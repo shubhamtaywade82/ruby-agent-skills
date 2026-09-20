@@ -1,64 +1,105 @@
 ---
 name: ruby-control-flow
-description: Use when implementing or refactoring conditionals, case expressions, loops, boolean branches or repetitive program flow in Ruby.
+description: Use when implementing or refactoring Ruby conditionals, case expressions, loops, boolean branches, guards, or repetitive program flow.
 ---
 
 # Ruby Control Flow
 
 ## Purpose
 
-Make branching and repetition explicit, correct and easy to reason about.
+Express decisions and repetition so the happy path, edge cases, and termination behavior are obvious.
+
+## Activate when
+
+- adding or changing `if`, `unless`, `case`, loops, guards, or boolean expressions
+- simplifying nested control flow
+- implementing an algorithm with explicit complexity constraints
+- debugging skipped branches or unexpected evaluation
+
+## Repository inspection
+
+Read the relevant method and tests first. Check Ruby version and nearby style before using newer control-flow syntax.
 
 ## Decision rules
 
-- Use a conditional when the decision is genuinely boolean.
-- Use `case` when selecting among multiple meaningful alternatives.
-- Prefer guard clauses when they make invalid/precondition states exit early.
-- Prefer iteration that expresses intent (`each`, `map`, `while`, `until`, ranges) over clever control tricks.
-- Avoid deeply nested conditionals; extract a predicate or cohesive method when the logic becomes difficult to read.
-- Keep loop termination conditions obvious.
-- Do not silently change mutation or break/next behavior during refactoring.
+### Choose the construct
 
-## Boolean logic
+- Use `if`/conditional expressions for boolean decisions.
+- Use `case` when selecting among meaningful alternatives or patterns.
+- Use `each` for side effects.
+- Use `map`, `select`, `reject`, `find`, and related Enumerable methods when the collection intent is clearer.
+- Use `while`/`until` when the termination condition is naturally state-driven.
+- Use `for` only when the repository explicitly prefers it or its semantics are required.
 
-Be explicit about:
-- truthiness
-- short-circuiting
+### Guard clauses
+
+Use guard clauses when they remove unnecessary nesting and make preconditions explicit.
+
+Do not turn every conditional into a guard merely to reduce line count.
+
+### Boolean logic
+
+Prefer named predicates or variables when complex conditions require mental parsing.
+
+Be precise about:
+
+- `&&` versus `&`
+- `||` versus `|`
 - operator precedence
-- negation
-- nil handling
+- short-circuit evaluation
+- double negatives
+- nil/false behavior
+- ternary readability
 
-For complicated predicates, consider a well-named predicate method so the calling code reads like a domain statement.
+A boolean expression should communicate a business or algorithmic decision, not merely pack tokens onto one line.
 
-## Loops and algorithms
+### Algorithms
 
-For algorithmic tasks, state:
+Record:
+
 - input/output contract
+- mutation
 - time complexity
 - auxiliary space
-- mutation
-- termination conditions
+- loop invariant where useful
+- termination condition
 - edge cases
 
-Do not replace a required algorithm with a convenience abstraction that violates the stated complexity.
+Do not replace a required algorithm with a convenient abstraction that violates the stated complexity.
 
 ## Refactoring procedure
 
-1. characterize current branches
-2. identify the happy path
-3. isolate guards and predicates
-4. simplify one branch at a time
-5. preserve observable behavior
-6. add focused tests for boundary cases
+1. Map the current branches.
+2. Identify the happy path.
+3. Identify guards and failure paths.
+4. Name complicated predicates.
+5. Simplify one branch at a time.
+6. Preserve evaluation order when it affects behavior.
+7. Add boundary tests.
+8. Run regression tests.
 
-## Anti-patterns
+## Common failure modes
 
-- nested conditionals that hide the main path
-- infinite or ambiguous loops
-- duplicated conditions
-- boolean expressions whose precedence is unclear
-- clever one-liners that obscure control flow
+- nested conditionals that hide the primary path
+- conditions whose precedence is unclear
+- changing `&&` to `&` or vice versa without understanding evaluation
+- loops with ambiguous termination
+- algorithmic code that silently allocates additional space
+- clever one-line transformations that obscure control flow
+
+## Agent review checklist
+
+- [ ] branch structure is obvious
+- [ ] evaluation order is preserved
+- [ ] guard clauses improve, rather than merely shorten, the method
+- [ ] loop termination is obvious
+- [ ] algorithmic constraints are respected
+- [ ] boundary cases are tested
+
+## Verification
+
+Exercise every meaningful branch and boundary. For algorithmic work, use tests or instrumentation to substantiate stated complexity constraints when practical.
 
 ## Source foundation
 
-Derived from the program-flow material in The Ruby Workshop and boolean-logic/readability guidance in Clean Ruby.
+Based on the program-flow material in *The Ruby Workshop* and the boolean-logic/readability guidance in *Clean Ruby*, which emphasizes making complex boolean decisions understandable rather than merely compact.
