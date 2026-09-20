@@ -1,41 +1,90 @@
 ---
 name: rails-generators
-description: Use when using Rails generators or scaffolding to create models, controllers, views, migrations or related application structure.
+description: Use when using Rails generators or scaffolding to create conventional models, controllers, views, migrations, tests, or related application structure.
 ---
 
 # Rails Generators and Scaffolding
 
 ## Purpose
 
-Use generators to accelerate conventional Rails development while still inspecting and reviewing the generated code.
+Use Rails generators to accelerate conventional work while treating generated output as code that still requires design review.
 
-## Inspect first
+## Activate when
 
-Check existing project generator conventions, Rails version, naming patterns and test framework.
+- creating a new Rails resource
+- generating model/controller/view/test structure
+- using `rails generate` or scaffolding
+- reviewing generated migrations/routes
+
+## Repository inspection
+
+Before generating:
+
+- resolve Rails version
+- inspect existing resource conventions
+- inspect test stack
+- inspect naming/namespace conventions
+- inspect whether project uses scaffolding at all
 
 ## Decision rules
 
-- Use generators when the generated structure matches the intended architecture.
-- Treat generated code as a starting point, not automatically correct final code.
-- Review generated migrations, associations, validations, routes, views, controllers and tests.
-- Remove generated code that is not part of the actual requirement.
+Use a generator when the generated structure matches the desired architecture.
+
+Typical generator output may include some combination of:
+
+- model
+- migration
+- controller
+- views
+- routes
+- tests
+
+The exact output is version/project dependent. Verify rather than assuming.
 
 ## Scaffolding
 
-Scaffolding is appropriate for quickly creating conventional CRUD structure around a resource when the project wants the generated structure.
+Scaffolding is appropriate when a conventional CRUD resource is actually desired.
 
-Do not scaffold merely to avoid understanding the resource boundaries.
+Do not use scaffolding simply because it is faster than designing the resource.
+
+## Post-generation review
+
+Treat generation as a draft.
+
+Review:
+
+1. migration
+2. schema impact
+3. model
+4. associations/validations
+5. controller
+6. routes
+7. views/forms
+8. tests
+9. generated comments/placeholder behavior
+
+Delete artifacts not required by the feature.
+
+## Safety
+
+For destructive generators or generators that replace files, inspect the generated diff before accepting it.
+
+Do not let a generator silently overwrite custom code.
+
+## Agent review checklist
+
+- [ ] Rails version checked
+- [ ] project conventions checked
+- [ ] generated files reviewed
+- [ ] migration reviewed
+- [ ] routes reviewed
+- [ ] unnecessary artifacts removed
+- [ ] tests run
 
 ## Verification
 
-After generation:
-1. inspect the diff
-2. inspect routes
-3. inspect the migration/schema change
-4. inspect model/controller/view/test code
-5. run the generated/relevant tests
-6. remove unnecessary artifacts
+Run the relevant generator command, inspect the exact diff, run migration/schema checks, then run affected tests.
 
 ## Source foundation
 
-Derived from the Rails scaffolding material in The Ruby Workshop.
+Derived from the Rails scaffolding/generator material in *The Ruby Workshop*, including the use of `rails generate scaffold` to create conventional resource structure. The final-design and review requirements are added for agent safety.
