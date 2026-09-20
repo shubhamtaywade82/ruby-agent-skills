@@ -1,61 +1,122 @@
 ---
 name: rails-deployment
-description: Use when preparing, reviewing or debugging Rails application deployment, hosting configuration or production readiness.
+description: Use when preparing, reviewing, debugging, or validating Rails deployment, hosting, production configuration, migrations, builds, or release readiness.
 ---
 
 # Rails Deployment
 
 ## Purpose
 
-Translate an application that works locally into a reproducible deployed environment.
+Make deployment behavior reproducible and evidence-based rather than assuming a local-working application is production-ready.
 
-## Inspect first
+## Activate when
 
-Identify:
-- deployment platform
-- Ruby version
-- Rails version
-- build/deploy commands
+- deploying Rails
+- preparing a release
+- debugging a production boot/build failure
+- changing environment configuration
+- changing production migrations
+- reviewing hosting readiness
+
+## Repository inspection
+
+Identify the actual deployment model:
+
+- hosting/platform
+- Ruby/Rails versions
+- Gemfile/Gemfile.lock
+- buildpack/container/Dockerfile
+- CI/CD workflows
 - database
-- environment variables
 - asset pipeline
-- background processes
-- storage/external services
-- CI/CD configuration
+- environment variables
+- storage
+- background jobs
+- external services
+- health checks
+- logging/error reporting
 
-Never assume a deployment platform from the task wording.
+Do not assume a platform from the Rails version.
 
 ## Configuration
 
-Separate code from environment-specific configuration.
+Separate code/configuration from secrets.
 
-Verify required environment variables exist and are not committed as secrets.
+Verify required environment variables without printing their values.
 
-## Database
+Do not commit secrets.
 
-For schema changes:
-- confirm migration order
-- verify production-safe migration behavior
-- consider existing data and table size
-- confirm application and database versions are compatible
+## Database changes
 
-## Application behavior
+For production migrations, inspect:
 
-Verify:
-- boot
-- routes
-- database connection
-- asset/static behavior as applicable
-- external service configuration
-- health checks where the project defines them
-- logs and error reporting
+- lock duration
+- table size
+- index creation behavior
+- default/backfill strategy
+- nullable transition
+- compatibility between old/new application versions
+- rollback expectations
+
+A migration that works locally may still be unsafe on a large production table.
+
+## Release procedure
+
+A robust release should make explicit:
+
+1. build artifact
+2. dependency installation
+3. database migration strategy
+4. asset/static preparation
+5. process startup
+6. health/readiness checks
+7. logs/metrics
+8. rollback/recovery
+
+Follow repository-specific deploy tooling rather than inventing generic commands.
+
+## Runtime verification
+
+Check:
+
+- application boots
+- database connects
+- routes respond
+- critical background processes run
+- external services authenticate
+- assets/rendering function where applicable
+- errors are visible in logs
+
+## Failure discipline
+
+Do not report "deployed successfully" without observing deployment/build/runtime evidence.
+
+When deployment fails, capture:
+
+- exact command
+- exact error
+- stage
+- environment
+- recent changes
+
+then debug from evidence.
+
+## Agent review checklist
+
+- [ ] platform/process model identified
+- [ ] secrets protected
+- [ ] migrations reviewed for production safety
+- [ ] build verified
+- [ ] boot verified
+- [ ] database verified
+- [ ] health checks verified
+- [ ] rollback path understood
+- [ ] actual deployment evidence observed
 
 ## Verification
 
-Use the project's actual build/deploy checks and, where possible, a staging environment before production.
-
-Do not claim deployment success without observing the deployment result.
+Use the repository's real CI/CD and staging/deployment checks. Never substitute a local test for a production deployment claim.
 
 ## Source foundation
 
-The Ruby Workshop includes hosting a Rails application as part of its Rails progression. This skill operationalizes the deployment concept without prescribing one hosting provider.
+Grounded in the hosting/deployment activity from *The Ruby Workshop*. Production-readiness and evidence requirements are extended here for modern agent-assisted engineering.
