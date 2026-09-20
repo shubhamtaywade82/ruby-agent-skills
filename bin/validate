@@ -2,4 +2,6 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-exec ruby "$ROOT/scripts/validate_skills.rb"
+
+ruby "$ROOT/scripts/validate_skills.rb"
+ruby "$ROOT/scripts/validate_patterns.rb"
