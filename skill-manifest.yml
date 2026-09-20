@@ -104,3 +104,33 @@ skills:
     family: operations
     path: skills/rails-deployment/SKILL.md
     triggers: [deployment, hosting, production, environment, release]
+
+patterns:
+  ruby-design:
+    paths:
+      - patterns/ruby-design/value-object.md
+      - patterns/ruby-design/service-object.md
+      - patterns/ruby-design/strategy-object.md
+      - patterns/ruby-design/composition-over-inheritance.md
+      - patterns/ruby-design/adapter.md
+    triggers: [value object, service object, strategy, composition, inheritance, adapter, external interface]
+
+  rails:
+    paths:
+      - patterns/rails/query-object.md
+      - patterns/rails/form-object.md
+      - patterns/rails/policy-boundary.md
+      - patterns/rails/transaction-boundary.md
+      - patterns/rails/request-flow.md
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow]
+
+  testing:
+    paths:
+      - patterns/testing/regression-test.md
+    triggers: [regression test, bug fix, regression coverage]
+
+  algorithms:
+    paths:
+      - patterns/algorithms/two-pointers.md
+      - patterns/algorithms/frequency-map.md
+    triggers: [two pointers, pair sum, frequency map, counting, membership lookup]
