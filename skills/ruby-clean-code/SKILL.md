@@ -13,6 +13,10 @@ Optimize for code that is readable, easy to change, and straightforward without 
 
 Use for every non-trivial Ruby/Rails change and especially during review/refactoring.
 
+## Repository inspection
+
+Before judging code quality, inspect the surrounding implementation, tests, configuration, and repository conventions.
+
 ## Primary quality model
 
 Ask:
