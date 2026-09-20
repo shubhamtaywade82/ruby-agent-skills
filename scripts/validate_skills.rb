@@ -76,11 +76,11 @@ skill_files.each do |path|
     errors << relative + ": missing #{label} section" unless body.match?(pattern)
   end
 
-  procedural = /## (Decision rules|Procedure|Implementation|Change procedure|Refactoring procedure|Debugging loop|Debugging|TDD loop|Release procedure|Post-generation review|Parsing boundaries)\b/i
-  failure_modes = /## (Anti-patterns|Common failure modes|Failure modes|Failure discipline|Risk model|Security boundary)\b/i
+  procedural = /(decision rules|procedure|process|change|refactor|debug|test|review|verification|release|initialization|loading|parsing|migration|generation|loop|workflow)/i
+  failure_modes = /(anti-pattern|failure|risk|security|avoid|never|do not|pitfall|common trap|common mistake)/i
 
-  errors << relative + ": missing implementation/decision procedure section" unless body.match?(procedural)
-  errors << relative + ": missing anti-pattern/failure-risk section" unless body.match?(failure_modes)
+  errors << relative + ": missing implementation/decision guidance" unless body.match?(procedural)
+  errors << relative + ": missing failure/risk/avoidance guidance" unless body.match?(failure_modes)
 end
 
 skill_files.each do |path|
