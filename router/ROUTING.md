@@ -39,6 +39,19 @@ This file defines how an agent should select and compose skills.
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | Test-driven change | ruby-tdd-refactoring | relevant implementation skill |
+| Primitive with domain behavior | ruby-data-types | ruby-oop, pattern:value-object |
+| Multi-step application workflow | ruby-oop / relevant domain skill | pattern:service-object, ruby-tdd-refactoring |
+| Interchangeable algorithm/policy | ruby-oop | pattern:strategy-object |
+| Replace inheritance with collaborators | ruby-oop | pattern:composition-over-inheritance |
+| External/legacy API boundary | ruby-gems-io-services | pattern:adapter, ruby-debugging |
+| Complex/read-oriented Rails query | rails-activerecord | pattern:query-object, rails-testing |
+| Multi-model/input validation boundary | rails-controllers | pattern:form-object, rails-validations |
+| Authorization boundary | rails-authentication | pattern:policy-boundary, rails-testing |
+| Atomic multi-write workflow | rails-activerecord | pattern:transaction-boundary, rails-testing |
+| End-to-end Rails endpoint | rails-architecture | pattern:request-flow, rails-testing |
+| Bug regression coverage | ruby-debugging | pattern:regression-test, ruby-tdd-refactoring |
+| Pair-search on sorted data | ruby-collections | pattern:two-pointers, ruby-tdd-refactoring |
+| Repeated membership/counting | ruby-collections | pattern:frequency-map, ruby-tdd-refactoring |
 
 ## Composition patterns
 
@@ -95,3 +108,64 @@ classify task
   -> inspect diff
   -> report changed/verified/not-verified
 ```
+
+## Pattern selection
+
+Patterns are selected **after** skills classify the task.
+
+Use this sequence:
+
+```text
+classify task
+  -> select skill(s)
+  -> inspect repository
+  -> check whether an existing local pattern already solves the shape
+  -> apply the smallest suitable pattern
+  -> adapt names/structure to repository conventions
+  -> verify behavior
+```
+
+Patterns are optional implementation shapes, not architecture mandates.
+
+### Pattern composition examples
+
+#### Service workflow
+
+```text
+ruby-oop
+  + ruby-method-design
+  + ruby-gems-io-services (when external boundaries exist)
+  + pattern:service-object
+  + ruby-tdd-refactoring
+```
+
+#### Rails endpoint
+
+```text
+rails-routing
+  + rails-controllers
+  + rails-authentication (when protected)
+  + rails-activerecord
+  + pattern:request-flow
+  + rails-testing
+```
+
+#### Complex query
+
+```text
+rails-activerecord
+  + rails-associations
+  + pattern:query-object
+  + rails-testing
+```
+
+#### Bug fix
+
+```text
+ruby-debugging
+  + relevant implementation skill
+  + pattern:regression-test
+  + ruby-tdd-refactoring
+```
+
+Do not use a pattern simply because it exists. If a direct implementation is clearer and fits the repository, prefer the direct implementation.
