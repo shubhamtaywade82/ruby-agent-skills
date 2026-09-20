@@ -1,58 +1,129 @@
 ---
 name: ruby-data-types
-description: Use when choosing or reviewing Ruby scalar values, strings, symbols, ranges, numbers, nil, hashes or other core data representations.
+description: Use when choosing, parsing, validating, or reviewing Ruby values such as strings, numbers, symbols, ranges, nil, arrays, hashes, or domain value representations.
 ---
 
 # Ruby Data Types
 
 ## Purpose
 
-Choose data representations that make the domain and behavior explicit.
+Choose data representations that make contracts obvious and keep invalid states difficult to create.
 
-## Inspect first
+## Activate when
 
-Determine:
+- an API or method needs a new value representation
+- input is parsed or normalized
+- hashes are becoming structured domain data
+- nilability or empty values matter
+- a primitive value is acquiring behavior or validation
+- serialization/deserialization crosses a boundary
+
+## Repository inspection
+
+Inspect:
+
 - supported Ruby version
-- existing value conventions
-- nilability expectations
-- serialization/parsing boundaries
-- whether the value is scalar data or a domain concept
+- schema/JSON/API payload shape
+- existing value objects and conventions
+- serialization libraries
+- nil/empty conventions
+- tests that describe boundary behavior
+
+Do not impose a new representation when an established one already exists.
 
 ## Decision rules
 
-- Use a simple value when identity and behavior are not needed.
-- Use strings for textual values; do not encode structured state into ad-hoc strings.
-- Use symbols when the repository treats a small closed set as symbolic identifiers.
-- Use hashes for keyed data when the keys and value shape are clear.
-- Use ranges when representing a bounded interval or sequence is clearer than paired endpoints.
-- Treat nil as an explicit state; do not silently convert "missing" into false or an empty value.
-- Preserve numeric meaning; do not use strings for numeric computation unless the boundary requires it.
-- Prefer domain objects when a value has meaningful validation, behavior or lifecycle.
+### Primitive versus object
 
-## String handling
+Use a primitive when the value has simple semantics.
 
-At input boundaries:
-1. identify encoding/format assumptions
-2. normalize only when required by the contract
-3. validate required content
-4. preserve meaningful whitespace unless the business rule says otherwise
+Introduce a value object when the value has meaningful:
 
-Do not add arbitrary strip/downcase/transliteration behavior just because it is convenient.
+- validation
+- normalization
+- comparison
+- formatting
+- domain behavior
+- identity beyond its raw representation
 
-## Hashes and structured data
+Do not create classes merely to wrap a single primitive.
 
-Before using a hash, identify:
+### Strings
+
+At input boundaries distinguish:
+
+- missing
+- empty
+- whitespace-only
+- normalized text
+- invalid encoding/format
+
+Do not silently `strip`, downcase, transliterate, or coerce unless the contract requires it.
+
+### Symbols
+
+Use symbols for stable symbolic identifiers when that matches project conventions. Do not convert arbitrary external user input directly into symbols without considering the runtime/version and lifecycle of those values.
+
+### Numbers
+
+Preserve numeric semantics through calculations. At external boundaries, distinguish numeric text from numeric values and validate conversion failures explicitly.
+
+### Nil
+
+Treat `nil` as meaningful state. Do not use empty strings, empty collections, or sentinel values as accidental substitutes.
+
+### Hashes
+
+Before creating a structured hash, define:
+
 - required keys
 - optional keys
-- value types/shapes
-- mutation expectations
+- value shapes
+- ownership/mutation
+- serialization expectations
 
-If a hash has become a stable domain object with substantial behavior, consider a class instead of adding more implicit structure.
+When the hash gains substantial behavior, consider a domain object.
+
+### Ranges
+
+Use ranges when they express a meaningful interval or sequence. Verify inclusive/exclusive semantics explicitly.
+
+## Parsing boundaries
+
+Separate:
+
+1. raw input
+2. parsing/coercion
+3. validation
+4. normalized representation
+5. domain behavior
+
+Do not combine all five responsibilities into one method.
+
+## Anti-patterns
+
+- hidden coercion
+- ambiguous nil/empty semantics
+- deeply nested hashes with undocumented structure
+- stringly-typed state
+- primitive obsession without a domain reason
+- data classes with no behavior when a simple hash would suffice
+- domain behavior embedded in serializers/parsers
+
+## Agent review checklist
+
+- [ ] value contract is explicit
+- [ ] nil/empty distinction is intentional
+- [ ] representation matches existing conventions
+- [ ] external input is validated
+- [ ] structured hashes have a defined shape
+- [ ] value-object introduction is justified
+- [ ] mutation and ownership are understood
 
 ## Verification
 
-Test nil, empty values, representative values and boundary values whenever the distinction matters.
+Test representative, empty, nil, malformed, and boundary values where those distinctions affect behavior. Test round-trip parsing/serialization when data crosses an external boundary.
 
 ## Source foundation
 
-Derived from the data-type and operation material in The Ruby Workshop, reinforced by the representation and naming principles of Clean Ruby.
+Derived from the data types and operations material in *The Ruby Workshop*. The naming and simplicity rules are reinforced by *Clean Ruby*: choose representations that help another developer understand the code without reconstructing hidden meaning.
