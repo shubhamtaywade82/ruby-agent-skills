@@ -1,55 +1,108 @@
 ---
 name: rails-authentication
-description: Use when adding, reviewing or debugging Rails authentication flows, protected resources, sessions or authentication-related integration.
+description: Use when adding, reviewing, or debugging Rails authentication, sessions, credentials, protected resources, or authentication-related integration.
 ---
 
 # Rails Authentication
 
 ## Purpose
 
-Protect application access using the repository's established authentication mechanism without scattering authentication logic through feature code.
+Preserve a clear authentication boundary without scattering identity/session logic through ordinary feature code.
 
-## Inspect first
+## Activate when
 
-Identify:
-- authentication gem/library or custom mechanism
-- user/session model
-- routes and callbacks
-- protected controllers
-- current sign-in/sign-out flow
-- authorization boundary if present
-- tests and fixtures/factories
+- adding sign-in/sign-out
+- protecting a resource
+- changing session/token behavior
+- integrating Devise or another existing authentication mechanism
+- debugging authenticated request failures
 
-Do not invent an authentication system if the repository already has one.
+## Repository inspection
 
-## Boundary rules
+Identify the actual mechanism first:
 
-- Authentication establishes who the requester is.
-- Authorization determines whether that requester may perform the operation.
-- Keep these concerns distinguishable even when the project implements them together.
+- authentication gem/library
+- User/account/session models
+- routes
+- controller callbacks
+- middleware if relevant
+- token/session storage
+- password/reset flows
+- request tests
+- authorization/policy layer if present
 
-## Implementation
+Do not invent a new authentication system when one already exists.
 
-Follow the existing mechanism for:
-- session/token handling
-- password storage
-- reset flows
-- callbacks
-- protected routes
-- unauthenticated responses
+## Authentication versus authorization
 
-Never log passwords, raw tokens or credentials.
+Keep the distinction clear:
+
+- authentication: who is the requester?
+- authorization: may that requester perform this action?
+
+A user being signed in does not imply permission to access every resource.
+
+## Credentials and secrets
+
+Never log or commit:
+
+- passwords
+- password hashes unnecessarily
+- raw session secrets
+- bearer tokens
+- reset tokens
+- private credentials
+
+Follow the repository's secret management mechanism.
+
+## Session/token behavior
+
+Before changing authentication state, understand:
+
+- session creation
+- rotation/invalidation
+- expiration
+- logout semantics
+- multi-device behavior if relevant
+- CSRF protection for browser sessions
+- API credential behavior for API endpoints
+
+## Protected resources
+
+Authentication checks should occur at the server boundary.
+
+Do not rely on:
+
+- hidden links
+- client-side UI state
+- disabled buttons
+- route obscurity
+
+for protection.
+
+## Failure behavior
+
+Verify repository conventions for:
+
+- unauthenticated request
+- invalid credentials
+- expired session/token
+- forbidden authenticated request
+- not-found versus unauthorized information disclosure behavior
+
+## Agent review checklist
+
+- [ ] existing authentication system inspected
+- [ ] authn/authz distinction preserved
+- [ ] secret handling safe
+- [ ] session/token lifecycle understood
+- [ ] protected endpoints enforce server-side checks
+- [ ] failure contract tested
 
 ## Verification
 
-Cover:
-- authenticated access
-- unauthenticated access
-- sign-in/sign-out behavior
-- invalid credentials
-- session/token expiration or invalidation when relevant
-- protected endpoint behavior
+Use authentication/integration/request tests that exercise valid, invalid, expired, unauthenticated, and unauthorized cases relevant to the repository.
 
 ## Source foundation
 
-The Ruby Workshop includes an authentication step in its Rails application activity. This skill turns that concept into a reusable agent procedure while requiring the repository's actual authentication mechanism to be inspected first.
+The Ruby Workshop includes an authentication step in its Rails learning path. This skill turns that material into an agent procedure while deliberately requiring inspection of the repository's real authentication mechanism.
