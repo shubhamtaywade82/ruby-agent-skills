@@ -1,0 +1,47 @@
+version: 1
+name: ruby-agent-skills
+
+defaults:
+  always_consider:
+    - ruby-clean-code
+  require_repository_inspection: true
+  require_tests_for_behavior_changes: true
+  prefer_existing_conventions: true
+
+skills:
+  ruby-core:
+    path: skills/ruby-core/SKILL.md
+    triggers: [Ruby implementation, Ruby syntax or semantics, object model]
+  ruby-collections:
+    path: skills/ruby-collections/SKILL.md
+    triggers: [arrays, hashes, Enumerable, collection transformation]
+  ruby-method-design:
+    path: skills/ruby-method-design/SKILL.md
+    triggers: [new method, method refactor, complex parameters, return contract]
+  ruby-oop:
+    path: skills/ruby-oop/SKILL.md
+    triggers: [class design, inheritance, encapsulation, polymorphism]
+  ruby-modules-mixins:
+    path: skills/ruby-modules-mixins/SKILL.md
+    triggers: [module, mixin, include, extend, prepend, namespace]
+  ruby-metaprogramming:
+    path: skills/ruby-metaprogramming/SKILL.md
+    triggers: [reflection, define_method, method_missing, runtime method creation]
+  ruby-gems-io-services:
+    path: skills/ruby-gems-io-services/SKILL.md
+    triggers: [gem, file I/O, CSV, HTTP client, service object]
+  ruby-debugging:
+    path: skills/ruby-debugging/SKILL.md
+    triggers: [bug, exception, stack trace, logging, debugging]
+  rails-architecture:
+    path: skills/rails-architecture/SKILL.md
+    triggers: [Rails feature, controller, routing, REST, MVC]
+  rails-activerecord:
+    path: skills/rails-activerecord/SKILL.md
+    triggers: [model, migration, association, validation, ActiveRecord, query]
+  ruby-clean-code:
+    path: skills/ruby-clean-code/SKILL.md
+    triggers: [code review, refactor, readability, naming, design quality]
+  ruby-tdd-refactoring:
+    path: skills/ruby-tdd-refactoring/SKILL.md
+    triggers: [test, TDD, regression, refactor]
