@@ -22,6 +22,10 @@ A search over pairs or boundaries appears quadratic because every element is com
 - the required auxiliary-space/complexity contract makes sorting inappropriate
 - pointer movement cannot be justified by a monotonic invariant
 
+## Repository inspection
+
+Inspect the input contract, ordering guarantees, mutation constraints, complexity requirements, and existing algorithm conventions before selecting this pattern.
+
 ## Structure
 
 ~~~ruby
