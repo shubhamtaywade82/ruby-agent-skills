@@ -17,7 +17,9 @@ Map a Rails feature to the repository's existing request, domain, persistence, p
 - application boundaries are unclear
 - architecture is being refactored
 
-## Inspect first
+## Repository inspection
+
+
 
 Read the smallest useful slice of the repository:
 
