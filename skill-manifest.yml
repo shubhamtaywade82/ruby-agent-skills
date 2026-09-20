@@ -1,47 +1,106 @@
-version: 1
+version: 2
 name: ruby-agent-skills
 
 defaults:
   always_consider:
     - ruby-clean-code
+    - ruby-tdd-refactoring
   require_repository_inspection: true
   require_tests_for_behavior_changes: true
   prefer_existing_conventions: true
+  require_version_awareness: true
 
 skills:
   ruby-core:
+    family: ruby
     path: skills/ruby-core/SKILL.md
-    triggers: [Ruby implementation, Ruby syntax or semantics, object model]
+    triggers: [Ruby syntax, Ruby semantics, object model, truthiness, method dispatch]
+  ruby-data-types:
+    family: ruby
+    path: skills/ruby-data-types/SKILL.md
+    triggers: [strings, symbols, numbers, nil, ranges, hashes, data representation]
+  ruby-control-flow:
+    family: ruby
+    path: skills/ruby-control-flow/SKILL.md
+    triggers: [if, unless, case, loops, boolean logic, branching]
   ruby-collections:
+    family: ruby
     path: skills/ruby-collections/SKILL.md
-    triggers: [arrays, hashes, Enumerable, collection transformation]
+    triggers: [arrays, hashes, Enumerable, map, select, grouping, deduplication, sorting]
   ruby-method-design:
+    family: design
     path: skills/ruby-method-design/SKILL.md
-    triggers: [new method, method refactor, complex parameters, return contract]
+    triggers: [new method, method refactor, parameters, return contract, guard clause]
   ruby-oop:
+    family: design
     path: skills/ruby-oop/SKILL.md
-    triggers: [class design, inheritance, encapsulation, polymorphism]
+    triggers: [class design, encapsulation, inheritance, polymorphism, composition]
   ruby-modules-mixins:
+    family: design
     path: skills/ruby-modules-mixins/SKILL.md
     triggers: [module, mixin, include, extend, prepend, namespace]
   ruby-metaprogramming:
+    family: ruby
     path: skills/ruby-metaprogramming/SKILL.md
     triggers: [reflection, define_method, method_missing, runtime method creation]
   ruby-gems-io-services:
+    family: integration
     path: skills/ruby-gems-io-services/SKILL.md
-    triggers: [gem, file I/O, CSV, HTTP client, service object]
+    triggers: [gem, dependency, file I/O, CSV, HTTP client, service object]
   ruby-debugging:
+    family: debugging
     path: skills/ruby-debugging/SKILL.md
-    triggers: [bug, exception, stack trace, logging, debugging]
-  rails-architecture:
-    path: skills/rails-architecture/SKILL.md
-    triggers: [Rails feature, controller, routing, REST, MVC]
-  rails-activerecord:
-    path: skills/rails-activerecord/SKILL.md
-    triggers: [model, migration, association, validation, ActiveRecord, query]
+    triggers: [bug, exception, stack trace, logging, debugging, production issue]
   ruby-clean-code:
+    family: quality
     path: skills/ruby-clean-code/SKILL.md
-    triggers: [code review, refactor, readability, naming, design quality]
+    triggers: [code review, refactor, readability, naming, simplicity, maintainability]
   ruby-tdd-refactoring:
+    family: quality
     path: skills/ruby-tdd-refactoring/SKILL.md
-    triggers: [test, TDD, regression, refactor]
+    triggers: [test, TDD, regression, refactor, behavior change]
+
+  rails-architecture:
+    family: rails
+    path: skills/rails-architecture/SKILL.md
+    triggers: [Rails feature, MVC, resource, REST, application structure]
+  rails-routing:
+    family: rails
+    path: skills/rails-routing/SKILL.md
+    triggers: [routes, route, resources, HTTP verb, URL helper, dispatch]
+  rails-controllers:
+    family: rails
+    path: skills/rails-controllers/SKILL.md
+    triggers: [controller action, params, render, redirect, response]
+  rails-views:
+    family: rails
+    path: skills/rails-views/SKILL.md
+    triggers: [ERB, view, partial, helper, form, presentation]
+  rails-activerecord:
+    family: rails
+    path: skills/rails-activerecord/SKILL.md
+    triggers: [model, migration, ActiveRecord, query, persistence]
+  rails-associations:
+    family: rails
+    path: skills/rails-associations/SKILL.md
+    triggers: [belongs_to, has_one, has_many, through, HABTM, relationship]
+  rails-validations:
+    family: rails
+    path: skills/rails-validations/SKILL.md
+    triggers: [validation, errors, validation context, invariant]
+  rails-authentication:
+    family: rails
+    path: skills/rails-authentication/SKILL.md
+    triggers: [authentication, session, sign in, sign out, protected route]
+  rails-testing:
+    family: rails-quality
+    path: skills/rails-testing/SKILL.md
+    triggers: [request test, model test, system test, integration test, Rails test]
+  rails-generators:
+    family: rails
+    path: skills/rails-generators/SKILL.md
+    triggers: [generator, scaffold, rails generate, CRUD scaffold]
+  rails-deployment:
+    family: operations
+    path: skills/rails-deployment/SKILL.md
+    triggers: [deployment, hosting, production, environment, release]
