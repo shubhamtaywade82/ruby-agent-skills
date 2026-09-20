@@ -22,6 +22,10 @@ Repeated membership/counting scans make a collection algorithm unnecessarily qua
 - memory is constrained enough that the index is unacceptable
 - ordering/identity semantics make hashing inappropriate
 
+## Repository inspection
+
+Inspect the input contract, ordering guarantees, mutation constraints, complexity requirements, and existing algorithm conventions before selecting this pattern.
+
 ## Structure
 
 ~~~ruby
