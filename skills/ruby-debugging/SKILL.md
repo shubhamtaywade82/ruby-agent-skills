@@ -17,7 +17,10 @@ Turn an observed failure into a verified root cause and a regression-safe fix.
 - logs do not explain an intermittent problem
 - state becomes invalid somewhere upstream of the failure
 
-## Evidence first
+## Repository inspection
+
+Before debugging, inspect the repository context and then collect evidence:
+
 
 Collect:
 
