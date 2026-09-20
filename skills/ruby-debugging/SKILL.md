@@ -1,42 +1,135 @@
 ---
 name: ruby-debugging
-description: Use when diagnosing Ruby or Rails exceptions, incorrect behavior, production issues, logging problems or unexplained state.
+description: Use when diagnosing Ruby/Rails exceptions, incorrect behavior, production failures, logging problems, unexpected state, or intermittent defects.
 ---
 
 # Ruby Debugging
 
-## Principle
-Debug from evidence rather than intuition.
+## Purpose
 
-## Loop
-~~~
-text
+Turn an observed failure into a verified root cause and a regression-safe fix.
+
+## Activate when
+
+- an exception or failing test exists
+- behavior is incorrect but the code appears plausible
+- a production issue needs diagnosis
+- logs do not explain an intermittent problem
+- state becomes invalid somewhere upstream of the failure
+
+## Evidence first
+
+Collect:
+
+- exact error/message
+- full relevant stack trace
+- request/input
+- relevant state
+- Ruby/Rails/dependency versions
+- recent changes
+- reproducibility
+- logs/metrics/traces available to the repository
+
+Do not start by changing code.
+
+## Debugging loop
+
+```text
 reproduce
   -> observe
   -> isolate
   -> inspect state
-  -> identify root cause
-  -> patch
+  -> form hypothesis
+  -> test hypothesis
+  -> patch root cause
   -> add regression coverage
   -> verify
-~~~
+```
 
-## First pass
-Collect the exact exception, stack trace, input/state, Ruby/Rails version, relevant logs, recent changes and reproduction steps.
-
-Do not change code before forming a concrete hypothesis.
+A hypothesis should predict what evidence will change if it is correct.
 
 ## Stack traces
-Distinguish the location where the exception surfaced from the location that created the invalid state.
+
+The exception location is where failure surfaced, not necessarily where invalid state was created.
+
+Trace backwards through:
+
+- arguments
+- collaborators
+- data loading
+- normalization
+- callbacks
+- persistence
+- external responses
 
 ## Logging
-Useful logs expose the operation, identifiers and relevant state. Never log secrets or credentials.
+
+Good diagnostic logs identify:
+
+- operation
+- correlation/request identifier when available
+- relevant domain identifier
+- meaningful state transition
+
+Do not log passwords, credentials, bearer tokens, secrets, or full sensitive payloads.
 
 ## Interactive debugging
-Use the project's supported debugger such as debug, byebug or IDE debugging to inspect locals, instance variables, receiver, stack and branch state.
+
+Use the repository's supported debugger (`debug`, `byebug`, IDE tooling, etc.).
+
+Inspect:
+
+- receiver
+- locals
+- instance variables
+- stack
+- branch state
+- database/external responses where relevant
+
+## Intermittent failures
+
+Look for:
+
+- concurrency
+- time
+- ordering
+- retries
+- external dependency behavior
+- shared mutable state
+- database isolation/transactions
+
+Avoid "fixes" that only add sleeps or retries without evidence.
 
 ## Fix discipline
-Fix root cause rather than masking the symptom. Add or strengthen regression coverage where practical.
+
+Prefer the smallest root-cause fix that preserves unrelated behavior.
+
+Then add a regression test that would have failed before the fix.
+
+## Verification ladder
+
+1. reproduce original failure
+2. run focused regression test
+3. run affected test group
+4. run broader suite when appropriate
+5. inspect final diff
+
+If a check cannot be run, state that explicitly.
+
+## Agent review checklist
+
+- [ ] evidence captured
+- [ ] hypothesis tested
+- [ ] root cause distinguished from symptom
+- [ ] regression test added/updated
+- [ ] no sensitive data logged
+- [ ] original reproduction now passes
+- [ ] broader regression checked
+
+## Verification
+
+Use deterministic reproductions where possible. For production-only failures, capture the observed evidence and create the narrowest safe reproduction available.
 
 ## Source foundation
-Based on logging/debugging material in The Ruby Workshop and readability/simplicity principles in Clean Ruby.
+
+Based on the logging and debugging material in *The Ruby Workshop*. The evidence-first and regression-oriented approach is aligned with the testing/refactoring discipline of *Clean Ruby*.
