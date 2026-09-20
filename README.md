@@ -60,11 +60,11 @@ Skills are intentionally composable. A Rails endpoint that changes persistence s
 
 The initial source set includes the uploaded *The Ruby Workshop* and *Clean Ruby* materials.
 
-The Ruby Workshop covers Ruby programs, data types, program flow, methods, OOP, modules/mixins, gems and I/O, debugging, metaprogramming, HTTP and Rails topics including MVC, routes, forms, Active Record, authentication, associations, validations, scaffolding and hosting. fileciteturn40file1 fileciteturn39file3
+The Ruby Workshop covers Ruby programs, data types, program flow, methods, OOP, modules/mixins, gems and I/O, debugging, metaprogramming, HTTP and Rails topics including MVC, routes, forms, Active Record, authentication, associations, validations, scaffolding and hosting.
 
-Clean Ruby focuses on readable, changeable and straightforward code, then develops naming, method design, boolean logic, classes, refactoring and TDD. fileciteturn40file0 fileciteturn41file2 fileciteturn41file4
+Clean Ruby focuses on readable, changeable and straightforward code, then develops naming, method design, boolean logic, classes, refactoring and TDD.
 
-The Allerin assessment is treated as an evaluation source rather than copied into the skills. Its tasks include sorting, missing values, shopping-cart behavior, triplet sum, majority element, distinct values, power-of-two detection and Chocolate Feast, with an explicit OOP requirement. fileciteturn42file9 fileciteturn42file8
+The Allerin assessment is treated as an evaluation source rather than copied into the skills. Its tasks include sorting, missing values, shopping-cart behavior, triplet sum, majority element, distinct values, power-of-two detection and Chocolate Feast, with an explicit OOP requirement.
 
 The repository does not reproduce the books. It turns their ideas into operational instructions for agents and uses the assessment as a benchmark corpus.
 
