@@ -1,63 +1,115 @@
 ---
 name: rails-testing
-description: Use when adding or changing Rails behavior and deciding where model, request, controller, system or integration tests belong.
+description: Use when adding or changing Rails behavior and deciding where model, request, system, controller, service, or integration tests should live.
 ---
 
 # Rails Testing
 
 ## Purpose
 
-Verify Rails behavior at the boundary where the contract actually exists.
+Place tests at the boundary that owns the behavior and use integration tests where the contract crosses Rails layers.
 
-## Inspect first
+## Activate when
 
-Determine the repository's test stack and conventions:
+- adding/changing Rails behavior
+- fixing a Rails bug
+- modifying a model/controller/request flow
+- adding authentication or authorization
+- changing rendered user-visible behavior
+- reviewing test quality
+
+## Repository inspection
+
+Resolve:
+
 - RSpec or Minitest
-- factories or fixtures
-- helper modules
-- request/system tests
-- service/object tests
+- unit/model conventions
+- request/controller tests
+- system tests
+- factories/fixtures
+- test database setup
+- helper/shared examples
 - CI commands
+- external-service stubs/fakes
 
-Do not introduce a second testing ecosystem without a concrete reason.
+Reuse the project's ecosystem.
 
 ## Test placement
 
-Prefer the smallest test that proves the behavior, but include integration coverage when the behavior crosses Rails boundaries.
+Prefer the smallest useful test that proves the contract.
 
 Examples:
+
 - model invariant -> model test
-- service workflow -> unit/service test
-- HTTP endpoint contract -> request/integration test
-- user-visible flow -> system test when the repository uses them
+- association behavior -> model/integration test as appropriate
+- service workflow -> service/domain test
+- HTTP response contract -> request test
+- user interaction -> system test when the repository uses one
+- cross-layer authentication -> request/integration test
+
+A focused test and an end-to-end test may both be justified when they prove different contracts.
 
 ## Test design
 
-Tests should make the contract obvious.
+Tests should explain behavior.
+
+Prefer:
+
+```text
+setup
+  -> meaningful action
+  -> meaningful expectation
+```
+
+over large arrangements with opaque helpers.
 
 Cover:
-- normal behavior
-- meaningful edge cases
+
+- normal cases
+- edge cases
 - invalid input
 - authorization/authentication
-- failure behavior
-- regressions for bugs
+- error behavior
+- important side effects
+- regressions
 
-Avoid tests that only assert private implementation details unless that implementation is itself an explicit contract.
+## Determinism
 
-## Change loop
+Avoid unnecessary:
 
-1. reproduce/describe behavior
-2. add or modify the focused test
-3. implement the minimum change
-4. run focused tests
-5. run relevant regression tests
-6. inspect the final diff
+- sleeps
+- time dependence
+- random data without controlled seed
+- external network calls
+- ordering assumptions
+- shared mutable state
+
+Use time helpers/fakes consistent with repository conventions.
+
+## Mocking/stubbing
+
+Mock external boundaries when appropriate, not the implementation under test.
+
+Avoid mocking every internal method; that can make tests pass while behavior is broken.
+
+## Regression tests
+
+A bug fix should ideally add a test that represents the previous failure.
+
+## Agent review checklist
+
+- [ ] test stack and conventions inspected
+- [ ] test boundary matches behavior
+- [ ] assertions describe the contract
+- [ ] edge/failure cases considered
+- [ ] external boundaries isolated appropriately
+- [ ] tests deterministic
+- [ ] no unnecessary implementation coupling
 
 ## Verification
 
-Prefer deterministic tests. Avoid unnecessary sleeps, order dependencies and hidden external network calls.
+Run focused tests first, then the affected Rails test group, then broader CI-equivalent checks where appropriate.
 
 ## Source foundation
 
-Combines the testing/TDD practice in Clean Ruby and the generated-test/activity model in The Ruby Workshop.
+Combines Rails testing practice implicit in the application activities of *The Ruby Workshop* with the TDD/test readability guidance in *Clean Ruby*, including meaningful test descriptions and focused expectations.
