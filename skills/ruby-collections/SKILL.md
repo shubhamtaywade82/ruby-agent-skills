@@ -1,43 +1,102 @@
 ---
 name: ruby-collections
-description: Use for arrays, hashes, Enumerable pipelines, filtering, mapping, grouping, deduplication and sorting.
+description: Use for Ruby arrays, hashes, Enumerable operations, grouping, deduplication, sorting, searching, collection mutation, or collection algorithm design.
 ---
 
 # Ruby Collections
 
 ## Purpose
-Use Ruby's collection abstractions to express data transformation clearly and safely.
 
-## Preferred patterns
-- map for transforming every element
-- select for retaining matching elements
-- reject for exclusion
-- find for one matching element
-- any?, all?, none? and include? for predicates
-- each for side effects
-- hashes for keyed lookup/counting when appropriate
-- uniq, sort, group_by and tally when they match the project runtime and intent
+Use Ruby collection abstractions when they express the required transformation without hiding important complexity or mutation.
 
-## Algorithm discipline
-Do not replace an algorithm with a shorter collection chain merely because the chain is shorter.
+## Activate when
 
-For algorithmic tasks record:
-- input/output contract
+- manipulating arrays or hashes
+- using Enumerable
+- filtering, mapping, grouping, counting, sorting, or deduplicating
+- designing an array algorithm
+- reviewing collection performance or mutation
+
+## Repository inspection
+
+Check:
+
+- supported Ruby version
+- collection shape and element contract
+- ordering guarantees
+- whether mutation is expected
+- existing Enumerable conventions
+- performance-sensitive callers/tests
+
+## Preferred operations
+
+Use the operation that communicates intent:
+
+- `map` — transform every element
+- `select` — keep matching elements
+- `reject` — remove matching elements
+- `find` — return one matching element
+- `any?`, `all?`, `none?`, `include?` — predicates
+- `each` — side effects
+- `group_by`, `tally` — grouping/counting when supported and appropriate
+- `uniq` — deduplication
+- `sort`, `sort_by` — ordering
+
+Do not choose an operation only because it is shorter.
+
+## Complexity discipline
+
+For non-trivial collection work, state expected:
+
 - time complexity
-- space complexity
+- auxiliary space
+- ordering behavior
 - mutation behavior
-- edge cases
 
-Choose between an Enumerable expression and an explicit algorithm based on clarity and complexity.
+A collection pipeline can hide repeated traversal or allocation. Inspect the full pipeline before declaring it efficient.
 
 ## Mutation
-Prefer non-mutating transformations unless mutation is part of the contract. Make mutation obvious.
+
+Default to non-mutating transformations unless the contract requires mutation.
+
+When mutating:
+
+- make ownership explicit
+- avoid modifying caller-owned collections unexpectedly
+- use bang methods only when their semantics are clear
+
+## Hashes as indexes
+
+A hash is often the right structure for membership/counting/indexing problems. Use it when the additional space is acceptable.
+
+When an evaluation explicitly requires `O(1)` auxiliary space, do not replace the requested algorithm with a hash-based shortcut.
 
 ## Readability
-A multi-line pipeline is often clearer than a dense one-liner. If the reader must mentally reconstruct several intermediate concepts, expand the code.
 
-## Review
-Check semantic correctness, nil/duplicate/order behavior, mutation, complexity and whether an explicit loop would be clearer.
+Expand a pipeline when a reader must reconstruct several intermediate concepts. Small, well-named steps are often easier for an agent and a human to maintain than a dense chain.
+
+## Anti-patterns
+
+- repeated `select`/`map` passes when one traversal is required
+- accidental quadratic lookup
+- mutating the input without a contract
+- relying on undocumented ordering
+- allocating large temporary collections unnecessarily
+- using Enumerable to obscure a required algorithm
+
+## Agent review checklist
+
+- [ ] collection contract is clear
+- [ ] nil/empty behavior is known
+- [ ] order is preserved or intentionally changed
+- [ ] mutation is explicit
+- [ ] complexity is appropriate
+- [ ] pipeline is readable
+
+## Verification
+
+Test empty, singleton, duplicate, nil-relevant, ordered, and large-input cases as applicable. For benchmark tasks, verify complexity and auxiliary-space requirements independently from output correctness.
 
 ## Source foundation
-Derived from the array/hash/Enumerable material in The Ruby Workshop, with readability and simplicity constraints from Clean Ruby.
+
+Grounded in the arrays, hashes, and collection operations of *The Ruby Workshop*, with *Clean Ruby* principles favoring readable, simple, changeable code.
