@@ -1,48 +1,110 @@
 ---
 name: rails-views
-description: Use when implementing or reviewing Rails views, ERB templates, forms, view helpers, rendering boundaries or presentation logic.
+description: Use when implementing or reviewing Rails views, ERB templates, partials, helpers, forms, presentation logic, or rendered response behavior.
 ---
 
 # Rails Views
 
 ## Purpose
 
-Keep presentation understandable while preventing business logic from leaking into templates.
+Keep presentation expressive without allowing business rules and data-access concerns to leak into templates.
 
-## Inspect first
+## Activate when
 
-Check neighboring views, partials, helpers, form conventions, response formats and system/request tests.
+- editing ERB/templates
+- adding forms or partials
+- changing helper behavior
+- fixing rendering bugs
+- moving logic out of an overgrown template
+
+## Repository inspection
+
+Inspect:
+
+- neighboring views
+- partial conventions
+- layout
+- helpers/presenters if present
+- form builder conventions
+- request/system tests
+- response formats
 
 ## Decision rules
 
-- Keep views focused on presentation.
-- Use partials when a repeated coherent presentation fragment exists.
-- Use helpers or presenter-style boundaries when presentation logic becomes complex.
-- Do not move domain rules into ERB just because a value is needed for display.
-- Keep forms aligned with the controller/model contract and existing conventions.
+### Views
 
-## ERB
+A view should answer:
 
-Prefer readable templates over dense inline Ruby.
+> How is the already-prepared information presented?
 
-When branching becomes difficult to read:
-1. simplify the view condition
-2. extract a presentation-specific helper/partial
-3. keep domain behavior in the domain/application layer
+Avoid:
 
-## Forms
+- database queries
+- substantial business rules
+- destructive side effects
+- complicated data transformations
+
+### Partials
+
+Extract a partial when a repeated, coherent presentation fragment exists or the template's intent becomes obscured.
+
+Do not fragment tiny one-use pieces solely to reduce line count.
+
+### Helpers/presenters
+
+Use existing helper/presenter conventions when presentation logic becomes complex.
+
+Keep helpers presentation-specific.
+
+### Forms
 
 Verify:
-- field names
-- parameter nesting
-- validation/error display
+
+- parameter names/nesting
+- field defaults
+- validation errors
+- CSRF conventions
 - submit behavior
-- successful and failed render flows
+- failed/successful render paths
+
+Do not assume a form field is an authorization mechanism.
+
+## ERB readability
+
+Prefer:
+
+- clear locals
+- meaningful partial names
+- modest conditional logic
+- explicit iteration
+
+over deeply nested or compressed Ruby expressions.
+
+## Accessibility/user behavior
+
+When the repository tests user-facing behavior, preserve important labels, form semantics, links/buttons, and validation messaging.
+
+## Anti-patterns
+
+- SQL/database access in templates
+- hidden business rules
+- massive helpers that become service objects
+- conditionals repeated across many views
+- relying on client-side state for server authorization
+
+## Agent review checklist
+
+- [ ] template is presentation-focused
+- [ ] partial boundaries are coherent
+- [ ] helpers remain presentation-specific
+- [ ] form contract matches controller
+- [ ] errors render correctly
+- [ ] response behavior is covered by appropriate tests
 
 ## Verification
 
-Use the repository's established view/system/request test style. Check both rendered content and important user interactions when covered by the project.
+Use request/system/view tests according to the repository. Verify rendered content and important interactions, especially form submission and error states.
 
 ## Source foundation
 
-Derived from the Action View, ERB, helper and form material in The Ruby Workshop.
+Derived from the Action View, ERB, helpers, forms, and UI material in *The Ruby Workshop*, constrained by the readability and responsibility principles of *Clean Ruby*.
