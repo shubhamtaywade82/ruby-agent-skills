@@ -2,72 +2,103 @@
 
 A practical skill library for AI coding agents working with Ruby and Ruby on Rails.
 
-This repository turns Ruby/Rails engineering principles into agent-executable instructions: activation triggers, design rules, review procedures, anti-patterns, and validation criteria.
+The repository converts Ruby/Rails engineering material into agent-executable instructions: activation triggers, decision rules, implementation procedures, anti-patterns, verification criteria and evaluation cases.
 
-## Skill map
+## Current skill map
+
+### Ruby
 
 | Skill | Purpose |
 |---|---|
-| ruby-core | Ruby object model, syntax, expressions, typing, truthiness and execution |
-| ruby-collections | Arrays, hashes, Enumerable and collection transformations |
-| ruby-method-design | Method responsibility, parameters, return contracts and nesting |
-| ruby-oop | Classes, encapsulation, inheritance, polymorphism and composition |
-| ruby-modules-mixins | Modules, mixins, namespaces, include, extend and prepend |
-| ruby-metaprogramming | Reflection and metaprogramming with safety boundaries |
-| ruby-gems-io-services | Gems, filesystem/CSV/HTTP work and service objects |
-| ruby-debugging | Logging, stack traces, breakpoints and root-cause debugging |
-| rails-architecture | MVC, routing, controllers, REST and application boundaries |
-| rails-activerecord | Models, migrations, associations, validations and persistence |
-| ruby-clean-code | Readability, simplicity, extensibility, naming and maintainability |
-| ruby-tdd-refactoring | Test-first changes, regression safety and behavior-preserving refactoring |
+| ruby-core | Ruby semantics, object model and runtime behavior |
+| ruby-data-types | Core value/data representation |
+| ruby-control-flow | Branching, loops and boolean logic |
+| ruby-collections | Arrays, hashes and Enumerable |
+| ruby-method-design | Method responsibility and contracts |
+| ruby-oop | Classes, encapsulation, inheritance, composition |
+| ruby-modules-mixins | Modules, mixins and namespaces |
+| ruby-metaprogramming | Reflection and runtime behavior |
+| ruby-gems-io-services | Dependencies, I/O, HTTP and service boundaries |
+| ruby-debugging | Evidence-driven debugging |
+| ruby-clean-code | Readability, simplicity and maintainability |
+| ruby-tdd-refactoring | Tests, regression safety and refactoring |
 
-## Design
+### Rails
 
-These are not a book dump or a passive RAG corpus.
+| Skill | Purpose |
+|---|---|
+| rails-architecture | MVC and application boundaries |
+| rails-routing | Routes, resources and dispatch |
+| rails-controllers | Actions, params and responses |
+| rails-views | ERB, helpers and forms |
+| rails-activerecord | Models, migrations, persistence and queries |
+| rails-associations | Active Record relationships |
+| rails-validations | Validation and invariants |
+| rails-authentication | Authentication and protected access |
+| rails-testing | Rails test placement and coverage |
+| rails-generators | Generators and scaffolding |
+| rails-deployment | Deployment and hosting verification |
 
-Each skill contains:
-- activation conditions
-- principles and decision rules
-- implementation/review procedures
-- anti-patterns
-- verification criteria
-- examples where they clarify behavior
+## Agent operating model
 
-Intended flow:
-
-~~~
-text
+```text
 Task
-  -> route to relevant skills
-  -> inspect the existing codebase
-  -> implement the smallest correct change
-  -> test
-  -> review against quality skills
-  -> refactor only where justified
-  -> test again
-~~~
+  -> classify
+  -> resolve Ruby/Rails version
+  -> inspect repository
+  -> route to one or more skills
+  -> implement smallest coherent change
+  -> focused verification
+  -> regression verification
+  -> review diff
+  -> report facts and verification
+```
+
+Skills are intentionally composable. A Rails endpoint that changes persistence should not be forced through one monolithic Rails skill.
 
 ## Source foundation
 
-The initial skill set is an original agent-oriented synthesis based on the uploaded:
+The initial source set includes the uploaded *The Ruby Workshop* and *Clean Ruby* materials.
 
-- The Ruby Workshop — Ruby and Rails fundamentals, OOP, modules/mixins, gems, debugging, metaprogramming, HTTP and Rails.
-- Clean Ruby — readability, extensibility, simplicity, naming, method design, boolean logic, classes/modules, refactoring, SRP and TDD.
+The Ruby Workshop covers Ruby programs, data types, program flow, methods, OOP, modules/mixins, gems and I/O, debugging, metaprogramming, HTTP and Rails topics including MVC, routes, forms, Active Record, authentication, associations, validations, scaffolding and hosting. fileciteturn40file1 fileciteturn39file3
 
-The repository does not reproduce the books. It converts their concepts into operational instructions for coding agents.
+Clean Ruby focuses on readable, changeable and straightforward code, then develops naming, method design, boolean logic, classes, refactoring and TDD. fileciteturn40file0 fileciteturn41file2 fileciteturn41file4
 
-This is an independent project and is not affiliated with Packt Publishing, Apress or the book authors.
+The Allerin assessment is treated as an evaluation source rather than copied into the skills. Its tasks include sorting, missing values, shopping-cart behavior, triplet sum, majority element, distinct values, power-of-two detection and Chocolate Feast, with an explicit OOP requirement. fileciteturn42file9 fileciteturn42file8
 
-## Repository contract
+The repository does not reproduce the books. It turns their ideas into operational instructions for agents and uses the assessment as a benchmark corpus.
 
-Skills should prefer:
-1. correctness over cleverness
-2. existing project conventions over invented conventions
-3. minimal, reviewable changes over broad rewrites
-4. explicit behavior over unnecessary abstraction
-5. tests as executable contracts
-6. evidence from the repository over assumptions
+## Design principles
 
-## Planned next layer
+- evidence over assumptions
+- repository conventions over invented conventions
+- explicit behavior over unnecessary abstraction
+- readable code over clever code
+- tests as executable contracts
+- small, reviewable changes
+- version-aware implementation
+- deterministic verification
 
-An executable evaluation suite can be added later so the agent is tested for both functional correctness and engineering quality.
+## Repository structure
+
+```text
+ruby-agent-skills/
+├── skills/
+├── router/
+│   └── ROUTING.md
+├── docs/
+│   ├── SKILL_CONTRACT.md
+│   └── SOURCE_COVERAGE.md
+├── evals/
+│   ├── README.md
+│   └── ruby-training/
+└── skill-manifest.yml
+```
+
+## Evaluation direction
+
+The evaluation layer measures functional correctness, contract correctness, engineering quality, test quality, constraint adherence and scope control independently. See `evals/`.
+
+## Status
+
+This branch is the second-stage expansion of the initial 12-skill foundation. The next work is to strengthen every existing skill with the same agent contract, expand the evaluation corpus, validate routing coverage and add installation/release tooling.
