@@ -18,7 +18,10 @@ Keep external boundaries and multi-step workflows isolated so the rest of the ap
 - introducing or refactoring a service object
 - coordinating several steps across domain/external boundaries
 
-## Dependency inspection
+## Repository inspection
+
+Before adding or changing an external dependency, inspect:
+
 
 Before adding a gem:
 
