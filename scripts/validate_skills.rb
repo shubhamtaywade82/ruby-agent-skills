@@ -36,6 +36,7 @@ skill_files.each do |path|
   end
 
   frontmatter_text = text[4...closing]
+
   begin
     metadata = YAML.safe_load(frontmatter_text, permitted_classes: [], aliases: false)
   rescue Psych::Exception => e
@@ -61,9 +62,25 @@ skill_files.each do |path|
   end
 
   body = text[(closing + 5)..] || ""
-  errors << relative + ": missing Purpose section" unless body.include?("## Purpose")
-  errors << relative + ": missing Verification section" unless body.include?("## Verification")
-  errors << relative + ": missing Source foundation section" unless body.include?("## Source foundation")
+
+  required_sections = {
+    "Purpose" => /## Purpose\b/,
+    "Activate when" => /## Activate when\b/,
+    "Repository inspection" => /## Repository inspection\b/,
+    "Agent review checklist" => /## Agent review checklist\b/,
+    "Verification" => /## Verification\b/,
+    "Source foundation" => /## Source foundation\b/
+  }
+
+  required_sections.each do |label, pattern|
+    errors << relative + ": missing #{label} section" unless body.match?(pattern)
+  end
+
+  procedural = /## (Decision rules|Procedure|Implementation|Change procedure|Refactoring procedure|Debugging loop|Debugging|TDD loop|Release procedure|Post-generation review|Parsing boundaries)\b/i
+  failure_modes = /## (Anti-patterns|Common failure modes|Failure modes|Failure discipline|Risk model|Security boundary)\b/i
+
+  errors << relative + ": missing implementation/decision procedure section" unless body.match?(procedural)
+  errors << relative + ": missing anti-pattern/failure-risk section" unless body.match?(failure_modes)
 end
 
 skill_files.each do |path|
@@ -84,6 +101,10 @@ skills_manifest.each do |name, entry|
   errors << "manifest skill " + name + " points to missing file " + path unless File.file?(full_path)
 end
 
+unless manifest["defaults"].is_a?(Hash)
+  errors << "manifest missing defaults mapping"
+end
+
 if errors.any?
   warn errors.map { |error| "ERROR: " + error }
   abort errors.length.to_s + " validation error(s)"
@@ -91,3 +112,4 @@ end
 
 puts "Validated " + skill_files.length.to_s + " skills."
 puts "Manifest contains " + skills_manifest.length.to_s + " skills."
+puts "Skill contract: frontmatter + activation + inspection + review + verification + source + decision/failure guidance"
