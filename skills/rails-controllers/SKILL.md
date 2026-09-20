@@ -1,55 +1,95 @@
 ---
 name: rails-controllers
-description: Use when implementing or reviewing Rails controller actions, request handling, parameters, responses, redirects, rendering or controller boundaries.
+description: Use when implementing or reviewing Rails controller actions, request parameters, authorization orchestration, rendering, redirects, or response contracts.
 ---
 
 # Rails Controllers
 
 ## Purpose
 
-Coordinate HTTP requests without turning controllers into business-logic containers.
+Treat controllers as HTTP/application boundaries that translate requests into domain operations and responses.
 
-## Inspect first
+## Activate when
 
-Read the action, route, model/service collaborators, authorization conventions, serializers/views, request tests and nearby controllers.
+- adding/changing an action
+- handling params
+- changing status/render/redirect behavior
+- adding authorization/authentication checks
+- moving logic into/out of a controller
 
-## Controller responsibilities
+## Repository inspection
 
-A controller should primarily:
-- receive the request
-- authorize or coordinate according to local conventions
-- validate/normalize boundary input
-- invoke domain/application behavior
-- render or redirect an appropriate response
+Read:
 
-Keep substantial business rules outside the controller.
+- route declaration
+- action and neighboring actions
+- authentication/authorization patterns
+- service/domain/model collaborators
+- serializer/view
+- request tests
+- error response conventions
+
+## Responsibilities
+
+A controller generally:
+
+1. receives request
+2. establishes requester context
+3. authorizes according to project convention
+4. filters/normalizes boundary input
+5. invokes application/domain behavior
+6. maps result to HTTP response
+
+Keep substantial business logic outside the action when it does not naturally belong at the HTTP boundary.
 
 ## Parameters
 
-- Use the application's established parameter filtering pattern.
-- Treat external input as untrusted.
-- Keep parameter normalization explicit.
-- Do not duplicate model/domain validation in controller code without a clear boundary reason.
+Treat incoming values as untrusted.
 
-## Responses
+Use the repository's established strong-parameter or request validation approach.
+
+Do not duplicate every model rule in the controller.
+
+## Response contract
 
 Verify:
-- status code
-- redirect/render behavior
+
+- status
+- headers where relevant
+- render/template/serializer
+- redirect destination
 - response format
-- error response shape
-- authorization behavior
+- error shape
 
-Do not change response contracts accidentally during refactoring.
+A controller refactor must not silently change an API response.
 
-## Action design
+## Error handling
 
-Prefer conventional CRUD actions when the behavior fits them. If an action becomes a workflow with multiple concepts, move the workflow into an appropriate domain/service boundary.
+Follow repository conventions for expected domain failures versus unexpected exceptions.
+
+Do not use broad rescue clauses to hide programming errors.
+
+## Action complexity
+
+When an action becomes a workflow involving several concepts, consider a service/application object, but do not extract trivial code merely to shorten the controller.
+
+## Security boundary
+
+Do not assume hidden fields or UI state are trusted. Authorization must be enforced at the server boundary.
+
+## Agent review checklist
+
+- [ ] route/action relationship checked
+- [ ] authentication/authorization behavior preserved
+- [ ] params boundary explicit
+- [ ] business logic owned elsewhere when appropriate
+- [ ] response contract preserved
+- [ ] expected and unexpected failures distinguished
 
 ## Verification
 
-Add or update request/controller tests covering success, invalid input, authorization and failure paths relevant to the action.
+Use request/controller tests that exercise the actual HTTP contract: successful request, invalid input, unauthorized/forbidden behavior, not-found behavior where relevant, and expected response format.
 
 ## Source foundation
 
-Derived from Action Controller, MVC, CRUD and form/request flow material in The Ruby Workshop, constrained by the book's clean-code principles and the repository's established patterns.
+Grounded in Action Controller, MVC, CRUD, forms, and request-handling material in *The Ruby Workshop*, with responsibility and simplicity guidance from *Clean Ruby*.
