@@ -95,6 +95,23 @@ ruby-agent-skills/
 └── skill-manifest.yml
 ```
 
+## Implementation patterns
+
+Patterns are concrete, reusable implementation shapes selected after skills classify a task.
+
+Current families include:
+
+| Family | Examples |
+|---|---|
+| Ruby design | value object, service object, strategy, composition, adapter |
+| Rails | query object, form object, policy boundary, transaction boundary, request flow |
+| Testing | regression test |
+| Algorithms | two pointers, frequency map |
+
+See `patterns/README.md` and `docs/PATTERN_SCHEMA.md`.
+
+Patterns are optional. Existing repository conventions and direct/simple implementations take precedence.
+
 ## Evaluation direction
 
 The evaluation layer measures functional correctness, contract correctness, engineering quality, test quality, constraint adherence and scope control independently. See `evals/`.
