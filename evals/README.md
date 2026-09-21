@@ -47,6 +47,12 @@ The second public family is derived from practical material in The Ruby Workshop
 
 These are benchmark tasks, not copied book exercises. The cases preserve the engineering concepts and add deterministic executable contracts.
 
+### Design-pattern system
+
+The design-pattern family evaluates whether an agent can choose an appropriate abstraction and avoid unjustified patterns. It includes PORO extraction, service/application objects, commands, strategies, adapters, policies, dependency injection, factories, builders, null objects, decorators, facades, repositories, specifications, state objects, composition over inheritance, presenters, and an explicit pattern-restraint case.
+
+The `pattern_selection` dimension is verified independently using deterministic fixture contracts. Hidden follow-up cases should vary naming and implementation shape so agents cannot overfit the public structural rules.
+
 ## Runner
 
 The provider-neutral runner executes an evaluation in a disposable workspace, captures the agent process, captures patch evidence, optionally invokes the declared verifier, and records dimension-level results.
