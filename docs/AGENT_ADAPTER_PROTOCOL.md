@@ -88,3 +88,24 @@ Do not aggregate away the individual result files. The campaign summary is only 
 Provider adapters should live outside this repository when they contain authentication, private endpoints or model-specific secrets.
 
 This repository defines the protocol; it does not need to vendor an Ollama/Codex/Claude-specific runtime.
+
+## Phase 9 concrete adapter
+
+The repository now includes:
+
+    adapters/command_agent.rb
+    bin/agent-benchmark
+    lib/ruby_agent_skills/agent_adapter.rb
+
+The command adapter is provider-neutral. It runs a trusted external coding-agent command inside the disposable benchmark workspace and writes normalized metadata to RUBY_AGENT_METADATA_FILE.
+
+Use bin/agent-benchmark when the same external command should be paired automatically with skills disabled and enabled:
+
+    ruby bin/agent-benchmark \
+      --command 'YOUR_AGENT_COMMAND' \
+      --provider your-provider \
+      --model your-model
+
+Provider-specific authentication and model launch logic remain outside the repository.
+
+The adapter does not supply hidden solutions. It exposes the task context and selected skill pack that the benchmark runner has already materialized.
