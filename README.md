@@ -414,3 +414,14 @@ Core patterns:
 - cache-capacity-review
 
 The cache layer composes with rails-performance, rails-observability, rails-security, rails-database-engineering, and rails-active-job.
+## Rails Action Mailer engineering
+
+The repository now includes a dedicated `rails-action-mailer` layer covering mailer contracts, synchronous versus asynchronous delivery, transaction semantics, duplicate/uncertain delivery, provider boundaries, SMTP configuration, email security/privacy, previews, observability, and deterministic testing.
+
+Core patterns:
+- `mailer-contract`
+- `mailer-delivery-semantics`
+- `mailer-provider-boundary`
+- `mailer-security-boundary`
+- `mailer-testing`
+- `mailer-observability`
