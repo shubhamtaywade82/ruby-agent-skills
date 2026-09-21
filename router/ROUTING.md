@@ -395,3 +395,22 @@ zero-downtime database change
 ```
 
 Do not treat a Rails migration as an isolated file. Inspect data volume, deployment overlap, database/adapter behavior, locks, and recovery semantics.
+
+
+## Rails production runtime
+
+```text
+Puma / production process model / workers / threads / graceful shutdown /
+zero-downtime release / Solid Queue topology / container lifecycle /
+runtime configuration / release ordering / rollback
+  -> rails-production-runtime
+  -> rails-deployment
+  -> rails-database-engineering when schema/migration is involved
+  -> rails-active-job when queued work or Solid Queue is involved
+  -> rails-observability for readiness/health/diagnostics
+  -> ruby-concurrency for process/thread/fiber capacity
+  -> ruby-performance for measured capacity/resource problems
+  -> rails-security for secrets/configuration boundaries
+```
+
+Do not select worker counts, restart modes, or deployment sequencing from generic defaults. Inspect the actual platform/runtime configuration.
