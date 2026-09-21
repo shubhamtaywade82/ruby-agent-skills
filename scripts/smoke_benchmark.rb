@@ -52,6 +52,9 @@ result = runner.run(
   timeout: 30
 )
 
-abort "benchmark smoke failed: #{result.fetch("overall")}" unless result.fetch("overall") == "passed"
+unless result.fetch("overall") == "passed"
+  warn JSON.pretty_generate(result)
+  abort "benchmark smoke failed: #{result.fetch("overall")}"
+end
 
 puts "Benchmark runner + verifier smoke test passed."
