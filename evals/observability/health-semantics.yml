@@ -1,0 +1,29 @@
+id: health-semantics
+version: 1
+title: Keep liveness separate from dependency readiness
+category: rails
+source: rails-observability-v1
+skills:
+  - rails-observability
+patterns:
+  - health-endpoint
+prompt: |
+  Review a Rails health endpoint. Preserve the built-in boot-health semantics and do not make liveness fail merely because an external dependency is unavailable. Add focused route/controller tests if the endpoint changes.
+constraints:
+  required_design:
+    - liveness/readiness separation
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: boot-health
+    input: app booted
+    expected: 200
+  - name: dependency-outage
+    input: external dependency unavailable
+    expected: liveness semantics remain independent
+grading:
+  functional: boot-health behavior is preserved
+  tests: health semantics are tested
+  contract: external dependency failure does not silently redefine liveness
