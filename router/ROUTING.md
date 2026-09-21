@@ -723,6 +723,38 @@ Caching is a correctness boundary. Define identity, freshness, invalidation, fai
 | Cache-store outage/failure semantics | pattern:cache-failure-boundary |
 | Bounded prewarming | pattern:cache-warming-strategy |
 | Cache capacity/eviction review | pattern:cache-capacity-review |
+## Rails Action View
+
+~~~
+Action View / ActionView / view rendering / templates / partials / layouts /
+strict locals / locals signature / helper boundary / output safety / html_safe /
+raw HTML / sanitize / localized views / collection rendering / view performance
+  -> rails-action-view
+  -> rails-views for basic presentation responsibilities, template organization, and forms
+  -> rails-controllers for render/redirect/content negotiation and response ownership
+  -> rails-i18n for locale context, fallback, and localization policy
+  -> rails-caching for fragment/collection cache identity and invalidation
+  -> rails-performance / ruby-performance for measured rendering/query/allocation work
+  -> rails-security / rails-security-engineering for escaping, sanitization, XSS, authorization, and cache privacy
+  -> rails-action-text for persisted rich content and attachment rendering
+  -> rails-test-engineering / rails-testing for deterministic rendering and security tests
+~~~
+
+Action View owns response rendering, not business authorization or persistence. Treat templates, partials, layouts, helpers, and rendered HTML as explicit contracts.
+
+### Action View pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Reusable partial inputs and locals | pattern:action-view-partial-contract |
+| Stable partial local signature | pattern:action-view-strict-locals |
+| HTML escaping/sanitization/output safety | pattern:action-view-output-safety |
+| Layout selection/content slots | pattern:action-view-layout-contract |
+| Presentation helper responsibility | pattern:action-view-helper-boundary |
+| Rendering bottleneck investigation | pattern:action-view-render-performance |
+| Locale-specific template selection | pattern:action-view-localized-template |
+| Deterministic rendering/security tests | pattern:action-view-testing |
+
 ## Rails Action Mailer
 
 ```text
