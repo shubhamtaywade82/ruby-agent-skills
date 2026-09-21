@@ -15,3 +15,5 @@ ruby -I"$ROOT/test" "$ROOT/test/zeitwerk_check_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/observability_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/database_engineering_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/production_runtime_system_test.rb"
