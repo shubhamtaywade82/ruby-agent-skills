@@ -499,3 +499,24 @@ Primary sources:
 - https://guides.rubyonrails.org/caching_with_rails.html
 - https://api.rubyonrails.org/v8.1.3/classes/ActionView/Helpers/SanitizeHelper.html
 - https://api.rubyonrails.org/classes/ActionView/Helpers/OutputSafetyHelper.html
+
+
+## Rails Active Model
+
+Rails Active Model is the model-like layer for plain Ruby objects that need Rails-facing contracts without Active Record persistence. Coverage is implemented through:
+
+- skills/rails-active-model/SKILL.md
+- patterns/rails/active-model-boundary.md
+- patterns/rails/active-model-attributes-contract.md
+- patterns/rails/active-model-validation-contract.md
+- patterns/rails/active-model-dirty-lifecycle.md
+- patterns/rails/active-model-callback-boundary.md
+- patterns/rails/active-model-conversion-contract.md
+- patterns/rails/active-model-serialization-contract.md
+- patterns/rails/active-model-testing.md
+- evals/rails/active-model-contract.yml
+- test/rails_active_model_system_test.rb
+
+Primary source: https://guides.rubyonrails.org/active_model_basics.html
+
+Coverage focuses on the Active Model/PORO boundary, typed attributes, validation/error semantics, Rails conversion/naming, dirty lifecycle, callbacks, serialization/privacy, translation, form integration, and Active Model lint/testing. Persistence remains owned by Active Record and database-engineering skills.
