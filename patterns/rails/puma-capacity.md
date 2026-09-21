@@ -48,3 +48,6 @@ Inspect runtime/version, repository conventions, the owning boundary, neighborin
 - rails-testing
 - ruby-tdd-refactoring
 - rails-architecture
+## Do not use when
+
+Do not use when Puma capacity is not being changed and there is no measured production runtime capacity problem.
