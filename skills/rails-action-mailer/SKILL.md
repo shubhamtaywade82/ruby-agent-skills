@@ -367,7 +367,7 @@ Prefer deterministic mailer tests plus Active Job assertions and focused provide
 - sending email synchronously from every request by default;
 - embedding authorization or database workflows inside templates;
 - enqueuing mail against uncommitted state;
-- Do not assume a failed SMTP/API call means the provider definitely did not send;
+- Do not assume a failed SMTP/API call means the provider definitely did not send.
 - relying on email address format as authorization;
 - putting secrets or full message bodies into logs;
 - hard-coding production SMTP credentials;
