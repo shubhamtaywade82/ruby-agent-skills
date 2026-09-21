@@ -84,14 +84,23 @@ The repository does not reproduce the books. It turns their ideas into operation
 ```text
 ruby-agent-skills/
 ├── skills/
+├── patterns/
+│   ├── ruby-design/
+│   ├── rails/
+│   ├── testing/
+│   └── algorithms/
 ├── router/
 │   └── ROUTING.md
 ├── docs/
 │   ├── SKILL_CONTRACT.md
+│   ├── PATTERN_SCHEMA.md
 │   └── SOURCE_COVERAGE.md
 ├── evals/
-│   ├── README.md
-│   └── ruby-training/
+│   ├── schema/
+│   ├── ruby-training/
+│   ├── algorithms/
+│   ├── oop/
+│   └── rails/
 └── skill-manifest.yml
 ```
 
@@ -112,10 +121,32 @@ See `patterns/README.md` and `docs/PATTERN_SCHEMA.md`.
 
 Patterns are optional. Existing repository conventions and direct/simple implementations take precedence.
 
-## Evaluation direction
+## Evaluation corpus
 
-The evaluation layer measures functional correctness, contract correctness, engineering quality, test quality, constraint adherence and scope control independently. See `evals/`.
+Phase 5 adds a machine-readable Ruby training benchmark derived from the Allerin assessment.
+
+Current corpus:
+
+- selection sort
+- recursive selection sort
+- smallest missing number
+- shopping cart
+- triplet sum
+- majority element
+- distinct elements
+- power-of-two detection
+- Chocolate Feast
+
+Each case separates:
+
+- functional behavior
+- explicit complexity/algorithm constraints
+- OOP/design requirements
+- tests and edge cases
+- scope control
+
+See `evals/README.md` and `evals/schema/EVAL_SCHEMA.md`.
 
 ## Status
 
-This branch is the second-stage expansion of the initial 12-skill foundation. The next work is to strengthen every existing skill with the same agent contract, expand the evaluation corpus, validate routing coverage and add installation/release tooling.
+The branch contains the Phase 4 implementation-pattern system and the Phase 5 evaluation corpus. The next step is the benchmark runner and reproducible agent-vs-baseline execution harness; hidden benchmark packs should remain outside the public repository.
