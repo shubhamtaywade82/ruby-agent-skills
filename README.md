@@ -47,6 +47,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-deployment | Deployment and hosting verification |
 | rails-best-practices | Rails quality review and RailsBestPractices interpretation |
 | rails-security | Rails application security and security-tool interpretation |
+| rails-database-engineering | Production migrations, indexes, constraints, transactions, locking, backfills, query plans, and connection pools |
 | rails-observability | Rails request lifecycle, error reporting, request correlation, instrumentation, and health semantics |
 | rails-active-job | Active Job lifecycle, retries, idempotency, queues, transactions, and Solid Queue semantics |
 | rails-zeitwerk | Zeitwerk path/constant, namespace, reload, and eager-load correctness |
@@ -328,4 +329,26 @@ Run the benchmark campaign with:
 
     ruby bin/benchmark campaign \
       --manifest benchmarks/observability/campaign.yml \
+      --agent-command 'AGENT_COMMAND'
+
+
+## Rails database engineering
+
+The repository includes a production database engineering layer covering:
+
+- zero-downtime / expand-contract schema changes
+- production index strategy
+- database constraints
+- bounded data backfills
+- transaction and lock boundaries
+- isolation and deadlock reasoning
+- query-plan verification
+- connection-pool capacity
+- bulk write semantics
+- multi-database and role considerations
+
+Run the benchmark campaign with:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/database-engineering/campaign.yml \
       --agent-command 'AGENT_COMMAND'
