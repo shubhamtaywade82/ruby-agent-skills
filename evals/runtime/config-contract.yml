@@ -1,0 +1,32 @@
+id: config-contract
+version: 1
+title: Validate production runtime configuration safely
+category: rails
+source: rails-production-runtime-v1
+skills:
+  - rails-production-runtime
+  - rails-security
+patterns:
+  - runtime-config-contract
+prompt: |
+  Add a production boot configuration contract requiring RAILS_MASTER_KEY and DATABASE_URL. Missing configuration must fail clearly, but diagnostics must never print secret values.
+constraints:
+  required_design:
+    - required runtime configuration
+    - secret-safe diagnostics
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: missing-key
+    input: RAILS_MASTER_KEY absent
+    expected: boot/configuration failure
+  - name: secret-safe
+    input: invalid configuration
+    expected: secret values are not logged
+grading:
+  functional: required configuration is enforced
+  tests: presence/absence contract is tested
+  contract: secret values are not emitted
