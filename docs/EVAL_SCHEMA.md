@@ -18,8 +18,8 @@ prompt: |
 constraints: {}
 checks:
   - functional
-  - oop
   - tests
+  - contract
 cases:
   - name: deterministic-case
     input: ...
@@ -36,7 +36,7 @@ grading: {}
 - `skills` must reference skills registered in `skill-manifest.yml`.
 - `patterns` may reference registered pattern names. Patterns are optional.
 - `constraints` records explicit requirements from the source or benchmark contract.
-- `checks` lists independent evaluation dimensions.
+- `checks` lists independent evaluation dimensions. Every evaluation requires `functional` and `tests`; `oop` is required only when the task contract explicitly requires object-oriented design. Other dimensions such as `contract`, `packaging`, `complexity`, and `scope_control` are optional.
 - `cases` contains deterministic input/expected pairs.
 - `grading` explains what each dimension means for the case.
 
