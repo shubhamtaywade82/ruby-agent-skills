@@ -48,6 +48,7 @@ This file defines how an agent should select and compose skills.
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
 | Reliability engineering and resilience | rails-reliability-engineering | rails-observability, rails-performance, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-production-runtime, rails-active-job, ruby-concurrency, rails-database-engineering, rails-security, rails-testing |
+| Incident response and operational debugging | rails-incident-engineering | rails-observability, rails-reliability-engineering, rails-production-runtime, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-security, rails-security-engineering, rails-performance, rails-testing |
 | Security engineering and threat modeling | rails-security-engineering | rails-security, rails-authentication, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-reliability-engineering, rails-database-engineering, rails-testing |
 | Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
@@ -649,4 +650,3 @@ Incident response starts from affected user/system contract and evidence, not fr
 | Debug production safely | pattern:safe-production-debugging |
 | Prove recovery beyond process health | pattern:recovery-verification |
 | Convert an incident into durable engineering change | pattern:post-incident-review |
-```
