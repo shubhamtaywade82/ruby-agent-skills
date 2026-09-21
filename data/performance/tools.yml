@@ -1,0 +1,47 @@
+version: 1
+source:
+  name: Ruby/Rails performance tooling
+  references:
+    - https://guides.rubyonrails.org/caching_with_rails.html
+    - https://guides.rubyonrails.org/performance_testing.html
+    - https://github.com/tmm1/stackprof
+    - https://github.com/ruby-prof/ruby-prof
+
+tools:
+  benchmark:
+    category: microbenchmark
+    source: Ruby standard library
+    command: ruby benchmark/file.rb
+  benchmark-ips:
+    category: microbenchmark
+    command: bundle exec benchmark-ips
+    optional: true
+  stackprof:
+    category: sampling_profiler
+    command: bundle exec stackprof
+    optional: true
+    modes: [cpu, wall, object]
+  ruby-prof:
+    category: instrumentation_profiler
+    command: bundle exec ruby-prof
+    optional: true
+  test-prof:
+    category: test_and_event_profiling
+    command: bundle exec rspec
+    optional: true
+  rack-mini-profiler:
+    category: request_profiling
+    optional: true
+    use_in_development: true
+  memory_profiler:
+    category: allocation_memory_profiling
+    optional: true
+
+selection:
+  rules:
+    - Start with measurement and repository evidence, not a profiler by default.
+    - Prefer the least intrusive tool that answers the performance question.
+    - Use sampling for hot-path discovery and instrumentation for detailed call relationships.
+    - Keep request profiling separate from microbenchmarking.
+    - Treat benchmark numbers as workload-specific evidence.
+    - Do not introduce optional profiling dependencies solely to fix an unmeasured performance concern.
