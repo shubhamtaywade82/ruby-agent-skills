@@ -47,8 +47,7 @@ eval_files.each do |path|
 
   required.each do |key|
     value = data[key]
-    missing = value.nil? || (value.respond_to?(:empty?) && value.empty?)
-    errors << "#{relative}: missing #{key}" if missing
+    errors << "#{relative}: missing #{key}" unless data.key?(key)
   end
 
   id = data["id"].to_s
@@ -58,7 +57,7 @@ eval_files.each do |path|
     errors << "#{relative}: duplicate evaluation id #{id}"
   end
 
-  unless id.match?(/A[a-z0-9]+(?:-[a-z0-9]+)*z/)
+  unless id.match?(/\\A[a-z0-9]+(?:-[a-z0-9]+)*\\z/)
     errors << "#{relative}: id must be kebab-case"
   end
 
@@ -67,8 +66,12 @@ eval_files.each do |path|
   end
 
   Array(data["patterns"]).each do |pattern|
-    normalized = pattern.to_s
-    errors << "#{relative}: unknown pattern #{normalized}" unless patterns.include?(normalized) || patterns.include?(normalized.sub(%r{Apattern:}, ""))
+    normalized = pattern.to_s.sub(%r{\\Apattern:}, "")
+    errors << "#{relative}: unknown pattern #{normalized}" unless patterns.include?(normalized) || pattern_names.include?(normalized)
+  end
+
+  %w[title source prompt].each do |field|
+    errors << "#{relative}: #{field} must not be empty" if data[field].to_s.strip.empty?
   end
 
   cases = data["cases"]
