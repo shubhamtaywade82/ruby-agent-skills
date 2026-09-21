@@ -324,3 +324,19 @@ For Active Storage changes:
 - reconcile storage migrations/mirrors rather than assuming replication is atomic;
 - use the Active Storage test service and deterministic fixtures for ordinary CI; avoid live cloud-provider dependence;
 - never claim storage durability, complete migration, replication completeness, or file delivery success without provider/runtime evidence.
+## Rails Action Cable changes
+
+For Action Cable/realtime changes:
+- inspect ApplicationCable::Connection, channel hierarchy, subscription parameters, stream naming, broadcast producers, client reconnect behavior, adapter/Redis configuration, process topology, capacity, and tests before implementation;
+- keep WebSocket connection authentication separate from per-channel/resource authorization;
+- treat all channel parameters and client actions as untrusted API input;
+- authorize subscriptions through the owning resource/tenant and never treat a blob/resource ID or stream name as authorization;
+- use bounded deterministic stream names and prefer framework resource primitives such as stream_for/broadcast_to when appropriate;
+- treat broadcast payloads as versioned wire contracts and avoid serializing entire Active Record objects or sensitive fields;
+- do not use Action Cable as durable messaging; define reconnect/refetch reconciliation when missed broadcasts matter;
+- coordinate broadcasts with committed state and use outbox/durable event infrastructure when delivery correctness requires it;
+- size WebSocket connections, subscriptions, message rate, payload bytes, Redis/pubsub, memory, CPU, and reconnect bursts separately from HTTP capacity;
+- define degraded behavior when Redis/Action Cable is unavailable rather than making optional realtime delivery an accidental transaction dependency;
+- review allowed origins, credential/session lifetime, tenant isolation, secrets, and sensitive payloads;
+- avoid synchronized reconnect storms during deploys and test connection/channel/broadcast behavior with deterministic local adapters;
+- never claim realtime delivery or capacity without runtime evidence.
