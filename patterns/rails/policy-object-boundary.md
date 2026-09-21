@@ -28,3 +28,11 @@ Unit-test decisions independently and verify at least one real application bound
 
 ## Review checklist
 Explicit inputs, deterministic decision, no side effects, clear action semantics.
+
+## Repository inspection
+
+Inspect the existing authorization mechanism, callers, resource ownership, tenant scope, tests, and resolved framework versions.
+
+## Related skills
+
+rails-authorization, rails-security, rails-active-record, rails-test-engineering
