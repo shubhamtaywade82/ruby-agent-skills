@@ -16,3 +16,23 @@ Frame response contract, stream actions, status/redirect behavior, authorization
 
 ## Review checklist
 Use the smallest deterministic boundary that proves the behavior and add a browser/system test when DOM lifecycle is essential.
+## Do not use when
+The change has no Hotwire or browser lifecycle contract.
+
+## Repository inspection
+Inspect request/system tests, JavaScript test setup, browser drivers, Turbo helpers, and deterministic fixtures.
+
+## Implementation procedure
+Test the smallest protocol boundary first, then add browser/system verification when DOM lifecycle is essential.
+
+## Failure modes
+Only testing snapshots, only testing JavaScript, timing flakes, and missing authorization coverage.
+
+## Testing
+Cover frame and stream contracts, status/redirect behavior, security failures, and Stimulus lifecycle cleanup.
+
+## Review checklist
+Tests prove both server protocol and client lifecycle behavior where applicable.
+
+## Related skills
+rails-hotwire, rails-test-engineering, rails-testing
