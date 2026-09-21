@@ -15,7 +15,7 @@ Testing JavaScript, browser navigation, UI interaction, or full user journeys.
 ## Do not use when
 A model, service, request, or integration test can prove the contract without a browser.
 
-## Procedure
+## Implementation procedure
 1. Identify the user-visible behavior.
 2. Define the minimal journey.
 3. Keep data setup explicit.
@@ -37,3 +37,15 @@ Run the system test and the lower-level contract tests it complements.
 - journey is minimal
 - assertions are user-visible
 - business rules are tested lower in the stack
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
