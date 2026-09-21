@@ -8,19 +8,19 @@ The runner is provider-neutral. It does not assume Codex, Claude, Copilot, Curso
 
 List evaluations:
 
-    bin/eval list
+    ruby bin/eval list
 
 Inspect a task:
 
-    bin/eval show triplet-sum
+    ruby bin/eval show triplet-sum
 
 Generate an agent packet:
 
-    bin/eval packet triplet-sum --output /tmp/triplet-sum.json
+    ruby bin/eval packet triplet-sum --output /tmp/triplet-sum.json
 
 Run an agent against a disposable copy of a workspace:
 
-    bin/eval run triplet-sum --workspace /path/to/fixture --agent-command 'your-agent-command' --verify-command 'your-verifier-command' --output results/triplet-sum.json
+    ruby bin/eval run triplet-sum --workspace /path/to/fixture --agent-command 'your-agent-command' --verify-command 'your-verifier-command' --output results/triplet-sum.json
 
 The source workspace is copied into a temporary directory before the agent runs. The source workspace is not modified.
 
