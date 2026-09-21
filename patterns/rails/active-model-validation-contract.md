@@ -1,4 +1,3 @@
-
 ---
 name: active-model-validation-contract
 description: Define validation and error semantics for non-persisted Active Model objects.
