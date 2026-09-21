@@ -16,6 +16,7 @@ patterns = manifest.fetch("patterns").values.flat_map { |entry| entry.fetch("pat
   path.delete_prefix("patterns/").delete_suffix(".md")
 end.to_set
 pattern_names = patterns.map { |path| File.basename(path) }.to_set
+errors = []
 
 runner = manifest.fetch("runner", {})
 %w[command result_schema documentation].each do |key|
@@ -30,7 +31,6 @@ abort "no evaluation files found" if eval_files.empty?
 
 required = %w[id version title category source skills patterns prompt constraints checks cases grading]
 ids = Set.new
-errors = []
 
 eval_files.each do |path|
   relative = path.delete_prefix(ROOT + "/")
