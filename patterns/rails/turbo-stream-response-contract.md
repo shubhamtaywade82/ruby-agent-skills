@@ -34,3 +34,7 @@ Action, target, partial, status, and fallback are deterministic.
 
 ## Related skills
 rails-hotwire, rails-action-controller, rails-action-view
+
+## Use when
+
+Use this pattern when the described Hotwire interaction is an explicit part of the page contract and its lifecycle needs dedicated guidance.
