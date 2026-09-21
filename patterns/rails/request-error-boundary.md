@@ -44,3 +44,6 @@ Inspect the repository's runtime/version, existing conventions, neighboring test
 - rails-testing
 - ruby-tdd-refactoring
 - rails-architecture
+## Do not use when
+
+Do not use when the concern is entirely internal and has no HTTP exception-to-response contract.
