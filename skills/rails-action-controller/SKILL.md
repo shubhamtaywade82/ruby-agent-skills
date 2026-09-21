@@ -83,7 +83,7 @@ Guidance:
 - keep permitted shapes explicit
 - treat nested arrays/hashes as deliberate contracts
 - separate transport normalization from domain validation
-- do not use permit! merely to make an integration work
+- Do not use permit! merely to make an integration work
 - do not permit fields just because the model has them
 - avoid forwarding the entire params object into domain/persistence code
 - test omitted, extra, malformed, and nested inputs.
