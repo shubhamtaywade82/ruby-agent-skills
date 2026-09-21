@@ -1,6 +1,6 @@
 ---
 name: ruby-enumerables
-description: Use when choosing or reviewing Ruby Enumerable transformations, filtering, grouping, counting, searching, lazy traversal, or multi-step collection pipelines.
+description: Use when choosing or reviewing Ruby Enumerable traversal and transformation semantics after the underlying collection representation is understood.
 ---
 
 # Ruby Enumerables
@@ -27,6 +27,10 @@ Inspect:
 - Ruby version and available Enumerable APIs
 - existing code style
 - performance-sensitive callers/tests
+
+## Boundary with ruby-collections
+
+This skill focuses on traversal semantics, pipeline clarity, allocation, and Enumerable complexity. Use `ruby-collections` when the primary design question is Array/Hash choice, indexing, mutation, or an explicit algorithm/data-structure constraint.
 
 ## Decision rules
 
