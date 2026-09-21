@@ -35,6 +35,7 @@ This file defines how an agent should select and compose skills.
 | Rails application structure | rails-architecture | ruby-clean-code |
 | Rails routes | rails-routing | rails-controllers, rails-testing |
 | Rails controller action | rails-controllers | rails-routing, ruby-method-design, rails-testing |
+| Rails Action Controller HTTP boundary | rails-action-controller | rails-routing, rails-controllers, rails-authentication, rails-security, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-test-engineering, rails-testing |
 | Rails view/form | rails-views | rails-controllers, rails-testing |
 | Model/migration/query | rails-activerecord | rails-architecture, rails-testing |
 | Active Record association | rails-associations | rails-activerecord, rails-testing |
@@ -791,6 +792,44 @@ Active Model is a Rails-facing model protocol, not a substitute for Active Recor
 | Form/URL/model conversion semantics | pattern:active-model-conversion-contract |
 | Explicit serialization/privacy boundary | pattern:active-model-serialization-contract |
 | Deterministic model protocol tests | pattern:active-model-testing |
+
+## Rails Action Controller
+
+~~~
+Action Controller / ActionController / params.expect / strong parameters /
+session / cookies / flash / before_action / after_action / around_action /
+content negotiation / respond_to / request / response / ETag / Last-Modified /
+conditional GET / 304 / streaming / send_data / send_file / rescue_from
+  -> rails-action-controller
+  -> rails-routing for route declaration and dispatch
+  -> rails-controllers for simple action-level design and basic response ownership
+  -> rails-authentication for identity/session authentication
+  -> rails-security / rails-security-engineering for CSRF, authorization, redirects, tenant isolation, and abuse cases
+  -> rails-api-integration for external API and stable wire-contract concerns
+  -> rails-observability for request telemetry, error reporting, and correlation
+  -> rails-caching for cache identity, invalidation, and shared/private cache correctness
+  -> rails-active-storage for attachment/download/storage lifecycle
+  -> rails-active-job for asynchronous work delegated from controllers
+  -> rails-i18n for locale context
+  -> rails-test-engineering / rails-testing for deterministic request and lifecycle tests
+~~~
+
+Action Controller owns HTTP request/response mechanics. It should translate transport input, construct the response, and enforce controller lifecycle contracts without becoming the owner of business workflows.
+
+### Action Controller pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Translate HTTP input into an application contract | pattern:action-controller-request-boundary |
+| Permit/require nested parameters | pattern:strong-parameters-contract |
+| Preserve status/body/header/redirect semantics | pattern:controller-response-contract |
+| Session/cookie/flash lifecycle | pattern:controller-session-cookie-boundary |
+| Callback scope and lifecycle | pattern:action-controller-callback-contract |
+| Multiple response formats | pattern:controller-content-negotiation |
+| ETag/Last-Modified conditional responses | pattern:conditional-response-cache |
+| Large downloads/streaming | pattern:controller-streaming-download |
+| Expected exception to HTTP mapping | pattern:controller-exception-boundary |
+| Deterministic controller contract tests | pattern:action-controller-testing |
 
 ## Rails Action View
 
