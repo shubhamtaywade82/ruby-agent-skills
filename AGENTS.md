@@ -86,3 +86,16 @@ For Ruby/Rails constants and file-layout changes:
 - check initializer lifecycle;
 - run Zeitwerk/eager-load verification when available;
 - do not hide structural loading errors with arbitrary require/require_dependency calls.
+
+
+## Active Job/background-job changes
+
+For background-job changes:
+- resolve the Rails/Active Job/queue-adapter versions first;
+- inspect ApplicationJob and existing job conventions;
+- make serialization and idempotency explicit;
+- classify retryable versus permanent failures;
+- inspect transaction/commit semantics when enqueueing from database transactions;
+- analyze concurrency and downstream capacity;
+- verify queue/worker configuration and shutdown behavior when operational behavior changes;
+- test enqueue, perform, failure, retry/discard, and duplicate-execution behavior as applicable.
