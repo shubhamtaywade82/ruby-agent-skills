@@ -249,3 +249,26 @@ Primary sources:
 - https://guides.rubyonrails.org/active_job_basics.html
 - https://guides.rubyonrails.org/testing.html
 - https://github.com/rails/solid_queue
+
+
+## Rails request lifecycle and observability
+
+This layer covers Rails request flow, stable HTTP error semantics, Rails.error reporting, request IDs/correlation, TaggedLogging/log tags, sensitive parameter filtering, ActiveSupport::Notifications, application instrumentation, low-cardinality metrics, health/liveness/readiness semantics, middleware ordering, and production debugging.
+
+Artifacts:
+- `skills/rails-observability/SKILL.md`
+- `patterns/rails/request-error-boundary.md`
+- `patterns/rails/request-observability.md`
+- `patterns/rails/health-endpoint.md`
+- `patterns/rails/instrumentation-event.md`
+- `data/observability/tools.yml`
+- `evals/observability/*`
+- `benchmarks/observability/*`
+- `scripts/verify_observability_eval.rb`
+
+Primary references:
+- https://guides.rubyonrails.org/action_controller_overview.html
+- https://guides.rubyonrails.org/error_reporting.html
+- https://guides.rubyonrails.org/active_support_instrumentation.html
+- https://guides.rubyonrails.org/configuring.html
+- https://guides.rubyonrails.org/debugging_rails_applications.html
