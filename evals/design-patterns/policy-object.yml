@@ -1,0 +1,33 @@
+id: policy-object
+version: 1
+title: Encapsulate a reusable business decision in a Policy object
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-domain-modeling
+  - ruby-poro
+  - ruby-boolean-logic
+  - ruby-tdd-refactoring
+patterns:
+  - policy-object
+prompt: |
+  Implement OrderPolicy as a focused policy object answering whether an order may be cancelled. The rule is: only pending orders owned by the actor may be cancelled. Keep the decision separate from the mutation.
+constraints:
+  required_design:
+    - policy-object
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: required public API and implementation boundary are present
+  pattern_selection: required design evidence is present and forbidden competing abstractions are absent
+  scope_control: changes remain inside the disposable fixture
