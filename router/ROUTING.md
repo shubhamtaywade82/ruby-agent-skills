@@ -45,6 +45,7 @@ This file defines how an agent should select and compose skills.
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
 | Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
 | Rails caching engineering | rails-caching | rails-performance, ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, rails-security, rails-security-engineering, rails-testing |
+| Rails email / Action Mailer | rails-action-mailer | rails-active-job, rails-api-integration, rails-security, rails-security-engineering, rails-observability, rails-test-engineering, rails-testing, rails-distributed-systems |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
@@ -718,3 +719,30 @@ Caching is a correctness boundary. Define identity, freshness, invalidation, fai
 | Cache-store outage/failure semantics | pattern:cache-failure-boundary |
 | Bounded prewarming | pattern:cache-warming-strategy |
 | Cache capacity/eviction review | pattern:cache-capacity-review |
+## Rails Action Mailer
+
+```text
+Action Mailer / ApplicationMailer / mailer / email delivery /
+deliver_later / deliver_now / mailer preview / SMTP / provider /
+email security / email observability
+  -> rails-action-mailer
+  -> rails-active-job for asynchronous delivery, retries, queue, idempotency, and transaction semantics
+  -> rails-api-integration for HTTP email providers and provider adapters
+  -> rails-security / rails-security-engineering for recipient, tenant, token, secret, and privacy boundaries
+  -> rails-observability for delivery telemetry and correlation
+  -> rails-test-engineering / rails-testing for deterministic mailer and async tests
+  -> rails-distributed-systems for ambiguous provider outcomes and durable delivery state
+```
+
+Action Mailer is an external side-effect boundary. Keep eligibility, authorization, and durable business state outside templates.
+
+### Action Mailer pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Define message contract | pattern:mailer-contract |
+| Choose synchronous/asynchronous semantics | pattern:mailer-delivery-semantics |
+| Isolate SMTP/API provider behavior | pattern:mailer-provider-boundary |
+| Review email privacy/authorization | pattern:mailer-security-boundary |
+| Test mail contracts and delivery behavior | pattern:mailer-testing |
+| Instrument delivery lifecycle | pattern:mailer-observability |
