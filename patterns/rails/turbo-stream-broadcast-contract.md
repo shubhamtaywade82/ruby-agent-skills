@@ -37,3 +37,7 @@ Durable state is authoritative and broadcast scope is explicit.
 
 ## Related skills
 rails-hotwire, rails-action-cable, rails-event-driven-messaging, rails-reliability-engineering
+
+## Use when
+
+Use this pattern when the described Hotwire interaction is an explicit part of the page contract and its lifecycle needs dedicated guidance.
