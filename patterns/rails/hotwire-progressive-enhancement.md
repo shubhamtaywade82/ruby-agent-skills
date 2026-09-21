@@ -33,3 +33,7 @@ Critical workflows remain meaningful without enhancement where required.
 
 ## Related skills
 rails-hotwire, rails-action-controller, rails-action-view, rails-security
+
+## Use when
+
+Use this pattern when the Hotwire interaction relies on the named security or progressive-enhancement boundary.
