@@ -1,4 +1,3 @@
-
 ---
 name: active-model-conversion-contract
 description: Define Active Model conversion, naming, key, and URL semantics for Rails-facing non-persisted objects.
