@@ -88,3 +88,9 @@ Test the workflow contract and collaborator interactions that matter. Use integr
 - ruby-clean-code
 - ruby-tdd-refactoring
 - rails-architecture
+
+## Book integration: service convention
+
+A Rails service should represent one actionable workflow. When the repository uses an ApplicationService base, a common convention is a single public call entry point with a domain-action name such as Post::Creator or Newsletter::Sender.
+
+Keep helpers private. Define failure semantics explicitly rather than rescuing every exception by default. Broad rescue is only acceptable when the repository deliberately treats the entire operation as a safe boolean/result boundary and the lost exception information is handled elsewhere.
