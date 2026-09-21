@@ -1,0 +1,33 @@
+id: deterministic-job
+version: 1
+title: Test Active Job execution without sleeps
+category: rails
+source: rails-test-engineering-v1
+skills:
+  - rails-test-engineering
+  - rails-active-job
+patterns:
+  - deterministic-async-test
+prompt: |
+  Test NotifyCustomerJob so the caller verifies enqueueing and the job test verifies execution. Do not use sleep, polling, or direct perform as the only verification.
+constraints:
+  required_design:
+    - ActiveJob::TestHelper
+    - deterministic execution
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: enqueue
+    input: customer notification
+    expected: job enqueued
+  - name: execute
+    input: queued notification
+    expected: delivery side effect
+grading:
+  functional: enqueue and execution contracts are tested
+  tests: Active Job test helpers are used appropriately
+  contract: serialization/queue boundary is not entirely bypassed
+  scope_control: no real worker process or sleep
