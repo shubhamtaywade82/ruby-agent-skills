@@ -1,0 +1,45 @@
+id: enumerable-transform
+version: 1
+title: Express a collection transformation with Ruby Enumerable
+category: ruby-workshop
+source: learn-rails-6
+skills:
+  - ruby-enumerables
+  - ruby-collections
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Implement Catalog#available_names(products).
+  Return the names of products whose available value is true, preserving input order.
+  The implementation should use Ruby's collection abstractions when they express the behavior clearly.
+constraints:
+  required_design:
+    - readable Enumerable-based implementation
+checks:
+  - functional
+  - tests
+  - scope_control
+cases:
+  - name: filters-and-preserves-order
+    input:
+      - name: Ruby
+        available: true
+      - name: Rails
+        available: false
+      - name: PostgreSQL
+        available: true
+    expected:
+      - Ruby
+      - PostgreSQL
+  - name: empty
+    input: []
+    expected: []
+  - name: all-unavailable
+    input:
+      - name: Ruby
+        available: false
+    expected: []
+grading:
+  functional: all deterministic cases pass
+  tests: agent adds meaningful executable tests
+  scope_control: no unrelated dependencies or files
