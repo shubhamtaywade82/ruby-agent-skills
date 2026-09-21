@@ -15,7 +15,7 @@ A job performs durable or externally visible side effects.
 ## Do not use when
 The job is provably pure and repeatable without side effects.
 
-## Procedure
+## Implementation procedure
 1. Identify every side effect.
 2. Define the duplicate-execution scenario.
 3. Choose a durable idempotency key or state invariant.
@@ -43,3 +43,7 @@ Execute the job twice with the same logical input and assert the externally visi
 - rails-activerecord
 - rails-security
 - ruby-concurrency
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
