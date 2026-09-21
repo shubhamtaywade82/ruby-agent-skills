@@ -1,0 +1,61 @@
+id: voting-application
+version: 1
+title: Build an object-oriented voting application
+category: ruby-workshop
+source: the-ruby-workshop
+skills:
+  - ruby-oop
+  - ruby-method-design
+  - ruby-collections
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Implement VotingMachine as an in-memory voting application.
+  vote(voter:, candidate:) should reject blank names and reject a voter voting more than once.
+  leaderboard should return candidate names sorted by vote count descending and then name ascending.
+  Keep voting state encapsulated in the object and add executable tests.
+constraints:
+  required_design:
+    - object-oriented design
+    - encapsulated mutable state
+checks:
+  - functional
+  - oop
+  - tests
+  - scope_control
+cases:
+  - name: counts-votes
+    input:
+      votes:
+        - voter: Alice
+          candidate: Sam
+        - voter: Bob
+          candidate: Pat
+        - voter: Cara
+          candidate: Sam
+      expected:
+        - Sam
+        - Pat
+  - name: tie-breaker
+    input:
+      votes:
+        - voter: Alice
+          candidate: Sam
+        - voter: Bob
+          candidate: Pat
+      expected:
+        - Pat
+        - Sam
+  - name: duplicate-voter
+    input:
+      votes:
+        - voter: Alice
+          candidate: Sam
+        - voter: Alice
+          candidate: Pat
+      expected: duplicate_vote
+grading:
+  functional: vote and leaderboard behavior matches the contract
+  oop: state is encapsulated in the VotingMachine class
+  tests: agent adds executable tests
+  scope_control: no unrelated framework is introduced
