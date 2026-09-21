@@ -179,3 +179,14 @@ Prefer structured assertions over brittle full-log snapshots.
 
 ## Verification
 Never claim production observability is complete from a passing controller test alone. Verify the request boundary, failure behavior, correlation, filtering, instrumentation, and health semantics actually changed.
+
+## Source foundation
+
+Primary Rails guidance:
+- Action Controller Overview: https://guides.rubyonrails.org/action_controller_overview.html
+- Error Reporting in Rails Applications: https://guides.rubyonrails.org/error_reporting.html
+- Active Support Instrumentation: https://guides.rubyonrails.org/active_support_instrumentation.html
+- Configuring Rails Applications: https://guides.rubyonrails.org/configuring.html
+- Debugging Rails Applications: https://guides.rubyonrails.org/debugging_rails_applications.html
+
+Use the target Rails version as the compatibility authority when request lifecycle, controller, middleware, error-reporting, or health behavior differs across releases.
