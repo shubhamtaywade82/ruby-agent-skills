@@ -177,3 +177,18 @@ The concurrency layer adds:
 - `patterns/ruby-design/bounded-concurrency.md` — bounded worker/queue implementation shape.
 - `evals/concurrency/concurrency-counter.yml` — executable thread-safety contract.
 - `scripts/verify_concurrency_eval.rb` — functional, contract, and test-change verification.
+
+## Rails security
+
+The security layer incorporates the Rails Security Guide and operational tooling for Brakeman and bundler-audit. citeturn429055view0turn429055search0turn290116search0
+
+Coverage includes authentication, authorization, sessions, CSRF, XSS, SQL/query safety, command injection, redirects, file access, SSRF, security headers, secrets, webhooks, tenant isolation, dependency security, scanner interpretation, and abuse-case tests.
+
+Operational artifacts:
+- `skills/rails-security/SKILL.md`
+- `patterns/rails/security-boundary-review.md`
+- `data/security/tools.yml`
+- `bin/security-audit`
+- `docs/SECURITY.md`
+- `evals/security/*`
+- `scripts/verify_security_eval.rb`
