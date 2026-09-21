@@ -1,0 +1,32 @@
+id: batched-backfill
+version: 1
+title: Backfill a large table incrementally
+category: rails
+source: rails-database-engineering-v1
+skills:
+  - rails-database-engineering
+patterns:
+  - batched-backfill
+prompt: |
+  Populate normalized_email for an existing users table containing millions of rows. Implement the backfill so it processes bounded batches, can resume safely, and does not load the entire table into Ruby memory.
+constraints:
+  required_design:
+    - bounded batches
+    - idempotent progress
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: bounded
+    input: millions of users
+    expected: bounded batched update
+  - name: rerun
+    input: partial previous run
+    expected: safe resume
+grading:
+  functional: backfill processes bounded deterministic batches
+  tests: restart/partial progress is covered
+  contract: normalized_email is populated correctly
+  scope_control: no unrelated data transformation
