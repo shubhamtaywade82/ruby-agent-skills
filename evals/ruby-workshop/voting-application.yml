@@ -33,9 +33,9 @@ cases:
           candidate: Pat
         - voter: Cara
           candidate: Sam
-      expected:
-        - Sam
-        - Pat
+    expected:
+      - Sam
+      - Pat
   - name: tie-breaker
     input:
       votes:
@@ -43,9 +43,9 @@ cases:
           candidate: Sam
         - voter: Bob
           candidate: Pat
-      expected:
-        - Pat
-        - Sam
+    expected:
+      - Pat
+      - Sam
   - name: duplicate-voter
     input:
       votes:
@@ -53,7 +53,7 @@ cases:
           candidate: Sam
         - voter: Alice
           candidate: Pat
-      expected: duplicate_vote
+    expected: duplicate_vote
 grading:
   functional: vote and leaderboard behavior matches the contract
   oop: state is encapsulated in the VotingMachine class
