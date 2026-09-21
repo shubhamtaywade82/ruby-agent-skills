@@ -1140,3 +1140,19 @@ validation rule / context / error / custom validator / bypass path
   -> rails-i18n for translated errors
   -> rails-security for tenant and disclosure boundaries
   -> rails-test-engineering / rails-testing for deterministic contract tests
+
+### Validation pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Invariant ownership across model/database boundaries | pattern:validation-boundary |
+| Named validation operation/context | pattern:validation-context-contract |
+| Conditional validation predicate | pattern:validation-condition-contract |
+| Concurrent/scoped uniqueness | pattern:validation-uniqueness-database-contract |
+| Bounded associated validation | pattern:validation-associated-graph |
+| Reusable validation rule | pattern:validation-custom-validator |
+| Fail-fast invalid state | pattern:validation-strict-failure |
+| Stable validation error representation | pattern:validation-error-contract |
+| Validation lifecycle callback | pattern:validation-callback-boundary |
+| Direct/bulk write bypass review | pattern:validation-bypass-audit |
+| Deterministic validation tests | pattern:validation-testing |
