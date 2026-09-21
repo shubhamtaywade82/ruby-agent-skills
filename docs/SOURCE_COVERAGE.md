@@ -169,3 +169,11 @@ Operational coverage:
 - `bin/runtime-profile` — JSON CLI output
 - `docs/RUNTIME_PROFILE.md` — evidence model and agent workflow
 - `test/runtime_profile_test.rb` — deterministic resolution/conflict tests
+
+## Ruby concurrency
+
+The concurrency layer adds:
+- `skills/ruby-concurrency/SKILL.md` — workload classification, ownership, synchronization, lifecycle, failure propagation, Rails/database boundaries, Fibers, race/deadlock diagnosis, deterministic testing, and capacity-aware performance guidance.
+- `patterns/ruby-design/bounded-concurrency.md` — bounded worker/queue implementation shape.
+- `evals/concurrency/concurrency-counter.yml` — executable thread-safety contract.
+- `scripts/verify_concurrency_eval.rb` — functional, contract, and test-change verification.
