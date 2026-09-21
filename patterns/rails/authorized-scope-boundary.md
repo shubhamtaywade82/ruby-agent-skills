@@ -25,3 +25,15 @@ Assert unauthorized records are absent and cross-tenant records cannot be enumer
 
 ## Review checklist
 Authorization is enforced in the query boundary, not presentation.
+
+## Do not use when
+
+Do not introduce this pattern when direct repository policy or scope logic is clearer and complete.
+
+## Repository inspection
+
+Inspect the existing authorization mechanism, callers, resource ownership, tenant scope, tests, and resolved framework versions.
+
+## Related skills
+
+rails-authorization, rails-security, rails-active-record, rails-test-engineering
