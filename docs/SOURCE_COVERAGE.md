@@ -365,3 +365,18 @@ Operational coverage:
 - evals/performance/cache-key-boundary.yml
 
 The repository synthesis emphasizes identity isolation, freshness, invalidation ownership, release compatibility, bounded recomputation, failure behavior, and cache capacity.
+## Rails Action Mailer
+
+The repository adds a dedicated Action Mailer engineering layer because outbound email combines Rails templating, Active Job delivery, external-provider failure semantics, security/privacy boundaries, and operational observability.
+
+Operational coverage:
+- `skills/rails-action-mailer/SKILL.md`
+- `patterns/rails/mailer-contract.md`
+- `patterns/rails/mailer-delivery-semantics.md`
+- `patterns/rails/mailer-provider-boundary.md`
+- `patterns/rails/mailer-security-boundary.md`
+- `patterns/rails/mailer-testing.md`
+- `patterns/rails/mailer-observability.md`
+- `evals/rails/action-mailer-contract.yml`
+
+Primary source: https://guides.rubyonrails.org/action_mailer_basics.html
