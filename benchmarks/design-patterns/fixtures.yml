@@ -1,0 +1,264 @@
+version: 1
+source: design-pattern-system-v1
+description: Deterministic disposable fixtures for design-pattern selection and implementation evaluation.
+
+fixtures:
+  poro-extraction:
+    root: benchmarks/design-patterns/fixtures/poro-extraction
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class PriceCalculator"
+      - "def total"
+    forbidden_regex:
+      - "ActiveRecord::Base"
+      - "ApplicationRecord"
+      - "ActionController"
+    contract_regex:
+      - "class PriceCalculator"
+      - "def initialize"
+  service-object-selection:
+    root: benchmarks/design-patterns/fixtures/service-object-selection
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class Order::Checkout"
+      - "class ApplicationService"
+    forbidden_regex:
+      - "class OrderService"
+      - "class OrderManager"
+    contract_regex:
+      - "class ApplicationService"
+      - "class Order::Checkout"
+      - "def call"
+  command-object:
+    root: benchmarks/design-patterns/fixtures/command-object
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class User::Deactivate"
+      - "def call"
+      - "@user"
+    forbidden_regex:
+      - "class UserManager"
+      - "class UserService"
+    contract_regex:
+      - "class User::Deactivate"
+      - "def initialize"
+      - "def call"
+  strategy-selection:
+    root: benchmarks/design-patterns/fixtures/strategy-selection
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ShippingCost"
+      - "def initialize\(strategy:"
+      - "@strategy"
+    forbidden_regex:
+      - "case shipping_mode"
+      - "case mode"
+      - "if mode =="
+    contract_regex:
+      - "class ShippingCost"
+      - "def calculate"
+  adapter-boundary:
+    root: benchmarks/design-patterns/fixtures/adapter-boundary
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class StripeAdapter"
+      - "def charge"
+      - "@client"
+    forbidden_regex:
+      - "class PaymentService"
+    contract_regex:
+      - "class StripeAdapter"
+      - "def charge\(amount:"
+  policy-object:
+    root: benchmarks/design-patterns/fixtures/policy-object
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class OrderPolicy"
+      - "def can_cancel\?"
+    forbidden_regex:
+      - "def cancel\("
+      - "def cancel!"
+    contract_regex:
+      - "class OrderPolicy"
+      - "def can_cancel\?"
+  dependency-injection:
+    root: benchmarks/design-patterns/fixtures/dependency-injection
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "def initialize\(clock:"
+      - "@clock"
+    forbidden_regex:
+      - "Time.now"
+      - "Time.current"
+      - "Date.today"
+    contract_regex:
+      - "class ReportGenerator"
+      - "def initialize\(clock:"
+      - "@clock"
+  factory-selection:
+    root: benchmarks/design-patterns/fixtures/factory-selection
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ParserFactory"
+      - "def self\.for"
+    forbidden_regex:
+      - "case format"
+      - "if format =="
+    contract_regex:
+      - "class ParserFactory"
+      - "def self\.for"
+  builder-selection:
+    root: benchmarks/design-patterns/fixtures/builder-selection
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ReportBuilder"
+      - "def add_header"
+      - "def add_section"
+      - "def build"
+    forbidden_regex:
+      - "class ReportFactory"
+    contract_regex:
+      - "class ReportBuilder"
+      - "def build"
+  null-object:
+    root: benchmarks/design-patterns/fixtures/null-object
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class NullNotifier"
+      - "def notify"
+    forbidden_regex:
+      - "if @notifier.nil?"
+      - "unless @notifier"
+      - "if notifier.nil?"
+    contract_regex:
+      - "class NullNotifier"
+      - "def notify"
+  decorator:
+    root: benchmarks/design-patterns/fixtures/decorator
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class TaxedPrice"
+      - "def initialize\(price:"
+      - "@price"
+    forbidden_regex:
+      - "class TaxedPrice <"
+    contract_regex:
+      - "class TaxedPrice"
+      - "def total"
+  facade:
+    root: benchmarks/design-patterns/fixtures/facade
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class Storefront"
+      - "def purchase"
+    forbidden_regex:
+      - "class InventoryService"
+      - "class PricingService"
+      - "class PaymentService"
+    contract_regex:
+      - "class Storefront"
+      - "def purchase"
+  repository-boundary:
+    root: benchmarks/design-patterns/fixtures/repository-boundary
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class OrderRepository"
+      - "def find"
+      - "def save"
+    forbidden_regex:
+      - "class ActiveRecordRepository"
+      - "ApplicationRecord"
+    contract_regex:
+      - "class OrderRepository"
+      - "def find"
+      - "def save"
+  specification:
+    root: benchmarks/design-patterns/fixtures/specification
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ActiveCustomerSpecification"
+      - "class PremiumSpecification"
+      - "def satisfied_by\?"
+    forbidden_regex:
+      - "def eligible\?"
+      - "def qualifies\?"
+    contract_regex:
+      - "class ActiveCustomerSpecification"
+      - "class PremiumSpecification"
+      - "def satisfied_by\?"
+  state-object:
+    root: benchmarks/design-patterns/fixtures/state-object
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class PendingState"
+      - "class PaidState"
+      - "def state"
+    forbidden_regex:
+      - "case @status"
+      - "case status"
+      - "case state"
+    contract_regex:
+      - "class PendingState"
+      - "class PaidState"
+      - "def state"
+  composition-over-inheritance:
+    root: benchmarks/design-patterns/fixtures/composition-over-inheritance
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class Report"
+      - "def initialize\(formatter:"
+      - "@formatter"
+    forbidden_regex:
+      - "class CsvReport < Report"
+      - "class PdfReport < Report"
+      - "class JsonReport < Report"
+    contract_regex:
+      - "class Report"
+      - "def initialize\(formatter:"
+      - "def render"
+  presenter:
+    root: benchmarks/design-patterns/fixtures/presenter
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class UserPresenter"
+      - "def display_name"
+      - "@user"
+    forbidden_regex:
+      - "class UserPresenter < User"
+    contract_regex:
+      - "class UserPresenter"
+      - "def display_name"
+      - "def membership_label"
+  pattern-restraint:
+    root: benchmarks/design-patterns/fixtures/pattern-restraint
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "def full_name"
+    forbidden_regex:
+      - "class .*Service"
+      - "class .*Factory"
+      - "class .*Strategy"
+      - "class .*Presenter"
+      - "class .*Policy"
+      - "class .*Repository"
+    contract_regex:
+      - "class User"
+      - "def full_name"
