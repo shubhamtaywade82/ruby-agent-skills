@@ -80,6 +80,10 @@ skills:
     family: rails
     path: skills/rails-action-cable/SKILL.md
     triggers: [Action Cable, ActionCable, WebSocket, WebSockets, realtime Rails, realtime, ApplicationCable::Connection, ApplicationCable::Channel, cable connection, cable channel, channel authorization, subscription, stream_from, stream_for, broadcast_to, broadcasting, pub/sub realtime, Redis pubsub, Action Cable testing, reconnect, resubscribe, realtime capacity]
+  rails-i18n:
+    family: rails
+    path: skills/rails-i18n/SKILL.md
+    triggers: [I18n, i18n, internationalization, localization, locale, locales, translation, translations, I18n.t, I18n.translate, I18n.l, I18n.localize, available_locales, default_locale, enforce_available_locales, translation keys, pluralization, interpolation, localized routes, localized views, locale negotiation, translation backend, missing translation, locale fallback]
   rails-active-storage:
     family: rails
     path: skills/rails-active-storage/SKILL.md
@@ -372,6 +376,13 @@ patterns:
       - patterns/rails/action-cable-reconciliation.md
       - patterns/rails/action-cable-capacity.md
       - patterns/rails/action-cable-failure-boundary.md
+      - patterns/rails/i18n-locale-resolution.md
+      - patterns/rails/i18n-translation-key-contract.md
+      - patterns/rails/i18n-pluralization-formatting.md
+      - patterns/rails/i18n-localized-routing.md
+      - patterns/rails/i18n-context-propagation.md
+      - patterns/rails/i18n-cache-identity.md
+      - patterns/rails/i18n-security-boundary.md
       - patterns/rails/release-risk-classification.md
       - patterns/rails/artifact-provenance.md
       - patterns/rails/deployment-gate.md
@@ -396,6 +407,7 @@ patterns:
       - patterns/rails/mailer-testing.md
       - patterns/rails/active-storage-testing.md
       - patterns/rails/action-cable-testing.md
+      - patterns/rails/i18n-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
@@ -643,6 +655,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-mailer-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-i18n:
+    source: rails-i18n-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/i18n-contract.yml
     checks:
       - functional
       - tests
