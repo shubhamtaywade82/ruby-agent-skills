@@ -47,6 +47,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-deployment | Deployment and hosting verification |
 | rails-best-practices | Rails quality review and RailsBestPractices interpretation |
 | rails-security | Rails application security and security-tool interpretation |
+| rails-test-engineering | Test-boundary selection, deterministic async tests, parallel safety, flaky-test diagnosis, system tests, CI, and test performance |
 | rails-production-runtime | Puma, process lifecycle, graceful shutdown, release ordering, Solid Queue runtime, secrets, and production capacity |
 | rails-database-engineering | Production migrations, indexes, constraints, transactions, locking, backfills, query plans, and connection pools |
 | rails-observability | Rails request lifecycle, error reporting, request correlation, instrumentation, and health semantics |
@@ -375,4 +376,26 @@ Run the benchmark campaign with:
 
     ruby bin/benchmark campaign \
       --manifest benchmarks/production-runtime/campaign.yml \
+      --agent-command 'AGENT_COMMAND'
+
+
+## Rails test engineering
+
+The repository now includes a staff-level Rails test engineering layer covering:
+
+- test-boundary selection
+- request/integration/system testing
+- Active Job testing
+- deterministic async tests
+- database isolation
+- parallel-test safety
+- flaky-test diagnosis
+- test-suite performance
+- CI/system-test/eager-load verification
+- focused external-boundary doubles
+
+Run the benchmark campaign with:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/test-engineering/campaign.yml \
       --agent-command 'AGENT_COMMAND'
