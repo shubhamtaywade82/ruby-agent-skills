@@ -1,0 +1,80 @@
+# frozen_string_literal: true
+
+# Ruby baseline:
+#   https://rubystyle.guide/
+# Rails extension/style guidance:
+#   https://rails.rubystyle.guide/
+#
+# RuboCop is the executable enforcement layer for the Ruby style guide, and
+# rubocop-rails provides the Rails-specific cop set based on the Rails style
+# guide. This configuration intentionally loads the complete plugin catalog
+# maintained/documented in data/rubocop/plugins.yml.
+#
+# IMPORTANT:
+# - The target application must have the corresponding gems installed.
+# - Not every plugin will produce findings for every repository.
+# - For a Rails application, rubocop-rails resolves TargetRailsVersion from
+#   Gemfile.lock when possible; override AllCops/TargetRailsVersion when the
+#   repository needs an explicit value.
+# - RuboCop 1.72+ uses the plugin API; older extensions may require legacy
+#   require configuration.
+
+plugins:
+  # Official plugins
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-minitest
+  - rubocop-rake
+  - rubocop-sequel
+  - rubocop-thread_safety
+  - rubocop-capybara
+  - rubocop-factory_bot
+  - rubocop-rspec_rails
+  - rubocop-i18n
+
+  # Third-party plugins
+  - rubocop-require_tools
+  - cookstyle
+  - rubocop-packaging
+  - rubocop-sorbet
+  - rubocop-graphql
+  - rubocop-changed
+  - rubocop-sketchup
+
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  SuggestExtensions: false
+  DisplayCopNames: true
+  ExtraDetails: true
+
+# The Ruby Style Guide recommends 80 columns and explicitly allows teams to
+# increase this to 100 or 120. This repository standardizes on 100.
+Layout/LineLength:
+  Max: 100
+
+Layout/IndentationWidth:
+  Width: 2
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/Documentation:
+  Enabled: false
+
+# Generated/fixture artifacts are validated by their own benchmark tooling and
+# should not be rewritten by broad style corrections.
+AllCops:
+  Exclude:
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - '.ruby-agent-eval/**/*'
+
+# Rails-specific configuration is intentionally version-neutral here.
+# Consuming Rails applications should override, when necessary:
+#
+# AllCops:
+#   TargetRailsVersion: 8.0
+#
+# and should use the version actually present in their Gemfile.lock.
