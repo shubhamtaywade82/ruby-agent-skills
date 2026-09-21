@@ -13,7 +13,12 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | ruby-core | Ruby semantics, object model and runtime behavior |
 | ruby-data-types | Core value/data representation |
 | ruby-control-flow | Branching, loops and boolean logic |
-| ruby-collections | Arrays, hashes and Enumerable |\n| ruby-blocks-procs-lambdas | Blocks, Proc, lambda and callback semantics |\n| ruby-enumerables | Enumerable decision rules and pipeline design |\n| ruby-api-design | Public method/library contracts |\n| ruby-boolean-logic | Predicates, truthiness and conditional design |
+| ruby-collections | Arrays, hashes and Enumerable |\n| ruby-blocks-procs-lambdas | Blocks, Proc, lambda and callback semantics |\n| ruby-enumerables | Enumerable decision rules and pipeline design |\n| ruby-api-design | Public method/library contracts |
+| ruby-poro | Plain Ruby object boundaries |
+| ruby-service-objects | Focused application workflows |
+| ruby-domain-modeling | Business concepts and invariant ownership |
+| ruby-dependency-injection | Explicit replaceable collaborators |
+| ruby-object-composition | Composition and inheritance decisions |\n| ruby-boolean-logic | Predicates, truthiness and conditional design |
 | ruby-method-design | Method responsibility and contracts |
 | ruby-oop | Classes, encapsulation, inheritance, composition |
 | ruby-modules-mixins | Modules, mixins and namespaces |
@@ -112,8 +117,8 @@ Current families include:
 
 | Family | Examples |
 |---|---|
-| Ruby design | value object, service object, strategy, composition, adapter, external API client, gem boundary |
-| Rails | query object, form object, policy boundary, transaction boundary, request flow, REST resource, scaffold lifecycle |
+| Ruby design | value object, service object, application service, command, strategy, policy, composition, adapter, dependency injection, null object, factory, builder, decorator, facade, repository, specification, state object, external API client, gem boundary |
+| Rails | query object, form object, policy boundary, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter |
 | Testing | regression test |
 | Algorithms | two pointers, frequency map |
 
@@ -186,4 +191,29 @@ It keeps the same agent command/model configuration across baseline and skills-e
 
 ## Book Integration v2
 
-The second book integration adds four Ruby skills, five implementation patterns, and an eight-case Ruby/Rails evaluation family under evals/ruby-workshop. The cases cover Enumerable selection, public API contracts, voting/application design, service objects, external API boundaries, gem packaging, REST resources, and authentication boundaries.
+The second book integration adds focused Ruby/Rails skills, a design-pattern catalog, and an eight-case Ruby/Rails evaluation family under evals/ruby-workshop. The cases cover Enumerable selection, public API contracts, voting/application design, service objects, external API boundaries, gem packaging, REST resources, and authentication boundaries.
+
+
+## Design skill system
+
+The repository now has a dedicated design layer for POROs, service objects, domain modeling, dependency injection, and object composition.
+
+Design patterns are deliberately separate from skills. The router selects a skill first, then considers the smallest justified pattern. Pattern selection includes negative cases so agents are trained not to introduce abstractions merely because a pattern exists.
+
+The design layer currently covers:
+
+- PORO boundaries
+- service/application objects
+- command objects
+- value objects
+- strategies and policies
+- adapters and external API clients
+- dependency injection
+- composition over inheritance
+- null objects
+- factories and builders
+- decorators and facades
+- repositories and specifications
+- state objects
+- Rails query/form/policy/transaction/request patterns
+- presenters
