@@ -650,3 +650,37 @@ Incident response starts from affected user/system contract and evidence, not fr
 | Debug production safely | pattern:safe-production-debugging |
 | Prove recovery beyond process health | pattern:recovery-verification |
 | Convert an incident into durable engineering change | pattern:post-incident-review |
+
+
+## Rails release engineering
+
+```
+release readiness / CI-CD release / artifact promotion / release gate /
+progressive delivery / canary / staged rollout / environment parity /
+rollback / roll-forward / release health / release evidence
+  -> rails-release-engineering
+  -> rails-deployment for basic hosting/deployment mechanics
+  -> rails-production-runtime for process lifecycle, readiness, shutdown, and runtime compatibility
+  -> rails-database-engineering for migration/schema compatibility
+  -> rails-reliability-engineering for SLI/SLO and recovery objectives
+  -> rails-incident-engineering for failed-release operational response
+  -> rails-security-engineering for supply-chain/provenance and security-sensitive release controls
+  -> rails-api-integration / rails-event-driven-messaging / rails-active-job for cross-boundary compatibility
+  -> rails-testing for executable release-contract tests
+```
+
+Release engineering owns change propagation and evidence. Reuse existing runtime and deployment primitives instead of creating duplicate release mechanisms.
+
+### Release pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Proportional risk classification | pattern:release-risk-classification |
+| Source-to-artifact identity | pattern:artifact-provenance |
+| Evidence-backed promotion gate | pattern:deployment-gate |
+| Controlled production exposure | pattern:progressive-delivery |
+| Staging/production drift | pattern:environment-parity |
+| Rollback versus forward recovery | pattern:rollback-rollforward |
+| Post-deploy success verification | pattern:release-health-verification |
+| Durable release audit trail | pattern:release-evidence |
+```
