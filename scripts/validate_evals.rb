@@ -25,7 +25,7 @@ end
 
 benchmark_manifest = manifest.fetch("benchmarks", {})
 benchmark_manifest.each do |name, entry|
-  %w[fixture_registry fixture_root verifier campaign_documentation comparison_schema campaign_manifest adapter_protocol].each do |key|
+  %w[fixture_registry fixture_root verifier campaign_documentation comparison_schema campaign_result_schema campaign_manifest adapter_protocol].each do |key|
     errors << "benchmark #{name} missing #{key}" if entry[key].to_s.empty?
   end
 
@@ -38,6 +38,7 @@ benchmark_manifest.each do |name, entry|
   errors << "benchmark #{name} verifier missing #{entry["verifier"]}" unless File.file?(verifier_path)
   errors << "benchmark #{name} campaign documentation missing #{entry["campaign_documentation"]}" unless File.file?(File.join(ROOT, entry["campaign_documentation"].to_s))
   errors << "benchmark #{name} comparison schema missing #{entry["comparison_schema"]}" unless File.file?(File.join(ROOT, entry["comparison_schema"].to_s))
+  errors << "benchmark #{name} campaign result schema missing #{entry["campaign_result_schema"]}" unless File.file?(File.join(ROOT, entry["campaign_result_schema"].to_s))
   errors << "benchmark #{name} campaign manifest missing #{entry["campaign_manifest"]}" unless File.file?(File.join(ROOT, entry["campaign_manifest"].to_s))
   errors << "benchmark #{name} adapter protocol missing #{entry["adapter_protocol"]}" unless File.file?(File.join(ROOT, entry["adapter_protocol"].to_s))
 
