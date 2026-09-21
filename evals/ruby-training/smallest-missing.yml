@@ -1,0 +1,47 @@
+id: smallest-missing
+version: 1
+title: Smallest missing number in a sorted unique array
+category: ruby-training
+source: allerin-ruby-set-2
+skills:
+  - ruby-collections
+  - ruby-method-design
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Given a sorted array of unique integers in the range 0..m-1 where m > n,
+  return the smallest number missing from the array.
+constraints:
+  required_design:
+    - object-oriented design
+  input_contract:
+    - sorted
+    - unique
+    - non-negative integers
+checks:
+  - functional
+  - oop
+  - tests
+  - edge_cases
+cases:
+  - name: source-example
+    input: [0, 1, 5, 10]
+    expected: 2
+  - name: missing-zero
+    input: [1, 2, 3]
+    expected: 0
+  - name: missing-middle
+    input: [0, 1, 2, 4, 5]
+    expected: 3
+  - name: missing-at-end
+    input: [0, 1, 2, 3]
+    expected: 4
+  - name: empty
+    input: []
+    expected: 0
+grading:
+  functional: returns the smallest missing value under the stated sorted/unique contract.
+  oop: behavior is encapsulated using the repository's appropriate OOP conventions.
+  tests: includes boundary and middle-gap cases.
+  scope: avoids unrelated changes.
