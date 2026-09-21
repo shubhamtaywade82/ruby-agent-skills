@@ -296,3 +296,17 @@ For caching changes:
 - keep cache metrics low-cardinality and payload-free;
 - test hit/miss, isolation, invalidation, versioning, concurrency, failure, and deployment compatibility as applicable;
 - require measured or structurally demonstrated evidence before claiming caching improved performance.
+## Rails Action Mailer changes
+
+For email and Action Mailer changes:
+- inspect ApplicationMailer, mailer views/layouts, delivery configuration, provider dependencies, queue behavior, recipient rules, security controls, and mailer tests before implementing;
+- define the recipient/authorization contract separately from message rendering;
+- justify deliver_now versus deliver_later from latency, transaction, retry, and duplicate-delivery semantics;
+- ensure asynchronous mail observes committed state when the message depends on transactional data;
+- classify provider outcomes as retryable, permanent, or uncertain rather than assuming a failed network call means no email was sent;
+- isolate provider-specific behavior and credentials from domain code;
+- protect tenant/private data, security tokens, attachments, and email logs;
+- use deterministic mailer/Active Job/provider tests rather than live SMTP/API calls;
+- preserve delivery correlation without logging full message bodies or sensitive headers;
+- use previews/interceptors/observers only for their intended rendering or cross-cutting lifecycle responsibilities;
+- do not claim real-world delivery without provider/runtime evidence.
