@@ -177,3 +177,22 @@ For API and integration changes:
 - exclude credentials, signatures, authorization headers, and sensitive payloads from logs/errors;
 - test wire contracts and failure paths with fake transports/request tests;
 - consider old/new client, worker, and webhook compatibility during rollout.
+
+
+## Distributed systems and service architecture changes
+
+For changes crossing process, service, host, queue, broker, or independent datastore boundaries:
+- classify the boundary and name the authoritative owner of each invariant;
+- inspect API/message schemas, transaction ownership, delivery guarantees, retry/dead-letter behavior, and deployment topology;
+- never assume exactly-once execution; make at-least-once duplicate behavior explicit;
+- use a database constraint, atomic update, row lock, keyed queue, or single authoritative writer before introducing distributed coordination;
+- use an outbox when database commit and message publication must be coupled without a distributed transaction;
+- use durable inbox/deduplication for duplicate message delivery and reuse existing idempotent-job semantics for queued execution;
+- define acknowledgement timing, replay, ordering, and poison-message behavior;
+- bound retries/backpressure across all layers instead of multiplying retry loops;
+- make eventual consistency visible through explicit pending/stale semantics and reconciliation where applicable;
+- use sagas only when independent transaction owners require cross-step compensation/recovery;
+- justify distributed locks over simpler primitives and define lease, ownership, expiry, and fencing behavior when stale holders can mutate state;
+- propagate correlation/causation identifiers and record state transitions, not only exceptions;
+- preserve old/new message compatibility during rolling deploys;
+- test duplicate, delayed, reordered, failed, replayed, and partially completed workflows.
