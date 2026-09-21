@@ -18,7 +18,7 @@ Use for fragment caching, low-level caching, API response caching, or computed-v
 
 Do not use when a measured query, index, algorithm, or representation fix addresses the bottleneck without introducing stale state.
 
-## Procedure
+## Implementation procedure
 
 1. Measure the expensive operation.
 2. Define freshness requirements.
@@ -51,3 +51,8 @@ Test hit, miss, invalidation, key isolation, and stale-data behavior.
 - rails-authentication
 - rails-testing
 - rails-security
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
