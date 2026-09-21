@@ -217,3 +217,16 @@ The design layer currently covers:
 - state objects
 - Rails query/form/policy/transaction/request patterns
 - presenters
+
+
+## Phase 9.5B — Design pattern evaluation corpus
+
+The repository now includes a dedicated design-pattern benchmark family with 18 public evaluation cases. It measures functional correctness, test execution, public contracts, pattern selection, and scope control.
+
+The corpus explicitly includes pattern-restraint cases so agents are evaluated on choosing when not to introduce an abstraction.
+
+Run the design-pattern campaign with:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/design-patterns/campaign.yml \
+      --agent-command 'AGENT_COMMAND'
