@@ -1,3 +1,9 @@
+---
+name: validation-custom-validator
+description: Use when a coherent Rails validation rule is genuinely reusable across model types.
+family: rails
+---
+
 # Custom Validator Contract
 
 ## Problem

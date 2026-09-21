@@ -1,3 +1,9 @@
+---
+name: validation-uniqueness-database-contract
+description: Use when combining Rails uniqueness validation with authoritative database uniqueness enforcement.
+family: rails
+---
+
 # Validation Uniqueness Database Contract
 
 ## Problem

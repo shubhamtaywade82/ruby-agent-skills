@@ -1,3 +1,9 @@
+---
+name: validation-callback-boundary
+description: Use when before_validation or after_validation behavior needs an explicit lifecycle boundary.
+family: rails
+---
+
 # Validation Callback Boundary
 
 ## Problem

@@ -1,3 +1,9 @@
+---
+name: validation-error-contract
+description: Use when Rails validation errors cross form, API, service, or other presentation boundaries.
+family: rails
+---
+
 # Validation Error Contract
 
 ## Problem

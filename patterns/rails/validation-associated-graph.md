@@ -1,3 +1,9 @@
+---
+name: validation-associated-graph
+description: Use when validating owned Active Record associations without creating an unbounded validation graph.
+family: rails
+---
+
 # Associated Validation Graph Contract
 
 ## Problem

@@ -1,3 +1,9 @@
+---
+name: validation-testing
+description: Use when validating Rails model behavior requires deterministic boundary-level tests.
+family: rails
+---
+
 # Validation Testing Contract
 
 ## Problem

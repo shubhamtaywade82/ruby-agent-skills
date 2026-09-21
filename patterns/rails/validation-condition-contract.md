@@ -1,3 +1,9 @@
+---
+name: validation-condition-contract
+description: Use when implementing conditional Rails validations with explicit if, unless, nil, or blank semantics.
+family: rails
+---
+
 # Conditional Validation Contract
 
 ## Problem

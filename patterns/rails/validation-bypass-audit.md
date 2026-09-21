@@ -1,3 +1,9 @@
+---
+name: validation-bypass-audit
+description: Use when a Rails invariant may be bypassed by direct or bulk write APIs.
+family: rails
+---
+
 # Validation Bypass Audit
 
 ## Problem

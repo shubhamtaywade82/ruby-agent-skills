@@ -1,3 +1,9 @@
+---
+name: validation-strict-failure
+description: Use when invalid Rails model state must raise a deliberate strict-validation exception.
+family: rails
+---
+
 # Strict Validation Failure Contract
 
 ## Problem

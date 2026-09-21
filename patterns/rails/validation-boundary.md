@@ -1,3 +1,9 @@
+---
+name: validation-boundary
+description: Use when deciding where a Rails invariant should be enforced across model validation and database integrity.
+family: rails
+---
+
 # Validation Boundary Contract
 
 ## Problem

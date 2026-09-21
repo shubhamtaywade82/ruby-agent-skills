@@ -1,3 +1,9 @@
+---
+name: validation-context-contract
+description: Use when introducing or reviewing Rails validation contexts for named operations or state transitions.
+family: rails
+---
+
 # Validation Context Contract
 
 ## Problem
