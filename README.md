@@ -450,3 +450,16 @@ Core patterns:
 - `action-cable-capacity`
 - `action-cable-failure-boundary`
 - `action-cable-testing`
+## Rails I18n & localization engineering
+
+The repository now includes a dedicated `rails-i18n` layer for locale resolution, translation-key contracts, pluralization and formatting, localized routing, background locale propagation, locale-aware caching, localization security, and deterministic tests.
+
+Core patterns:
+- `i18n-locale-resolution`
+- `i18n-translation-key-contract`
+- `i18n-pluralization-formatting`
+- `i18n-localized-routing`
+- `i18n-context-propagation`
+- `i18n-cache-identity`
+- `i18n-security-boundary`
+- `i18n-testing`
