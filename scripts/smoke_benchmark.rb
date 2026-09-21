@@ -11,6 +11,8 @@ fixture = File.join(root, "benchmarks/ruby-training/fixtures/selection-sort")
 verifier = "ruby #{Shellwords.escape(File.join(root, "scripts/verify_training_eval.rb"))}"
 
 agent_script = <<~RUBY
+  require "fileutils"
+
   File.write("lib/solution.rb", <<~'CODE')
     # frozen_string_literal: true
 
