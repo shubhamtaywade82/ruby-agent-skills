@@ -93,6 +93,17 @@ Review the implementation across:
 
 Then ask whether every abstraction earns its complexity.
 
+## Agent review checklist
+
+- [ ] applicable skills discovered
+- [ ] repository inspected before implementation
+- [ ] ambiguity resolved
+- [ ] smallest justified pattern selected
+- [ ] focused tests run
+- [ ] validators/CI-equivalent checks run
+- [ ] final diff reviewed
+- [ ] unrun checks disclosed
+
 ## Verification
 
 Run:
