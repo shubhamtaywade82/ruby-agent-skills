@@ -15,7 +15,7 @@ Overlap itself is unsafe or a downstream dependency enforces per-resource concur
 ## Do not use when
 The real requirement is general worker throughput throttling; prefer queue worker sizing for that case.
 
-## Procedure
+## Implementation procedure
 1. Identify the shared resource/key.
 2. Define the maximum overlap.
 3. Choose a stable key.
@@ -44,3 +44,7 @@ Exercise two logically conflicting jobs and assert the configured overlap contra
 - rails-active-job
 - ruby-concurrency
 - ruby-performance
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
