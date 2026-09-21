@@ -64,6 +64,12 @@ The YAML cases in this repository are public benchmark definitions. Truly hidden
 
 `bin/validate` validates skills, implementation patterns and evaluation definitions. CI also runs the benchmark runner smoke test.
 
-## Future benchmark campaign
+## Phase 7 benchmark campaign
 
-Run the same evaluation packet against a baseline agent configuration and a skill-enabled configuration, then compare the JSON results dimension by dimension. The repository does not automatically declare one agent better than another.
+Fixtures and a deterministic verifier now live under `benchmarks/ruby-training/`. The campaign CLI can run the same evaluation against two explicit agent commands and produce side-by-side dimension results:
+
+    ruby bin/benchmark compare triplet-sum \\
+      --baseline-command 'BASELINE_AGENT_COMMAND' \\
+      --skills-command 'SKILL_ENABLED_AGENT_COMMAND'
+
+The comparison preserves individual evidence rather than collapsing the result into a single score. Hidden benchmark packs remain external.
