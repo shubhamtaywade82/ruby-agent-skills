@@ -16,24 +16,38 @@ Patterns are not mandatory templates. Repository evidence and task requirements 
 
 ### Ruby design
 
-- value objects
-- service/application objects
-- strategy objects
+- value object
+- service object
+- application service
+- command
+- strategy object
+- policy object
 - composition over inheritance
-- adapters
-- external API clients
-- Ruby gem boundaries
-- metaprogramming boundaries
+- adapter
+- dependency injection
+- external API client
+- Ruby gem boundary
+- metaprogramming boundary
+- null object
+- factory
+- builder
+- decorator
+- facade
+- repository
+- specification
+- state object
+- service composition
 
 ### Rails
 
-- query objects
-- form objects
-- policy boundaries
-- transaction boundaries
+- query object
+- form object
+- policy boundary
+- transaction boundary
 - request flow
-- REST resources
+- REST resource
 - scaffold lifecycle
+- presenter
 
 ### Testing and algorithms
 
@@ -41,15 +55,73 @@ Patterns are not mandatory templates. Repository evidence and task requirements 
 - two pointers
 - frequency maps
 
+## Pattern selection matrix
+
+| Problem shape | Candidate |
+|---|---|
+| Meaningful immutable value | value object |
+| One application workflow | service object / command |
+| Shared service entry-point convention | application service |
+| Reusable business decision | policy object / specification |
+| Interchangeable algorithm | strategy object |
+| External interface mismatch | adapter |
+| Replaceable collaborator | dependency injection |
+| Add behavior around a stable interface | decorator |
+| Hide a complex subsystem | facade |
+| Vary object construction | factory |
+| Complex staged construction | builder |
+| Safe no-op collaborator | null object |
+| Complex persistence boundary | repository / query object |
+| State-specific behavior | state object |
+| Presentation transformation | presenter |
+
+A matrix entry is a candidate, not an automatic architectural verdict.
+
 ## Selection rule
 
 Do not introduce a pattern because its name sounds sophisticated.
 
 Use the smallest pattern that:
+
 1. solves the actual responsibility problem,
 2. matches repository conventions,
 3. improves testability or changeability,
 4. does not create unnecessary indirection.
+
+## Pattern composition
+
+Patterns can compose when each solves a different responsibility.
+
+For example:
+
+    Service Object
+      + Strategy
+      + Adapter
+      + Value Object
+
+or:
+
+    Rails endpoint
+      + REST resource
+      + Authentication boundary
+      + Form Object
+      + Service Object
+      + Transaction boundary
+
+Do not stack patterns merely to make an architecture look sophisticated.
+
+## Pattern restraint
+
+Negative pattern selection is intentional.
+
+A task that can be solved cleanly with one method should not produce a factory, service, strategy, and repository merely because those patterns exist.
+
+Before applying a pattern, ask:
+
+- Is there a real responsibility boundary?
+- Does the pattern reduce coupling or improve testability?
+- Does the repository already use it?
+- Would a direct implementation be clearer?
 
 ## Evidence order
 
