@@ -296,3 +296,15 @@ shared mutable state / concurrent I/O / Thread / Queue / Mutex / deadlock
 ```
 
 Do not activate concurrency merely because code is slow. First establish the workload, bottleneck, ownership model, and existing Rails/repository executor infrastructure.
+## Security
+
+```text
+authentication / authorization / untrusted input / scanner finding / secrets / injection / webhook / tenant isolation
+  -> rails-security
+  -> ruby-runtime-compatibility when version-sensitive
+  -> relevant Rails skill (controllers, Active Record, authentication, testing)
+  -> security-boundary-review when a concrete trust boundary needs review
+  -> ruby-debugging when diagnosing a security defect
+```
+
+Security findings are reviewed as trust-boundary/data-flow evidence. Do not reduce security work to a style/lint pass.
