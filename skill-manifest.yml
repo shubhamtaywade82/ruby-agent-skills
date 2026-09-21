@@ -134,3 +134,23 @@ patterns:
       - patterns/algorithms/two-pointers.md
       - patterns/algorithms/frequency-map.md
     triggers: [two pointers, pair sum, frequency map, counting, membership lookup]
+
+
+evaluations:
+  ruby-training:
+    source: allerin-ruby-set-2
+    schema: evals/schema/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/selection-sort.yml
+      - evals/ruby-training/recursive-selection-sort.yml
+      - evals/ruby-training/smallest-missing.yml
+      - evals/ruby-training/shopping-cart.yml
+      - evals/ruby-training/triplet-sum.yml
+      - evals/ruby-training/majority-element.yml
+      - evals/ruby-training/distinct-elements.yml
+      - evals/ruby-training/power-of-two.yml
+      - evals/ruby-training/chocolate-feast.yml
+    checks:
+      - functional
+      - oop
+      - tests
