@@ -1,0 +1,33 @@
+id: facade
+version: 1
+title: Expose a stable Facade over a complex subsystem
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-object-composition
+  - ruby-dependency-injection
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - facade
+prompt: |
+  Implement Storefront as a facade over Inventory, Pricing, and Payment collaborators. purchase(sku:) coordinates the three steps behind one stable application-facing operation.
+constraints:
+  required_design:
+    - facade
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: Storefront exposes one application-facing purchase operation
+  pattern_selection: subsystem classes are collaborators rather than broad service wrappers
+  scope_control: changes remain inside the disposable fixture
