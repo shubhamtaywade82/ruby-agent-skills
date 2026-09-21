@@ -348,3 +348,20 @@ Primary reference:
 
 Supporting reference:
 - https://guides.rubyonrails.org/active_job_basics.html
+
+## Rails caching engineering
+
+Caching is covered as a dedicated correctness/system boundary rather than only as a performance optimization.
+
+Operational coverage:
+- skills/rails-caching/SKILL.md
+- patterns/rails/cache-boundary.md
+- patterns/rails/cache-key-isolation.md
+- patterns/rails/cache-invalidation-contract.md
+- patterns/rails/cache-stampede-control.md
+- patterns/rails/cache-failure-boundary.md
+- patterns/rails/cache-warming-strategy.md
+- patterns/rails/cache-capacity-review.md
+- evals/performance/cache-key-boundary.yml
+
+The repository synthesis emphasizes identity isolation, freshness, invalidation ownership, release compatibility, bounded recomputation, failure behavior, and cache capacity.
