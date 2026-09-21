@@ -128,3 +128,17 @@ For database changes:
 - size connection pools against aggregate application concurrency and database limits;
 - require query-plan evidence for query/index performance claims;
 - test migration and database behavior at the owning boundary.
+
+
+## Rails production runtime changes
+
+For deployment/runtime changes:
+- resolve Rails, Ruby, Puma, Solid Queue, and platform/process-manager versions first;
+- inspect actual Puma, container, process-manager, queue, health, and release configuration;
+- size web/job concurrency against memory, CPU, database pools, and downstream capacity;
+- verify restart mode against preload/plugin configuration;
+- align graceful shutdown with the platform hard-kill deadline;
+- preserve old/new schema and queued-job compatibility during rolling releases;
+- protect runtime secrets and validate required configuration without printing values;
+- distinguish application rollback from database/data rollback;
+- verify boot, readiness, process lifecycle, and release ordering at the owning boundary.
