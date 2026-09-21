@@ -93,3 +93,11 @@ Use request/controller tests that exercise the actual HTTP contract: successful 
 ## Source foundation
 
 Grounded in Action Controller, MVC, CRUD, forms, and request-handling material in *The Ruby Workshop*, with responsibility and simplicity guidance from *Clean Ruby*.
+
+## Book integration: controller filters
+
+Controller callbacks such as before_action are useful for repeatable request prerequisites such as authentication and loading a resource. Keep the callback small and explicit.
+
+Do not move arbitrary business workflows into callbacks. If the operation coordinates several domain steps, keep the callback as a boundary check and delegate the workflow elsewhere.
+
+Always verify which actions are affected by a callback; an authentication filter intended for private actions must not accidentally protect public endpoints.
