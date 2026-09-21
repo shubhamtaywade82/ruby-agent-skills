@@ -80,6 +80,7 @@ Keep these signals separate:
 - OOP/design adherence
 - test quality
 - edge-case coverage
+- security boundary adherence
 - scope control
 
 A runner can score these dimensions independently and preserve exact failure reasons.
