@@ -477,3 +477,16 @@ Core patterns:
 - `action-text-lifecycle`
 - `action-text-attachable-contract`
 - `action-text-testing`
+
+## Rails framework boundary coverage
+
+The Rails integration layer now includes focused skills for framework boundaries that commonly cross trust, persistence, asynchronous execution, and external-provider concerns:
+
+- rails-action-mailer — outbound email content, delivery, provider, security, and observability;
+- rails-action-mailbox — inbound email ingress, routing, sender/tenant authorization, idempotency, failure/quarantine, retention, and deterministic testing;
+- rails-active-storage — uploaded-file ownership, storage, access, processing, purge, and testing;
+- rails-action-cable — realtime connection/channel authorization, stream contracts, reconciliation, and capacity;
+- rails-i18n — locale context, translation contracts, formatting, routing, propagation, caching, security, and testing;
+- rails-action-text — rich content, sanitization, attachables, rendering, API boundaries, lifecycle, performance, and testing.
+
+These boundaries are compositional. The router should select Action Mailbox for inbound email mechanics, then compose security, Active Job, Active Storage, database, reliability, observability, and test-engineering skills where the task requires them.
