@@ -1,4 +1,3 @@
-
 ---
 name: active-model-callback-boundary
 description: Use explicit Active Model callbacks only for intrinsic model lifecycle hooks and avoid hiding workflows in callback chains.
