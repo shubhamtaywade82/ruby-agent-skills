@@ -413,7 +413,7 @@ Before enabling public storage, verify:
 - deletion/retention is compatible;
 - tenant-private resources cannot accidentally attach public storage.
 
-Do not switch private storage to public as a debugging shortcut.
+Never switch private storage to public as a debugging shortcut.
 
 ## Authenticated file controllers
 
