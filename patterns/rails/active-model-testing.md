@@ -1,4 +1,3 @@
-
 ---
 name: active-model-testing
 description: Test Active Model protocol behavior, validations, attributes, callbacks, conversion, and Rails consumers deterministically.
