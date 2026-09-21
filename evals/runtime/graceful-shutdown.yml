@@ -4,6 +4,7 @@ title: Align graceful shutdown with process limits
 category: rails
 source: rails-production-runtime-v1
 skills:
+  - rails-release-engineering
   - rails-production-runtime
 patterns:
   - graceful-shutdown
