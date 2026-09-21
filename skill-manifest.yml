@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  rails-observability:
+    family: rails
+    path: skills/rails-observability/SKILL.md
+    triggers: [observability, Rails.error, error reporting, ActiveSupport::Notifications, instrumentation, request ID, correlation ID, logging, log tags, health check, readiness, liveness, API error handling, rescue_from]
   rails-active-job:
     family: rails
     path: skills/rails-active-job/SKILL.md
@@ -221,6 +225,10 @@ patterns:
       - patterns/rails/security-boundary-review.md
       - patterns/rails/cache-boundary.md
       - patterns/rails/zeitwerk-structure-review.md
+      - patterns/rails/request-error-boundary.md
+      - patterns/rails/request-observability.md
+      - patterns/rails/health-endpoint.md
+      - patterns/rails/instrumentation-event.md
       - patterns/rails/idempotent-job.md
       - patterns/rails/job-retry-policy.md
       - patterns/rails/transactional-job-enqueue.md
@@ -247,6 +255,15 @@ runner:
   documentation: docs/BENCHMARK_RUNNER.md
 
 benchmarks:
+  observability:
+    fixture_registry: benchmarks/observability/fixtures.yml
+    fixture_root: benchmarks/observability/fixtures
+    verifier: scripts/verify_observability_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/observability/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
   active-job:
     fixture_registry: benchmarks/active-job/fixtures.yml
     fixture_root: benchmarks/active-job/fixtures
@@ -322,6 +339,19 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  observability:
+    source: rails-observability-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/observability/error-boundary.yml
+      - evals/observability/request-correlation.yml
+      - evals/observability/instrumentation-event.yml
+      - evals/observability/health-semantics.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
   active-job:
     source: active-job-v1
     schema: docs/EVAL_SCHEMA.md
