@@ -44,6 +44,10 @@ skills:
     family: rails
     path: skills/rails-api-integration/SKILL.md
     triggers: [API contract, API versioning, API compatibility, JSON API, content negotiation, serialization contract, external API integration, HTTP integration, outbound HTTP client, retry policy, HTTP timeout, rate limit, webhook, webhook signature, webhook replay, idempotency key, idempotent request, provider adapter, integration testing]
+  rails-distributed-systems:
+    family: rails
+    path: skills/rails-distributed-systems/SKILL.md
+    triggers: [distributed systems, distributed architecture, service boundary, service ownership, service decomposition, event-driven architecture, asynchronous integration, message delivery, at-least-once, exactly-once, outbox, inbox, message deduplication, eventual consistency, saga, compensation, distributed transaction, distributed lock, lease, fencing token, cross-service consistency, replay, reconciliation]
   rails-performance:
     family: performance
     path: skills/rails-performance/SKILL.md
@@ -252,6 +256,13 @@ patterns:
       - patterns/rails/query-plan-evidence.md
       - patterns/rails/connection-pool-capacity.md
       - patterns/rails/cache-stampede-control.md
+      - patterns/rails/distributed-service-boundary.md
+      - patterns/rails/message-delivery-contract.md
+      - patterns/rails/outbox-publication.md
+      - patterns/rails/inbox-deduplication.md
+      - patterns/rails/saga-orchestration.md
+      - patterns/rails/distributed-lock.md
+      - patterns/rails/eventual-consistency.md
       - patterns/rails/zeitwerk-structure-review.md
       - patterns/rails/puma-capacity.md
       - patterns/rails/graceful-shutdown.md
@@ -271,7 +282,7 @@ patterns:
       - patterns/rails/job-retry-policy.md
       - patterns/rails/transactional-job-enqueue.md
       - patterns/rails/concurrency-controlled-job.md
-    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede]
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, eventual consistency]
 
   testing:
     paths:
