@@ -33,3 +33,7 @@ Every acquired resource has a deterministic release path.
 
 ## Related skills
 rails-hotwire, rails-test-engineering, ruby-concurrency
+
+## Use when
+
+Use this pattern when the described Hotwire interaction is an explicit part of the page contract and its lifecycle needs dedicated guidance.
