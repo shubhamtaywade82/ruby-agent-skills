@@ -15,11 +15,12 @@ A job talks to unreliable infrastructure, rate-limited dependencies, or has expl
 ## Do not use when
 The work is deterministic and failures should immediately surface without retry.
 
-## Procedure
+## Implementation procedure
 1. Classify exceptions as transient or permanent.
 2. Use retry_on only for transient failures.
 3. Choose attempts and backoff from recovery/capacity expectations.
-4. Add jitter when synchronized retry bursts are possible.
+4. Add jitter when synchroni
+zed retry bursts are possible.
 5. Use discard_on only when retrying is not meaningful.
 6. Report terminal failures when operational action is required.
 7. Test each exception path.
@@ -43,3 +44,7 @@ Assert retry scheduling/attempt policy and terminal discard/failure behavior.
 - rails-active-job
 - ruby-debugging
 - ruby-performance
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
