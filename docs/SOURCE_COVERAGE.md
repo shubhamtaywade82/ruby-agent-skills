@@ -228,3 +228,24 @@ Operational artifacts:
 Primary sources:
 - https://guides.rubyonrails.org/autoloading_and_reloading_constants.html
 - https://github.com/fxn/zeitwerk
+
+
+## Active Job and background processing
+
+The Active Job layer covers job lifecycle, serialization, GlobalID, idempotency, retry/discard policy, transaction-aware enqueueing, queues/priorities, scheduling/recurring tasks, bulk enqueue, callbacks, concurrency controls, error reporting, graceful shutdown, observability, security of durable payloads, and job testing.
+
+Artifacts:
+- `skills/rails-active-job/SKILL.md`
+- `patterns/rails/idempotent-job.md`
+- `patterns/rails/job-retry-policy.md`
+- `patterns/rails/transactional-job-enqueue.md`
+- `patterns/rails/concurrency-controlled-job.md`
+- `data/active_job/tools.yml`
+- `evals/active-job/*`
+- `benchmarks/active-job/*`
+- `scripts/verify_active_job_eval.rb`
+
+Primary sources:
+- https://guides.rubyonrails.org/active_job_basics.html
+- https://guides.rubyonrails.org/testing.html
+- https://github.com/rails/solid_queue
