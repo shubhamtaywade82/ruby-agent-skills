@@ -76,6 +76,10 @@ skills:
     family: rails
     path: skills/rails-action-mailer/SKILL.md
     triggers: [Action Mailer, Rails mailer, ApplicationMailer, mailer, email delivery, deliver_later, deliver_now, mailer preview, mailer testing, mailer provider, SMTP, email security, email observability]
+  rails-active-storage:
+    family: rails
+    path: skills/rails-active-storage/SKILL.md
+    triggers: [Active Storage, ActiveStorage, has_one_attached, has_many_attached, file upload, file uploads, direct upload, Active Storage direct upload, storage service, S3 upload, GCS upload, blob, attachment, file serving, signed blob URL, authenticated file access, file variant, image variant, preview file, file analysis, purge attachment, purge blob, unattached blobs, storage mirror, storage migration]
   rails-security-engineering:
     family: security
     path: skills/rails-security-engineering/SKILL.md
@@ -351,6 +355,12 @@ patterns:
       - patterns/rails/mailer-provider-boundary.md
       - patterns/rails/mailer-security-boundary.md
       - patterns/rails/mailer-observability.md
+      - patterns/rails/active-storage-boundary.md
+      - patterns/rails/active-storage-upload-security.md
+      - patterns/rails/active-storage-direct-upload.md
+      - patterns/rails/active-storage-serving.md
+      - patterns/rails/active-storage-processing.md
+      - patterns/rails/active-storage-purge.md
       - patterns/rails/release-risk-classification.md
       - patterns/rails/artifact-provenance.md
       - patterns/rails/deployment-gate.md
@@ -373,6 +383,7 @@ patterns:
       - patterns/testing/parallel-database-test.md
       - patterns/testing/regression-test.md
       - patterns/rails/mailer-testing.md
+      - patterns/rails/active-storage-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
@@ -620,6 +631,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-mailer-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-active-storage:
+    source: rails-active-storage-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-storage-contract.yml
     checks:
       - functional
       - tests
