@@ -75,7 +75,7 @@ skills:
   rails-action-mailbox:
     family: rails
     path: skills/rails-action-mailbox/SKILL.md
-    triggers: [Action Mailbox, ActionMailbox, inbound email, inbound emails, InboundEmail, ApplicationMailbox, mailbox routing, mailbox, inbound mail, email ingress, inbound email ingress, receive email, incoming email, Action Mailbox testing, bounce_with, inbound email replay, email quarantine]
+    triggers: [Action Mailbox, ActionMailbox, inbound email, inbound emails, InboundEmail, ApplicationMailbox, mailbox routing, mailbox, inbound mail, email ingress, ingress, inbound email ingress, receive email, incoming email, Action Mailbox testing, bounce_with, inbound email replay, email quarantine]
 
   rails-action-mailer:
     family: rails
