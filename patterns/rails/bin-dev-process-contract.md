@@ -5,6 +5,10 @@ family: rails
 ---
 # bin/dev Process Contract
 
+## Problem
+
+Development orchestration can hide failed asset watchers or leave processes running with inconsistent environments.
+
 ## Use when
 Changing bin/dev, Procfile.dev, watcher processes, or local development orchestration.
 
