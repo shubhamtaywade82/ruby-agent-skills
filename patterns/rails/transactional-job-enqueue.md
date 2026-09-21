@@ -15,7 +15,7 @@ A job is enqueued inside a database transaction and requires committed state.
 ## Do not use when
 The job is independent of the transaction or the repository deliberately accepts eventual consistency before commit.
 
-## Procedure
+## Implementation procedure
 1. Identify the transaction boundary.
 2. Identify data the job reads.
 3. Determine adapter/database semantics.
@@ -42,3 +42,7 @@ Cover commit, rollback, and enqueue timing at the application boundary.
 - rails-active-job
 - rails-activerecord
 - ruby-runtime-compatibility
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
