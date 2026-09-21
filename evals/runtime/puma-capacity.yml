@@ -4,6 +4,7 @@ title: Configure Puma capacity from runtime constraints
 category: rails
 source: rails-production-runtime-v1
 skills:
+  - rails-release-engineering
   - rails-production-runtime
   - ruby-performance
 patterns:
