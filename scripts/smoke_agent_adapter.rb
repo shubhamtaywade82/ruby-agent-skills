@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "fileutils"
 require "shellwords"
 require "tmpdir"
 
@@ -25,11 +26,16 @@ agent_script = <<~RUBY
         def sort(values)
           values.sort
         end
+
+        def recursive_sort(values)
+          values.length <= 1 ? values : recursive_sort(values[1..]) 
+        end
       end
     CODE
   )
 
-  FileUtils.mkdir_p("test") if defined?(FileUtils)
+  FileUtils.mkdir_p("test")
+  File.write("test/selection_sort_test.rb", "smoke coverage\n")
 RUBY
 
 command = "ruby -e #{Shellwords.escape(agent_script)}"
