@@ -425,3 +425,15 @@ Core patterns:
 - `mailer-security-boundary`
 - `mailer-testing`
 - `mailer-observability`
+## Rails Active Storage engineering
+
+The repository now includes a dedicated `rails-active-storage` layer for attachment ownership, upload security, direct uploads, storage services, private/public file access, variants and previews, analysis, purge/reconciliation, storage migration/mirroring, and deterministic testing.
+
+Core patterns:
+- `active-storage-boundary`
+- `active-storage-upload-security`
+- `active-storage-direct-upload`
+- `active-storage-serving`
+- `active-storage-processing`
+- `active-storage-purge`
+- `active-storage-testing`
