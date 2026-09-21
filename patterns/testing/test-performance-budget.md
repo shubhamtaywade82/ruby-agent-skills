@@ -12,7 +12,7 @@ Test suites grow until feedback becomes too slow to sustain development.
 ## Use when
 A test suite or specific test group has a measured runtime problem.
 
-## Procedure
+## Implementation procedure
 1. Establish total and component-level baseline.
 2. Identify slow files/tests and boot/setup overhead.
 3. Measure factory/fixture, DB, system-test, and parallel overhead.
@@ -34,3 +34,15 @@ Compare before/after runtime using the same environment/workload.
 - bottleneck identified
 - change targeted
 - coverage preserved
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
