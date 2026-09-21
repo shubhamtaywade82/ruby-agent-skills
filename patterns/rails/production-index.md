@@ -15,7 +15,7 @@ Creating an index on a live table or changing a high-traffic query's indexing st
 ## Do not use when
 The table is disposable or small enough that normal locking is explicitly acceptable.
 
-## Procedure
+## Implementation procedure
 1. Identify the target query shape.
 2. Inspect existing indexes and cardinality.
 3. Estimate table size and write traffic.
@@ -38,3 +38,15 @@ Verify migration behavior and query execution plan in a representative environme
 - lock/build cost considered
 - adapter support verified
 - recovery documented
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
