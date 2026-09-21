@@ -9,3 +9,5 @@ ruby "$ROOT/scripts/validate_evals.rb"
 ruby -I"$ROOT/test" "$ROOT/test/runtime_profile_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/security_audit_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/zeitwerk_check_test.rb"
