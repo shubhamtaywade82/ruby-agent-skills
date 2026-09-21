@@ -241,6 +241,15 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/ruby-workshop/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  concurrency:
+    fixture_registry: benchmarks/concurrency/fixtures.yml
+    fixture_root: benchmarks/concurrency/fixtures
+    verifier: scripts/verify_concurrency_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/concurrency/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
   design-patterns:
     fixture_registry: benchmarks/design-patterns/fixtures.yml
     fixture_root: benchmarks/design-patterns/fixtures
@@ -285,6 +294,16 @@ evaluations:
     checks:
       - functional
       - tests
+
+  concurrency:
+    source: concurrency-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/concurrency/concurrency-counter.yml
+    checks:
+      - functional
+      - tests
+      - contract
 
   design-patterns:
     source: design-pattern-system-v1
