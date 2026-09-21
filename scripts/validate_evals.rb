@@ -57,8 +57,22 @@ benchmark_manifest.each do |name, entry|
     extra = fixture_ids - benchmark_eval_ids
     errors << "benchmark #{name} missing fixtures: #{missing.to_a.sort.join(", ")}" unless missing.empty?
     errors << "benchmark #{name} has unregistered fixtures: #{extra.to_a.sort.join(", ")}" unless extra.empty?
+
+    campaign_path = File.join(ROOT, entry["campaign_manifest"].to_s)
+    if File.file?(campaign_path)
+      campaign = YAML.safe_load(
+        File.read(campaign_path, encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      )
+      errors << "benchmark #{name} campaign id missing" if campaign["id"].to_s.empty?
+      repetitions = campaign.fetch("execution", {}).fetch("repetitions", nil)
+      errors << "benchmark #{name} campaign repetitions must be >= 1" unless repetitions.to_i >= 1
+      campaign_ids = Array(campaign["evaluations"]).to_set
+      errors << "benchmark #{name} campaign evaluations do not match registered evaluation ids" unless campaign_ids == benchmark_eval_ids
+    end
   rescue Psych::Exception, KeyError => e
-    errors << "benchmark #{name} fixture registry invalid: #{e.message}"
+    errors << "benchmark #{name} fixture registry/campaign invalid: #{e.message}"
   end
 end
 
