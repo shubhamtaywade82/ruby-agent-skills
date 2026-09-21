@@ -99,3 +99,17 @@ For background-job changes:
 - analyze concurrency and downstream capacity;
 - verify queue/worker configuration and shutdown behavior when operational behavior changes;
 - test enqueue, perform, failure, retry/discard, and duplicate-execution behavior as applicable.
+
+
+## Rails request lifecycle/observability changes
+
+For request and production-diagnostics changes:
+- resolve Rails version first;
+- inspect existing HTTP error, logging, request-ID, and health conventions;
+- keep exception-to-response mappings narrow;
+- preserve correlation identifiers across request/job/dependency boundaries;
+- filter sensitive data before logs/error context;
+- use Rails.error for error reporting and ActiveSupport::Notifications for meaningful instrumentation;
+- keep instrumentation subscribers observational;
+- distinguish liveness from readiness and dependency health;
+- verify request/error/health contracts with focused tests.
