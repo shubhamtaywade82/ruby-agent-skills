@@ -27,3 +27,6 @@ jobs:
 
       - name: Smoke test agent adapter
         run: ruby scripts/smoke_agent_adapter.rb
+
+      - name: Smoke test book integration campaign
+        run: ruby scripts/smoke_workshop_benchmark.rb
