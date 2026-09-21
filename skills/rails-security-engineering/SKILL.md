@@ -107,6 +107,8 @@ Use `patterns/rails/trust-boundary.md`.
 
 Authentication establishes identity. Authorization decides whether the actor may perform the specific action on the specific resource.
 
+Do not treat authentication as authorization.
+
 For material authorization domains define:
 
 - actor/subject;
