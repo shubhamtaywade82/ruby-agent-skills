@@ -1,0 +1,38 @@
+---
+name: request-observability
+description: Add request correlation, logging, and metrics at the existing Rails request boundary.
+family: rails
+---
+
+# Request Observability
+
+## Problem
+Production requests are hard to diagnose when logs, metrics, and errors cannot be correlated.
+
+## Use when
+A request path needs explicit correlation, structured logs, duration/status metrics, or error context.
+
+## Procedure
+1. Inspect existing request ID/log-tag conventions.
+2. Reuse Rails/request context already available.
+3. Define minimal event fields.
+4. Add instrumentation at meaningful boundaries.
+5. Keep metric dimensions low-cardinality.
+6. Filter sensitive parameters before logging.
+7. Test correlation/event emission.
+
+## Failure modes
+- duplicate correlation identifiers
+- raw IDs/user strings as metric labels
+- full request bodies in logs
+- instrumentation that mutates business behavior
+
+## Testing
+Assert structured event fields and request correlation rather than exact log formatting when possible.
+
+## Review checklist
+- request ID preserved
+- logs are minimal
+- metrics have bounded dimensions
+- sensitive data filtered
+- instrumentation is side-effect free
