@@ -1,0 +1,28 @@
+id: parameterized-query-boundary
+version: 1
+title: Parameterize an untrusted query input
+category: security
+source: rails-security-v1
+skills:
+  - rails-security
+patterns:
+  - security-boundary-review
+prompt: |
+  Implement UserSearch.call(term, relation:) so a user-controlled search term is passed to the relation without SQL interpolation. Preserve the relation API and add a focused test.
+constraints:
+  forbidden_constructs:
+    - SQL string interpolation with the user-controlled term
+  required_design:
+    - parameterized query boundary
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: benign-term
+    input: "alice"
+    expected: pass
+grading:
+  functional: the search term reaches relation.where through a parameterized value
+  tests: an executable test/spec is changed
+  contract: UserSearch.call(term, relation:) is preserved
