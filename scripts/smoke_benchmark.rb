@@ -20,7 +20,7 @@ agent_script = <<~RUBY
 
   context = File.read(ENV.fetch("RUBY_AGENT_CONTEXT_FILE"), encoding: "UTF-8")
   abort "task context missing" unless context.include?("Implement selection sort")
-  if expected_enabled
+  if actual_enabled
     manifest = JSON.parse(File.read(ENV.fetch("RUBY_AGENT_SKILL_MANIFEST"), encoding: "UTF-8"))
     abort "skill pack empty" if manifest.fetch("skills").empty?
     abort "skill context missing ruby-oop" unless context.include?("ruby-oop")
