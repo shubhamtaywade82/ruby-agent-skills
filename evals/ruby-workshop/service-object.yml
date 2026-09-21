@@ -1,0 +1,49 @@
+id: service-object
+version: 1
+title: Implement a focused Rails-style service object
+category: ruby-workshop
+source: learn-rails-6
+skills:
+  - ruby-oop
+  - ruby-api-design
+  - ruby-gems-io-services
+  - ruby-tdd-refactoring
+patterns:
+  - service-object
+prompt: |
+  Implement Post::Creator as a focused service object.
+  It should accept a User and status_text, create a Status, append a Post to the user, and return the created Post.
+  A blank status_text or nil user must fail predictably without partially creating a Post.
+  Preserve ApplicationService.call as the public convenience entry point.
+constraints:
+  required_design:
+    - service object
+    - single public call entry point
+checks:
+  - functional
+  - oop
+  - tests
+  - contract
+cases:
+  - name: creates-post
+    input:
+      user: present
+      status_text: Howdy
+    expected:
+      status: Howdy
+      persisted: true
+  - name: blank-status
+    input:
+      user: present
+      status_text: ""
+    expected: invalid
+  - name: missing-user
+    input:
+      user: nil
+      status_text: Howdy
+    expected: invalid
+grading:
+  functional: service creates exactly one Post on valid input
+  contract: invalid input does not create partial state
+  oop: workflow lives in Post::Creator
+  tests: service contract is tested
