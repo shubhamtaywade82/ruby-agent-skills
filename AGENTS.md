@@ -10,16 +10,18 @@ This repository is an agent-oriented Ruby/Rails skill library. Every coding agen
 4. **Select patterns only when earned.** Existing repository patterns take precedence over generic preferences. A pattern is guidance, not a mandatory abstraction.
 5. **Implement incrementally** in the smallest coherent slice.
 6. **Test behavior** at the boundary that owns the contract.
-7. **Review the change** for correctness, simplicity, architecture, security, performance, and scope.
-8. **Simplify** if an abstraction does not earn its complexity.
-9. **Verify** with the repository's validators, focused tests, and applicable CI-equivalent checks.
-10. **Report evidence**, not assumptions. Never claim a test, benchmark, CI run, or deployment passed unless it was actually observed.
+7. **Lint the change** with the repository's RuboCop configuration when Ruby/Rails code is affected.
+8. **Review the change** for correctness, simplicity, architecture, security, performance, and scope.
+9. **Simplify** if an abstraction does not earn its complexity.
+10. **Verify** with the repository's validators, focused tests, and applicable CI-equivalent checks.
+11. **Report evidence**, not assumptions. Never claim a test, benchmark, CI run, or deployment passed unless it was actually observed.
 
 ## Context rules
 
 - Read only the smallest useful source slice first; expand context when evidence requires it.
 - Resolve Ruby/Rails versions from repository configuration rather than memory.
 - Prefer official/source-backed guidance for framework-sensitive behavior.
+- Treat `.rubocop.yml` as the executable Ruby/Rails style baseline; inspect plugin applicability before interpreting findings.
 - Treat external input and third-party responses as untrusted at boundaries.
 - Never weaken a validator or test merely to make an agent run green.
 - Preserve public contracts unless the task explicitly changes them.
