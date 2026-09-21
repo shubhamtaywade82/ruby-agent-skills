@@ -79,3 +79,7 @@ At minimum, cover the meaningful success path plus invalid/unauthorized/error pa
 - rails-activerecord
 - rails-testing
 - rails-architecture
+
+## Book integration: request-test boundary
+
+When the behavior crosses the Rails request boundary, verify it at request level rather than relying only on controller implementation tests. The test should exercise routing, authentication/authorization, permitted parameters, domain/service behavior, persistence, and observable response behavior as appropriate.
