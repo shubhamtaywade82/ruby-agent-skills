@@ -12,7 +12,7 @@ Application events need observable, reusable contracts for metrics, auditing, an
 ## Use when
 A business/application boundary needs measurement or external observation.
 
-## Procedure
+## Implementation procedure
 1. Choose a stable event.library name.
 2. Define minimal payload fields.
 3. Instrument the meaningful boundary.
@@ -34,3 +34,13 @@ Subscribe during the test and assert the event contract.
 - minimal payload
 - side-effect-free subscriber
 - meaningful boundary
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
