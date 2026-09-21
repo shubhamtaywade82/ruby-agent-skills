@@ -2,6 +2,7 @@ version: 2
 name: ruby-agent-skills
 
 defaults:
+  agent_workflow: agent-workflow
   always_consider:
     - ruby-clean-code
     - ruby-tdd-refactoring
@@ -11,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  agent-workflow:
+    family: meta
+    path: skills/agent-workflow/SKILL.md
+    triggers: [agent workflow, skill selection, repository agent process, context management, implementation workflow]
   ruby-core:
     family: ruby
     path: skills/ruby-core/SKILL.md
