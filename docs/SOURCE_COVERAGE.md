@@ -474,3 +474,28 @@ Source foundation:
 - https://api.rubyonrails.org/classes/ActionMailbox/TestHelper.html
 
 Coverage focuses on ingress authentication, raw-message capture, mailbox routing, sender/resource/tenant authorization, duplicate/replay safety, processing lifecycle, failure/quarantine behavior, attachment boundaries, retention/incineration, observability, capacity, and deterministic tests. The repository intentionally keeps provider-specific contracts at the ingress boundary rather than reproducing provider implementation details inside mailbox classes.
+
+
+## Rails Action View
+
+Current Rails Action View documentation provides a dedicated rendering layer around templates, partials, layouts, helpers, strict locals, localized views, output safety, and fragment/collection rendering performance. Coverage is implemented through:
+
+- skills/rails-action-view/SKILL.md
+- patterns/rails/action-view-partial-contract.md
+- patterns/rails/action-view-strict-locals.md
+- patterns/rails/action-view-output-safety.md
+- patterns/rails/action-view-layout-contract.md
+- patterns/rails/action-view-helper-boundary.md
+- patterns/rails/action-view-render-performance.md
+- patterns/rails/action-view-localized-template.md
+- patterns/rails/action-view-testing.md
+- evals/rails/action-view-contract.yml
+- test/rails_action_view_system_test.rb
+
+Primary sources:
+- https://guides.rubyonrails.org/action_view_overview.html
+- https://guides.rubyonrails.org/action_view_helpers.html
+- https://guides.rubyonrails.org/form_helpers.html
+- https://guides.rubyonrails.org/caching_with_rails.html
+- https://api.rubyonrails.org/v8.1.3/classes/ActionView/Helpers/SanitizeHelper.html
+- https://api.rubyonrails.org/classes/ActionView/Helpers/OutputSafetyHelper.html
