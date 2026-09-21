@@ -47,3 +47,7 @@ Inspect runtime/version, repository conventions, the owning boundary, neighborin
 - rails-testing
 - ruby-tdd-refactoring
 - rails-architecture
+
+## Do not use when
+
+Do not use when the test failure is deterministic and reproducible under one stable execution configuration.
