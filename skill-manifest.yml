@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  rails-database-engineering:
+    family: rails
+    path: skills/rails-database-engineering/SKILL.md
+    triggers: [database migration, Active Record migration, schema change, index, unique constraint, foreign key, check constraint, database constraint, backfill, transaction, isolation, row lock, pessimistic locking, deadlock, connection pool, pool exhaustion, query plan, EXPLAIN, zero downtime migration, expand contract, PostgreSQL]
   rails-observability:
     family: rails
     path: skills/rails-observability/SKILL.md
@@ -225,6 +229,11 @@ patterns:
       - patterns/rails/security-boundary-review.md
       - patterns/rails/cache-boundary.md
       - patterns/rails/zeitwerk-structure-review.md
+      - patterns/rails/expand-contract-migration.md
+      - patterns/rails/production-index.md
+      - patterns/rails/database-constraint.md
+      - patterns/rails/batched-backfill.md
+      - patterns/rails/transaction-lock-boundary.md
       - patterns/rails/request-error-boundary.md
       - patterns/rails/request-observability.md
       - patterns/rails/health-endpoint.md
@@ -255,6 +264,15 @@ runner:
   documentation: docs/BENCHMARK_RUNNER.md
 
 benchmarks:
+  database-engineering:
+    fixture_registry: benchmarks/database-engineering/fixtures.yml
+    fixture_root: benchmarks/database-engineering/fixtures
+    verifier: scripts/verify_database_engineering_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/database-engineering/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
   observability:
     fixture_registry: benchmarks/observability/fixtures.yml
     fixture_root: benchmarks/observability/fixtures
@@ -339,6 +357,21 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  database-engineering:
+    source: rails-database-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/database/expand-contract.yml
+      - evals/database/concurrent-index.yml
+      - evals/database/constraint.yml
+      - evals/database/batched-backfill.yml
+      - evals/database/transaction-lock.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   observability:
     source: rails-observability-v1
     schema: docs/EVAL_SCHEMA.md
