@@ -260,7 +260,7 @@ skills:
   rails-validations:
     family: rails
     path: skills/rails-validations/SKILL.md
-    triggers: [validation, errors, validation context, invariant]
+    triggers: [validation, validations, errors, validation context, validation contexts, validation lifecycle, validates_associated, validates_with, validation callbacks, conditional validation, allow_nil, allow_blank, except_on, strict validation, strict validations, custom validator, validation bypass, uniqueness, invariant, model validation]
   rails-authentication:
     family: rails
     path: skills/rails-authentication/SKILL.md
@@ -473,6 +473,16 @@ patterns:
       - patterns/rails/association-counter-touch-contract.md
       - patterns/rails/association-callback-contract.md
       - patterns/rails/association-loading-contract.md
+      - patterns/rails/validation-boundary.md
+      - patterns/rails/validation-context-contract.md
+      - patterns/rails/validation-condition-contract.md
+      - patterns/rails/validation-uniqueness-database-contract.md
+      - patterns/rails/validation-associated-graph.md
+      - patterns/rails/validation-custom-validator.md
+      - patterns/rails/validation-strict-failure.md
+      - patterns/rails/validation-error-contract.md
+      - patterns/rails/validation-callback-boundary.md
+      - patterns/rails/validation-bypass-audit.md
       - patterns/rails/action-mailbox-routing-contract.md
       - patterns/rails/action-mailbox-authenticity-security.md
       - patterns/rails/action-mailbox-idempotency.md
@@ -509,6 +519,7 @@ patterns:
       - patterns/rails/action-controller-testing.md
       - patterns/rails/active-record-testing.md
       - patterns/rails/association-testing.md
+      - patterns/rails/validation-testing.md
       - patterns/rails/active-model-testing.md
       - patterns/rails/active-support-testing.md
       - patterns/rails/action-mailbox-testing.md
@@ -814,6 +825,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/associations-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-validations:
+    source: rails-validations-v2
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/validations-contract.yml
     checks:
       - functional
       - tests

@@ -519,3 +519,22 @@ For Action Text/rich-text changes:
 - add negative security tests for malicious HTML/URLs and unauthorized embedded resources;
 - use deterministic local/test storage and avoid live cloud-provider dependencies in ordinary CI;
 - never claim rich-text safety merely because the content came from Trix; verify sanitization, authorization, attachable resolution, and final rendering.
+
+## Rails Validations changes
+
+For deep Rails validation changes:
+- inspect resolved Rails/Ruby/adapter versions, model/object definition, schema constraints, indexes, associations, callbacks, validation contexts, custom validators, error consumers, direct/bulk write paths, and tests;
+- classify the boundary as lifecycle, validator semantics, condition/context, error contract, association validation, uniqueness/invariant enforcement, custom validator, strict failure, validation callback, or bypass path;
+- keep ownership explicit: model validation answers whether state is acceptable at that boundary; database constraints own invariants that must survive concurrency and alternate writers;
+- never use validation as authorization, tenant access control, transaction orchestration, external API success handling, or durable workflow;
+- inspect all relevant write APIs because direct/bulk operations can bypass validations; use rails-database-engineering for authoritative constraints;
+- treat on, except_on, if, unless, allow_nil, allow_blank, and strict as explicit contract choices and test their interactions;
+- use custom validation contexts only for named operations with explicit callers; do not make ordinary save silently accept invalid domain state;
+- prefer the narrowest built-in validator and justify reusable validator classes;
+- keep validation callbacks local and deterministic; never hide external effects, authorization, or multi-step workflow in them;
+- treat ActiveModel::Errors as a structured contract and preserve attribute/type/detail identity;
+- keep associated validation graphs bounded and coordinate with inverse/autosave/nested-persistence ownership;
+- pair application uniqueness validation with database enforcement when the invariant is authoritative, including tenant/scope/normalization semantics;
+- use strict validation only when callers explicitly expect fail-fast exceptions;
+- test lifecycle, contexts, conditions, error shape, persistence conflicts, associated failures, and bypass writers at their owning boundaries;
+- never claim validation safety from valid? alone when alternate writers or database-level enforcement matter.

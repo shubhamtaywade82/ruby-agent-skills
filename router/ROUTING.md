@@ -42,6 +42,7 @@ This file defines how an agent should select and compose skills.
 | Active Record association | rails-associations | rails-activerecord, rails-testing |
 | Rails Association deep engineering | rails-associations | rails-active-record, rails-activerecord, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering, rails-testing |
 | Validation/invariant | rails-validations | rails-activerecord, rails-testing |
+| Rails Validation deep engineering | rails-validations | rails-active-record, rails-active-model, rails-associations, rails-database-engineering, rails-action-controller, rails-action-view, rails-api-integration, rails-i18n, rails-security, rails-performance, rails-test-engineering, rails-testing |
 | Authentication/session | rails-authentication | rails-controllers, rails-testing |
 | Rails test design | rails-testing | relevant implementation skill, ruby-tdd-refactoring |
 | Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |\n| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |
@@ -1127,3 +1128,15 @@ Action Text is a persisted rich-content boundary. Sanitization does not replace 
 | RichText/attachment lifecycle | pattern:action-text-lifecycle |
 | Signed Global ID attachables | pattern:action-text-attachable-contract |
 | Deterministic Action Text tests | pattern:action-text-testing |
+
+### Validation engineering
+
+validation rule / context / error / custom validator / bypass path
+  -> rails-validations
+  -> rails-active-record or rails-active-model
+  -> rails-database-engineering when invariants must survive concurrency
+  -> rails-associations for owned associated validation
+  -> rails-action-controller / rails-action-view / rails-api-integration for boundary contracts
+  -> rails-i18n for translated errors
+  -> rails-security for tenant and disclosure boundaries
+  -> rails-test-engineering / rails-testing for deterministic contract tests

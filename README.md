@@ -41,7 +41,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-views | ERB, helpers and forms |
 | rails-activerecord | Models, migrations, persistence and queries |
 | rails-associations | Deep Active Record association cardinality, inverse, through, polymorphic, dependent, autosave, counter/touch, callback, loading, and testing contracts |
-| rails-validations | Validation and invariants |
+| rails-validations | Deep validation lifecycle, contexts, conditions, structured errors, custom validators, uniqueness/database enforcement, bypass audits, and testing |
 | rails-authentication | Authentication and protected access |
 | rails-testing | Rails test placement and coverage |
 | rails-generators | Generators and scaffolding |
@@ -497,3 +497,21 @@ The Rails integration layer now includes focused skills for framework boundaries
 - rails-action-text — rich content, sanitization, attachables, rendering, API boundaries, lifecycle, performance, and testing.
 
 These boundaries are compositional. The router should select Action Mailbox for inbound email mechanics, then compose security, Active Job, Active Storage, database, reliability, observability, and test-engineering skills where the task requires them.
+
+
+## Rails Validations engineering
+
+The repository now includes a dedicated validation engineering layer covering validation lifecycle and bypass paths, built-in validator semantics, conditional/contextual validation, structured ActiveModel errors, custom validators, strict failures, association validation scope, concurrent uniqueness/database enforcement, validation callbacks, API/form integration, tenant/security boundaries, and deterministic testing.
+
+Core patterns:
+- validation-boundary
+- validation-context-contract
+- validation-condition-contract
+- validation-uniqueness-database-contract
+- validation-associated-graph
+- validation-custom-validator
+- validation-strict-failure
+- validation-error-contract
+- validation-callback-boundary
+- validation-bypass-audit
+- validation-testing

@@ -29,6 +29,7 @@ The repository intentionally synthesizes concepts rather than reproducing source
 | Authentication | rails-authentication |
 | Associations | rails-associations |
 | Validations | rails-validations |
+| Deep Rails validation lifecycle, contexts, errors, custom validators, uniqueness/database enforcement, bypass paths, and testing | rails-validations, rails-active-record, rails-active-model, rails-database-engineering, rails-associations, rails-api-integration, rails-i18n, rails-security, rails-test-engineering |
 | Scaffolding | rails-generators, scaffold-lifecycle |
 | Hosting/deployment activity | rails-deployment |
 
@@ -625,3 +626,27 @@ Primary sources:
 - https://api.rubyonrails.org/classes/Class.html
 
 The boundary is intentionally compositional: rails-observability owns production telemetry/diagnostics, rails-zeitwerk owns autoloading, rails-active-model/rails-activerecord own model lifecycles, and rails-security/rails-security-engineering own trust decisions around dynamic names and context.
+
+
+## Rails Validations engineering
+
+Artifacts:
+- skills/rails-validations/SKILL.md
+- patterns/rails/validation-boundary.md
+- patterns/rails/validation-context-contract.md
+- patterns/rails/validation-condition-contract.md
+- patterns/rails/validation-uniqueness-database-contract.md
+- patterns/rails/validation-associated-graph.md
+- patterns/rails/validation-custom-validator.md
+- patterns/rails/validation-strict-failure.md
+- patterns/rails/validation-error-contract.md
+- patterns/rails/validation-callback-boundary.md
+- patterns/rails/validation-bypass-audit.md
+- patterns/rails/validation-testing.md
+- evals/rails/validations-contract.yml
+- test/rails_validations_system_test.rb
+
+Primary Rails references:
+- https://guides.rubyonrails.org/active_record_validations.html
+- https://api.rubyonrails.org/classes/ActiveModel/Validations/ClassMethods.html
+- https://api.rubyonrails.org/classes/ActiveModel/Errors.html
