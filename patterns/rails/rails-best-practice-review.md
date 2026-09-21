@@ -1,3 +1,9 @@
+---
+name: rails-best-practice-review
+description: Review Rails code-quality findings against the actual repository and Rails version.
+family: rails-quality
+---
+
 # Rails Best-Practice Review
 
 ## Problem
