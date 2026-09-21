@@ -844,6 +844,40 @@ I18n is a cross-layer presentation contract. Locale is presentation context, not
 | Locale-sensitive cache identity | pattern:i18n-cache-identity |
 | Localization security/privacy | pattern:i18n-security-boundary |
 | Deterministic localization tests | pattern:i18n-testing |
+## Rails Action Mailbox
+
+~~~
+Action Mailbox / ActionMailbox / inbound email / InboundEmail /
+ApplicationMailbox / mailbox routing / email ingress / provider webhook /
+relay ingress / bounce_with / receive email / inbound email replay
+  -> rails-action-mailbox
+  -> rails-api-integration for provider ingress/webhook contracts and adapter boundaries
+  -> rails-security / rails-security-engineering for ingress trust, sender identity, authorization, tenant isolation, and untrusted email content
+  -> rails-active-job for asynchronous mailbox processing, retries, queues, idempotency, and transaction-aware follow-up work
+  -> rails-active-storage for raw email source and attachment lifecycle
+  -> rails-action-mailer for outbound replies and bounce notices
+  -> rails-database-engineering for durable idempotency, transaction ownership, constraints, and retention state
+  -> rails-event-driven-messaging / rails-distributed-systems for outbox, inbox, replay, or cross-service workflows
+  -> rails-observability for correlation, lifecycle telemetry, error reporting, and sensitive-data filtering
+  -> rails-reliability-engineering / rails-incident-engineering for backlog, poison-message containment, recovery, and operator replay
+  -> rails-test-engineering / rails-testing for deterministic mailbox/ingress tests
+~~~
+
+Action Mailbox is an inbound trust and side-effect boundary. Keep ingress authentication, sender identity, recipient routing, tenant authorization, and business idempotency as separate decisions.
+
+### Action Mailbox pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| External provider/MTA ingress | pattern:action-mailbox-ingress-boundary |
+| Recipient routing and precedence | pattern:action-mailbox-routing-contract |
+| Sender/provider trust and tenant security | pattern:action-mailbox-authenticity-security |
+| Duplicate delivery/replay safety | pattern:action-mailbox-idempotency |
+| Mailbox callbacks and processing lifecycle | pattern:action-mailbox-processing-lifecycle |
+| Tenant/resource ownership | pattern:action-mailbox-tenant-association |
+| Poison message/quarantine/recovery | pattern:action-mailbox-failure-quarantine |
+| Deterministic mailbox tests | pattern:action-mailbox-testing |
+
 ## Rails Action Text
 
 ```text
