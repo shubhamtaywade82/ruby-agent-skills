@@ -113,3 +113,11 @@ Run focused tests first, then the affected Rails test group, then broader CI-equ
 ## Source foundation
 
 Combines Rails testing practice implicit in the application activities of *The Ruby Workshop* with the TDD/test readability guidance in *Clean Ruby*, including meaningful test descriptions and focused expectations.
+
+## Book integration: request-level testing
+
+For HTTP behavior that crosses routing, controller, persistence, authentication, and response layers, prefer request-level tests over tests that exercise only an isolated controller implementation when the repository's test stack supports that style.
+
+A request test should assert the observable contract: status, response body/redirect, persistence/side effects, and relevant authorization behavior.
+
+Keep unit/service tests for local behavior and request/system tests for cross-layer contracts.
