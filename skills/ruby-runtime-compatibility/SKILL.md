@@ -9,6 +9,8 @@ description: Use when determining or enforcing Ruby, Rails, Bundler, and runtime
 Establish the actual Ruby/Rails/Bundler runtime contract before using version-sensitive APIs, gems, framework features, or tooling.
 
 This skill separates:
+
+- **Ruby engine** — CRuby, JRuby, TruffleRuby, or another implementation;
 - **resolved runtime** — a concrete version established by repository evidence;
 - **declared constraint** — a version/range the project permits;
 - **supported matrix** — versions exercised by CI or tooling;
@@ -43,6 +45,8 @@ Record the source and exact evidence for every resolved value.
 
 ## Resolution rules
 ### Ruby
+
+Resolve the Ruby implementation separately from the version. A version such as 3.3 can behave differently across CRuby/JRuby/TruffleRuby, and native extensions may impose engine/platform constraints.
 Prefer:
 ```text
 Gemfile.lock RUBY VERSION
@@ -158,6 +162,7 @@ They must be distinguished from:
 If CI tests Ruby 3.2, 3.3, and 3.4, report a supported matrix rather than claiming one runtime is the runtime.
 
 ## Agent review checklist
+- [ ] Ruby engine resolved or explicitly marked unknown
 - [ ] Ruby runtime resolved or explicitly marked unknown
 - [ ] Rails runtime resolved or explicitly marked unknown
 - [ ] Bundler requirement inspected
