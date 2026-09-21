@@ -370,5 +370,19 @@ observability known
 - using `update_all` while depending on callbacks/validations
 - running `EXPLAIN ANALYZE` against production casually
 
+## Source foundation
+
+Primary Rails references:
+- https://guides.rubyonrails.org/active_record_migrations.html
+- https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html
+- https://api.rubyonrails.org/classes/ActiveRecord/Locking/Pessimistic.html
+- https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html
+- https://api.rubyonrails.org/classes/ActiveRecord/Relation.html
+
+Primary PostgreSQL reference:
+- https://www.postgresql.org/docs/current/sql-createindex.html
+
+Use the installed Rails, adapter, and database versions as the compatibility authority for version-sensitive migration and locking behavior.
+
 ## Verification
 Migration/database changes require both code-level and database-level verification appropriate to the contract: migration syntax/status, schema diff, constraint/index presence, targeted model/query tests, transaction/locking tests where relevant, and production rollout/recovery evidence for operational migrations.
