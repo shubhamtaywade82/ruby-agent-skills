@@ -520,3 +520,31 @@ Rails Active Model is the model-like layer for plain Ruby objects that need Rail
 Primary source: https://guides.rubyonrails.org/active_model_basics.html
 
 Coverage focuses on the Active Model/PORO boundary, typed attributes, validation/error semantics, Rails conversion/naming, dirty lifecycle, callbacks, serialization/privacy, translation, form integration, and Active Model lint/testing. Persistence remains owned by Active Record and database-engineering skills.
+
+
+## Rails Active Support
+
+Current Rails Active Support coverage is implemented as a cross-cutting framework layer for utility extensions and infrastructure primitives rather than a replacement for focused Rails skills. It covers:
+
+- skills/rails-active-support/SKILL.md
+- patterns/rails/active-support-loading-boundary.md
+- patterns/rails/active-support-concern-composition.md
+- patterns/rails/active-support-class-configuration.md
+- patterns/rails/active-support-current-context.md
+- patterns/rails/active-support-notifications-contract.md
+- patterns/rails/active-support-callback-boundary.md
+- patterns/rails/active-support-time-semantics.md
+- patterns/rails/active-support-inflection-boundary.md
+- patterns/rails/active-support-testing.md
+- evals/rails/active-support-contract.yml
+- test/rails_active_support_system_test.rb
+
+Primary sources:
+- https://guides.rubyonrails.org/active_support_core_extensions.html
+- https://guides.rubyonrails.org/active_support_instrumentation.html
+- https://api.rubyonrails.org/classes/ActiveSupport/Concern.html
+- https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html
+- https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html
+- https://api.rubyonrails.org/classes/Class.html
+
+The boundary is intentionally compositional: rails-observability owns production telemetry/diagnostics, rails-zeitwerk owns autoloading, rails-active-model/rails-activerecord own model lifecycles, and rails-security/rails-security-engineering own trust decisions around dynamic names and context.
