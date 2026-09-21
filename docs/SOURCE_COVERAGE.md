@@ -135,3 +135,16 @@ The repository incorporates the documented review taxonomy from [flyerhzm/rails_
 | Analyzer finding interpretation | rails-best-practices, rails-best-practice-review |
 
 Historical checks are treated as review signals. The agent must translate them to the actual Rails version and repository contract instead of introducing deprecated APIs merely to satisfy an old rule.
+## RuboCop and plugin ecosystem
+
+The repository now incorporates the current RuboCop plugin taxonomy from the official Plugins documentation. The current documentation page lists 11 official plugins and 7 third-party plugins, in addition to the core rubocop gem. The plugin system was introduced in RuboCop 1.72 and is the recommended extension-loading mechanism for compatible plugins.
+
+Coverage is implemented through:
+
+- skills/rubocop/SKILL.md — agent workflow and plugin selection
+- data/rubocop/plugins.yml — machine-readable plugin catalog
+- docs/RUBOCOP_PLUGINS.md — human-readable catalog
+- patterns/ruby/rubocop-review.md — review procedure
+- router integration in router/ROUTING.md
+
+Source: https://docs.rubocop.org/rubocop/latest/plugins.html
