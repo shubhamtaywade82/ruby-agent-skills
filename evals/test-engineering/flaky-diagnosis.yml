@@ -1,0 +1,33 @@
+id: flaky-diagnosis
+version: 1
+title: Diagnose a nondeterministic Rails test without masking it
+category: rails
+source: rails-test-engineering-v1
+skills:
+  - rails-test-engineering
+  - ruby-debugging
+patterns:
+  - flaky-test-diagnosis
+prompt: |
+  A test fails only under CI with a specific randomized seed and parallel workers. Diagnose the state/order dependency and remove the shared-state leak. Do not add retries or sleep calls.
+constraints:
+  forbidden_constructs:
+    - retry to mask failure
+    - sleep-based synchronization
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: seed-reproduction
+    input: recorded seed and worker count
+    expected: deterministic reproduction
+  - name: fixed-state
+    input: shared state
+    expected: isolated test
+grading:
+  functional: underlying nondeterminism is removed
+  tests: regression test remains deterministic
+  contract: no retry/sleep workaround
+  scope_control: changes target the leaking state
