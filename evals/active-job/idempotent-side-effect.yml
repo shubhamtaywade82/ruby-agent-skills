@@ -1,0 +1,28 @@
+id: idempotent-side-effect
+version: 1
+title: Make a retryable side effect idempotent
+category: rails
+source: active-job-v1
+skills:
+  - rails-active-job
+patterns:
+  - idempotent-job
+prompt: |
+  Implement ReceiptDeliveryJob so the same receipt_id can be processed repeatedly without sending the receipt twice. Preserve the public job API and add focused tests for duplicate execution.
+constraints:
+  required_design:
+    - durable idempotency
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: duplicate-execution
+    input: receipt_id=42 executed twice
+    expected: one delivery side effect
+grading:
+  functional: duplicate executions produce one durable delivery
+  tests: duplicate behavior is directly tested
+  contract: ReceiptDeliveryJob public API remains intact
+  scope_control: change stays focused on job delivery
