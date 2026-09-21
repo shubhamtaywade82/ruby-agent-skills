@@ -40,6 +40,10 @@ skills:
     family: performance
     path: skills/ruby-performance/SKILL.md
     triggers: [performance, profiling, benchmark, benchmarking, latency, throughput, allocations, memory, GC, YJIT, slow query, N+1, caching, performance regression]
+  rails-performance:
+    family: performance
+    path: skills/rails-performance/SKILL.md
+    triggers: [Rails performance, Rails performance regression, N+1, query plan, EXPLAIN, slow Rails endpoint, slow Active Record query, Active Record performance, cache stampede, cache key, connection pool, pool exhaustion, Puma capacity, web concurrency, job throughput, Rails allocations, Rails memory]
   rails-security:
     family: security
     path: skills/rails-security/SKILL.md
@@ -236,6 +240,10 @@ patterns:
       - patterns/rails/rails-best-practice-review.md
       - patterns/rails/security-boundary-review.md
       - patterns/rails/cache-boundary.md
+      - patterns/rails/n-plus-one-review.md
+      - patterns/rails/query-plan-evidence.md
+      - patterns/rails/connection-pool-capacity.md
+      - patterns/rails/cache-stampede-control.md
       - patterns/rails/zeitwerk-structure-review.md
       - patterns/rails/puma-capacity.md
       - patterns/rails/graceful-shutdown.md
@@ -255,7 +263,7 @@ patterns:
       - patterns/rails/job-retry-policy.md
       - patterns/rails/transactional-job-enqueue.md
       - patterns/rails/concurrency-controlled-job.md
-    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job]
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede]
 
   testing:
     paths:

@@ -5,6 +5,7 @@ category: performance
 source: performance-v1
 skills:
   - ruby-performance
+  - rails-performance
 patterns:
   - performance-investigation
 prompt: |

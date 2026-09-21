@@ -43,6 +43,7 @@ This file defines how an agent should select and compose skills.
 | Rails test design | rails-testing | relevant implementation skill, ruby-tdd-refactoring |
 | Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |\n| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
+| Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
 | Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | RuboCop/linting review | rubocop | ruby-clean-code, relevant implementation skill, pattern:rubocop-review |
@@ -321,6 +322,23 @@ slow endpoint / job / query / memory / allocations / benchmark / profiler / cach
 ```
 
 Do not activate performance guidance merely because code could theoretically be optimized. Require a workload, symptom, or explicit measurable target.
+
+## Rails Performance
+
+```text
+slow Rails endpoint / Active Record N+1 / query plan / cache stampede /
+connection pool / Puma capacity / job throughput / Rails memory
+  -> rails-performance
+  -> ruby-performance for profiling, allocations, GC, or benchmark methodology
+  -> rails-activerecord for query implementation
+  -> rails-database-engineering for index, lock, pool, and database capacity changes
+  -> rails-active-job for background-job execution semantics
+  -> rails-observability for telemetry and production evidence
+  -> ruby-concurrency for thread/worker contention and capacity reasoning
+  -> rails-testing for regression and deterministic performance tests
+```
+
+Require a workload or measurable symptom. Inspect actual Rails/database/runtime configuration before changing concurrency, caching, query shape, or indexes.
 
 ## Zeitwerk / autoloading
 
