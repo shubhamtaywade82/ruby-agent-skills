@@ -12,7 +12,7 @@ Parallel execution exposes hidden shared state and resource collisions.
 ## Use when
 Enabling/tuning Rails parallel tests or fixing failures that appear only under parallel execution.
 
-## Procedure
+## Implementation procedure
 1. Reproduce with the reported worker count/seed.
 2. Identify shared state/resource.
 3. Isolate database/process/port/filesystem/cache state.
@@ -35,3 +35,15 @@ Run the focused case repeatedly under the parallel configuration and then the re
 - shared state identified
 - isolation fixed
 - serial and parallel runs agree
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
