@@ -372,3 +372,26 @@ ActiveSupport::Notifications / instrumentation / health / liveness / readiness
 ```
 
 Prefer an existing framework/request boundary over introducing duplicate middleware or controller callbacks.
+
+
+## Rails database engineering
+
+```text
+migration / schema / index / constraint / backfill / transaction /
+locking / isolation / deadlock / connection pool / query plan /
+zero-downtime database change
+  -> rails-database-engineering
+  -> rails-activerecord
+  -> rails-testing
+  -> ruby-concurrency when contention/capacity is involved
+  -> ruby-performance when query/index/pool performance is the measured problem
+  -> ruby-runtime-compatibility for version-sensitive database APIs
+  -> rails-security when database changes affect tenant isolation or sensitive data
+  -> expand-contract-migration for rolling-deploy compatibility
+  -> production-index for live index changes
+  -> database-constraint for cross-writer invariants
+  -> batched-backfill for production data transformation
+  -> transaction-lock-boundary for concurrent state transitions
+```
+
+Do not treat a Rails migration as an isolated file. Inspect data volume, deployment overlap, database/adapter behavior, locks, and recovery semantics.
