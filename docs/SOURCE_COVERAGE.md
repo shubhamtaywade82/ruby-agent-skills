@@ -211,3 +211,20 @@ Primary references:
 - https://ruby-doc.org/
 - https://github.com/tmm1/stackprof
 - https://github.com/ruby-prof/ruby-prof
+
+## Rails Zeitwerk
+
+The repository now has a dedicated loader/constant-structure layer covering Zeitwerk path-to-constant contracts, roots/namespaces, `lib` handling, reloadable vs once-loaded code, initializer timing, inflections, eager loading, engines/custom namespaces, circular dependencies, shadowing, and loader diagnostics.
+
+Operational artifacts:
+- `skills/rails-zeitwerk/SKILL.md`
+- `patterns/rails/zeitwerk-structure-review.md`
+- `data/zeitwerk/tools.yml`
+- `bin/zeitwerk-check`
+- `test/zeitwerk_check_test.rb`
+- `evals/zeitwerk/*`
+- `scripts/verify_zeitwerk_eval.rb`
+
+Primary sources:
+- https://guides.rubyonrails.org/autoloading_and_reloading_constants.html
+- https://github.com/fxn/zeitwerk
