@@ -1,3 +1,9 @@
+---
+name: rubocop-review
+description: Apply RuboCop and applicable extension plugins to a Ruby/Rails review without over-enabling plugins or blindly accepting lint findings.
+family: tooling
+---
+
 # RuboCop Review
 
 ## Problem
