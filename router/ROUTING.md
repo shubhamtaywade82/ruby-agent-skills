@@ -47,6 +47,7 @@ This file defines how an agent should select and compose skills.
 | Rails caching engineering | rails-caching | rails-performance, ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, rails-security, rails-security-engineering, rails-testing |
 | Rails email / Action Mailer | rails-action-mailer | rails-active-job, rails-api-integration, rails-security, rails-security-engineering, rails-observability, rails-test-engineering, rails-testing, rails-distributed-systems |
 | Rails Active Storage / file attachments | rails-active-storage | rails-security, rails-security-engineering, rails-active-job, rails-api-integration, rails-performance, rails-caching, rails-observability, rails-production-runtime, rails-test-engineering, rails-testing |
+| Rails Action Cable / realtime WebSockets | rails-action-cable | rails-security, rails-security-engineering, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-reliability-engineering, rails-performance, ruby-performance, ruby-concurrency, rails-production-runtime, rails-release-engineering, rails-observability, rails-test-engineering, rails-testing |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
@@ -778,3 +779,35 @@ Active Storage is an external-data boundary. The domain resource owns authorizat
 | Analysis/variants/previews | pattern:active-storage-processing |
 | Deletion/purge/orphan cleanup | pattern:active-storage-purge |
 | Deterministic Active Storage tests | pattern:active-storage-testing |
+## Rails Action Cable
+
+```text
+Action Cable / ActionCable / WebSocket / realtime /
+ApplicationCable::Connection / ApplicationCable::Channel /
+subscription / stream_from / stream_for / broadcast_to /
+Redis pubsub / reconnect / resubscribe / realtime capacity
+  -> rails-action-cable
+  -> rails-security / rails-security-engineering for connection auth, channel authorization, origins, tenant isolation, and sensitive payloads
+  -> rails-active-job for asynchronous producers and background lifecycle
+  -> rails-event-driven-messaging / rails-distributed-systems when realtime messages depend on durable events, outbox, replay, or cross-process delivery
+  -> rails-reliability-engineering for failure/degradation and overload controls
+  -> rails-performance / ruby-performance / ruby-concurrency for fan-out, serialization, memory, and connection capacity
+  -> rails-production-runtime / rails-release-engineering for process lifecycle, deploy/reconnect behavior, and topology
+  -> rails-observability for connection/broadcast telemetry
+  -> rails-test-engineering / rails-testing for deterministic connection/channel/broadcast tests
+```
+
+Action Cable is an online realtime boundary, not a durable message queue. Authorization belongs at both the connection and channel/resource boundaries.
+
+### Action Cable pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| WebSocket identity/authentication | pattern:action-cable-connection-auth |
+| Per-resource/channel authorization | pattern:action-cable-channel-authorization |
+| Stream naming and isolation | pattern:action-cable-stream-contract |
+| Payload/schema compatibility | pattern:action-cable-broadcast-contract |
+| Missed updates/reconnect reconciliation | pattern:action-cable-reconciliation |
+| Connection/fan-out capacity | pattern:action-cable-capacity |
+| Redis/cable outage behavior | pattern:action-cable-failure-boundary |
+| Deterministic realtime tests | pattern:action-cable-testing |
