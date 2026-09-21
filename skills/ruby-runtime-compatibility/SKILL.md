@@ -184,7 +184,7 @@ bundle exec rubocop --version
 
 For the repository-independent profile generator, use:
 ```bash
-bin/runtime-profile PATH
+ruby bin/runtime-profile PATH
 ```
 
 It must report evidence and conflicts rather than silently selecting a version.
