@@ -52,7 +52,7 @@ fixtures:
     test_file: test/test_solution.rb
     required_regex:
       - "class ShippingCost"
-      - "def initialize\(strategy:"
+      - 'def initialize\(strategy:'
       - "@strategy"
     forbidden_regex:
       - "case shipping_mode"
@@ -73,26 +73,26 @@ fixtures:
       - "class PaymentService"
     contract_regex:
       - "class StripeAdapter"
-      - "def charge\(amount:"
+      - 'def charge\(amount:'
   policy-object:
     root: benchmarks/design-patterns/fixtures/policy-object
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
     required_regex:
       - "class OrderPolicy"
-      - "def can_cancel\?"
+      - 'def can_cancel\?'
     forbidden_regex:
-      - "def cancel\("
+      - 'def cancel\('
       - "def cancel!"
     contract_regex:
       - "class OrderPolicy"
-      - "def can_cancel\?"
+      - 'def can_cancel\?'
   dependency-injection:
     root: benchmarks/design-patterns/fixtures/dependency-injection
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
     required_regex:
-      - "def initialize\(clock:"
+      - 'def initialize\(clock:'
       - "@clock"
     forbidden_regex:
       - "Time.now"
@@ -100,7 +100,7 @@ fixtures:
       - "Date.today"
     contract_regex:
       - "class ReportGenerator"
-      - "def initialize\(clock:"
+      - 'def initialize\(clock:'
       - "@clock"
   factory-selection:
     root: benchmarks/design-patterns/fixtures/factory-selection
@@ -108,13 +108,13 @@ fixtures:
     test_file: test/test_solution.rb
     required_regex:
       - "class ParserFactory"
-      - "def self\.for"
+      - 'def self\.for'
     forbidden_regex:
       - "case format"
       - "if format =="
     contract_regex:
       - "class ParserFactory"
-      - "def self\.for"
+      - 'def self\.for'
   builder-selection:
     root: benchmarks/design-patterns/fixtures/builder-selection
     implementation_file: lib/solution.rb
@@ -149,7 +149,7 @@ fixtures:
     test_file: test/test_solution.rb
     required_regex:
       - "class TaxedPrice"
-      - "def initialize\(price:"
+      - 'def initialize\(price:'
       - "@price"
     forbidden_regex:
       - "class TaxedPrice <"
@@ -192,14 +192,14 @@ fixtures:
     required_regex:
       - "class ActiveCustomerSpecification"
       - "class PremiumSpecification"
-      - "def satisfied_by\?"
+      - 'def satisfied_by\?'
     forbidden_regex:
-      - "def eligible\?"
-      - "def qualifies\?"
+      - 'def eligible\?'
+      - 'def qualifies\?'
     contract_regex:
       - "class ActiveCustomerSpecification"
       - "class PremiumSpecification"
-      - "def satisfied_by\?"
+      - 'def satisfied_by\?'
   state-object:
     root: benchmarks/design-patterns/fixtures/state-object
     implementation_file: lib/solution.rb
@@ -222,7 +222,7 @@ fixtures:
     test_file: test/test_solution.rb
     required_regex:
       - "class Report"
-      - "def initialize\(formatter:"
+      - 'def initialize\(formatter:'
       - "@formatter"
     forbidden_regex:
       - "class CsvReport < Report"
@@ -230,7 +230,7 @@ fixtures:
       - "class JsonReport < Report"
     contract_regex:
       - "class Report"
-      - "def initialize\(formatter:"
+      - 'def initialize\(formatter:'
       - "def render"
   presenter:
     root: benchmarks/design-patterns/fixtures/presenter
