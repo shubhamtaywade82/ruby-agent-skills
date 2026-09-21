@@ -19,3 +19,26 @@ Serialized bearer token, enqueue-time authorization trusted forever, and unscope
 
 ## Testing
 Revoke membership after enqueue and assert execution fails safely.
+
+## Do not use when
+
+Do not introduce this pattern when direct repository policy or scope logic is clearer and complete.
+
+## Repository inspection
+
+Inspect the existing authorization mechanism, callers, resource ownership, tenant scope, tests, and resolved framework versions.
+
+## Implementation procedure
+
+Define the boundary, adapt it to existing repository conventions, preserve failure semantics, and add regression tests.
+
+## Review checklist
+
+[ ] boundary is explicit
+[ ] bypass callers considered
+[ ] failure behavior preserved
+[ ] tests cover rejection paths
+
+## Related skills
+
+rails-authorization, rails-security, rails-active-record, rails-test-engineering
