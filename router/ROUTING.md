@@ -47,6 +47,7 @@ This file defines how an agent should select and compose skills.
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
+| Reliability engineering and resilience | rails-reliability-engineering | rails-observability, rails-performance, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-production-runtime, rails-active-job, ruby-concurrency, rails-database-engineering, rails-security, rails-testing |
 | Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | RuboCop/linting review | rubocop | ruby-clean-code, relevant implementation skill, pattern:rubocop-review |
@@ -545,3 +546,39 @@ Classify the message before designing transport mechanics. Keep broker-specific 
 | End-to-end message lifecycle diagnostics | pattern:message-observability |
 | Lag/backpressure/downstream capacity | pattern:broker-capacity |
 | Isolate broker mechanics from domain logic | pattern:message-handler-boundary |
+
+
+## Reliability engineering and resilience
+
+```text
+SLO/SLI / error budget / dependency failure / circuit breaker / bulkhead /
+load shedding / graceful degradation / overload / cascading failure /
+RTO/RPO / failover / restore / reconciliation / resilience testing
+  -> rails-reliability-engineering
+  -> rails-observability for user-impact telemetry, health, correlation, alerts
+  -> rails-performance for workload, saturation, throughput, and capacity evidence
+  -> rails-api-integration for timeout/retry/fallback around synchronous dependencies
+  -> rails-distributed-systems for cross-service failure, consistency, and recovery
+  -> rails-event-driven-messaging for queue lag, retries, DLQ, and consumer capacity
+  -> rails-production-runtime for process lifecycle, shutdown, rollout, and recovery
+  -> rails-active-job for job retry/concurrency semantics
+  -> ruby-concurrency for bounded execution and resource isolation
+  -> rails-database-engineering for DB capacity, replicas, locking, and recovery state
+  -> rails-security for fail-safe authorization/tenant boundaries
+  -> rails-testing for deterministic resilience verification
+```
+
+Start with the user-visible reliability objective and failure model. Choose the smallest containment or recovery mechanism that is justified by evidence.
+
+### Reliability pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Define service-level reliability target and budget | pattern:slo-error-budget |
+| Classify a dependency's criticality and failure behavior | pattern:dependency-failure-boundary |
+| Stop repeated calls into an unhealthy dependency | pattern:circuit-breaker |
+| Isolate shared capacity between workloads | pattern:bulkhead-isolation |
+| Protect critical work under overload | pattern:load-shedding |
+| Preserve useful behavior during dependency failure | pattern:graceful-degradation |
+| Define restore/failover/reconciliation targets | pattern:recovery-objectives |
+| Verify failure containment and recovery | pattern:resilience-testing |
