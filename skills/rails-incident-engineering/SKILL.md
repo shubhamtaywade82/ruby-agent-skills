@@ -1,6 +1,6 @@
 ---
 name: rails-incident-engineering
-description: Use when operating, diagnosing, or reviewing production Rails systems through incident response: alert triage, diagnostic context, incident timelines, runbooks, safe production debugging, mitigation, recovery verification, and post-incident learning.
+description: "Use when operating, diagnosing, or reviewing production Rails systems through incident response: alert triage, diagnostic context, incident timelines, runbooks, safe production debugging, mitigation, recovery verification, and post-incident learning."
 ---
 
 # Rails Incident Engineering & Operational Debugging
