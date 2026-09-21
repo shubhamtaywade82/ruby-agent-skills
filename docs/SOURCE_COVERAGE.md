@@ -322,3 +322,29 @@ Primary references:
 - https://puma.io/puma/file.deployment.html
 - https://puma.io/puma/file.restart.html
 - https://github.com/rails/solid_queue
+
+
+## Rails test engineering
+
+This layer covers test-boundary selection, request/integration/system testing, Active Job testing, mailer and Action Cable testing, fixtures/factories, deterministic time and asynchronous tests, database isolation, parallel tests, flaky-test diagnosis, test-suite performance, CI test strategy, eager-load testing, and test-doubles at real external boundaries.
+
+Artifacts:
+- `skills/rails-test-engineering/SKILL.md`
+- `patterns/testing/test-boundary-selection.md`
+- `patterns/testing/deterministic-async-test.md`
+- `patterns/testing/parallel-safe-test.md`
+- `patterns/testing/flaky-test-diagnosis.md`
+- `patterns/testing/test-performance-budget.md`
+- `patterns/testing/system-test-contract.md`
+- `patterns/testing/request-contract.md`
+- `patterns/testing/parallel-database-test.md`
+- `data/test-engineering/tools.yml`
+- `evals/test-engineering/*`
+- `benchmarks/test-engineering/*`
+- `scripts/verify_test_engineering_eval.rb`
+
+Primary reference:
+- https://guides.rubyonrails.org/testing.html
+
+Supporting reference:
+- https://guides.rubyonrails.org/active_job_basics.html
