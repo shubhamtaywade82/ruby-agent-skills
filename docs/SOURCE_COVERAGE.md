@@ -148,3 +148,14 @@ Coverage is implemented through:
 - router integration in router/ROUTING.md
 
 Source: https://docs.rubocop.org/rubocop/latest/plugins.html
+## RSpec Style Guide
+
+The repository now includes the RSpec Style Guide at https://rspec.rubystyle.guide/ as the style source for RSpec specifications. The guide assumes RSpec 3 or later and points to `rubocop-rspec` as the executable enforcement mechanism. citeturn198163view0
+
+Coverage is implemented through:
+- `skills/rubocop/SKILL.md` — RSpec-aware RuboCop workflow
+- `.rubocop.yml` — explicit core RSpec style policies
+- `docs/RSPEC_STYLE_GUIDE.md` — source-to-enforcement map
+- `rubocop-rspec` — executable RSpec cop implementation
+
+Key source areas include spec layout, example-group structure, subject/let/hooks, contexts, expectations, matchers, doubles, test isolation, naming, and controlled DRYing. The upstream guide explicitly treats itself as a living document, so agents must check installed RSpec/rubocop-rspec versions before assuming a rule is current. citeturn198163view0
