@@ -159,3 +159,13 @@ Coverage is implemented through:
 - `rubocop-rspec` — executable RSpec cop implementation
 
 Key source areas include spec layout, example-group structure, subject/let/hooks, contexts, expectations, matchers, doubles, test isolation, naming, and controlled DRYing. The upstream guide explicitly treats itself as a living document, so agents must check installed RSpec/rubocop-rspec versions before assuming a rule is current. citeturn198163view0
+## Runtime compatibility
+
+The repository now includes `ruby-runtime-compatibility` as the runtime/version intelligence layer for AI coding agents. It separates concrete resolved versions, declared constraints, CI-supported matrices, tooling targets, and conflicting evidence.
+
+Operational coverage:
+- `skills/ruby-runtime-compatibility/SKILL.md` — decision rules and compatibility procedure
+- `lib/ruby_agent_skills/runtime_profile.rb` — repository evidence detector
+- `bin/runtime-profile` — JSON CLI output
+- `docs/RUNTIME_PROFILE.md` — evidence model and agent workflow
+- `test/runtime_profile_test.rb` — deterministic resolution/conflict tests
