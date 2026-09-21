@@ -1,0 +1,26 @@
+id: graceful-shutdown
+version: 1
+title: Align graceful shutdown with process limits
+category: rails
+source: rails-production-runtime-v1
+skills:
+  - rails-production-runtime
+patterns:
+  - graceful-shutdown
+prompt: |
+  Configure a production process so it receives TERM for graceful shutdown and completes within a platform hard-kill window of 30 seconds. Preserve normal startup behavior and do not swallow the termination signal.
+constraints:
+  required_design:
+    - bounded graceful shutdown
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: termination-budget
+    input: 30 second hard kill
+    expected: graceful shutdown budget is lower than hard kill
+grading:
+  functional: process configuration forwards termination and respects the deadline
+  tests: shutdown behavior is checked
+  contract: startup command remains valid
