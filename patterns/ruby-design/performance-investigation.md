@@ -18,7 +18,7 @@ Use after a performance symptom or explicit measurable target exists.
 
 Do not use as justification for speculative refactoring or generic micro-optimization.
 
-## Procedure
+## Implementation procedure
 
 1. Define workload and target.
 2. Establish a reproducible baseline.
@@ -53,3 +53,8 @@ Use functional regression tests plus a stable performance contract when the repo
 - rails-activerecord
 - rails-testing
 - ruby-tdd-refactoring
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
