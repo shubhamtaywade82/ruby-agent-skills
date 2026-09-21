@@ -12,22 +12,6 @@ A pattern answers:
 
 Patterns are not mandatory templates. Repository evidence and task requirements always take precedence.
 
-## Pattern contract
-
-Each pattern should state:
-
-- activation conditions
-- problem
-- when to use
-- when not to use
-- structure
-- implementation sequence
-- Ruby/Rails example
-- failure modes
-- testing strategy
-- review checklist
-- related skills
-
 ## Pattern families
 
 ### Ruby design
@@ -37,6 +21,9 @@ Each pattern should state:
 - strategy objects
 - composition over inheritance
 - adapters
+- external API clients
+- Ruby gem boundaries
+- metaprogramming boundaries
 
 ### Rails
 
@@ -45,6 +32,8 @@ Each pattern should state:
 - policy boundaries
 - transaction boundaries
 - request flow
+- REST resources
+- scaffold lifecycle
 
 ### Testing and algorithms
 
@@ -57,7 +46,6 @@ Each pattern should state:
 Do not introduce a pattern because its name sounds sophisticated.
 
 Use the smallest pattern that:
-
 1. solves the actual responsibility problem,
 2. matches repository conventions,
 3. improves testability or changeability,
@@ -71,3 +59,5 @@ Use the smallest pattern that:
 4. skill guidance
 5. these patterns
 6. generic preference
+
+Book-derived patterns are guidance for recurring problem shapes, not architecture mandates.
