@@ -47,6 +47,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-deployment | Deployment and hosting verification |
 | rails-best-practices | Rails quality review and RailsBestPractices interpretation |
 | rails-security | Rails application security and security-tool interpretation |
+| ruby-performance | Evidence-driven Ruby/Rails benchmarking, profiling, caching, and optimization |
 | rubocop | Ruby/Rails style analysis and RuboCop plugin selection |
 
 ## Runtime intelligence
@@ -263,3 +264,10 @@ Use:
     ruby bin/security-audit /path/to/rails-app
 
 Security tooling is treated as evidence and must be interpreted against the actual trust boundary and data flow.
+
+
+## Performance engineering
+
+Performance guidance is evidence-driven: establish a workload and baseline, measure, identify the bottleneck, make the smallest targeted change, and re-measure.
+
+The repository includes profiling/benchmark tool metadata, performance-specific patterns, and executable performance evaluations. It explicitly distinguishes latency, throughput, CPU, allocations, GC, database time, network time, and cache correctness.
