@@ -533,6 +533,17 @@ patterns:
       - patterns/rails/action-cable-authorization-boundary.md
       - patterns/rails/authorization-cache-identity.md
       - patterns/rails/authorization-audit-contract.md
+      - patterns/rails/turbo-drive-navigation-contract.md
+      - patterns/rails/turbo-frame-contract.md
+      - patterns/rails/turbo-stream-response-contract.md
+      - patterns/rails/turbo-stream-broadcast-contract.md
+      - patterns/rails/turbo-morph-identity.md
+      - patterns/rails/turbo-form-contract.md
+      - patterns/rails/stimulus-controller-boundary.md
+      - patterns/rails/stimulus-target-value-contract.md
+      - patterns/rails/stimulus-lifecycle-boundary.md
+      - patterns/rails/hotwire-progressive-enhancement.md
+      - patterns/rails/hotwire-csrf-security.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, eventual consistency, incident triage, operational runbook, alert actionability, diagnostic context, incident timeline, safe production debugging, recovery verification, post-incident review]
 
   testing:
@@ -562,6 +573,7 @@ patterns:
       - patterns/rails/action-mailbox-testing.md
       - patterns/testing/route-testing.md
       - patterns/testing/authorization-testing.md
+      - patterns/testing/hotwire-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
