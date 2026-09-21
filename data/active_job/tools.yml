@@ -9,9 +9,9 @@ tools:
     category: job_testing
     command: bin/rails test
     application_only: true
-  solid-queue-status:
+  solid-queue-start:
     category: queue_operations
-    command: bin/jobs status
+    command: bin/jobs start
     application_only: true
     optional: true
   solid-queue-start:
