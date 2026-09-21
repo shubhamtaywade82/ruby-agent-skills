@@ -46,6 +46,7 @@ This file defines how an agent should select and compose skills.
 | Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
 | Rails caching engineering | rails-caching | rails-performance, ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, rails-security, rails-security-engineering, rails-testing |
 | Rails email / Action Mailer | rails-action-mailer | rails-active-job, rails-api-integration, rails-security, rails-security-engineering, rails-observability, rails-test-engineering, rails-testing, rails-distributed-systems |
+| Rails Active Storage / file attachments | rails-active-storage | rails-security, rails-security-engineering, rails-active-job, rails-api-integration, rails-performance, rails-caching, rails-observability, rails-production-runtime, rails-test-engineering, rails-testing |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
@@ -746,3 +747,34 @@ Action Mailer is an external side-effect boundary. Keep eligibility, authorizati
 | Review email privacy/authorization | pattern:mailer-security-boundary |
 | Test mail contracts and delivery behavior | pattern:mailer-testing |
 | Instrument delivery lifecycle | pattern:mailer-observability |
+## Rails Active Storage
+
+```text
+Active Storage / ActiveStorage / has_one_attached / has_many_attached /
+file upload / direct upload / storage service / blob / attachment /
+file serving / signed blob URL / variant / preview / analysis / purge /
+storage mirror / storage migration
+  -> rails-active-storage
+  -> rails-security / rails-security-engineering for upload authorization, tenant isolation, file access, and untrusted content
+  -> rails-active-job for analysis, variants, purge jobs, retries, and worker lifecycle
+  -> rails-api-integration when provider-specific HTTP/storage adapters exist
+  -> rails-performance / ruby-performance for download and transformation capacity
+  -> rails-caching for CDN/proxy/cache isolation decisions
+  -> rails-observability for storage/processing telemetry
+  -> rails-production-runtime for worker/process capacity
+  -> rails-test-engineering / rails-testing for deterministic attachment and access tests
+```
+
+Active Storage is an external-data boundary. The domain resource owns authorization; the blob is not itself the authorization boundary.
+
+### Active Storage pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Attachment ownership/lifecycle | pattern:active-storage-boundary |
+| Upload security and tenant isolation | pattern:active-storage-upload-security |
+| Browser direct upload lifecycle | pattern:active-storage-direct-upload |
+| File serving/private access/CDN | pattern:active-storage-serving |
+| Analysis/variants/previews | pattern:active-storage-processing |
+| Deletion/purge/orphan cleanup | pattern:active-storage-purge |
+| Deterministic Active Storage tests | pattern:active-storage-testing |
