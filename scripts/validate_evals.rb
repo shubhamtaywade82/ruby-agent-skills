@@ -23,6 +23,43 @@ runner = manifest.fetch("runner", {})
   errors << "manifest runner missing #{key}" if runner[key].to_s.empty?
 end
 
+benchmark_manifest = manifest.fetch("benchmarks", {})
+benchmark_manifest.each do |name, entry|
+  %w[fixture_registry fixture_root verifier campaign_documentation comparison_schema].each do |key|
+    errors << "benchmark #{name} missing #{key}" if entry[key].to_s.empty?
+  end
+
+  registry_path = File.join(ROOT, entry["fixture_registry"].to_s)
+  fixtures_root = File.join(ROOT, entry["fixture_root"].to_s)
+  verifier_path = File.join(ROOT, entry["verifier"].to_s)
+
+  errors << "benchmark #{name} fixture registry missing #{entry["fixture_registry"]}" unless File.file?(registry_path)
+  errors << "benchmark #{name} fixture root missing #{entry["fixture_root"]}" unless Dir.exist?(fixtures_root)
+  errors << "benchmark #{name} verifier missing #{entry["verifier"]}" unless File.file?(verifier_path)
+  errors << "benchmark #{name} campaign documentation missing #{entry["campaign_documentation"]}" unless File.file?(File.join(ROOT, entry["campaign_documentation"].to_s))
+  errors << "benchmark #{name} comparison schema missing #{entry["comparison_schema"]}" unless File.file?(File.join(ROOT, entry["comparison_schema"].to_s))
+
+  next unless File.file?(registry_path)
+
+  begin
+    registry = YAML.safe_load(
+      File.read(registry_path, encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    fixture_ids = registry.fetch("fixtures", {}).keys.to_set
+    benchmark_eval_ids = Dir[File.join(ROOT, "evals", name, "*.yml")].map do |path|
+      YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("id")
+    end.to_set
+    missing = benchmark_eval_ids - fixture_ids
+    extra = fixture_ids - benchmark_eval_ids
+    errors << "benchmark #{name} missing fixtures: #{missing.to_a.sort.join(", ")}" unless missing.empty?
+    errors << "benchmark #{name} has unregistered fixtures: #{extra.to_a.sort.join(", ")}" unless extra.empty?
+  rescue Psych::Exception, KeyError => e
+    errors << "benchmark #{name} fixture registry invalid: #{e.message}"
+  end
+end
+
 evaluation_manifest = manifest.fetch("evaluations", {})
 manifest_eval_paths = evaluation_manifest.values.flat_map { |entry| entry.fetch("paths", []) }.to_set
 
