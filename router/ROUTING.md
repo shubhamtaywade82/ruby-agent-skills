@@ -40,6 +40,7 @@ This file defines how an agent should select and compose skills.
 | Model/migration/query | rails-activerecord | rails-architecture, rails-testing |
 | Rails Active Record deep engineering | rails-active-record | rails-activerecord, rails-associations, rails-validations, rails-database-engineering, rails-performance, rails-security, rails-test-engineering, rails-testing |
 | Active Record association | rails-associations | rails-activerecord, rails-testing |
+| Rails Association deep engineering | rails-associations | rails-active-record, rails-activerecord, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering, rails-testing |
 | Validation/invariant | rails-validations | rails-activerecord, rails-testing |
 | Authentication/session | rails-authentication | rails-controllers, rails-testing |
 | Rails test design | rails-testing | relevant implementation skill, ruby-tdd-refactoring |
@@ -793,6 +794,44 @@ Active Model is a Rails-facing model protocol, not a substitute for Active Recor
 | Form/URL/model conversion semantics | pattern:active-model-conversion-contract |
 | Explicit serialization/privacy boundary | pattern:active-model-serialization-contract |
 | Deterministic model protocol tests | pattern:active-model-testing |
+
+## Rails Associations
+
+~~~
+belongs_to / has_one / has_many / has_many :through / HABTM /
+association cardinality / foreign_key / class_name / primary_key /
+inverse_of / polymorphic / dependent / destroy_async / nullify /
+restrict_with_exception / restrict_with_error / autosave /
+nested attributes / counter_cache / touch / before_add / after_add /
+before_remove / after_remove / association extension
+  -> rails-associations
+  -> rails-active-record for Relation/query/materialization semantics
+  -> rails-database-engineering for foreign keys, uniqueness, indexes, constraints, migrations, and transaction mechanics
+  -> rails-validations for association validation/error behavior
+  -> rails-security for authorization and tenant ownership
+  -> rails-active-job for supported asynchronous association cleanup
+  -> rails-active-storage for attachment cleanup and storage lifecycle
+  -> rails-performance for measured association loading and N+1 work
+  -> rails-test-engineering / rails-testing for deterministic relationship/lifecycle tests
+  -> rails-zeitwerk when namespaced association constants or polymorphic type compatibility cross loader boundaries
+~~~
+
+Associations define relationship and lifecycle mechanics, not authorization. Make cardinality, join ownership, inverse behavior, dependent semantics, and loading contracts explicit.
+
+### Association pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Define cardinality and ownership | pattern:association-cardinality-contract |
+| Preserve bidirectional/inverse semantics | pattern:association-inverse-contract |
+| Join-model relationship and mutation | pattern:through-association-contract |
+| Bounded polymorphic targets | pattern:polymorphic-association-boundary |
+| Parent/dependent lifecycle | pattern:association-dependent-lifecycle |
+| Parent/child persistence coupling | pattern:association-autosave-contract |
+| Counter cache/touch coupling | pattern:association-counter-touch-contract |
+| Collection mutation callbacks | pattern:association-callback-contract |
+| Association loading strategy | pattern:association-loading-contract |
+| Relationship regression tests | pattern:association-testing |
 
 ## Rails Active Record
 
