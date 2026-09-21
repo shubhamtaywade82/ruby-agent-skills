@@ -1,4 +1,3 @@
-
 ---
 name: active-model-dirty-lifecycle
 description: Define explicit dirty-state transitions for non-persisted Active Model objects.
