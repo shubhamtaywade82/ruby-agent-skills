@@ -1,50 +1,39 @@
 # Ruby Training Evaluations
 
-These evaluations are based on the uploaded Ruby training assessment material.
+These evaluations are derived from the uploaded Ruby training assessment material and are stored as machine-readable YAML cases.
 
 ## Cases
 
-### Q1 — Selection and missing value
-- selection sort
-- recursive selection sort
-- smallest missing number for a sorted unique array
+- `selection-sort.yml`
+- `recursive-selection-sort.yml`
+- `smallest-missing.yml`
+- `shopping-cart.yml`
+- `triplet-sum.yml`
+- `majority-element.yml`
+- `distinct-elements.yml`
+- `power-of-two.yml`
+- `chocolate-feast.yml`
 
-### Q2 — Shopping cart
-The program models:
-- products in the mall
-- adding a product to the cart
-- removing a product from the cart
-- showing cart details
-- quantity checks and inventory limits
-
-### Q3 — Array algorithms
-- triplet sum for a target
-- majority element
-
-The triplet task states `O(n^2)` time and `O(1)` auxiliary space and describes sorting plus a two-pointer search.
-
-The majority-element task states `O(n)` time and `O(1)` auxiliary space.
-
-### Q4 — Collection/bitwise tasks
-- print distinct values from an array with duplicates
-- detect a power of two without division or modulo
-
-### Q5 — Chocolate Feast
-Implement the wrapper-exchange loop and preserve the sample behavior.
+The assessment covers selection sort, recursive selection sort, smallest missing number, shopping-cart behavior, triplet sum, majority element, distinct values, power-of-two detection and Chocolate Feast. It explicitly requires OOP concepts across the programs.
 
 ## Design constraint
 
-The assessment explicitly states that OOP concepts should be used in all programs.
+A passing solution must satisfy the behavioral contract and the stated OOP requirement. For algorithm cases, explicit complexity and forbidden-operation constraints are evaluated separately from functional correctness.
 
-A good evaluation therefore checks:
-- cohesive classes
-- encapsulated state
-- focused methods
-- sensible collaboration
-- tests for edge cases
+## Case design
 
-## Do not overfit
+Each YAML document contains:
 
-Expected outputs are necessary but insufficient.
+- the task prompt
+- relevant skills
+- optional implementation patterns
+- explicit constraints
+- deterministic behavioral cases
+- independent checks
+- dimension-specific grading
 
-Cases should include hidden inputs and quality checks so an agent cannot pass by hard-coding the examples.
+Source examples are included, but each case also contains edge cases so an agent cannot pass by hard-coding the examples.
+
+## Hidden benchmark policy
+
+The public YAML cases are visible by design. Hidden cases should be maintained outside the public repository and injected by the benchmark runner.
