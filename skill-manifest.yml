@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  rails-best-practices:
+    family: rails-quality
+    path: skills/rails-best-practices/SKILL.md
+    triggers: [Rails best practices, Rails code quality, rails_best_practices, Rails review, Rails maintainability]
   agent-workflow:
     family: meta
     path: skills/agent-workflow/SKILL.md
@@ -182,7 +186,8 @@ patterns:
       - patterns/rails/rest-resource.md
       - patterns/rails/scaffold-lifecycle.md
       - patterns/rails/presenter.md
-    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter]
+      - patterns/rails/rails-best-practice-review.md
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review]
 
   testing:
     paths:
