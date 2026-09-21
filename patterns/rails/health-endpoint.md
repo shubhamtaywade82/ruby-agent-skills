@@ -12,7 +12,7 @@ Infrastructure needs deterministic health signals while application dependency f
 ## Use when
 Adding or reviewing Rails health, readiness, liveness, or dependency endpoints.
 
-## Procedure
+## Implementation procedure
 1. Determine whether the endpoint is liveness, readiness, or dependency-specific.
 2. Prefer Rails built-in health semantics when they match the requirement.
 3. Add only necessary dependency checks.
@@ -34,3 +34,13 @@ Assert status and response contract for each intended health state.
 - dependency checks are justified
 - response is deterministic
 - no sensitive diagnostics leak
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
