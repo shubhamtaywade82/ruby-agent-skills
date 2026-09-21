@@ -1,0 +1,34 @@
+id: test-performance
+version: 1
+title: Optimize a measured slow Rails test suite
+category: rails
+source: rails-test-engineering-v1
+skills:
+  - rails-test-engineering
+  - ruby-performance
+patterns:
+  - test-performance-budget
+prompt: |
+  A Rails test suite has a measured 40 second setup cost from eagerly loading every helper and constructing an unnecessarily deep factory graph. Reduce test feedback time without weakening assertions or changing behavior. Preserve shared helper semantics.
+constraints:
+  required_design:
+    - measured optimization
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+  - performance
+cases:
+  - name: helper-boot
+    input: global helper glob
+    expected: targeted helper loading
+  - name: factory-depth
+    input: deep unused associations
+    expected: smaller setup graph
+grading:
+  functional: tests retain behavior
+  tests: relevant tests pass
+  contract: helper API remains intact
+  scope_control: only measured setup costs change
+  performance: workload is measured before/after
