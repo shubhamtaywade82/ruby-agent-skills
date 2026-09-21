@@ -1,0 +1,43 @@
+id: method-contract
+version: 1
+title: Design a predictable Ruby public method contract
+category: ruby-workshop
+source: learn-rails-6
+skills:
+  - ruby-api-design
+  - ruby-method-design
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Implement NotificationFormatter#format(recipient:, channel:).
+  Return a String in the form "channel: recipient" for supported channels :email and :sms.
+  Reject unsupported channels with ArgumentError.
+  Keep the public return contract predictable and use explicit keyword arguments.
+constraints:
+  required_design:
+    - predictable return contract
+    - keyword arguments
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: email
+    input:
+      recipient: Sam
+      channel: email
+    expected: "email: Sam"
+  - name: sms
+    input:
+      recipient: Sam
+      channel: sms
+    expected: "sms: Sam"
+  - name: unsupported
+    input:
+      recipient: Sam
+      channel: push
+    expected: ArgumentError
+grading:
+  functional: supported channels return the specified String
+  contract: unsupported channels raise ArgumentError and valid calls return Strings
+  tests: agent covers normal and failure contracts
