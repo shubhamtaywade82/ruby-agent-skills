@@ -280,3 +280,19 @@ For release-engineering and release-readiness changes:
 - preserve release evidence including source, artifact, gates, exposure, recovery actions, and final state without secrets;
 - link failed-release response to incident engineering when user impact or production instability occurs;
 - never claim release safety from CI success alone when deployment or runtime evidence has not been observed.
+
+## Rails caching changes
+
+For caching changes:
+- establish the workload and bottleneck before introducing a cache;
+- inspect the existing cache store, key/version conventions, invalidation mechanisms, authorization/tenant boundaries, deployment topology, and cache tests;
+- define the cache layer and sharing scope explicitly;
+- treat the key as a correctness/security contract and include every required identity/version dimension;
+- define freshness and invalidation from the authoritative state transition instead of relying on scattered callers;
+- reason about old/new application overlap and cached serialization across deployments;
+- bound stampede, warming, eviction, and source fallback behavior;
+- classify cache-store failure separately from source-of-truth failure;
+- never cache secrets, authorization failures, or exceptions as successful values;
+- keep cache metrics low-cardinality and payload-free;
+- test hit/miss, isolation, invalidation, versioning, concurrency, failure, and deployment compatibility as applicable;
+- require measured or structurally demonstrated evidence before claiming caching improved performance.
