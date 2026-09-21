@@ -101,3 +101,13 @@ Trace the final feature end-to-end and run the appropriate request/model/system 
 ## Source foundation
 
 Grounded in the MVC, Rails application anatomy, REST/CRUD, and Rails philosophy material in *The Ruby Workshop*, including DRY and convention-over-configuration. The boundary discipline is strengthened using *Clean Ruby*'s responsibility and refactoring guidance.
+
+## Book integration: request lifecycle
+
+For a cross-layer change, reason through the complete path:
+
+route -> authentication -> authorization -> params -> application/domain operation -> persistence -> representation -> HTTP response.
+
+REST resources should use conventional resource routes when the semantics fit. Custom actions are justified by actual domain operations, not by controller convenience.
+
+The traditional thin-controller/richer-domain guidance is useful, but do not turn Active Record models into universal workflow containers. Existing repository boundaries still decide where behavior belongs.
