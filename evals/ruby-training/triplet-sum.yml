@@ -1,0 +1,58 @@
+id: triplet-sum
+version: 1
+title: Triplet sum using sort and two pointers
+category: ruby-training
+source: allerin-ruby-set-2
+skills:
+  - ruby-collections
+  - ruby-method-design
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns:
+  - two-pointers
+prompt: |
+  Given an array and a target value, determine a triplet whose sum equals
+  the target. Return the triplet in ascending order when one exists.
+constraints:
+  time_complexity: O(n^2)
+  auxiliary_space: O(1)
+  required_algorithm:
+    - sort
+    - fix one element
+    - search remaining range with two pointers
+  required_design:
+    - object-oriented design
+checks:
+  - functional
+  - complexity
+  - auxiliary_space
+  - oop
+  - tests
+  - edge_cases
+cases:
+  - name: source-example
+    input:
+      values: [12, 3, 4, 1, 6, 9]
+      target: 25
+    expected: [4, 9, 12]
+  - name: negative-values
+    input:
+      values: [-1, 0, 1, 2, -1, -4]
+      target: 0
+    expected: [-1, 0, 1]
+  - name: no-match
+    input:
+      values: [1, 2, 4, 8]
+      target: 20
+    expected: null
+  - name: too-short
+    input:
+      values: [1, 2]
+      target: 3
+    expected: null
+grading:
+  functional: returns a valid target-sum triplet or null when none exists.
+  complexity: follows the stated O(n^2) approach.
+  auxiliary_space: does not introduce an additional O(n) lookup structure.
+  oop: algorithm responsibility is encapsulated cleanly.
+  tests: includes a match, no-match, negative values and insufficient input.
