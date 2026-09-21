@@ -34,3 +34,7 @@ State ownership and DOM identity are explicit.
 
 ## Related skills
 rails-hotwire, rails-action-view, rails-test-engineering
+
+## Use when
+
+Use this pattern when the described Hotwire interaction is an explicit part of the page contract and its lifecycle needs dedicated guidance.
