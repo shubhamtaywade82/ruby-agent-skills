@@ -380,3 +380,19 @@ Operational coverage:
 - `evals/rails/action-mailer-contract.yml`
 
 Primary source: https://guides.rubyonrails.org/action_mailer_basics.html
+## Rails Active Storage
+
+Active Storage is covered by a dedicated framework skill because file attachments cross database, object-storage, browser-upload, authorization, processing, cleanup, and operational boundaries.
+
+Operational coverage:
+- `skills/rails-active-storage/SKILL.md`
+- `patterns/rails/active-storage-boundary.md`
+- `patterns/rails/active-storage-upload-security.md`
+- `patterns/rails/active-storage-direct-upload.md`
+- `patterns/rails/active-storage-serving.md`
+- `patterns/rails/active-storage-processing.md`
+- `patterns/rails/active-storage-purge.md`
+- `patterns/rails/active-storage-testing.md`
+- `evals/rails/active-storage-contract.yml`
+
+Primary source: https://guides.rubyonrails.org/active_storage_overview.html
