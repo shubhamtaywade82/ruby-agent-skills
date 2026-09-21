@@ -1,0 +1,80 @@
+version: 1
+source:
+  name: RuboCop Plugins
+  url: https://docs.rubocop.org/rubocop/latest/plugins.html
+  observed_rubocop_docs_version: "1.89"
+  notes:
+    - "This catalog mirrors the plugins listed on the current official Plugins documentation."
+    - "Availability and compatibility are version-sensitive; inspect the installed gem versions before enabling a plugin."
+    - "RuboCop 1.72+ recommends the lint_roller-based plugin API; older extensions may still require legacy loading."
+
+core:
+  - name: rubocop
+    category: core
+    purpose: Ruby language linting, style, metrics, and static analysis
+
+official:
+  - name: rubocop-performance
+    purpose: Performance optimization analysis
+    triggers: [performance, allocation, inefficient Ruby]
+  - name: rubocop-rails
+    purpose: Rails-specific analysis
+    triggers: [Rails, ActiveRecord, controllers, views, migrations]
+  - name: rubocop-rspec
+    purpose: RSpec-specific analysis
+    triggers: [RSpec, spec, describe, context, let, mocks]
+  - name: rubocop-minitest
+    purpose: Minitest-specific analysis
+    triggers: [Minitest, Test::Unit]
+  - name: rubocop-rake
+    purpose: Rake-specific analysis
+    triggers: [Rake, Rakefile, task]
+  - name: rubocop-sequel
+    purpose: Sequel-specific analysis
+    triggers: [Sequel, sequel]
+  - name: rubocop-thread_safety
+    purpose: Thread-safety analysis
+    triggers: [Thread, concurrency, synchronization, thread safety]
+  - name: rubocop-capybara
+    purpose: Capybara-specific analysis
+    triggers: [Capybara, feature specs, browser tests, system specs]
+  - name: rubocop-factory_bot
+    purpose: factory_bot-specific analysis
+    triggers: [factory_bot, factories, FactoryBot]
+  - name: rubocop-rspec_rails
+    purpose: RSpec Rails-specific analysis
+    triggers: [RSpec Rails, Rails specs, request specs, controller specs, model specs]
+  - name: rubocop-i18n
+    purpose: i18n wrapper-function analysis
+    triggers: [I18n, Rails I18n, gettext]
+
+third_party:
+  - name: rubocop-require_tools
+    purpose: Dynamic analysis for missing require statements
+    triggers: [require, missing require, autoload]
+  - name: cookstyle
+    purpose: Chef Infra Cookbook cops and config defaults
+    triggers: [Chef, cookbook, Chef Infra]
+  - name: rubocop-packaging
+    purpose: Packaging and downstream compatibility conventions
+    triggers: [packaging, Debian, downstream compatibility]
+  - name: rubocop-sorbet
+    purpose: Sorbet-specific analysis
+    triggers: [Sorbet, sig, typed Ruby, RBI]
+  - name: rubocop-graphql
+    purpose: GraphQL-specific analysis
+    triggers: [GraphQL, graphql-ruby]
+  - name: rubocop-changed
+    purpose: Analyze only changed files for reduced CI time
+    triggers: [changed files, diff-only lint, CI optimization]
+  - name: rubocop-sketchup
+    purpose: SketchUp Ruby API-specific analysis
+    triggers: [SketchUp, SketchUp API]
+
+selection:
+  rules:
+    - "Do not enable every plugin by default."
+    - "Select plugins from actual dependencies, repository configuration, file structure, and task requirements."
+    - "If multiple testing stacks are present, load only the testing plugins actually used."
+    - "Treat rubocop-changed as a CI execution optimization, not a substitute for full linting when full coverage is required."
+    - "Treat plugin findings as review signals; repository contracts and framework compatibility still govern the fix."
