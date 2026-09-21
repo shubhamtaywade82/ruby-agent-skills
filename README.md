@@ -162,4 +162,15 @@ The runner executes agents in a disposable workspace, captures process output an
 
 ## Status
 
-The branch contains the Phase 4 implementation-pattern system, the Phase 5 evaluation corpus, the Phase 6 benchmark runner and the Phase 7 benchmark campaign infrastructure. The remaining execution step is to run real baseline-versus-skill-enabled agent commands across the public and private benchmark packs. Hidden benchmark packs should remain outside the public repository.
+The branch contains the Phase 4 implementation-pattern system, the Phase 5 evaluation corpus, the Phase 6 benchmark runner, the Phase 7 fixture/verifier infrastructure and the Phase 8 controlled repeated benchmark campaign. A real campaign now only requires an external agent adapter command. Hidden benchmark packs should remain outside the public repository.
+
+
+## Controlled agent campaign
+
+Phase 8 materializes only the skills and patterns declared by each evaluation when `RUBY_AGENT_SKILLS_ENABLED=true`. Baseline runs receive the same task and fixture without those selected skills.
+
+See:
+
+- `docs/AGENT_ADAPTER_PROTOCOL.md`
+- `docs/BENCHMARK_CAMPAIGN.md`
+- `benchmarks/ruby-training/campaign.yml`
