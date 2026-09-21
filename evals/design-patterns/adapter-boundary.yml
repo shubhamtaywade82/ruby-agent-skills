@@ -1,0 +1,35 @@
+id: adapter-boundary
+version: 1
+title: Isolate a vendor API behind an Adapter
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-dependency-injection
+  - ruby-gems-io-services
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - adapter
+  - external-api-client
+prompt: |
+  Wrap the supplied vendor payment client with StripeAdapter. The application-facing method must be charge(amount:) and return a normalized success hash. Keep vendor-specific API details inside the adapter.
+constraints:
+  required_design:
+    - adapter
+    - external-api-client
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: required public API and implementation boundary are present
+  pattern_selection: required design evidence is present and forbidden competing abstractions are absent
+  scope_control: changes remain inside the disposable fixture
