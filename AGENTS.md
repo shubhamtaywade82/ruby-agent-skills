@@ -537,4 +537,5 @@ For deep Rails validation changes:
 - pair application uniqueness validation with database enforcement when the invariant is authoritative, including tenant/scope/normalization semantics;
 - use strict validation only when callers explicitly expect fail-fast exceptions;
 - test lifecycle, contexts, conditions, error shape, persistence conflicts, associated failures, and bypass writers at their owning boundaries;
+- treat direct/bulk writers as a validation bypass audit surface and make intentional validation bypasses explicit;
 - never claim validation safety from valid? alone when alternate writers or database-level enforcement matter.
