@@ -448,3 +448,29 @@ Operational coverage:
 - `evals/rails/action-text-contract.yml`
 
 Primary source: https://guides.rubyonrails.org/action_text_overview.html
+
+## Rails Action Mailbox
+
+Current Rails documentation provides a dedicated inbound-email framework separate from Action Mailer. The operational coverage is implemented through:
+
+- skills/rails-action-mailbox/SKILL.md
+- patterns/rails/action-mailbox-ingress-boundary.md
+- patterns/rails/action-mailbox-routing-contract.md
+- patterns/rails/action-mailbox-authenticity-security.md
+- patterns/rails/action-mailbox-idempotency.md
+- patterns/rails/action-mailbox-processing-lifecycle.md
+- patterns/rails/action-mailbox-tenant-association.md
+- patterns/rails/action-mailbox-failure-quarantine.md
+- patterns/rails/action-mailbox-testing.md
+- evals/rails/action-mailbox-contract.yml
+- test/rails_action_mailbox_system_test.rb
+
+Source foundation:
+
+- https://guides.rubyonrails.org/action_mailbox_basics.html
+- https://api.rubyonrails.org/classes/ActionMailbox/Base.html
+- https://api.rubyonrails.org/classes/ActionMailbox/Router.html
+- https://api.rubyonrails.org/classes/ActionMailbox/InboundEmail.html
+- https://api.rubyonrails.org/classes/ActionMailbox/TestHelper.html
+
+Coverage focuses on ingress authentication, raw-message capture, mailbox routing, sender/resource/tenant authorization, duplicate/replay safety, processing lifecycle, failure/quarantine behavior, attachment boundaries, retention/incineration, observability, capacity, and deterministic tests. The repository intentionally keeps provider-specific contracts at the ingress boundary rather than reproducing provider implementation details inside mailbox classes.
