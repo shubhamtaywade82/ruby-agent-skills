@@ -70,6 +70,21 @@ rescue StandardError => e
   checks["contract"] ||= { "status" => "not_evaluated" }
 end
 
+case evaluation.fetch("id")
+when "parameterized-query-boundary"
+  checks["security"] = if source.match?(/where\(.*\?.*term/) && !source.match?(/where\s*\([^)]*#\{\s*term/)
+    { "status" => "pass", "evidence" => "parameterized query boundary detected" }
+  else
+    { "status" => "fail", "evidence" => "untrusted query term is not clearly parameterized" }
+  end
+when "authorization-boundary"
+  checks["security"] = if source.match?(/admin\?/) && source.match?(/owner_id/) && source.match?(/def\s+update\?/)
+    { "status" => "pass", "evidence" => "authorization policy boundary is explicit" }
+  else
+    { "status" => "fail", "evidence" => "explicit authorization boundary not detected" }
+  end
+end
+
 changed_files = %x{git status --short}.lines.map { |line| line[3..] || line }.map(&:strip).reject(&:empty?)
 checks["tests"] =
   if changed_files.any? { |path| path.start_with?("test/", "spec/") }
