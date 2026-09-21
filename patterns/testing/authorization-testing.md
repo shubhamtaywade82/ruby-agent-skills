@@ -19,3 +19,27 @@ Allow/deny by action, cross-tenant isolation, collection scope, ownership, role/
 
 ## Review checklist
 A green suite must demonstrate that unauthorized paths are rejected, not merely that authorized paths work.
+
+## Do not use when
+
+Do not use this pattern when a simpler direct test or implementation is sufficient.
+
+## Repository inspection
+
+Inspect existing test conventions, fixtures, authorization helpers, and the relevant runtime or browser lifecycle.
+
+## Implementation procedure
+
+Define the contract, apply it at the correct boundary, and add focused deterministic regression coverage.
+
+## Failure modes
+
+Happy-path-only coverage, hidden bypass paths, and tests coupled to incidental implementation details.
+
+## Testing
+
+Test both expected success and rejection/failure behavior at the narrowest deterministic boundary.
+
+## Related skills
+
+rails-authorization, rails-hotwire, rails-test-engineering
