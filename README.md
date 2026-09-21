@@ -613,11 +613,16 @@ When adding a new skill or deepening an existing one:
 
 **Iteration 36 — Rails Hotwire Engineering**
 
-Latest verified commit:
+Latest verified implementation commit:
 
-`PENDING_CI_VERIFICATION`
+`8c2d44f79b07aeb6df031fc38ad3702b2a100c0e`
 
-The corresponding CI validation is pending for the Hotwire iteration.
+CI validation:
+
+- Workflow: **Validate skills**
+- Run: **#638**
+- Result: **passed**
+- Validation included skill/pattern/evaluation contracts plus all configured smoke tests.
 
 Next milestone:
 
