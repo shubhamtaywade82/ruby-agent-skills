@@ -47,6 +47,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-deployment | Deployment and hosting verification |
 | rails-best-practices | Rails quality review and RailsBestPractices interpretation |
 | rails-security | Rails application security and security-tool interpretation |
+| rails-active-job | Active Job lifecycle, retries, idempotency, queues, transactions, and Solid Queue semantics |
 | rails-zeitwerk | Zeitwerk path/constant, namespace, reload, and eager-load correctness |
 | ruby-performance | Evidence-driven Ruby/Rails benchmarking, profiling, caching, and optimization |
 | rubocop | Ruby/Rails style analysis and RuboCop plugin selection |
@@ -283,3 +284,26 @@ For a Rails project:
     ruby bin/zeitwerk-check /path/to/rails-app
 
 The agent is expected to resolve path-to-constant mappings and loader lifecycle before adding manual require workarounds.
+
+
+## Active Job engineering
+
+The repository includes a dedicated Active Job/Solid Queue skill, four job-design patterns, tool metadata, and a public background-job benchmark family.
+
+Coverage includes:
+
+- idempotent side effects
+- retry/discard classification
+- transaction-aware enqueueing
+- queue/priority decisions
+- concurrency controls
+- recurring/scheduled execution
+- serialization and GlobalID
+- shutdown/recovery
+- job observability and testing
+
+Run the benchmark campaign with:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/active-job/campaign.yml \
+      --agent-command 'AGENT_COMMAND'
