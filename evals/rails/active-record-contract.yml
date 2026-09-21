@@ -1,0 +1,77 @@
+id: active-record-contract
+version: 1
+title: Preserve deep Active Record Relation, persistence lifecycle, callback, bulk-write, loading, and deletion contracts
+category: rails
+source: rails-active-record-v1
+skills:
+  - rails-active-record
+  - rails-activerecord
+  - rails-associations
+  - rails-validations
+  - rails-database-engineering
+  - rails-performance
+  - rails-security
+  - rails-test-engineering
+  - rails-testing
+patterns:
+  - active-record-model-boundary
+  - active-record-query-contract
+  - active-record-relation-composition
+  - active-record-scope-contract
+  - active-record-persistence-lifecycle
+  - active-record-callback-contract
+  - active-record-bulk-write-boundary
+  - active-record-strict-loading
+  - active-record-deletion-contract
+  - active-record-testing
+prompt: |
+  Refactor a Rails order reporting and state-transition layer using Active Record. Preserve a composable Relation contract for filtered reports, make ordering explicit, avoid accidental materialization, and use projection only where the caller intentionally needs scalar data. Review a scoped tenant filter without making default_scope the authorization mechanism, ensure a state-change workflow uses the correct persistence lifecycle, and distinguish per-record destroy behavior from bulk deletion. A callback that triggers an external effect must run only after a successful commit and must retain an idempotent contract. A high-volume export path should use bounded batch iteration and a deliberate preload or strict-loading strategy rather than loading an unbounded graph into memory. Add deterministic model/query tests for success and failure paths without relying on live external services.
+constraints:
+  required_design:
+    - Relation result type and composition are explicit
+    - tenant/security filtering is authoritative outside default_scope assumptions
+    - persistence lifecycle and transaction phase are explicit
+    - callback side effects use commit-aware semantics
+    - bulk-write lifecycle bypass is deliberate
+    - large dataset processing is bounded
+    - loading strategy is justified
+    - deletion/dependent semantics are preserved
+    - deterministic Active Record tests are added
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: relation-contract
+    input: filtered report query with additional caller constraints
+    expected: a composable Relation remains composable until the intended terminal operation
+  - name: projection
+    input: caller needs only identifiers and display values
+    expected: projection returns the intentional scalar contract without pretending to return model objects
+  - name: default-scope-boundary
+    input: tenant-scoped records plus an unscoped administrative operation
+    expected: authorization remains explicit and unscoped behavior is deliberate and tested
+  - name: persistence-lifecycle
+    input: valid and invalid state transition writes
+    expected: validations, callbacks, and persisted state match the declared lifecycle
+  - name: after-commit-effect
+    input: successful commit and rolled-back transaction
+    expected: external side effect is triggered only after successful commit
+  - name: bulk-write
+    input: large set of records requiring a direct bulk update
+    expected: skipped callbacks/validations are understood and database invariants remain authoritative
+  - name: batch-loading
+    input: large export over many records
+    expected: bounded iteration and a narrow loading strategy avoid unbounded materialization
+  - name: strict-loading
+    input: report rendering that accidentally accesses an unpreloaded association
+    expected: strict loading detects the contract violation or the query is intentionally preloaded
+  - name: deletion
+    input: parent with dependent records and cleanup side effects
+    expected: destroy/delete choice preserves intended application and database lifecycle
+grading:
+  functional: Active Record query and persistence behavior is correct
+  tests: query, lifecycle, loading, deletion, and callback contracts are executable
+  contract: Relation, transaction, tenant, callback, and bulk semantics remain explicit
+  scope_control: model responsibilities remain focused and no unnecessary abstraction is introduced
