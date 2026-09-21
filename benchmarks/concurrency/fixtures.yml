@@ -1,0 +1,9 @@
+version: 1
+source: concurrency-v1
+description: Deterministic concurrency fixtures.
+fixtures:
+  concurrency-counter:
+    root: benchmarks/concurrency/fixtures/concurrency-counter
+    implementation_file: lib/counter.rb
+    classes:
+      - Counter
