@@ -4,6 +4,7 @@
 require "json"
 require "yaml"
 require "open3"
+require "fileutils"
 
 ROOT = ENV.fetch("RUBY_AGENT_EVAL_ROOT")
 EVAL_FILE = ENV.fetch("RUBY_AGENT_EVAL_FILE")
@@ -133,6 +134,7 @@ begin
     if package_ok
       stdout, stderr, status = Open3.capture3("gem", "build", gemspec, chdir: WORKSPACE)
       build_ok = status.success? && stdout.include?("Successfully built") && stderr.empty?
+      Dir.glob(File.join(WORKSPACE, "*.gem")).each { |path| FileUtils.rm_f(path) }
     end
     checks["functional"] = public_ok ? check("pass") : check("fail", "public namespace/version unavailable")
     checks["contract"] = source.match?(/module\s+InventoryClient/) ? check("pass") : check("fail", "public namespace not explicit")
