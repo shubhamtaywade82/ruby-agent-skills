@@ -265,6 +265,10 @@ skills:
     family: rails
     path: skills/rails-authentication/SKILL.md
     triggers: [authentication, session, sign in, sign out, protected route, password reset, session fixation, session revocation, remember me, bearer token, account lockout, login throttling, current user, reauthentication]
+  rails-authorization:
+    family: rails
+    path: skills/rails-authorization/SKILL.md
+    triggers: [authorization, policy, Pundit, CanCanCan, authorization policy, authorized scope, object-level authorization, IDOR, tenant isolation, role, permission, capability, ownership authorization, policy scope, access control]
   rails-testing:
     family: rails-quality
     path: skills/rails-testing/SKILL.md
@@ -517,6 +521,18 @@ patterns:
       - patterns/rails/rollback-rollforward.md
       - patterns/rails/release-health-verification.md
       - patterns/rails/release-evidence.md
+      - patterns/rails/authorization-mechanism-boundary.md
+      - patterns/rails/policy-object-boundary.md
+      - patterns/rails/authorized-scope-boundary.md
+      - patterns/rails/tenant-isolation-authorization.md
+      - patterns/rails/role-capability-boundary.md
+      - patterns/rails/contextual-authorization.md
+      - patterns/rails/authorization-service-boundary.md
+      - patterns/rails/background-authorization-boundary.md
+      - patterns/rails/api-authorization-boundary.md
+      - patterns/rails/action-cable-authorization-boundary.md
+      - patterns/rails/authorization-cache-identity.md
+      - patterns/rails/authorization-audit-contract.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, eventual consistency, incident triage, operational runbook, alert actionability, diagnostic context, incident timeline, safe production debugging, recovery verification, post-incident review]
 
   testing:
@@ -545,6 +561,7 @@ patterns:
       - patterns/rails/active-support-testing.md
       - patterns/rails/action-mailbox-testing.md
       - patterns/testing/route-testing.md
+      - patterns/testing/authorization-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
@@ -869,6 +886,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/authentication-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-authorization:
+    source: rails-authorization-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/authorization-contract.yml
     checks:
       - functional
       - tests
