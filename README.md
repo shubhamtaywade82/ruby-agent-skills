@@ -40,7 +40,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-action-controller | Deep HTTP boundary: strong parameters, request/response semantics, sessions/cookies, callbacks, negotiation, conditional responses, downloads, streaming, and controller exceptions |
 | rails-views | ERB, helpers and forms |
 | rails-activerecord | Models, migrations, persistence and queries |
-| rails-associations | Active Record relationships |
+| rails-associations | Deep Active Record association cardinality, inverse, through, polymorphic, dependent, autosave, counter/touch, callback, loading, and testing contracts |
 | rails-validations | Validation and invariants |
 | rails-authentication | Authentication and protected access |
 | rails-testing | Rails test placement and coverage |
@@ -485,6 +485,7 @@ The Rails integration layer now includes focused skills for framework boundaries
 
 - rails-action-controller — deep Action Controller request/response boundaries, strong parameters, session/cookie state, callbacks, content negotiation, HTTP cache validators, downloads/streaming, and expected exception mapping;
 - rails-active-record — deep Active Record model/Relation semantics, query composition, scope/default_scope contracts, persistence lifecycle, callbacks, bulk operations, deletion, loading, and testing;
+- rails-associations — deep Active Record association cardinality, inverse behavior, through joins, polymorphic boundaries, dependent lifecycle, autosave, counter/touch, callbacks, loading, and testing;
 - rails-action-view — Action View rendering, partial/layout/helper contracts, strict locals, output safety, localized templates, and rendering performance;
 - rails-active-model — Active Model model protocol, transient attributes, validations, conversion, dirty state, callbacks, serialization, translation, and linting;
 - rails-active-support — Active Support loading, Concern composition, class configuration, CurrentAttributes, callbacks, instrumentation, time semantics, inflection, and framework-state testing;
