@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  ruby-concurrency:
+    family: concurrency
+    path: skills/ruby-concurrency/SKILL.md
+    triggers: [concurrency, threads, Thread, Mutex, Monitor, Queue, thread pool, race condition, deadlock, thread safety, Fibers, scheduler, parallel I/O]
   ruby-runtime-compatibility:
     family: runtime
     path: skills/ruby-runtime-compatibility/SKILL.md
@@ -181,6 +185,7 @@ patterns:
       - patterns/ruby-design/specification.md
       - patterns/ruby-design/state-object.md
       - patterns/ruby-design/dependency-injection.md
+      - patterns/ruby-design/bounded-concurrency.md
       - patterns/ruby-design/service-composition.md
       - patterns/ruby/rubocop-review.md
     triggers: [value object, service object, strategy, composition, inheritance, adapter, external interface, external API client, gem boundary, metaprogramming boundary, RuboCop review, application service, command object, policy object, null object, factory, builder, decorator, facade, repository, specification, state object, dependency injection, service composition]
