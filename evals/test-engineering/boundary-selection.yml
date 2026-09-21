@@ -1,0 +1,29 @@
+id: boundary-selection
+version: 1
+title: Select the owning Rails test boundary
+category: rails
+source: rails-test-engineering-v1
+skills:
+  - rails-test-engineering
+  - rails-testing
+patterns:
+  - test-boundary-selection
+prompt: |
+  A Rails OrdersController endpoint must guarantee status, JSON response shape, authorization, and persistence side effects. Add the smallest focused test boundary that proves the HTTP contract without directly invoking controller methods.
+constraints:
+  required_design:
+    - request/integration boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: request-boundary
+    input: POST /orders
+    expected: routed request test
+grading:
+  functional: request-level boundary exercises the endpoint
+  tests: test asserts HTTP and important persistence behavior
+  contract: success/error response is treated as public behavior
+  scope_control: no unnecessary browser/system test
