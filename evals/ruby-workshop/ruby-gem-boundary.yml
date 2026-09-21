@@ -1,0 +1,39 @@
+id: ruby-gem-boundary
+version: 1
+title: Shape a reusable Ruby gem boundary
+category: ruby-workshop
+source: learn-rails-6
+skills:
+  - ruby-gems-io-services
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - ruby-gem
+prompt: |
+  Turn the InventoryClient fixture into a small reusable gem boundary.
+  Keep the public namespace InventoryClient, expose a stable VERSION, make the public require path deterministic, and ensure the gemspec contains the library files.
+  Add tests for the public API and verify that the gemspec can be built without application-specific dependencies.
+constraints:
+  required_design:
+    - stable library namespace
+    - explicit gem boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - packaging
+cases:
+  - name: public-namespace
+    input: InventoryClient
+    expected: public
+  - name: public-version
+    input: InventoryClient::VERSION
+    expected: "0.1.0"
+  - name: package-files
+    input: inventory_client.gemspec
+    expected: includes-lib-files
+grading:
+  functional: public namespace and version are loadable
+  contract: public API does not depend on Rails/application classes
+  tests: public require path and API are tested
+  packaging: gemspec references library files and can be built
