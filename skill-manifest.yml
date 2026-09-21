@@ -27,6 +27,22 @@ skills:
     family: ruby
     path: skills/ruby-collections/SKILL.md
     triggers: [arrays, hashes, Enumerable, map, select, grouping, deduplication, sorting]
+  ruby-blocks-procs-lambdas:
+    family: ruby
+    path: skills/ruby-blocks-procs-lambdas/SKILL.md
+    triggers: [blocks, yield, Proc, lambda, callbacks, ampersand operator]
+  ruby-enumerables:
+    family: ruby
+    path: skills/ruby-enumerables/SKILL.md
+    triggers: [Enumerable pipeline, each_with_object, reduce, group_by, tally, lazy]
+  ruby-api-design:
+    family: design
+    path: skills/ruby-api-design/SKILL.md
+    triggers: [public API, return contract, keyword arguments, compatibility, library boundary]
+  ruby-boolean-logic:
+    family: design
+    path: skills/ruby-boolean-logic/SKILL.md
+    triggers: [boolean expression, predicate, guard clause, truthiness, conditional refactor]
   ruby-method-design:
     family: design
     path: skills/ruby-method-design/SKILL.md
@@ -113,7 +129,10 @@ patterns:
       - patterns/ruby-design/strategy-object.md
       - patterns/ruby-design/composition-over-inheritance.md
       - patterns/ruby-design/adapter.md
-    triggers: [value object, service object, strategy, composition, inheritance, adapter, external interface]
+      - patterns/ruby-design/external-api-client.md
+      - patterns/ruby-design/ruby-gem.md
+      - patterns/ruby-design/metaprogramming-boundary.md
+    triggers: [value object, service object, strategy, composition, inheritance, adapter, external interface, external API client, gem boundary, metaprogramming boundary]
 
   rails:
     paths:
@@ -122,7 +141,9 @@ patterns:
       - patterns/rails/policy-boundary.md
       - patterns/rails/transaction-boundary.md
       - patterns/rails/request-flow.md
-    triggers: [query object, form object, authorization policy, transaction boundary, request flow]
+      - patterns/rails/rest-resource.md
+      - patterns/rails/scaffold-lifecycle.md
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle]
 
   testing:
     paths:
@@ -138,6 +159,8 @@ patterns:
 
 runner:
   command: bin/eval
+  agent_benchmark: bin/agent-benchmark
+  adapter_examples: docs/AGENT_ADAPTER_EXAMPLES.md
   result_schema: docs/EVAL_RESULT_SCHEMA.md
   documentation: docs/BENCHMARK_RUNNER.md
 
@@ -150,6 +173,15 @@ benchmarks:
     comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/ruby-training/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  ruby-workshop:
+    fixture_registry: benchmarks/ruby-workshop/fixtures.yml
+    fixture_root: benchmarks/ruby-workshop/fixtures
+    verifier: scripts/verify_workshop_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/ruby-workshop/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
@@ -169,4 +201,20 @@ evaluations:
     checks:
       - functional
       - oop
+      - tests
+
+  ruby-workshop:
+    source: book-integration-v2
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/enumerable-transform.yml
+      - evals/ruby-workshop/method-contract.yml
+      - evals/ruby-workshop/voting-application.yml
+      - evals/ruby-workshop/service-object.yml
+      - evals/ruby-workshop/external-api-client.yml
+      - evals/ruby-workshop/ruby-gem-boundary.yml
+      - evals/ruby-workshop/rails-rest-contract.yml
+      - evals/ruby-workshop/rails-authentication-boundary.yml
+    checks:
+      - functional
       - tests
