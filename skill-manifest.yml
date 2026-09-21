@@ -44,6 +44,10 @@ skills:
     family: rails
     path: skills/rails-api-integration/SKILL.md
     triggers: [API contract, API versioning, API compatibility, JSON API, content negotiation, serialization contract, external API integration, HTTP integration, outbound HTTP client, retry policy, HTTP timeout, rate limit, webhook, webhook signature, webhook replay, idempotency key, idempotent request, provider adapter, integration testing]
+  rails-reliability-engineering:
+    family: reliability
+    path: skills/rails-reliability-engineering/SKILL.md
+    triggers: [reliability engineering, resilience, SRE, SLI, SLO, error budget, availability target, latency target, dependency failure, circuit breaker, bulkhead, load shedding, overload protection, graceful degradation, fallback, stale data, retry storm, cascading failure, RTO, RPO, disaster recovery, failover, restore test, resilience testing, fault injection, game day]
   rails-event-driven-messaging:
     family: rails
     path: skills/rails-event-driven-messaging/SKILL.md
@@ -260,6 +264,14 @@ patterns:
       - patterns/rails/query-plan-evidence.md
       - patterns/rails/connection-pool-capacity.md
       - patterns/rails/cache-stampede-control.md
+      - patterns/rails/slo-error-budget.md
+      - patterns/rails/dependency-failure-boundary.md
+      - patterns/rails/circuit-breaker.md
+      - patterns/rails/bulkhead-isolation.md
+      - patterns/rails/load-shedding.md
+      - patterns/rails/graceful-degradation.md
+      - patterns/rails/recovery-objectives.md
+      - patterns/rails/resilience-testing.md
       - patterns/rails/event-envelope.md
       - patterns/rails/event-schema-evolution.md
       - patterns/rails/consumer-group-partitioning.md
