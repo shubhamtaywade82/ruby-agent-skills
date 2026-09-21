@@ -26,6 +26,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | ruby-gems-io-services | Dependencies, I/O, HTTP and service boundaries |
 | ruby-debugging | Evidence-driven debugging |
 | ruby-runtime-compatibility | Ruby/Rails/Bundler version and compatibility resolution |
+| ruby-concurrency | Threads, queues, synchronization, lifecycle, Fibers and concurrency hazards |
 | ruby-clean-code | Readability, simplicity and maintainability |
 | ruby-tdd-refactoring | Tests, regression safety and refactoring |
 
@@ -245,3 +246,8 @@ Run the design-pattern campaign with:
     ruby bin/benchmark campaign \
       --manifest benchmarks/design-patterns/campaign.yml \
       --agent-command 'AGENT_COMMAND'
+
+
+## Concurrency engineering
+
+The repository includes a dedicated `ruby-concurrency` skill and bounded-concurrency pattern. Its benchmark layer verifies synchronized shared state, tests, and explicit concurrency contracts. The guidance treats Ruby threads, Rails executors/jobs, database connection pools, process boundaries, and Fibers as distinct concerns rather than one generic "parallelism" abstraction.
