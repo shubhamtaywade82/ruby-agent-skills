@@ -256,7 +256,7 @@ skills:
   rails-associations:
     family: rails
     path: skills/rails-associations/SKILL.md
-    triggers: [belongs_to, has_one, has_many, through, HABTM, relationship]
+    triggers: [belongs_to, has_one, has_many, through, HABTM, relationship, association cardinality, association ownership, inverse_of, class_name, foreign_key, primary_key, polymorphic, dependent, destroy_async, restrict_with_exception, restrict_with_error, nullify, autosave, nested attributes, counter_cache, touch, association callbacks, before_add, after_add, before_remove, after_remove, association extension]
   rails-validations:
     family: rails
     path: skills/rails-validations/SKILL.md
@@ -464,6 +464,15 @@ patterns:
       - patterns/rails/active-record-bulk-write-boundary.md
       - patterns/rails/active-record-strict-loading.md
       - patterns/rails/active-record-deletion-contract.md
+      - patterns/rails/association-cardinality-contract.md
+      - patterns/rails/association-inverse-contract.md
+      - patterns/rails/through-association-contract.md
+      - patterns/rails/polymorphic-association-boundary.md
+      - patterns/rails/association-dependent-lifecycle.md
+      - patterns/rails/association-autosave-contract.md
+      - patterns/rails/association-counter-touch-contract.md
+      - patterns/rails/association-callback-contract.md
+      - patterns/rails/association-loading-contract.md
       - patterns/rails/action-mailbox-routing-contract.md
       - patterns/rails/action-mailbox-authenticity-security.md
       - patterns/rails/action-mailbox-idempotency.md
@@ -499,6 +508,7 @@ patterns:
       - patterns/rails/action-view-testing.md
       - patterns/rails/action-controller-testing.md
       - patterns/rails/active-record-testing.md
+      - patterns/rails/association-testing.md
       - patterns/rails/active-model-testing.md
       - patterns/rails/active-support-testing.md
       - patterns/rails/action-mailbox-testing.md
@@ -793,6 +803,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/active-record-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-associations:
+    source: rails-associations-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/associations-contract.yml
     checks:
       - functional
       - tests
