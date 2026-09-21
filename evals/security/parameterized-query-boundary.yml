@@ -18,6 +18,7 @@ checks:
   - functional
   - tests
   - contract
+  - security
 cases:
   - name: benign-term
     input: "alice"
