@@ -1,0 +1,37 @@
+version: 1
+source:
+  migrations: https://guides.rubyonrails.org/active_record_migrations.html
+  transactions: https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html
+  locking: https://api.rubyonrails.org/classes/ActiveRecord/Locking/Pessimistic.html
+  connection_pool: https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html
+  relation: https://api.rubyonrails.org/classes/ActiveRecord/Relation.html
+  postgres_indexes: https://www.postgresql.org/docs/current/sql-createindex.html
+
+tools:
+  rails-migrate-status:
+    category: migration_verification
+    command: bin/rails db:migrate:status
+    application_only: true
+  rails-schema:
+    category: schema_verification
+    command: bin/rails db:schema:dump
+    application_only: true
+  rails-test:
+    category: database_testing
+    command: bin/rails test
+    application_only: true
+  rails-runner:
+    category: runtime_database_inspection
+    command: bundle exec rails runner
+    application_only: true
+  postgres-explain:
+    category: query_plan_analysis
+    command: EXPLAIN (ANALYZE, BUFFERS)
+    database: postgresql
+
+selection:
+  rules:
+    - "Resolve Rails and database adapter/version before using version-sensitive migration APIs."
+    - "Inspect schema, existing indexes/constraints, data size, and deployment order before production changes."
+    - "Use query-plan evidence for performance claims."
+    - "Do not run destructive or EXPLAIN ANALYZE operations against production without an explicit safety plan."
