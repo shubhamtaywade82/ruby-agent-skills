@@ -23,6 +23,10 @@ Inspect inheritance hierarchies, overridden methods, modules/mixins, strategy ob
 
 Do not replace stable inheritance simply because composition is fashionable.
 
+## Pattern-selection guardrail
+
+Composition is a design option, not a target. First prove that behavior varies independently, that inheritance is creating coupling, or that a collaborator boundary materially improves testability/extensibility. If the existing inheritance is a stable subtype relationship and simple, leave it alone.
+
 ## Decision rules
 
 Prefer composition when behavior changes independently from the object's core identity.
