@@ -13,3 +13,24 @@ Document action, target, ordering, rendered partial, and fallback response seman
 
 ## Testing
 Verify create/update/delete paths and invalid-form behavior.
+
+## Do not use when
+A normal HTML response already expresses the required interaction.
+
+## Repository inspection
+Inspect stream templates, target IDs, controller formats, partials, and fallback responses.
+
+## Implementation procedure
+Define action and target, render the smallest partial, preserve status semantics, and keep target identity stable.
+
+## Failure modes
+Wrong target, malformed stream, duplicate mutation, and missing fallback behavior.
+
+## Testing
+Test each stream action and invalid-form path.
+
+## Review checklist
+Action, target, partial, status, and fallback are deterministic.
+
+## Related skills
+rails-hotwire, rails-action-controller, rails-action-view
