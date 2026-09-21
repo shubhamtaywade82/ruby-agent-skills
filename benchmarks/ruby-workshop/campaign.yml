@@ -1,0 +1,29 @@
+id: ruby-workshop-public-v1
+version: 1
+evaluation_set: ruby-workshop
+source: book-integration-v2
+
+fixture_root: benchmarks/ruby-workshop/fixtures
+verifier: scripts/verify_workshop_eval.rb
+
+evaluations:
+  - enumerable-transform
+  - method-contract
+  - voting-application
+  - service-object
+  - external-api-client
+  - ruby-gem-boundary
+  - rails-rest-contract
+  - rails-authentication-boundary
+
+execution:
+  repetitions: 3
+  paired: true
+  fresh_workspace_per_run: true
+  same_fixture_for_pair: true
+  require_same_agent_command_when_using_agent_command: true
+
+controls:
+  runtime:
+    ruby: "3.3"
+  hidden_cases: external-only
