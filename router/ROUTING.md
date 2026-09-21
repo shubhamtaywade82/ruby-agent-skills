@@ -353,3 +353,22 @@ background job / Active Job / ApplicationJob / perform_later / retry / discard /
 ```
 
 Do not treat "runs in the background" as sufficient design. Resolve serialization, idempotency, retry, transaction, concurrency, observability, and recovery semantics.
+
+
+## Rails request lifecycle / observability
+
+```text
+API error handling / Rails.error / error reporting / request ID / logging /
+ActiveSupport::Notifications / instrumentation / health / liveness / readiness
+  -> rails-observability
+  -> rails-controllers
+  -> ruby-debugging
+  -> rails-security when sensitive-data or trust-boundary concerns exist
+  -> ruby-performance when logging/instrumentation has measurable overhead
+  -> request-error-boundary for stable exception-to-HTTP mappings
+  -> request-observability for correlation/logging/metrics
+  -> health-endpoint for liveness/readiness semantics
+  -> instrumentation-event for stable application events
+```
+
+Prefer an existing framework/request boundary over introducing duplicate middleware or controller callbacks.
