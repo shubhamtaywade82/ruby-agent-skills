@@ -346,7 +346,7 @@ For I18n/localization changes:
 - inspect supported locales, default locale, locale resolution, translation file organization, route conventions, user/account locale preferences, jobs, mailers, APIs, caches, tests, and custom backends before implementation;
 - define supported locales and precedence explicitly; normalize/reject untrusted locale input before entering the scoped locale context;
 - use request-scoped I18n.with_locale rather than leaking mutable I18n.locale across requests or execution units;
-- keep locale separate from authentication/authorization and timezone;
+- keep locale separate from authentication/authorization and timezone; locale is presentation context, not authorization.
 - use semantic translation keys with explicit interpolation contracts; do not use human-readable translated text as machine-readable identifiers;
 - delegate pluralization and locale-aware date/number/currency formatting to I18n rather than hand-building grammar or presentation strings;
 - review localized routes/default_url_options and bound locale dimensions when locale participates in URLs;
