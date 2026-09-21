@@ -58,3 +58,9 @@ Use functional regression tests plus a stable performance contract when the repo
 ## Repository inspection
 
 Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+## Failure modes
+
+- optimizing a non-bottleneck
+- changing workload between baseline and comparison
+- retaining an optimization that regresses another critical dimension
