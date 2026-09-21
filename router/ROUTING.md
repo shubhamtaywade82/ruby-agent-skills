@@ -48,6 +48,7 @@ This file defines how an agent should select and compose skills.
 | Rails email / Action Mailer | rails-action-mailer | rails-active-job, rails-api-integration, rails-security, rails-security-engineering, rails-observability, rails-test-engineering, rails-testing, rails-distributed-systems |
 | Rails Active Storage / file attachments | rails-active-storage | rails-security, rails-security-engineering, rails-active-job, rails-api-integration, rails-performance, rails-caching, rails-observability, rails-production-runtime, rails-test-engineering, rails-testing |
 | Rails Action Cable / realtime WebSockets | rails-action-cable | rails-security, rails-security-engineering, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-reliability-engineering, rails-performance, ruby-performance, ruby-concurrency, rails-production-runtime, rails-release-engineering, rails-observability, rails-test-engineering, rails-testing |
+| Rails I18n / localization | rails-i18n | rails-routing, rails-views, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, rails-testing, ruby-concurrency |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
@@ -811,3 +812,34 @@ Action Cable is an online realtime boundary, not a durable message queue. Author
 | Connection/fan-out capacity | pattern:action-cable-capacity |
 | Redis/cable outage behavior | pattern:action-cable-failure-boundary |
 | Deterministic realtime tests | pattern:action-cable-testing |
+## Rails I18n
+
+```text
+I18n / internationalization / localization / locale / translations /
+I18n.t / I18n.l / available_locales / default_locale / pluralization /
+interpolation / localized routes / locale negotiation / missing translation
+  -> rails-i18n
+  -> rails-routing / rails-views / rails-validations for URL, rendering, and validation presentation
+  -> rails-api-integration for localized wire/error contracts
+  -> rails-action-mailer for localized subjects/content
+  -> rails-active-job for background locale propagation
+  -> rails-caching for locale-sensitive cache identity
+  -> rails-security for locale input, translated HTML, interpolation, and translation administration
+  -> rails-test-engineering / rails-testing for deterministic locale isolation and translation tests
+  -> ruby-concurrency when locale crosses custom execution-context boundaries
+```
+
+I18n is a cross-layer presentation contract. Locale is presentation context, not authorization.
+
+### I18n pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Resolve locale from multiple sources | pattern:i18n-locale-resolution |
+| Stable translation keys/interpolation | pattern:i18n-translation-key-contract |
+| Pluralization/date/number formatting | pattern:i18n-pluralization-formatting |
+| Locale-aware URLs/routes | pattern:i18n-localized-routing |
+| Background/asynchronous locale context | pattern:i18n-context-propagation |
+| Locale-sensitive cache identity | pattern:i18n-cache-identity |
+| Localization security/privacy | pattern:i18n-security-boundary |
+| Deterministic localization tests | pattern:i18n-testing |
