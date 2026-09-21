@@ -49,6 +49,7 @@ This file defines how an agent should select and compose skills.
 | Rails Active Storage / file attachments | rails-active-storage | rails-security, rails-security-engineering, rails-active-job, rails-api-integration, rails-performance, rails-caching, rails-observability, rails-production-runtime, rails-test-engineering, rails-testing |
 | Rails Action Cable / realtime WebSockets | rails-action-cable | rails-security, rails-security-engineering, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-reliability-engineering, rails-performance, ruby-performance, ruby-concurrency, rails-production-runtime, rails-release-engineering, rails-observability, rails-test-engineering, rails-testing |
 | Rails I18n / localization | rails-i18n | rails-routing, rails-views, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, rails-testing, ruby-concurrency |
+| Rails Action Text / rich text | rails-action-text | rails-views, rails-activerecord, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering, rails-testing |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
@@ -843,3 +844,36 @@ I18n is a cross-layer presentation contract. Locale is presentation context, not
 | Locale-sensitive cache identity | pattern:i18n-cache-identity |
 | Localization security/privacy | pattern:i18n-security-boundary |
 | Deterministic localization tests | pattern:i18n-testing |
+## Rails Action Text
+
+```text
+Action Text / ActionText / has_rich_text / RichText / Trix /
+rich_textarea / rich text / action-text-attachment / Signed Global ID /
+attachable / rich text rendering / rich text API / Action Text N+1
+  -> rails-action-text
+  -> rails-views / rails-activerecord / rails-validations for rendering, ownership, persistence, and input contracts
+  -> rails-active-storage for embedded file upload/storage/access lifecycle
+  -> rails-security / rails-security-engineering for sanitization, attachable authorization, tenant isolation, and XSS
+  -> rails-i18n for locale-aware rich content and surrounding presentation
+  -> rails-caching for rendered-content identity and private-content isolation
+  -> rails-performance / ruby-performance for RichText preloading and rendering capacity
+  -> rails-api-integration for stable rich-text API representations
+  -> rails-active-job for asynchronous processing/indexing/cleanup
+  -> rails-test-engineering / rails-testing for deterministic rich-text, attachment, and security tests
+```
+
+Action Text is a persisted rich-content boundary. Sanitization does not replace authorization of embedded resources or attachables.
+
+### Action Text pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Define rich-text ownership/content contract | pattern:action-text-content-contract |
+| Sanitization/XSS/link safety | pattern:action-text-sanitization-security |
+| Embedded resource/file authorization | pattern:action-text-attachment-authorization |
+| Safe HTML/plain-text rendering | pattern:action-text-rendering |
+| Stable API representation | pattern:action-text-api-boundary |
+| RichText/embed N+1 and performance | pattern:action-text-preload-performance |
+| RichText/attachment lifecycle | pattern:action-text-lifecycle |
+| Signed Global ID attachables | pattern:action-text-attachable-contract |
+| Deterministic Action Text tests | pattern:action-text-testing |
