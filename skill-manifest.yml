@@ -136,6 +136,14 @@ patterns:
     triggers: [two pointers, pair sum, frequency map, counting, membership lookup]
 
 
+benchmarks:
+  ruby-training:
+    fixture_registry: benchmarks/ruby-training/fixtures.yml
+    fixture_root: benchmarks/ruby-training/fixtures
+    verifier: scripts/verify_training_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+
 evaluations:
   ruby-training:
     source: allerin-ruby-set-2
