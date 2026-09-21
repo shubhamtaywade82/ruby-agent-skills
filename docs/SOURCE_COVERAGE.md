@@ -272,3 +272,28 @@ Primary references:
 - https://guides.rubyonrails.org/active_support_instrumentation.html
 - https://guides.rubyonrails.org/configuring.html
 - https://guides.rubyonrails.org/debugging_rails_applications.html
+
+
+## Rails database engineering
+
+This layer covers production schema changes, migration reversibility, DDL transactions, indexes, PostgreSQL concurrent index creation, database constraints, foreign keys, nullability/type changes, expand-contract deployments, data backfills, transaction boundaries, isolation, pessimistic locking, deadlocks, query plans, bulk Active Record writes, connection pools, and multi-database/role considerations.
+
+Artifacts:
+- `skills/rails-database-engineering/SKILL.md`
+- `patterns/rails/expand-contract-migration.md`
+- `patterns/rails/production-index.md`
+- `patterns/rails/database-constraint.md`
+- `patterns/rails/batched-backfill.md`
+- `patterns/rails/transaction-lock-boundary.md`
+- `data/database-engineering/tools.yml`
+- `evals/database/*`
+- `benchmarks/database-engineering/*`
+- `scripts/verify_database_engineering_eval.rb`
+
+Primary references:
+- https://guides.rubyonrails.org/active_record_migrations.html
+- https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html
+- https://api.rubyonrails.org/classes/ActiveRecord/Locking/Pessimistic.html
+- https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html
+- https://api.rubyonrails.org/classes/ActiveRecord/Relation.html
+- https://www.postgresql.org/docs/current/sql-createindex.html
