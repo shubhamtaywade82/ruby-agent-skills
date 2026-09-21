@@ -1,0 +1,33 @@
+id: parallel-safety
+version: 1
+title: Make Rails tests safe under parallel execution
+category: rails
+source: rails-test-engineering-v1
+skills:
+  - rails-test-engineering
+  - ruby-concurrency
+patterns:
+  - parallel-safe-test
+  - parallel-database-test
+prompt: |
+  A test uses a fixed TCP port and a shared global array and fails intermittently when Rails parallel testing is enabled. Isolate both resources without globally disabling parallelization.
+constraints:
+  required_design:
+    - parallel-safe isolation
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: shared-port
+    input: parallel workers
+    expected: worker-safe port allocation
+  - name: global-state
+    input: parallel workers
+    expected: no shared mutable array
+grading:
+  functional: each worker has isolated state/resources
+  tests: focused parallel behavior is covered
+  contract: global parallelization remains enabled
+  scope_control: fix is local to the collision
