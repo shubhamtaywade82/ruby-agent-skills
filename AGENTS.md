@@ -310,6 +310,24 @@ For email and Action Mailer changes:
 - preserve delivery correlation without logging full message bodies or sensitive headers;
 - use previews/interceptors/observers only for their intended rendering or cross-cutting lifecycle responsibilities;
 - do not claim real-world delivery without provider/runtime evidence.
+## Rails Active Support changes
+
+For Active Support and cross-cutting Rails utility changes:
+- inspect the Rails/Ruby/Active Support version, existing requires, concerns, class configuration, CurrentAttributes, callback definitions, Notifications events/subscribers, Time.zone conventions, inflections, dynamic constantization, observability, and tests before implementing;
+- classify the boundary as loading, concern composition, inherited configuration, request/execution context, callbacks, instrumentation, time semantics, inflection, or framework testing;
+- choose the narrowest Active Support API that satisfies the contract; do not use active_support/all inside focused reusable libraries without justification;
+- keep ActiveSupport::Concern modules cohesive, document host contracts, and make dependencies explicit; do not create god concerns;
+- treat class_attribute as inherited configuration, not mutable request/tenant state; control mutable defaults and test parent/subclass isolation;
+- keep CurrentAttributes small and request/execution scoped; define setters, reset behavior, concurrency semantics, and explicit background-job propagation;
+- never assume CurrentAttributes automatically propagates across background jobs, threads, or process boundaries;
+- use ActiveSupport::Callbacks only for explicit lifecycle protocols; prefer explicit methods/services for significant business workflows and external side effects;
+- define ActiveSupport::Notifications event names, payload schemas, cardinality, units, privacy, and subscriber ownership; notification payload is observational telemetry, not the business event bus;
+- use monotonic timing when elapsed-duration accuracy matters and keep Time.zone/timezone choices separate from authorization or tenant identity;
+- review Active Support inflection and constantization as compatibility/security boundaries; external type names require explicit allowlists;
+- keep autoloading/constant ownership in rails-zeitwerk rather than hiding structural loading problems with dynamic constantization;
+- isolate global/context state in tests and restore CurrentAttributes, timezone, inherited configuration, and subscriptions;
+- never claim framework-state isolation, instrumentation correctness, or context propagation without tests proving the relevant lifecycle boundary.
+
 ## Rails Active Model changes
 
 For Active Model and Rails-facing non-persisted model changes:
