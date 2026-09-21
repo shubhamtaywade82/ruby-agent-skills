@@ -130,3 +130,17 @@ Run focused unit tests with external boundaries isolated. Add integration tests 
 ## Source foundation
 
 Derived from the RubyGems, filesystem, CSV, HTTP, and service-class material in *The Ruby Workshop*. The service-boundary and responsibility guidance is reinforced by *Clean Ruby*.
+
+## Book integration: reusable client and gem boundaries
+
+For reusable integrations, separate the external transport from the public library API. A client should expose a small application-facing interface and translate remote responses/errors at one boundary.
+
+When an internal integration becomes a true reusable library, use the gem boundary deliberately:
+- stable namespace
+- deterministic require path
+- explicit dependencies
+- public API tests
+- application-specific code excluded
+- gem build/package verified
+
+Do not extract a gem merely to move files. Extraction should create a real reuse boundary.
