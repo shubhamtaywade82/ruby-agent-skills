@@ -12,7 +12,7 @@ Abrupt process termination can drop requests, interrupt jobs, or leak resources.
 ## Use when
 Changing TERM/QUIT handling, container shutdown, process-manager configuration, worker lifecycle, or restart behavior.
 
-## Procedure
+## Implementation procedure
 1. Identify termination signal sequence.
 2. Identify the hard kill deadline.
 3. Stop accepting new work.
@@ -33,3 +33,15 @@ Changing TERM/QUIT handling, container shutdown, process-manager configuration, 
 - in-flight work semantics understood
 - resources released
 - recovery path exists
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
