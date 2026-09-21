@@ -1,0 +1,48 @@
+id: rails-rest-contract
+version: 1
+title: Design a conventional Rails REST resource
+category: ruby-workshop
+source: learn-rails-6
+skills:
+  - rails-architecture
+  - rails-routing
+  - rails-controllers
+  - rails-authentication
+  - rails-testing
+patterns:
+  - rest-resource
+  - request-flow
+prompt: |
+  Shape the fixture into a conventional Posts REST resource.
+  Provide routes for index, show, create, update, and destroy.
+  Implement matching controller actions with a controlled post parameter boundary.
+  Keep the controller focused on request orchestration and add request-level tests.
+constraints:
+  required_design:
+    - REST resource
+    - request-level testing
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: resources-route
+    input: posts
+    expected: RESTful
+  - name: controller-actions
+    input:
+      - index
+      - show
+      - create
+      - update
+      - destroy
+    expected: present
+  - name: params-boundary
+    input: post
+    expected: require-and-permit
+grading:
+  functional: route/controller contract is complete
+  contract: params boundary and action semantics are explicit
+  tests: request-level test is present and meaningful
+  scope_control: no unrelated routing structure
