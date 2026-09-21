@@ -179,11 +179,15 @@ module RubyAgentSkills
     end
 
     def resolution(candidates, preferred_types)
-      preferred = candidates.select { |candidate| preferred_types.include?(candidate["type"]) }
+      preferred = preferred_types.flat_map do |type|
+        candidates.select { |candidate| candidate["type"] == type }
+      end
       return nil if preferred.empty?
 
-      values = preferred.map { |candidate| candidate["value"] }.uniq
-      values.one? ? values.first : nil
+      comparison_values = preferred.map { |candidate| candidate.fetch("comparison_value", candidate.fetch("value")) }.uniq
+      return nil if comparison_values.length > 1
+
+      preferred.first.fetch("value")
     end
 
     def build_version_result(resolved, candidates, preferred_conflict_types:)
