@@ -5,6 +5,10 @@ family: rails
 ---
 # CSS Bundling Contract
 
+## Problem
+
+CSS can appear correct in a watcher while the release build produces missing or stale compiled output.
+
 ## Use when
 CSS requires Sass/PostCSS/Tailwind or another build-time transformation.
 
