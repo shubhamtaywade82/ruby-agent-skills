@@ -318,7 +318,7 @@ For Active Model and Rails-facing non-persisted model changes:
 - choose the smallest Active Model modules required by actual consumers;
 - keep persistence, database constraints, querying, and database lifecycle in Active Record/database boundaries when persistence is intrinsic;
 - define typed/default attribute behavior separately from semantic validation; casting success is not domain validity;
-- keep validation separate from authorization, transaction orchestration, external API success, and database integrity;
+- keep validation separate from authorization, transaction orchestration, external API success, and database integrity; validation is authorization-independent and never an authorization mechanism;
 - treat to_model, to_key, to_param, and model_name as Rails-facing conversion contracts and never derive authorization from URL parameters;
 - treat ActiveModel::Dirty as change tracking rather than persistence and define apply/reset/rollback semantics explicitly;
 - use ActiveModel::Callbacks only for intrinsic lifecycle hooks; prefer explicit methods/services for significant workflows and external side effects;
