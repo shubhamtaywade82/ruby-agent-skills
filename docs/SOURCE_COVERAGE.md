@@ -22,6 +22,7 @@ The repository intentionally synthesizes concepts rather than reproducing source
 | HTTP/client integration | ruby-gems-io-services, external-api-client, ruby-dependency-injection |
 | Rails MVC/application anatomy | rails-architecture |
 | Rails routes/controllers/views/forms | rails-routing, rails-controllers, rails-views |
+| Deep Action Controller request/response boundary | rails-action-controller, rails-security, rails-observability, rails-caching, rails-test-engineering |
 | Models, migrations, Active Record and console | rails-activerecord |
 | Authentication | rails-authentication |
 | Associations | rails-associations |
@@ -273,6 +274,32 @@ Primary references:
 - https://guides.rubyonrails.org/configuring.html
 - https://guides.rubyonrails.org/debugging_rails_applications.html
 
+
+## Rails Action Controller
+
+Action Controller is covered as a dedicated HTTP boundary layer because request input, response semantics, session/cookie state, callbacks, format negotiation, HTTP cache validators, streaming/downloads, and controller exception mapping require deeper contracts than the basic rails-controllers skill.
+
+Operational coverage:
+- skills/rails-action-controller/SKILL.md
+- patterns/rails/action-controller-request-boundary.md
+- patterns/rails/strong-parameters-contract.md
+- patterns/rails/controller-response-contract.md
+- patterns/rails/controller-session-cookie-boundary.md
+- patterns/rails/action-controller-callback-contract.md
+- patterns/rails/controller-content-negotiation.md
+- patterns/rails/conditional-response-cache.md
+- patterns/rails/controller-streaming-download.md
+- patterns/rails/controller-exception-boundary.md
+- patterns/rails/action-controller-testing.md
+- evals/rails/action-controller-contract.yml
+- test/rails_action_controller_system_test.rb
+
+Primary sources:
+- https://guides.rubyonrails.org/action_controller_overview.html
+- https://api.rubyonrails.org/classes/ActionController/Parameters.html
+- https://api.rubyonrails.org/classes/ActionController/Redirecting.html
+- https://api.rubyonrails.org/classes/ActionController/ConditionalGet.html
+- https://api.rubyonrails.org/classes/ActionController/Rescue.html
 
 ## Rails database engineering
 
