@@ -15,7 +15,7 @@ Existing rows must be transformed or populated in production-scale data.
 ## Do not use when
 The dataset is demonstrably small and a single bounded transaction is explicitly acceptable.
 
-## Procedure
+## Implementation procedure
 1. Determine row volume and acceptable load.
 2. Choose deterministic batching/cursor ordering.
 3. Process bounded batches.
@@ -40,3 +40,15 @@ Test empty, partial, repeated, and failure/restart cases.
 - resumable
 - idempotent
 - progress measurable
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
