@@ -17,6 +17,7 @@ checks:
   - functional
   - tests
   - contract
+  - security
 cases:
   - name: owner
     input: owner
