@@ -90,12 +90,14 @@ Public YAML files are visible benchmark definitions. Hidden cases must be stored
 
 ## Runner contract
 
-A future benchmark runner should:
+Phase 6 implements the provider-neutral runner documented in `docs/BENCHMARK_RUNNER.md`.
 
-1. materialize the case repository
-2. present the task prompt and available agent tools
-3. capture the resulting patch
-4. run deterministic tests
-5. inspect complexity/design constraints
-6. record dimension-level results
-7. preserve exact failure signals for regression analysis
+A run:
+
+1. materializes the case prompt and YAML into a disposable workspace
+2. invokes the explicit agent command
+3. captures stdout/stderr and process status
+4. captures git status and patch evidence
+5. optionally invokes an explicit verifier command
+6. consumes verifier JSON for declared check dimensions
+7. records an overall status without discarding the individual signals
