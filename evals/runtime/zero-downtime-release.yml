@@ -4,6 +4,7 @@ title: Preserve compatibility during a rolling Rails release
 category: rails
 source: rails-production-runtime-v1
 skills:
+  - rails-release-engineering
   - rails-production-runtime
   - rails-database-engineering
   - rails-active-job
