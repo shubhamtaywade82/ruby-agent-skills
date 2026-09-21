@@ -1,0 +1,32 @@
+id: pattern-restraint
+version: 1
+title: Keep a simple behavior as a direct method
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-method-design
+  - ruby-clean-code
+  - ruby-tdd-refactoring
+patterns:
+  []
+prompt: |
+  Implement User#full_name. The behavior is simply the first and last name joined by one space. Keep the solution direct and do not introduce service, factory, strategy, presenter, policy, or repository abstractions.
+constraints:
+  required_design:
+    - direct implementation with no design-pattern abstraction
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: User exposes full_name
+  pattern_selection: direct method is preserved and speculative abstractions are absent
+  scope_control: changes remain inside the disposable fixture
