@@ -162,4 +162,4 @@ The runner executes agents in a disposable workspace, captures process output an
 
 ## Status
 
-The branch contains the Phase 4 implementation-pattern system, the Phase 5 evaluation corpus and the Phase 6 benchmark runner. The next step is the actual benchmark campaign: define reproducible fixtures/verifiers and execute baseline-versus-skill-enabled runs. Hidden benchmark packs should remain outside the public repository.
+The branch contains the Phase 4 implementation-pattern system, the Phase 5 evaluation corpus, the Phase 6 benchmark runner and the Phase 7 benchmark campaign infrastructure. The remaining execution step is to run real baseline-versus-skill-enabled agent commands across the public and private benchmark packs. Hidden benchmark packs should remain outside the public repository.
