@@ -57,7 +57,7 @@ eval_files.each do |path|
     errors << "#{relative}: duplicate evaluation id #{id}"
   end
 
-  unless id.match?(/\\A[a-z0-9]+(?:-[a-z0-9]+)*\\z/)
+  unless id.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/)
     errors << "#{relative}: id must be kebab-case"
   end
 
@@ -66,7 +66,7 @@ eval_files.each do |path|
   end
 
   Array(data["patterns"]).each do |pattern|
-    normalized = pattern.to_s.sub(%r{\\Apattern:}, "")
+    normalized = pattern.to_s.sub(%r{\Apattern:}, "")
     errors << "#{relative}: unknown pattern #{normalized}" unless patterns.include?(normalized) || pattern_names.include?(normalized)
   end
 
