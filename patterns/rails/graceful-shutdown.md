@@ -45,3 +45,10 @@ Inspect runtime/version, repository conventions, the owning boundary, neighborin
 - rails-testing
 - ruby-tdd-refactoring
 - rails-architecture
+## Do not use when
+
+Do not use when the change has no process lifecycle, termination, restart, or resource-release concern.
+
+## Testing
+
+Test signal forwarding, graceful completion, timeout behavior, and recovery after forced termination.
