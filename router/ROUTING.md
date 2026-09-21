@@ -19,12 +19,12 @@ This file defines how an agent should select and compose skills.
 | Ruby syntax/semantics | ruby-core | ruby-clean-code |
 | Ruby values/data representation | ruby-data-types | ruby-core, ruby-clean-code |
 | Branches/loops/boolean logic | ruby-control-flow | ruby-core, ruby-clean-code |
-| Arrays/hashes/Enumerable | ruby-collections | ruby-data-types, ruby-clean-code |
+| Arrays/hashes/Enumerable | ruby-collections | ruby-enumerables, ruby-data-types, ruby-clean-code |\n| Blocks/Procs/lambdas | ruby-blocks-procs-lambdas | ruby-method-design, ruby-tdd-refactoring |\n| Public Ruby API contract | ruby-api-design | ruby-method-design, ruby-oop, ruby-tdd-refactoring |\n| Complex boolean predicates | ruby-boolean-logic | ruby-control-flow, ruby-method-design, ruby-clean-code |
 | New/refactored method | ruby-method-design | ruby-clean-code, ruby-tdd-refactoring |
 | Class/domain design | ruby-oop | ruby-method-design, ruby-clean-code |
 | Shared behavior/namespaces | ruby-modules-mixins | ruby-oop, ruby-clean-code |
 | Reflection/metaprogramming | ruby-metaprogramming | ruby-clean-code, ruby-tdd-refactoring |
-| File/CSV/HTTP/dependency boundary | ruby-gems-io-services | ruby-debugging, ruby-tdd-refactoring |
+| File/CSV/HTTP/dependency boundary | ruby-gems-io-services | ruby-api-design, ruby-debugging, ruby-tdd-refactoring, pattern:external-api-client |
 | Runtime failure/exception | ruby-debugging | ruby-tdd-refactoring |
 | Rails application structure | rails-architecture | ruby-clean-code |
 | Rails routes | rails-routing | rails-controllers, rails-testing |
@@ -35,7 +35,7 @@ This file defines how an agent should select and compose skills.
 | Validation/invariant | rails-validations | rails-activerecord, rails-testing |
 | Authentication/session | rails-authentication | rails-controllers, rails-testing |
 | Rails test design | rails-testing | relevant implementation skill, ruby-tdd-refactoring |
-| Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing |
+| Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |\n| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | Test-driven change | ruby-tdd-refactoring | relevant implementation skill |
@@ -43,7 +43,7 @@ This file defines how an agent should select and compose skills.
 | Multi-step application workflow | ruby-oop / relevant domain skill | pattern:service-object, ruby-tdd-refactoring |
 | Interchangeable algorithm/policy | ruby-oop | pattern:strategy-object |
 | Replace inheritance with collaborators | ruby-oop | pattern:composition-over-inheritance |
-| External/legacy API boundary | ruby-gems-io-services | pattern:adapter, ruby-debugging |
+| External/legacy API boundary | ruby-gems-io-services | ruby-api-design, pattern:external-api-client, pattern:adapter, ruby-debugging |\n| Reusable Ruby gem/library | ruby-gems-io-services | ruby-api-design, pattern:ruby-gem |
 | Complex/read-oriented Rails query | rails-activerecord | pattern:query-object, rails-testing |
 | Multi-model/input validation boundary | rails-controllers | pattern:form-object, rails-validations |
 | Authorization boundary | rails-authentication | pattern:policy-boundary, rails-testing |
@@ -125,7 +125,7 @@ classify task
   -> verify behavior
 ```
 
-Patterns are optional implementation shapes, not architecture mandates.
+Patterns are optional implementation shapes, not architecture mandates. Book-derived patterns are selected only when the repository/task shape justifies them.
 
 ### Pattern composition examples
 
@@ -169,3 +169,37 @@ ruby-debugging
 ```
 
 Do not use a pattern simply because it exists. If a direct implementation is clearer and fits the repository, prefer the direct implementation.
+
+
+## Book Integration v2 routing examples
+
+### External API client
+
+    ruby-gems-io-services
+      + ruby-api-design
+      + pattern:external-api-client
+      + pattern:adapter (when provider/legacy transport needs isolation)
+      + ruby-testing/tdd discipline
+
+### Rails REST resource
+
+    rails-routing
+      + rails-controllers
+      + rails-authentication (when protected)
+      + pattern:rest-resource
+      + pattern:request-flow
+      + rails-testing
+
+### Rails scaffold cleanup
+
+    rails-generators
+      + pattern:scaffold-lifecycle
+      + relevant resource skills
+      + rails-testing
+
+### Ruby gem extraction
+
+    ruby-gems-io-services
+      + ruby-api-design
+      + pattern:ruby-gem
+      + ruby-tdd-refactoring
