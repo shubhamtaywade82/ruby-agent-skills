@@ -13,3 +13,24 @@ Own one cohesive browser behavior with explicit actions, targets, values, and li
 
 ## Testing
 Test public behavior and important lifecycle transitions.
+
+## Do not use when
+A native HTML mechanism or a single declarative attribute already solves the behavior.
+
+## Repository inspection
+Inspect controller registration, related targets/values, lifecycle hooks, and JS tests.
+
+## Implementation procedure
+Define one responsibility, explicit inputs, public actions, and bounded external dependencies.
+
+## Failure modes
+God controllers, hidden domain logic, global state, and lifecycle leaks.
+
+## Testing
+Test public controller behavior and important reconnect/disconnect paths.
+
+## Review checklist
+The controller is cohesive and server responsibilities remain server-side.
+
+## Related skills
+rails-hotwire, ruby-clean-code, rails-test-engineering
