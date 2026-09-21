@@ -437,3 +437,16 @@ Core patterns:
 - `active-storage-processing`
 - `active-storage-purge`
 - `active-storage-testing`
+## Rails Action Cable & realtime engineering
+
+The repository now includes a dedicated `rails-action-cable` layer for WebSocket connection authentication, channel authorization, stream naming, broadcast contracts, reconnect/reconciliation, realtime capacity, failure/degradation semantics, and deterministic testing.
+
+Core patterns:
+- `action-cable-connection-auth`
+- `action-cable-channel-authorization`
+- `action-cable-stream-contract`
+- `action-cable-broadcast-contract`
+- `action-cable-reconciliation`
+- `action-cable-capacity`
+- `action-cable-failure-boundary`
+- `action-cable-testing`
