@@ -70,6 +70,34 @@ AllCops:
     - 'vendor/**/*'
     - '.ruby-agent-eval/**/*'
 
+# RSpec style guide policy. These cops are linked to
+# https://rspec.rubystyle.guide/ by rubocop-rspec.
+RSpec/AnyInstance:
+  Enabled: true
+RSpec/BeforeAfterAll:
+  Enabled: true
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+RSpec/ExampleWording:
+  Enabled: true
+RSpec/HookArgument:
+  EnforcedStyle: implicit
+RSpec/ImplicitBlockExpectation:
+  Enabled: true
+RSpec/InstanceVariable:
+  Enabled: true
+RSpec/LeadingSubject:
+  Enabled: true
+RSpec/MultipleExpectations:
+  Max: 1
+RSpec/NamedSubject:
+  EnforcedStyle: always
+RSpec/PredicateMatcher:
+  EnforcedStyle: inflected
+
 # Rails-specific configuration is intentionally version-neutral here.
 # Consuming Rails applications should override, when necessary:
 #
