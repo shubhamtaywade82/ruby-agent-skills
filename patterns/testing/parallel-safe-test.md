@@ -47,3 +47,7 @@ Inspect runtime/version, repository conventions, the owning boundary, neighborin
 - rails-testing
 - ruby-tdd-refactoring
 - rails-architecture
+
+## Do not use when
+
+Do not use when the test suite is not parallelized and the task has no shared-resource or order-independence concern.
