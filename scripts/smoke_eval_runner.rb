@@ -18,7 +18,8 @@ Dir.mktmpdir("ruby-agent-eval-smoke-") do |dir|
   parsed = JSON.parse(File.read(packet, encoding: "UTF-8"))
   abort "packet evaluation mismatch" unless parsed.fetch("evaluation") == "selection-sort"
 
-  verifier = <<~RUBY
+  verifier = File.join(dir, "verifier.rb")
+  File.write(verifier, <<~RUBY, encoding: "UTF-8")
     require "json"
     require "yaml"
     evaluation = YAML.safe_load(File.read(ENV.fetch("RUBY_AGENT_EVAL_FILE")), permitted_classes: [], aliases: false)
@@ -29,13 +30,13 @@ Dir.mktmpdir("ruby-agent-eval-smoke-") do |dir|
   result = runner.run(
     id: "selection-sort",
     workspace: root,
-    agent_command: "ruby -e \"exit 0\"",
-    verify_command: "ruby -e #{verifier.inspect}",
+    agent_command: "ruby -e 'exit 0'",
+    verify_command: "ruby #{verifier}",
     output: File.join(dir, "result.json"),
     timeout: 30
   )
 
-  abort "smoke run was not passed" unless result.fetch("overall") == "passed"
+  abort JSON.pretty_generate(result) unless result.fetch("overall") == "passed"
   abort "git evidence missing" unless result.fetch("patch").fetch("git_repository")
 end
 
