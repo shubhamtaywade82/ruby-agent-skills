@@ -40,6 +40,10 @@ end
 
 implementation = File.join(WORKSPACE, fixture.fetch("implementation_file"))
 source = File.file?(implementation) ? File.read(implementation, encoding: "UTF-8") : ""
+ruby_sources = Dir[File.join(WORKSPACE, "lib", "**", "*.rb"), File.join(WORKSPACE, "app", "**", "*.rb")]
+  .select { |path| File.file?(path) }
+  .map { |path| File.read(path, encoding: "UTF-8") }
+  .join("\n")
 
 begin
   case evaluation.fetch("id")
@@ -163,7 +167,8 @@ end
 files = changed_files
 checks["oop"] = if declared.include?("oop")
   class_names = Array(fixture.fetch("classes"))
-  missing = class_names.reject { |name| static_class_present?(source, name) }
+  design_source = ruby_sources.empty? ? source : ruby_sources
+  missing = class_names.reject { |name| static_class_present?(design_source, name) }
   missing.empty? ? check("pass", "declared benchmark classes are present") : check("fail", "missing classes: #{missing.join(", ")}")
 else
   check("not_evaluated", "OOP is not a declared dimension for this case")
