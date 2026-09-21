@@ -118,3 +118,20 @@ Do not turn these prompts into source-text skills. Turn them into testable evalu
 - **eval-only** — the material is primarily a benchmark or exercise.
 
 The goal is not to maximize skill count. The goal is to make routing precise while keeping each skill focused.
+
+## rails_best_practices
+
+The repository incorporates the documented review taxonomy from [flyerhzm/rails_best_practices](https://github.com/flyerhzm/rails_best_practices), a Rails code-metric tool. Its documented checks cover model responsibility, associations/query access, database indexes, RESTful routes, controller/view/helper boundaries, migrations, mailers, exception handling, and unused methods. citeturn0search0
+
+| Source area | Agent coverage |
+|---|---|
+| Model/persistence checks | rails-best-practices, rails-activerecord, rails-associations, rails-validations |
+| RESTful route checks | rails-best-practices, rails-routing |
+| Controller boundary checks | rails-best-practices, rails-controllers, rails-architecture |
+| View/helper checks | rails-best-practices, rails-views |
+| Migration/index checks | rails-best-practices, rails-activerecord |
+| Exception handling | rails-best-practices, ruby-debugging |
+| Unused/dead-code review | rails-best-practices, ruby-clean-code |
+| Analyzer finding interpretation | rails-best-practices, rails-best-practice-review |
+
+Historical checks are treated as review signals. The agent must translate them to the actual Rails version and repository contract instead of introducing deprecated APIs merely to satisfy an old rule.
