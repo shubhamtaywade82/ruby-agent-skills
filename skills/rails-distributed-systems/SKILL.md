@@ -27,6 +27,7 @@ classify boundary
 This skill composes with:
 
 - rails-api-integration for synchronous APIs/webhooks;
+- rails-event-driven-messaging for message envelopes, broker topology, schema evolution, dead-letter/replay, and messaging capacity;
 - rails-active-job for asynchronous execution;
 - rails-database-engineering for transaction/constraint/locking boundaries;
 - ruby-concurrency for in-process coordination;
@@ -335,6 +336,8 @@ Distributed debugging requires state-transition evidence, not only exception log
 Compose with `rails-observability`.
 
 ## Rollout compatibility
+
+For message-specific topology/schema/consumer concerns, compose with `rails-event-driven-messaging` rather than expanding this skill with broker-specific mechanics.
 
 During rolling deployment:
 
