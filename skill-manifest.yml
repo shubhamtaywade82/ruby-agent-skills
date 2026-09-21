@@ -76,6 +76,10 @@ skills:
     family: rails
     path: skills/rails-action-mailer/SKILL.md
     triggers: [Action Mailer, Rails mailer, ApplicationMailer, mailer, email delivery, deliver_later, deliver_now, mailer preview, mailer testing, mailer provider, SMTP, email security, email observability]
+  rails-action-cable:
+    family: rails
+    path: skills/rails-action-cable/SKILL.md
+    triggers: [Action Cable, ActionCable, WebSocket, WebSockets, realtime Rails, realtime, ApplicationCable::Connection, ApplicationCable::Channel, cable connection, cable channel, channel authorization, subscription, stream_from, stream_for, broadcast_to, broadcasting, pub/sub realtime, Redis pubsub, Action Cable testing, reconnect, resubscribe, realtime capacity]
   rails-active-storage:
     family: rails
     path: skills/rails-active-storage/SKILL.md
@@ -361,6 +365,13 @@ patterns:
       - patterns/rails/active-storage-serving.md
       - patterns/rails/active-storage-processing.md
       - patterns/rails/active-storage-purge.md
+      - patterns/rails/action-cable-connection-auth.md
+      - patterns/rails/action-cable-channel-authorization.md
+      - patterns/rails/action-cable-stream-contract.md
+      - patterns/rails/action-cable-broadcast-contract.md
+      - patterns/rails/action-cable-reconciliation.md
+      - patterns/rails/action-cable-capacity.md
+      - patterns/rails/action-cable-failure-boundary.md
       - patterns/rails/release-risk-classification.md
       - patterns/rails/artifact-provenance.md
       - patterns/rails/deployment-gate.md
@@ -384,6 +395,7 @@ patterns:
       - patterns/testing/regression-test.md
       - patterns/rails/mailer-testing.md
       - patterns/rails/active-storage-testing.md
+      - patterns/rails/action-cable-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
@@ -631,6 +643,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-mailer-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-action-cable:
+    source: rails-action-cable-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-cable-contract.yml
     checks:
       - functional
       - tests
