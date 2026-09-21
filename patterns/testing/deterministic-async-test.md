@@ -12,7 +12,7 @@ Asynchronous code is commonly tested with sleeps or direct method calls that byp
 ## Use when
 Testing Active Job, delayed side effects, polling, or asynchronous workflow boundaries.
 
-## Procedure
+## Implementation procedure
 1. Identify enqueue versus execution contract.
 2. Assert enqueue with ActiveJob::TestHelper when applicable.
 3. Use perform_enqueued_jobs for controlled execution.
@@ -34,3 +34,15 @@ Cover both enqueue and execution when both are part of the contract.
 - serialization not accidentally bypassed
 - no sleep-based synchronization
 - deterministic execution
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
