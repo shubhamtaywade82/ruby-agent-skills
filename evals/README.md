@@ -43,8 +43,6 @@ Do not collapse these dimensions into a single opaque score. Preserve individual
 
 ```text
 evals/
-├── schema/
-│   └── EVAL_SCHEMA.md
 ├── ruby-training/
 │   ├── selection-sort.yml
 │   ├── recursive-selection-sort.yml
@@ -74,7 +72,7 @@ Truly hidden cases must be injected by a benchmark runner from outside the publi
 
 ## Evaluation schema
 
-See `evals/schema/EVAL_SCHEMA.md`.
+See `docs/EVAL_SCHEMA.md`.
 
 Each case records:
 
