@@ -1,0 +1,56 @@
+id: power-of-two
+version: 1
+title: Power-of-two detection without division or modulo
+category: ruby-training
+source: allerin-ruby-set-2
+skills:
+  - ruby-core
+  - ruby-control-flow
+  - ruby-method-design
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Determine whether an integer is a power of two without using division
+  or modulo operators. Use the bitwise property described by the assessment.
+constraints:
+  time_complexity: O(1)
+  auxiliary_space: O(1)
+  forbidden_constructs:
+    - division operator
+    - modulo operator
+  required_algorithm:
+    - bitwise AND of x and x-1
+  required_design:
+    - object-oriented design
+checks:
+  - functional
+  - complexity
+  - forbidden_constructs
+  - oop
+  - tests
+  - edge_cases
+cases:
+  - name: source-not-power
+    input: 126
+    expected: false
+  - name: source-power
+    input: 1024
+    expected: true
+  - name: one
+    input: 1
+    expected: true
+  - name: zero
+    input: 0
+    expected: false
+  - name: negative
+    input: -2
+    expected: false
+  - name: small-power
+    input: 2
+    expected: true
+grading:
+  functional: correctly identifies positive powers of two and rejects zero/negative values.
+  forbidden_constructs: implementation does not use / or % for the check.
+  complexity: uses constant time and auxiliary space.
+  oop: follows the assessment's OOP requirement without adding unnecessary abstraction.
