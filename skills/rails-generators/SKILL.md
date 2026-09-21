@@ -88,3 +88,9 @@ Run the relevant generator command, inspect the exact diff, run migration/schema
 ## Source foundation
 
 Derived from the Rails scaffolding/generator material in *The Ruby Workshop*, including the use of `rails generate scaffold` to create conventional resource structure. The final-design and review requirements are added for agent safety.
+
+## Book integration: scaffold lifecycle
+
+Treat scaffold output as a first draft. After generation, review the migration, model, controller, routes, views/forms, tests, and authorization boundaries.
+
+Remove generated actions, files, placeholders, or routes that the actual feature does not need. The goal is a coherent resource, not maximum generated surface area.
