@@ -12,7 +12,7 @@ Production requests are hard to diagnose when logs, metrics, and errors cannot b
 ## Use when
 A request path needs explicit correlation, structured logs, duration/status metrics, or error context.
 
-## Procedure
+## Implementation procedure
 1. Inspect existing request ID/log-tag conventions.
 2. Reuse Rails/request context already available.
 3. Define minimal event fields.
@@ -36,3 +36,13 @@ Assert structured event fields and request correlation rather than exact log for
 - metrics have bounded dimensions
 - sensitive data filtered
 - instrumentation is side-effect free
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
