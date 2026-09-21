@@ -192,3 +192,22 @@ Operational artifacts:
 - `docs/SECURITY.md`
 - `evals/security/*`
 - `scripts/verify_security_eval.rb`
+## Ruby/Rails performance
+
+The performance layer covers evidence-driven benchmarking, profiling, allocations/GC, Active Record query cost, request/job decomposition, caching semantics, concurrency capacity, and YJIT/runtime considerations.
+
+Operational artifacts:
+- `skills/ruby-performance/SKILL.md`
+- `patterns/ruby-design/performance-investigation.md`
+- `patterns/rails/cache-boundary.md`
+- `data/performance/tools.yml`
+- `evals/performance/*`
+- `scripts/verify_performance_eval.rb`
+- `benchmarks/performance/campaign.yml`
+
+Primary references:
+- https://guides.rubyonrails.org/caching_with_rails.html
+- https://guides.rubyonrails.org/performance_testing.html
+- https://ruby-doc.org/
+- https://github.com/tmm1/stackprof
+- https://github.com/ruby-prof/ruby-prof
