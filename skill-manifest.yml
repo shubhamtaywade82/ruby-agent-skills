@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  ruby-runtime-compatibility:
+    family: runtime
+    path: skills/ruby-runtime-compatibility/SKILL.md
+    triggers: [Ruby version, Rails version, Bundler version, runtime compatibility, version compatibility, Ruby upgrade, Rails upgrade, deprecation compatibility]
   rubocop:
     family: quality
     path: skills/rubocop/SKILL.md
