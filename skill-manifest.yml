@@ -249,6 +249,10 @@ skills:
     family: rails
     path: skills/rails-activerecord/SKILL.md
     triggers: [model, migration, ActiveRecord, query, persistence]
+  rails-active-record:
+    family: rails
+    path: skills/rails-active-record/SKILL.md
+    triggers: [Active Record, ActiveRecord, ActiveRecord::Base, ApplicationRecord, ActiveRecord::Relation, relation, query composition, scope, default_scope, unscoped, preload, eager_load, includes, strict_loading, pluck, pick, persistence lifecycle, save, update, destroy, delete, update_all, delete_all, destroy_all, upsert, after_commit, after_rollback, Active Record callbacks, bulk write]
   rails-associations:
     family: rails
     path: skills/rails-associations/SKILL.md
