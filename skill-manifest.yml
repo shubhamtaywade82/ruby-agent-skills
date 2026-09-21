@@ -139,7 +139,7 @@ patterns:
 evaluations:
   ruby-training:
     source: allerin-ruby-set-2
-    schema: evals/schema/EVAL_SCHEMA.md
+    schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/ruby-training/selection-sort.yml
       - evals/ruby-training/recursive-selection-sort.yml
