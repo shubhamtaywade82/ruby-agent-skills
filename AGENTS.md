@@ -348,6 +348,28 @@ For Active Model and Rails-facing non-persisted model changes:
 - use Active Model lint/protocol tests for reusable Rails-facing model objects and test actual form/view/route consumers at focused integration boundaries;
 - never claim Rails model compatibility from valid? alone; verify the specific protocol required by the consumer.
 
+## Rails Associations changes
+
+For deep Active Record association changes:
+- inspect the Rails version, both association directions, foreign-key columns, primary keys, nullability, uniqueness, database foreign keys, scopes, inverse_of, dependent options, callbacks, through/join models, polymorphic types, autosave, counter/touch behavior, tenant ownership, loading paths, and relationship tests before implementation;
+- classify the boundary as cardinality/ownership, collection mutation, through join, polymorphic target, inverse/autosave, dependent lifecycle, counter/touch, association callback, loading, or association testing;
+- do not infer database integrity from association declarations; use rails-database-engineering for foreign keys, unique constraints, indexes, nullability, and transaction/locking mechanics;
+- when has_one means exactly one row, verify database uniqueness rather than relying only on the association declaration;
+- keep belongs_to presence/optional semantics aligned with the actual foreign-key and domain contract;
+- inspect both sides of every changed relationship; custom foreign_key, class_name, scopes, and through associations can affect inverse inference, autosave, validation, and duplicate queries;
+- use inverse_of explicitly when automatic inverse detection is not reliable and verify the resulting identity/autosave behavior;
+- treat has_many :through as a join-model contract; do not assume changing a through collection destroys target records;
+- prefer a join model over HABTM when the relationship carries attributes, validations, callbacks, authorization, or lifecycle behavior;
+- restrict polymorphic target types to an explicit allowed set and never trust client-provided type names for arbitrary constantization;
+- treat dependent as lifecycle behavior that must be reconciled with database cascading, foreign-key nullability, attachment cleanup, audits, and transaction boundaries;
+- verify asynchronous dependent destruction against the actual Active Job/runtime and database foreign-key contract;
+- make autosave/nested persistence ownership explicit; test parent success/failure and associated-record validation failures;
+- treat counter_cache and touch as denormalized coupling requiring authoritative-source and reconciliation reasoning;
+- keep before_add/after_add/before_remove/after_remove callbacks narrow and deterministic; do not hide external workflows or authorization engines inside them;
+- choose association loading from the actual traversal path; review inverse behavior before adding broad eager loading and compose with rails-active-record strict-loading/query guidance;
+- keep association validity separate from authorization and tenant isolation; a valid relationship can still cross a security boundary;
+- test cardinality, both directions, collection mutation, through changes, polymorphic targets, dependent behavior, autosave failure, security isolation, and representative loading behavior;
+- never claim association-performance improvements without measured query/runtime evidence.
 ## Rails Active Record changes
 
 For deep Active Record changes:
