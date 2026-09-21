@@ -1,0 +1,33 @@
+---
+name: asset-dependency-boundary
+description: Keep frontend dependency installation, runtime versions, and Rails integration explicit.
+family: rails
+---
+# Asset Dependency Boundary
+
+## Use when
+Adding/updating npm/Bun/yarn/pnpm packages or JavaScript/CSS build runtimes.
+
+## Do not use when
+The change is internal application code with no dependency graph change.
+
+## Repository inspection
+Inspect package manager, lockfile, runtime version, install scripts, registry configuration, and CI.
+
+## Implementation procedure
+Change the smallest dependency set, preserve lockfile integrity, audit install/build scripts, and verify clean installation.
+
+## Failure modes
+Transitive drift, malicious install scripts, incompatible runtime versions, and undocumented private registry assumptions.
+
+## Testing
+Run clean dependency installation and the relevant asset build.
+
+## Review checklist
+[ ] lockfile updated intentionally
+[ ] runtime compatible
+[ ] install scripts reviewed
+[ ] CI clean install verified
+
+## Related skills
+rails-asset-build-engineering, rails-security-engineering, ruby-runtime-compatibility
