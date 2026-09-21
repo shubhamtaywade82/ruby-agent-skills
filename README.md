@@ -515,3 +515,21 @@ Core patterns:
 - validation-callback-boundary
 - validation-bypass-audit
 - validation-testing
+
+## Rails Routing engineering
+
+The repository now includes a dedicated rails-routing deep-engineering layer covering route precedence, nested/shallow resources, namespace/scope dimensions, constraints, helper and polymorphic URL generation, routing concerns, direct/resolve mappings, mounted endpoints, catch-all boundaries, localized/host-aware routing, route inspection, and deterministic routing tests.
+
+Core patterns:
+- route-precedence-contract
+- nested-route-boundary
+- route-scope-namespace-contract
+- route-constraint-contract
+- route-helper-contract
+- route-concern-contract
+- direct-route-resolution
+- mounted-endpoint-boundary
+- catch-all-route-boundary
+- route-testing
+
+The routing layer composes with rails-action-controller, rails-authentication, rails-security, rails-i18n, rails-api-integration, rails-observability, rails-testing, and rails-test-engineering.

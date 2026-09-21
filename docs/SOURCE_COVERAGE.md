@@ -650,3 +650,21 @@ Primary Rails references:
 - https://guides.rubyonrails.org/active_record_validations.html
 - https://api.rubyonrails.org/classes/ActiveModel/Validations/ClassMethods.html
 - https://api.rubyonrails.org/classes/ActiveModel/Errors.html
+
+## Deep Rails routing
+
+The routing coverage now extends beyond basic resource declarations to the full public routing contract:
+
+- route precedence and shadowing
+- nested and shallow resources
+- namespace/path/module/helper scopes
+- segment, request, host, subdomain, and format constraints
+- path/url and polymorphic helper contracts
+- routing concerns
+- direct routes and resolve
+- Rack/engine mount boundaries
+- catch-all and redirect fallback behavior
+- localized and host-aware route composition
+- route inspection and deterministic route assertions
+
+Primary source: https://guides.rubyonrails.org/routing.html

@@ -232,7 +232,7 @@ skills:
   rails-routing:
     family: rails
     path: skills/rails-routing/SKILL.md
-    triggers: [routes, route, resources, HTTP verb, URL helper, dispatch]
+    triggers: [routes, route, resources, HTTP verb, URL helper, dispatch, nested routes, shallow routes, namespace, scope, route constraints, subdomain, host constraint, format routing, polymorphic route, direct route, resolve route, routing concern, catch-all route, mounted endpoint, mounted Rack, localized routes, route precedence]
   rails-controllers:
     family: rails
     path: skills/rails-controllers/SKILL.md
@@ -522,7 +522,7 @@ patterns:
       - patterns/rails/validation-testing.md
       - patterns/rails/active-model-testing.md
       - patterns/rails/active-support-testing.md
-      - patterns/rails/action-mailbox-testing.md
+      - patterns/rails/action-mailbox-testing.md\n      - patterns/testing/route-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
