@@ -483,6 +483,15 @@ patterns:
       - patterns/rails/validation-error-contract.md
       - patterns/rails/validation-callback-boundary.md
       - patterns/rails/validation-bypass-audit.md
+      - patterns/rails/route-precedence-contract.md
+      - patterns/rails/nested-route-boundary.md
+      - patterns/rails/route-scope-namespace-contract.md
+      - patterns/rails/route-constraint-contract.md
+      - patterns/rails/route-helper-contract.md
+      - patterns/rails/route-concern-contract.md
+      - patterns/rails/direct-route-resolution.md
+      - patterns/rails/mounted-endpoint-boundary.md
+      - patterns/rails/catch-all-route-boundary.md
       - patterns/rails/action-mailbox-routing-contract.md
       - patterns/rails/action-mailbox-authenticity-security.md
       - patterns/rails/action-mailbox-idempotency.md
@@ -522,7 +531,8 @@ patterns:
       - patterns/rails/validation-testing.md
       - patterns/rails/active-model-testing.md
       - patterns/rails/active-support-testing.md
-      - patterns/rails/action-mailbox-testing.md\n      - patterns/testing/route-testing.md
+      - patterns/rails/action-mailbox-testing.md
+      - patterns/testing/route-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
@@ -836,6 +846,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/validations-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-routing:
+    source: rails-routing-v2
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/routing-contract.yml
     checks:
       - functional
       - tests
