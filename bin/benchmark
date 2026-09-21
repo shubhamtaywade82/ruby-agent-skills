@@ -223,17 +223,16 @@ when "report"
   skills = JSON.parse(File.read(skills_path, encoding: "UTF-8"))
   names = (baseline.fetch("checks").keys | skills.fetch("checks").keys).sort
 
+  dimensions = names.each_with_object({}) do |name, hash|
+    hash[name] = {
+      "baseline" => status_value(baseline, name),
+      "skills_enabled" => status_value(skills, name)
+    }
+  end
+
   report = {
     "evaluation" => baseline.fetch("evaluation"),
-    "dimensions" => names.to_h do |name|
-      [
-        name,
-        {
-          "baseline" => status_value(baseline, name),
-          "skills_enabled" => status_value(skills, name)
-        }
-      ]
-    },
+    "dimensions" => dimensions,
     "overall" => {
       "baseline" => baseline.fetch("overall"),
       "skills_enabled" => skills.fetch("overall")
