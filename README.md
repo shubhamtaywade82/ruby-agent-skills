@@ -608,13 +608,13 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 34 — Rails Authentication Engineering**
+**Iteration 36 — Rails Hotwire Engineering**
 
 Latest verified commit:
 
-`8e1f0e2fb4da6005dcc7b98b83fd1f3356528ec9`
+`PENDING_CI_VERIFICATION`
 
-The corresponding CI validation completed successfully (CI run #595, validate job 106386786112).
+The corresponding CI validation is pending for the authorization iteration.
 
 Next milestone:
 
