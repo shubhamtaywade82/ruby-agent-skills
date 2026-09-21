@@ -13,7 +13,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | ruby-core | Ruby semantics, object model and runtime behavior |
 | ruby-data-types | Core value/data representation |
 | ruby-control-flow | Branching, loops and boolean logic |
-| ruby-collections | Arrays, hashes and Enumerable |
+| ruby-collections | Arrays, hashes and Enumerable |\n| ruby-blocks-procs-lambdas | Blocks, Proc, lambda and callback semantics |\n| ruby-enumerables | Enumerable decision rules and pipeline design |\n| ruby-api-design | Public method/library contracts |\n| ruby-boolean-logic | Predicates, truthiness and conditional design |
 | ruby-method-design | Method responsibility and contracts |
 | ruby-oop | Classes, encapsulation, inheritance, composition |
 | ruby-modules-mixins | Modules, mixins and namespaces |
@@ -58,7 +58,7 @@ Skills are intentionally composable. A Rails endpoint that changes persistence s
 
 ## Source foundation
 
-The initial source set includes the uploaded *The Ruby Workshop* and *Clean Ruby* materials.
+The source set includes *The Ruby Workshop*, *Clean Ruby*, and the uploaded *Learn Rails 6* material.
 
 The Ruby Workshop covers Ruby programs, data types, program flow, methods, OOP, modules/mixins, gems and I/O, debugging, metaprogramming, HTTP and Rails topics including MVC, routes, forms, Active Record, authentication, associations, validations, scaffolding and hosting.
 
@@ -66,7 +66,7 @@ Clean Ruby focuses on readable, changeable and straightforward code, then develo
 
 The Allerin assessment is treated as an evaluation source rather than copied into the skills. Its tasks include sorting, missing values, shopping-cart behavior, triplet sum, majority element, distinct values, power-of-two detection and Chocolate Feast, with an explicit OOP requirement.
 
-The repository does not reproduce the books. It turns their ideas into operational instructions for agents and uses the assessment as a benchmark corpus.
+The repository does not reproduce the books. It turns their ideas into operational instructions for agents and uses the assessment plus book-derived exercises as benchmark corpora.
 
 ## Design principles
 
@@ -112,8 +112,8 @@ Current families include:
 
 | Family | Examples |
 |---|---|
-| Ruby design | value object, service object, strategy, composition, adapter |
-| Rails | query object, form object, policy boundary, transaction boundary, request flow |
+| Ruby design | value object, service object, strategy, composition, adapter, external API client, gem boundary |
+| Rails | query object, form object, policy boundary, transaction boundary, request flow, REST resource, scaffold lifecycle |
 | Testing | regression test |
 | Algorithms | two pointers, frequency map |
 
@@ -174,3 +174,16 @@ See:
 - `docs/AGENT_ADAPTER_PROTOCOL.md`
 - `docs/BENCHMARK_CAMPAIGN.md`
 - `benchmarks/ruby-training/campaign.yml`
+
+
+## Phase 9 real agent adapter
+
+The repository now includes a provider-neutral command adapter:
+
+    ruby bin/agent-benchmark --command 'YOUR_AGENT_COMMAND'
+
+It keeps the same agent command/model configuration across baseline and skills-enabled paired runs while changing only the materialized skill context. Provider-specific credentials and launch logic stay outside the repository.
+
+## Book Integration v2
+
+The second book integration adds four Ruby skills, five implementation patterns, and an eight-case Ruby/Rails evaluation family under evals/ruby-workshop. The cases cover Enumerable selection, public API contracts, voting/application design, service objects, external API boundaries, gem packaging, REST resources, and authentication boundaries.
