@@ -17,6 +17,11 @@ patterns = manifest.fetch("patterns").values.flat_map { |entry| entry.fetch("pat
 end.to_set
 pattern_names = patterns.map { |path| File.basename(path) }.to_set
 
+runner = manifest.fetch("runner", {})
+%w[command result_schema documentation].each do |key|
+  errors << "manifest runner missing #{key}" if runner[key].to_s.empty?
+end
+
 evaluation_manifest = manifest.fetch("evaluations", {})
 manifest_eval_paths = evaluation_manifest.values.flat_map { |entry| entry.fetch("paths", []) }.to_set
 
