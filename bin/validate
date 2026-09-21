@@ -35,3 +35,4 @@ ruby -I"$ROOT/test" "$ROOT/test/rails_security_engineering_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/rails_incident_engineering_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_release_engineering_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_caching_system_test.rb"
