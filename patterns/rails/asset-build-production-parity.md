@@ -5,6 +5,10 @@ family: rails
 ---
 # Asset Build Production Parity
 
+## Problem
+
+Development and production can silently use different toolchains, dependencies, or artifact paths.
+
 ## Use when
 A build works locally but production has a different compilation, runtime, or delivery path.
 
