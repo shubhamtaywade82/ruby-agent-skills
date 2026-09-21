@@ -72,6 +72,11 @@ skills:
     family: performance
     path: skills/rails-caching/SKILL.md
     triggers: [Rails caching, cache engineering, cache key, cache key isolation, cache invalidation, cache freshness, cache store, cache stampede, cache warming, cache failure, cache eviction, cache capacity, fragment cache, low-level cache, response cache, stale cache]
+  rails-active-support:
+    family: rails
+    path: skills/rails-active-support/SKILL.md
+    triggers: [Active Support, ActiveSupport, ActiveSupport::Concern, ActiveSupport::CurrentAttributes, ActiveSupport::Notifications, ActiveSupport::Callbacks, class_attribute, Active Support instrumentation, Active Support core extensions, Active Support loading, CurrentAttributes, Time.zone, Active Support inflection, safe_constantize, Active Support concern]
+
   rails-active-model:
     family: rails
     path: skills/rails-active-model/SKILL.md
@@ -410,6 +415,14 @@ patterns:
       - patterns/rails/action-text-preload-performance.md
       - patterns/rails/action-text-lifecycle.md
       - patterns/rails/action-text-attachable-contract.md
+      - patterns/rails/active-support-loading-boundary.md
+      - patterns/rails/active-support-concern-composition.md
+      - patterns/rails/active-support-class-configuration.md
+      - patterns/rails/active-support-current-context.md
+      - patterns/rails/active-support-notifications-contract.md
+      - patterns/rails/active-support-callback-boundary.md
+      - patterns/rails/active-support-time-semantics.md
+      - patterns/rails/active-support-inflection-boundary.md
       - patterns/rails/active-model-boundary.md
       - patterns/rails/active-model-attributes-contract.md
       - patterns/rails/active-model-validation-contract.md
@@ -459,6 +472,7 @@ patterns:
       - patterns/rails/action-text-testing.md
       - patterns/rails/action-view-testing.md
       - patterns/rails/active-model-testing.md
+      - patterns/rails/active-support-testing.md
       - patterns/rails/action-mailbox-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
@@ -701,6 +715,17 @@ evaluations:
       - functional
       - oop
       - tests
+
+  rails-active-support:
+    source: rails-active-support-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-support-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
 
   rails-active-model:
     source: rails-active-model-v1
