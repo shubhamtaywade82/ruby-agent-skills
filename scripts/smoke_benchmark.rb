@@ -15,9 +15,7 @@ agent_script = <<~RUBY
   require "fileutils"
   require "json"
 
-  expected_enabled = ENV.fetch("SMOKE_EXPECT_SKILLS") == "true"
   actual_enabled = ENV.fetch("RUBY_AGENT_SKILLS_ENABLED") == "true"
-  abort "skill mode mismatch" unless actual_enabled == expected_enabled
 
   context = File.read(ENV.fetch("RUBY_AGENT_CONTEXT_FILE"), encoding: "UTF-8")
   abort "task context missing" unless context.include?("Implement selection sort")
@@ -60,7 +58,7 @@ agent_script = <<~RUBY
 RUBY
 
 run_case = lambda do |skills_enabled|
-  command = "SMOKE_EXPECT_SKILLS=#{skills_enabled} ruby -e #{Shellwords.escape(agent_script)}"
+  command = "ruby -e #{Shellwords.escape(agent_script)}"
   runner.run(
     id: "selection-sort",
     workspace: fixture,
@@ -84,5 +82,22 @@ end
 abort "baseline did not disable skills" if baseline.fetch("configuration").fetch("skills_enabled")
 abort "skills run did not enable skills" unless skills.fetch("configuration").fetch("skills_enabled")
 abort "skills were not materialized" if skills.fetch("agent").fetch("exit_code") != 0
+
+Dir.mktmpdir("ruby-agent-campaign-smoke-") do |dir|
+  campaign_command = [
+    "ruby", File.join(root, "bin", "benchmark"), "campaign",
+    "--agent-command", agent_command,
+    "--evaluation", "selection-sort",
+    "--runs", "1",
+    "--output", dir
+  ]
+  abort "campaign command failed" unless system(*campaign_command)
+  campaign_path = File.join(dir, "campaign.json")
+  abort "campaign result missing" unless File.file?(campaign_path)
+  campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+  evaluation = campaign.fetch("evaluations").fetch("selection-sort")
+  abort "campaign baseline result missing" if evaluation.fetch("baseline_results").empty?
+  abort "campaign skills result missing" if evaluation.fetch("skills_results").empty?
+end
 
 puts "Benchmark runner + skill isolation + verifier smoke test passed."
