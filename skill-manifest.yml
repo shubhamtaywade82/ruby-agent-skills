@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  rails-test-engineering:
+    family: rails-quality
+    path: skills/rails-test-engineering/SKILL.md
+    triggers: [test engineering, Rails test suite, flaky test, flaky tests, parallel tests, parallelize, test isolation, test performance, slow tests, system tests, integration tests, request tests, job tests, test database, transactional tests, test helpers, fixtures, factories, deterministic tests, CI tests]
   rails-production-runtime:
     family: rails
     path: skills/rails-production-runtime/SKILL.md
@@ -255,8 +259,16 @@ patterns:
 
   testing:
     paths:
+      - patterns/testing/test-boundary-selection.md
+      - patterns/testing/deterministic-async-test.md
+      - patterns/testing/parallel-safe-test.md
+      - patterns/testing/flaky-test-diagnosis.md
+      - patterns/testing/test-performance-budget.md
+      - patterns/testing/system-test-contract.md
+      - patterns/testing/request-contract.md
+      - patterns/testing/parallel-database-test.md
       - patterns/testing/regression-test.md
-    triggers: [regression test, bug fix, regression coverage]
+    triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
     paths:
@@ -273,6 +285,15 @@ runner:
   documentation: docs/BENCHMARK_RUNNER.md
 
 benchmarks:
+  test-engineering:
+    fixture_registry: benchmarks/test-engineering/fixtures.yml
+    fixture_root: benchmarks/test-engineering/fixtures
+    verifier: scripts/verify_test_engineering_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/test-engineering/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
   production-runtime:
     fixture_registry: benchmarks/production-runtime/fixtures.yml
     fixture_root: benchmarks/production-runtime/fixtures
@@ -375,6 +396,22 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  test-engineering:
+    source: rails-test-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/boundary-selection.yml
+      - evals/test-engineering/deterministic-job.yml
+      - evals/test-engineering/parallel-safety.yml
+      - evals/test-engineering/flaky-diagnosis.yml
+      - evals/test-engineering/system-contract.yml
+      - evals/test-engineering/test-performance.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   production-runtime:
     source: rails-production-runtime-v1
     schema: docs/EVAL_SCHEMA.md
