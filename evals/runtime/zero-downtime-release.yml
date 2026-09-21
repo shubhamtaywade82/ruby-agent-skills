@@ -1,0 +1,31 @@
+id: zero-downtime-release
+version: 1
+title: Preserve compatibility during a rolling Rails release
+category: rails
+source: rails-production-runtime-v1
+skills:
+  - rails-production-runtime
+  - rails-database-engineering
+  - rails-active-job
+patterns:
+  - zero-downtime-release
+prompt: |
+  A release adds customer.display_name while old web workers and queued jobs may still run. Design the release ordering so the schema expands first, compatible code is deployed, readiness is verified, and destructive removal is deferred.
+constraints:
+  required_design:
+    - rolling compatibility
+    - schema expand before contract
+    - queued-job compatibility
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: release-order
+    input: old and new web/job processes overlap
+    expected: no process sees an incompatible schema state
+grading:
+  functional: release sequence is compatible across overlap
+  tests: release-order contract is validated
+  contract: destructive removal is deferred
