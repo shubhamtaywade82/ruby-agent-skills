@@ -225,7 +225,7 @@ patterns:
       - patterns/rails/job-retry-policy.md
       - patterns/rails/transactional-job-enqueue.md
       - patterns/rails/concurrency-controlled-job.md
-    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review]
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job]
 
   testing:
     paths:
