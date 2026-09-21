@@ -1,0 +1,26 @@
+id: initializer-reload-boundary
+version: 1
+title: Configure reloadable code at the correct lifecycle boundary
+category: rails
+source: zeitwerk-v1
+skills:
+  - rails-zeitwerk
+patterns:
+  - zeitwerk-structure-review
+prompt: |
+  Configure ApiGateway from a Rails initializer. ApiGateway is reloadable and the endpoint configuration must be applied on boot and after reload. Do not cache the reloadable class object in a one-time initializer.
+constraints:
+  required_design:
+    - reload-safe initializer lifecycle
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: prepare-hook
+    input: initializer
+    expected: to_prepare
+grading:
+  functional: configuration is executed through a reload-aware lifecycle
+  tests: an executable test/spec is changed
+  contract: ApiGateway remains reloadable and is not eagerly required by the initializer
