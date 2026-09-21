@@ -86,7 +86,7 @@ module RubyAgentSkills
           packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
         end
 
-        env = runner_env(evaluation, prompt_path, eval_path, result_path, skill_pack)
+        env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
         run_command(agent_command, temp_dir, env, timeout, result["agent"])
         run_git_snapshot(temp_dir, result["patch"])
 
@@ -95,6 +95,7 @@ module RubyAgentSkills
         end
 
         apply_verifier_result(result, result_path)
+        apply_agent_metadata(result, env.fetch("RUBY_AGENT_METADATA_FILE"))
       end
 
       result["completed_at"] = Time.now.utc.iso8601
@@ -142,15 +143,15 @@ module RubyAgentSkills
       }
     end
 
-    def runner_env(evaluation, prompt_path, eval_path, result_path, skill_pack)
+    def runner_env(evaluation, workspace, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
       {
         "RUBY_AGENT_EVAL_ID" => evaluation.fetch("id"),
         "RUBY_AGENT_EVAL_PROMPT" => prompt_path,
         "RUBY_AGENT_EVAL_FILE" => eval_path,
         "RUBY_AGENT_EVAL_RESULT_FILE" => result_path,
         "RUBY_AGENT_EVAL_ROOT" => root,
-        "RUBY_AGENT_WORKSPACE" => Dir.pwd,
-        "RUBY_AGENT_SKILLS_ENABLED" => skill_pack.fetch("skills").empty? ? "false" : "true",
+        "RUBY_AGENT_WORKSPACE" => workspace,
+        "RUBY_AGENT_SKILLS_ENABLED" => skills_enabled ? "true" : "false",
         "RUBY_AGENT_SKILLS_DIR" => skill_pack.fetch("skills_dir"),
         "RUBY_AGENT_PATTERNS_DIR" => skill_pack.fetch("patterns_dir"),
         "RUBY_AGENT_SKILL_MANIFEST" => skill_pack.fetch("manifest"),
@@ -226,6 +227,13 @@ module RubyAgentSkills
       result["verification"]["reported_result_error"] = "verifier JSON must contain a checks mapping"
     end
 
+    def apply_agent_metadata(result, metadata_path)
+      return unless File.file?(metadata_path)
+
+      result["agent"]["metadata"] = JSON.parse(File.read(metadata_path, encoding: "UTF-8"))
+    rescue JSON::ParserError => e
+      result["agent"]["metadata_error"] = "invalid agent metadata JSON: #{e.message}"
+    end
     def overall_status(result)
       statuses = result["checks"].values.map { |value| value.fetch("status", "not_evaluated") }
       return "failed" if result["agent"]["timed_out"] || result["verification"]["timed_out"]
