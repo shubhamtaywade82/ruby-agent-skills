@@ -5,6 +5,10 @@ family: rails
 ---
 # Asset Dependency Boundary
 
+## Problem
+
+Frontend dependency changes can alter runtime, install, build, and supply-chain behavior outside the immediate feature.
+
 ## Use when
 Adding/updating npm/Bun/yarn/pnpm packages or JavaScript/CSS build runtimes.
 
