@@ -1,0 +1,30 @@
+id: concurrency-control
+version: 1
+title: Bound per-account job overlap
+category: rails
+source: active-job-v1
+skills:
+  - rails-active-job
+  - ruby-concurrency
+patterns:
+  - concurrency-controlled-job
+prompt: |
+  Two RebuildAccountJob executions for the same account must not overlap, while different accounts may execute concurrently. Add the smallest supported concurrency control and tests that demonstrate the key boundary.
+constraints:
+  required_design:
+    - per-account concurrency boundary
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: same-account
+    input: account 7 and account 7
+    expected: overlap <= 1
+  - name: different-account
+    input: account 7 and account 8
+    expected: concurrency may proceed independently
+grading:
+  functional: concurrency key scopes the same account
+  tests: same-key behavior is covered
+  contract: RebuildAccountJob API remains intact
