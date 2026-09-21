@@ -316,7 +316,7 @@ For inbound email and Action Mailbox changes:
 - inspect the configured ingress, provider/MTA setup, ApplicationMailbox routes, mailbox classes, Active Job queue behavior, InboundEmail schema/storage, authorization rules, Active Storage behavior, retention configuration, observability, and mailbox tests before implementing;
 - classify the boundary as external ingress, mailbox routing, mailbox processing, or downstream asynchronous work;
 - keep ingress authentication separate from sender identity, recipient authorization, and tenant/resource authorization;
-- treat From, Reply-To, Return-Path, custom headers, HTML, links, and attachment metadata as untrusted input until the owning boundary verifies them;
+- treat the From header, Reply-To, Return-Path, custom headers, HTML, links, and attachment metadata as untrusted input until the owning boundary verifies them;
 - define provider/MTA retry, duplicate, raw-message, body-size, timeout, and credential-rotation contracts at the ingress boundary;
 - keep provider-specific payload handling out of mailbox/domain code;
 - order mailbox routes from specific to general, define unmatched-message behavior, and test route collisions;
