@@ -39,6 +39,26 @@ skills:
     family: design
     path: skills/ruby-api-design/SKILL.md
     triggers: [public API, return contract, keyword arguments, compatibility, library boundary]
+  ruby-poro:
+    family: design
+    path: skills/ruby-poro/SKILL.md
+    triggers: [PORO, plain Ruby object, domain object, object extraction, framework-independent behavior]
+  ruby-service-objects:
+    family: design
+    path: skills/ruby-service-objects/SKILL.md
+    triggers: [service object, application service, application workflow, action object, command service]
+  ruby-domain-modeling:
+    family: design
+    path: skills/ruby-domain-modeling/SKILL.md
+    triggers: [domain modeling, business rule, invariant ownership, domain concept, rich domain object]
+  ruby-dependency-injection:
+    family: design
+    path: skills/ruby-dependency-injection/SKILL.md
+    triggers: [dependency injection, injected collaborator, dependency boundary, test double, replaceable collaborator]
+  ruby-object-composition:
+    family: design
+    path: skills/ruby-object-composition/SKILL.md
+    triggers: [composition, composition over inheritance, collaborator, replace inheritance, delegation]
   ruby-boolean-logic:
     family: design
     path: skills/ruby-boolean-logic/SKILL.md
@@ -132,7 +152,20 @@ patterns:
       - patterns/ruby-design/external-api-client.md
       - patterns/ruby-design/ruby-gem.md
       - patterns/ruby-design/metaprogramming-boundary.md
-    triggers: [value object, service object, strategy, composition, inheritance, adapter, external interface, external API client, gem boundary, metaprogramming boundary]
+      - patterns/ruby-design/application-service.md
+      - patterns/ruby-design/command.md
+      - patterns/ruby-design/policy-object.md
+      - patterns/ruby-design/null-object.md
+      - patterns/ruby-design/factory.md
+      - patterns/ruby-design/builder.md
+      - patterns/ruby-design/decorator.md
+      - patterns/ruby-design/facade.md
+      - patterns/ruby-design/repository.md
+      - patterns/ruby-design/specification.md
+      - patterns/ruby-design/state-object.md
+      - patterns/ruby-design/dependency-injection.md
+      - patterns/ruby-design/service-composition.md
+    triggers: [value object, service object, strategy, composition, inheritance, adapter, external interface, external API client, gem boundary, metaprogramming boundary, application service, command object, policy object, null object, factory, builder, decorator, facade, repository, specification, state object, dependency injection, service composition]
 
   rails:
     paths:
@@ -143,7 +176,8 @@ patterns:
       - patterns/rails/request-flow.md
       - patterns/rails/rest-resource.md
       - patterns/rails/scaffold-lifecycle.md
-    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle]
+      - patterns/rails/presenter.md
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter]
 
   testing:
     paths:
