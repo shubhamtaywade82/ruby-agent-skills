@@ -723,6 +723,41 @@ Caching is a correctness boundary. Define identity, freshness, invalidation, fai
 | Cache-store outage/failure semantics | pattern:cache-failure-boundary |
 | Bounded prewarming | pattern:cache-warming-strategy |
 | Cache capacity/eviction review | pattern:cache-capacity-review |
+## Rails Active Model
+
+~~~
+Active Model / ActiveModel / ActiveModel::Model / ActiveModel::API /
+ActiveModel::Attributes / ActiveModel::Validations / ActiveModel::Dirty /
+ActiveModel::Callbacks / ActiveModel::Serialization / ActiveModel::Translation /
+Active Model lint / model-like object / non-persisted model / form model
+  -> rails-active-model
+  -> ruby-poro / ruby-domain-modeling for domain-object ownership
+  -> rails-validations for validation and error semantics
+  -> rails-controllers for input boundaries
+  -> rails-action-view / rails-views for forms, partials, and rendering
+  -> rails-routing for to_param/model_name/form routing when applicable
+  -> rails-i18n for translation and locale context
+  -> rails-api-integration for serialized external representations
+  -> rails-security for authorization/input/output safety
+  -> rails-activerecord when persistence/database lifecycle is intrinsic
+  -> rails-test-engineering / rails-testing for model protocol and consumer tests
+~~~
+
+Active Model is a Rails-facing model protocol, not a substitute for Active Record or a generic service abstraction.
+
+### Active Model pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Decide Active Model versus PORO/Active Record | pattern:active-model-boundary |
+| Typed/default transient attributes | pattern:active-model-attributes-contract |
+| Non-persisted validation/error contract | pattern:active-model-validation-contract |
+| Dirty-state lifecycle | pattern:active-model-dirty-lifecycle |
+| Explicit model lifecycle callbacks | pattern:active-model-callback-boundary |
+| Form/URL/model conversion semantics | pattern:active-model-conversion-contract |
+| Explicit serialization/privacy boundary | pattern:active-model-serialization-contract |
+| Deterministic model protocol tests | pattern:active-model-testing |
+
 ## Rails Action View
 
 ~~~
