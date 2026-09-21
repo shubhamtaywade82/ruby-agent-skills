@@ -255,6 +255,16 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/concurrency/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  security:
+    fixture_registry: benchmarks/security/fixtures.yml
+    fixture_root: benchmarks/security/fixtures
+    verifier: scripts/verify_security_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/security/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+
   design-patterns:
     fixture_registry: benchmarks/design-patterns/fixtures.yml
     fixture_root: benchmarks/design-patterns/fixtures
@@ -305,6 +315,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/concurrency/concurrency-counter.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  security:
+    source: rails-security-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/security/parameterized-query-boundary.yml
+      - evals/security/authorization-boundary.yml
     checks:
       - functional
       - tests
