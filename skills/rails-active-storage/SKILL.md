@@ -559,7 +559,7 @@ For user-facing deletes, consider durable domain state first and asynchronous cl
 
 Do not assume attachment deletion and physical object deletion have identical timing.
 
-## Orphaned and unattached uploads
+## Unattached and orphaned uploads
 
 Direct uploads and interrupted workflows can create unattached blobs.
 
