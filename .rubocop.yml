@@ -42,12 +42,6 @@ plugins:
   - rubocop-changed
   - rubocop-sketchup
 
-AllCops:
-  TargetRubyVersion: 3.3
-  NewCops: enable
-  SuggestExtensions: false
-  DisplayCopNames: true
-  ExtraDetails: true
 
 # The Ruby Style Guide recommends 80 columns and explicitly allows teams to
 # increase this to 100 or 120. This repository standardizes on 100.
@@ -66,6 +60,11 @@ Style/Documentation:
 # Generated/fixture artifacts are validated by their own benchmark tooling and
 # should not be rewritten by broad style corrections.
 AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  SuggestExtensions: false
+  DisplayCopNames: true
+  ExtraDetails: true
   Exclude:
     - 'tmp/**/*'
     - 'vendor/**/*'
