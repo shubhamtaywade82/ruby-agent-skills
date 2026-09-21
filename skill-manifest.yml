@@ -217,6 +217,15 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/ruby-workshop/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  design-patterns:
+    fixture_registry: benchmarks/design-patterns/fixtures.yml
+    fixture_root: benchmarks/design-patterns/fixtures
+    verifier: scripts/verify_design_pattern_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/design-patterns/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
   ruby-training:
@@ -252,3 +261,32 @@ evaluations:
     checks:
       - functional
       - tests
+
+  design-patterns:
+    source: design-pattern-system-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/poro-extraction.yml
+      - evals/design-patterns/service-object-selection.yml
+      - evals/design-patterns/command-object.yml
+      - evals/design-patterns/strategy-selection.yml
+      - evals/design-patterns/adapter-boundary.yml
+      - evals/design-patterns/policy-object.yml
+      - evals/design-patterns/dependency-injection.yml
+      - evals/design-patterns/factory-selection.yml
+      - evals/design-patterns/builder-selection.yml
+      - evals/design-patterns/null-object.yml
+      - evals/design-patterns/decorator.yml
+      - evals/design-patterns/facade.yml
+      - evals/design-patterns/repository-boundary.yml
+      - evals/design-patterns/specification.yml
+      - evals/design-patterns/state-object.yml
+      - evals/design-patterns/composition-over-inheritance.yml
+      - evals/design-patterns/presenter.yml
+      - evals/design-patterns/pattern-restraint.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - pattern_selection
+      - scope_control
