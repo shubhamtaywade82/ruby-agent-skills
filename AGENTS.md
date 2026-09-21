@@ -310,3 +310,17 @@ For email and Action Mailer changes:
 - preserve delivery correlation without logging full message bodies or sensitive headers;
 - use previews/interceptors/observers only for their intended rendering or cross-cutting lifecycle responsibilities;
 - do not claim real-world delivery without provider/runtime evidence.
+## Rails Active Storage changes
+
+For Active Storage changes:
+- inspect attachment declarations, domain ownership, tenant rules, storage configuration, routes, direct-upload code, processing jobs, purge behavior, and tests before implementation;
+- treat the uploaded file as untrusted data and the blob identifier as an object reference, not as authorization;
+- define attachment cardinality, replacement/additive semantics, validation, retention, and purge behavior explicitly;
+- keep production storage services and credentials environment-isolated and least-privileged;
+- treat browser direct uploads as a staged lifecycle: upload, attach to an authorized resource, process/analyze, then clean up unattached blobs;
+- review CORS, file-size/content policy, signed URLs, default Active Storage routes, proxy/redirect mode, and authenticated access for private files;
+- bound download memory, transformation CPU/memory, processing concurrency, and background retry behavior;
+- distinguish logical attachment removal from physical object purge;
+- reconcile storage migrations/mirrors rather than assuming replication is atomic;
+- use the Active Storage test service and deterministic fixtures for ordinary CI; avoid live cloud-provider dependence;
+- never claim storage durability, complete migration, replication completeness, or file delivery success without provider/runtime evidence.
