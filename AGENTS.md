@@ -213,3 +213,20 @@ For queue, broker, stream, event, and message changes:
 - preserve original message identity during retry/replay;
 - instrument publish, queue age/lag, processing, retries, dead-letter, and replay state without logging sensitive payloads;
 - test duplicate delivery, failures before/after side effects, schema compatibility, dead-letter routing, replay, ordering, and restart/rebalance behavior.
+
+
+## Reliability engineering changes
+
+For reliability, resilience, overload, or recovery work:
+- identify the critical user journey before choosing infrastructure metrics;
+- define user-visible SLIs, an evidence-based SLO/window, and the resulting error budget;
+- classify dependencies as critical, degradable, optional, or asynchronous;
+- bound timeout/retry/concurrency budgets across every layer instead of stacking independent retries;
+- use circuit breakers only for justified dependency failure domains and exclude deterministic caller errors from health signals;
+- use bulkheads to isolate genuinely shared resources and verify capacity fragmentation does not create a new bottleneck;
+- define load-shed priorities and never silently discard durable business work;
+- make graceful degradation explicit, including freshness, correctness, authorization, and recovery semantics;
+- define RTO/RPO and verify restore, failover, reconciliation, and post-recovery invariants where recovery matters;
+- resilience-test failure containment and recovery with deterministic, bounded fault injection;
+- make reliability controls observable, reversible, and compatible with rolling deployment;
+- report measured evidence and remaining assumptions instead of claiming resilience from structural patterns alone.
