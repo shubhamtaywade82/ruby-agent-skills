@@ -313,6 +313,7 @@ For email and Action Mailer changes:
 ## Rails Active Model changes
 
 For Active Model and Rails-facing non-persisted model changes:
+- treat ActiveModel::Model as an explicit Rails-facing model protocol, not a generic base class;
 - inspect the Rails/Ruby version, current Active Model usage, neighboring POROs/form objects/services, Active Record boundaries, form/view consumers, routes, validations, translations, serialization, callbacks, and tests before implementing;
 - decide explicitly whether the object should remain a PORO, use Active Model, or become Active Record; do not add Active Model merely because the class has attributes or validations;
 - choose the smallest Active Model modules required by actual consumers;
