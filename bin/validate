@@ -23,3 +23,5 @@ ruby -I"$ROOT/test" "$ROOT/test/test_engineering_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/rails_performance_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_api_integration_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_distributed_systems_system_test.rb"
