@@ -608,7 +608,7 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 36 — Rails Hotwire Engineering**
+**Iteration 35 — Rails Authorization Engineering**
 
 Latest verified commit:
 
@@ -618,4 +618,4 @@ The corresponding CI validation is pending for the authorization iteration.
 
 Next milestone:
 
-**Iteration 35 — Rails Authorization Engineering**
+**Iteration 36 — Rails Hotwire Engineering**
