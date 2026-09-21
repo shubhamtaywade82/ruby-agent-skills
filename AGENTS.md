@@ -142,3 +142,18 @@ For deployment/runtime changes:
 - protect runtime secrets and validate required configuration without printing values;
 - distinguish application rollback from database/data rollback;
 - verify boot, readiness, process lifecycle, and release ordering at the owning boundary.
+
+
+## Rails test engineering changes
+
+For testing changes:
+- resolve the repository's test framework and conventions first;
+- select the smallest boundary that proves the contract;
+- keep fixtures/factories explicit and bounded;
+- preserve deterministic time, randomness, network, and filesystem behavior;
+- diagnose flaky tests from seed/order/parallel/runtime evidence instead of adding blind retries;
+- treat parallel tests as an isolation and capacity problem;
+- disable transactional tests only at the narrow case that requires independent transactions;
+- test Active Job enqueue and execution at the relevant boundaries;
+- measure test runtime before optimizing;
+- keep CI coverage for system tests and eager-loading where the repository requires them.
