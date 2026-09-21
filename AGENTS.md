@@ -263,3 +263,20 @@ For production incident and operational-diagnostics changes:
 - make runbooks executable, bounded, reversible, and explicit about stop conditions;
 - convert material incidents into owned, testable changes to code, telemetry, alerts, runbooks, resilience controls, or architecture;
 - do not disclose secrets or disable security boundaries as a generic incident response technique.
+
+
+## Rails release engineering changes
+
+For release-engineering and release-readiness changes:
+- classify release risk from reversibility, blast radius, schema/data impact, contract impact, security impact, and runtime impact before choosing gates;
+- inspect the existing CI/CD, artifact, deployment, migration, feature-flag, and rollback conventions before adding a new release path;
+- preserve immutable source/artifact identity and promote the artifact that was actually verified;
+- make each release gate evidence-backed, bounded, owned, and explicit about abort/override behavior;
+- use progressive exposure only when the platform provides meaningful reduced exposure and a decision gate;
+- treat staging/production differences as explicit release concerns when they affect behavior;
+- assess old/new web, worker, schema, and message compatibility during rolling releases;
+- choose rollback or roll-forward from durable-state and external-side-effect compatibility rather than assuming rollback is always safe;
+- verify release health with user-impact, dependency, queue/backlog, readiness, and correctness signals over an appropriate observation window;
+- preserve release evidence including source, artifact, gates, exposure, recovery actions, and final state without secrets;
+- link failed-release response to incident engineering when user impact or production instability occurs;
+- never claim release safety from CI success alone when deployment or runtime evidence has not been observed.
