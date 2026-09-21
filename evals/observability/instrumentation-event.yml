@@ -5,6 +5,7 @@ category: rails
 source: rails-observability-v1
 skills:
   - rails-observability
+  - rails-incident-engineering
 patterns:
   - instrumentation-event
 prompt: |
