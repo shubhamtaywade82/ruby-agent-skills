@@ -42,6 +42,7 @@ This file defines how an agent should select and compose skills.
 | Rails test design | rails-testing | relevant implementation skill, ruby-tdd-refactoring |
 | Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |\n| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
+| Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | Test-driven change | ruby-tdd-refactoring | relevant implementation skill |
 | Primitive with domain behavior | ruby-data-types | ruby-oop, pattern:value-object |
@@ -89,6 +90,18 @@ ruby-debugging
   + relevant implementation skill
   + ruby-tdd-refactoring
 ```
+
+### Rails quality review
+
+```text
+rails-best-practices
+  + relevant Rails implementation skill
+  + ruby-clean-code
+  + rails-testing
+  + pattern:rails-best-practice-review
+```
+
+Treat analyzer findings as signals. Translate historical rules to the actual Rails version and repository contract.
 
 ### Cross-cutting refactor
 
