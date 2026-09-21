@@ -1,0 +1,146 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+require "json"
+require "optparse"
+require "shellwords"
+require "yaml"
+require_relative "../lib/ruby_agent_skills/eval_runner"
+
+ROOT = File.expand_path("..", __dir__)
+FIXTURE_ROOT = File.join(ROOT, "benchmarks", "ruby-training", "fixtures")
+VERIFY = File.join(ROOT, "scripts", "verify_training_eval.rb")
+
+runner = RubyAgentSkills::EvalRunner.new(root: ROOT)
+command = ARGV.shift
+
+def fixture_path(id)
+  path = File.join(FIXTURE_ROOT, id)
+  abort "fixture not found: #{id}" unless Dir.exist?(path)
+  path
+end
+
+def write_json(path, value)
+  FileUtils.mkdir_p(File.dirname(File.expand_path(path)))
+  File.write(path, JSON.pretty_generate(value) + "\n", encoding: "UTF-8")
+end
+
+def status_value(result, name)
+  result.fetch("checks", {}).fetch(name, {}).fetch("status", "not_evaluated")
+end
+
+case command
+when "list"
+  Dir.children(FIXTURE_ROOT).sort.each { |id| puts id }
+when "prepare"
+  id = ARGV.shift
+  output = nil
+  OptionParser.new { |opts| opts.on("--output PATH") { |value| output = value } }.parse!(ARGV)
+  abort "usage: ruby bin/benchmark prepare EVAL_ID --output PATH" unless id && output
+  FileUtils.rm_rf(output)
+  FileUtils.mkdir_p(output)
+  FileUtils.cp_r(File.join(fixture_path(id), "."), output)
+  puts output
+when "compare"
+  id = ARGV.shift
+  options = { output: File.join(ROOT, "benchmark-results", id), timeout: RubyAgentSkills::EvalRunner::DEFAULT_TIMEOUT }
+  OptionParser.new do |opts|
+    opts.on("--baseline-command COMMAND") { |value| options[:baseline] = value }
+    opts.on("--skills-command COMMAND") { |value| options[:skills] = value }
+    opts.on("--output DIR") { |value| options[:output] = value }
+    opts.on("--timeout SECONDS", Integer) { |value| options[:timeout] = value }
+  end.parse!(ARGV)
+
+  unless id && options[:baseline] && options[:skills]
+    abort "usage: ruby bin/benchmark compare EVAL_ID --baseline-command COMMAND --skills-command COMMAND [--output DIR] [--timeout SECONDS]"
+  end
+
+  fixture = fixture_path(id)
+  output_dir = File.expand_path(options.fetch(:output))
+  FileUtils.mkdir_p(output_dir)
+
+  baseline_path = File.join(output_dir, "baseline.json")
+  skills_path = File.join(output_dir, "skills.json")
+
+  verifier = "ruby #{Shellwords.escape(VERIFY)}"
+  baseline = runner.run(
+    id: id,
+    workspace: fixture,
+    agent_command: options.fetch(:baseline),
+    verify_command: verifier,
+    output: baseline_path,
+    timeout: options.fetch(:timeout)
+  )
+  skills = runner.run(
+    id: id,
+    workspace: fixture,
+    agent_command: options.fetch(:skills),
+    verify_command: verifier,
+    output: skills_path,
+    timeout: options.fetch(:timeout)
+  )
+
+  checks = runner.find(id).fetch("checks")
+  comparison = {
+    "protocol_version" => 1,
+    "evaluation" => id,
+    "baseline_result" => baseline_path,
+    "skills_result" => skills_path,
+    "dimensions" => checks.to_h do |name|
+      [name, {
+        "baseline" => status_value(baseline, name),
+        "skills_enabled" => status_value(skills, name)
+      }]
+    end,
+    "overall" => {
+      "baseline" => baseline.fetch("overall"),
+      "skills_enabled" => skills.fetch("overall")
+    }
+  }
+  comparison_path = File.join(output_dir, "comparison.json")
+  write_json(comparison_path, comparison)
+  puts JSON.pretty_generate(comparison)
+when "report"
+  baseline_path = ARGV.shift
+  skills_path = ARGV.shift
+  output = nil
+  OptionParser.new { |opts| opts.on("--output PATH") { |value| output = value } }.parse!(ARGV)
+  abort "usage: ruby bin/benchmark report BASELINE_JSON SKILLS_JSON [--output PATH]" unless baseline_path && skills_path
+
+  baseline = JSON.parse(File.read(baseline_path, encoding: "UTF-8"))
+  skills = JSON.parse(File.read(skills_path, encoding: "UTF-8"))
+  names = (baseline.fetch("checks").keys | skills.fetch("checks").keys).sort
+
+  report = {
+    "evaluation" => baseline.fetch("evaluation"),
+    "dimensions" => names.to_h do |name|
+      [
+        name,
+        {
+          "baseline" => status_value(baseline, name),
+          "skills_enabled" => status_value(skills, name)
+        }
+      ]
+    },
+    "overall" => {
+      "baseline" => baseline.fetch("overall"),
+      "skills_enabled" => skills.fetch("overall")
+    }
+  }
+
+  if output
+    write_json(output, report)
+    puts output
+  else
+    puts JSON.pretty_generate(report)
+  end
+else
+  abort <<~USAGE
+    usage:
+      ruby bin/benchmark list
+      ruby bin/benchmark prepare EVAL_ID --output PATH
+      ruby bin/benchmark compare EVAL_ID --baseline-command COMMAND --skills-command COMMAND [options]
+      ruby bin/benchmark report BASELINE_JSON SKILLS_JSON [--output PATH]
+  USAGE
+end
