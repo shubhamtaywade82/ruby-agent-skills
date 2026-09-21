@@ -84,6 +84,6 @@ end
 abort "baseline did not disable skills" if baseline.fetch("configuration").fetch("skills_enabled")
 abort "skills run did not enable skills" unless skills.fetch("configuration").fetch("skills_enabled")
 abort "skills were not materialized" if skills.fetch("agent").fetch("exit_code") != 0
-abort "agent metadata path was not available" unless skills.fetch("agent").key?("metadata") || File.file?(skills.fetch("verification").fetch("command").split.last.to_s)
+abort "agent metadata was not captured" unless skills.fetch("agent").fetch("metadata").fetch("skills_enabled")
 
 puts "Benchmark runner + skill isolation + verifier smoke test passed."
