@@ -340,3 +340,20 @@ For Action Cable/realtime changes:
 - review allowed origins, credential/session lifetime, tenant isolation, secrets, and sensitive payloads;
 - avoid synchronized reconnect storms during deploys and test connection/channel/broadcast behavior with deterministic local adapters;
 - never claim realtime delivery or capacity without runtime evidence.
+## Rails I18n changes
+
+For I18n/localization changes:
+- inspect supported locales, default locale, locale resolution, translation file organization, route conventions, user/account locale preferences, jobs, mailers, APIs, caches, tests, and custom backends before implementation;
+- define supported locales and precedence explicitly; normalize/reject untrusted locale input before entering the scoped locale context;
+- use request-scoped I18n.with_locale rather than leaking mutable I18n.locale across requests or execution units;
+- keep locale separate from authentication/authorization and timezone;
+- use semantic translation keys with explicit interpolation contracts; do not use human-readable translated text as machine-readable identifiers;
+- delegate pluralization and locale-aware date/number/currency formatting to I18n rather than hand-building grammar or presentation strings;
+- review localized routes/default_url_options and bound locale dimensions when locale participates in URLs;
+- explicitly decide whether background work captures or re-reads locale and validate locale again at execution;
+- include locale in cache identity only when the cached representation actually varies by locale;
+- treat translated HTML, interpolation data, translation administration, and localized caches as security boundaries;
+- keep canonical domain data locale-independent and translate at presentation/wire boundaries;
+- define missing-translation and fallback behavior for development, test, and production;
+- use deterministic locale-sensitive tests and restore locale state between examples;
+- never claim localization coverage solely from translation-file presence; verify execution paths, formatting, fallback, and cross-boundary propagation.
