@@ -1,535 +1,577 @@
 # Ruby Agent Skills
 
-A practical skill library for AI coding agents working with Ruby and Ruby on Rails.
+A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge**.
 
-The repository converts Ruby/Rails engineering material into agent-executable instructions: activation triggers, decision rules, implementation procedures, anti-patterns, verification criteria and evaluation cases.
+The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-## Current skill map
+> **Current milestone:** Iteration 33 — Rails Routing Engineering  
+> **Branch:** `feat/ai-skill-system-v2`
 
-### Ruby
+---
 
-| Skill | Purpose |
-|---|---|
-| ruby-core | Ruby semantics, object model and runtime behavior |
-| ruby-data-types | Core value/data representation |
-| ruby-control-flow | Branching, loops and boolean logic |
-| ruby-collections | Arrays, hashes and Enumerable |\n| ruby-blocks-procs-lambdas | Blocks, Proc, lambda and callback semantics |\n| ruby-enumerables | Enumerable decision rules and pipeline design |\n| ruby-api-design | Public method/library contracts |
-| ruby-poro | Plain Ruby object boundaries |
-| ruby-service-objects | Focused application workflows |
-| ruby-domain-modeling | Business concepts and invariant ownership |
-| ruby-dependency-injection | Explicit replaceable collaborators |
-| ruby-object-composition | Composition and inheritance decisions |\n| ruby-boolean-logic | Predicates, truthiness and conditional design |
-| ruby-method-design | Method responsibility and contracts |
-| ruby-oop | Classes, encapsulation, inheritance, composition |
-| ruby-modules-mixins | Modules, mixins and namespaces |
-| ruby-metaprogramming | Reflection and runtime behavior |
-| ruby-gems-io-services | Dependencies, I/O, HTTP and service boundaries |
-| ruby-debugging | Evidence-driven debugging |
-| ruby-runtime-compatibility | Ruby/Rails/Bundler version and compatibility resolution |
-| ruby-concurrency | Threads, queues, synchronization, lifecycle, Fibers and concurrency hazards |
-| ruby-clean-code | Readability, simplicity and maintainability |
-| ruby-tdd-refactoring | Tests, regression safety and refactoring |
+## What this repository contains
 
-### Rails
+The skill system is built from five connected layers:
 
-| Skill | Purpose |
-|---|---|
-| rails-architecture | MVC and application boundaries |
-| rails-routing | Routes, resources and dispatch |
-| rails-controllers | Actions, params and responses |
-| rails-action-controller | Deep HTTP boundary: strong parameters, request/response semantics, sessions/cookies, callbacks, negotiation, conditional responses, downloads, streaming, and controller exceptions |
-| rails-views | ERB, helpers and forms |
-| rails-activerecord | Models, migrations, persistence and queries |
-| rails-associations | Deep Active Record association cardinality, inverse, through, polymorphic, dependent, autosave, counter/touch, callback, loading, and testing contracts |
-| rails-validations | Deep validation lifecycle, contexts, conditions, structured errors, custom validators, uniqueness/database enforcement, bypass audits, and testing |
-| rails-authentication | Authentication and protected access |
-| rails-testing | Rails test placement and coverage |
-| rails-generators | Generators and scaffolding |
-| rails-deployment | Deployment and hosting verification |
-| rails-best-practices | Rails quality review and RailsBestPractices interpretation |
-| rails-security | Rails application security and security-tool interpretation |
-| rails-test-engineering | Test-boundary selection, deterministic async tests, parallel safety, flaky-test diagnosis, system tests, CI, and test performance |
-| rails-production-runtime | Puma, process lifecycle, graceful shutdown, release ordering, Solid Queue runtime, secrets, and production capacity |
-| rails-database-engineering | Production migrations, indexes, constraints, transactions, locking, backfills, query plans, and connection pools |
-| rails-observability | Rails request lifecycle, error reporting, request correlation, instrumentation, and health semantics |
-| rails-active-job | Active Job lifecycle, retries, idempotency, queues, transactions, and Solid Queue semantics |
-| rails-zeitwerk | Zeitwerk path/constant, namespace, reload, and eager-load correctness |
-| ruby-performance | Evidence-driven Ruby/Rails benchmarking, profiling, caching, and optimization |
-| rubocop | Ruby/Rails style analysis and RuboCop plugin selection |
+```text
+                         ┌──────────────────────┐
+                         │       Task           │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                         ┌──────────────────────┐
+                         │ Runtime / Repository │
+                         │      Inspection      │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                    ┌──────────────────────────────┐
+                    │      Skill Router            │
+                    │ skill-manifest + ROUTING.md  │
+                    └──────────────┬───────────────┘
+                                   │
+                     ┌─────────────┴─────────────┐
+                     ▼                           ▼
+              ┌─────────────┐             ┌─────────────┐
+              │   Skills    │             │  Patterns   │
+              │   What/Why  │             │  How/When   │
+              └──────┬──────┘             └──────┬──────┘
+                     └─────────────┬─────────────┘
+                                   ▼
+                         ┌──────────────────────┐
+                         │ Implementation +     │
+                         │ Focused Verification │
+                         └──────────┬───────────┘
+                                    ▼
+                         ┌──────────────────────┐
+                         │ Evaluations / System │
+                         │ Tests / CI Evidence  │
+                         └──────────────────────┘
+```
 
-## Runtime intelligence
+### Current validated inventory
 
-The repository now includes an executable runtime profile detector:
+| Capability | Count |
+|---|---:|
+| Skills | **65** |
+| Implementation patterns | **246** |
+| Evaluation cases | **80** |
+| Dedicated system/contract tests | **50+** |
+| Manifest version | **2** |
 
-    ruby bin/runtime-profile /path/to/app
+The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
 
-It reports Ruby, Rails, Bundler and CI version evidence while distinguishing resolved versions, constraints and conflicts. The agent must use that evidence before version-sensitive implementation or upgrades.
+---
 
-## Agent operating model
+# Skill coverage
+
+## Ruby fundamentals
+
+The Ruby foundation covers:
+
+- language semantics and object model
+- core data types
+- control flow
+- collections and Enumerable
+- blocks, Proc, lambda, and callbacks
+- API and method design
+- OOP and encapsulation
+- modules and mixins
+- metaprogramming
+- PORO boundaries
+- service/application objects
+- domain modeling
+- dependency injection
+- object composition
+- boolean/predicate design
+- gems, I/O, HTTP, and external service boundaries
+- debugging
+- clean code
+- TDD and refactoring
+- runtime/version compatibility
+- concurrency
+- performance
+- RuboCop
+
+Core skills include:
+
+`ruby-core` · `ruby-data-types` · `ruby-control-flow` · `ruby-collections` · `ruby-blocks-procs-lambdas` · `ruby-enumerables` · `ruby-api-design` · `ruby-method-design` · `ruby-oop` · `ruby-modules-mixins` · `ruby-metaprogramming` · `ruby-poro` · `ruby-service-objects` · `ruby-domain-modeling` · `ruby-dependency-injection` · `ruby-object-composition` · `ruby-boolean-logic` · `ruby-gems-io-services` · `ruby-debugging` · `ruby-clean-code` · `ruby-tdd-refactoring` · `ruby-concurrency` · `ruby-performance` · `ruby-runtime-compatibility`
+
+---
+
+# Rails framework coverage
+
+The Rails layer has both foundational skills and deep framework-boundary skills.
+
+## Core Rails
+
+- `rails-architecture`
+- `rails-routing`
+- `rails-controllers`
+- `rails-action-controller`
+- `rails-views`
+- `rails-activerecord`
+- `rails-active-record`
+- `rails-associations`
+- `rails-validations`
+- `rails-authentication`
+- `rails-testing`
+- `rails-generators`
+- `rails-deployment`
+- `rails-best-practices`
+- `rails-security`
+
+## Deep framework engineering
+
+The repository now has dedicated deep skills for:
+
+- **Action Controller** — request/response boundaries, strong parameters, sessions/cookies, callbacks, negotiation, conditional responses, streaming/downloads, exception mapping.
+- **Active Record** — Relation semantics, query composition, scopes, persistence lifecycle, callbacks, bulk operations, loading, deletion, strict loading.
+- **Associations** — cardinality, inverse behavior, through associations, polymorphic boundaries, dependent lifecycle, autosave, counters/touch, callbacks, loading.
+- **Validations** — lifecycle, contexts, conditions, errors, custom validators, strict failures, associated validation, uniqueness/database enforcement, bypass paths.
+- **Action View** — rendering, partials, strict locals, layouts, helpers, output safety, localization, caching, rendering performance.
+- **Active Model** — model protocol, transient attributes, validations, conversion, dirty state, callbacks, serialization, translation, linting.
+- **Active Support** — loading, Concern, class configuration, CurrentAttributes, callbacks, instrumentation, time semantics, inflection.
+- **Action Mailer** — mailer contracts, delivery semantics, providers, security/privacy, previews, observability, deterministic tests.
+- **Action Mailbox** — inbound email ingress, routing, sender/tenant authorization, idempotency, quarantine, replay, retention.
+- **Active Storage** — attachment ownership, direct uploads, storage services, private/public serving, processing, purge, migration/mirroring.
+- **Action Cable** — WebSocket authentication/authorization, streams, broadcasts, reconciliation, capacity, failure boundaries.
+- **I18n** — locale resolution, translation contracts, formatting, localized routing, propagation, cache identity, security.
+- **Action Text** — rich text ownership, sanitization, attachables, rendering, API boundaries, lifecycle, performance.
+- **Zeitwerk** — autoloading, eager loading, reloading, path/constant contracts.
+- **Active Job** — lifecycle, retries, idempotency, transactions, queues, concurrency, recurring execution, serialization, observability.
+- **API Integration** — API contracts, versioning, external HTTP clients, retries/timeouts, webhooks, idempotency, compatibility.
+- **Caching** — key identity, invalidation, freshness, stampede control, warming, failure boundaries, capacity.
+- **Database Engineering** — migrations, constraints, indexes, backfills, transactions, locking, query plans, connection pools, multi-database roles.
+- **Performance** — profiling, workload baselines, N+1, query plans, allocations, caching, Puma capacity, job throughput.
+- **Observability** — request lifecycle, errors, correlation, instrumentation, structured logging, metrics, health semantics.
+- **Production Runtime** — Puma, process lifecycle, shutdown, boot, Solid Queue topology, readiness, secrets, release ordering.
+- **Reliability** — SLO/error budgets, dependency failure, circuit breakers, bulkheads, load shedding, degradation, recovery objectives, resilience testing.
+- **Distributed Systems** — service boundaries, message delivery, outbox/inbox, deduplication, sagas, distributed locks, eventual consistency.
+- **Event-Driven Messaging** — events, commands, brokers, schemas, acknowledgements, replay, DLQs, consumer lag, capacity.
+- **Release Engineering** — artifact promotion, deployment gates, progressive delivery, canary/staged rollout, rollback/roll-forward, release evidence.
+- **Incident Engineering** — incident triage, runbooks, diagnostics, mitigation, recovery verification, post-incident review.
+- **Security Engineering** — threat modeling, trust boundaries, tenant isolation, secret management, SSRF/network security, supply chain and residual risk.
+- **Test Engineering** — boundary selection, deterministic async tests, database isolation, parallel safety, flaky-test diagnosis, CI/system-test verification.
+
+---
+
+# Rails Routing Engineering
+
+The latest milestone deepened the foundational `rails-routing` skill into a full routing engineering layer.
+
+### Coverage
+
+- route precedence and shadowing
+- resource design
+- nested and shallow resources
+- namespaces and scopes
+- segment/request/host/subdomain/format constraints
+- route helper and URL-generation contracts
+- polymorphic routing
+- routing concerns
+- `direct` and `resolve`
+- wildcard/catch-all routes
+- redirects
+- Rack and engine mounts
+- API/version/format routing
+- localized and host-aware routing
+- route-table inspection
+- route-generation/recognition testing
+
+### Routing patterns
+
+- `route-precedence-contract`
+- `nested-route-boundary`
+- `route-scope-namespace-contract`
+- `route-constraint-contract`
+- `route-helper-contract`
+- `route-concern-contract`
+- `direct-route-resolution`
+- `mounted-endpoint-boundary`
+- `catch-all-route-boundary`
+- `route-testing`
+
+The routing layer deliberately keeps **dispatch and URL generation separate from authorization and business invariants**.
+
+---
+
+# Agent operating model
+
+The agent is expected to follow this workflow:
 
 ```text
 Task
-  -> classify
-  -> resolve Ruby/Rails version
-  -> inspect repository
-  -> route to one or more skills
-  -> implement smallest coherent change
-  -> focused verification
-  -> regression verification
-  -> review diff
-  -> report facts and verification
+  │
+  ▼
+Classify
+  │
+  ▼
+Resolve Ruby / Rails / dependency versions
+  │
+  ▼
+Inspect repository and existing conventions
+  │
+  ▼
+Route to skills
+  │
+  ▼
+Select the smallest justified patterns
+  │
+  ▼
+Implement the smallest coherent change
+  │
+  ▼
+Run focused verification
+  │
+  ▼
+Run regression / system verification
+  │
+  ▼
+Review diff and failure evidence
+  │
+  ▼
+Report facts, changes, and verification
 ```
 
-Skills are intentionally composable. A Rails endpoint that changes persistence should not be forced through one monolithic Rails skill.
-
-## Source foundation
-
-The source set includes *The Ruby Workshop*, *Clean Ruby*, and the uploaded *Learn Rails 6* material.
-
-The Ruby Workshop covers Ruby programs, data types, program flow, methods, OOP, modules/mixins, gems and I/O, debugging, metaprogramming, HTTP and Rails topics including MVC, routes, forms, Active Record, authentication, associations, validations, scaffolding and hosting.
-
-Clean Ruby focuses on readable, changeable and straightforward code, then develops naming, method design, boolean logic, classes, refactoring and TDD.
-
-The Allerin assessment is treated as an evaluation source rather than copied into the skills. Its tasks include sorting, missing values, shopping-cart behavior, triplet sum, majority element, distinct values, power-of-two detection and Chocolate Feast, with an explicit OOP requirement.
-
-The repository does not reproduce the books. It turns their ideas into operational instructions for agents and uses the assessment plus book-derived exercises as benchmark corpora.
-
-## Design principles
+The core principles are:
 
 - evidence over assumptions
 - repository conventions over invented conventions
+- version-aware implementation
 - explicit behavior over unnecessary abstraction
-- readable code over clever code
 - tests as executable contracts
 - small, reviewable changes
-- version-aware implementation
 - deterministic verification
+- no claims of correctness without evidence
 
-## Repository structure
+---
+
+# Skill routing
+
+The routing contract is defined in:
+
+- `skill-manifest.yml`
+- `router/ROUTING.md`
+- `AGENTS.md`
+
+The manifest provides machine-readable:
+
+- skill identity
+- family
+- activation triggers
+- implementation pattern paths
+- evaluation registration
+- default workflow requirements
+
+The router provides cross-skill composition rules.
+
+`AGENTS.md` provides repository-level operating instructions for implementation agents.
+
+---
+
+# Implementation patterns
+
+Patterns are concrete implementation shapes selected **after** the relevant skill has classified the problem.
+
+Current pattern families include:
+
+### Ruby design
+
+Value objects, service/application objects, commands, strategies, policies, composition, adapters, dependency injection, null objects, factories, builders, decorators, facades, repositories, specifications, state objects, external API clients, and gem boundaries.
+
+### Rails
+
+Query objects, form objects, policy boundaries, transaction boundaries, request-flow patterns, REST resources, scaffolding, presenters, and the deep framework patterns listed above.
+
+### Testing
+
+Regression testing, deterministic boundary testing, routing testing, and framework-specific testing contracts.
+
+### Algorithms
+
+Two pointers, frequency maps, and the original Ruby training algorithm corpus.
+
+Patterns include negative guidance. The existence of a pattern is **not** a reason to introduce it.
+
+---
+
+# Evaluation system
+
+Evaluations are machine-readable task contracts.
+
+Each evaluation can specify:
+
+- functional behavior
+- explicit implementation constraints
+- public contracts
+- design requirements
+- test requirements
+- scope control
+- expected failure modes
+
+Current validated evaluation inventory: **80 cases**.
+
+Important evaluation families include:
+
+- Ruby training
+- Ruby Workshop integration
+- design patterns
+- concurrency
+- security
+- observability
+- database engineering
+- production runtime
+- Active Job
+- test engineering
+- Rails framework boundaries
+- Rails API/integration
+- reliability
+- distributed systems
+- event-driven messaging
+- release engineering
+- incident engineering
+- caching
+- Action Mailer
+- Active Storage
+- Action Cable
+- I18n
+- Action Text
+- Action Mailbox
+- Action View
+- Active Model
+- Active Support
+- Action Controller
+- Active Record
+- Associations
+- Validations
+- Routing
+
+---
+
+# Benchmark infrastructure
+
+The repository includes a provider-neutral benchmark system.
+
+List evaluations:
+
+```bash
+ruby bin/eval list
+```
+
+Inspect an evaluation:
+
+```bash
+ruby bin/eval show EVAL_ID
+```
+
+Build an evaluation packet:
+
+```bash
+ruby bin/eval packet EVAL_ID
+```
+
+Run an evaluation with an external agent:
+
+```bash
+ruby bin/eval run EVAL_ID \
+  --workspace /tmp/eval-workspace \
+  --agent-command 'AGENT_COMMAND' \
+  --verify-command 'VERIFY_COMMAND'
+```
+
+Run a campaign:
+
+```bash
+ruby bin/benchmark campaign \
+  --manifest benchmarks/<family>/campaign.yml \
+  --agent-command 'AGENT_COMMAND'
+```
+
+The benchmark system keeps provider credentials and launch-specific configuration outside the repository.
+
+---
+
+# Runtime intelligence
+
+Before version-sensitive work, use:
+
+```bash
+ruby bin/runtime-profile /path/to/app
+```
+
+This resolves and reports Ruby, Rails, Bundler, and CI evidence while distinguishing:
+
+- resolved versions
+- declared constraints
+- conflicts
+- runtime evidence
+
+Agents should not guess Rails behavior when the repository can provide the version evidence.
+
+---
+
+# Repository validation
+
+The repository has one integrated validation entry point:
+
+```bash
+bin/validate
+```
+
+Validation covers:
+
+- skill contracts
+- pattern contracts
+- evaluation contracts
+- runtime/security/loader/observability/database/production/test-engineering system checks
+- manifest consistency
+- routing/activation contracts
+- benchmark fixture consistency
+
+The validation suite currently reports:
+
+```text
+65 skills
+246 implementation patterns
+80 evaluation cases
+```
+
+---
+
+# Repository structure
 
 ```text
 ruby-agent-skills/
-├── skills/
-├── patterns/
+├── skills/                    # agent skills
+├── patterns/                  # reusable implementation patterns
 │   ├── ruby-design/
 │   ├── rails/
 │   ├── testing/
 │   └── algorithms/
 ├── router/
-│   └── ROUTING.md
+│   └── ROUTING.md             # cross-skill routing rules
 ├── docs/
 │   ├── SKILL_CONTRACT.md
 │   ├── PATTERN_SCHEMA.md
-│   └── SOURCE_COVERAGE.md
+│   ├── EVAL_SCHEMA.md
+│   ├── SOURCE_COVERAGE.md
+│   └── benchmark/...
 ├── evals/
 │   ├── schema/
 │   ├── ruby-training/
-│   ├── algorithms/
-│   ├── oop/
-│   └── rails/
+│   ├── ruby-workshop/
+│   ├── design-patterns/
+│   ├── rails/
+│   └── ...
+├── benchmarks/
+│   └── ...                    # campaign manifests and fixtures
 ├── data/
 │   └── rubocop/
-│       └── plugins.yml
-├── .rubocop.yml
-└── skill-manifest.yml
+├── bin/
+│   ├── validate
+│   ├── eval
+│   ├── benchmark
+│   ├── agent-benchmark
+│   ├── runtime-profile
+│   └── ...
+├── AGENTS.md
+├── skill-manifest.yml
+└── README.md
 ```
 
-## Implementation patterns
+---
 
-Patterns are concrete, reusable implementation shapes selected after skills classify a task.
+# Source foundation
 
-Current families include:
+The repository began from Ruby/Rails training material and has progressively converted that material into executable agent knowledge.
 
-| Family | Examples |
-|---|---|
-| Ruby design | value object, service object, application service, command, strategy, policy, composition, adapter, dependency injection, null object, factory, builder, decorator, facade, repository, specification, state object, external API client, gem boundary |
-| Rails | query object, form object, policy boundary, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter |
-| Testing | regression test |
-| Algorithms | two pointers, frequency map |
+Source categories include:
 
-See `patterns/README.md` and `docs/PATTERN_SCHEMA.md`.
+- Ruby Workshop material
+- Clean Ruby material
+- Learn Rails 6 material
+- Allerin assessment material as an evaluation/benchmark source
+- current Rails framework documentation for version-sensitive framework boundaries
 
-Patterns are optional. Existing repository conventions and direct/simple implementations take precedence.
-
-## Evaluation corpus
-
-Phase 5 adds a machine-readable Ruby training benchmark derived from the Allerin assessment.
-
-Current corpus:
-
-- selection sort
-- recursive selection sort
-- smallest missing number
-- shopping cart
-- triplet sum
-- majority element
-- distinct elements
-- power-of-two detection
-- Chocolate Feast
-
-Each case separates:
-
-- functional behavior
-- explicit complexity/algorithm constraints
-- OOP/design requirements
-- tests and edge cases
-- scope control
-
-See `evals/README.md` and `docs/EVAL_SCHEMA.md`.
-
-## Benchmark runner
-
-Phase 6 adds a provider-neutral execution harness:
-
-```text
-ruby bin/eval list
-  -> ruby bin/eval show EVAL_ID
-  -> ruby bin/eval packet EVAL_ID
-  -> ruby bin/eval run EVAL_ID --workspace ... --agent-command ... --verify-command ...
-```
-
-The runner executes agents in a disposable workspace, captures process output and patch evidence, optionally runs a verifier, and records dimension-level results. See `docs/BENCHMARK_RUNNER.md` and `docs/EVAL_RESULT_SCHEMA.md`.
-
-## Status
-
-The branch contains the Phase 4 implementation-pattern system, the Phase 5 evaluation corpus, the Phase 6 benchmark runner, the Phase 7 fixture/verifier infrastructure and the Phase 8 controlled repeated benchmark campaign. A real campaign now only requires an external agent adapter command. Hidden benchmark packs should remain outside the public repository.
-
-
-## Controlled agent campaign
-
-Phase 8 materializes only the skills and patterns declared by each evaluation when `RUBY_AGENT_SKILLS_ENABLED=true`. Baseline runs receive the same task and fixture without those selected skills.
+The repository does **not** reproduce source books. It operationalizes their engineering ideas into skills, patterns, evaluations, and verification contracts.
 
 See:
 
-- `docs/AGENT_ADAPTER_PROTOCOL.md`
-- `docs/BENCHMARK_CAMPAIGN.md`
-- `benchmarks/ruby-training/campaign.yml`
-
-
-## Phase 9 real agent adapter
-
-The repository now includes a provider-neutral command adapter:
-
-    ruby bin/agent-benchmark --command 'YOUR_AGENT_COMMAND'
-
-It keeps the same agent command/model configuration across baseline and skills-enabled paired runs while changing only the materialized skill context. Provider-specific credentials and launch logic stay outside the repository.
-
-## Book Integration v2
-
-The second book integration adds focused Ruby/Rails skills, a design-pattern catalog, and an eight-case Ruby/Rails evaluation family under evals/ruby-workshop. The cases cover Enumerable selection, public API contracts, voting/application design, service objects, external API boundaries, gem packaging, REST resources, and authentication boundaries.
-
-
-## Design skill system
-
-The repository now has a dedicated design layer for POROs, service objects, domain modeling, dependency injection, and object composition.
-
-Design patterns are deliberately separate from skills. The router selects a skill first, then considers the smallest justified pattern. Pattern selection includes negative cases so agents are trained not to introduce abstractions merely because a pattern exists.
-
-The design layer currently covers:
-
-- PORO boundaries
-- service/application objects
-- command objects
-- value objects
-- strategies and policies
-- adapters and external API clients
-- dependency injection
-- composition over inheritance
-- null objects
-- factories and builders
-- decorators and facades
-- repositories and specifications
-- state objects
-- Rails query/form/policy/transaction/request patterns
-- presenters
-
-
-## Phase 9.5B — Design pattern evaluation corpus
-
-The repository now includes a dedicated design-pattern benchmark family with 18 public evaluation cases. It measures functional correctness, test execution, public contracts, pattern selection, and scope control.
-
-The corpus explicitly includes pattern-restraint cases so agents are evaluated on choosing when not to introduce an abstraction.
-
-Run the design-pattern campaign with:
-
-    ruby bin/benchmark campaign \
-      --manifest benchmarks/design-patterns/campaign.yml \
-      --agent-command 'AGENT_COMMAND'
-
-
-## Concurrency engineering
-
-The repository includes a dedicated `ruby-concurrency` skill and bounded-concurrency pattern. Its benchmark layer verifies synchronized shared state, tests, and explicit concurrency contracts. The guidance treats Ruby threads, Rails executors/jobs, database connection pools, process boundaries, and Fibers as distinct concerns rather than one generic "parallelism" abstraction.
-
-
-## Security engineering
-
-The repository now includes a Rails security skill, a security-boundary review pattern, a machine-readable security tool registry, a security audit CLI, and a public security evaluation family.
-
-Use:
-
-    ruby bin/security-audit /path/to/rails-app
-
-Security tooling is treated as evidence and must be interpreted against the actual trust boundary and data flow.
-
-
-## Performance engineering
-
-Performance guidance is evidence-driven: establish a workload and baseline, measure, identify the bottleneck, make the smallest targeted change, and re-measure.
-
-The repository includes profiling/benchmark tool metadata, performance-specific patterns, and executable performance evaluations. It explicitly distinguishes latency, throughput, CPU, allocations, GC, database time, network time, and cache correctness.
-
-
-## Zeitwerk and autoloading
-
-The repository includes a dedicated Rails Zeitwerk skill, structure-review pattern, loader tooling registry, verification CLI, and executable evaluations.
-
-For a Rails project:
-
-    ruby bin/zeitwerk-check /path/to/rails-app
-
-The agent is expected to resolve path-to-constant mappings and loader lifecycle before adding manual require workarounds.
-
-
-## Active Job engineering
-
-The repository includes a dedicated Active Job/Solid Queue skill, four job-design patterns, tool metadata, and a public background-job benchmark family.
-
-Coverage includes:
-
-- idempotent side effects
-- retry/discard classification
-- transaction-aware enqueueing
-- queue/priority decisions
-- concurrency controls
-- recurring/scheduled execution
-- serialization and GlobalID
-- shutdown/recovery
-- job observability and testing
-
-Run the benchmark campaign with:
-
-    ruby bin/benchmark campaign \
-      --manifest benchmarks/active-job/campaign.yml \
-      --agent-command 'AGENT_COMMAND'
-
-
-## Rails observability
-
-The repository includes a dedicated request lifecycle and observability layer covering:
-
-- stable API error contracts
-- Rails.error reporting
-- request IDs and correlation
-- structured/tagged logging
-- sensitive parameter filtering
-- ActiveSupport::Notifications
-- request metrics
-- health/liveness/readiness semantics
-- middleware and production debugging
-
-Run the benchmark campaign with:
-
-    ruby bin/benchmark campaign \
-      --manifest benchmarks/observability/campaign.yml \
-      --agent-command 'AGENT_COMMAND'
-
-
-## Rails database engineering
-
-The repository includes a production database engineering layer covering:
-
-- zero-downtime / expand-contract schema changes
-- production index strategy
-- database constraints
-- bounded data backfills
-- transaction and lock boundaries
-- isolation and deadlock reasoning
-- query-plan verification
-- connection-pool capacity
-- bulk write semantics
-- multi-database and role considerations
-
-Run the benchmark campaign with:
-
-    ruby bin/benchmark campaign \
-      --manifest benchmarks/database-engineering/campaign.yml \
-      --agent-command 'AGENT_COMMAND'
-
-
-## Rails production runtime
-
-The repository includes a production-runtime engineering layer covering:
-
-- Puma worker/thread capacity
-- database/process resource budgets
-- boot and preload behavior
-- hot/phased restart semantics
-- graceful shutdown
-- Solid Queue process topology
-- container/process-manager lifecycle
-- readiness gates
-- runtime secret/configuration contracts
-- zero-downtime release ordering
-- rollback boundaries
-
-Run the benchmark campaign with:
-
-    ruby bin/benchmark campaign \
-      --manifest benchmarks/production-runtime/campaign.yml \
-      --agent-command 'AGENT_COMMAND'
-
-
-## Rails test engineering
-
-The repository now includes a staff-level Rails test engineering layer covering:
-
-- test-boundary selection
-- request/integration/system testing
-- Active Job testing
-- deterministic async tests
-- database isolation
-- parallel-test safety
-- flaky-test diagnosis
-- test-suite performance
-- CI/system-test/eager-load verification
-- focused external-boundary doubles
-
-Run the benchmark campaign with:
-
-    ruby bin/benchmark campaign \
-      --manifest benchmarks/test-engineering/campaign.yml \
-      --agent-command 'AGENT_COMMAND'
-
-## Rails caching engineering
-
-The repository now includes a dedicated rails-caching layer for cache correctness and systems behavior. It covers cache-key identity, freshness, invalidation ownership, versioning across releases, stampede control, warming, cache-store failure behavior, capacity/eviction, security isolation, and deterministic cache-contract testing.
-
-Core patterns:
-- cache-boundary
-- cache-key-isolation
-- cache-invalidation-contract
-- cache-stampede-control
-- cache-failure-boundary
-- cache-warming-strategy
-- cache-capacity-review
-
-The cache layer composes with rails-performance, rails-observability, rails-security, rails-database-engineering, and rails-active-job.
-## Rails Action Mailer engineering
-
-The repository now includes a dedicated `rails-action-mailer` layer covering mailer contracts, synchronous versus asynchronous delivery, transaction semantics, duplicate/uncertain delivery, provider boundaries, SMTP configuration, email security/privacy, previews, observability, and deterministic testing.
-
-Core patterns:
-- `mailer-contract`
-- `mailer-delivery-semantics`
-- `mailer-provider-boundary`
-- `mailer-security-boundary`
-- `mailer-testing`
-- `mailer-observability`
-## Rails Active Storage engineering
-
-The repository now includes a dedicated `rails-active-storage` layer for attachment ownership, upload security, direct uploads, storage services, private/public file access, variants and previews, analysis, purge/reconciliation, storage migration/mirroring, and deterministic testing.
-
-Core patterns:
-- `active-storage-boundary`
-- `active-storage-upload-security`
-- `active-storage-direct-upload`
-- `active-storage-serving`
-- `active-storage-processing`
-- `active-storage-purge`
-- `active-storage-testing`
-## Rails Action Cable & realtime engineering
-
-The repository now includes a dedicated `rails-action-cable` layer for WebSocket connection authentication, channel authorization, stream naming, broadcast contracts, reconnect/reconciliation, realtime capacity, failure/degradation semantics, and deterministic testing.
-
-Core patterns:
-- `action-cable-connection-auth`
-- `action-cable-channel-authorization`
-- `action-cable-stream-contract`
-- `action-cable-broadcast-contract`
-- `action-cable-reconciliation`
-- `action-cable-capacity`
-- `action-cable-failure-boundary`
-- `action-cable-testing`
-## Rails I18n & localization engineering
-
-The repository now includes a dedicated `rails-i18n` layer for locale resolution, translation-key contracts, pluralization and formatting, localized routing, background locale propagation, locale-aware caching, localization security, and deterministic tests.
-
-Core patterns:
-- `i18n-locale-resolution`
-- `i18n-translation-key-contract`
-- `i18n-pluralization-formatting`
-- `i18n-localized-routing`
-- `i18n-context-propagation`
-- `i18n-cache-identity`
-- `i18n-security-boundary`
-- `i18n-testing`
-## Rails Action Text engineering
-
-The repository now includes a dedicated `rails-action-text` layer for rich-text ownership, sanitization, embedded attachment/attachable authorization, rendering, API representation, RichText/embed performance, lifecycle coordination, and deterministic testing.
-
-Core patterns:
-- `action-text-content-contract`
-- `action-text-sanitization-security`
-- `action-text-attachment-authorization`
-- `action-text-rendering`
-- `action-text-api-boundary`
-- `action-text-preload-performance`
-- `action-text-lifecycle`
-- `action-text-attachable-contract`
-- `action-text-testing`
-
-## Rails framework boundary coverage
-
-The Rails integration layer now includes focused skills for framework boundaries that commonly cross trust, persistence, asynchronous execution, and external-provider concerns:
-
-- rails-action-controller — deep Action Controller request/response boundaries, strong parameters, session/cookie state, callbacks, content negotiation, HTTP cache validators, downloads/streaming, and expected exception mapping;
-- rails-active-record — deep Active Record model/Relation semantics, query composition, scope/default_scope contracts, persistence lifecycle, callbacks, bulk operations, deletion, loading, and testing;
-- rails-associations — deep Active Record association cardinality, inverse behavior, through joins, polymorphic boundaries, dependent lifecycle, autosave, counter/touch, callbacks, loading, and testing;
-- rails-action-view — Action View rendering, partial/layout/helper contracts, strict locals, output safety, localized templates, and rendering performance;
-- rails-active-model — Active Model model protocol, transient attributes, validations, conversion, dirty state, callbacks, serialization, translation, and linting;
-- rails-active-support — Active Support loading, Concern composition, class configuration, CurrentAttributes, callbacks, instrumentation, time semantics, inflection, and framework-state testing;
-- rails-action-mailer — outbound email content, delivery, provider, security, and observability;
-- rails-action-mailbox — inbound email ingress, routing, sender/tenant authorization, idempotency, failure/quarantine, retention, and deterministic testing;
-- rails-active-storage — uploaded-file ownership, storage, access, processing, purge, and testing;
-- rails-action-cable — realtime connection/channel authorization, stream contracts, reconciliation, and capacity;
-- rails-i18n — locale context, translation contracts, formatting, routing, propagation, caching, security, and testing;
-- rails-action-text — rich content, sanitization, attachables, rendering, API boundaries, lifecycle, performance, and testing.
-
-These boundaries are compositional. The router should select Action Mailbox for inbound email mechanics, then compose security, Active Job, Active Storage, database, reliability, observability, and test-engineering skills where the task requires them.
-
-
-## Rails Validations engineering
-
-The repository now includes a dedicated validation engineering layer covering validation lifecycle and bypass paths, built-in validator semantics, conditional/contextual validation, structured ActiveModel errors, custom validators, strict failures, association validation scope, concurrent uniqueness/database enforcement, validation callbacks, API/form integration, tenant/security boundaries, and deterministic testing.
-
-Core patterns:
-- validation-boundary
-- validation-context-contract
-- validation-condition-contract
-- validation-uniqueness-database-contract
-- validation-associated-graph
-- validation-custom-validator
-- validation-strict-failure
-- validation-error-contract
-- validation-callback-boundary
-- validation-bypass-audit
-- validation-testing
-
-## Rails Routing engineering
-
-The repository now includes a dedicated rails-routing deep-engineering layer covering route precedence, nested/shallow resources, namespace/scope dimensions, constraints, helper and polymorphic URL generation, routing concerns, direct/resolve mappings, mounted endpoints, catch-all boundaries, localized/host-aware routing, route inspection, and deterministic routing tests.
-
-Core patterns:
-- route-precedence-contract
-- nested-route-boundary
-- route-scope-namespace-contract
-- route-constraint-contract
-- route-helper-contract
-- route-concern-contract
-- direct-route-resolution
-- mounted-endpoint-boundary
-- catch-all-route-boundary
-- route-testing
-
-The routing layer composes with rails-action-controller, rails-authentication, rails-security, rails-i18n, rails-api-integration, rails-observability, rails-testing, and rails-test-engineering.
+- `docs/SOURCE_COVERAGE.md`
+- `docs/SKILL_CONTRACT.md`
+- `docs/PATTERN_SCHEMA.md`
+- `docs/EVAL_SCHEMA.md`
+
+---
+
+# Development status
+
+The repository is being expanded iteratively rather than treated as a static documentation dump.
+
+Completed deep Rails areas currently include:
+
+- Action Controller
+- Active Record
+- Associations
+- Validations
+- Action View
+- Active Model
+- Active Support
+- Action Mailer
+- Action Mailbox
+- Active Storage
+- Action Cable
+- I18n
+- Action Text
+- Routing
+- API/integration
+- Database engineering
+- Production runtime
+- Observability
+- Active Job
+- Performance
+- Caching
+- Reliability
+- Distributed systems
+- Event-driven messaging
+- Release engineering
+- Incident engineering
+- Security engineering
+- Test engineering
+
+The next planned deep Rails boundary is **Authentication Engineering**, followed by authorization, Hotwire, frontend asset/build infrastructure, Rack/middleware, initialization/configuration, engines/Railties, encryption, serialization, operational tasks, cross-boundary authorization composition, and finally repository-level staff architecture evaluation.
+
+---
+
+# Contributing / extending the system
+
+When adding a new skill or deepening an existing one:
+
+1. inspect the current repository and manifest;
+2. identify overlap with existing skills and patterns;
+3. write the skill with activation, repository inspection, implementation/review guidance, verification, and source foundation;
+4. add reusable patterns only where they represent repeatable engineering decisions;
+5. add deterministic evaluation cases;
+6. add a dedicated system/contract test where the skill has integration requirements;
+7. register the skill/patterns/evaluation in the manifest;
+8. update routing and `AGENTS.md`;
+9. update this README when user-facing capability or architecture changes;
+10. run `bin/validate`;
+11. verify CI before reporting completion.
+
+---
+
+# Current milestone
+
+**Iteration 33 — Rails Routing Engineering**
+
+Latest verified commit:
+
+`b229875cf7f97df6d6488830854db2d727736e28`
+
+The corresponding CI validation completed successfully after correcting manifest registration.
+
+Next milestone:
+
+**Iteration 34 — Rails Authentication Engineering**
