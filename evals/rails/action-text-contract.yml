@@ -1,0 +1,48 @@
+id: action-text-contract
+version: 1
+title: Preserve Rails Action Text ownership, sanitization, and attachable security contracts
+category: rails
+source: rails-action-text-v1
+skills:
+  - rails-action-text
+  - rails-security
+  - rails-active-storage
+  - rails-i18n
+patterns:
+  - action-text-content-contract
+  - action-text-sanitization-security
+  - action-text-attachment-authorization
+  - action-text-rendering
+  - action-text-api-boundary
+prompt: |
+  Implement tenant-scoped rich-text content for an article resource using Rails Action Text. The feature must authorize editing through the owning article, preserve server-side sanitization, restrict embedded attachments/attachables to authorized resources, expose a stable API representation, and support deterministic tests without live cloud storage. Add negative tests for malicious HTML and cross-tenant embedded resources.
+constraints:
+  required_design:
+    - explicit rich-text ownership
+    - server-side sanitization
+    - attachment/attachable authorization
+    - stable API representation
+    - deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: authorized-rich-text
+    input: authorized editor updates article content
+    expected: rich text persists through the article-owned Action Text boundary
+  - name: malicious-html
+    input: script/event-handler or unsafe URL markup
+    expected: unsafe content is sanitized before rendering
+  - name: cross-tenant-attachable
+    input: rich text references an attachable owned by another tenant
+    expected: reference is rejected or not rendered through the unauthorized boundary
+  - name: api-representation
+    input: article rich text requested through API
+    expected: stable sanitized representation is returned without exposing internal RichText table structure
+grading:
+  functional: rich-text ownership and rendering behavior are correct
+  tests: sanitization, authorization, attachment, and API contracts are executable
+  contract: Trix/client-side behavior is not treated as the security boundary
+  scope_control: ordinary tests do not depend on live cloud storage
