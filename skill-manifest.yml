@@ -148,6 +148,8 @@ benchmarks:
     verifier: scripts/verify_training_eval.rb
     campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
     comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_manifest: benchmarks/ruby-training/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
   ruby-training:
