@@ -5,6 +5,10 @@ family: testing
 ---
 # Asset Build Testing
 
+## Problem
+
+Browser/system tests can pass while the actual release asset build is broken.
+
 ## Use when
 Changing asset configuration, JavaScript/CSS build tooling, package dependencies, or release artifacts.
 
