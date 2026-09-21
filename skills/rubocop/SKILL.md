@@ -229,7 +229,7 @@ When introducing RuboCop into an existing codebase:
 
 Prefer explicit documented exclusions to unexplained broad disabling.
 
-## Agent checklist
+## Agent review checklist
 
 - [ ] Ruby/Rails version resolved
 - [ ] Gemfile/Gemfile.lock inspected
