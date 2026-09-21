@@ -1,119 +1,522 @@
 ---
 name: rails-authentication
-description: Use when adding, reviewing, or debugging Rails authentication, sessions, credentials, protected resources, or authentication-related integration.
+description: Use when designing, implementing, reviewing, testing, or debugging Rails authentication, credentials, sessions, password recovery, login abuse controls, authentication context propagation, or browser/API identity boundaries.
 ---
 
-# Rails Authentication
+# Rails Authentication Engineering
 
 ## Purpose
 
-Preserve a clear authentication boundary without scattering identity/session logic through ordinary feature code.
+Treat authentication as a stateful security boundary with explicit identity proof, credential handling, session/token lifecycle, recovery, revocation, abuse controls, observable failure semantics, and deterministic verification.
+
+Authentication answers:
+
+> Who is this requester, and what authenticated state does the application recognize for this request?
+
+Authorization answers a different question:
+
+> May that authenticated actor perform this action on this resource?
+
+Keep those contracts separate.
+
+Core flow:
+
+~~~text
+repository mechanism
+-> identity/credential boundary
+-> authentication attempt
+-> authenticated state
+-> session/token lifecycle
+-> request context propagation
+-> protected resource boundary
+-> logout/revocation/recovery
+-> abuse detection
+-> audit/observability
+-> deterministic verification
+~~~
 
 ## Activate when
 
-- adding sign-in/sign-out
-- protecting a resource
-- changing session/token behavior
-- integrating Devise or another existing authentication mechanism
-- debugging authenticated request failures
+- adding sign-in, sign-out, or authentication middleware;
+- introducing or changing Rails generated authentication;
+- reviewing Devise or another authentication gem;
+- changing password hashing or credential storage;
+- changing session creation, renewal, rotation, expiry, or invalidation;
+- implementing password reset or credential recovery;
+- adding remember-me or persistent login behavior;
+- adding API tokens, bearer credentials, signed credentials, or service identities;
+- changing browser/session authentication versus API authentication;
+- supporting multiple devices or active-session management;
+- adding account lockout, throttling, or login-abuse controls;
+- propagating authenticated identity into jobs, mailers, Action Cable, or service boundaries;
+- debugging unexpected login/logout state;
+- responding to session compromise or credential compromise;
+- reviewing authentication security regressions.
+
+Do not activate merely because an endpoint has an Authorization header if the task is only outbound HTTP authentication; use the relevant integration skill.
 
 ## Repository inspection
 
-Identify the actual mechanism first:
+Before changing authentication, identify:
 
-- authentication gem/library
-- User/account/session models
-- routes
-- controller callbacks
-- middleware if relevant
-- token/session storage
-- password/reset flows
-- request tests
-- authorization/policy layer if present
+1. Ruby and Rails versions;
+2. the actual authentication mechanism: Rails generator, Devise, custom code, OAuth/OIDC provider, API token layer, or a combination;
+3. User/account/identity/session/credential models;
+4. password hashing and credential storage;
+5. authentication concern/module/middleware;
+6. session store and cookie configuration;
+7. token/session tables, digests, expiration fields, and indexes;
+8. routes/controllers/concerns used for sign-in and sign-out;
+9. password reset/recovery models, tokens, mailers, and jobs;
+10. remember-me/persistent-login behavior;
+11. current-user/request context implementation;
+12. browser CSRF policy and same-site cookie settings;
+13. API authentication scheme and endpoint classification;
+14. login throttling, lockout, device/session limits, or bot controls;
+15. authorization/policy layer and protected-resource lookup conventions;
+16. background jobs, mailers, Action Cable connections, webhooks, and service boundaries that may need identity context;
+17. logging, audit events, metrics, security alerts, and credential filtering;
+18. test helpers, request tests, system tests, factories/fixtures, and security regression coverage.
 
-Do not invent a new authentication system when one already exists.
+Do not infer authentication behavior from routes alone. Find where identity is actually established and where it is invalidated.
 
-## Authentication versus authorization
+## Authentication mechanism boundary
 
-Keep the distinction clear:
+Classify the repository mechanism before editing.
 
-- authentication: who is the requester?
-- authorization: may that requester perform this action?
+### Rails 8+ generated authentication
 
-A user being signed in does not imply permission to access every resource.
+Rails 8 introduced a built-in authentication generator. The current Rails Security Guide documents a baseline flow containing User, Session, Current, SessionsController, PasswordsController, an Authentication concern, password reset views/mailers, routes, and migrations.
 
-## Credentials and secrets
+The generator uses has_secure_password/bcrypt for password hashing and creates a database-backed Session model in its baseline implementation.
 
-Never log or commit:
+Do not treat generated authentication as a black box. Inspect the generated concern, session model, routes, password reset flow, and migrations before modifying it.
 
-- passwords
-- password hashes unnecessarily
-- raw session secrets
-- bearer tokens
-- reset tokens
-- private credentials
+### Authentication gem
 
-Follow the repository's secret management mechanism.
+For Devise or another gem, map:
 
-## Session/token behavior
+~~~text
+gem module
+-> model concerns
+-> controllers/routes
+-> session/token storage
+-> callbacks/hooks
+-> configuration
+-> upgrade/version semantics
+~~~
 
-Before changing authentication state, understand:
+Do not duplicate framework behavior with a second home-grown authentication concern.
 
-- session creation
-- rotation/invalidation
-- expiration
-- logout semantics
-- multi-device behavior if relevant
-- CSRF protection for browser sessions
-- API credential behavior for API endpoints
+### Custom authentication
 
-## Protected resources
+For custom systems identify:
 
-Authentication checks should occur at the server boundary.
+- password hashing API;
+- credential comparison;
+- session/token issuance;
+- storage;
+- revocation;
+- expiry;
+- recovery;
+- request identity loading;
+- audit/observability;
+- failure semantics.
 
-Do not rely on:
+Custom authentication needs explicit security regression coverage because framework guarantees may not exist.
 
-- hidden links
-- client-side UI state
-- disabled buttons
-- route obscurity
+## Identity versus authorization
 
-for protection.
+Authentication should establish a stable principal such as current_user, current_account, a service identity, or an API client identity.
 
-## Failure behavior
+Do not infer authorization from identity alone.
 
-Verify repository conventions for:
+A protected request should normally compose:
 
-- unauthenticated request
-- invalid credentials
-- expired session/token
-- forbidden authenticated request
-- not-found versus unauthorized information disclosure behavior
+~~~text
+authenticate
+-> resolve principal
+-> resolve authoritative tenant/resource
+-> authorize action
+-> execute
+~~~
+
+Avoid trusting a client-supplied resource or tenant identifier as authoritative identity context.
+
+Use the repository's authorization policy and tenant-isolation skills for resource access decisions.
+
+## Credential storage
+
+Passwords must never be stored in plaintext.
+
+Inspect hashing algorithm/library, digest columns, credential normalization, password-change timestamp, password history requirements, compromised-password checks, logging filters, and migration compatibility.
+
+For Rails has_secure_password, inspect the actual Rails version's supported behavior rather than assuming every version has identical validation or token APIs.
+
+Password policy is separate from password hashing.
+
+Never log plaintext passwords, password confirmations, reset tokens, bearer credentials, session cookies, or Authorization headers.
+
+## Authentication state machine
+
+Model authentication as explicit state transitions.
+
+~~~text
+anonymous
+-> credential submitted
+-> credential accepted/rejected
+-> authenticated session created
+-> authenticated request context
+-> logout/revocation/expiry
+-> anonymous
+~~~
+
+Recovery adds:
+
+~~~text
+authenticated
+-> credential-change request
+-> recovery verification
+-> credential updated
+-> previous authentication state reviewed/revoked
+~~~
+
+Compromise remediation may require:
+
+~~~text
+active sessions
+-> revoke all
+-> rotate/reissue credentials
+-> re-authenticate
+~~~
+
+Define these transitions before adding callbacks or scattered controller logic.
+
+## Session lifecycle
+
+For browser authentication define:
+
+- session creation;
+- session renewal/rotation;
+- expiry;
+- inactivity timeout if required;
+- absolute lifetime if required;
+- logout invalidation;
+- credential-change invalidation;
+- global session revocation;
+- multi-device semantics.
+
+Rails security guidance explicitly treats session fixation, session hijacking, CookieStore replay, session expiry, and secret rotation as authentication/security concerns.
+
+A successful login must not preserve attacker-controlled pre-authentication session state.
+
+Use reset_session or the authentication framework's equivalent when the framework contract requires session renewal after authentication.
+
+## Session fixation and rotation
+
+Session fixation is distinct from session theft.
+
+The critical invariant is:
+
+> Successful authentication establishes a fresh authenticated session context that is not attacker-controlled.
+
+Review pre-login session identifiers, the login transition, session renewal, old-session invalidation, remember-me behavior, and browser/proxy behavior.
+
+Test the transition, not only the final authenticated page.
+
+## Session revocation
+
+Define the revocation source of truth.
+
+Possible mechanisms include database-backed session deletion, session version/timestamp checks, credential-version checks, token denylists, or short-lived credentials with refresh-token rotation.
+
+For multi-device systems distinguish:
+
+- revoke current session;
+- revoke one device;
+- revoke all sessions;
+- revoke on password change;
+- revoke on suspected compromise.
+
+Make revocation race behavior explicit. Security-sensitive operations may require a stronger freshness check than ordinary requests.
+
+## Cookie and browser session contract
+
+Review Secure, HttpOnly, SameSite, domain/path scope, expiry, and environment differences.
+
+Rails CookieStore is encrypted/signed, but sensitive or highly mutable business state should not be placed in a client-side session merely because the cookie is protected.
+
+Respect cookie size limits.
+
+Keep secret_key_base and related secrets outside source control and use the repository's secrets mechanism.
+
+Understand that rotating authentication secrets can invalidate existing encrypted/signed session material.
+
+## Password reset and recovery
+
+Treat password reset as an authentication protocol, not ordinary CRUD.
+
+Define:
+
+1. reset request;
+2. account lookup behavior;
+3. enumeration-safe response;
+4. token generation/storage;
+5. token lifetime;
+6. one-time-use semantics;
+7. trusted delivery;
+8. token consumption;
+9. credential update;
+10. session/token revocation after successful reset;
+11. notification/audit;
+12. abuse/rate limiting.
+
+Reset tokens must not be logged or exposed through analytics, referrers, screenshots, or generic error reporting.
+
+A password reset should not silently leave known-compromised sessions active unless that behavior is an explicit security decision.
+
+## Login abuse controls
+
+Authentication endpoints are public security boundaries.
+
+Assess credential stuffing, password spraying, brute-force attempts, account enumeration, reset-email abuse, token replay, bot traffic, and distributed attacks.
+
+Possible controls include rate limiting, progressive backoff, device/IP controls, challenges, generic failure messages, anomaly detection, notifications, and safe recovery.
+
+Avoid permanent lockouts that become denial-of-service primitives unless explicitly justified.
+
+Rate limits should reflect the threat model; one global IP limit is rarely sufficient.
+
+## Remember-me and persistent login
+
+Persistent authentication changes the threat model.
+
+Document token format/storage, lifetime, rotation, revocation, device scope, logout behavior, credential-change behavior, and stolen-token response.
+
+Do not place a long-lived bearer credential into an opaque cookie without a revocation and rotation model.
+
+## Browser authentication versus API authentication
+
+Classify endpoints before changing authentication.
+
+| Boundary | Typical credential | Key concerns |
+|---|---|---|
+| Browser HTML | session cookie | CSRF, cookie attributes, fixation, logout |
+| Browser JSON | session cookie | CSRF and response contract |
+| First-party API | bearer/session/token | leakage, expiry, revocation |
+| Third-party API | API key/OAuth token | provider boundary and rotation |
+| Service-to-service | service credential | workload identity, scope, rotation |
+
+Do not blindly reuse browser session semantics for machine clients.
+
+Do not disable CSRF protections simply because an endpoint returns JSON; classify the authentication boundary first.
+
+## Authentication context propagation
+
+Authenticated context can cross controllers, service objects, jobs, mailers, Action Cable, events, and downstream services.
+
+Separate user actor attribution, tenant attribution, authorization context, credential material, and correlation identifiers.
+
+Never serialize passwords, session cookies, bearer tokens, reset tokens, or live authentication objects into jobs/events.
+
+A background job should not silently impersonate a live browser session.
+
+If a job performs an authorization-sensitive action, pass stable actor identity and re-evaluate authorization against current state where required.
+
+## Authentication callbacks and hooks
+
+Callbacks can be useful for narrow lifecycle hooks but dangerous when they hide security state transitions.
+
+Prefer explicit ownership for session issuance, credential change, session revocation, recovery, and audit events.
+
+If callbacks are used, document trigger, ordering, transaction semantics, failure behavior, and bypass paths.
+
+Do not make credential security depend on a model callback if bulk SQL or alternate writers can bypass it.
+
+## Failure contracts
+
+Define behavior for missing credentials, malformed credentials, wrong credentials, disabled/suspended users, expired sessions, revoked sessions, expired/reset tokens, consumed reset tokens, rate-limited login, unauthorized authenticated requests, and stale authentication context.
+
+Keep responses safe against account enumeration.
+
+Do not conflate unauthenticated, forbidden, and deliberately hidden resource responses; use repository-specific HTTP/error conventions.
+
+## Security-sensitive operations
+
+Some actions should require recent or fresh authentication even if a session exists.
+
+Examples include password changes, MFA/security settings, API-key rotation, payout/payment destination changes, account deletion, and privilege changes.
+
+Define a freshness requirement rather than assuming logged in is equivalent to recently authenticated.
+
+Enforce freshness on the server.
+
+## Observability and audit
+
+Authentication telemetry should support incident response without leaking secrets.
+
+Useful events include login success/failure category, logout, session creation/revocation, reset requested/completed/failed, credential change, global revocation, and suspicious activity.
+
+Keep dimensions bounded and safe.
+
+Never log raw passwords, session cookies, bearer tokens, reset tokens, or Authorization headers.
+
+Compose with rails-observability and rails-incident-engineering.
+
+## Testing strategy
+
+Authentication requires transition-focused tests.
+
+### Credential verification
+
+- valid credentials;
+- invalid credentials;
+- unknown account;
+- disabled/suspended account;
+- credential normalization.
+
+### Session lifecycle
+
+- anonymous request rejected;
+- successful login creates authenticated state;
+- authenticated request resolves expected principal;
+- logout invalidates the session;
+- expiry/revocation rejects stale state;
+- session rotation occurs at the correct transition.
+
+### Recovery
+
+- reset request;
+- enumeration-safe response;
+- valid token;
+- expired token;
+- consumed token;
+- invalid token;
+- credential update;
+- post-reset revocation behavior.
+
+### Abuse
+
+- rate-limit behavior;
+- lockout/challenge behavior if present;
+- repeated failures do not expose account existence.
+
+### Boundary separation
+
+- authentication does not bypass authorization;
+- alternate endpoints/jobs cannot skip required authentication context;
+- browser and API auth contracts remain distinct.
+
+Prefer deterministic request/system tests and fake external mail/provider delivery at the narrow boundary.
+
+## Performance and capacity
+
+Authentication can become a database and cryptographic hotspot.
+
+Measure password hashing cost, login throughput, session lookup rate, session-table growth, reset-token queries, rate-limit storage, and authentication cache/store latency.
+
+Do not reduce password hashing cost solely to improve latency without security review.
+
+Use indexes for session/token lookup paths.
+
+Avoid loading entire user graphs during every request authentication.
+
+## Multi-device session management
+
+If users can be signed in on multiple devices, define session ownership, device metadata, last activity, session listing, per-device revoke, revoke-all, and expiry.
+
+Treat device/session metadata as security-sensitive and minimize stored values.
+
+## Compromise response
+
+Plan for leaked passwords, session cookies, reset tokens, API tokens, signing secrets, and credential-store exposure.
+
+For each credential class define detection, revocation, rotation, session invalidation, notification, audit evidence, and recovery verification.
+
+Do not assume changing the password invalidates every other credential type.
+
+## Anti-patterns / failure modes
+
+- authentication treated as authorization;
+- duplicate custom authentication beside an existing framework;
+- plaintext passwords;
+- credentials in logs;
+- reset tokens in logs/analytics without controls;
+- pre-authentication session reused after login;
+- logout that only clears UI state;
+- password reset that leaves compromised sessions active without an explicit rationale;
+- bearer token with no revocation or expiry model;
+- browser session reused as a generic service credential;
+- client-supplied tenant used as authoritative identity context;
+- account enumeration through inconsistent login/reset responses;
+- permanent lockout as the only brute-force control;
+- authentication callbacks relied on by bypassable persistence paths;
+- live external provider dependencies in every CI authentication test;
+- raw session IDs/tokens used as metric labels.
 
 ## Agent review checklist
 
-- [ ] existing authentication system inspected
-- [ ] authn/authz distinction preserved
-- [ ] secret handling safe
-- [ ] session/token lifecycle understood
-- [ ] protected endpoints enforce server-side checks
-- [ ] failure contract tested
+- [ ] Ruby/Rails version resolved
+- [ ] actual authentication mechanism identified
+- [ ] identity boundary documented
+- [ ] authentication/authorization distinction preserved
+- [ ] credential hashing/storage inspected
+- [ ] session lifecycle documented
+- [ ] session fixation defense verified
+- [ ] logout/revocation semantics explicit
+- [ ] cookie attributes reviewed for browser auth
+- [ ] password recovery lifecycle explicit
+- [ ] account-enumeration behavior reviewed
+- [ ] login/reset abuse controls reviewed
+- [ ] remember-me semantics explicit if present
+- [ ] browser/API authentication boundaries separated
+- [ ] authentication context propagation explicit
+- [ ] callback/bypass paths audited
+- [ ] sensitive-operation freshness requirements reviewed
+- [ ] safe authentication telemetry defined
+- [ ] deterministic transition tests exist
+- [ ] alternate auth paths/jobs/channels reviewed
+- [ ] performance/capacity evidence collected when material
+- [ ] compromise/revocation path exists
 
 ## Verification
 
-Use authentication/integration/request tests that exercise valid, invalid, expired, unauthenticated, and unauthorized cases relevant to the repository.
+For a new authentication capability:
+
+~~~text
+identify mechanism
+-> model principal and state transitions
+-> inspect credential/session storage
+-> define login/logout/recovery contracts
+-> define revocation
+-> define browser/API boundary
+-> add abuse/security controls
+-> add transition-focused tests
+-> run repository security tooling
+-> run full validation
+~~~
+
+Do not claim authentication security merely because a framework helper exists. Verify the actual repository path.
 
 ## Source foundation
 
-The Ruby Workshop includes an authentication step in its Rails learning path. This skill turns that material into an agent procedure while deliberately requiring inspection of the repository's real authentication mechanism.
+Primary current Rails guidance:
 
-## Book integration: protected resource boundary
+- https://guides.rubyonrails.org/security.html
+- https://guides.rubyonrails.org/8_0_release_notes.html
+- https://api.rubyonrails.org/classes/ActiveModel/SecurePassword/ClassMethods.html
+- https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html
 
-Authentication mechanisms commonly expose a reusable controller-level guard. Apply it to the smallest correct set of actions/resources.
+The current Rails Security Guide documents the Rails 8+ authentication generator, password reset flow, has_secure_password, session storage, session fixation, session expiry, CSRF, brute-force/account-hijacking guidance, and secret rotation.
 
-Keep authentication and authorization distinct. A protected route proves identity requirements, not permission for every record/action.
+Repository composition:
 
-Test both sides of the boundary:
-- unauthenticated access is blocked as specified
-- authenticated but unauthorized access is handled as specified
-- deliberately public endpoints remain public
+- skills/rails-security/SKILL.md
+- skills/rails-security-engineering/SKILL.md
+- skills/rails-action-controller/SKILL.md
+- skills/rails-api-integration/SKILL.md
+- skills/rails-observability/SKILL.md
+- skills/rails-incident-engineering/SKILL.md
+- skills/rails-active-record/SKILL.md
+- skills/rails-database-engineering/SKILL.md
+- skills/rails-test-engineering/SKILL.md

@@ -46,6 +46,7 @@ This file defines how an agent should select and compose skills.
 | Authentication/session | rails-authentication | rails-controllers, rails-testing |
 | Rails test design | rails-testing | relevant implementation skill, ruby-tdd-refactoring |
 | Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |\n| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |\n| Route precedence/shadowing | rails-routing | rails-action-controller, rails-testing, pattern:route-precedence-contract |\n| Nested/shallow route design | rails-routing | rails-associations, rails-authentication, rails-testing, pattern:nested-route-boundary |\n| Route scopes/namespaces/constraints | rails-routing | rails-action-controller, rails-security, rails-testing, pattern:route-scope-namespace-contract, pattern:route-constraint-contract |\n| URL helper/polymorphic routing | rails-routing | rails-action-view, rails-action-mailer, rails-i18n, rails-testing, pattern:route-helper-contract |\n| Routing concerns/direct/resolve | rails-routing | rails-testing, pattern:route-concern-contract, pattern:direct-route-resolution |\n| Mounted Rack/engine endpoint | rails-routing | rails-security, rails-testing, pattern:mounted-endpoint-boundary |\n| Catch-all/redirect fallback routing | rails-routing | rails-action-controller, rails-security, rails-testing, pattern:catch-all-route-boundary |
+| Rails Authentication engineering | rails-authentication | rails-action-controller, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
 | Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
 | Rails caching engineering | rails-caching | rails-performance, ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, rails-security, rails-security-engineering, rails-testing |
@@ -1156,3 +1157,20 @@ validation rule / context / error / custom validator / bypass path
 | Validation lifecycle callback | pattern:validation-callback-boundary |
 | Direct/bulk write bypass review | pattern:validation-bypass-audit |
 | Deterministic validation tests | pattern:validation-testing |
+
+
+## Rails Authentication engineering
+
+When a task changes identity, sessions, credentials, recovery, or protected request entry:
+- identify the repository's existing authentication mechanism before coding;
+- keep authentication and authorization separate;
+- map credential storage, hashing, filtering, session/token issuance, expiry, and revocation;
+- treat successful login as a session-state transition and verify fixation resistance;
+- define logout, current-session revoke, revoke-all, and credential-change semantics;
+- treat password reset as an expiring, one-time authentication protocol with enumeration-safe responses;
+- classify browser session versus API/token authentication before changing CSRF or credential handling;
+- never serialize passwords, session cookies, bearer tokens, or reset tokens into jobs/events;
+- propagate stable actor attribution, not live credentials, across asynchronous/realtime boundaries;
+- define fresh-authentication requirements for security-sensitive changes;
+- test success, failure, expiry, revocation, fixation, recovery replay, and abuse controls deterministically;
+- do not claim security from framework defaults alone; verify the actual repository path.

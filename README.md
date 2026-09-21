@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 33 — Rails Routing Engineering  
+> **Current milestone:** Iteration 34 — Rails Authentication Engineering  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -195,6 +195,50 @@ The latest milestone deepened the foundational `rails-routing` skill into a full
 The routing layer deliberately keeps **dispatch and URL generation separate from authorization and business invariants**.
 
 ---
+
+
+---
+
+# Rails Authentication Engineering
+
+The current milestone deepens authentication from a shallow sign-in/sign-out reference into a lifecycle and security boundary.
+
+### Coverage
+
+- authentication mechanism discovery, including Rails 8+ generated authentication
+- credential hashing/storage and secret-safe logging
+- explicit authentication state transitions
+- session lifecycle, fixation resistance, renewal, expiry, and logout
+- current-session, per-device, global, and compromise-driven revocation
+- password reset/recovery with expiry, replay prevention, and enumeration-safe behavior
+- credential-stuffing, brute-force, reset-abuse, and throttling controls
+- remember-me and persistent-login semantics
+- browser session versus API/token authentication boundaries
+- actor/tenant context propagation without serializing credentials
+- recent/fresh authentication requirements for sensitive operations
+- transition-focused request/system/security regression tests
+
+### Authentication artifacts
+
+- `skills/rails-authentication/SKILL.md`
+- `patterns/rails/authentication-mechanism-boundary.md`
+- `patterns/rails/credential-storage-contract.md`
+- `patterns/rails/session-lifecycle-contract.md`
+- `patterns/rails/session-fixation-rotation.md`
+- `patterns/rails/session-revocation-contract.md`
+- `patterns/rails/password-recovery-contract.md`
+- `patterns/rails/login-abuse-controls.md`
+- `patterns/rails/remember-me-contract.md`
+- `patterns/rails/browser-api-auth-boundary.md`
+- `patterns/rails/authentication-context-propagation.md`
+- `patterns/rails/authentication-freshness-boundary.md`
+- `patterns/testing/authentication-testing.md`
+- `evals/rails/authentication-contract.yml`
+- `test/rails_authentication_system_test.rb`
+
+Primary source: https://guides.rubyonrails.org/security.html
+
+The boundary is intentionally compositional: security engineering owns threat/trust analysis, authorization owns action/resource permission, API integration owns external credential contracts, and Active Job/Action Cable own their execution boundaries.
 
 # Agent operating model
 
@@ -432,9 +476,9 @@ Validation covers:
 The validation suite currently reports:
 
 ```text
-65 skills
-246 implementation patterns
-80 evaluation cases
+66 skills
+257 implementation patterns
+81 evaluation cases
 ```
 
 ---
@@ -574,4 +618,4 @@ The corresponding CI validation completed successfully after correcting manifest
 
 Next milestone:
 
-**Iteration 34 — Rails Authentication Engineering**
+**Iteration 35 — Rails Authorization Engineering**

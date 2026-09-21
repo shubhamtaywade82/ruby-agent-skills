@@ -229,6 +229,17 @@ skills:
     family: rails
     path: skills/rails-architecture/SKILL.md
     triggers: [Rails feature, MVC, resource, REST, application structure]
+  rails-authentication:
+    source: rails-authentication-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/authentication-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-routing:
     family: rails
     path: skills/rails-routing/SKILL.md
@@ -264,7 +275,7 @@ skills:
   rails-authentication:
     family: rails
     path: skills/rails-authentication/SKILL.md
-    triggers: [authentication, session, sign in, sign out, protected route]
+    triggers: [authentication, session, sign in, sign out, protected route, password reset, session fixation, session revocation, remember me, bearer token, account lockout, login throttling, current user, reauthentication]
   rails-testing:
     family: rails-quality
     path: skills/rails-testing/SKILL.md
@@ -310,6 +321,17 @@ patterns:
 
   rails:
     paths:
+      - patterns/rails/authentication-mechanism-boundary.md
+      - patterns/rails/credential-storage-contract.md
+      - patterns/rails/session-lifecycle-contract.md
+      - patterns/rails/session-fixation-rotation.md
+      - patterns/rails/session-revocation-contract.md
+      - patterns/rails/password-recovery-contract.md
+      - patterns/rails/login-abuse-controls.md
+      - patterns/rails/remember-me-contract.md
+      - patterns/rails/browser-api-auth-boundary.md
+      - patterns/rails/authentication-context-propagation.md
+      - patterns/rails/authentication-freshness-boundary.md
       - patterns/rails/query-object.md
       - patterns/rails/form-object.md
       - patterns/rails/policy-boundary.md
@@ -510,6 +532,7 @@ patterns:
 
   testing:
     paths:
+      - patterns/testing/authentication-testing.md
       - patterns/testing/test-boundary-selection.md
       - patterns/testing/deterministic-async-test.md
       - patterns/testing/parallel-safe-test.md

@@ -668,3 +668,32 @@ The routing coverage now extends beyond basic resource declarations to the full 
 - route inspection and deterministic route assertions
 
 Primary source: https://guides.rubyonrails.org/routing.html
+
+
+## Rails Authentication
+
+Rails authentication is implemented as a full lifecycle/security boundary through:
+
+- skills/rails-authentication/SKILL.md
+- patterns/rails/authentication-mechanism-boundary.md
+- patterns/rails/credential-storage-contract.md
+- patterns/rails/session-lifecycle-contract.md
+- patterns/rails/session-fixation-rotation.md
+- patterns/rails/session-revocation-contract.md
+- patterns/rails/password-recovery-contract.md
+- patterns/rails/login-abuse-controls.md
+- patterns/rails/remember-me-contract.md
+- patterns/rails/browser-api-auth-boundary.md
+- patterns/rails/authentication-context-propagation.md
+- patterns/rails/authentication-freshness-boundary.md
+- patterns/testing/authentication-testing.md
+- evals/rails/authentication-contract.yml
+- test/rails_authentication_system_test.rb
+
+Primary sources:
+- https://guides.rubyonrails.org/security.html
+- https://guides.rubyonrails.org/8_0_release_notes.html
+- https://api.rubyonrails.org/classes/ActiveModel/SecurePassword/ClassMethods.html
+- https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html
+
+Coverage focuses on authentication mechanism boundaries, credential storage, session lifecycle, fixation resistance, revocation, password recovery, abuse controls, persistent login, browser/API separation, context propagation, freshness, and deterministic security regression testing.
