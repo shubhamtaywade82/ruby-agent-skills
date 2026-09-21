@@ -2,6 +2,9 @@ version: 1
 id: ruby-training-public-v1
 evaluation_set: ruby-training
 source: allerin-ruby-set-2
+
+fixture_root: benchmarks/ruby-training/fixtures
+verifier: scripts/verify_training_eval.rb
 evaluations:
   - selection-sort
   - recursive-selection-sort
