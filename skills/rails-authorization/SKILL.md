@@ -8,11 +8,15 @@ family: rails
 
 Authorization answers what an already identified actor is allowed to do to a resource in a context. Authentication establishes identity; authorization establishes permission. Do not merge the two contracts.
 
-## Activation
+## Purpose
+
+Treat authorization as an explicit server-side permission boundary covering actor, action, resource, tenant, context, execution boundary, and denial semantics.
+
+## Activate when
 
 Use this skill for policy objects, Pundit, CanCanCan, custom authorization, roles or permissions, protected controller/service/job/API/Action Cable actions, object-level authorization and IDOR prevention, tenant isolation, collection authorization, contextual permissions, authorization caching, auditability, and security regression work.
 
-## First inspect the repository
+## Repository inspection
 
 Before changing authorization:
 
@@ -169,7 +173,7 @@ Required categories include actor/resource ownership, cross-tenant access, colle
 
 Prefer policy/unit tests for decision logic and request/system tests for boundary wiring.
 
-## Review checklist
+## Agent review checklist
 
 - Is authentication distinct from authorization?
 - Is there one authoritative authorization mechanism?
@@ -182,6 +186,20 @@ Prefer policy/unit tests for decision logic and request/system tests for boundar
 - Are authorization caches correctly keyed and invalidated?
 - Are allow and deny paths executable tests?
 - Is the change limited to the requested boundary?
+
+## Verification
+
+For an authorization change:
+
+identify mechanism
+-> inspect lookup/scope boundaries
+-> define permission and tenant contracts
+-> protect service/job/API/realtime boundaries
+-> test allow/deny and regression cases
+-> run security/contract validation
+-> inspect CI evidence
+
+Do not claim authorization safety without verifying the actual repository path.
 
 ## Source foundation
 
