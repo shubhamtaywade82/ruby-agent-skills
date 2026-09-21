@@ -1,0 +1,78 @@
+version: 1
+source: allerin-ruby-set-2
+description: >
+  Benchmark-defined workspace contracts for deterministic execution of the
+  public Ruby training evaluation cases. The assessment defines behavior,
+  examples and algorithmic constraints; these API seams make that behavior
+  executable without pretending the assessment prescribed a particular class API.
+
+fixtures:
+  selection-sort:
+    implementation_file: lib/solution.rb
+    classes:
+      - SelectionSorter
+    api:
+      sort: SelectionSorter#sort(values)
+      recursive_sort: SelectionSorter#recursive_sort(values)
+
+  recursive-selection-sort:
+    implementation_file: lib/solution.rb
+    classes:
+      - RecursiveSelectionSorter
+    api:
+      sort: RecursiveSelectionSorter#sort(values)
+
+  smallest-missing:
+    implementation_file: lib/solution.rb
+    classes:
+      - SmallestMissing
+    api:
+      find: SmallestMissing#find(values)
+
+  shopping-cart:
+    implementation_file: lib/solution.rb
+    classes:
+      - Mall
+      - ShoppingCart
+    api:
+      mall_add: Mall#add_product(name, price, quantity)
+      cart_init: ShoppingCart.new(mall)
+      cart_add: ShoppingCart#add_product(name, quantity)
+      cart_remove: ShoppingCart#remove_product(name, quantity)
+      cart_details: ShoppingCart#details
+      cart_total: ShoppingCart#total
+
+  triplet-sum:
+    implementation_file: lib/solution.rb
+    classes:
+      - TripletSum
+    api:
+      find: TripletSum#find(values, target)
+
+  majority-element:
+    implementation_file: lib/solution.rb
+    classes:
+      - MajorityElement
+    api:
+      find: MajorityElement#find(values)
+
+  distinct-elements:
+    implementation_file: lib/solution.rb
+    classes:
+      - DistinctElements
+    api:
+      find: DistinctElements#find(values)
+
+  power-of-two:
+    implementation_file: lib/solution.rb
+    classes:
+      - PowerOfTwo
+    api:
+      check: PowerOfTwo#check?(value)
+
+  chocolate-feast:
+    implementation_file: lib/solution.rb
+    classes:
+      - ChocolateFeast
+    api:
+      call: ChocolateFeast#call(money, cost, wrappers)
