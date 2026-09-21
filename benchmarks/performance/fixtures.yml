@@ -1,0 +1,10 @@
+version: 1
+source: performance-v1
+description: Deterministic performance fixtures.
+fixtures:
+  performance-allocation-boundary:
+    root: benchmarks/performance/fixtures/performance-allocation-boundary
+    implementation_file: lib/event_labels.rb
+  cache-key-boundary:
+    root: benchmarks/performance/fixtures/cache-key-boundary
+    implementation_file: lib/dashboard_cache.rb
