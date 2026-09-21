@@ -182,9 +182,9 @@ when "campaign"
 
       skills = runner.run(
         id: eval_id,
-        workspace: fixture_path(eval_id),
+        workspace: fixture_path(eval_id, campaign_fixture_root),
         agent_command: options.fetch(:skills),
-        verify_command: "ruby #{Shellwords.escape(VERIFY)}",
+        verify_command: "ruby #{Shellwords.escape(campaign_verifier)}",
         output: skills_path,
         timeout: options.fetch(:timeout),
         skills_enabled: true
