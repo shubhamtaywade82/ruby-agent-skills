@@ -283,3 +283,16 @@ Do not use a pattern simply because it exists. If a direct implementation is cle
       + ruby-api-design
       + pattern:ruby-gem
       + ruby-tdd-refactoring
+
+## Concurrency
+
+```text
+shared mutable state / concurrent I/O / Thread / Queue / Mutex / deadlock
+  -> ruby-concurrency
+  -> ruby-runtime-compatibility when runtime-sensitive
+  -> ruby-dependency-injection when collaborators require isolation
+  -> ruby-debugging + ruby-tdd-refactoring for concurrency defects
+  -> bounded-concurrency only when capacity and lifecycle justify it
+```
+
+Do not activate concurrency merely because code is slow. First establish the workload, bottleneck, ownership model, and existing Rails/repository executor infrastructure.
