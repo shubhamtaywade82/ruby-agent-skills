@@ -17,6 +17,10 @@ Map a Rails feature to the repository's existing request, domain, persistence, p
 - application boundaries are unclear
 - architecture is being refactored
 
+## Boundary with focused Rails skills
+
+Use this skill for cross-layer ownership and request-flow decisions. Delegate detailed route decisions to `rails-routing`, controller boundary decisions to `rails-controllers`, persistence decisions to `rails-activerecord`, and HTTP contract testing to `rails-testing`. Do not duplicate detailed guidance from those skills.
+
 ## Repository inspection
 
 
