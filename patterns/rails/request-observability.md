@@ -46,3 +46,6 @@ Inspect the repository's runtime/version, existing conventions, neighboring test
 - rails-testing
 - ruby-tdd-refactoring
 - rails-architecture
+## Do not use when
+
+Do not use when there is no request-level correlation, logging, metric, or diagnostic requirement.
