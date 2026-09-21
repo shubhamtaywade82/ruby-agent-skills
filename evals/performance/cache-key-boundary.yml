@@ -4,11 +4,13 @@ title: Preserve tenant isolation in a cache key
 category: performance
 source: performance-v1
 skills:
+  - rails-caching
   - ruby-performance
   - rails-performance
   - rails-security
 patterns:
   - cache-boundary
+  - cache-key-isolation
 prompt: |
   Implement DashboardCache.key(tenant_id, dashboard_id) so cache entries cannot collide across tenants. Preserve the public API and add tests proving different tenants produce different keys while the same tenant/resource is stable.
 constraints:
