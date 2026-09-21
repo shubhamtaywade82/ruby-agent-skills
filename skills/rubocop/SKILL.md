@@ -53,7 +53,13 @@ inspect dependencies
 
 Do not load every plugin simply because it exists.
 
-### Official plugins
+### RSpec style guide
+
+When RSpec is present, treat https://rspec.rubystyle.guide/ as the style-guide source for specification structure and test readability. The guide assumes RSpec 3 or later and identifies `rubocop-rspec` as its executable enforcement path. Focus on example-group structure, contexts, subject/let ordering, expectations, matchers, doubles, test isolation, naming, and controlled DRYing. Do not over-abstract tests merely to remove duplication.
+
+The `rubocop-rspec` extension contains cops linked directly to the guide, including `RSpec/AnyInstance`, `RSpec/BeforeAfterAll`, `RSpec/ContextWording`, `RSpec/ExampleWording`, `RSpec/InstanceVariable`, `RSpec/LeadingSubject`, `RSpec/MultipleExpectations`, `RSpec/NamedSubject`, and `RSpec/PredicateMatcher`.
+
+## Official plugins
 
 The current RuboCop documentation lists:
 
@@ -254,6 +260,10 @@ Then run the repository's full lint/test checks.
 Never claim RuboCop is clean unless the command actually ran and passed.
 
 ## Source foundation
+
+RSpec Style Guide: https://rspec.rubystyle.guide/
+
+RuboCop RSpec extension: https://docs.rubocop.org/rubocop-rspec/
 
 Current upstream plugin taxonomy and loading guidance: RuboCop documentation, version 1.89, Plugins page. The page states that RuboCop 1.72 introduced the plugin system and recommends it for extensions that support it; it lists the official and third-party plugins catalogued by this repository.
 
