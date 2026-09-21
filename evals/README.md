@@ -47,10 +47,10 @@ The assessment explicitly requires OOP concepts across the programs, so OOP/desi
 
 Phase 6 adds the provider-neutral benchmark runner:
 
-    bin/eval list
-    bin/eval show triplet-sum
-    bin/eval packet triplet-sum --output /tmp/triplet-sum.json
-    bin/eval run triplet-sum --workspace /path/to/fixture --agent-command 'agent ...' --verify-command 'verifier ...'
+    ruby bin/eval list
+    ruby bin/eval show triplet-sum
+    ruby bin/eval packet triplet-sum --output /tmp/triplet-sum.json
+    ruby bin/eval run triplet-sum --workspace /path/to/fixture --agent-command 'agent ...' --verify-command 'verifier ...'
 
 See `docs/BENCHMARK_RUNNER.md` and `docs/EVAL_RESULT_SCHEMA.md`.
 
