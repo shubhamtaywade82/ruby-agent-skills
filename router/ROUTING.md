@@ -44,6 +44,7 @@ This file defines how an agent should select and compose skills.
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
 | Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
+| RuboCop/linting review | rubocop | ruby-clean-code, relevant implementation skill, pattern:rubocop-review |
 | Test-driven change | ruby-tdd-refactoring | relevant implementation skill |
 | Primitive with domain behavior | ruby-data-types | ruby-oop, pattern:value-object |
 | Multi-step application workflow | ruby-service-objects | ruby-poro, ruby-domain-modeling, pattern:service-object, pattern:application-service, ruby-tdd-refactoring |
@@ -90,6 +91,18 @@ ruby-debugging
   + relevant implementation skill
   + ruby-tdd-refactoring
 ```
+
+### RuboCop review
+
+```text
+rubocop
+  + relevant implementation skill
+  + ruby-clean-code
+  + pattern:rubocop-review
+  + ruby-tdd-refactoring (behavior changes)
+```
+
+Select plugins from `data/rubocop/plugins.yml` only when repository dependencies or the task justify them.
 
 ### Rails quality review
 
