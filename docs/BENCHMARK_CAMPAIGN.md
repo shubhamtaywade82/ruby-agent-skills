@@ -1,68 +1,100 @@
 # Benchmark Campaign
 
-Phase 7 turns the execution harness into a controlled baseline-versus-skill-enabled campaign.
+Phase 8 turns the benchmark runner into a controlled repeated campaign.
 
-## What is held constant
+## Controlled experiment
 
-For a valid comparison, keep these identical between runs:
+For each evaluation, the campaign executes paired runs:
 
-- evaluation YAML
-- benchmark fixture
-- verifier
-- Ruby/runtime version
-- timeout
-- repository snapshot
-- tool permissions and external resources
+```text
+same evaluation
+same fixture
+same verifier
+same runtime
+same agent configuration
+      │
+      ├── skills disabled
+      └── skills enabled
+```
 
-Only the agent configuration should change.
+The skill-enabled side receives only the skills and patterns declared in the evaluation YAML.
 
-## Fixture contracts
+## Repetitions
 
-The original assessment defines behavior, examples and algorithmic constraints, but it does not prescribe one class/method API for every question. Phase 7 therefore introduces explicit fixture contracts in:
+The public campaign manifest uses three repetitions per evaluation.
 
-`benchmarks/ruby-training/fixtures.yml`
+A repeated campaign is important for stochastic agents. Individual JSON files are retained; the campaign summary only reports dimension-level status counts.
 
-These contracts create stable seams for deterministic verification. They are benchmark infrastructure and should not be treated as claims about the original source implementation.
+Run the complete public campaign:
 
-## Deterministic checks
+    ruby bin/benchmark campaign \
+      --agent-command 'YOUR_AGENT_ADAPTER_COMMAND' \
+      --output benchmark-results/ruby-training-public-v1
 
-The public verifier checks what can be established reproducibly:
+Run one evaluation:
 
-- functional behavior against all public cases
-- contract behavior where an API seam is defined
-- presence of required OOP class boundaries
-- test/spec changes
-- selected forbidden constructs
-- selected algorithmic static heuristics
+    ruby bin/benchmark campaign \
+      --agent-command 'YOUR_AGENT_ADAPTER_COMMAND' \
+      --evaluation triplet-sum \
+      --output benchmark-results/triplet-sum
 
-Some complexity/space properties are intentionally reported as `not_evaluated` when static evidence is insufficient. The benchmark must not manufacture certainty from weak heuristics.
+Use different provider commands only when intentionally comparing different adapters:
 
-## Running one comparison
+    ruby bin/benchmark campaign \
+      --baseline-command 'BASELINE_ADAPTER' \
+      --skills-command 'SKILL_ADAPTER'
 
-Example:
+## Agent adapter
 
-    ruby bin/benchmark compare triplet-sum       --baseline-command 'BASELINE_AGENT_COMMAND'       --skills-command 'SKILL_ENABLED_AGENT_COMMAND'       --output benchmark-results/triplet-sum
+See `docs/AGENT_ADAPTER_PROTOCOL.md`.
 
-This produces:
+The adapter is the only component that knows how to invoke the actual AI coding agent.
 
-    baseline.json
-    skills.json
-    comparison.json
+## Results
 
-## Reporting
+Each evaluation receives:
 
-A comparison keeps baseline and skill-enabled dimensions side by side. It does not calculate a winner or hide the underlying evidence.
+```text
+baseline-1.json
+baseline-2.json
+baseline-3.json
 
-    ruby bin/benchmark report       benchmark-results/triplet-sum/baseline.json       benchmark-results/triplet-sum/skills.json
+skills-1.json
+skills-2.json
+skills-3.json
+```
 
-## Public versus hidden benchmarks
+The root `campaign.json` reports counts per dimension.
 
-The nine current training cases are public and should remain reproducible.
+Example shape:
 
-A serious benchmark campaign should add a private hidden pack containing independently authored cases. The hidden pack must live outside this public repository and use the same evaluation/result contracts.
+```json
+{
+  "dimensions": {
+    "functional": {
+      "baseline": {"pass": 2, "fail": 1},
+      "skills_enabled": {"pass": 3}
+    }
+  }
+}
+```
 
-## Campaign hygiene
+This is descriptive reporting, not a single benchmark score.
 
-Do not commit generated benchmark results. Keep them in `benchmark-results/` or external artifact storage.
+## Hidden evaluation pack
 
-Do not compare runs performed with different prompts, fixtures, runtimes, or tool permissions and attribute the difference to skills.
+Public benchmark definitions are useful for reproducibility but can be optimized against.
+
+A private hidden pack should use the same evaluation and result schemas, remain outside this repository, and be executed by the same adapter protocol.
+
+## Experimental hygiene
+
+Do not vary runtime, tool permissions, adapter code, model version, prompt, timeout or fixture between paired runs.
+
+Do not load unrelated global skills during the skill-enabled configuration.
+
+Do not commit generated results.
+
+## Phase 8 boundary
+
+The repository now supplies the controlled campaign machinery. A real campaign requires an external agent adapter command connected to an actual coding model/runtime.
