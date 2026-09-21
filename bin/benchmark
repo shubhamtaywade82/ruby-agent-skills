@@ -46,14 +46,17 @@ when "compare"
   id = ARGV.shift
   options = { output: File.join(ROOT, "benchmark-results", id), timeout: RubyAgentSkills::EvalRunner::DEFAULT_TIMEOUT }
   OptionParser.new do |opts|
+    opts.on("--agent-command COMMAND") { |value| options[:agent] = value }
     opts.on("--baseline-command COMMAND") { |value| options[:baseline] = value }
     opts.on("--skills-command COMMAND") { |value| options[:skills] = value }
     opts.on("--output DIR") { |value| options[:output] = value }
     opts.on("--timeout SECONDS", Integer) { |value| options[:timeout] = value }
   end.parse!(ARGV)
 
+  options[:baseline] ||= options[:agent]
+  options[:skills] ||= options[:agent]
   unless id && options[:baseline] && options[:skills]
-    abort "usage: ruby bin/benchmark compare EVAL_ID --baseline-command COMMAND --skills-command COMMAND [--output DIR] [--timeout SECONDS]"
+    abort "usage: ruby bin/benchmark compare EVAL_ID --agent-command COMMAND [or explicit --baseline-command/--skills-command] [options]"
   end
 
   fixture = fixture_path(id)
@@ -70,7 +73,8 @@ when "compare"
     agent_command: options.fetch(:baseline),
     verify_command: verifier,
     output: baseline_path,
-    timeout: options.fetch(:timeout)
+    timeout: options.fetch(:timeout),
+    skills_enabled: false
   )
   skills = runner.run(
     id: id,
@@ -78,7 +82,8 @@ when "compare"
     agent_command: options.fetch(:skills),
     verify_command: verifier,
     output: skills_path,
-    timeout: options.fetch(:timeout)
+    timeout: options.fetch(:timeout),
+    skills_enabled: true
   )
 
   checks = runner.find(id).fetch("checks")
@@ -101,6 +106,112 @@ when "compare"
   comparison_path = File.join(output_dir, "comparison.json")
   write_json(comparison_path, comparison)
   puts JSON.pretty_generate(comparison)
+
+when "campaign"
+  manifest_path = nil
+  options = {
+    output: File.join(ROOT, "benchmark-results", "campaign"),
+    timeout: RubyAgentSkills::EvalRunner::DEFAULT_TIMEOUT,
+    runs: nil,
+    evaluation: nil,
+    continue_on_failure: false
+  }
+
+  OptionParser.new do |opts|
+    opts.on("--manifest PATH") { |value| manifest_path = value }
+    opts.on("--agent-command COMMAND") { |value| options[:agent] = value }
+    opts.on("--baseline-command COMMAND") { |value| options[:baseline] = value }
+    opts.on("--skills-command COMMAND") { |value| options[:skills] = value }
+    opts.on("--output DIR") { |value| options[:output] = value }
+    opts.on("--timeout SECONDS", Integer) { |value| options[:timeout] = value }
+    opts.on("--runs COUNT", Integer) { |value| options[:runs] = value }
+    opts.on("--evaluation ID") { |value| options[:evaluation] = value }
+    opts.on("--continue-on-failure") { options[:continue_on_failure] = true }
+  end.parse!(ARGV)
+
+  manifest_path ||= File.join(ROOT, "benchmarks", "ruby-training", "campaign.yml")
+  campaign = YAML.safe_load(File.read(manifest_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+
+  options[:baseline] ||= options[:agent]
+  options[:skills] ||= options[:agent]
+  unless options[:baseline] && options[:skills]
+    abort "usage: ruby bin/benchmark campaign --agent-command COMMAND [or explicit baseline/skills commands] [options]"
+  end
+
+  selected_ids = Array(campaign.fetch("evaluations"))
+  selected_ids &= [options.fetch(:evaluation)] if options[:evaluation]
+  repetitions = (options[:runs] || campaign.fetch("execution").fetch("repetitions", 1)).to_i
+  abort "repetitions must be >= 1" if repetitions < 1
+
+  output_dir = File.expand_path(options.fetch(:output))
+  FileUtils.mkdir_p(output_dir)
+
+  campaign_result = {
+    "protocol_version" => 1,
+    "campaign" => campaign.fetch("id"),
+    "manifest" => File.expand_path(manifest_path),
+    "repetitions" => repetitions,
+    "evaluations" => {}
+  }
+
+  selected_ids.each do |eval_id|
+    evaluation_output = File.join(output_dir, eval_id)
+    FileUtils.mkdir_p(evaluation_output)
+    baseline_runs = []
+    skills_runs = []
+
+    repetitions.times do |index|
+      run_number = index + 1
+      baseline_path = File.join(evaluation_output, "baseline-#{run_number}.json")
+      skills_path = File.join(evaluation_output, "skills-#{run_number}.json")
+
+      baseline = runner.run(
+        id: eval_id,
+        workspace: fixture_path(eval_id),
+        agent_command: options.fetch(:baseline),
+        verify_command: "ruby #{Shellwords.escape(VERIFY)}",
+        output: baseline_path,
+        timeout: options.fetch(:timeout),
+        skills_enabled: false
+      )
+      baseline_runs << baseline_path
+
+      skills = runner.run(
+        id: eval_id,
+        workspace: fixture_path(eval_id),
+        agent_command: options.fetch(:skills),
+        verify_command: "ruby #{Shellwords.escape(VERIFY)}",
+        output: skills_path,
+        timeout: options.fetch(:timeout),
+        skills_enabled: true
+      )
+      skills_runs << skills_path
+
+      if !options[:continue_on_failure] && [baseline, skills].any? { |result| result.fetch("overall") == "failed" }
+        break
+      end
+    end
+
+    checks = runner.find(eval_id).fetch("checks")
+    aggregate = {}
+    checks.each do |name|
+      aggregate[name] = {
+        "baseline" => baseline_runs.map { |path| status_value(JSON.parse(File.read(path, encoding: "UTF-8")), name) }.tally,
+        "skills_enabled" => skills_runs.map { |path| status_value(JSON.parse(File.read(path, encoding: "UTF-8")), name) }.tally
+      }
+    end
+
+    campaign_result["evaluations"][eval_id] = {
+      "baseline_results" => baseline_runs,
+      "skills_results" => skills_runs,
+      "dimensions" => aggregate
+    }
+  end
+
+  comparison_path = File.join(output_dir, "campaign.json")
+  write_json(comparison_path, campaign_result)
+  puts JSON.pretty_generate(campaign_result)
+
 when "report"
   baseline_path = ARGV.shift
   skills_path = ARGV.shift
@@ -140,7 +251,8 @@ else
     usage:
       ruby bin/benchmark list
       ruby bin/benchmark prepare EVAL_ID --output PATH
-      ruby bin/benchmark compare EVAL_ID --baseline-command COMMAND --skills-command COMMAND [options]
+      ruby bin/benchmark compare EVAL_ID --agent-command COMMAND [or explicit baseline/skills commands] [options]
+      ruby bin/benchmark campaign --agent-command COMMAND [or explicit baseline/skills commands] [options]
       ruby bin/benchmark report BASELINE_JSON SKILLS_JSON [--output PATH]
   USAGE
 end
