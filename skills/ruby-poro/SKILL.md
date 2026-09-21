@@ -19,6 +19,10 @@ A PORO is an implementation substrate, not a design pattern by itself. Choose th
 - a domain concept deserves an explicit Ruby object
 - testing is difficult because behavior is coupled to framework infrastructure
 
+## Boundary with related design skills
+
+PORO describes the implementation substrate, not the reason for the abstraction. If the object exists primarily to execute an operation, decide with `ruby-service-objects`; if it represents a business concept, use `ruby-domain-modeling`; if it wraps an external interface, use an adapter; if it is only a value, consider a value object. Avoid treating PORO as a catch-all category.
+
 ## Repository inspection
 
 Inspect existing PORO directories, service/policy/query/form/presenter/command objects, dependency injection conventions, construction lifecycle, and tests.
