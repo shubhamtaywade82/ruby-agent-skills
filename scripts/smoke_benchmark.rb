@@ -64,7 +64,7 @@ run_case = lambda do |skills_enabled|
   runner.run(
     id: "selection-sort",
     workspace: fixture,
-    agent_command: command,
+    agent_command: agent_command,
     verify_command: verifier,
     timeout: 30,
     skills_enabled: skills_enabled
