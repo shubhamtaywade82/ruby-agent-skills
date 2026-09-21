@@ -1,0 +1,30 @@
+id: error-boundary
+version: 1
+title: Preserve stable API error semantics
+category: rails
+source: rails-observability-v1
+skills:
+  - rails-observability
+  - rails-controllers
+patterns:
+  - request-error-boundary
+prompt: |
+  Map InvalidOrderState to a stable 409 JSON response in OrdersController while leaving unexpected exceptions on the normal 5xx path. Preserve the existing success response and add focused request tests.
+constraints:
+  required_design:
+    - narrow exception-to-response boundary
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: domain-conflict
+    input: InvalidOrderState
+    expected: HTTP 409 JSON
+  - name: unexpected
+    input: RuntimeError
+    expected: normal 5xx path
+grading:
+  functional: expected domain exception maps to 409 without swallowing unexpected failures
+  tests: both paths are covered
+  contract: success response remains unchanged
