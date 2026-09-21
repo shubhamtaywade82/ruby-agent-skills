@@ -15,7 +15,7 @@ A state transition depends on persisted state and concurrent updates must be ser
 ## Do not use when
 A database constraint or atomic update already expresses and enforces the invariant.
 
-## Procedure
+## Implementation procedure
 1. State the invariant.
 2. Identify the rows that own the state.
 3. Choose atomic SQL, unique constraint, optimistic locking, or pessimistic locking.
@@ -39,3 +39,15 @@ Exercise conflicting transactions where practical.
 - transaction duration is bounded
 - retry is safe
 - constraint alternative considered
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
