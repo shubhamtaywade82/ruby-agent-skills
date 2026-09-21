@@ -308,3 +308,16 @@ authentication / authorization / untrusted input / scanner finding / secrets / i
 ```
 
 Security findings are reviewed as trust-boundary/data-flow evidence. Do not reduce security work to a style/lint pass.
+## Performance
+
+```text
+slow endpoint / job / query / memory / allocations / benchmark / profiler / cache
+  -> ruby-performance
+  -> rails-activerecord when DB/query work is involved
+  -> ruby-concurrency when concurrency/capacity is involved
+  -> rails-security when cache/auth/tenant boundaries are security-sensitive
+  -> performance-investigation when a measured bottleneck needs a concrete optimization
+  -> cache-boundary when introducing or reviewing cache semantics
+```
+
+Do not activate performance guidance merely because code could theoretically be optimized. Require a workload, symptom, or explicit measurable target.
