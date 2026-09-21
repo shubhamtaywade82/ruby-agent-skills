@@ -30,3 +30,6 @@ jobs:
 
       - name: Smoke test book integration campaign
         run: ruby scripts/smoke_workshop_benchmark.rb
+
+      - name: Smoke test runtime profile
+        run: ruby -Itest test/runtime_profile_test.rb
