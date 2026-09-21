@@ -482,6 +482,7 @@ Core patterns:
 
 The Rails integration layer now includes focused skills for framework boundaries that commonly cross trust, persistence, asynchronous execution, and external-provider concerns:
 
+- rails-action-view — Action View rendering, partial/layout/helper contracts, strict locals, output safety, localized templates, and rendering performance;
 - rails-action-mailer — outbound email content, delivery, provider, security, and observability;
 - rails-action-mailbox — inbound email ingress, routing, sender/tenant authorization, idempotency, failure/quarantine, retention, and deterministic testing;
 - rails-active-storage — uploaded-file ownership, storage, access, processing, purge, and testing;
