@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "optparse"
+require "yaml"
+require_relative "../lib/ruby_agent_skills/eval_runner"
+
+runner = RubyAgentSkills::EvalRunner.new(root: File.expand_path("..", __dir__))
+command = ARGV.shift
+
+case command
+when "list"
+  runner.evaluations.each { |evaluation| puts "#{evaluation.fetch("id")}\t#{evaluation.fetch("title")}" }
+when "show"
+  id = ARGV.shift
+  abort "usage: bin/eval show EVAL_ID" unless id
+  evaluation = runner.find(id)
+  puts evaluation.fetch("prompt")
+  puts
+  puts "Constraints:"
+  puts YAML.dump(evaluation.fetch("constraints"))
+  puts "Checks:"
+  evaluation.fetch("checks").each { |check| puts "- #{check}" }
+when "packet"
+  id = ARGV.shift
+  output = nil
+  OptionParser.new { |opts| opts.on("--output PATH") { |value| output = value } }.parse!(ARGV)
+  abort "usage: bin/eval packet EVAL_ID --output PATH" unless id && output
+  runner.write_packet(id, output: output)
+  puts output
+when "run"
+  options = { output: nil, verify_command: nil, timeout: RubyAgentSkills::EvalRunner::DEFAULT_TIMEOUT }
+  OptionParser.new do |opts|
+    opts.on("--workspace PATH") { |value| options[:workspace] = value }
+    opts.on("--agent-command COMMAND") { |value| options[:agent_command] = value }
+    opts.on("--verify-command COMMAND") { |value| options[:verify_command] = value }
+    opts.on("--output PATH") { |value| options[:output] = value }
+    opts.on("--timeout SECONDS", Integer) { |value| options[:timeout] = value }
+  end.parse!(ARGV)
+
+  id = ARGV.shift
+  unless id && options[:workspace] && options[:agent_command]
+    abort <<~USAGE
+      usage: bin/eval run EVAL_ID --workspace PATH --agent-command COMMAND [options]
+
+      options:
+        --verify-command COMMAND
+        --output PATH
+        --timeout SECONDS
+    USAGE
+  end
+
+  result = runner.run(
+    id: id,
+    workspace: options.fetch(:workspace),
+    agent_command: options.fetch(:agent_command),
+    verify_command: options[:verify_command],
+    output: options[:output],
+    timeout: options.fetch(:timeout)
+  )
+
+  puts JSON.pretty_generate(result)
+  exit(1) if result.fetch("overall") == "failed"
+else
+  abort <<~USAGE
+    usage:
+      bin/eval list
+      bin/eval show EVAL_ID
+      bin/eval packet EVAL_ID --output PATH
+      bin/eval run EVAL_ID --workspace PATH --agent-command COMMAND [options]
+  USAGE
+end
