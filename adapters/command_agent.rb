@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "shellwords"
+require "digest"
 require_relative "../lib/ruby_agent_skills/agent_adapter"
 
 command = ENV["RUBY_AGENT_COMMAND"].to_s
@@ -23,7 +23,7 @@ if metadata_file && !metadata_file.empty?
   RubyAgentSkills::AgentAdapter.write_metadata(
     metadata_file,
     "command_adapter" => {
-      "command_fingerprint" => command.shellescape.hash,
+      "command_fingerprint" => Digest::SHA256.hexdigest(command),
       "context_file_present" => File.file?(context_file),
       "skills_enabled" => ENV.fetch("RUBY_AGENT_SKILLS_ENABLED", "false") == "true"
     },
