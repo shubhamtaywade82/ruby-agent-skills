@@ -44,6 +44,10 @@ skills:
     family: rails
     path: skills/rails-api-integration/SKILL.md
     triggers: [API contract, API versioning, API compatibility, JSON API, content negotiation, serialization contract, external API integration, HTTP integration, outbound HTTP client, retry policy, HTTP timeout, rate limit, webhook, webhook signature, webhook replay, idempotency key, idempotent request, provider adapter, integration testing]
+  rails-event-driven-messaging:
+    family: rails
+    path: skills/rails-event-driven-messaging/SKILL.md
+    triggers: [event-driven architecture, event-driven messaging, events, domain events, integration events, commands, message broker, message queue, stream processing, topic, queue, routing key, partition, consumer group, message schema, event schema, schema evolution, dead-letter queue, dead letter, poison message, replay, message tracing, consumer lag, broker capacity, message acknowledgement, ack semantics]
   rails-distributed-systems:
     family: rails
     path: skills/rails-distributed-systems/SKILL.md
@@ -256,6 +260,13 @@ patterns:
       - patterns/rails/query-plan-evidence.md
       - patterns/rails/connection-pool-capacity.md
       - patterns/rails/cache-stampede-control.md
+      - patterns/rails/event-envelope.md
+      - patterns/rails/event-schema-evolution.md
+      - patterns/rails/consumer-group-partitioning.md
+      - patterns/rails/dead-letter-replay.md
+      - patterns/rails/message-observability.md
+      - patterns/rails/broker-capacity.md
+      - patterns/rails/message-handler-boundary.md
       - patterns/rails/distributed-service-boundary.md
       - patterns/rails/message-delivery-contract.md
       - patterns/rails/outbox-publication.md
