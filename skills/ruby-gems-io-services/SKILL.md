@@ -20,8 +20,7 @@ Keep external boundaries and multi-step workflows isolated so the rest of the ap
 
 ## Repository inspection
 
-Before adding or changing an external dependency, inspect:
-
+Before adding or changing an external dependency, inspect the Gemfile, lockfile, runtime constraints, security policy, and existing integration boundaries.
 
 Before adding a gem:
 
@@ -32,6 +31,10 @@ Before adding a gem:
 5. keep the new dependency's responsibility narrow
 
 Do not add a dependency merely to save a few lines.
+
+## Boundary ownership
+
+Use this skill for transport, parsing, dependency, and workflow-boundary decisions. Use `ruby-service-objects` when the primary question is the shape of an application operation; use `ruby-dependency-injection` when the primary question is replacing a collaborator; use `ruby-api-design` when the primary question is the public contract.
 
 ## I/O boundaries
 
