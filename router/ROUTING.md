@@ -44,6 +44,7 @@ This file defines how an agent should select and compose skills.
 | Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |\n| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
 | Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
+| Rails caching engineering | rails-caching | rails-performance, ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, rails-security, rails-security-engineering, rails-testing |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
@@ -685,3 +686,35 @@ Release engineering owns change propagation and evidence. Reuse existing runtime
 | Post-deploy success verification | pattern:release-health-verification |
 | Durable release audit trail | pattern:release-evidence |
 ```
+
+
+## Rails caching engineering
+
+```
+cache key / freshness / invalidation / fragment cache / low-level cache /
+response cache / cache store / stampede / hot key / cache warming /
+cache failure / eviction / cache capacity / tenant cache isolation
+  -> rails-caching
+  -> rails-performance for workload, baseline, bottleneck, and re-measurement
+  -> ruby-performance for Ruby runtime/cache serialization cost
+  -> rails-activerecord for source query and persistence semantics
+  -> rails-database-engineering for authoritative state and transaction boundaries
+  -> rails-active-job for warming/invalidation work
+  -> rails-observability for cache telemetry and diagnostics
+  -> rails-security / rails-security-engineering for authorization and tenant isolation
+  -> rails-testing for deterministic cache contract tests
+```
+
+Caching is a correctness boundary. Define identity, freshness, invalidation, failure, and capacity before optimizing hit rate.
+
+### Cache pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Basic cache correctness boundary | pattern:cache-boundary |
+| Tenant/user/authorization key isolation | pattern:cache-key-isolation |
+| Domain-owned invalidation | pattern:cache-invalidation-contract |
+| Stampede/concurrent recomputation | pattern:cache-stampede-control |
+| Cache-store outage/failure semantics | pattern:cache-failure-boundary |
+| Bounded prewarming | pattern:cache-warming-strategy |
+| Cache capacity/eviction review | pattern:cache-capacity-review |
