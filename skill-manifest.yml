@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  rails-active-job:
+    family: rails
+    path: skills/rails-active-job/SKILL.md
+    triggers: [Active Job, ApplicationJob, background job, perform_later, perform_now, perform_all_later, retry_on, discard_on, job retry, job queue, Solid Queue, concurrency controls, recurring jobs, scheduled jobs, idempotency, transactional enqueue]
   rails-zeitwerk:
     family: rails
     path: skills/rails-zeitwerk/SKILL.md
@@ -217,6 +221,10 @@ patterns:
       - patterns/rails/security-boundary-review.md
       - patterns/rails/cache-boundary.md
       - patterns/rails/zeitwerk-structure-review.md
+      - patterns/rails/idempotent-job.md
+      - patterns/rails/job-retry-policy.md
+      - patterns/rails/transactional-job-enqueue.md
+      - patterns/rails/concurrency-controlled-job.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review]
 
   testing:
@@ -239,6 +247,15 @@ runner:
   documentation: docs/BENCHMARK_RUNNER.md
 
 benchmarks:
+  active-job:
+    fixture_registry: benchmarks/active-job/fixtures.yml
+    fixture_root: benchmarks/active-job/fixtures
+    verifier: scripts/verify_active_job_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/active-job/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
   zeitwerk:
     fixture_registry: benchmarks/zeitwerk/fixtures.yml
     fixture_root: benchmarks/zeitwerk/fixtures
@@ -305,6 +322,20 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  active-job:
+    source: active-job-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/active-job/idempotent-side-effect.yml
+      - evals/active-job/retry-policy.yml
+      - evals/active-job/transactional-enqueue.yml
+      - evals/active-job/concurrency-control.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   zeitwerk:
     source: zeitwerk-v1
     schema: docs/EVAL_SCHEMA.md
