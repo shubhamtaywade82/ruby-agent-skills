@@ -466,3 +466,13 @@ Never claim a job is reliable from a unit test that only exercises `perform`.
 Verify the enqueue contract, execution behavior, failure policy, and relevant adapter/worker configuration.
 
 For Rails/Solid Queue changes, inspect actual queue configuration and use version-supported commands/tests.
+
+
+## Source foundation
+
+Primary Rails guidance:
+- Active Job Basics: https://guides.rubyonrails.org/active_job_basics.html
+- Rails Testing: https://guides.rubyonrails.org/testing.html
+- Solid Queue: https://github.com/rails/solid_queue
+
+Use the target Rails/Active Job/adapter version as the compatibility authority when APIs or semantics differ.
