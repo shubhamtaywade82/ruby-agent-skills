@@ -145,7 +145,7 @@ Each case separates:
 - tests and edge cases
 - scope control
 
-See `evals/README.md` and `evals/schema/EVAL_SCHEMA.md`.
+See `evals/README.md` and `docs/EVAL_SCHEMA.md`.
 
 ## Status
 
