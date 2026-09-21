@@ -1,0 +1,20 @@
+version: 1
+source: active-job-v1
+description: Deterministic Active Job engineering fixtures.
+fixtures:
+  idempotent-side-effect:
+    root: benchmarks/active-job/fixtures/idempotent-side-effect
+    implementation_files:
+      - app/jobs/receipt_delivery_job.rb
+  retry-policy:
+    root: benchmarks/active-job/fixtures/retry-policy
+    implementation_files:
+      - app/jobs/sync_customer_job.rb
+  transactional-enqueue:
+    root: benchmarks/active-job/fixtures/transactional-enqueue
+    implementation_files:
+      - app/jobs/publish_account_job.rb
+  concurrency-control:
+    root: benchmarks/active-job/fixtures/concurrency-control
+    implementation_files:
+      - app/jobs/rebuild_account_job.rb
