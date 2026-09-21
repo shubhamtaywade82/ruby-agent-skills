@@ -1,0 +1,33 @@
+id: decorator
+version: 1
+title: Layer tax behavior with a Decorator
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-object-composition
+  - ruby-dependency-injection
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns:
+  - decorator
+prompt: |
+  Implement TaxedPrice as a decorator around a price object responding to total. Preserve that interface and add tax without modifying the wrapped object.
+constraints:
+  required_design:
+    - decorator
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: wrapped price remains unchanged
+  pattern_selection: TaxedPrice wraps a collaborator rather than subclassing a price implementation
+  scope_control: changes remain inside the disposable fixture
