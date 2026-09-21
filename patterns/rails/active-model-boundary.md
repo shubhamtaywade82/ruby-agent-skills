@@ -1,4 +1,3 @@
-
 ---
 name: active-model-boundary
 description: Decide when a Rails-facing plain Ruby object should use Active Model instead of remaining a PORO or becoming Active Record.
