@@ -12,7 +12,7 @@ Multiple application versions and long-lived workers can coexist during deployme
 ## Use when
 Releasing Rails applications behind rolling or restart-based process management.
 
-## Procedure
+## Implementation procedure
 1. Identify old/new application overlap.
 2. Expand schema first when required.
 3. Deploy backward-compatible application code.
@@ -37,3 +37,15 @@ Validate intermediate release states and readiness behavior.
 - job compatibility proven
 - readiness gate exists
 - rollback boundary explicit
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
