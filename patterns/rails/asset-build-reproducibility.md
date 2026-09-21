@@ -5,6 +5,10 @@ family: rails
 ---
 # Asset Build Reproducibility
 
+## Problem
+
+A local asset build can succeed because of undeclared runtimes, caches, or dependency state.
+
 ## Use when
 Changing lockfiles, package runtimes, build tooling, CI caches, or release asset compilation.
 
