@@ -60,6 +60,10 @@ skills:
     family: performance
     path: skills/rails-performance/SKILL.md
     triggers: [Rails performance, Rails performance regression, N+1, query plan, EXPLAIN, slow Rails endpoint, slow Active Record query, Active Record performance, cache stampede, cache key, connection pool, pool exhaustion, Puma capacity, web concurrency, job throughput, Rails allocations, Rails memory]
+  rails-security-engineering:
+    family: security
+    path: skills/rails-security-engineering/SKILL.md
+    triggers: [security engineering, threat model, threat modeling, security architecture, trust boundary, authorization matrix, tenant isolation, secret management, secret rotation, SSRF architecture, outbound network security, dependency supply chain, CI security, build security, abuse case, security regression, defense in depth, residual risk]
   rails-security:
     family: security
     path: skills/rails-security/SKILL.md
@@ -255,6 +259,14 @@ patterns:
       - patterns/rails/scaffold-lifecycle.md
       - patterns/rails/presenter.md
       - patterns/rails/rails-best-practice-review.md
+      - patterns/rails/threat-model.md
+      - patterns/rails/trust-boundary.md
+      - patterns/rails/authorization-matrix.md
+      - patterns/rails/tenant-isolation-review.md
+      - patterns/rails/secret-management-boundary.md
+      - patterns/rails/ssrf-outbound-boundary.md
+      - patterns/rails/dependency-supply-chain.md
+      - patterns/rails/security-regression.md
       - patterns/rails/security-boundary-review.md
       - patterns/rails/cache-boundary.md
       - patterns/rails/api-contract-versioning.md
