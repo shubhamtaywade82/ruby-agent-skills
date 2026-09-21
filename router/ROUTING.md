@@ -16,6 +16,7 @@ This file defines how an agent should select and compose skills.
 
 | Task | Primary | Secondary |
 |---|---|---|
+| Runtime/version compatibility | ruby-runtime-compatibility | ruby-core, ruby-gems-io-services, ruby-debugging |
 | Ruby syntax/semantics | ruby-core | ruby-clean-code |
 | Ruby values/data representation | ruby-data-types | ruby-core, ruby-clean-code |
 | Branches/loops/boolean logic | ruby-control-flow | ruby-core, ruby-clean-code |
@@ -70,6 +71,17 @@ This file defines how an agent should select and compose skills.
 | Bug regression coverage | ruby-debugging | pattern:regression-test, ruby-tdd-refactoring |
 | Pair-search on sorted data | ruby-collections | pattern:two-pointers, ruby-tdd-refactoring |
 | Repeated membership/counting | ruby-collections | pattern:frequency-map, ruby-tdd-refactoring |
+
+## Runtime compatibility
+
+```text
+ruby-runtime-compatibility
+  + relevant Ruby/Rails skill
+  + ruby-tdd-refactoring (when upgrading behavior)
+  + rubocop (when lint/tooling compatibility changes)
+```
+
+Resolve runtime evidence before using version-sensitive APIs. Do not choose between conflicting authoritative sources without clarification.
 
 ## Composition patterns
 
