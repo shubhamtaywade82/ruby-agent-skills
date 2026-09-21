@@ -463,3 +463,17 @@ Core patterns:
 - `i18n-cache-identity`
 - `i18n-security-boundary`
 - `i18n-testing`
+## Rails Action Text engineering
+
+The repository now includes a dedicated `rails-action-text` layer for rich-text ownership, sanitization, embedded attachment/attachable authorization, rendering, API representation, RichText/embed performance, lifecycle coordination, and deterministic testing.
+
+Core patterns:
+- `action-text-content-contract`
+- `action-text-sanitization-security`
+- `action-text-attachment-authorization`
+- `action-text-rendering`
+- `action-text-api-boundary`
+- `action-text-preload-performance`
+- `action-text-lifecycle`
+- `action-text-attachable-contract`
+- `action-text-testing`
