@@ -1,5 +1,3 @@
-# Agent Evaluations
-
 The evaluation layer measures whether an AI coding agent can apply the skills, not whether it can repeat Ruby/Rails terminology.
 
 ## Evaluation dimensions
@@ -37,75 +35,35 @@ Does the solution satisfy explicit complexity, algorithm or API requirements?
 ### Scope control
 Did the agent avoid unrelated refactors?
 
-Do not collapse these dimensions into a single opaque score. Preserve individual signals so regressions are diagnosable.
+Do not collapse these dimensions into one opaque score. Preserve individual signals so regressions are diagnosable.
 
-## Evaluation categories
+## Evaluation corpus
 
-```text
-evals/
-├── ruby-training/
-│   ├── selection-sort.yml
-│   ├── recursive-selection-sort.yml
-│   ├── smallest-missing.yml
-│   ├── shopping-cart.yml
-│   ├── triplet-sum.yml
-│   ├── majority-element.yml
-│   ├── distinct-elements.yml
-│   ├── power-of-two.yml
-│   └── chocolate-feast.yml
-├── algorithms/
-├── oop/
-└── rails/
-```
+The initial benchmark source is the uploaded Allerin Ruby assessment. The current public corpus contains nine Ruby training cases covering selection sort, recursive selection sort, smallest missing number, shopping cart, triplet sum, majority element, distinct elements, power-of-two detection and Chocolate Feast.
 
-## Initial benchmark source
+The assessment explicitly requires OOP concepts across the programs, so OOP/design is evaluated separately from functional output.
 
-The uploaded Allerin assessment is the first benchmark source. It specifies selection sort, recursive selection sort, smallest missing number, shopping-cart behavior, triplet sum, majority element, distinct elements, power-of-two detection and Chocolate Feast. It also explicitly requires OOP concepts across the programs.
+## Runner
 
-The benchmark therefore evaluates both output and design, not output alone.
+Phase 6 adds the provider-neutral benchmark runner:
+
+    bin/eval list
+    bin/eval show triplet-sum
+    bin/eval packet triplet-sum --output /tmp/triplet-sum.json
+    bin/eval run triplet-sum --workspace /path/to/fixture --agent-command 'agent ...' --verify-command 'verifier ...'
+
+See `docs/BENCHMARK_RUNNER.md` and `docs/EVAL_RESULT_SCHEMA.md`.
+
+The runner copies the source workspace into a disposable directory, captures the agent process, captures the resulting patch, optionally runs a verifier, and records dimension-level check results.
 
 ## Public versus hidden cases
 
-The YAML files in this repository are public benchmark definitions. They contain source examples plus independently chosen edge cases.
-
-Truly hidden cases must be injected by a benchmark runner from outside the public repository. A public file cannot be treated as a secret test.
-
-## Evaluation schema
-
-See `docs/EVAL_SCHEMA.md`.
-
-Each case records:
-
-```text
-prompt
-  -> constraints
-  -> deterministic cases
-  -> independent checks
-  -> dimension-specific grading
-```
-
-The schema intentionally separates functional correctness from complexity, OOP/design, test quality and scope.
+The YAML cases in this repository are public benchmark definitions. Truly hidden cases must remain outside the repository and be injected by a private benchmark harness using the same schema.
 
 ## Validation
 
-`bin/validate` validates:
+`bin/validate` validates skills, implementation patterns and evaluation definitions. CI also runs the benchmark runner smoke test.
 
-1. all skill contracts
-2. all implementation patterns
-3. all evaluation YAML documents
+## Future benchmark campaign
 
-The evaluation validator verifies that referenced skills and patterns exist in the manifest and that every case has deterministic `input` and `expected` fields.
-
-## Future runner contract
-
-A runner should:
-
-1. materialize the case repository
-2. present only the task prompt and available agent tools
-3. capture the patch
-4. run deterministic tests
-5. run quality and constraint checks
-6. store structured results
-7. preserve exact failure signals for regression analysis
-
-Never mutate the benchmark's expected answer to fit the agent output.
+Run the same evaluation packet against a baseline agent configuration and a skill-enabled configuration, then compare the JSON results dimension by dimension. The repository does not automatically declare one agent better than another.
