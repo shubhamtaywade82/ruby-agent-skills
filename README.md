@@ -53,9 +53,9 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **67** |
-| Implementation patterns | **283** |
-| Evaluation cases | **83** |
+| Skills | **68** |
+| Implementation patterns | **292** |
+| Evaluation cases | **94** |
 | Dedicated system/contract tests | **50+** |
 | Manifest version | **2** |
 
@@ -239,6 +239,26 @@ The current milestone deepens authentication from a shallow sign-in/sign-out ref
 Primary source: https://guides.rubyonrails.org/security.html
 
 The boundary is intentionally compositional: security engineering owns threat/trust analysis, authorization owns action/resource permission, API integration owns external credential contracts, and Active Job/Action Cable own their execution boundaries.
+
+## Rails Asset and Build Infrastructure Engineering
+
+The current milestone deepens Rails frontend infrastructure into an explicit build/runtime boundary covering asset strategy selection, Importmap, JavaScript and CSS bundling, development process orchestration, dependency/runtime contracts, reproducibility, production parity, artifact/cache identity, supply-chain security, and release verification.
+
+Artifacts:
+
+- `skills/rails-asset-build-engineering/SKILL.md`
+- `patterns/rails/rails-asset-pipeline-contract.md`
+- `patterns/rails/importmap-contract.md`
+- `patterns/rails/jsbundling-contract.md`
+- `patterns/rails/cssbundling-contract.md`
+- `patterns/rails/bin-dev-process-contract.md`
+- `patterns/rails/asset-build-reproducibility.md`
+- `patterns/rails/asset-build-production-parity.md`
+- `patterns/rails/asset-dependency-boundary.md`
+- `patterns/testing/asset-build-testing.md`
+- `evals/rails/asset-build-contract.yml`
+- `test/rails_asset_build_system_test.rb`
+
 
 # Agent operating model
 
@@ -476,9 +496,9 @@ Validation covers:
 The validation suite currently reports:
 
 ```text
-67 skills
-283 implementation patterns
-83 evaluation cases
+68 skills
+292 implementation patterns
+94 evaluation cases
 ```
 
 ---
@@ -611,19 +631,10 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 36 — Rails Hotwire Engineering**
+**Iteration 37 — Rails Asset and Build Infrastructure Engineering**
 
-Latest verified implementation commit:
-
-`8c2d44f79b07aeb6df031fc38ad3702b2a100c0e`
-
-CI validation:
-
-- Workflow: **Validate skills**
-- Run: **#638**
-- Result: **passed**
-- Validation included skill/pattern/evaluation contracts plus all configured smoke tests.
+Latest implementation is being validated by the repository CI pipeline.
 
 Next milestone:
 
-**Iteration 37 — Rails Asset/Build Infrastructure Engineering**
+**Iteration 38 — Rails Rack/Middleware Engineering**
