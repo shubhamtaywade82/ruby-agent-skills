@@ -1,0 +1,34 @@
+version: 1
+source:
+  name: Ruby/Rails security tooling
+  references:
+    - https://guides.rubyonrails.org/security.html
+    - https://github.com/presidentbeef/brakeman
+    - https://github.com/rubysec/bundler-audit
+
+tools:
+  brakeman:
+    category: static_analysis
+    command: bundle exec brakeman
+    scope: Rails application security
+    formats: [text, json, sarif, junit, markdown, csv, codeclimate, github, sonar]
+    fail_on_warning_by_default: true
+    notes:
+      - confidence levels are triage signals, not proof
+      - use config/brakeman.yml and config/brakeman.ignore only after investigation
+  bundler-audit:
+    category: dependency_security
+    command: bundle exec bundler-audit check
+    scope: Gemfile.lock dependency advisories
+    advisory_source: ruby-advisory-db
+    notes:
+      - version-sensitive; use the installed gem's CLI
+      - update advisory data according to repository/CI policy
+
+selection:
+  rules:
+    - Run application-specific security tools only when the target is present and the tool is installed.
+    - Keep static code findings separate from dependency vulnerability findings.
+    - Treat scanner output as evidence that requires application-context analysis.
+    - Do not suppress a finding merely to obtain a green build.
+    - Security verification should include abuse-case tests when behavior crosses a security boundary.
