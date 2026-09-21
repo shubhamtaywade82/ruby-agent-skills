@@ -196,3 +196,20 @@ For changes crossing process, service, host, queue, broker, or independent datas
 - propagate correlation/causation identifiers and record state transitions, not only exceptions;
 - preserve old/new message compatibility during rolling deploys;
 - test duplicate, delayed, reordered, failed, replayed, and partially completed workflows.
+
+      
+## Event-driven messaging changes
+
+For queue, broker, stream, event, and message changes:
+- classify the message as command, event, notification, or retry/control message;
+- resolve actual transport guarantees for delivery, ordering, retention, acknowledgement, and partitioning;
+- define stable message identity, envelope metadata, schema version, correlation, and causation;
+- preserve old/new message compatibility during rolling deployments and replay;
+- choose routing/partition keys from ordering requirements and hot-key evidence;
+- bound consumer concurrency against partitions, database pools, downstream API limits, CPU, and memory;
+- make acknowledgement timing explicit and never acknowledge before required durable work;
+- classify retryable versus permanent failures and terminate poison-message loops;
+- define dead-letter ownership, retention, remediation, authorization, and controlled replay;
+- preserve original message identity during retry/replay;
+- instrument publish, queue age/lag, processing, retries, dead-letter, and replay state without logging sensitive payloads;
+- test duplicate delivery, failures before/after side effects, schema compatibility, dead-letter routing, replay, ordering, and restart/rebalance behavior.
