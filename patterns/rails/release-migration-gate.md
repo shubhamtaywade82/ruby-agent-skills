@@ -12,7 +12,7 @@ A release can be application-compatible but migration-incompatible, or vice vers
 ## Use when
 Deployments include schema changes or migrations that affect runtime compatibility.
 
-## Procedure
+## Implementation procedure
 1. Classify migrations as expand/contract/destructive.
 2. Identify old/new application compatibility.
 3. Run safe migration/preparation steps.
@@ -36,3 +36,15 @@ Exercise migration status and release-order checks.
 - readiness gate exists
 - rollback limitations explicit
 - queued jobs considered
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
