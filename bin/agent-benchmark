@@ -38,7 +38,7 @@ OptionParser.new do |opts|
   opts.on("--continue-on-failure") { options[:continue_on_failure] = true }
 end.parse!
 
-abort OptionParser.new.to_s unless options[:command]
+abort "usage: ruby bin/agent-benchmark --command COMMAND [options]" unless options[:command]
 
 ENV["RUBY_AGENT_COMMAND"] = options[:command]
 ENV["RUBY_AGENT_PROVIDER"] = options[:provider]
