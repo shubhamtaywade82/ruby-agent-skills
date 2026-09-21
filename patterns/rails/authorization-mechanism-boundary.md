@@ -31,3 +31,7 @@ Verify representative allow/deny cases through policy and request boundaries.
 
 ## Review checklist
 One source of truth, explicit integration boundary, no bypass path.
+
+## Related skills
+
+rails-authorization, rails-authentication, rails-security, rails-test-engineering
