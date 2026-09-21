@@ -1,0 +1,29 @@
+id: system-contract
+version: 1
+title: Keep browser coverage focused on user-visible behavior
+category: rails
+source: rails-test-engineering-v1
+skills:
+  - rails-test-engineering
+  - rails-testing
+patterns:
+  - system-test-contract
+prompt: |
+  Add a system test for a JavaScript-dependent checkout flow where selecting a shipping method updates the order total and completing checkout shows a confirmation. Keep domain calculation assertions in lower-level tests.
+constraints:
+  required_design:
+    - minimal user journey
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: checkout-journey
+    input: browser checkout
+    expected: visible total update and confirmation
+grading:
+  functional: browser behavior is covered
+  tests: system test asserts user-visible results
+  contract: no duplicate internal calculation assertions
+  scope_control: one focused journey
