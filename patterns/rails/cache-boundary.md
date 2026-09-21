@@ -56,3 +56,9 @@ Test hit, miss, invalidation, key isolation, and stale-data behavior.
 ## Repository inspection
 
 Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+## Review checklist
+
+- [ ] key includes every correctness/security identity dimension
+- [ ] freshness/invalidation contract is explicit
+- [ ] miss/stampede behavior is understood
+- [ ] storage/serialization cost is acceptable
