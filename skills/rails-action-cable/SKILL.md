@@ -238,6 +238,8 @@ Use Action Cable for freshness/interaction where missed messages can be reconstr
 
 Use Active Job or durable messaging/event infrastructure when delivery itself is business-critical.
 
+Do not use Action Cable as a durable queue.
+
 Do not build durable workflow semantics by assuming Action Cable broadcast history exists.
 
 A robust UI often combines:
@@ -273,6 +275,8 @@ On reconnect, determine whether the client must:
 - re-subscribe;
 - request a snapshot;
 - reconcile missed state changes.
+
+Do not claim a single broadcast after reconnect repairs all missed state.
 
 Do not assume a single broadcast after reconnect repairs all missed state.
 
