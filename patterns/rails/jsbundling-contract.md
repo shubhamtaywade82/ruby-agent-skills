@@ -5,6 +5,10 @@ family: rails
 ---
 # JS Bundling Contract
 
+## Problem
+
+JavaScript builds can succeed locally while CI or production lacks the runtime, dependency, or generated artifact.
+
 ## Use when
 JavaScript requires compilation, transformation, package processing, bundling, or code splitting.
 
