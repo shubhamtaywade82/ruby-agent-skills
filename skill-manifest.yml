@@ -229,17 +229,6 @@ skills:
     family: rails
     path: skills/rails-architecture/SKILL.md
     triggers: [Rails feature, MVC, resource, REST, application structure]
-  rails-authentication:
-    source: rails-authentication-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/authentication-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
   rails-routing:
     family: rails
     path: skills/rails-routing/SKILL.md
@@ -869,6 +858,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/validations-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-authentication:
+    source: rails-authentication-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/authentication-contract.yml
     checks:
       - functional
       - tests
