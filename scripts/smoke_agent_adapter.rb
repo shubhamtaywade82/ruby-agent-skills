@@ -24,11 +24,25 @@ agent_script = <<~RUBY
     <<~CODE
       class SelectionSorter
         def sort(values)
-          values.sort
+          values.each_index do |index|
+            minimum = index
+            (index + 1...values.length).each do |candidate|
+              minimum = candidate if values[candidate] < values[minimum]
+            end
+            values[index], values[minimum] = values[minimum], values[index]
+          end
+          values
         end
 
-        def recursive_sort(values)
-          values.length <= 1 ? values : recursive_sort(values[1..]) 
+        def recursive_sort(values, start_index = 0)
+          return values if start_index >= values.length - 1
+
+          minimum = start_index
+          (start_index + 1...values.length).each do |candidate|
+            minimum = candidate if values[candidate] < values[minimum]
+          end
+          values[start_index], values[minimum] = values[minimum], values[start_index]
+          recursive_sort(values, start_index + 1)
         end
       end
     CODE
