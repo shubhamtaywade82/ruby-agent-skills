@@ -25,3 +25,15 @@ Cross-tenant read, update, delete, association, export, and job cases.
 
 ## Review checklist
 Tenant identity is authoritative, explicit, and consistently enforced.
+
+## Do not use when
+
+Do not use this pattern when a simpler direct test or implementation is sufficient.
+
+## Repository inspection
+
+Inspect existing test conventions, fixtures, authorization helpers, and the relevant runtime or browser lifecycle.
+
+## Related skills
+
+rails-authorization, rails-hotwire, rails-test-engineering
