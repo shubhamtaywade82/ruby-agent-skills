@@ -12,7 +12,7 @@ A behavior can be tested at model, service, request, integration, system, job, o
 ## Use when
 Adding or reviewing tests for Rails behavior.
 
-## Procedure
+## Implementation procedure
 1. State the observable contract.
 2. Identify the layer that owns it.
 3. Prefer the smallest test that proves it.
@@ -33,3 +33,15 @@ Verify both the focused contract and any distinct integration path.
 - contract observable
 - no unnecessary duplicate layers
 - failure behavior covered
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
