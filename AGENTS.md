@@ -348,6 +348,27 @@ For Active Model and Rails-facing non-persisted model changes:
 - use Active Model lint/protocol tests for reusable Rails-facing model objects and test actual form/view/route consumers at focused integration boundaries;
 - never claim Rails model compatibility from valid? alone; verify the specific protocol required by the consumer.
 
+## Rails Active Record changes
+
+For deep Active Record changes:
+- inspect the resolved Rails/Active Record version, ApplicationRecord inheritance, model/schema/migrations, associations, validations, callbacks, scopes, default_scope, query consumers, loading conventions, bulk operations, security/tenant rules, performance evidence, and tests before implementation;
+- classify the boundary as model ownership, Relation semantics, query composition, scope/default_scope, loading, persistence lifecycle, callbacks, bulk writes/deletes, or Active Record testing;
+- keep rails-active-record focused on Active Record object/Relation semantics while delegating schema, indexes, constraints, transactions, locking, isolation, and query-plan mechanics to rails-database-engineering;
+- treat ActiveRecord::Relation as a query description until an intended terminal/materializing operation; do not change a composable Relation into an Array or scalar result without preserving the caller contract;
+- make ordering and cardinality explicit whenever a query is part of a contract; joins, distinct, grouping, and projections can change result shape;
+- use scopes for composable named semantics and treat default_scope as high-risk implicit behavior; never use default_scope as an authorization mechanism;
+- choose preload/includes/eager_load/joins/strict_loading from the actual consumer path; do not globally preload graphs or disable strict loading to silence regressions;
+- use pluck/pick and other projections only when the caller actually needs scalar data; projection is a contract change, not a generic optimization;
+- inspect the exact persistence method before changing it because validations, callbacks, timestamps, dirty state, and transactions differ across write APIs;
+- use model callbacks only for lifecycle behavior intrinsic to the record; keep multi-record workflows, authorization, and external integrations outside callbacks;
+- use after_commit or after_rollback when an effect depends on transaction outcome, and retain idempotency/correlation for retried external effects;
+- do not assume bulk update/delete/import/upsert operations execute per-record validations or callbacks; review database constraints and audit/event semantics before using them;
+- do not replace destroy_all with delete_all solely for speed; inspect dependent, callback, storage, auditing, and database-cascade behavior;
+- do not treat in-memory model state as authoritative database state after independent or concurrent writes; reload or query authoritative state when required;
+- keep tenant predicates and authorization authoritative outside hidden scope assumptions and review unscoped/raw SQL/dynamic identifiers as security boundaries;
+- for large datasets, prefer bounded batch processing such as find_each/find_in_batches when their ordering and concurrency semantics fit the workload;
+- test Relation type/composition, persistence success/failure, callback commit/rollback, bulk lifecycle, strict loading, deletion/dependents, and tenant boundaries at the owning test layer;
+- never claim an Active Record query or loading optimization improved performance without query/runtime evidence.
 ## Rails Action Controller changes
 
 For Action Controller and deep controller-boundary changes:
