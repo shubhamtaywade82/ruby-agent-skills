@@ -4,6 +4,7 @@ title: Design a conventional Rails REST resource
 category: ruby-workshop
 source: learn-rails-6
 skills:
+  - rails-api-integration
   - rails-architecture
   - rails-routing
   - rails-controllers

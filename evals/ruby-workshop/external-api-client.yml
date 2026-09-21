@@ -4,6 +4,7 @@ title: Isolate and test an external API client
 category: ruby-workshop
 source: learn-rails-6
 skills:
+  - rails-api-integration
   - ruby-gems-io-services
   - ruby-api-design
   - ruby-debugging

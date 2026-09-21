@@ -40,6 +40,10 @@ skills:
     family: performance
     path: skills/ruby-performance/SKILL.md
     triggers: [performance, profiling, benchmark, benchmarking, latency, throughput, allocations, memory, GC, YJIT, slow query, N+1, caching, performance regression]
+  rails-api-integration:
+    family: rails
+    path: skills/rails-api-integration/SKILL.md
+    triggers: [API contract, API versioning, API compatibility, JSON API, content negotiation, serialization contract, external API integration, HTTP integration, outbound HTTP client, retry policy, HTTP timeout, rate limit, webhook, webhook signature, webhook replay, idempotency key, idempotent request, provider adapter, integration testing]
   rails-performance:
     family: performance
     path: skills/rails-performance/SKILL.md
@@ -207,6 +211,7 @@ patterns:
       - patterns/ruby-design/composition-over-inheritance.md
       - patterns/ruby-design/adapter.md
       - patterns/ruby-design/external-api-client.md
+      - patterns/ruby-design/resilient-http-client.md
       - patterns/ruby-design/ruby-gem.md
       - patterns/ruby-design/metaprogramming-boundary.md
       - patterns/ruby-design/application-service.md
@@ -240,6 +245,9 @@ patterns:
       - patterns/rails/rails-best-practice-review.md
       - patterns/rails/security-boundary-review.md
       - patterns/rails/cache-boundary.md
+      - patterns/rails/api-contract-versioning.md
+      - patterns/rails/webhook-ingestion.md
+      - patterns/rails/idempotent-request.md
       - patterns/rails/n-plus-one-review.md
       - patterns/rails/query-plan-evidence.md
       - patterns/rails/connection-pool-capacity.md

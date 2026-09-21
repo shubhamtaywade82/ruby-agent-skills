@@ -4,6 +4,7 @@ title: Preserve a public/private Rails authentication boundary
 category: ruby-workshop
 source: learn-rails-6
 skills:
+  - rails-api-integration
   - rails-authentication
   - rails-controllers
   - rails-routing

@@ -44,6 +44,7 @@ This file defines how an agent should select and compose skills.
 | Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |\n| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
 | Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
+| Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | RuboCop/linting review | rubocop | ruby-clean-code, relevant implementation skill, pattern:rubocop-review |
@@ -339,6 +340,35 @@ connection pool / Puma capacity / job throughput / Rails memory
 ```
 
 Require a workload or measurable symptom. Inspect actual Rails/database/runtime configuration before changing concurrency, caching, query shape, or indexes.
+
+## Rails API and integration architecture
+
+```text
+API contract / versioning / serialization / external HTTP / webhook /
+idempotency / retry / rate limit / provider adapter / integration test
+  -> rails-api-integration
+  -> rails-routing for dispatch
+  -> rails-controllers for HTTP orchestration
+  -> rails-authentication for identity/session
+  -> rails-security for trust boundaries/secrets
+  -> rails-observability for correlation/diagnostics
+  -> rails-active-job for asynchronous processing
+  -> ruby-api-design for public Ruby contracts
+  -> ruby-gems-io-services for transport/dependency boundaries
+  -> ruby-dependency-injection for replaceable clients/transports
+  -> rails-testing for contract/integration tests
+```
+
+Classify the boundary first. Preserve existing API/auth/versioning conventions and make retry, idempotency, replay, and error semantics explicit.
+
+### Integration pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| API consumers must survive a contract change | pattern:api-contract-versioning |
+| Provider client needs bounded timeout/retry behavior | pattern:resilient-http-client |
+| Provider sends signed callbacks | pattern:webhook-ingestion |
+| Mutation may arrive more than once | pattern:idempotent-request |
 
 ## Zeitwerk / autoloading
 
