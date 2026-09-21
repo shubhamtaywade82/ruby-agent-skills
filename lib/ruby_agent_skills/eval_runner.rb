@@ -169,6 +169,7 @@ module RubyAgentSkills
 
       patch["git_repository"] = true
       patch["status"] = Open3.capture2("git", "-C", workdir, "status", "--short").first
+      Open3.capture2("git", "-C", workdir, "add", "-N", "--", ".")
       patch["diff_stat"] = Open3.capture2("git", "-C", workdir, "diff", "--stat").first
       patch["diff"] = Open3.capture2("git", "-C", workdir, "diff", "--binary").first
     end
