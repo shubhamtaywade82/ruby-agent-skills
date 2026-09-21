@@ -67,6 +67,7 @@ module RubyAgentSkills
 
       Dir.mktmpdir("ruby-agent-eval-") do |temp_dir|
         FileUtils.cp_r("#{source_workspace}/.", temp_dir)
+        ensure_git_repository(temp_dir)
         metadata_dir = File.join(temp_dir, ".ruby-agent-eval")
         FileUtils.mkdir_p(metadata_dir)
 
@@ -133,7 +134,8 @@ module RubyAgentSkills
         "RUBY_AGENT_EVAL_ID" => evaluation.fetch("id"),
         "RUBY_AGENT_EVAL_PROMPT" => prompt_path,
         "RUBY_AGENT_EVAL_FILE" => eval_path,
-        "RUBY_AGENT_EVAL_RESULT_FILE" => result_path
+        "RUBY_AGENT_EVAL_RESULT_FILE" => result_path,
+        "RUBY_AGENT_EVAL_ROOT" => root
       }
     end
 
@@ -162,6 +164,20 @@ module RubyAgentSkills
       target["stdout"] = stdout
       target["stderr"] = stderr
       target["duration_seconds"] = elapsed(started)
+    end
+
+    def ensure_git_repository(workdir)
+      return if Dir.exist?(File.join(workdir, ".git"))
+
+      system("git", "-C", workdir, "init", "-q") or raise Error, "git init failed"
+      system("git", "-C", workdir, "config", "user.email", "benchmark@ruby-agent-skills.local") or raise Error, "git config failed"
+      system("git", "-C", workdir, "config", "user.name", "Ruby Agent Skills Benchmark") or raise Error, "git config failed"
+
+      exclude = File.join(workdir, ".git", "info", "exclude")
+      File.open(exclude, "a", encoding: "UTF-8") { |file| file.puts(".ruby-agent-eval/") }
+
+      system("git", "-C", workdir, "add", "-A") or raise Error, "git add failed"
+      system("git", "-C", workdir, "commit", "-qm", "benchmark baseline") or raise Error, "git baseline commit failed"
     end
 
     def run_git_snapshot(workdir, patch)
