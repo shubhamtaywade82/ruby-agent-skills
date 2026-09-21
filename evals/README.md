@@ -1,9 +1,10 @@
+# Evaluations
+
 The evaluation layer measures whether an AI coding agent can apply the skills, not whether it can repeat Ruby/Rails terminology.
 
 ## Evaluation dimensions
 
 Each case defines:
-
 - task prompt
 - expected behavior
 - relevant skill IDs
@@ -13,48 +14,61 @@ Each case defines:
 - quality expectations
 - verification dimensions
 
-## Scoring model
+Signals remain separate so regressions are diagnosable.
 
-Evaluations are machine-checkable where possible.
+## Evaluation families
 
-### Functional correctness
-Does the implementation produce the required behavior?
+### Ruby training
 
-### Contract correctness
-Does it preserve the stated return shape, errors and side effects?
-
-### Engineering quality
-Does it follow repository conventions and keep responsibilities focused?
-
-### Test quality
-Does the agent add useful tests instead of testing implementation trivia?
-
-### Constraint adherence
-Does the solution satisfy explicit complexity, algorithm or API requirements?
-
-### Scope control
-Did the agent avoid unrelated refactors?
-
-Do not collapse these dimensions into one opaque score. Preserve individual signals so regressions are diagnosable.
-
-## Evaluation corpus
-
-The initial benchmark source is the uploaded Allerin Ruby assessment. The current public corpus contains nine Ruby training cases covering selection sort, recursive selection sort, smallest missing number, shopping cart, triplet sum, majority element, distinct elements, power-of-two detection and Chocolate Feast.
+The public corpus contains nine cases derived from the uploaded Allerin Ruby assessment:
+- selection sort
+- recursive selection sort
+- smallest missing number
+- shopping cart
+- triplet sum
+- majority element
+- distinct elements
+- power-of-two detection
+- Chocolate Feast
 
 The assessment explicitly requires OOP concepts across the programs, so OOP/design is evaluated separately from functional output.
 
+### Ruby workshop / Rails book integration v2
+
+The second public family is derived from practical material in The Ruby Workshop and the uploaded Learn Rails 6 book. It covers:
+- Enumerable transformation
+- public Ruby API contract
+- object-oriented voting application
+- service object workflow
+- external API client isolation
+- Ruby gem boundary
+- Rails REST resource
+- Rails authentication boundary
+
+These are benchmark tasks, not copied book exercises. The cases preserve the engineering concepts and add deterministic executable contracts.
+
 ## Runner
 
-Phase 6 adds the provider-neutral benchmark runner:
+The provider-neutral runner executes an evaluation in a disposable workspace, captures the agent process, captures patch evidence, optionally invokes the declared verifier, and records dimension-level results.
 
-    ruby bin/eval list
-    ruby bin/eval show triplet-sum
-    ruby bin/eval packet triplet-sum --output /tmp/triplet-sum.json
-    ruby bin/eval run triplet-sum --workspace /path/to/fixture --agent-command 'agent ...' --verify-command 'verifier ...'
+For repeated baseline-versus-skills campaigns:
 
-See `docs/BENCHMARK_RUNNER.md` and `docs/EVAL_RESULT_SCHEMA.md`.
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/ruby-training/campaign.yml \
+      --agent-command 'AGENT_COMMAND'
 
-The runner copies the source workspace into a disposable directory, captures the agent process, captures the resulting patch, optionally runs a verifier, and records dimension-level check results.
+Book Integration v2:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/ruby-workshop/campaign.yml \
+      --agent-command 'AGENT_COMMAND'
+
+For the concrete provider-neutral adapter wrapper:
+
+    ruby bin/agent-benchmark \
+      --command 'AGENT_COMMAND' \
+      --provider your-provider \
+      --model your-model
 
 ## Public versus hidden cases
 
@@ -62,14 +76,8 @@ The YAML cases in this repository are public benchmark definitions. Truly hidden
 
 ## Validation
 
-`bin/validate` validates skills, implementation patterns and evaluation definitions. CI also runs the benchmark runner smoke test.
+bin/validate validates skills, implementation patterns and evaluation definitions. CI also runs benchmark and agent-adapter smoke tests.
 
-## Phase 7 benchmark campaign
+## Experimental discipline
 
-Fixtures and a deterministic verifier now live under `benchmarks/ruby-training/`. The campaign CLI can run the same evaluation against two explicit agent commands and produce side-by-side dimension results:
-
-    ruby bin/benchmark compare triplet-sum \\
-      --baseline-command 'BASELINE_AGENT_COMMAND' \\
-      --skills-command 'SKILL_ENABLED_AGENT_COMMAND'
-
-The comparison preserves individual evidence rather than collapsing the result into a single score. Hidden benchmark packs remain external.
+Keep baseline and skills-enabled runs matched on agent/model/adapter/runtime/tools/prompt/fixture/timeout. The controlled difference is the selected skill/pattern context.
