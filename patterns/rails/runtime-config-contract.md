@@ -12,7 +12,7 @@ Production processes fail when required environment variables, credentials, or r
 ## Use when
 Changing environment variables, Rails credentials, container build/runtime configuration, or production boot requirements.
 
-## Procedure
+## Implementation procedure
 1. Enumerate required configuration keys.
 2. Classify build-time versus runtime configuration.
 3. Validate presence without printing values.
@@ -34,3 +34,15 @@ Test presence/absence and boot behavior without asserting secret values.
 - build/runtime boundary explicit
 - secrets protected
 - missing configuration fails clearly
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
