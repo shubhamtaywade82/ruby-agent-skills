@@ -494,6 +494,7 @@ patterns:
       - patterns/rails/action-text-testing.md
       - patterns/rails/action-view-testing.md
       - patterns/rails/action-controller-testing.md
+      - patterns/rails/active-record-testing.md
       - patterns/rails/active-model-testing.md
       - patterns/rails/active-support-testing.md
       - patterns/rails/action-mailbox-testing.md
