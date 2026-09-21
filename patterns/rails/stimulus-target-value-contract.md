@@ -37,3 +37,7 @@ View markup and controller code share an explicit contract.
 
 ## Related skills
 rails-hotwire, rails-action-view, rails-test-engineering
+
+## Use when
+
+Use this pattern when the named behavior is an intentional part of the browser interaction contract.
