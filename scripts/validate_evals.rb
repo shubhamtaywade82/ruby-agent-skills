@@ -15,6 +15,10 @@ skills = manifest.fetch("skills").keys.to_set
 patterns = manifest.fetch("patterns").values.flat_map { |entry| entry.fetch("paths") }.map do |path|
   path.delete_prefix("patterns/").delete_suffix(".md")
 end.to_set
+pattern_names = patterns.map { |path| File.basename(path) }.to_set
+
+evaluation_manifest = manifest.fetch("evaluations", {})
+manifest_eval_paths = evaluation_manifest.values.flat_map { |entry| entry.fetch("paths", []) }.to_set
 
 eval_files = Dir[File.join(ROOT, "evals", "**", "*.yml")].sort
 abort "no evaluation files found" if eval_files.empty?
@@ -90,6 +94,20 @@ eval_files.each do |path|
   constraints = data["constraints"]
   errors << "#{relative}: constraints must be a mapping" unless constraints.is_a?(Hash)
   errors << "#{relative}: grading must be a mapping" unless data["grading"].is_a?(Hash)
+end
+
+eval_files.each do |path|
+  relative = path.delete_prefix(ROOT + "/")
+  unless manifest_eval_paths.include?(relative)
+    errors << "#{relative}: missing from manifest evaluations section"
+  end
+end
+
+evaluation_manifest.each do |name, entry|
+  Array(entry.fetch("paths", [])).each do |relative|
+    full_path = File.join(ROOT, relative)
+    errors << "manifest evaluation #{name} points to missing file #{relative}" unless File.file?(full_path)
+  end
 end
 
 if errors.any?
