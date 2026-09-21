@@ -574,6 +574,23 @@ For authorization changes:
 - add deterministic allow/deny, cross-tenant, collection-scope, direct-service, job, API/realtime, and IDOR regression tests;
 - verify the actual repository contract and report only observed validation evidence.
 
+## Rails Hotwire changes
+
+For Hotwire changes:
+- resolve the Ruby/Rails and turbo-rails/Stimulus versions and inspect the JavaScript loading strategy before implementation;
+- classify the interaction as Turbo Drive, Frame, Stream, morph/refresh, Stimulus lifecycle, or a cross-boundary composition;
+- preserve server-side authentication, authorization, validation, CSRF, status, redirect, and caching semantics;
+- treat frame IDs, DOM IDs, stream targets, and client data attributes as identifiers, not authorization;
+- keep Turbo Frame and Stream responses stable and explicit; audit partial/DOM contracts when IDs or target structure change;
+- make Stimulus controllers cohesive and make connect/disconnect cleanup idempotent for listeners, timers, observers, subscriptions, and widgets;
+- review morphing/refresh for DOM identity and client-state preservation rather than assuming rerendering is harmless;
+- preserve progressive enhancement and semantic HTML for critical workflows;
+- review accessibility for focus, errors, live updates, keyboard behavior, and loading states;
+- isolate private frame/stream HTML in cache identity and tenant/resource broadcast channels;
+- coordinate Turbo Stream broadcasts with Action Cable and durable eventing rather than treating browser updates as the source of truth;
+- add deterministic request/system/JavaScript tests for the protocol and lifecycle boundary;
+- do not claim Hotwire correctness from manual browser success alone.
+
 ## Rails authentication changes
 
 For authentication changes:
