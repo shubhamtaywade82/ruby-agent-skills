@@ -46,3 +46,20 @@ Additional verifier metadata is allowed inside each check mapping.
 The result preserves evidence separately from interpretation. The runner records process outcomes and patch evidence; the verifier provides dimension-level judgments.
 
 `overall` is computed from those independent signals and must not replace them.
+## Benchmark configuration
+
+Phase 8 adds an explicit configuration block:
+
+```json
+{
+  "configuration": {
+    "skills_enabled": true,
+    "skills": ["ruby-oop", "ruby-tdd-refactoring"],
+    "patterns": ["two-pointers"]
+  }
+}
+```
+
+When skill support is disabled, `skills` and `patterns` are empty.
+
+The agent result may also contain `agent.metadata` supplied by the adapter. This should identify provider/model/version/tool mode when available, without storing secrets.
