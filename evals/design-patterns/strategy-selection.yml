@@ -1,0 +1,33 @@
+id: strategy-selection
+version: 1
+title: Use Strategy for interchangeable pricing rules
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-object-composition
+  - ruby-dependency-injection
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns:
+  - strategy-object
+prompt: |
+  Implement ShippingCost using a Strategy object. Shipping rules for standard and express must be interchangeable collaborators injected into ShippingCost. Avoid growing conditional branches on shipping mode inside ShippingCost.
+constraints:
+  required_design:
+    - strategy-object
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: required public API and implementation boundary are present
+  pattern_selection: required design evidence is present and forbidden competing abstractions are absent
+  scope_control: changes remain inside the disposable fixture
