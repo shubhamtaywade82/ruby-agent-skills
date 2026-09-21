@@ -99,6 +99,17 @@ Do not commit generated results.
 
 The repository now supplies the controlled campaign machinery. A real campaign requires an external agent adapter command connected to an actual coding model/runtime.
 
+## Design-pattern campaign
+
+The same paired-run machinery can execute the design-pattern corpus:
+
+    ruby bin/benchmark campaign \\
+      --manifest benchmarks/design-patterns/campaign.yml \\
+      --agent-command 'YOUR_AGENT_COMMAND' \\
+      --output benchmark-results/design-patterns-public-v1
+
+The design-pattern campaign includes 18 public cases and five independent verifier dimensions, including `pattern_selection` and `scope_control`.
+
 ## Multiple campaign families
 
 The campaign runner accepts a manifest, so book-derived evaluations can use the same paired-run machinery:
