@@ -237,6 +237,10 @@ skills:
     family: rails
     path: skills/rails-controllers/SKILL.md
     triggers: [controller action, params, render, redirect, response]
+  rails-action-controller:
+    family: rails
+    path: skills/rails-action-controller/SKILL.md
+    triggers: [Action Controller, ActionController, ActionController::Base, strong parameters, params.expect, params.permit, params.require, request object, response object, session, cookies, flash, controller callbacks, before_action, after_action, around_action, content negotiation, respond_to, ETag, Last-Modified, conditional GET, 304 Not Modified, streaming, send_data, send_file, ActionController::Live, rescue_from, controller exception handling]
   rails-views:
     family: rails
     path: skills/rails-views/SKILL.md
@@ -437,6 +441,15 @@ patterns:
       - patterns/rails/action-view-helper-boundary.md
       - patterns/rails/action-view-render-performance.md
       - patterns/rails/action-view-localized-template.md
+      - patterns/rails/action-controller-request-boundary.md
+      - patterns/rails/strong-parameters-contract.md
+      - patterns/rails/controller-response-contract.md
+      - patterns/rails/controller-session-cookie-boundary.md
+      - patterns/rails/action-controller-callback-contract.md
+      - patterns/rails/controller-content-negotiation.md
+      - patterns/rails/conditional-response-cache.md
+      - patterns/rails/controller-streaming-download.md
+      - patterns/rails/controller-exception-boundary.md
       - patterns/rails/action-mailbox-ingress-boundary.md
       - patterns/rails/action-mailbox-routing-contract.md
       - patterns/rails/action-mailbox-authenticity-security.md
@@ -471,6 +484,7 @@ patterns:
       - patterns/rails/i18n-testing.md
       - patterns/rails/action-text-testing.md
       - patterns/rails/action-view-testing.md
+      - patterns/rails/action-controller-testing.md
       - patterns/rails/active-model-testing.md
       - patterns/rails/active-support-testing.md
       - patterns/rails/action-mailbox-testing.md
@@ -743,6 +757,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-view-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-action-controller:
+    source: rails-action-controller-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-controller-contract.yml
     checks:
       - functional
       - tests
