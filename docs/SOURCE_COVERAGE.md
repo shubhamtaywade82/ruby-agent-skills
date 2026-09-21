@@ -22,6 +22,7 @@ The repository intentionally synthesizes concepts rather than reproducing source
 | HTTP/client integration | ruby-gems-io-services, external-api-client, ruby-dependency-injection |
 | Rails MVC/application anatomy | rails-architecture |
 | Rails routes/controllers/views/forms | rails-routing, rails-controllers, rails-views |
+| Deep Active Record Relation and lifecycle boundary | rails-active-record, rails-activerecord, rails-associations, rails-validations, rails-database-engineering, rails-performance |
 | Deep Action Controller request/response boundary | rails-action-controller, rails-security, rails-observability, rails-caching, rails-test-engineering |
 | Models, migrations, Active Record and console | rails-activerecord |
 | Authentication | rails-authentication |
@@ -300,6 +301,32 @@ Primary sources:
 - https://api.rubyonrails.org/classes/ActionController/Redirecting.html
 - https://api.rubyonrails.org/classes/ActionController/ConditionalGet.html
 - https://api.rubyonrails.org/classes/ActionController/Rescue.html
+
+## Rails Active Record
+
+Active Record is covered by a dedicated deep engineering layer because model and Relation semantics extend beyond basic CRUD. The skill deliberately separates object/query contracts from database infrastructure.
+
+Operational coverage:
+- skills/rails-active-record/SKILL.md
+- patterns/rails/active-record-model-boundary.md
+- patterns/rails/active-record-query-contract.md
+- patterns/rails/active-record-relation-composition.md
+- patterns/rails/active-record-scope-contract.md
+- patterns/rails/active-record-persistence-lifecycle.md
+- patterns/rails/active-record-callback-contract.md
+- patterns/rails/active-record-bulk-write-boundary.md
+- patterns/rails/active-record-strict-loading.md
+- patterns/rails/active-record-deletion-contract.md
+- patterns/rails/active-record-testing.md
+- evals/rails/active-record-contract.yml
+- test/rails_active_record_system_test.rb
+
+Primary sources:
+- https://guides.rubyonrails.org/active_record_basics.html
+- https://guides.rubyonrails.org/active_record_querying.html
+- https://guides.rubyonrails.org/active_record_callbacks.html
+- https://guides.rubyonrails.org/association_basics.html
+- https://guides.rubyonrails.org/active_record_validations.html
 
 ## Rails database engineering
 
