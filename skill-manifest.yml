@@ -68,6 +68,10 @@ skills:
     family: performance
     path: skills/rails-performance/SKILL.md
     triggers: [Rails performance, Rails performance regression, N+1, query plan, EXPLAIN, slow Rails endpoint, slow Active Record query, Active Record performance, cache stampede, cache key, connection pool, pool exhaustion, Puma capacity, web concurrency, job throughput, Rails allocations, Rails memory]
+  rails-caching:
+    family: performance
+    path: skills/rails-caching/SKILL.md
+    triggers: [Rails caching, cache engineering, cache key, cache key isolation, cache invalidation, cache freshness, cache store, cache stampede, cache warming, cache failure, cache eviction, cache capacity, fragment cache, low-level cache, response cache, stale cache]
   rails-security-engineering:
     family: security
     path: skills/rails-security-engineering/SKILL.md
@@ -284,6 +288,11 @@ patterns:
       - patterns/rails/query-plan-evidence.md
       - patterns/rails/connection-pool-capacity.md
       - patterns/rails/cache-stampede-control.md
+      - patterns/rails/cache-key-isolation.md
+      - patterns/rails/cache-invalidation-contract.md
+      - patterns/rails/cache-failure-boundary.md
+      - patterns/rails/cache-warming-strategy.md
+      - patterns/rails/cache-capacity-review.md
       - patterns/rails/slo-error-budget.md
       - patterns/rails/dependency-failure-boundary.md
       - patterns/rails/circuit-breaker.md
