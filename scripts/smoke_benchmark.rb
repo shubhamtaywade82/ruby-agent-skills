@@ -4,6 +4,7 @@
 require "fileutils"
 require "json"
 require "shellwords"
+require "tmpdir"
 require_relative "../lib/ruby_agent_skills/eval_runner"
 
 root = File.expand_path("..", __dir__)
