@@ -7,8 +7,7 @@ skills:
   - ruby-method-design
   - ruby-clean-code
   - ruby-tdd-refactoring
-patterns:
-  []
+patterns: []
 prompt: |
   Implement User#full_name. The behavior is simply the first and last name joined by one space. Keep the solution direct and do not introduce service, factory, strategy, presenter, policy, or repository abstractions.
 constraints:
