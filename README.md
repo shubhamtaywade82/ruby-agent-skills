@@ -47,6 +47,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-deployment | Deployment and hosting verification |
 | rails-best-practices | Rails quality review and RailsBestPractices interpretation |
 | rails-security | Rails application security and security-tool interpretation |
+| rails-zeitwerk | Zeitwerk path/constant, namespace, reload, and eager-load correctness |
 | ruby-performance | Evidence-driven Ruby/Rails benchmarking, profiling, caching, and optimization |
 | rubocop | Ruby/Rails style analysis and RuboCop plugin selection |
 
@@ -271,3 +272,14 @@ Security tooling is treated as evidence and must be interpreted against the actu
 Performance guidance is evidence-driven: establish a workload and baseline, measure, identify the bottleneck, make the smallest targeted change, and re-measure.
 
 The repository includes profiling/benchmark tool metadata, performance-specific patterns, and executable performance evaluations. It explicitly distinguishes latency, throughput, CPU, allocations, GC, database time, network time, and cache correctness.
+
+
+## Zeitwerk and autoloading
+
+The repository includes a dedicated Rails Zeitwerk skill, structure-review pattern, loader tooling registry, verification CLI, and executable evaluations.
+
+For a Rails project:
+
+    ruby bin/zeitwerk-check /path/to/rails-app
+
+The agent is expected to resolve path-to-constant mappings and loader lifecycle before adding manual require workarounds.
