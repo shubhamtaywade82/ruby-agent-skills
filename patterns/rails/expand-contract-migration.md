@@ -15,7 +15,7 @@ A production schema change removes or renames data, changes nullability or type,
 ## Do not use when
 The database change is provably atomic and compatible with every application version that can run during deployment.
 
-## Procedure
+## Implementation procedure
 1. Identify old and new application versions that may overlap.
 2. Expand the schema without breaking old code.
 3. Deploy code that can use both states.
@@ -38,3 +38,13 @@ Test intermediate schema/application states where practical and verify deploymen
 - backfill completion criterion exists
 - cutover is explicit
 - destructive cleanup is separated
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
