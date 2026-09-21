@@ -1,4 +1,3 @@
-
 ---
 name: active-model-attributes-contract
 description: Define typed attributes, defaults, casting, and serialization semantics for Active Model objects.
