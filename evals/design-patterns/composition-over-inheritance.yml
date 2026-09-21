@@ -1,0 +1,33 @@
+id: composition-over-inheritance
+version: 1
+title: Replace a behavior hierarchy with composition
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-object-composition
+  - ruby-dependency-injection
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns:
+  - composition-over-inheritance
+prompt: |
+  Refactor reporting so Report composes an injected formatter instead of subclassing Report for each output format. Preserve render and support CSV and PDF formatter collaborators.
+constraints:
+  required_design:
+    - composition-over-inheritance
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: Report renders through an injected formatter
+  pattern_selection: concrete Report subclasses are absent
+  scope_control: changes remain inside the disposable fixture
