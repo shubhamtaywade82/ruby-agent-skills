@@ -34,3 +34,7 @@ Security and HTTP semantics remain independent of Turbo behavior.
 
 ## Related skills
 rails-hotwire, rails-authentication, rails-authorization, rails-security, rails-action-controller
+
+## Use when
+
+Use this pattern when the described Hotwire interaction is an explicit part of the page contract and its lifecycle needs dedicated guidance.
