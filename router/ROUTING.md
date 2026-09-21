@@ -46,6 +46,7 @@ This file defines how an agent should select and compose skills.
 | Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
+| Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
 | Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | RuboCop/linting review | rubocop | ruby-clean-code, relevant implementation skill, pattern:rubocop-review |
@@ -513,3 +514,34 @@ Classify the failure model before selecting a mechanism. Prefer local atomicity 
 | Workflow spans independent transactions | pattern:saga-orchestration |
 | Cross-process exclusion is unavoidable | pattern:distributed-lock |
 | Consumers observe asynchronous propagation | pattern:eventual-consistency |
+
+
+## Event-driven messaging architecture
+
+```text
+event/command / broker / queue / stream / topic / partition / consumer group /
+schema evolution / dead letter / replay / lag / message tracing / capacity
+  -> rails-event-driven-messaging
+  -> rails-distributed-systems for ownership, consistency, and failure model
+  -> rails-api-integration for synchronous boundaries and provider contracts
+  -> rails-active-job for Rails-managed asynchronous execution
+  -> rails-observability for correlation and message lifecycle
+  -> rails-production-runtime for consumer process/shutdown topology
+  -> ruby-concurrency for bounded consumer concurrency
+  -> rails-security for trust, permissions, and secrets
+  -> rails-testing for deterministic message/failure tests
+```
+
+Classify the message before designing transport mechanics. Keep broker-specific types at the handler boundary and treat replay as a production capability.
+
+### Messaging pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Shared message metadata/identity contract | pattern:event-envelope |
+| Old/new producers and consumers coexist | pattern:event-schema-evolution |
+| Ordering and parallel consumer topology | pattern:consumer-group-partitioning |
+| Poison-message containment and replay | pattern:dead-letter-replay |
+| End-to-end message lifecycle diagnostics | pattern:message-observability |
+| Lag/backpressure/downstream capacity | pattern:broker-capacity |
+| Isolate broker mechanics from domain logic | pattern:message-handler-boundary |
