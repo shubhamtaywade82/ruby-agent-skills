@@ -52,6 +52,10 @@ skills:
     family: operations
     path: skills/rails-incident-engineering/SKILL.md
     triggers: [incident engineering, incident response, production incident, incident triage, operational runbook, runbook, alert actionability, alert fatigue, diagnostic context, incident timeline, safe production debugging, mitigation, recovery verification, post-incident review, operational debugging]
+  rails-release-engineering:
+    family: operations
+    path: skills/rails-release-engineering/SKILL.md
+    triggers: [release engineering, release management, release readiness, CI/CD release, artifact promotion, artifact provenance, deployment gate, release gate, progressive delivery, canary release, staged rollout, environment parity, rollback, roll-forward, release health, release evidence, deployment verification]
   rails-event-driven-messaging:
     family: rails
     path: skills/rails-event-driven-messaging/SKILL.md
@@ -329,6 +333,14 @@ patterns:
       - patterns/rails/safe-production-debugging.md
       - patterns/rails/recovery-verification.md
       - patterns/rails/post-incident-review.md
+      - patterns/rails/release-risk-classification.md
+      - patterns/rails/artifact-provenance.md
+      - patterns/rails/deployment-gate.md
+      - patterns/rails/progressive-delivery.md
+      - patterns/rails/environment-parity.md
+      - patterns/rails/rollback-rollforward.md
+      - patterns/rails/release-health-verification.md
+      - patterns/rails/release-evidence.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, eventual consistency, incident triage, operational runbook, alert actionability, diagnostic context, incident timeline, safe production debugging, recovery verification, post-incident review]
 
   testing:
