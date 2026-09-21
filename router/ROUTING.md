@@ -414,3 +414,22 @@ runtime configuration / release ordering / rollback
 ```
 
 Do not select worker counts, restart modes, or deployment sequencing from generic defaults. Inspect the actual platform/runtime configuration.
+
+
+## Rails test engineering
+
+```text
+test boundary / request test / integration / system test / job test /
+test isolation / flaky test / parallel tests / transactional tests /
+test performance / CI test execution / fixtures / factories
+  -> rails-test-engineering
+  -> rails-testing
+  -> ruby-tdd-refactoring
+  -> ruby-concurrency when thread/process concurrency is involved
+  -> ruby-performance for measured test-runtime problems
+  -> rails-active-job when job queue semantics are tested
+  -> rails-database-engineering when test behavior depends on DB transactions/locks
+  -> rails-security when security boundaries are the contract under test
+```
+
+Use the repository's existing test framework and helpers. Do not introduce a second testing stack merely because it offers a different style.
