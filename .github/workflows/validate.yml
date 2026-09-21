@@ -21,3 +21,6 @@ jobs:
 
       - name: Smoke test evaluation runner
         run: ruby scripts/smoke_eval_runner.rb
+
+      - name: Smoke test benchmark verifier
+        run: ruby scripts/smoke_benchmark.rb
