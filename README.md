@@ -584,7 +584,7 @@ Completed deep Rails areas currently include:
 - Security engineering
 - Test engineering
 
-The next planned deep Rails boundary is **Authentication Engineering**, followed by authorization, Hotwire, frontend asset/build infrastructure, Rack/middleware, initialization/configuration, engines/Railties, encryption, serialization, operational tasks, cross-boundary authorization composition, and finally repository-level staff architecture evaluation.
+Authentication Engineering is now a deep Rails boundary covering mechanism discovery, credential storage, authentication state transitions, session lifecycle, fixation/rotation, expiry/revocation, password recovery, abuse controls, persistent login, browser/API boundaries, context propagation, freshness, multi-device sessions, compromise response, observability, and deterministic security testing.\n\nThe next planned deep Rails boundary is **Authorization Engineering**, followed by Hotwire, frontend asset/build infrastructure, Rack/middleware, initialization/configuration, engines/Railties, encryption, serialization, operational tasks, cross-boundary authorization composition, and finally repository-level staff architecture evaluation.
 
 ---
 
@@ -608,13 +608,13 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 33 — Rails Routing Engineering**
+**Iteration 34 — Rails Authentication Engineering**
 
 Latest verified commit:
 
-`19da3232c5fa29c02393c8e8bcf0754366111b93`
+`8e1f0e2fb4da6005dcc7b98b83fd1f3356528ec9`
 
-The corresponding CI validation completed successfully after correcting manifest registration.
+The corresponding CI validation completed successfully (CI run #595, validate job 106386786112).
 
 Next milestone:
 
