@@ -256,7 +256,7 @@ skills:
   rails-associations:
     family: rails
     path: skills/rails-associations/SKILL.md
-    triggers: [belongs_to, has_one, has_many, through, HABTM, relationship, association cardinality, association ownership, inverse_of, class_name, foreign_key, primary_key, polymorphic, dependent, destroy_async, restrict_with_exception, restrict_with_error, nullify, autosave, nested attributes, counter_cache, touch, association callbacks, before_add, after_add, before_remove, after_remove, association extension]
+    triggers: [belongs_to, has_one, has_many, through, has_many :through, HABTM, relationship, association cardinality, association ownership, inverse_of, class_name, foreign_key, primary_key, polymorphic, dependent, destroy_async, restrict_with_exception, restrict_with_error, nullify, autosave, nested attributes, counter_cache, touch, association callbacks, before_add, after_add, before_remove, after_remove, association extension]
   rails-validations:
     family: rails
     path: skills/rails-validations/SKILL.md
