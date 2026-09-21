@@ -1,0 +1,77 @@
+id: rails-asset-build-contract
+version: 1
+title: Preserve Rails asset, JavaScript, CSS, development-process, reproducibility, and production-build contracts
+category: rails
+source: rails-asset-build-v1
+skills:
+  - rails-asset-build-engineering
+  - rails-production-runtime
+  - rails-deployment
+  - rails-release-engineering
+  - rails-security-engineering
+  - rails-hotwire
+  - ruby-runtime-compatibility
+  - rails-test-engineering
+patterns:
+  - rails-asset-pipeline-contract
+  - importmap-contract
+  - jsbundling-contract
+  - cssbundling-contract
+  - bin-dev-process-contract
+  - asset-build-reproducibility
+  - asset-build-production-parity
+  - asset-dependency-boundary
+  - asset-build-testing
+prompt: |
+  Implement or review a Rails asset/build change using the repository's actual Rails version, asset strategy, JavaScript/CSS toolchain, package manager, development process, CI path, and production artifact contract. Preserve reproducibility, security, production parity, deterministic verification, and the smallest justified toolchain change.
+constraints:
+  required_design:
+    - repository-consistent asset strategy
+    - explicit dependency/runtime contract
+    - reproducible build
+    - production-like verification
+    - no unjustified toolchain migration
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: strategy-selection
+    input: application with existing asset strategy and a new frontend dependency
+    expected: the smallest compatible strategy is selected without an unnecessary migration
+  - name: importmap
+    input: browser-compatible ESM dependency
+    expected: importmap resolution is pinned and verified when it satisfies the repository contract
+  - name: js-build
+    input: dependency requiring transformation
+    expected: the configured JS build produces the artifact consumed by Rails
+  - name: css-build
+    input: CSS requiring build-time transformation
+    expected: the CSS build is deterministic and integrated with Rails precompile/deploy
+  - name: dev-process
+    input: bin/dev or Procfile.dev change
+    expected: process ownership, failure propagation, and shutdown behavior are explicit
+  - name: reproducibility
+    input: clean environment build
+    expected: declared dependency/runtime inputs produce a successful build without developer-local state
+  - name: production-parity
+    input: production-like build
+    expected: the release-relevant build path succeeds and Rails consumes the resulting artifacts
+  - name: dependency-security
+    input: package dependency update
+    expected: lockfile/runtime/install-script changes are reviewed and secrets remain outside client artifacts
+  - name: cache-identity
+    input: CI dependency/build cache
+    expected: cache keys account for relevant dependency and source changes
+  - name: asset-precompile
+    input: Rails release
+    expected: asset precompile failure prevents a false-success deployment
+  - name: build-testing
+    input: asset toolchain change
+    expected: clean build, precompile, and production-like verification are exercised
+grading:
+  functional: asset behavior matches the repository's intended runtime contract
+  tests: deterministic build and failure paths are executable
+  contract: dependency, artifact, cache, and deployment responsibilities remain explicit
+  scope_control: no unrelated frontend/toolchain migration is introduced
