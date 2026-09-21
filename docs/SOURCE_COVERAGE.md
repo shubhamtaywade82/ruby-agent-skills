@@ -413,3 +413,20 @@ Operational coverage:
 - `evals/rails/action-cable-contract.yml`
 
 Primary source: https://guides.rubyonrails.org/action_cable_overview.html
+## Rails I18n & localization
+
+I18n is covered by a dedicated skill because locale selection, request isolation, translation contracts, formatting, routes, jobs, mailers, APIs, caches, and translation backends form a cross-layer Rails boundary.
+
+Operational coverage:
+- `skills/rails-i18n/SKILL.md`
+- `patterns/rails/i18n-locale-resolution.md`
+- `patterns/rails/i18n-translation-key-contract.md`
+- `patterns/rails/i18n-pluralization-formatting.md`
+- `patterns/rails/i18n-localized-routing.md`
+- `patterns/rails/i18n-context-propagation.md`
+- `patterns/rails/i18n-cache-identity.md`
+- `patterns/rails/i18n-security-boundary.md`
+- `patterns/rails/i18n-testing.md`
+- `evals/rails/i18n-contract.yml`
+
+Primary source: https://guides.rubyonrails.org/i18n.html
