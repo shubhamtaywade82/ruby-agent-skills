@@ -106,3 +106,14 @@ Use authentication/integration/request tests that exercise valid, invalid, expir
 ## Source foundation
 
 The Ruby Workshop includes an authentication step in its Rails learning path. This skill turns that material into an agent procedure while deliberately requiring inspection of the repository's real authentication mechanism.
+
+## Book integration: protected resource boundary
+
+Authentication mechanisms commonly expose a reusable controller-level guard. Apply it to the smallest correct set of actions/resources.
+
+Keep authentication and authorization distinct. A protected route proves identity requirements, not permission for every record/action.
+
+Test both sides of the boundary:
+- unauthenticated access is blocked as specified
+- authenticated but unauthorized access is handled as specified
+- deliberately public endpoints remain public
