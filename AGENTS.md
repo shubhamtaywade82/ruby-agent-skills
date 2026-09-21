@@ -357,3 +357,20 @@ For I18n/localization changes:
 - define missing-translation and fallback behavior for development, test, and production;
 - use deterministic locale-sensitive tests and restore locale state between examples;
 - never claim localization coverage solely from translation-file presence; verify execution paths, formatting, fallback, and cross-boundary propagation.
+## Rails Action Text changes
+
+For Action Text/rich-text changes:
+- inspect has_rich_text declarations, Action Text/Trix versions, RichText schema, editor integration, sanitization, custom partials, attachment/attachable behavior, APIs, locale behavior, query patterns, and tests before implementation;
+- authorize editing through the owning domain resource; never treat ActionText::RichText IDs or Signed Global IDs as authorization by themselves;
+- preserve Action Text server-side sanitization and review custom HTML/link/attachment rendering for XSS and privacy risks;
+- treat Trix/client-side validation as usability only; server-side authorization and content controls remain authoritative;
+- use rails-active-storage for embedded file storage/access lifecycle rather than duplicating storage-provider logic in Action Text code;
+- restrict and explicitly authorize attachable object types, tenant scope, and rendering partials; define missing-record fallback;
+- keep public API representations stable and avoid exposing internal RichText/attachment table structure unless explicitly contractual;
+- measure RichText and embed query behavior before choosing `with_rich_text_*` preloads; use the narrowest preload justified by the rendering workload;
+- review locale and cache identity when rendered rich text varies by locale, permission, content version, or attachment state;
+- bound rich-text size, attachment count, and transformation work where product requirements allow;
+- coordinate lifecycle/cleanup semantics across RichText and Active Storage instead of assuming external object deletion is transactional;
+- add negative security tests for malicious HTML/URLs and unauthorized embedded resources;
+- use deterministic local/test storage and avoid live cloud-provider dependencies in ordinary CI;
+- never claim rich-text safety merely because the content came from Trix; verify sanitization, authorization, attachable resolution, and final rendering.
