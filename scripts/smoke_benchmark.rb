@@ -58,8 +58,9 @@ agent_script = <<~RUBY
   File.write("test/selection_sort_test.rb", "SelectionSorter smoke coverage\n")
 RUBY
 
+agent_command = "ruby -e #{Shellwords.escape(agent_script)}"
+
 run_case = lambda do |skills_enabled|
-  command = "ruby -e #{Shellwords.escape(agent_script)}"
   runner.run(
     id: "selection-sort",
     workspace: fixture,
