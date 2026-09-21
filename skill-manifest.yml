@@ -451,6 +451,15 @@ patterns:
       - patterns/rails/controller-streaming-download.md
       - patterns/rails/controller-exception-boundary.md
       - patterns/rails/action-mailbox-ingress-boundary.md
+      - patterns/rails/active-record-model-boundary.md
+      - patterns/rails/active-record-query-contract.md
+      - patterns/rails/active-record-relation-composition.md
+      - patterns/rails/active-record-scope-contract.md
+      - patterns/rails/active-record-persistence-lifecycle.md
+      - patterns/rails/active-record-callback-contract.md
+      - patterns/rails/active-record-bulk-write-boundary.md
+      - patterns/rails/active-record-strict-loading.md
+      - patterns/rails/active-record-deletion-contract.md
       - patterns/rails/action-mailbox-routing-contract.md
       - patterns/rails/action-mailbox-authenticity-security.md
       - patterns/rails/action-mailbox-idempotency.md
