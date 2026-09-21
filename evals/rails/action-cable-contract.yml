@@ -1,0 +1,48 @@
+id: action-cable-contract
+version: 1
+title: Preserve Action Cable realtime authorization and delivery contracts
+category: rails
+source: rails-action-cable-v1
+skills:
+  - rails-action-cable
+  - rails-security
+  - rails-reliability-engineering
+patterns:
+  - action-cable-connection-auth
+  - action-cable-channel-authorization
+  - action-cable-stream-contract
+  - action-cable-broadcast-contract
+  - action-cable-reconciliation
+prompt: |
+  Implement a tenant-scoped realtime notifications channel with authenticated Action Cable connections and per-resource subscription authorization. The channel must use bounded stream identities, publish a minimal versioned payload, and define reconnect reconciliation from authoritative application state. Add deterministic tests proving unauthorized subscriptions and cross-tenant access are rejected.
+constraints:
+  required_design:
+    - connection authentication
+    - resource/tenant channel authorization
+    - bounded stream identity
+    - explicit broadcast payload contract
+    - reconnect reconciliation
+    - deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: authenticated-subscription
+    input: authenticated user subscribing to owned tenant resource
+    expected: subscription is accepted and stream is established
+  - name: cross-tenant-subscription
+    input: authenticated user subscribing to another tenant resource
+    expected: subscription is rejected
+  - name: broadcast-contract
+    input: notification event
+    expected: minimal versioned payload is broadcast to the authorized resource stream
+  - name: reconnect-reconciliation
+    input: client reconnects after missed broadcasts
+    expected: authoritative current state can be refetched/reconciled
+grading:
+  functional: authorized realtime subscription and broadcast behavior are correct
+  tests: connection/channel/security/reconciliation behavior is executable
+  contract: realtime delivery is not treated as durable messaging
+  scope_control: no live Redis dependency is introduced for ordinary tests
