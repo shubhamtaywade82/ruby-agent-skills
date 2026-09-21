@@ -430,3 +430,21 @@ Operational coverage:
 - `evals/rails/i18n-contract.yml`
 
 Primary source: https://guides.rubyonrails.org/i18n.html
+## Rails Action Text
+
+Action Text is covered by a dedicated skill because rich text combines persisted RichText records, Trix editing, server-side sanitization, embedded Active Storage resources, Signed Global ID attachables, rendering, APIs, localization, and collection performance.
+
+Operational coverage:
+- `skills/rails-action-text/SKILL.md`
+- `patterns/rails/action-text-content-contract.md`
+- `patterns/rails/action-text-sanitization-security.md`
+- `patterns/rails/action-text-attachment-authorization.md`
+- `patterns/rails/action-text-rendering.md`
+- `patterns/rails/action-text-api-boundary.md`
+- `patterns/rails/action-text-preload-performance.md`
+- `patterns/rails/action-text-lifecycle.md`
+- `patterns/rails/action-text-attachable-contract.md`
+- `patterns/rails/action-text-testing.md`
+- `evals/rails/action-text-contract.yml`
+
+Primary source: https://guides.rubyonrails.org/action_text_overview.html
