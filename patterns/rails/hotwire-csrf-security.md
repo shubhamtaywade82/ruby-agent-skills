@@ -13,3 +13,23 @@ Classify browser authentication first and preserve the repository CSRF contract.
 
 ## Testing
 Cover non-GET requests, redirects, and rejection behavior.
+## Do not use when
+The interaction is a public non-browser API boundary that intentionally does not use cookie authentication; use the repository API security contract instead.
+
+## Repository inspection
+Inspect authentication mode, CSRF configuration, Turbo requests, custom JavaScript requests, and request tests.
+
+## Implementation procedure
+Classify the credential boundary, preserve CSRF behavior, and test rejection semantics before adding workarounds.
+
+## Failure modes
+Global CSRF disablement, missing request tokens, and mixed-authentication semantics.
+
+## Testing
+Test state-changing browser requests with valid and invalid CSRF context.
+
+## Review checklist
+CSRF remains a deliberate server-side security control.
+
+## Related skills
+rails-hotwire, rails-authentication, rails-security, rails-action-controller
