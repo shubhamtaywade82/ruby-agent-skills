@@ -6,6 +6,7 @@ require "open3"
 require "tmpdir"
 require "yaml"
 require "time"
+require_relative "skill_pack"
 
 module RubyAgentSkills
   class EvalRunner
@@ -58,12 +59,12 @@ module RubyAgentSkills
       output
     end
 
-    def run(id:, workspace:, agent_command:, verify_command: nil, output: nil, timeout: DEFAULT_TIMEOUT)
+    def run(id:, workspace:, agent_command:, verify_command: nil, output: nil, timeout: DEFAULT_TIMEOUT, skills_enabled: false)
       evaluation = find(id)
       source_workspace = File.expand_path(workspace)
       raise Error, "workspace does not exist: #{source_workspace}" unless Dir.exist?(source_workspace)
 
-      result = base_result(evaluation, agent_command, verify_command)
+      result = base_result(evaluation, agent_command, verify_command, skills_enabled)
 
       Dir.mktmpdir("ruby-agent-eval-") do |temp_dir|
         FileUtils.cp_r("#{source_workspace}/.", temp_dir)
@@ -78,7 +79,14 @@ module RubyAgentSkills
         File.write(prompt_path, evaluation.fetch("prompt"), encoding: "UTF-8")
         File.write(eval_path, YAML.dump(evaluation.reject { |k, _| k == "__path" }), encoding: "UTF-8")
 
-        env = runner_env(evaluation, prompt_path, eval_path, result_path)
+        packer = SkillPack.new(root: root)
+        skill_pack = if skills_enabled
+          packer.materialize(evaluation: evaluation, workspace: temp_dir)
+        else
+          packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
+        end
+
+        env = runner_env(evaluation, prompt_path, eval_path, result_path, skill_pack)
         run_command(agent_command, temp_dir, env, timeout, result["agent"])
         run_git_snapshot(temp_dir, result["patch"])
 
@@ -109,11 +117,16 @@ module RubyAgentSkills
       data
     end
 
-    def base_result(evaluation, agent_command, verify_command)
+    def base_result(evaluation, agent_command, verify_command, skills_enabled)
       {
         "protocol_version" => 1,
         "evaluation" => evaluation.fetch("id"),
         "title" => evaluation.fetch("title"),
+        "configuration" => {
+          "skills_enabled" => skills_enabled,
+          "skills" => skills_enabled ? evaluation.fetch("skills", []) : [],
+          "patterns" => skills_enabled ? evaluation.fetch("patterns", []) : []
+        },
         "started_at" => Time.now.utc.iso8601,
         "agent" => {
           "command" => agent_command, "exit_code" => nil, "timed_out" => false,
@@ -129,13 +142,20 @@ module RubyAgentSkills
       }
     end
 
-    def runner_env(evaluation, prompt_path, eval_path, result_path)
+    def runner_env(evaluation, prompt_path, eval_path, result_path, skill_pack)
       {
         "RUBY_AGENT_EVAL_ID" => evaluation.fetch("id"),
         "RUBY_AGENT_EVAL_PROMPT" => prompt_path,
         "RUBY_AGENT_EVAL_FILE" => eval_path,
         "RUBY_AGENT_EVAL_RESULT_FILE" => result_path,
-        "RUBY_AGENT_EVAL_ROOT" => root
+        "RUBY_AGENT_EVAL_ROOT" => root,
+        "RUBY_AGENT_WORKSPACE" => Dir.pwd,
+        "RUBY_AGENT_SKILLS_ENABLED" => skill_pack.fetch("skills").empty? ? "false" : "true",
+        "RUBY_AGENT_SKILLS_DIR" => skill_pack.fetch("skills_dir"),
+        "RUBY_AGENT_PATTERNS_DIR" => skill_pack.fetch("patterns_dir"),
+        "RUBY_AGENT_SKILL_MANIFEST" => skill_pack.fetch("manifest"),
+        "RUBY_AGENT_CONTEXT_FILE" => skill_pack.fetch("context"),
+        "RUBY_AGENT_METADATA_FILE" => File.join(File.dirname(result_path), "agent-metadata.json")
       }
     end
 
