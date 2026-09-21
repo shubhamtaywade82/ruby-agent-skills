@@ -19,6 +19,10 @@ A service object should orchestrate work, not become a dumping ground for unrela
 - a domain action has a clear command-like boundary
 - the repository already uses service objects consistently
 
+## Boundary with related design skills
+
+Use `ruby-service-objects` when the primary problem is an application operation/workflow. Use `ruby-poro` for the framework-independent object substrate, `ruby-dependency-injection` for collaborator replacement, and `ruby-api-design` for the public operation contract. Do not activate all four automatically when one skill is sufficient.
+
 ## Repository inspection
 
 Inspect app/services or its equivalent, ApplicationService conventions, public entry points such as call/perform/execute/run, namespacing such as Post::Creator, result/error conventions, and existing service tests.
