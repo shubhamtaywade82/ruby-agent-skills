@@ -1,0 +1,33 @@
+id: dependency-injection
+version: 1
+title: Inject a replaceable collaborator
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-dependency-injection
+  - ruby-poro
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - dependency-injection
+prompt: |
+  Implement ReportGenerator with an injected clock collaborator. The report should use clock.now to produce a deterministic generated_at value. Do not access global time APIs inside ReportGenerator.
+constraints:
+  required_design:
+    - dependency-injection
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: required public API and implementation boundary are present
+  pattern_selection: required design evidence is present and forbidden competing abstractions are absent
+  scope_control: changes remain inside the disposable fixture
