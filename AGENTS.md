@@ -574,6 +574,23 @@ For authorization changes:
 - add deterministic allow/deny, cross-tenant, collection-scope, direct-service, job, API/realtime, and IDOR regression tests;
 - verify the actual repository contract and report only observed validation evidence.
 
+## Rails asset/build changes
+
+For Rails asset/build changes:
+- resolve Ruby/Rails, asset-pipeline, package-manager, and JavaScript/CSS runtime versions before changing tooling;
+- inspect the actual development, CI, and production build commands rather than inferring the toolchain from package files;
+- classify the boundary as asset pipeline, Importmap, JS bundling, CSS bundling, development process, dependency/runtime, artifact/cache, or release build;
+- choose the smallest repository-consistent asset strategy; do not migrate toolchains merely because another tool is familiar;
+- treat lockfiles, runtime versions, build scripts, and install hooks as executable dependency contracts;
+- make `bin/dev`/Procfile.dev process ownership and failure propagation explicit;
+- require reproducible dependency installation and production-like asset builds for release-relevant changes;
+- ensure CI executes the actual release-relevant asset/precompile path;
+- review dependency install scripts, private registries, build-time secrets, source maps, CDN dependencies, and generated client artifacts as supply-chain/security boundaries;
+- ensure dependency/build caches are invalidated by relevant lockfile/source/runtime changes;
+- distinguish development watchers from successful production builds;
+- add deterministic clean-build/precompile/system verification and inspect CI evidence;
+- do not claim production parity or reproducibility from a single local build.
+
 ## Rails Hotwire changes
 
 For Hotwire changes:
