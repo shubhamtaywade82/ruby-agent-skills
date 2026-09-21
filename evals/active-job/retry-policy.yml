@@ -1,0 +1,31 @@
+id: retry-policy
+version: 1
+title: Distinguish retryable and permanent job failures
+category: rails
+source: active-job-v1
+skills:
+  - rails-active-job
+patterns:
+  - job-retry-policy
+prompt: |
+  Update SyncCustomerJob so transient remote timeouts are retried with bounded backoff, while invalid customer state is not retried. Preserve the perform API and add tests for both exception classes.
+constraints:
+  required_design:
+    - explicit transient/permanent failure policy
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: transient-timeout
+    input: RemoteTimeout
+    expected: retry policy configured
+  - name: permanent-state
+    input: InvalidCustomerState
+    expected: no retry
+grading:
+  functional: exception classes map to intended retry/discard behavior
+  tests: both paths are tested
+  contract: perform signature remains unchanged
+  scope_control: no unrelated queue rewrite
