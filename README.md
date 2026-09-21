@@ -117,6 +117,10 @@ ruby-agent-skills/
 │   ├── algorithms/
 │   ├── oop/
 │   └── rails/
+├── data/
+│   └── rubocop/
+│       └── plugins.yml
+├── .rubocop.yml
 └── skill-manifest.yml
 ```
 
