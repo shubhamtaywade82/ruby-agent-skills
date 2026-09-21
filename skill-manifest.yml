@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  rails-security:
+    family: security
+    path: skills/rails-security/SKILL.md
+    triggers: [security, Rails security, Brakeman, bundler-audit, authentication security, authorization security, CSRF, XSS, SQL injection, SSRF, command injection, security review]
   ruby-concurrency:
     family: concurrency
     path: skills/ruby-concurrency/SKILL.md
@@ -201,7 +205,8 @@ patterns:
       - patterns/rails/scaffold-lifecycle.md
       - patterns/rails/presenter.md
       - patterns/rails/rails-best-practice-review.md
-    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review]
+      - patterns/rails/security-boundary-review.md
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review]
 
   testing:
     paths:
