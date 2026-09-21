@@ -1,0 +1,33 @@
+id: presenter
+version: 1
+title: Move substantial presentation transformation into a Presenter
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-poro
+  - ruby-object-composition
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - presenter
+prompt: |
+  Implement UserPresenter to transform a User into display-ready values without modifying the User model. It must expose display_name and membership_label.
+constraints:
+  required_design:
+    - presenter
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: presenter exposes display methods
+  pattern_selection: presenter is a collaborator around User rather than a User subclass
+  scope_control: changes remain inside the disposable fixture
