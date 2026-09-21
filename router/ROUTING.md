@@ -321,3 +321,16 @@ slow endpoint / job / query / memory / allocations / benchmark / profiler / cach
 ```
 
 Do not activate performance guidance merely because code could theoretically be optimized. Require a workload, symptom, or explicit measurable target.
+
+## Zeitwerk / autoloading
+
+```text
+constant/file-path/load/reload/eager-load/namespace/inflection issue
+  -> rails-zeitwerk
+  -> ruby-runtime-compatibility
+  -> rails-architecture when application structure changes
+  -> ruby-debugging for loader failures
+  -> zeitwerk-structure-review for concrete structural review
+```
+
+Do not add arbitrary `require` or `require_dependency` calls before identifying the expected constant, loader root, namespace, and inflection.
