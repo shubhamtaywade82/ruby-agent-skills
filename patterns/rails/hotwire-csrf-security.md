@@ -33,3 +33,7 @@ CSRF remains a deliberate server-side security control.
 
 ## Related skills
 rails-hotwire, rails-authentication, rails-security, rails-action-controller
+
+## Use when
+
+Use this pattern when the Hotwire interaction relies on the named security or progressive-enhancement boundary.
