@@ -915,6 +915,17 @@ evaluations:
       - contract
       - scope_control
 
+  rails-hotwire:
+    source: rails-hotwire-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/hotwire-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-routing:
     source: rails-routing-v2
     schema: docs/EVAL_SCHEMA.md
