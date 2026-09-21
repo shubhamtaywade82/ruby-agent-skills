@@ -22,3 +22,19 @@ Invoke the service directly with authorized and unauthorized actors.
 
 ## Review checklist
 The service security contract is explicit.
+
+## Do not use when
+
+Do not introduce this pattern when direct repository policy or scope logic is clearer and complete.
+
+## Repository inspection
+
+Inspect the existing authorization mechanism, callers, resource ownership, tenant scope, tests, and resolved framework versions.
+
+## Implementation procedure
+
+Define the boundary, adapt it to existing repository conventions, preserve failure semantics, and add regression tests.
+
+## Related skills
+
+rails-authorization, rails-security, rails-active-record, rails-test-engineering
