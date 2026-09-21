@@ -94,3 +94,16 @@ Write focused tests for generated methods, reflection, method visibility, missin
 ## Source foundation
 
 Based on the metaprogramming, open-class, monkey-patching, and dynamic-method material in *The Ruby Workshop*. The simplicity and maintainability constraints come from *Clean Ruby*: choose the straightforward solution unless dynamic behavior has a concrete benefit.
+
+## Book integration: dynamic boundary rule
+
+The book demonstrates how Rails-style declarations can use runtime method generation. Treat this as a framework/library technique, not a default application technique.
+
+Before using dynamic method generation, record:
+- what input names are trusted
+- which methods will be generated
+- why explicit methods are insufficient
+- how reflection will behave
+- how unsupported names fail
+
+Prefer explicit Ruby for ordinary application code. Dynamic behavior should remain bounded and testable.
