@@ -81,6 +81,7 @@ Keep these signals separate:
 - test quality
 - edge-case coverage
 - security boundary adherence
+- loader/constant contract adherence
 - scope control
 
 A runner can score these dimensions independently and preserve exact failure reasons.
