@@ -46,6 +46,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-generators | Generators and scaffolding |
 | rails-deployment | Deployment and hosting verification |
 | rails-best-practices | Rails quality review and RailsBestPractices interpretation |
+| rails-security | Rails application security and security-tool interpretation |
 | rubocop | Ruby/Rails style analysis and RuboCop plugin selection |
 
 ## Runtime intelligence
@@ -251,3 +252,14 @@ Run the design-pattern campaign with:
 ## Concurrency engineering
 
 The repository includes a dedicated `ruby-concurrency` skill and bounded-concurrency pattern. Its benchmark layer verifies synchronized shared state, tests, and explicit concurrency contracts. The guidance treats Ruby threads, Rails executors/jobs, database connection pools, process boundaries, and Fibers as distinct concerns rather than one generic "parallelism" abstraction.
+
+
+## Security engineering
+
+The repository now includes a Rails security skill, a security-boundary review pattern, a machine-readable security tool registry, a security audit CLI, and a public security evaluation family.
+
+Use:
+
+    ruby bin/security-audit /path/to/rails-app
+
+Security tooling is treated as evidence and must be interpreted against the actual trust boundary and data flow.
