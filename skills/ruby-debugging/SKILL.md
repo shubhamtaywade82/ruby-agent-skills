@@ -136,3 +136,10 @@ Use deterministic reproductions where possible. For production-only failures, ca
 ## Source foundation
 
 Based on the logging and debugging material in *The Ruby Workshop*. The evidence-first and regression-oriented approach is aligned with the testing/refactoring discipline of *Clean Ruby*.
+
+## Book integration: interactive debugging
+
+For a reproducible local failure, an interactive breakpoint can be useful at the point where state becomes suspicious. Inspect locals, receiver state, and the call path, then remove temporary breakpoints before the final patch.
+
+Do not substitute a debugger for a hypothesis. The debugging loop remains:
+reproduce -> inspect -> hypothesize -> test -> fix -> regression test -> verify.
