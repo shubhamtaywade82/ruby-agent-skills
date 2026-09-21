@@ -24,3 +24,6 @@ jobs:
 
       - name: Smoke test benchmark verifier
         run: ruby scripts/smoke_benchmark.rb
+
+      - name: Smoke test agent adapter
+        run: ruby scripts/smoke_agent_adapter.rb
