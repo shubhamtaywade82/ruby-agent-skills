@@ -92,12 +92,12 @@ when "compare"
     "evaluation" => id,
     "baseline_result" => baseline_path,
     "skills_result" => skills_path,
-    "dimensions" => checks.to_h do |name|
+    "dimensions" => checks.to_h { |name|
       [name, {
         "baseline" => status_value(baseline, name),
         "skills_enabled" => status_value(skills, name)
       }]
-    end,
+    },
     "overall" => {
       "baseline" => baseline.fetch("overall"),
       "skills_enabled" => skills.fetch("overall")
