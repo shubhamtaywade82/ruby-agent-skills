@@ -38,6 +38,7 @@ This file defines how an agent should select and compose skills.
 | Rails Action Controller HTTP boundary | rails-action-controller | rails-routing, rails-controllers, rails-authentication, rails-security, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-test-engineering, rails-testing |
 | Rails view/form | rails-views | rails-controllers, rails-testing |
 | Model/migration/query | rails-activerecord | rails-architecture, rails-testing |
+| Rails Active Record deep engineering | rails-active-record | rails-activerecord, rails-associations, rails-validations, rails-database-engineering, rails-performance, rails-security, rails-test-engineering, rails-testing |
 | Active Record association | rails-associations | rails-activerecord, rails-testing |
 | Validation/invariant | rails-validations | rails-activerecord, rails-testing |
 | Authentication/session | rails-authentication | rails-controllers, rails-testing |
@@ -792,6 +793,42 @@ Active Model is a Rails-facing model protocol, not a substitute for Active Recor
 | Form/URL/model conversion semantics | pattern:active-model-conversion-contract |
 | Explicit serialization/privacy boundary | pattern:active-model-serialization-contract |
 | Deterministic model protocol tests | pattern:active-model-testing |
+
+## Rails Active Record
+
+~~~
+Active Record / ActiveRecord / ApplicationRecord / ActiveRecord::Relation /
+query composition / scopes / default_scope / preload / eager_load / includes /
+strict_loading / pluck / pick / save / update / destroy / delete /
+update_all / delete_all / destroy_all / upsert / after_commit / callbacks
+  -> rails-active-record
+  -> rails-activerecord for foundational model and persistence guidance
+  -> rails-associations for relationship/cardinality/dependent behavior
+  -> rails-validations for validation and error semantics
+  -> rails-database-engineering for schema, constraints, transactions, locking, isolation, and query-plan mechanics
+  -> rails-performance for measured query cost and N+1 investigation
+  -> rails-security for tenant/authorization and dynamic-query safety
+  -> rails-active-storage for attachment cleanup and storage lifecycle
+  -> rails-active-job / rails-event-driven-messaging for durable asynchronous effects
+  -> rails-test-engineering / rails-testing for deterministic lifecycle and query tests
+~~~
+
+Active Record owns persisted model and Relation semantics. Do not use default_scope, model existence, or callback presence as substitutes for authorization, workflow ownership, or database guarantees.
+
+### Active Record pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Decide model versus service/domain ownership | pattern:active-record-model-boundary |
+| Preserve query result/laziness contract | pattern:active-record-query-contract |
+| Compose reusable Relations | pattern:active-record-relation-composition |
+| Scope/default_scope design | pattern:active-record-scope-contract |
+| Save/update/destroy lifecycle | pattern:active-record-persistence-lifecycle |
+| Lifecycle and transactional callbacks | pattern:active-record-callback-contract |
+| Bulk update/delete/upsert | pattern:active-record-bulk-write-boundary |
+| Prevent accidental lazy loading | pattern:active-record-strict-loading |
+| Destroy/delete/dependent behavior | pattern:active-record-deletion-contract |
+| Query/lifecycle contract tests | pattern:active-record-testing |
 
 ## Rails Action Controller
 
