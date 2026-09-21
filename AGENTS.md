@@ -310,6 +310,25 @@ For email and Action Mailer changes:
 - preserve delivery correlation without logging full message bodies or sensitive headers;
 - use previews/interceptors/observers only for their intended rendering or cross-cutting lifecycle responsibilities;
 - do not claim real-world delivery without provider/runtime evidence.
+## Rails Action View changes
+
+For Action View and rendering changes:
+- inspect the Rails/Action View version, template engines, view paths, partial/layout conventions, helpers, presenters, localization, caching, output-safety rules, and view/request/system tests before implementing;
+- classify the boundary as template lookup, partial contract, layout, helper, output safety, localization, caching, or rendering performance;
+- keep domain authorization, persistence, and external side effects outside templates and helpers; rendering receives already-authorized/prepared data;
+- define partial locals explicitly and use strict locals when the partial has a stable interface and the repository Rails version supports it;
+- treat changes to required/default locals as caller-contract changes and audit all callers;
+- keep layout selection deterministic and never derive a layout path from untrusted input;
+- keep helpers presentation-focused; do not let helpers become hidden service objects, query orchestrators, authorization engines, or external API clients;
+- preserve Action View's default escaping for untrusted strings; review raw, html_safe, safe_join, sanitize, and custom sanitizer allowlists as security-sensitive operations;
+- never mark user input HTML-safe and never expand sanitizer allowlists merely to bypass a rendering defect;
+- use rails-i18n for locale context and keep localized templates free of duplicated domain rules; test canonical fallback behavior;
+- coordinate fragment and collection caching with rails-caching, including locale/tenant/permission identity when rendered output varies;
+- measure template, partial, query, allocation, cache, and output costs before making performance claims;
+- do not solve view N+1s by blindly caching private output or globally preloading unrelated records;
+- use deterministic view/request/system tests and targeted XSS/unsafe-URL regressions rather than relying only on large snapshots;
+- never claim a rendering optimization improved performance without workload evidence or a demonstrated structural property.
+
 ## Rails Action Mailbox changes
 
 For inbound email and Action Mailbox changes:
