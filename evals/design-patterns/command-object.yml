@@ -1,0 +1,33 @@
+id: command-object
+version: 1
+title: Represent one application action as a command object
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-service-objects
+  - ruby-poro
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - command
+prompt: |
+  Implement User::Deactivate as a focused command object. It receives a User, exposes one call operation, deactivates the user, and returns the user. Do not create a broad UserService or Manager.
+constraints:
+  required_design:
+    - command
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: required public API and implementation boundary are present
+  pattern_selection: required design evidence is present and forbidden competing abstractions are absent
+  scope_control: changes remain inside the disposable fixture
