@@ -37,6 +37,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-architecture | MVC and application boundaries |
 | rails-routing | Routes, resources and dispatch |
 | rails-controllers | Actions, params and responses |
+| rails-action-controller | Deep HTTP boundary: strong parameters, request/response semantics, sessions/cookies, callbacks, negotiation, conditional responses, downloads, streaming, and controller exceptions |
 | rails-views | ERB, helpers and forms |
 | rails-activerecord | Models, migrations, persistence and queries |
 | rails-associations | Active Record relationships |
@@ -482,6 +483,7 @@ Core patterns:
 
 The Rails integration layer now includes focused skills for framework boundaries that commonly cross trust, persistence, asynchronous execution, and external-provider concerns:
 
+- rails-action-controller — deep Action Controller request/response boundaries, strong parameters, session/cookie state, callbacks, content negotiation, HTTP cache validators, downloads/streaming, and expected exception mapping;
 - rails-action-view — Action View rendering, partial/layout/helper contracts, strict locals, output safety, localized templates, and rendering performance;
 - rails-active-model — Active Model model protocol, transient attributes, validations, conversion, dirty state, callbacks, serialization, translation, and linting;
 - rails-active-support — Active Support loading, Concern composition, class configuration, CurrentAttributes, callbacks, instrumentation, time semantics, inflection, and framework-state testing;
