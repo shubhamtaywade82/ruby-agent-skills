@@ -4,6 +4,7 @@ title: Gate release on migration compatibility
 category: rails
 source: rails-production-runtime-v1
 skills:
+  - rails-release-engineering
   - rails-production-runtime
   - rails-database-engineering
 patterns:
