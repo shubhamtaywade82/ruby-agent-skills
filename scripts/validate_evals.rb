@@ -67,6 +67,12 @@ benchmark_manifest.each do |name, entry|
         aliases: false
       )
       errors << "benchmark #{name} campaign id missing" if campaign["id"].to_s.empty?
+      required_campaign_fields = %w[id version fixture_root verifier evaluations execution]
+      required_campaign_fields.each do |key|
+        errors << "benchmark #{name} campaign missing #{key}" unless campaign.key?(key)
+      end
+      errors << "benchmark #{name} campaign fixture_root mismatch" unless campaign["fixture_root"].to_s == entry["fixture_root"].to_s
+      errors << "benchmark #{name} campaign verifier mismatch" unless campaign["verifier"].to_s == entry["verifier"].to_s
       repetitions = campaign.fetch("execution", {}).fetch("repetitions", nil)
       errors << "benchmark #{name} campaign repetitions must be >= 1" unless repetitions.to_i >= 1
       campaign_ids = Array(campaign["evaluations"]).to_set
