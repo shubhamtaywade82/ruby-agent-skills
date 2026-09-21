@@ -57,3 +57,30 @@ Use data/rubocop/plugins.yml as the repository catalog. Never treat its existenc
 - relevant tests
 - full RuboCop run when appropriate
 - final diff inspection
+
+## Repository inspection
+
+Inspect Ruby/Rails versions, Gemfile.lock, .rubocop.yml, CI lint commands, and actual plugin dependencies before changing configuration.
+
+## Implementation procedure
+
+Follow the smallest plugin/configuration change justified by repository evidence; run focused linting, tests when behavior changes, then broader lint checks.
+
+## Testing
+
+Run focused tests for behavior changes and the configured RuboCop command. Review autocorrect diffs before accepting them.
+
+## Review checklist
+
+- [ ] target runtime/version resolved
+- [ ] applicable plugin support verified
+- [ ] finding interpreted in context
+- [ ] autocorrect diff reviewed
+- [ ] broader lint check considered
+
+## Related skills
+
+- rubocop
+- ruby-clean-code
+- ruby-tdd-refactoring
+- ruby-runtime-compatibility
