@@ -9,14 +9,14 @@ require "yaml"
 require_relative "../lib/ruby_agent_skills/eval_runner"
 
 ROOT = File.expand_path("..", __dir__)
-FIXTURE_ROOT = File.join(ROOT, "benchmarks", "ruby-training", "fixtures")
-VERIFY = File.join(ROOT, "scripts", "verify_training_eval.rb")
+DEFAULT_FIXTURE_ROOT = File.join(ROOT, "benchmarks", "ruby-training", "fixtures")
+DEFAULT_VERIFY = File.join(ROOT, "scripts", "verify_training_eval.rb")
 
 runner = RubyAgentSkills::EvalRunner.new(root: ROOT)
 command = ARGV.shift
 
-def fixture_path(id)
-  path = File.join(FIXTURE_ROOT, id)
+def fixture_path(id, fixture_root = DEFAULT_FIXTURE_ROOT)
+  path = File.join(fixture_root, id)
   abort "fixture not found: #{id}" unless Dir.exist?(path)
   path
 end
@@ -32,7 +32,7 @@ end
 
 case command
 when "list"
-  Dir.children(FIXTURE_ROOT).sort.each { |id| puts id }
+  Dir.children(DEFAULT_FIXTURE_ROOT).sort.each { |id| puts id }
 when "prepare"
   id = ARGV.shift
   output = nil
@@ -40,7 +40,7 @@ when "prepare"
   abort "usage: ruby bin/benchmark prepare EVAL_ID --output PATH" unless id && output
   FileUtils.rm_rf(output)
   FileUtils.mkdir_p(output)
-  FileUtils.cp_r(File.join(fixture_path(id), "."), output)
+  FileUtils.cp_r(File.join(fixture_path(id, DEFAULT_FIXTURE_ROOT), "."), output)
   puts output
 when "compare"
   id = ARGV.shift
@@ -66,7 +66,7 @@ when "compare"
   baseline_path = File.join(output_dir, "baseline.json")
   skills_path = File.join(output_dir, "skills.json")
 
-  verifier = "ruby #{Shellwords.escape(VERIFY)}"
+  verifier = "ruby #{Shellwords.escape(DEFAULT_VERIFY)}"
   baseline = runner.run(
     id: id,
     workspace: fixture,
@@ -131,6 +131,10 @@ when "campaign"
 
   manifest_path ||= File.join(ROOT, "benchmarks", "ruby-training", "campaign.yml")
   campaign = YAML.safe_load(File.read(manifest_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  campaign_fixture_root = File.expand_path(campaign.fetch("fixture_root"), ROOT)
+  campaign_verifier = File.expand_path(campaign.fetch("verifier"), ROOT)
+  abort "campaign fixture root not found: #{campaign_fixture_root}" unless Dir.exist?(campaign_fixture_root)
+  abort "campaign verifier not found: #{campaign_verifier}" unless File.file?(campaign_verifier)
 
   options[:baseline] ||= options[:agent]
   options[:skills] ||= options[:agent]
@@ -167,9 +171,9 @@ when "campaign"
 
       baseline = runner.run(
         id: eval_id,
-        workspace: fixture_path(eval_id),
+        workspace: fixture_path(eval_id, campaign_fixture_root),
         agent_command: options.fetch(:baseline),
-        verify_command: "ruby #{Shellwords.escape(VERIFY)}",
+        verify_command: "ruby #{Shellwords.escape(campaign_verifier)}",
         output: baseline_path,
         timeout: options.fetch(:timeout),
         skills_enabled: false
