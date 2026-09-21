@@ -162,11 +162,21 @@ module RubyAgentSkills
     def add_candidate(collection, value, source, type)
       return if value.to_s.strip.empty?
 
+      normalized = value.to_s.strip
       collection << {
-        "value" => value.to_s.strip,
+        "value" => normalized,
         "source" => source,
-        "type" => type
+        "type" => type,
+        "comparison_value" => ruby_comparison_value(normalized)
       }
+    end
+
+    def ruby_comparison_value(value)
+      normalized = value.sub(/^ruby-/, "").sub(/p\d+.*$/, "")
+      match = normalized.match(/\A(\d+)(?:\.(\d+))?(?:\.(\d+))?/)
+      return normalized unless match
+
+      [match[1], match[2], match[3]].compact.join(".")
     end
 
     def resolution(candidates, preferred_types)
@@ -179,8 +189,10 @@ module RubyAgentSkills
 
     def build_version_result(resolved, candidates, preferred_conflict_types:)
       preferred = candidates.select { |candidate| preferred_conflict_types.include?(candidate["type"]) }
-      exact_values = preferred.map { |candidate| candidate["value"] }.uniq
-      conflict = exact_values.length > 1
+      comparison_values = preferred.map do |candidate|
+        candidate.fetch("comparison_value", candidate.fetch("value"))
+      end.uniq
+      conflict = comparison_values.length > 1
 
       {
         "resolved" => conflict ? nil : resolved,
