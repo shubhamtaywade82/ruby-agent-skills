@@ -149,8 +149,10 @@ eval_files.each do |path|
   end
 
   checks = Array(data["checks"]).map(&:to_s)
-  %w[functional oop tests].each do |check|
-    errors << "#{relative}: missing required check #{check}" unless checks.include?(check)
+  errors << "#{relative}: missing required check functional" unless checks.include?("functional")
+  errors << "#{relative}: missing required check tests" unless checks.include?("tests")
+  if data.fetch("constraints", {}).is_a?(Hash) && data.fetch("constraints").fetch("required_design", []).to_a.any? { |item| item.to_s.downcase.include?("object-oriented") || item.to_s == "oop" }
+    errors << "#{relative}: missing required check oop" unless checks.include?("oop")
   end
 
   constraints = data["constraints"]
