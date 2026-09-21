@@ -62,3 +62,15 @@ When skills conflict, stop and resolve the conflict rather than combining incomp
 ## Benchmark integrity
 
 Evaluation fixtures and verifiers are measurement infrastructure. Do not make the evaluator easier by weakening constraints, accepting unverified output, or coupling the verifier to one agent's implementation. Public structural checks must be complemented by behavioral tests and, where appropriate, hidden/adversarial cases.
+
+
+## Performance-sensitive changes
+
+For performance work:
+- establish a workload and baseline before optimizing when practical;
+- distinguish latency, throughput, CPU, allocations, GC, database, network, and contention costs;
+- use profiling/benchmarking only to answer a concrete question;
+- never claim a performance improvement without measurement or a demonstrated structural property;
+- do not introduce caching without explicit freshness and invalidation semantics;
+- do not increase concurrency without downstream capacity analysis;
+- keep performance thresholds stable enough for CI.
