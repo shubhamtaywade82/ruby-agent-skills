@@ -98,3 +98,25 @@ Do not commit generated results.
 ## Phase 8 boundary
 
 The repository now supplies the controlled campaign machinery. A real campaign requires an external agent adapter command connected to an actual coding model/runtime.
+
+## Multiple campaign families
+
+The campaign runner accepts a manifest, so book-derived evaluations can use the same paired-run machinery:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/ruby-workshop/campaign.yml \
+      --agent-command 'YOUR_AGENT_ADAPTER_COMMAND' \
+      --output benchmark-results/ruby-workshop-public-v1
+
+This manifest supplies its own fixture root and verifier. The runner uses the manifest values for both baseline and skills-enabled sides.
+
+## Real agent adapter
+
+For a concrete provider-neutral command adapter:
+
+    ruby bin/agent-benchmark \
+      --command 'YOUR_AGENT_COMMAND' \
+      --provider your-provider \
+      --model your-model
+
+The adapter is intentionally outside model-specific launch logic. Authentication and provider-specific harness code remain external.
