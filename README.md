@@ -53,9 +53,9 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **65** |
-| Implementation patterns | **246** |
-| Evaluation cases | **80** |
+| Skills | **67** |
+| Implementation patterns | **283** |
+| Evaluation cases | **83** |
 | Dedicated system/contract tests | **50+** |
 | Manifest version | **2** |
 
@@ -476,9 +476,9 @@ Validation covers:
 The validation suite currently reports:
 
 ```text
-65 skills
-258 implementation patterns
-81 evaluation cases
+67 skills
+283 implementation patterns
+83 evaluation cases
 ```
 
 ---
@@ -583,6 +583,9 @@ Completed deep Rails areas currently include:
 - Incident engineering
 - Security engineering
 - Test engineering
+- Authentication engineering
+- Authorization engineering
+- Hotwire engineering
 
 Authentication Engineering is now a deep Rails boundary covering mechanism discovery, credential storage, authentication state transitions, session lifecycle, fixation/rotation, expiry/revocation, password recovery, abuse controls, persistent login, browser/API boundaries, context propagation, freshness, multi-device sessions, compromise response, observability, and deterministic security testing.\n\nThe next planned deep Rails boundary is **Authorization Engineering**, followed by Hotwire, frontend asset/build infrastructure, Rack/middleware, initialization/configuration, engines/Railties, encryption, serialization, operational tasks, cross-boundary authorization composition, and finally repository-level staff architecture evaluation.
 
@@ -608,14 +611,14 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 35 — Rails Authorization Engineering**
+**Iteration 36 — Rails Hotwire Engineering**
 
 Latest verified commit:
 
 `PENDING_CI_VERIFICATION`
 
-The corresponding CI validation is pending for the authorization iteration.
+The corresponding CI validation is pending for the Hotwire iteration.
 
 Next milestone:
 
-**Iteration 36 — Rails Hotwire Engineering**
+**Iteration 37 — Rails Asset/Build Infrastructure Engineering**
