@@ -1,0 +1,26 @@
+id: instrumentation-event
+version: 1
+title: Instrument a meaningful application boundary
+category: rails
+source: rails-observability-v1
+skills:
+  - rails-observability
+patterns:
+  - instrumentation-event
+prompt: |
+  Instrument OrderCheckout#call with the stable event name checkout.completed and a minimal order_id payload. The subscriber must observe the event without changing business behavior. Add a focused test.
+constraints:
+  required_design:
+    - ActiveSupport::Notifications event
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: event-contract
+    input: order_id=7
+    expected: checkout.completed with order_id 7
+grading:
+  functional: event is emitted at the meaningful boundary
+  tests: event name and payload are asserted
+  contract: subscriber has no business side effect
