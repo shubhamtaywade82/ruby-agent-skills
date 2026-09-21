@@ -269,6 +269,10 @@ skills:
     family: rails
     path: skills/rails-authorization/SKILL.md
     triggers: [authorization, policy, Pundit, CanCanCan, authorization policy, authorized scope, object-level authorization, IDOR, tenant isolation, role, permission, capability, ownership authorization, policy scope, access control]
+  rails-asset-build-engineering:
+    family: rails
+    path: skills/rails-asset-build-engineering/SKILL.md
+    triggers: [asset, assets, build, asset pipeline, Importmap, importmap-rails, jsbundling, jsbundling-rails, cssbundling, cssbundling-rails, Propshaft, Sprockets, bin/dev, Procfile.dev, precompile, JavaScript build, CSS build]
   rails-hotwire:
     family: rails
     path: skills/rails-hotwire/SKILL.md
@@ -548,6 +552,14 @@ patterns:
       - patterns/rails/stimulus-lifecycle-boundary.md
       - patterns/rails/hotwire-progressive-enhancement.md
       - patterns/rails/hotwire-csrf-security.md
+      - patterns/rails/rails-asset-pipeline-contract.md
+      - patterns/rails/importmap-contract.md
+      - patterns/rails/jsbundling-contract.md
+      - patterns/rails/cssbundling-contract.md
+      - patterns/rails/bin-dev-process-contract.md
+      - patterns/rails/asset-build-reproducibility.md
+      - patterns/rails/asset-build-production-parity.md
+      - patterns/rails/asset-dependency-boundary.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, eventual consistency, incident triage, operational runbook, alert actionability, diagnostic context, incident timeline, safe production debugging, recovery verification, post-incident review]
 
   testing:
@@ -578,6 +590,7 @@ patterns:
       - patterns/testing/route-testing.md
       - patterns/testing/authorization-testing.md
       - patterns/testing/hotwire-testing.md
+      - patterns/testing/asset-build-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
@@ -913,6 +926,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/authorization-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-asset-build-engineering:
+    source: rails-asset-build-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/asset-build-contract.yml
     checks:
       - functional
       - tests
