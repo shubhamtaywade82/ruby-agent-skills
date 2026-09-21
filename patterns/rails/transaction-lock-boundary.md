@@ -1,0 +1,41 @@
+---
+name: transaction-lock-boundary
+description: Define a minimal database transaction and lock boundary for a concurrency-sensitive state transition.
+family: rails
+---
+
+# Transaction Lock Boundary
+
+## Problem
+Concurrent writers can observe and modify the same state unless the invariant is protected.
+
+## Use when
+A state transition depends on persisted state and concurrent updates must be serialized.
+
+## Do not use when
+A database constraint or atomic update already expresses and enforces the invariant.
+
+## Procedure
+1. State the invariant.
+2. Identify the rows that own the state.
+3. Choose atomic SQL, unique constraint, optimistic locking, or pessimistic locking.
+4. If locking is needed, acquire it as late as practical.
+5. Keep the protected transaction section short.
+6. Establish consistent lock ordering.
+7. Define deadlock/retry semantics.
+
+## Failure modes
+- locking unrelated rows
+- holding locks during network calls
+- inconsistent lock ordering
+- lock used where a database constraint would be stronger
+
+## Testing
+Exercise conflicting transactions where practical.
+
+## Review checklist
+- invariant is explicit
+- smallest row set is locked
+- transaction duration is bounded
+- retry is safe
+- constraint alternative considered
