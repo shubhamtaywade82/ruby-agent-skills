@@ -1,6 +1,6 @@
 ---
 name: ruby-collections
-description: Use for Ruby arrays, hashes, Enumerable operations, grouping, deduplication, sorting, searching, collection mutation, or collection algorithm design.
+description: Use for Ruby Array/Hash data structures and collection algorithms, especially when representation, mutation, indexing, ordering, or algorithmic complexity is the primary concern. Use `ruby-enumerables` when the primary concern is selecting or composing Enumerable transformations.
 ---
 
 # Ruby Collections
@@ -27,6 +27,10 @@ Check:
 - whether mutation is expected
 - existing Enumerable conventions
 - performance-sensitive callers/tests
+
+## Boundary with ruby-enumerables
+
+This skill answers **which data structure or algorithm should represent the collection problem**. `ruby-enumerables` answers **which traversal/transformation operation expresses an already-chosen collection representation**. When both apply, use both but keep their responsibilities distinct.
 
 ## Preferred operations
 
