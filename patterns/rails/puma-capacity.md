@@ -12,7 +12,7 @@ Puma concurrency settings create aggregate CPU, memory, database, and dependency
 ## Use when
 Changing workers, threads, WEB_CONCURRENCY, RAILS_MAX_THREADS, or production request capacity.
 
-## Procedure
+## Implementation procedure
 1. Inspect CPU and memory limits.
 2. Determine current workers and threads.
 3. Determine database pool and downstream limits.
@@ -36,3 +36,15 @@ Run production-like load/capacity checks where available.
 - DB budget known
 - downstream limits considered
 - change is measured
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
