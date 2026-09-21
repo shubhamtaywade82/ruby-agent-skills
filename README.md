@@ -476,8 +476,8 @@ Validation covers:
 The validation suite currently reports:
 
 ```text
-66 skills
-257 implementation patterns
+65 skills
+258 implementation patterns
 81 evaluation cases
 ```
 
@@ -612,7 +612,7 @@ When adding a new skill or deepening an existing one:
 
 Latest verified commit:
 
-`b229875cf7f97df6d6488830854db2d727736e28`
+`19da3232c5fa29c02393c8e8bcf0754366111b93`
 
 The corresponding CI validation completed successfully after correcting manifest registration.
 
