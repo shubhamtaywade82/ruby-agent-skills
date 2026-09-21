@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  rails-zeitwerk:
+    family: rails
+    path: skills/rails-zeitwerk/SKILL.md
+    triggers: [Zeitwerk, autoloading, eager loading, reloading, autoload paths, constant loading, Zeitwerk::NameError, zeitwerk:check, Rails autoloader, inflections, namespaces]
   ruby-performance:
     family: performance
     path: skills/ruby-performance/SKILL.md
@@ -212,6 +216,7 @@ patterns:
       - patterns/rails/rails-best-practice-review.md
       - patterns/rails/security-boundary-review.md
       - patterns/rails/cache-boundary.md
+      - patterns/rails/zeitwerk-structure-review.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review]
 
   testing:
@@ -234,6 +239,15 @@ runner:
   documentation: docs/BENCHMARK_RUNNER.md
 
 benchmarks:
+  zeitwerk:
+    fixture_registry: benchmarks/zeitwerk/fixtures.yml
+    fixture_root: benchmarks/zeitwerk/fixtures
+    verifier: scripts/verify_zeitwerk_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/zeitwerk/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
   performance:
     fixture_registry: benchmarks/performance/fixtures.yml
     fixture_root: benchmarks/performance/fixtures
@@ -291,6 +305,17 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  zeitwerk:
+    source: zeitwerk-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/zeitwerk/path-constant-contract.yml
+      - evals/zeitwerk/initializer-reload-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
   performance:
     source: performance-v1
     schema: docs/EVAL_SCHEMA.md
