@@ -1,4 +1,3 @@
-
 ---
 name: active-model-serialization-contract
 description: Define explicit serialization fields and privacy rules for Active Model objects crossing application or API boundaries.
