@@ -1,0 +1,10 @@
+version: 1
+source: rails-security-v1
+description: Deterministic security-boundary fixtures.
+fixtures:
+  parameterized-query-boundary:
+    root: benchmarks/security/fixtures/parameterized-query-boundary
+    implementation_file: lib/user_search.rb
+  authorization-boundary:
+    root: benchmarks/security/fixtures/authorization-boundary
+    implementation_file: lib/document_policy.rb
