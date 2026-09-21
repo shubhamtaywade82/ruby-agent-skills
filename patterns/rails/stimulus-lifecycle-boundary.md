@@ -13,3 +13,23 @@ Allocate resources in connect and release them in disconnect; make repeated life
 
 ## Testing
 Exercise repeated lifecycle transitions and cleanup.
+## Do not use when
+The controller owns no resource that requires cleanup.
+
+## Repository inspection
+Inspect connect/disconnect hooks, event listeners, timers, observers, subscriptions, and Turbo replacement paths.
+
+## Implementation procedure
+Acquire external resources in connect, release them in disconnect, and make repeated cycles safe.
+
+## Failure modes
+Duplicate handlers, memory leaks, stale subscriptions, and work continuing after disconnect.
+
+## Testing
+Run repeated connect/disconnect cycles and verify cleanup.
+
+## Review checklist
+Every acquired resource has a deterministic release path.
+
+## Related skills
+rails-hotwire, rails-test-engineering, ruby-concurrency
