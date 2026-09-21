@@ -72,6 +72,10 @@ skills:
     family: performance
     path: skills/rails-caching/SKILL.md
     triggers: [Rails caching, cache engineering, cache key, cache key isolation, cache invalidation, cache freshness, cache store, cache stampede, cache warming, cache failure, cache eviction, cache capacity, fragment cache, low-level cache, response cache, stale cache]
+  rails-action-mailer:
+    family: rails
+    path: skills/rails-action-mailer/SKILL.md
+    triggers: [Action Mailer, Rails mailer, ApplicationMailer, mailer, email delivery, deliver_later, deliver_now, mailer preview, mailer testing, mailer provider, SMTP, email security, email observability]
   rails-security-engineering:
     family: security
     path: skills/rails-security-engineering/SKILL.md
@@ -342,6 +346,11 @@ patterns:
       - patterns/rails/safe-production-debugging.md
       - patterns/rails/recovery-verification.md
       - patterns/rails/post-incident-review.md
+      - patterns/rails/mailer-contract.md
+      - patterns/rails/mailer-delivery-semantics.md
+      - patterns/rails/mailer-provider-boundary.md
+      - patterns/rails/mailer-security-boundary.md
+      - patterns/rails/mailer-observability.md
       - patterns/rails/release-risk-classification.md
       - patterns/rails/artifact-provenance.md
       - patterns/rails/deployment-gate.md
@@ -363,6 +372,7 @@ patterns:
       - patterns/testing/request-contract.md
       - patterns/testing/parallel-database-test.md
       - patterns/testing/regression-test.md
+      - patterns/rails/mailer-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
@@ -604,6 +614,17 @@ evaluations:
       - functional
       - oop
       - tests
+
+  rails-action-mailer:
+    source: rails-action-mailer-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-mailer-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
 
   ruby-workshop:
     source: book-integration-v2
