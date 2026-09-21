@@ -48,6 +48,7 @@ This file defines how an agent should select and compose skills.
 | Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
 | Reliability engineering and resilience | rails-reliability-engineering | rails-observability, rails-performance, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-production-runtime, rails-active-job, ruby-concurrency, rails-database-engineering, rails-security, rails-testing |
+| Security engineering and threat modeling | rails-security-engineering | rails-security, rails-authentication, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-reliability-engineering, rails-database-engineering, rails-testing |
 | Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | RuboCop/linting review | rubocop | ruby-clean-code, relevant implementation skill, pattern:rubocop-review |
@@ -582,3 +583,36 @@ Start with the user-visible reliability objective and failure model. Choose the 
 | Preserve useful behavior during dependency failure | pattern:graceful-degradation |
 | Define restore/failover/reconciliation targets | pattern:recovery-objectives |
 | Verify failure containment and recovery | pattern:resilience-testing |
+
+
+## Security engineering and threat modeling
+
+```text
+threat model / trust boundary / asset / attacker capability /
+authorization matrix / tenant isolation / secret management / SSRF /
+dependency supply chain / defense in depth / abuse case / residual risk
+  -> rails-security-engineering
+  -> rails-security for Rails-specific security controls and scanners
+  -> rails-authentication for identity/session mechanisms
+  -> rails-api-integration for API/webhook/provider boundaries
+  -> rails-distributed-systems for cross-service trust and consistency
+  -> rails-event-driven-messaging for message trust/replay boundaries
+  -> rails-reliability-engineering for failure-safe degradation and recovery
+  -> rails-database-engineering for database-enforced invariants
+  -> rails-testing for executable security contracts
+```
+
+Start from assets and trust boundaries. Use the narrowest existing security control that owns the decision, then add defense in depth only for a distinct failure mode.
+
+### Security pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Formal security architecture review | pattern:threat-model |
+| New or changing trust relationship | pattern:trust-boundary |
+| Complex role/resource/tenant permissions | pattern:authorization-matrix |
+| Cross-tenant access review | pattern:tenant-isolation-review |
+| Credential/secret lifecycle | pattern:secret-management-boundary |
+| Arbitrary outbound URL/network access | pattern:ssrf-outbound-boundary |
+| Gem/CI/build/release dependency risk | pattern:dependency-supply-chain |
+| Turn a security finding into durable test coverage | pattern:security-regression |
