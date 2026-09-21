@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  ruby-performance:
+    family: performance
+    path: skills/ruby-performance/SKILL.md
+    triggers: [performance, profiling, benchmark, benchmarking, latency, throughput, allocations, memory, GC, YJIT, slow query, N+1, caching, performance regression]
   rails-security:
     family: security
     path: skills/rails-security/SKILL.md
@@ -190,6 +194,7 @@ patterns:
       - patterns/ruby-design/state-object.md
       - patterns/ruby-design/dependency-injection.md
       - patterns/ruby-design/bounded-concurrency.md
+      - patterns/ruby-design/performance-investigation.md
       - patterns/ruby-design/service-composition.md
       - patterns/ruby/rubocop-review.md
     triggers: [value object, service object, strategy, composition, inheritance, adapter, external interface, external API client, gem boundary, metaprogramming boundary, RuboCop review, application service, command object, policy object, null object, factory, builder, decorator, facade, repository, specification, state object, dependency injection, service composition]
@@ -206,6 +211,7 @@ patterns:
       - patterns/rails/presenter.md
       - patterns/rails/rails-best-practice-review.md
       - patterns/rails/security-boundary-review.md
+      - patterns/rails/cache-boundary.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review]
 
   testing:
@@ -228,6 +234,15 @@ runner:
   documentation: docs/BENCHMARK_RUNNER.md
 
 benchmarks:
+  performance:
+    fixture_registry: benchmarks/performance/fixtures.yml
+    fixture_root: benchmarks/performance/fixtures
+    verifier: scripts/verify_performance_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/performance/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
   ruby-training:
     fixture_registry: benchmarks/ruby-training/fixtures.yml
     fixture_root: benchmarks/ruby-training/fixtures
@@ -276,6 +291,18 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  performance:
+    source: performance-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/performance/performance-allocation-boundary.yml
+      - evals/performance/cache-key-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - performance
+
   ruby-training:
     source: allerin-ruby-set-2
     schema: docs/EVAL_SCHEMA.md
