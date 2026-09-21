@@ -46,3 +46,7 @@ Inspect runtime/version, repository conventions, the owning boundary, neighborin
 - rails-testing
 - ruby-tdd-refactoring
 - rails-architecture
+
+## Do not use when
+
+Do not use when the behavior is not an HTTP/API contract and can be proven entirely inside the application/domain boundary.
