@@ -34,3 +34,7 @@ The controller is cohesive and server responsibilities remain server-side.
 
 ## Related skills
 rails-hotwire, ruby-clean-code, rails-test-engineering
+
+## Use when
+
+Use this pattern when the named behavior is an intentional part of the browser interaction contract.
