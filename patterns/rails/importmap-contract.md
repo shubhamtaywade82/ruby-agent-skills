@@ -5,6 +5,10 @@ family: rails
 ---
 # Importmap Contract
 
+## Problem
+
+Browser module resolution can drift or fail when pins, module formats, or delivery paths are implicit.
+
 ## Use when
 The application uses or is evaluating importmap-rails and browser-native ES modules.
 
