@@ -12,7 +12,7 @@ Internal exceptions need a stable HTTP contract without leaking implementation d
 ## Use when
 A Rails API/controller needs explicit mapping for validation, authorization, not-found, conflict, domain, or unexpected failures.
 
-## Procedure
+## Implementation procedure
 1. Inspect existing error response conventions.
 2. Identify exception ownership.
 3. Map expected client errors to stable status/body contracts.
@@ -34,3 +34,13 @@ Assert status, content type, stable error fields, and no sensitive exception det
 - status semantics are correct
 - unexpected failures remain observable
 - error body is stable
+
+## Repository inspection
+
+Inspect the repository's runtime/version, existing conventions, neighboring tests or implementation patterns, and the actual owning boundary before applying this pattern.
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
