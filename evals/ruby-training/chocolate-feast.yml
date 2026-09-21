@@ -1,0 +1,60 @@
+id: chocolate-feast
+version: 1
+title: Chocolate Feast wrapper exchange
+category: ruby-training
+source: allerin-ruby-set-2
+skills:
+  - ruby-control-flow
+  - ruby-method-design
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Implement chocolate_feast(money, cost, wrappers) so it returns the total
+  number of chocolates eaten after exchanging wrappers whenever enough
+  wrappers are available.
+constraints:
+  required_design:
+    - object-oriented design
+  domain_rules:
+    - always exchange wrappers whenever the threshold is reached
+checks:
+  - functional
+  - oop
+  - tests
+  - edge_cases
+cases:
+  - name: source-sample-1
+    input:
+      money: 10
+      cost: 2
+      wrappers: 5
+    expected: 6
+  - name: source-sample-2
+    input:
+      money: 12
+      cost: 4
+      wrappers: 4
+    expected: 3
+  - name: source-sample-3
+    input:
+      money: 6
+      cost: 2
+      wrappers: 2
+    expected: 5
+  - name: no-free-chocolate
+    input:
+      money: 10
+      cost: 2
+      wrappers: 6
+    expected: 5
+  - name: exact-threshold
+    input:
+      money: 2
+      cost: 2
+      wrappers: 1
+    expected: 2
+grading:
+  functional: matches the wrapper-exchange process and sample outputs.
+  oop: wrapper exchange behavior is represented with appropriate object-oriented structure.
+  tests: covers multiple exchanges, no exchange and exact threshold.
