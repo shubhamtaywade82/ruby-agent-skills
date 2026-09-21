@@ -45,6 +45,7 @@ This file defines how an agent should select and compose skills.
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
 | Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
+| Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
 | Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | RuboCop/linting review | rubocop | ruby-clean-code, relevant implementation skill, pattern:rubocop-review |
@@ -481,3 +482,34 @@ test performance / CI test execution / fixtures / factories
 ```
 
 Use the repository's existing test framework and helpers. Do not introduce a second testing stack merely because it offers a different style.
+
+
+## Distributed systems and service architecture
+
+```text
+cross-process/service boundary / queue / broker / event / outbox / inbox /
+eventual consistency / saga / distributed lock / replay / reconciliation
+  -> rails-distributed-systems
+  -> rails-api-integration for synchronous APIs/webhooks and contract compatibility
+  -> rails-active-job for asynchronous execution/retry/concurrency
+  -> rails-database-engineering for transaction/constraint/locking ownership
+  -> ruby-concurrency for in-process coordination and capacity
+  -> rails-observability for correlation/causation and state transitions
+  -> rails-production-runtime for process topology and rollout/shutdown
+  -> rails-security for cross-service trust and credentials
+  -> rails-testing for deterministic failure/replay coverage
+```
+
+Classify the failure model before selecting a mechanism. Prefer local atomicity over distributed coordination when one owner can enforce the invariant.
+
+### Distributed pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Independent service/data ownership | pattern:distributed-service-boundary |
+| Database commit must hand off a message atomically | pattern:outbox-publication |
+| At-least-once consumer needs durable deduplication | pattern:inbox-deduplication |
+| Delivery/ack/replay semantics need explicit contract | pattern:message-delivery-contract |
+| Workflow spans independent transactions | pattern:saga-orchestration |
+| Cross-process exclusion is unavoidable | pattern:distributed-lock |
+| Consumers observe asynchronous propagation | pattern:eventual-consistency |
