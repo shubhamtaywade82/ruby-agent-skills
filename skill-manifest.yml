@@ -269,6 +269,10 @@ skills:
     family: rails
     path: skills/rails-authorization/SKILL.md
     triggers: [authorization, policy, Pundit, CanCanCan, authorization policy, authorized scope, object-level authorization, IDOR, tenant isolation, role, permission, capability, ownership authorization, policy scope, access control]
+  rails-hotwire:
+    family: rails
+    path: skills/rails-hotwire/SKILL.md
+    triggers: [Hotwire, Turbo, turbo-rails, Turbo Drive, Turbo Frames, Turbo Streams, Turbo Frame, Turbo Stream, Turbo morphing, morphing, Stimulus, stimulus controller, Stimulus target, Stimulus value, progressive enhancement, turbo form, Turbo navigation, Turbo refresh]
   rails-testing:
     family: rails-quality
     path: skills/rails-testing/SKILL.md
