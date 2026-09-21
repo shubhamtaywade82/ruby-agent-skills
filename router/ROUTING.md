@@ -723,6 +723,40 @@ Caching is a correctness boundary. Define identity, freshness, invalidation, fai
 | Cache-store outage/failure semantics | pattern:cache-failure-boundary |
 | Bounded prewarming | pattern:cache-warming-strategy |
 | Cache capacity/eviction review | pattern:cache-capacity-review |
+## Rails Active Support
+
+~~~
+Active Support / ActiveSupport / ActiveSupport::Concern /
+ActiveSupport::CurrentAttributes / ActiveSupport::Notifications /
+ActiveSupport::Callbacks / class_attribute / core extensions /
+Active Support instrumentation / Time.zone / safe_constantize /
+Active Support inflection / reusable Rails concern
+  -> rails-active-support
+  -> rails-observability for production telemetry, logging, metrics, health, and diagnostics
+  -> ruby-concurrency for thread/fiber safety and context isolation
+  -> rails-zeitwerk for autoloading and constant-loading ownership
+  -> rails-active-model / rails-activerecord for model-specific callbacks, attributes, and persistence lifecycle
+  -> rails-i18n for locale/timezone presentation contracts
+  -> rails-security / rails-security-engineering for dynamic constantization, context isolation, and sensitive instrumentation payloads
+  -> rails-test-engineering / rails-testing for state-isolated framework tests
+~~~
+
+Active Support primitives are framework infrastructure. Keep inherited configuration, request context, callbacks, and instrumentation explicit; do not turn them into hidden global state or domain-event mechanisms.
+
+### Active Support pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Active Support require/load footprint | pattern:active-support-loading-boundary |
+| Concern composition/dependencies | pattern:active-support-concern-composition |
+| Inherited class configuration | pattern:active-support-class-configuration |
+| Request/execution context | pattern:active-support-current-context |
+| Custom instrumentation | pattern:active-support-notifications-contract |
+| Generic lifecycle callbacks | pattern:active-support-callback-boundary |
+| Time/date/timezone semantics | pattern:active-support-time-semantics |
+| Inflection/dynamic constantization | pattern:active-support-inflection-boundary |
+| State-isolated Active Support tests | pattern:active-support-testing |
+
 ## Rails Active Model
 
 ~~~
