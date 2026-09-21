@@ -19,7 +19,12 @@ This file defines how an agent should select and compose skills.
 | Ruby syntax/semantics | ruby-core | ruby-clean-code |
 | Ruby values/data representation | ruby-data-types | ruby-core, ruby-clean-code |
 | Branches/loops/boolean logic | ruby-control-flow | ruby-core, ruby-clean-code |
-| Arrays/hashes/Enumerable | ruby-collections | ruby-enumerables, ruby-data-types, ruby-clean-code |\n| Blocks/Procs/lambdas | ruby-blocks-procs-lambdas | ruby-method-design, ruby-tdd-refactoring |\n| Public Ruby API contract | ruby-api-design | ruby-method-design, ruby-oop, ruby-tdd-refactoring |\n| Complex boolean predicates | ruby-boolean-logic | ruby-control-flow, ruby-method-design, ruby-clean-code |
+| Arrays/hashes/Enumerable | ruby-collections | ruby-enumerables, ruby-data-types, ruby-clean-code |\n| Blocks/Procs/lambdas | ruby-blocks-procs-lambdas | ruby-method-design, ruby-tdd-refactoring |\n| Public Ruby API contract | ruby-api-design | ruby-method-design, ruby-oop, ruby-tdd-refactoring |
+| Plain Ruby object extraction | ruby-poro | ruby-oop, ruby-object-composition, ruby-tdd-refactoring |
+| Application workflow | ruby-service-objects | ruby-poro, ruby-api-design, ruby-tdd-refactoring, pattern:service-object |
+| Business concept/invariant modeling | ruby-domain-modeling | ruby-poro, ruby-oop, ruby-clean-code, ruby-tdd-refactoring |
+| Replaceable/external collaborator | ruby-dependency-injection | ruby-poro, ruby-api-design, pattern:dependency-injection, ruby-tdd-refactoring |
+| Inheritance/coupling refactor | ruby-object-composition | ruby-oop, ruby-dependency-injection, pattern:composition-over-inheritance, ruby-tdd-refactoring |\n| Complex boolean predicates | ruby-boolean-logic | ruby-control-flow, ruby-method-design, ruby-clean-code |
 | New/refactored method | ruby-method-design | ruby-clean-code, ruby-tdd-refactoring |
 | Class/domain design | ruby-oop | ruby-method-design, ruby-clean-code |
 | Shared behavior/namespaces | ruby-modules-mixins | ruby-oop, ruby-clean-code |
@@ -40,7 +45,18 @@ This file defines how an agent should select and compose skills.
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | Test-driven change | ruby-tdd-refactoring | relevant implementation skill |
 | Primitive with domain behavior | ruby-data-types | ruby-oop, pattern:value-object |
-| Multi-step application workflow | ruby-oop / relevant domain skill | pattern:service-object, ruby-tdd-refactoring |
+| Multi-step application workflow | ruby-service-objects | ruby-poro, ruby-domain-modeling, pattern:service-object, pattern:application-service, ruby-tdd-refactoring |
+| Explicit application command | ruby-service-objects | ruby-api-design, pattern:command, ruby-tdd-refactoring |
+| Reusable business decision | ruby-domain-modeling | pattern:policy-object, pattern:specification, ruby-tdd-refactoring |
+| Interchangeable implementation | ruby-object-composition | ruby-dependency-injection, pattern:strategy-object, pattern:factory, ruby-tdd-refactoring |
+| External boundary | ruby-dependency-injection | pattern:adapter, pattern:dependency-injection, pattern:external-api-client |
+| Complex object construction | ruby-object-composition | pattern:factory, pattern:builder, ruby-tdd-refactoring |
+| Optional collaborator with safe no-op | ruby-object-composition | pattern:null-object, ruby-tdd-refactoring |
+| Layer behavior around stable interface | ruby-object-composition | pattern:decorator, ruby-tdd-refactoring |
+| Complex subsystem interface | ruby-object-composition | pattern:facade, ruby-tdd-refactoring |
+| Complex persistence abstraction | ruby-domain-modeling | pattern:repository, rails-activerecord, rails-testing |
+| Repeated state-specific behavior | ruby-domain-modeling | pattern:state-object, ruby-tdd-refactoring |
+| Rails presentation transformation | rails-views | pattern:presenter, rails-testing |
 | Interchangeable algorithm/policy | ruby-oop | pattern:strategy-object |
 | Replace inheritance with collaborators | ruby-oop | pattern:composition-over-inheritance |
 | External/legacy API boundary | ruby-gems-io-services | ruby-api-design, pattern:external-api-client, pattern:adapter, ruby-debugging |\n| Reusable Ruby gem/library | ruby-gems-io-services | ruby-api-design, pattern:ruby-gem |
@@ -126,6 +142,32 @@ classify task
 ```
 
 Patterns are optional implementation shapes, not architecture mandates. Book-derived patterns are selected only when the repository/task shape justifies them.
+
+### Pattern restraint
+
+A pattern must not be introduced solely because a trigger matches. Before selecting one, ask whether the direct implementation is already clear, whether the abstraction has a stable responsibility, and whether it reduces coupling or improves testability. Negative design cases are intentional: sometimes the correct architecture is no new object.
+
+### Design-pattern selection matrix
+
+| Problem shape | Candidate pattern |
+|---|---|
+| Meaningful immutable value | value-object |
+| One application workflow | service-object / command |
+| Shared service entry-point convention | application-service |
+| Reusable business decision | policy-object / specification |
+| Interchangeable algorithm | strategy-object |
+| External interface mismatch | adapter |
+| Add behavior around stable interface | decorator |
+| Hide complex subsystem | facade |
+| Vary object construction | factory |
+| Complex staged construction | builder |
+| Safe no-op collaborator | null-object |
+| Complex persistence boundary | repository / query-object |
+| State-specific behavior | state-object |
+| Presentation transformation | presenter |
+| Replaceable collaborator | dependency-injection |
+
+Pattern choice is a candidate, not an automatic verdict. Prefer the smallest abstraction supported by repository evidence.
 
 ### Pattern composition examples
 
