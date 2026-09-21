@@ -89,17 +89,6 @@ skills:
     family: rails
     path: skills/rails-i18n/SKILL.md
     triggers: [I18n, i18n, internationalization, localization, locale, locales, translation, translations, I18n.t, I18n.translate, I18n.l, I18n.localize, available_locales, default_locale, enforce_available_locales, translation keys, pluralization, interpolation, localized routes, localized views, locale negotiation, translation backend, missing translation, locale fallback]
-  rails-action-mailbox:
-    source: rails-action-mailbox-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/action-mailbox-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
   rails-action-text:
     family: rails
     path: skills/rails-action-text/SKILL.md
@@ -686,6 +675,17 @@ evaluations:
       - functional
       - oop
       - tests
+
+  rails-action-mailbox:
+    source: rails-action-mailbox-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-mailbox-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
 
   rails-action-mailer:
     source: rails-action-mailer-v1
