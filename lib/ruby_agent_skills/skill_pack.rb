@@ -127,7 +127,7 @@ module RubyAgentSkills
     end
 
     def relative_path(path)
-      path.delete_prefix(File.join(root, "")).sub(%r{\A/}, "")
+      path.sub(%r{\A#{Regexp.escape(root)}/?}, "")
     end
 
     def write_context(path, evaluation, skill_files, pattern_files)
