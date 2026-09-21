@@ -147,6 +147,19 @@ Each case separates:
 
 See `evals/README.md` and `docs/EVAL_SCHEMA.md`.
 
+## Benchmark runner
+
+Phase 6 adds a provider-neutral execution harness:
+
+```text
+bin/eval list
+  -> bin/eval show EVAL_ID
+  -> bin/eval packet EVAL_ID
+  -> bin/eval run EVAL_ID --workspace ... --agent-command ... --verify-command ...
+```
+
+The runner executes agents in a disposable workspace, captures process output and patch evidence, optionally runs a verifier, and records dimension-level results. See `docs/BENCHMARK_RUNNER.md` and `docs/EVAL_RESULT_SCHEMA.md`.
+
 ## Status
 
-The branch contains the Phase 4 implementation-pattern system and the Phase 5 evaluation corpus. The next step is the benchmark runner and reproducible agent-vs-baseline execution harness; hidden benchmark packs should remain outside the public repository.
+The branch contains the Phase 4 implementation-pattern system, the Phase 5 evaluation corpus and the Phase 6 benchmark runner. The next step is the actual benchmark campaign: define reproducible fixtures/verifiers and execute baseline-versus-skill-enabled runs. Hidden benchmark packs should remain outside the public repository.
