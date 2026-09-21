@@ -334,3 +334,22 @@ constant/file-path/load/reload/eager-load/namespace/inflection issue
 ```
 
 Do not add arbitrary `require` or `require_dependency` calls before identifying the expected constant, loader root, namespace, and inflection.
+
+
+## Active Job / background jobs
+
+```text
+background job / Active Job / ApplicationJob / perform_later / retry / discard / queue / Solid Queue
+  -> rails-active-job
+  -> ruby-runtime-compatibility
+  -> ruby-tdd-refactoring
+  -> rails-activerecord when persistence or transaction boundaries are involved
+  -> ruby-concurrency when overlap/capacity/concurrency is involved
+  -> rails-security when authorization, secrets, or tenant isolation is involved
+  -> idempotent-job when repeated side effects must be safe
+  -> job-retry-policy when exception semantics need explicit retry/discard design
+  -> transactional-job-enqueue when commit timing affects correctness
+  -> concurrency-controlled-job when per-resource overlap must be bounded
+```
+
+Do not treat "runs in the background" as sufficient design. Resolve serialization, idempotency, retry, transaction, concurrency, observability, and recovery semantics.
