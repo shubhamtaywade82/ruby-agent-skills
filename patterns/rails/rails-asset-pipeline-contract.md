@@ -5,6 +5,10 @@ family: rails
 ---
 # Rails Asset Pipeline Contract
 
+## Problem
+
+Rails can serve stale, missing, or incorrectly fingerprinted assets when source, manifest, precompile, and delivery contracts diverge.
+
 ## Use when
 Changing static asset delivery, fingerprinting, manifests, or the Rails asset pipeline.
 
