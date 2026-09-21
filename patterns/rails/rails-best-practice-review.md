@@ -32,6 +32,15 @@ Inspect Rails/Ruby versions, relevant files, tests, schema/migrations, routes, e
 7. Re-run the analyzer or document why it is not applicable.
 8. Inspect the final diff.
 
+## Implementation procedure
+
+1. Inspect the finding and surrounding Rails code.
+2. Resolve Rails/Ruby version and repository conventions.
+3. Classify the finding as correctness, maintainability, performance/integrity, outdated, or intentional.
+4. Apply the smallest justified change.
+5. Run focused tests and the applicable analyzer.
+6. Review the final diff.
+
 ## Failure modes
 - blindly fixing every warning
 - introducing deprecated Rails APIs
