@@ -1,0 +1,29 @@
+id: performance-allocation-boundary
+version: 1
+title: Avoid unnecessary intermediate allocation in a hot transformation
+category: performance
+source: performance-v1
+skills:
+  - ruby-performance
+patterns:
+  - performance-investigation
+prompt: |
+  Optimize EventLabels.labels(events) for a large collection. Preserve the public API and returned values. Avoid building an unnecessary intermediate collection in the hot transformation. Add or update a benchmark/test that demonstrates the intended structural improvement.
+constraints:
+  required_design:
+    - preserve public API
+    - reduce intermediate allocation
+checks:
+  - functional
+  - tests
+  - contract
+  - performance
+cases:
+  - name: labels
+    input: 1000
+    expected: correct labels
+grading:
+  functional: returned labels remain correct
+  tests: an executable test/spec is changed
+  contract: EventLabels.labels(events) remains the public API
+  performance: implementation does not use an intermediate map followed by another traversal
