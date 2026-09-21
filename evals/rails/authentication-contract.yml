@@ -1,8 +1,8 @@
 id: authentication-contract
-version: 1
+version: 2
 title: Preserve Rails authentication identity, session, recovery, and revocation contracts
 category: rails
-source: rails-authentication-v1
+source: rails-authentication-v2
 skills:
   - rails-authentication
   - rails-security
@@ -76,6 +76,22 @@ cases:
   - name: authentication-testing
     input: authentication behavior change
     expected: deterministic transition-focused security tests cover both success and rejection paths
+
+  - name: authentication-state-machine
+    input: anonymous, authenticated, expired, and revoked states
+    expected: each authentication state transition has an explicit server-side contract
+  - name: session-expiry
+    input: inactive or over-age session when expiry is configured
+    expected: stale session authority is rejected according to repository policy
+  - name: credential-change-revocation
+    input: password change or reset
+    expected: affected sessions and tokens are revoked according to explicit repository policy
+  - name: multi-device
+    input: multiple active sessions for one principal
+    expected: current-device, per-device, and global revocation semantics are explicit where supported
+  - name: compromise-response
+    input: suspected credential compromise
+    expected: affected credential classes can be revoked or rotated and subsequent authentication checks reject compromised authority
 grading:
   functional: identity/session/recovery behavior matches the repository contract
   tests: security transitions and rejection paths are executable

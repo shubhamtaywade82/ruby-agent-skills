@@ -520,3 +520,202 @@ Repository composition:
 - skills/rails-active-record/SKILL.md
 - skills/rails-database-engineering/SKILL.md
 - skills/rails-test-engineering/SKILL.md
+
+## Authentication state machine
+
+Treat authentication as explicit states and transitions rather than a boolean current-user check:
+
+anonymous
+  -> credential_verified
+  -> authenticated
+  -> renewed
+  -> expired
+  -> revoked
+
+Also model security-triggered transitions:
+
+authenticated
+  -> logout
+  -> credential_change
+  -> global_revoke
+  -> compromise_response
+
+For each transition identify the authoritative state store, the credential involved, the evidence required, and what subsequent requests must observe.
+
+A valid session is not necessarily a fresh authentication. Sensitive operations may require recent credential proof or explicit reauthentication.
+
+## Session lifecycle
+
+Define the complete lifecycle:
+
+- anonymous request;
+- session creation;
+- successful-login renewal;
+- request-time principal resolution;
+- inactivity expiry;
+- absolute/session-age expiry where required;
+- logout;
+- current-session revocation;
+- per-device revocation;
+- global revocation;
+- password-change/reset effects;
+- compromise response.
+
+Do not equate clearing browser state with server-side logout. The repository's authentication authority must be invalidated according to its session model.
+
+Rails documents CookieStore as encrypted by default, but session data remains client-side and is constrained by cookie size and replay/security considerations. Keep only appropriate session state in the cookie and store durable business state server-side.
+
+## Multi-device session management
+
+When sessions are persisted server-side, model device/session ownership explicitly:
+
+user
+  ├─ session A / device A
+  ├─ session B / device B
+  └─ session C / device C
+
+Define whether the application supports:
+
+- revoke current device;
+- revoke one device;
+- revoke all devices;
+- password-change invalidation;
+- compromise-triggered global revocation;
+- device/session visibility.
+
+User-agent and IP information may be useful context and audit metadata, but should not silently become a strong identity proof.
+
+## Compromise response
+
+Authentication design must include an emergency response path:
+
+1. identify affected credential classes;
+2. revoke active sessions/tokens;
+3. rotate compromised secrets;
+4. require reauthentication where appropriate;
+5. notify affected users according to policy;
+6. retain non-secret audit evidence;
+7. verify previously issued credentials fail;
+8. document residual risk.
+
+Do not assume password reset automatically revokes API tokens, remember-me credentials, or every device session unless the implementation explicitly guarantees it.
+
+## Security-sensitive operations
+
+Require recent authentication or explicit reauthentication when the repository's security contract demands it, including:
+
+- password changes;
+- API key/token rotation;
+- MFA/security-setting changes;
+- payment destination changes;
+- account deletion;
+- privilege changes.
+
+Enforce this on the server. A frontend confirmation is not authentication evidence.
+
+## Authentication context propagation
+
+When an authenticated request crosses into a job, mailer, event, Action Cable action, or service:
+
+- propagate stable actor/tenant identifiers only when needed;
+- never serialize passwords, session cookies, bearer tokens, or reset credentials;
+- re-resolve the principal at execution time;
+- re-evaluate authorization at the destination boundary;
+- define deleted/disabled principal behavior;
+- preserve correlation identifiers separately from authentication material.
+
+Actor attribution is not authorization. A background job carrying a user ID must still enforce the destination operation's authorization policy.
+
+## Browser authentication versus API authentication
+
+Classify each boundary explicitly:
+
+- browser session/cookie authentication;
+- API bearer/opaque-token authentication;
+- service-to-service credentials;
+- WebSocket connection authentication.
+
+Do not disable CSRF globally to accommodate JSON requests. Determine whether the endpoint is cookie-authenticated, token-authenticated, or deliberately mixed, and give each credential class explicit expiry, revocation, and failure semantics.
+
+## Failure contracts
+
+Define and test the behavior for:
+
+- missing credential;
+- invalid credential;
+- expired credential;
+- revoked credential;
+- disabled/deleted principal;
+- invalid/expired/replayed password reset;
+- throttled login;
+- authenticated but unauthorized action.
+
+Authentication failure and authorization failure are different contracts. Resource-not-found behavior may also be deliberately different where information disclosure is a concern.
+
+## Observability and audit
+
+Record security-relevant events without credential material:
+
+- login success/failure;
+- logout;
+- session creation/revocation;
+- password-reset request/completion/failure;
+- credential change;
+- global revoke;
+- throttling/abuse events;
+- reauthentication;
+- compromise response.
+
+Use structured, bounded dimensions. Never log passwords, raw tokens, reset credentials, session cookies, or full authorization headers.
+
+## Performance and reliability
+
+Authentication is a public, potentially expensive boundary. Review password-hash cost, login/reset rate, session-store latency, token lookup indexes, distributed throttling capacity, and dependency failure behavior.
+
+Do not weaken password hashing or security controls to solve capacity problems. Measure first and preserve fail-safe authentication semantics.
+
+## Testing strategy
+
+Prefer deterministic transition-focused tests:
+
+- valid login;
+- invalid and missing credentials;
+- protected request without identity;
+- authenticated request;
+- logout;
+- expiry;
+- revocation;
+- session fixation transition;
+- password reset valid/expired/replayed;
+- post-reset revocation;
+- remember-me issuance/expiry/revocation when supported;
+- browser/API authentication and CSRF semantics;
+- login/reset abuse thresholds;
+- fresh/stale authentication for sensitive actions;
+- actor propagation without credential serialization;
+- multi-device revocation;
+- compromise response.
+
+Use fake clocks and repository-local transports where practical. Do not depend on live email providers or external identity providers for deterministic unit/request/system contracts.
+
+## Source foundation
+
+Primary source: Ruby on Rails, Securing Rails Applications. The current guide documents the Rails authentication generator, password reset, has_secure_password, authenticate_by, sessions, session fixation, session expiry, CSRF, brute-force/account-hijacking concerns, credentials, and related security controls.
+
+https://guides.rubyonrails.org/security.html
+
+The repository's reusable authentication patterns operationalize the source material:
+
+- authentication-mechanism-boundary
+- credential-storage-contract
+- session-lifecycle-contract
+- session-fixation-rotation
+- session-revocation-contract
+- password-recovery-contract
+- login-abuse-controls
+- remember-me-contract
+- browser-api-auth-boundary
+- authentication-context-propagation
+- authentication-freshness-boundary
+
+Use patterns only when their problem shape exists; they are decision aids rather than mandatory abstractions.
