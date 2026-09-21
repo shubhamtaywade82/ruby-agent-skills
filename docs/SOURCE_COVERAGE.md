@@ -23,6 +23,7 @@ The repository intentionally synthesizes concepts rather than reproducing source
 | Rails MVC/application anatomy | rails-architecture |
 | Rails routes/controllers/views/forms | rails-routing, rails-controllers, rails-views |
 | Deep Active Record Relation and lifecycle boundary | rails-active-record, rails-activerecord, rails-associations, rails-validations, rails-database-engineering, rails-performance |
+| Deep Active Record association lifecycle boundary | rails-associations, rails-active-record, rails-database-engineering, rails-validations, rails-security, rails-performance |
 | Deep Action Controller request/response boundary | rails-action-controller, rails-security, rails-observability, rails-caching, rails-test-engineering |
 | Models, migrations, Active Record and console | rails-activerecord |
 | Authentication | rails-authentication |
@@ -301,6 +302,28 @@ Primary sources:
 - https://api.rubyonrails.org/classes/ActionController/Redirecting.html
 - https://api.rubyonrails.org/classes/ActionController/ConditionalGet.html
 - https://api.rubyonrails.org/classes/ActionController/Rescue.html
+
+## Rails Associations
+
+Active Record associations are covered as a dedicated relationship/lifecycle boundary because cardinality, inverse identity, join mutation, polymorphism, dependent deletion, autosave, counter/touch coupling, and collection callbacks have distinct behavior from general Relation/query semantics.
+
+Operational coverage:
+- skills/rails-associations/SKILL.md
+- patterns/rails/association-cardinality-contract.md
+- patterns/rails/association-inverse-contract.md
+- patterns/rails/through-association-contract.md
+- patterns/rails/polymorphic-association-boundary.md
+- patterns/rails/association-dependent-lifecycle.md
+- patterns/rails/association-autosave-contract.md
+- patterns/rails/association-counter-touch-contract.md
+- patterns/rails/association-callback-contract.md
+- patterns/rails/association-loading-contract.md
+- patterns/rails/association-testing.md
+- evals/rails/associations-contract.yml
+- test/rails_associations_system_test.rb
+
+Primary source:
+- https://guides.rubyonrails.org/association_basics.html
 
 ## Rails Active Record
 
