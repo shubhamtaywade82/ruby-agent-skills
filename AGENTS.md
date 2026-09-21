@@ -348,6 +348,28 @@ For Active Model and Rails-facing non-persisted model changes:
 - use Active Model lint/protocol tests for reusable Rails-facing model objects and test actual form/view/route consumers at focused integration boundaries;
 - never claim Rails model compatibility from valid? alone; verify the specific protocol required by the consumer.
 
+## Rails Action Controller changes
+
+For Action Controller and deep controller-boundary changes:
+- inspect the Rails/Ruby version, routes, controller inheritance, ApplicationController callbacks, authentication/authorization, parameter filtering, request/response formats, session/cookie configuration, exception handling, cache validators, download/streaming code, observability, and request tests before implementation;
+- classify the boundary as request input, response contract, session/cookie state, callback lifecycle, content negotiation, conditional response, streaming/download, or controller exception handling;
+- use the smallest supported strong-parameter API for the resolved Rails version; prefer params.expect where supported and locally adopted, otherwise use require plus permit;
+- treat every request value, header, cookie, session-derived identifier, redirect target, and file name as untrusted until its owning boundary validates or authorizes it;
+- never forward raw params into persistence or domain code; strong parameters are an input boundary, not authorization;
+- keep controller response contracts explicit: status, format, body/rendering, headers, redirects, empty-body semantics, and error representation;
+- remember that redirect_to does not terminate Ruby execution; return when continuing the method could produce side effects or another response;
+- preserve Rails open-redirect protections and never enable cross-host redirects for untrusted input;
+- keep session/cookie payloads minimal, treat signed versus encrypted storage deliberately, and never use session/cookie presence as the authorization source;
+- keep controller callbacks narrow and action-scoped; use them for request prerequisites, not business workflows, transactions, or large orchestration graphs;
+- define supported response formats explicitly and compose API wire contracts with rails-api-integration;
+- use ETag/Last-Modified only when validator identity covers every representation dimension such as tenant, permission, locale, and other private variants;
+- distinguish HTTP 304 transport behavior from application-state correctness and coordinate shared/private caching with rails-caching;
+- authorize downloads before opening the source, bound producer/database work, and account for long-lived streams in request concurrency and runtime capacity;
+- do not stream unbounded database/provider work directly from a controller without bounded production, timeout, disconnect, and cleanup semantics;
+- use rescue_from only for expected errors with a stable HTTP contract and do not rescue StandardError broadly to hide programmer defects;
+- coordinate error reporting with rails-observability rather than building one-controller global error handling;
+- test status, content type, headers, redirect behavior, parameter rejection, authorization, callback scope, conditional 304 behavior, session/cookies, downloads, and expected/unexpected exception paths as applicable;
+- never claim a controller contract is safe or performant without request-level evidence or focused regression tests.
 ## Rails Action View changes
 
 For Action View and rendering changes:
