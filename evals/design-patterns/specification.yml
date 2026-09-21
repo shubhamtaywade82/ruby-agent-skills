@@ -1,0 +1,33 @@
+id: specification
+version: 1
+title: Encapsulate a reusable business predicate
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-domain-modeling
+  - ruby-boolean-logic
+  - ruby-poro
+  - ruby-tdd-refactoring
+patterns:
+  - specification
+prompt: |
+  Implement reusable Specification objects for active and premium customers. Each exposes satisfied_by? so business predicates can be composed without copying the rules into every caller.
+constraints:
+  required_design:
+    - specification
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: satisfied_by? is the public predicate
+  pattern_selection: specification objects are explicit and ad hoc eligibility methods are absent
+  scope_control: changes remain inside the disposable fixture
