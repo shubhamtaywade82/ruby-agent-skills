@@ -294,7 +294,7 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/test-engineering/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
-  production-runtime:
+  runtime:
     fixture_registry: benchmarks/production-runtime/fixtures.yml
     fixture_root: benchmarks/production-runtime/fixtures
     verifier: scripts/verify_production_runtime_eval.rb
@@ -303,7 +303,7 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/production-runtime/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
-  database-engineering:
+  database:
     fixture_registry: benchmarks/database-engineering/fixtures.yml
     fixture_root: benchmarks/database-engineering/fixtures
     verifier: scripts/verify_database_engineering_eval.rb
