@@ -396,3 +396,20 @@ Operational coverage:
 - `evals/rails/active-storage-contract.yml`
 
 Primary source: https://guides.rubyonrails.org/active_storage_overview.html
+## Rails Action Cable & realtime
+
+Action Cable is covered by a dedicated skill because long-lived WebSockets combine connection authentication, resource authorization, pub/sub delivery, reconnect semantics, fan-out capacity, and deployment/runtime behavior that are distinct from ordinary HTTP requests.
+
+Operational coverage:
+- `skills/rails-action-cable/SKILL.md`
+- `patterns/rails/action-cable-connection-auth.md`
+- `patterns/rails/action-cable-channel-authorization.md`
+- `patterns/rails/action-cable-stream-contract.md`
+- `patterns/rails/action-cable-broadcast-contract.md`
+- `patterns/rails/action-cable-reconciliation.md`
+- `patterns/rails/action-cable-capacity.md`
+- `patterns/rails/action-cable-failure-boundary.md`
+- `patterns/rails/action-cable-testing.md`
+- `evals/rails/action-cable-contract.yml`
+
+Primary source: https://guides.rubyonrails.org/action_cable_overview.html
