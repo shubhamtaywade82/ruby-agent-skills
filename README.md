@@ -399,3 +399,18 @@ Run the benchmark campaign with:
     ruby bin/benchmark campaign \
       --manifest benchmarks/test-engineering/campaign.yml \
       --agent-command 'AGENT_COMMAND'
+
+## Rails caching engineering
+
+The repository now includes a dedicated rails-caching layer for cache correctness and systems behavior. It covers cache-key identity, freshness, invalidation ownership, versioning across releases, stampede control, warming, cache-store failure behavior, capacity/eviction, security isolation, and deterministic cache-contract testing.
+
+Core patterns:
+- cache-boundary
+- cache-key-isolation
+- cache-invalidation-contract
+- cache-stampede-control
+- cache-failure-boundary
+- cache-warming-strategy
+- cache-capacity-review
+
+The cache layer composes with rails-performance, rails-observability, rails-security, rails-database-engineering, and rails-active-job.
