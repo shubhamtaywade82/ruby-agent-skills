@@ -152,10 +152,10 @@ See `evals/README.md` and `docs/EVAL_SCHEMA.md`.
 Phase 6 adds a provider-neutral execution harness:
 
 ```text
-bin/eval list
-  -> bin/eval show EVAL_ID
-  -> bin/eval packet EVAL_ID
-  -> bin/eval run EVAL_ID --workspace ... --agent-command ... --verify-command ...
+ruby bin/eval list
+  -> ruby bin/eval show EVAL_ID
+  -> ruby bin/eval packet EVAL_ID
+  -> ruby bin/eval run EVAL_ID --workspace ... --agent-command ... --verify-command ...
 ```
 
 The runner executes agents in a disposable workspace, captures process output and patch evidence, optionally runs a verifier, and records dimension-level results. See `docs/BENCHMARK_RUNNER.md` and `docs/EVAL_RESULT_SCHEMA.md`.
