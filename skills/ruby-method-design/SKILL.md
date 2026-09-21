@@ -137,3 +137,15 @@ Test normal, boundary, invalid, and failure behavior appropriate to the method's
 ## Source foundation
 
 Strongly grounded in Chapter 3 of *Clean Ruby*, which focuses on parameters, return values, guard clauses, length, comments, and nesting, and supported by Ruby method material from *The Ruby Workshop*.
+
+## Book integration: public API boundaries
+
+When a method is used by several callers, treat its arguments, return value, visibility, and failure behavior as part of a contract. Prefer a predictable result family. If a method is producing unrelated return types, stop and redesign the boundary rather than forcing every caller to type-check the result.
+
+Use keyword arguments when names carry meaning. When several values travel together because they form one concept, consider a domain/value object instead of a long positional signature.
+
+## Book integration: boolean and guard-clause review
+
+When a method contains nested conditionals or compound predicates, first simplify the condition without changing Ruby truthiness or short-circuit behavior. Name a meaningful predicate when the condition communicates a domain decision.
+
+This is not a method-length contest. Extract only cohesive behavior that improves the boundary or removes distracting implementation detail.
