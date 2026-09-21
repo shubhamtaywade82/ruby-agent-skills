@@ -25,6 +25,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | ruby-metaprogramming | Reflection and runtime behavior |
 | ruby-gems-io-services | Dependencies, I/O, HTTP and service boundaries |
 | ruby-debugging | Evidence-driven debugging |
+| ruby-runtime-compatibility | Ruby/Rails/Bundler version and compatibility resolution |
 | ruby-clean-code | Readability, simplicity and maintainability |
 | ruby-tdd-refactoring | Tests, regression safety and refactoring |
 
@@ -43,6 +44,16 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-testing | Rails test placement and coverage |
 | rails-generators | Generators and scaffolding |
 | rails-deployment | Deployment and hosting verification |
+| rails-best-practices | Rails quality review and RailsBestPractices interpretation |
+| rubocop | Ruby/Rails style analysis and RuboCop plugin selection |
+
+## Runtime intelligence
+
+The repository now includes an executable runtime profile detector:
+
+    ruby bin/runtime-profile /path/to/app
+
+It reports Ruby, Rails, Bundler and CI version evidence while distinguishing resolved versions, constraints and conflicts. The agent must use that evidence before version-sensitive implementation or upgrades.
 
 ## Agent operating model
 
