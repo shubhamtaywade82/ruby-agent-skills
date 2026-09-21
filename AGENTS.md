@@ -310,6 +310,29 @@ For email and Action Mailer changes:
 - preserve delivery correlation without logging full message bodies or sensitive headers;
 - use previews/interceptors/observers only for their intended rendering or cross-cutting lifecycle responsibilities;
 - do not claim real-world delivery without provider/runtime evidence.
+## Rails Action Mailbox changes
+
+For inbound email and Action Mailbox changes:
+- inspect the configured ingress, provider/MTA setup, ApplicationMailbox routes, mailbox classes, Active Job queue behavior, InboundEmail schema/storage, authorization rules, Active Storage behavior, retention configuration, observability, and mailbox tests before implementing;
+- classify the boundary as external ingress, mailbox routing, mailbox processing, or downstream asynchronous work;
+- keep ingress authentication separate from sender identity, recipient authorization, and tenant/resource authorization;
+- treat From, Reply-To, Return-Path, custom headers, HTML, links, and attachment metadata as untrusted input until the owning boundary verifies them;
+- define provider/MTA retry, duplicate, raw-message, body-size, timeout, and credential-rotation contracts at the ingress boundary;
+- keep provider-specific payload handling out of mailbox/domain code;
+- order mailbox routes from specific to general, define unmatched-message behavior, and test route collisions;
+- keep mailbox classes focused on orchestration and delegate complex domain rules to the owning service/model/policy boundary;
+- use before_processing for cheap deterministic prerequisites and keep framework status truthful; do not convert programmer defects into successful delivery;
+- separate business-invalid messages, transient dependencies, poison messages, and programmer failures so retry/bounce/quarantine behavior is bounded and explicit;
+- do not assume Action Mailbox provides exactly-once business effects; define durable domain idempotency for non-idempotent mutations and preserve message identity during replay;
+- persist tenant/resource ownership through authoritative application state and propagate tenant context to downstream jobs/events;
+- coordinate business mutations and follow-up jobs/events through the actual transaction/commit contract;
+- use rails-active-storage for attachment/storage lifecycle and enforce server-side size/type/content limits;
+- treat raw inbound mail as privacy-sensitive data; never log full raw messages or credentials by default;
+- review config.action_mailbox.incinerate_after as a raw-message retention policy and distinguish it from lifecycle of derived domain data;
+- use deterministic ActionMailbox test helpers and local/test storage/provider doubles; do not rely on live email providers for ordinary CI;
+- add negative tests for spoofed senders, cross-tenant targets, duplicate delivery, unmatched routing, poison messages, and sensitive log output;
+- never claim inbound email is authenticated as a business user merely because the ingress is authenticated, and never claim exactly-once processing without evidence from the domain idempotency contract.
+
 ## Rails Active Storage changes
 
 For Active Storage changes:
