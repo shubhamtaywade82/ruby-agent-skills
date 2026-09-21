@@ -616,3 +616,37 @@ Start from assets and trust boundaries. Use the narrowest existing security cont
 | Arbitrary outbound URL/network access | pattern:ssrf-outbound-boundary |
 | Gem/CI/build/release dependency risk | pattern:dependency-supply-chain |
 | Turn a security finding into durable test coverage | pattern:security-regression |
+
+
+## Rails incident engineering
+
+```
+production incident / incident response / triage / alert / runbook /
+diagnostic context / timeline / mitigation / recovery verification /
+post-incident review / operational debugging
+  -> rails-incident-engineering
+  -> rails-observability for telemetry, correlation, error reporting, and health semantics
+  -> rails-reliability-engineering for SLI/SLO, failure containment, overload, and recovery objectives
+  -> rails-production-runtime for deploy/process lifecycle and rollback mechanics
+  -> rails-active-job for job execution/retry state
+  -> rails-event-driven-messaging for broker/consumer/replay evidence
+  -> rails-distributed-systems for cross-service ownership and consistency
+  -> rails-security / rails-security-engineering for secure incident access and trust boundaries
+  -> rails-performance when latency, saturation, or capacity evidence is the incident signal
+```
+
+Incident response starts from affected user/system contract and evidence, not from the loudest exception. Prefer existing telemetry and reversible mitigation before state-changing intervention.
+
+### Incident pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Establish incident scope, onset, and hypothesis | pattern:incident-triage |
+| Create an executable operator procedure | pattern:operational-runbook |
+| Make paging signals actionable | pattern:alert-actionability |
+| Preserve correlation context across boundaries | pattern:diagnostic-context |
+| Build a factual incident timeline | pattern:incident-timeline |
+| Debug production safely | pattern:safe-production-debugging |
+| Prove recovery beyond process health | pattern:recovery-verification |
+| Convert an incident into durable engineering change | pattern:post-incident-review |
+```
