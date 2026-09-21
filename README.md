@@ -47,6 +47,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-deployment | Deployment and hosting verification |
 | rails-best-practices | Rails quality review and RailsBestPractices interpretation |
 | rails-security | Rails application security and security-tool interpretation |
+| rails-observability | Rails request lifecycle, error reporting, request correlation, instrumentation, and health semantics |
 | rails-active-job | Active Job lifecycle, retries, idempotency, queues, transactions, and Solid Queue semantics |
 | rails-zeitwerk | Zeitwerk path/constant, namespace, reload, and eager-load correctness |
 | ruby-performance | Evidence-driven Ruby/Rails benchmarking, profiling, caching, and optimization |
@@ -306,4 +307,25 @@ Run the benchmark campaign with:
 
     ruby bin/benchmark campaign \
       --manifest benchmarks/active-job/campaign.yml \
+      --agent-command 'AGENT_COMMAND'
+
+
+## Rails observability
+
+The repository includes a dedicated request lifecycle and observability layer covering:
+
+- stable API error contracts
+- Rails.error reporting
+- request IDs and correlation
+- structured/tagged logging
+- sensitive parameter filtering
+- ActiveSupport::Notifications
+- request metrics
+- health/liveness/readiness semantics
+- middleware and production debugging
+
+Run the benchmark campaign with:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/observability/campaign.yml \
       --agent-command 'AGENT_COMMAND'
