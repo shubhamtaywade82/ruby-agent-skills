@@ -12,7 +12,7 @@ A test that sometimes passes and sometimes fails provides weak evidence and can 
 ## Use when
 A test fails intermittently or only under CI/parallel execution.
 
-## Procedure
+## Implementation procedure
 1. Capture test name and random seed.
 2. Capture Ruby/Rails/runtime and CI configuration.
 3. Reproduce with identical parallelism/order.
@@ -35,3 +35,15 @@ Use repeated runs only as evidence of reproducibility; the fix must remove the u
 - root cause classified
 - actual isolation/timing issue fixed
 - repeated verification performed
+
+
+## Repository inspection
+
+Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
+
+
+## Related skills
+
+- rails-testing
+- ruby-tdd-refactoring
+- rails-architecture
