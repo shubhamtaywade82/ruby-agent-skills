@@ -788,6 +788,17 @@ evaluations:
       - contract
       - scope_control
 
+  rails-active-record:
+    source: rails-active-record-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-record-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-action-mailbox:
     source: rails-action-mailbox-v1
     schema: docs/EVAL_SCHEMA.md
