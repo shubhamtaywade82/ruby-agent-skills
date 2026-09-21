@@ -47,6 +47,7 @@ The repository converts Ruby/Rails engineering material into agent-executable in
 | rails-deployment | Deployment and hosting verification |
 | rails-best-practices | Rails quality review and RailsBestPractices interpretation |
 | rails-security | Rails application security and security-tool interpretation |
+| rails-production-runtime | Puma, process lifecycle, graceful shutdown, release ordering, Solid Queue runtime, secrets, and production capacity |
 | rails-database-engineering | Production migrations, indexes, constraints, transactions, locking, backfills, query plans, and connection pools |
 | rails-observability | Rails request lifecycle, error reporting, request correlation, instrumentation, and health semantics |
 | rails-active-job | Active Job lifecycle, retries, idempotency, queues, transactions, and Solid Queue semantics |
@@ -351,4 +352,27 @@ Run the benchmark campaign with:
 
     ruby bin/benchmark campaign \
       --manifest benchmarks/database-engineering/campaign.yml \
+      --agent-command 'AGENT_COMMAND'
+
+
+## Rails production runtime
+
+The repository includes a production-runtime engineering layer covering:
+
+- Puma worker/thread capacity
+- database/process resource budgets
+- boot and preload behavior
+- hot/phased restart semantics
+- graceful shutdown
+- Solid Queue process topology
+- container/process-manager lifecycle
+- readiness gates
+- runtime secret/configuration contracts
+- zero-downtime release ordering
+- rollback boundaries
+
+Run the benchmark campaign with:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/production-runtime/campaign.yml \
       --agent-command 'AGENT_COMMAND'
