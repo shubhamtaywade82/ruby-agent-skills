@@ -1,0 +1,85 @@
+id: authorization-contract
+version: 1
+title: Preserve Rails authorization, resource scope, tenant isolation, and execution-boundary contracts
+category: rails
+source: rails-authorization-v1
+skills:
+  - rails-authorization
+  - rails-authentication
+  - rails-security
+  - rails-security-engineering
+  - rails-active-record
+  - rails-active-job
+  - rails-test-engineering
+patterns:
+  - authorization-mechanism-boundary
+  - policy-object-boundary
+  - authorized-scope-boundary
+  - tenant-isolation-authorization
+  - role-capability-boundary
+  - contextual-authorization
+  - authorization-service-boundary
+  - background-authorization-boundary
+  - api-authorization-boundary
+  - action-cable-authorization-boundary
+  - authorization-cache-identity
+  - authorization-audit-contract
+  - authorization-testing
+prompt: |
+  Implement or review a Rails authorization change using the repository's existing authorization mechanism. Preserve authentication/authorization separation, object-level permission, collection scoping, tenant isolation, explicit denial semantics, and re-authorization at service/job/API/realtime boundaries. Add deterministic allow/deny and cross-tenant regression tests.
+constraints:
+  required_design:
+    - authoritative authorization mechanism
+    - object-level authorization
+    - collection scope
+    - tenant isolation
+    - explicit denial semantics
+    - execution-boundary authorization
+    - deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: mechanism-boundary
+    input: repository with an existing authorization mechanism
+    expected: the change reuses it and does not create a parallel policy path
+  - name: object-authorization
+    input: actor and resource
+    expected: unauthorized resource action is rejected
+  - name: collection-scope
+    input: actor requesting a collection
+    expected: unauthorized resources are excluded before pagination/enumeration
+  - name: tenant-isolation
+    input: actor and resource from another tenant
+    expected: cross-tenant access is rejected without trusting client tenant input
+  - name: service-boundary
+    input: protected service invoked directly
+    expected: authorization remains enforced outside the controller
+  - name: background-boundary
+    input: job enqueued before membership revocation
+    expected: execution re-resolves state and rejects stale authorization
+  - name: api-boundary
+    input: authenticated API caller targeting another principal's resource
+    expected: authentication does not substitute for resource authorization
+  - name: realtime-boundary
+    input: authenticated Action Cable connection requesting unauthorized stream/action
+    expected: connection identity does not grant unrelated resource permission
+  - name: fail-closed
+    input: missing actor, tenant, or policy context
+    expected: protected operation is denied according to explicit safe failure semantics
+  - name: cache-invalidation
+    input: cached permission followed by role/membership revocation
+    expected: stale authorization is not reused beyond the defined cache contract
+  - name: idor-regression
+    input: direct object identifier for an unauthorized record
+    expected: record cannot be read or mutated through identifier substitution
+  - name: authorization-testing
+    input: authorization behavior change
+    expected: deterministic allow/deny and regression tests are added
+grading:
+  functional: authorized operations succeed and unauthorized operations fail
+  tests: security boundaries and rejection paths are executable
+  contract: authentication, authorization, validation, and input filtering remain distinct
+  scope_control: no unrelated authorization framework replacement or broad refactor is introduced
