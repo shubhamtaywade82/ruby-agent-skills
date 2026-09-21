@@ -297,3 +297,28 @@ Primary references:
 - https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html
 - https://api.rubyonrails.org/classes/ActiveRecord/Relation.html
 - https://www.postgresql.org/docs/current/sql-createindex.html
+
+
+## Rails production runtime
+
+This layer covers Puma worker/thread capacity, aggregate database/process resource budgets, boot/preload behavior, hot versus phased restart semantics, graceful shutdown, Solid Queue process topology, Puma/Solid Queue coupling, container PID 1 and signal forwarding, readiness gates, release/migration ordering, queued-job compatibility, runtime configuration and Rails master-key requirements, resource limits, process managers, and rollback boundaries.
+
+Artifacts:
+- `skills/rails-production-runtime/SKILL.md`
+- `patterns/rails/puma-capacity.md`
+- `patterns/rails/graceful-shutdown.md`
+- `patterns/rails/zero-downtime-release.md`
+- `patterns/rails/runtime-config-contract.md`
+- `patterns/rails/release-migration-gate.md`
+- `data/production-runtime/tools.yml`
+- `evals/runtime/*`
+- `benchmarks/production-runtime/*`
+- `scripts/verify_production_runtime_eval.rb`
+
+Primary references:
+- https://guides.rubyonrails.org/getting_started.html
+- https://guides.rubyonrails.org/configuring.html
+- https://guides.rubyonrails.org/security.html
+- https://puma.io/puma/file.deployment.html
+- https://puma.io/puma/file.restart.html
+- https://github.com/rails/solid_queue
