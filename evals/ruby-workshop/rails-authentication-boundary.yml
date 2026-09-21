@@ -1,0 +1,37 @@
+id: rails-authentication-boundary
+version: 1
+title: Preserve a public/private Rails authentication boundary
+category: ruby-workshop
+source: learn-rails-6
+skills:
+  - rails-authentication
+  - rails-controllers
+  - rails-routing
+  - rails-testing
+patterns:
+  - policy-boundary
+  - request-flow
+prompt: |
+  Protect the dashboard endpoint with the repository's existing authentication mechanism while keeping the health endpoint public.
+  Use a controller-level authentication boundary appropriate to the fixture.
+  Add request-level tests that demonstrate both the protected dashboard and public health behavior.
+constraints:
+  required_design:
+    - server-side authentication boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: dashboard-protected
+    input: /dashboard
+    expected: authenticated
+  - name: health-public
+    input: /health
+    expected: public
+grading:
+  functional: dashboard is protected while health remains public
+  contract: authentication is enforced server-side
+  tests: both sides of the boundary are covered
+  scope_control: no replacement authentication framework
