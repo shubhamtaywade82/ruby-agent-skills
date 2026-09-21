@@ -12,6 +12,10 @@ defaults:
   require_version_awareness: true
 
 skills:
+  rails-production-runtime:
+    family: rails
+    path: skills/rails-production-runtime/SKILL.md
+    triggers: [production runtime, Puma, puma.rb, WEB_CONCURRENCY, RAILS_MAX_THREADS, workers, threads, graceful shutdown, zero downtime deploy, rolling deploy, phased restart, hot restart, Solid Queue process, bin/jobs, container lifecycle, PID 1, readiness, release process, runtime configuration, RAILS_MASTER_KEY, production boot]
   rails-database-engineering:
     family: rails
     path: skills/rails-database-engineering/SKILL.md
@@ -229,6 +233,11 @@ patterns:
       - patterns/rails/security-boundary-review.md
       - patterns/rails/cache-boundary.md
       - patterns/rails/zeitwerk-structure-review.md
+      - patterns/rails/puma-capacity.md
+      - patterns/rails/graceful-shutdown.md
+      - patterns/rails/zero-downtime-release.md
+      - patterns/rails/runtime-config-contract.md
+      - patterns/rails/release-migration-gate.md
       - patterns/rails/expand-contract-migration.md
       - patterns/rails/production-index.md
       - patterns/rails/database-constraint.md
@@ -264,6 +273,15 @@ runner:
   documentation: docs/BENCHMARK_RUNNER.md
 
 benchmarks:
+  production-runtime:
+    fixture_registry: benchmarks/production-runtime/fixtures.yml
+    fixture_root: benchmarks/production-runtime/fixtures
+    verifier: scripts/verify_production_runtime_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/production-runtime/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
   database-engineering:
     fixture_registry: benchmarks/database-engineering/fixtures.yml
     fixture_root: benchmarks/database-engineering/fixtures
@@ -357,6 +375,21 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  production-runtime:
+    source: rails-production-runtime-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/runtime/puma-capacity.yml
+      - evals/runtime/graceful-shutdown.yml
+      - evals/runtime/zero-downtime-release.yml
+      - evals/runtime/config-contract.yml
+      - evals/runtime/migration-gate.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   database-engineering:
     source: rails-database-engineering-v1
     schema: docs/EVAL_SCHEMA.md
