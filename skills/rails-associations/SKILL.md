@@ -170,7 +170,7 @@ Before adding or changing polymorphism define:
 - serialization/API exposure
 - migration strategy if class names change.
 
-Never accept arbitrary client-provided polymorphic type names for constantization or lookup.
+Do not accept arbitrary client-provided polymorphic type names for constantization or lookup.
 
 Treat the type column as untrusted data at external boundaries and use an explicit allowlist in application code where it crosses a trust boundary.
 
