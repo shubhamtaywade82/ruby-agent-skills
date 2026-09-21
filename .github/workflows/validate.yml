@@ -18,3 +18,6 @@ jobs:
 
       - name: Validate skill library
         run: bash bin/validate
+
+      - name: Smoke test evaluation runner
+        run: ruby scripts/smoke_eval_runner.rb
