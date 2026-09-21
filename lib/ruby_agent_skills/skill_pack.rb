@@ -127,7 +127,7 @@ module RubyAgentSkills
     end
 
     def relative_path(path)
-      path.sub(%r{\A#{Regexp.escape(root)}/?}, "")
+      path.sub(%r{\A.*?/(\.ruby-agent-eval/.*)\z}, "\\1")
     end
 
     def write_context(path, evaluation, skill_files, pattern_files)
