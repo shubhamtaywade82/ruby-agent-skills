@@ -281,6 +281,10 @@ skills:
     family: rails
     path: skills/rails-encryption-credentials-engineering/SKILL.md
     triggers: [credentials, config/credentials.yml.enc, config/credentials, master.key, RAILS_MASTER_KEY, credentials:edit, credentials:show, secret_key_base, Active Record Encryption, ActiveRecord::Encryption, encrypts, deterministic encryption, encrypted attribute, db:encryption:init, key rotation]
+  rails-serialization-globalid-engineering:
+    family: rails
+    path: skills/rails-serialization-globalid-engineering/SKILL.md
+    triggers: [serialization, serializable_hash, as_json, to_json, ActiveModel::Serialization, ActiveModel::Serializers::JSON, JSON representation, serializer, nested serialization, GlobalID, GlobalId, SignedGlobalID, Global ID, GlobalID::Locator, to_global_id, to_signed_global_id, to_sgid, Active Job arguments, custom serializer, deserialization]
   rails-initialization-configuration-engineering:
     family: rails
     path: skills/rails-initialization-configuration-engineering/SKILL.md
@@ -599,6 +603,18 @@ patterns:
       - patterns/rails/encrypted-data-migration-contract.md
       - patterns/rails/encryption-key-rotation-contract.md
       - patterns/rails/credentials-testing-contract.md
+      - patterns/rails/serialization-boundary-contract.md
+      - patterns/rails/serializable-hash-allowlist.md
+      - patterns/rails/json-representation-contract.md
+      - patterns/rails/nested-serialization-boundary.md
+      - patterns/rails/sensitive-serialization-contract.md
+      - patterns/rails/serialization-versioning-contract.md
+      - patterns/rails/globalid-identity-contract.md
+      - patterns/rails/signed-globalid-integrity-contract.md
+      - patterns/rails/globalid-locator-allowlist.md
+      - patterns/rails/globalid-resolution-failure-contract.md
+      - patterns/rails/activejob-argument-serialization-contract.md
+      - patterns/rails/custom-activejob-serializer-contract.md
 
       - patterns/rails/rack-request-response-contract.md
       - patterns/rails/middleware-stack-ordering.md
@@ -1013,6 +1029,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/rack-middleware-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-serialization-globalid-engineering:
+    source: rails-serialization-globalid-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/serialization-globalid-contract.yml
     checks:
       - functional
       - tests
