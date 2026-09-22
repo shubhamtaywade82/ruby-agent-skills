@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 54 — Empirical Skill Routing Evaluation  
+> **Current milestone:** Iteration 55 — Real Agent Routing Campaign  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -56,7 +56,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **45** |
+| Dedicated system/contract tests | **46** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -670,7 +670,7 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 52 — CI Toolchain and Release-Guard Maintenance**
+**Iteration 55 — Real Agent Routing Campaign**
 
 Latest implementation removes the Node 20 checkout warning, standardizes CI on the Node 24-compatible `actions/checkout@v7` line, and makes CI toolchain compatibility an executable repository contract.
 
@@ -733,3 +733,15 @@ Iteration 50 expanded the Rails benchmark campaign with five high-risk identity/
 Iteration 51 completes the public Rails benchmark campaign. All **27** Rails evaluation families now have disposable implementation/test seams and are registered in the controlled benchmarks/rails/campaign.yml. The campaign enforces paired execution, three repetitions, fresh workspaces, shared fixtures for baseline/skills-enabled comparisons, and explicit hidden-case disclosure.
 
 The benchmark-quality audit now treats missing public Rails coverage as an error rather than a warning.
+
+## Iteration 53 — Skill Routing and Activation Quality
+
+Iteration 53 added adversarial routing cases for overlap-heavy tasks and made primary/secondary skill ownership an explicit repository contract.
+
+## Iteration 54 — Empirical Skill Routing Evaluation
+
+Iteration 54 added a provider-neutral routing evaluator that measures actual primary-skill selection and secondary-skill recall.
+
+## Iteration 55 — Real Agent Routing Campaign
+
+Iteration 55 turns the evaluator into a repeated campaign: three fresh repetitions per public routing case, campaign-level completion checks, and an expected-primary versus observed-primary confusion matrix. The repository now has a measurement path for discovering real cross-boundary routing failures instead of relying only on structural routing tests.
