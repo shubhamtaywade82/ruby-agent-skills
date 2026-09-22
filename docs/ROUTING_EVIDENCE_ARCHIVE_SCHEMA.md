@@ -18,7 +18,7 @@ An archive is a portable historical snapshot of a completed routing experiment e
 
 The archive key is deterministic from:
 
-- campaign runner identity;
+- routing campaign id;
 - agent model;
 - repository Git SHA.
 
