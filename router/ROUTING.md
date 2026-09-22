@@ -1265,3 +1265,33 @@ When a task changes Rails::Engine, Rails::Railtie, mountable engines, engine nam
 | Engine assets | pattern:engine-asset-integration-contract |
 | Dummy application integration | pattern:engine-dummy-app-testing |
 | Multiple-engine composition | pattern:engine-cross-engine-composition |
+
+
+## Rails Encryption and Credentials engineering
+
+When a task changes Rails credentials, master keys, secret_key_base, Active Record Encryption, encrypted attributes, key rotation, secret redaction, or encrypted-data migration:
+  -> rails-encryption-credentials-engineering
+  -> rails-security-engineering for threat modeling, key ownership, and secret exposure
+  -> rails-production-runtime for deployment secret delivery and boot requirements
+  -> rails-initialization-configuration-engineering for credential/config lifecycle
+  -> rails-observability for redaction and telemetry boundaries
+  -> rails-active-record / rails-database-engineering for encrypted attributes, schema, indexes, and migrations
+  -> rails-reliability-engineering for recovery and rotation sequencing
+  -> rails-test-engineering for credential/encryption failure-path tests
+
+### Encryption/Credentials pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Secret storage boundary | pattern:credentials-store-contract |
+| Environment-specific credential selection | pattern:credentials-environment-selection |
+| Master-key delivery | pattern:master-key-boundary |
+| Credential editing | pattern:credentials-editing-workflow |
+| secret_key_base | pattern:secret-key-base-contract |
+| Redaction | pattern:credentials-redaction-contract |
+| Active Record Encryption | pattern:active-record-encryption-contract |
+| Searchable encrypted value | pattern:deterministic-encryption-query-contract |
+| Ciphertext storage sizing | pattern:encrypted-storage-capacity-contract |
+| Existing-data encryption migration | pattern:encrypted-data-migration-contract |
+| Encryption key rotation | pattern:encryption-key-rotation-contract |
+| Testing | pattern:credentials-testing-contract |
