@@ -795,3 +795,6 @@ For changes to the skill repository itself:
 - resolve current Rails behavior from the supported Rails version before adding triggers or guidance;
 - treat Rails 8/8.1 additions such as ActiveJob::Continuable, structured Event Reporting, Local CI, Solid Cache/Cable, Kamal, and CLI credential fetching as version-sensitive framework concerns;
 - do not claim repository completeness from counts alone; verify executable registration, routing, evaluation coverage, and regression tests.
+
+
+Routing changes must make route precedence, routing constraints, URL helper contracts, and mounted boundaries explicit when those behaviors are part of the public contract.
