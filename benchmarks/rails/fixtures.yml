@@ -1,5 +1,5 @@
-version: 1
-source: rails-framework-v1
+version: 2
+source: rails-framework-v2
 description: Disposable Rails-boundary fixtures for incremental public benchmark coverage.
 
 fixtures:
@@ -65,3 +65,88 @@ fixtures:
       - "def add"
       - "tenant"
       - "class ReusableDomainValidator"
+
+  authentication-contract:
+    root: benchmarks/rails/fixtures/authentication-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class AuthenticationService"
+      - "def login"
+      - "def logout"
+    forbidden_regex:
+      - "password:\\s*password"
+    contract_regex:
+      - "password_digest"
+      - "rotate"
+      - "revoked"
+      - "expires_at"
+
+  authorization-contract:
+    root: benchmarks/rails/fixtures/authorization-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class DocumentPolicy"
+      - "class DocumentService"
+      - "def authorize!"
+    forbidden_regex:
+      - "@documents\\.find\\s*\\{"
+    contract_regex:
+      - "tenant_id"
+      - "scope"
+      - "authorize!"
+
+  rails-cross-boundary-authorization-security-contract:
+    root: benchmarks/rails/fixtures/cross-boundary-authorization-security-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class AuthorizationContext"
+      - "class ReportService"
+      - "class PublishReportJob"
+      - "def authorize!"
+    forbidden_regex:
+      - "context_at_enqueue"
+    contract_regex:
+      - "tenant_id"
+      - "revoke"
+      - "authorize!"
+      - "class ReportChannel"
+
+  rails-encryption-credentials-contract:
+    root: benchmarks/rails/fixtures/rails-encryption-credentials-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class CredentialStore"
+      - "class EncryptedAttribute"
+      - "class KeyRotation"
+      - "def fetch"
+    forbidden_regex:
+      - 'cipher\\.iv = "fixed-iv'
+      - 'value=\\#\\{fetch\\(name\\)\\}'
+    contract_regex:
+      - "master_key"
+      - "redact"
+      - "expires_at"
+      - "rotate"
+
+  rails-serialization-globalid-contract:
+    root: benchmarks/rails/fixtures/rails-serialization-globalid-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ReportSerializer"
+      - "class GlobalIdLocator"
+      - "class SignedGlobalId"
+      - "def serialize"
+      - "def locate"
+    forbidden_regex:
+      - "password_hash"
+      - "Base64\\.urlsafe_encode64\\(payload\\)"
+    contract_regex:
+      - "allowed"
+      - "HMAC"
+      - "expires_at"
+      - "purpose"
