@@ -1,0 +1,80 @@
+id: rails-initialization-configuration-contract
+version: 1
+title: Preserve Rails boot, configuration, initialization, environment, lifecycle, reload, security, and failure contracts
+category: rails
+source: rails-initialization-configuration-v1
+skills:
+  - rails-initialization-configuration-engineering
+  - zeitwerk
+  - rails-production-runtime
+  - rails-security-engineering
+  - rails-observability
+  - rails-reliability-engineering
+  - rails-test-engineering
+  - ruby-runtime-compatibility
+patterns:
+  - configuration-ownership-contract
+  - configuration-precedence-contract
+  - initializer-dependency-contract
+  - lifecycle-hook-contract
+  - reload-safe-initializer
+  - boot-external-dependency-boundary
+  - environment-configuration-contract
+  - boot-failure-contract
+  - application-config-contract
+  - initializer-testing-contract
+  - boot-performance-contract
+prompt: |
+  Implement or review a Rails initialization/configuration change using the repository's actual Ruby/Rails lifecycle, configuration sources, autoloading, environment, deployment, secret, and observability contracts. Preserve explicit ownership, precedence, lifecycle timing, reload behavior, boot failure semantics, and minimal boot-time work.
+constraints:
+  required_design:
+    - explicit configuration ownership
+    - explicit lifecycle phase
+    - version-aware Rails behavior
+    - fail-fast required boot invariants
+    - no secret leakage
+    - deterministic configuration/boot tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: ownership
+    input: new application setting
+    expected: one configuration owner and stable consumer contract
+  - name: precedence
+    input: setting supplied by multiple sources
+    expected: precedence is explicit and tested
+  - name: initializer-order
+    input: initializer depending on another registration
+    expected: lifecycle dependency is explicit rather than incidental filename order
+  - name: lifecycle
+    input: code that must run at boot or preparation
+    expected: correct hook and execution frequency are selected
+  - name: reload
+    input: reload-sensitive registration
+    expected: repeated preparation does not duplicate state or retain stale classes
+  - name: external-dependency
+    input: boot-time remote dependency
+    expected: necessity, timeout, failure, and readiness semantics are explicit
+  - name: environment
+    input: development/test/production divergence
+    expected: difference is intentional and affected environments are verified
+  - name: boot-failure
+    input: missing required configuration
+    expected: process fails clearly without exposing secrets
+  - name: application-config
+    input: config.x setting
+    expected: type/default/namespace contract is stable
+  - name: testing
+    input: initializer change
+    expected: lifecycle boundary and clean boot behavior are tested
+  - name: performance
+    input: slow initializer
+    expected: startup cost is measured before optimization
+grading:
+  functional: boot/configuration behavior matches the intended contract
+  tests: configuration, lifecycle, failure, and relevant boot paths are executable
+  contract: ownership, precedence, lifecycle, reload, secret, and environment boundaries remain explicit
+  scope_control: no unrelated framework or deployment migration is introduced
