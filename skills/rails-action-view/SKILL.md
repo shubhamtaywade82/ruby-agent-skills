@@ -319,6 +319,11 @@ For a rendering bug distinguish:
 
 Never claim a view is safe because it comes from ERB or a helper is safe because it returns a string. Verify escaping, sanitization, authorization boundaries, and cache isolation where applicable.
 
+## Rails 8.1 current framework considerations
+
+- Rails 8.1 supports Markdown rendering through the response/rendering stack. Treat Markdown as a negotiated representation with explicit content type, escaping/sanitization, and caching semantics.
+- Inspect whether the repository uses Markdown as trusted source, sanitized user content, or generated output before selecting a rendering path.
+
 ## Source foundation
 
 Primary Rails sources:
