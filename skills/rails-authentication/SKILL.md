@@ -498,6 +498,11 @@ identify mechanism
 
 Do not claim authentication security merely because a framework helper exists. Verify the actual repository path.
 
+## Rails 8 current framework considerations
+
+- Rails 8 includes an authentication system generator that establishes a session-based, password-resettable starting point.
+- Generated authentication is scaffolding, not a proof of repository-specific security correctness; reconcile it with the application's session, authorization, recovery, abuse-control, and observability contracts.
+
 ## Source foundation
 
 Primary current Rails guidance:
