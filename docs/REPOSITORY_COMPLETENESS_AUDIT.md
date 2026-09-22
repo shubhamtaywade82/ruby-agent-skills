@@ -31,7 +31,7 @@ Iteration 46 routes these version-sensitive concerns to existing owners rather t
 |---|---|
 | ActiveJob::Continuable | rails-active-job |
 | Rails.event / structured Event Reporting | rails-observability |
-| Markdown rendering from controllers | rails-action-controller |
+| markdown rendering from controllers | rails-action-controller |
 | Deprecated Active Record associations | rails-associations |
 | config/ci.rb / bin/ci Local CI | rails-test-engineering |
 | Solid Cache | rails-caching |
