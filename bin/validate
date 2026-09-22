@@ -7,6 +7,7 @@ ruby "$ROOT/scripts/validate_skills.rb"
 ruby "$ROOT/scripts/validate_patterns.rb"
 ruby "$ROOT/scripts/validate_evals.rb"
 ruby "$ROOT/scripts/audit_repository_completeness.rb"
+ruby "$ROOT/scripts/audit_benchmark_quality.rb"
 ruby -I"$ROOT/test" "$ROOT/test/runtime_profile_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/security_audit_test.rb"
