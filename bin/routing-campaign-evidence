@@ -62,7 +62,6 @@ artifact_paths = {
 
 preflight_path = File.join(File.dirname(campaign_path), "preflight.json")
 artifact_paths["preflight"] = preflight_path if File.file?(preflight_path)
-}
 
 campaign.fetch("cases").each do |case_id, case_data|
   Array(case_data.fetch("runs")).each do |run|
