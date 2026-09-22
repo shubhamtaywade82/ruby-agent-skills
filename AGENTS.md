@@ -660,3 +660,20 @@ For Rails boot and configuration changes:
 - test configuration precedence, initializer registration, boot failure, reload behavior, and production-like startup where applicable;
 - measure boot-time performance before optimizing;
 - report observed validation evidence and do not claim boot correctness from static inspection.
+
+
+## Rails Engine/Railtie changes
+
+For Rails Engine, Railtie, plugin, or mountable-extension changes:
+- resolve Ruby/Rails/Bundler and engine gem versions before implementation;
+- classify the extension as Engine, mountable Engine, Railtie-only plugin, or ordinary gem;
+- inspect engine/railtie files, gemspec, namespace, mounts, routes, initializers, generators, tasks, assets, migrations, and dummy application;
+- keep host application authority explicit; do not leak engine internals into host behavior without a supported contract;
+- use namespace isolation when ownership requires it and do not confuse isolation with authorization;
+- treat engine mounts/routes as explicit exposure and security boundaries;
+- define engine configuration as a public namespaced contract rather than reading arbitrary host globals;
+- coordinate Engine/Railtie lifecycle with initialization/configuration and Zeitwerk rules;
+- review gemspec Ruby/Rails constraints and supported compatibility matrices;
+- prefer supported host extension points over undocumented monkey patches;
+- test engine boot, dummy-host integration, routes/mounting, autoloading, configuration, and changed generators/tasks/assets;
+- do not claim Engine compatibility or isolation without executable evidence.
