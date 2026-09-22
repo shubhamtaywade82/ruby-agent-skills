@@ -110,6 +110,14 @@ The same paired-run machinery can execute the design-pattern corpus:
 
 The design-pattern campaign includes 18 public cases and five independent verifier dimensions, including `pattern_selection` and `scope_control`.
 
+## Incremental campaign coverage
+
+A benchmark family may cover a deliberate subset of its public evaluation corpus. The validator checks that campaign evaluation IDs are public and that fixture registration is exact; audit_benchmark_quality.rb reports the remaining public evaluations without campaigns. This makes benchmark coverage measurable without falsely labeling unrun evaluations as benchmarked.
+
+## Rails framework campaign
+
+The first Rails campaign is defined at benchmarks/rails/campaign.yml and currently covers Action Controller, Active Record, Routing, and Validations.
+
 ## Multiple campaign families
 
 The campaign runner accepts a manifest, so book-derived evaluations can use the same paired-run machinery:
