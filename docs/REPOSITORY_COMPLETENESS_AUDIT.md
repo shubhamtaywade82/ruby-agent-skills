@@ -17,9 +17,9 @@ The audit checks:
 
 ## Current inventory
 
-At Iteration 46 the repository contains **76 skills**, **393 implementation patterns**, and **203 evaluation cases**.
+At Iteration 46 the repository contains **76 skills**, **393 implementation patterns**, and **206 evaluation cases**.
 
-The repository-wide validator executes **39 system tests**. Every system test is required to appear in bin/validate.
+The repository-wide validator executes **40 system tests**. Every system test is required to appear in bin/validate.
 
 ## Framework drift review
 
@@ -45,7 +45,7 @@ Iteration 46 routes these version-sensitive concerns to existing owners rather t
 1. All 76 skill paths match the manifest.
 2. All 393 implementation pattern files are registered; the four additional registry references are intentional testing-category aliases.
 3. All evaluation YAMLs are registered.
-4. All 39 system tests are now executed by the canonical validator.
+4. All 40 system tests are now executed by the canonical validator.
 5. Router coverage is explicit for every skill, including the meta-level agent-workflow skill.
 6. README inventory and milestone text are checked by the audit.
 7. Stale pre-Iteration-46 roadmap text is removed.
