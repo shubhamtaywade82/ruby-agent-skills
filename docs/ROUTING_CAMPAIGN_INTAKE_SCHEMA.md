@@ -25,3 +25,5 @@ For the current public campaign this means **14 routing cases × 3 repetitions =
 This command is an intake boundary, not a scoring system. It does not alter model results, repair missing runs, or infer a score. A campaign either satisfies the declared experimental protocol or is rejected.
 
 The verifier should run before `bin/routing-evidence` and `bin/routing-archive` when accepting results from an external model runtime.
+
+The public default is 3 repetitions per case. Explicit experimental overrides are supported through `--expected-repetitions` and must still cover the full public case set.
