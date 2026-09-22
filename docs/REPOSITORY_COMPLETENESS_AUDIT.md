@@ -64,6 +64,8 @@ Iteration 54 adds a provider-neutral empirical routing evaluator and system test
 
 Iteration 55 upgrades the evaluator to repeated public-campaign execution with fresh run workspaces, completion enforcement, and primary-skill confusion metrics.
 
+Iteration 56 adds a concrete Ollama routing adapter and verifies that routing gold labels are not exposed to the external agent workspace.
+
 Run the audit directly with:
 ruby scripts/audit_repository_completeness.rb
 
