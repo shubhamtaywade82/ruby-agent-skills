@@ -284,7 +284,7 @@ skills:
   rails-encryption-credentials-engineering:
     family: rails
     path: skills/rails-encryption-credentials-engineering/SKILL.md
-    triggers: [credentials, config/credentials.yml.enc, config/credentials, master.key, RAILS_MASTER_KEY, credentials:edit, credentials:show, secret_key_base, Active Record Encryption, ActiveRecord::Encryption, encrypts, deterministic encryption, encrypted attribute, db:encryption:init, key rotation, rails credentials:fetch, credential fetch, Active, Record, Encryption, deterministic, encrypted, attribute, key, rotation]
+    triggers: [credentials, config/credentials.yml.enc, config/credentials, master.key, RAILS_MASTER_KEY, credentials:edit, credentials:show, secret_key_base, Active Record Encryption, ActiveRecord::Encryption, encrypts, deterministic encryption, encrypted attribute, db:encryption:init, key rotation, rails credentials:fetch, credential fetch, Active, Record, Encryption, deterministic, encrypted, attribute, key, rotation, encryption]
   rails-serialization-globalid-engineering:
     family: rails
     path: skills/rails-serialization-globalid-engineering/SKILL.md
