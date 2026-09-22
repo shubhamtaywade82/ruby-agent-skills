@@ -39,6 +39,7 @@ repository mechanism
 
 - adding sign-in, sign-out, or authentication middleware;
 - introducing or changing Rails generated authentication;
+- reviewing or customizing the Rails authentication system generator output;
 - reviewing Devise or another authentication gem;
 - changing password hashing or credential storage;
 - changing session creation, renewal, rotation, expiry, or invalidation;
