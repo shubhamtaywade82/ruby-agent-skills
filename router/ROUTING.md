@@ -158,6 +158,16 @@ ruby-clean-code
   + ruby-tdd-refactoring
 ```
 
+## Routing quality contract
+
+Routing cases in router/ROUTING_CASES.yml are executable design contracts for overlap-heavy tasks. They document intended **Primary skill** ownership and supporting **Secondary skill** composition.
+
+A **routing case** is not a keyword classifier. The agent must inspect the task and repository before applying it.
+
+For authentication and authorization, keep identity establishment separate from permission decisions. Cross-boundary authorization must compose the authoritative authorization skill with the execution boundary rather than treating a controller check as sufficient.
+
+When a task spans boundaries, route to the dominant owner first and add dependent skills only when they contribute an actual constraint, implementation boundary, or verification requirement.
+
 ## Conflict resolution
 
 When skills appear to disagree:
