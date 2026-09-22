@@ -1,0 +1,102 @@
+id: rails-staff-principal-architecture-contract
+version: 1
+title: Make evidence-backed staff and principal Rails architecture decisions about ownership, dependency direction, modularity, data, migration, and system tradeoffs
+category: architecture
+source: rails-staff-principal-architecture-v1
+skills:
+  - rails-staff-principal-architecture
+  - rails-architecture
+  - rails-domain-modeling
+  - rails-cross-boundary-authorization-security
+  - rails-engines-railties-engineering
+  - rails-distributed-systems
+  - rails-release-engineering
+  - rails-reliability-engineering
+  - rails-security-engineering
+  - rails-database-engineering
+  - rails-observability
+  - rails-test-engineering
+  - agent-workflow
+patterns:
+  - architecture-problem-statement
+  - dependency-direction-contract
+  - bounded-context-contract
+  - modular-monolith-boundary
+  - data-ownership-contract
+  - shared-kernel-contract
+  - application-service-boundary
+  - cross-cutting-ownership-contract
+  - change-coupling-contract
+  - distributed-boundary-readiness
+  - architectural-migration-contract
+  - architecture-decision-record-contract
+  - architecture-fitness-check
+  - architecture-tradeoff-contract
+  - architecture-ownership-contract
+prompt: |
+  Review or design a material Rails architecture change. Establish the concrete problem and invariants, inspect the current dependency and data ownership graph, identify desired dependency direction, compare alternatives including no change, choose the smallest effective boundary, define an incremental migration/recovery path, and create executable architecture checks where practical.
+constraints:
+  required_design:
+    - concrete architecture problem and invariants
+    - explicit ownership and dependency direction
+    - authoritative data owner
+    - alternatives including no-change considered
+    - operational/security/reliability tradeoffs considered
+    - incremental recoverable migration
+    - executable fitness checks where practical
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: problem
+    input: large Rails feature crossing many layers
+    expected: architecture problem is explicit with evidence and invariants
+  - name: dependency-direction
+    input: cyclic module dependencies
+    expected: ownership and dependency direction are made explicit
+  - name: bounded-context
+    input: two domains with conflicting terminology
+    expected: bounded context boundary and public contracts are defined
+  - name: modular-monolith
+    input: monolith needs ownership boundaries but not independent deploys
+    expected: in-process modular boundary is considered before service extraction
+  - name: data-ownership
+    input: two modules write the same domain table
+    expected: authoritative writer and invariant owner are selected
+  - name: shared-kernel
+    input: shared abstraction proposed between domains
+    expected: stability and ownership justify a small kernel or duplication
+  - name: application-service
+    input: workflow extraction
+    expected: orchestration and domain-invariant ownership remain distinct
+  - name: cross-cutting
+    input: duplicate authentication/telemetry behavior
+    expected: one policy owner with explicit adapters is identified
+  - name: change-coupling
+    input: repeated synchronized edits
+    expected: recurring coupling mechanism is identified before restructuring
+  - name: distributed-readiness
+    input: proposed microservice extraction
+    expected: data, contract, latency, failure, deployment, and recovery readiness is explicit
+  - name: migration
+    input: moving responsibility between old and new modules
+    expected: staged compatibility, verification, cutover, cleanup, and recovery are explicit
+  - name: adr
+    input: material architecture decision
+    expected: context, alternatives, decision, consequences, and migration are recorded
+  - name: fitness
+    input: stable forbidden dependency rule
+    expected: architecture rule becomes an executable check when safe
+  - name: tradeoff
+    input: two plausible boundary designs
+    expected: system-wide tradeoffs and no-change option are compared
+  - name: ownership
+    input: new platform/subsystem boundary
+    expected: behavior, data, operations, incident, and compatibility ownership is explicit
+grading:
+  functional: chosen architecture preserves required business and technical invariants
+  tests: architectural and behavioral contracts have executable evidence
+  contract: ownership, dependency, data, migration, and tradeoff boundaries are explicit
+  scope_control: no unrelated structural rewrite is introduced
