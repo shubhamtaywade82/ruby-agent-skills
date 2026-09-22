@@ -1,0 +1,84 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+require "json"
+require "open3"
+require "optparse"
+require "shellwords"
+require "tmpdir"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+EVALUATOR = File.join(ROOT, "bin", "routing-eval")
+COMPARATOR = File.join(ROOT, "bin", "routing-compare")
+
+options = {
+  output: File.join(Dir.tmpdir, "ruby-agent-routing-experiment"),
+  timeout: 300,
+  runs: nil,
+  provider: ENV["RUBY_AGENT_PROVIDER"],
+  model: ENV["RUBY_AGENT_MODEL"],
+  model_version: ENV["RUBY_AGENT_MODEL_VERSION"],
+  tool_mode: ENV["RUBY_AGENT_TOOL_MODE"]
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-experiment --command COMMAND --baseline-router PATH --candidate-router PATH"
+  opts.on("--command COMMAND", "Same trusted agent command for both campaigns") { |value| options[:command] = value }
+  opts.on("--baseline-router PATH", "Baseline routing contract snapshot") { |value| options[:baseline_router] = File.expand_path(value) }
+  opts.on("--candidate-router PATH", "Candidate routing contract snapshot") { |value| options[:candidate_router] = File.expand_path(value) }
+  opts.on("--output DIR", "Experiment output directory") { |value| options[:output] = File.expand_path(value) }
+  opts.on("--runs COUNT", Integer, "Override repetitions") { |value| options[:runs] = value }
+  opts.on("--timeout SECONDS", Integer, "Maximum runtime per case") { |value| options[:timeout] = value }
+  opts.on("--provider NAME") { |value| options[:provider] = value }
+  opts.on("--model NAME") { |value| options[:model] = value }
+  opts.on("--model-version VALUE") { |value| options[:model_version] = value }
+  opts.on("--tool-mode VALUE") { |value| options[:tool_mode] = value }
+end.parse!
+
+abort "--command is required" unless options[:command]
+abort "--baseline-router is required" unless options[:baseline_router]
+abort "--candidate-router is required" unless options[:candidate_router]
+abort "baseline router does not exist" unless File.file?(options[:baseline_router])
+abort "candidate router does not exist" unless File.file?(options[:candidate_router])
+
+FileUtils.mkdir_p(options[:output])
+baseline = File.join(options[:output], "baseline.json")
+candidate = File.join(options[:output], "candidate.json")
+comparison = File.join(options[:output], "comparison.json")
+
+common_args = [
+  "--command", options[:command],
+  "--provider", options[:provider].to_s,
+  "--model", options[:model].to_s,
+  "--tool-mode", options[:tool_mode].to_s,
+  "--timeout", options[:timeout].to_s
+]
+common_args += ["--model-version", options[:model_version]] if options[:model_version]
+
+def run_campaign(evaluator, command, router, output, args, runs)
+  argv = [RbConfig.ruby, evaluator, *args, "--router", router, "--output", output]
+  argv.insert(argv.index("--router"), "--runs", runs.to_s) if runs
+  stdout, stderr, status = Open3.capture3(*argv, chdir: File.dirname(evaluator))
+  warn stderr unless stderr.empty?
+  puts stdout
+  abort "routing campaign failed for #{router}: #{status.exitstatus}" unless status.success?
+end
+
+run_campaign(EVALUATOR, options[:command], options[:baseline_router], baseline, common_args, options[:runs])
+run_campaign(EVALUATOR, options[:command], options[:candidate_router], candidate, common_args, options[:runs])
+
+compare_argv = [
+  RbConfig.ruby, COMPARATOR, baseline, candidate,
+  "--output", comparison
+]
+stdout, stderr, status = Open3.capture3(*compare_argv, chdir: ROOT)
+warn stderr unless stderr.empty?
+puts stdout
+abort "routing comparison gate failed with exit code #{status.exitstatus}" unless status.success?
+
+puts "Routing experiment complete:"
+puts "  baseline: #{baseline}"
+puts "  candidate: #{candidate}"
+puts "  comparison: #{comparison}"
