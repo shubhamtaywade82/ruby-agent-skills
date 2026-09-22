@@ -110,6 +110,9 @@ errors << "routing experiment runner missing" unless File.file?(experiment_runne
 errors << "manifest evidence packager path missing" unless routing_contract["evidence_packager"].to_s == "bin/routing-evidence"
 evidence_packager_path = File.join(ROOT, routing_contract.fetch("evidence_packager", ""))
 errors << "routing evidence packager missing" unless File.file?(evidence_packager_path)
+errors << "manifest evidence verifier path missing" unless routing_contract["evidence_verifier"].to_s == "bin/routing-evidence-verify"
+evidence_verifier_path = File.join(ROOT, routing_contract.fetch("evidence_verifier", ""))
+errors << "routing evidence verifier missing" unless File.file?(evidence_verifier_path)
 errors << "manifest evidence schema path missing" unless routing_contract["evidence_schema"].to_s == "docs/ROUTING_EVIDENCE_SCHEMA.md"
 evidence_schema_path = File.join(ROOT, routing_contract.fetch("evidence_schema", ""))
 errors << "routing evidence schema missing" unless File.file?(evidence_schema_path)
