@@ -17,6 +17,7 @@ Make deployment behavior reproducible and evidence-based rather than assuming a 
 - changing environment configuration
 - changing production migrations
 - reviewing hosting readiness
+- deploying with Kamal 2, registry-free Kamal flows, or Thruster
 
 ## Repository inspection
 
