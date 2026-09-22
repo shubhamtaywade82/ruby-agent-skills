@@ -1,0 +1,92 @@
+id: rails-operational-tasks-maintenance-contract
+version: 1
+title: Preserve safe, resumable, observable, and verifiable Rails operational task semantics
+category: rails
+source: rails-operational-tasks-maintenance-v1
+skills:
+  - rails-operational-tasks-maintenance
+  - rails-active-job
+  - rails-production-runtime
+  - rails-database-engineering
+  - rails-reliability-engineering
+  - rails-observability
+  - rails-incident-engineering
+  - rails-release-engineering
+  - rails-authorization
+  - rails-security-engineering
+  - rails-test-engineering
+patterns:
+  - operational-task-boundary
+  - task-namespace-contract
+  - environment-gate-contract
+  - operational-dry-run-contract
+  - idempotent-maintenance-contract
+  - batch-checkpoint-contract
+  - maintenance-lock-contract
+  - mutation-invariant-contract
+  - partial-failure-contract
+  - operational-observability-contract
+  - scheduled-maintenance-overlap-contract
+  - data-repair-verification-contract
+  - production-runbook-command-contract
+prompt: |
+  Implement or review a Rails operational task, Rake task, runner workflow, data repair, cleanup, reconciliation, backfill, or maintenance command using the repository's actual conventions. Preserve explicit ownership, safety gates, idempotency, bounded execution, concurrency control, observability, verification, and recovery.
+constraints:
+  required_design:
+    - explicit operational scope and ownership
+    - production/environment safety gates
+    - rerun-safe or explicitly convergent behavior
+    - batching/checkpointing for large work
+    - explicit concurrency policy
+    - explicit partial-failure behavior
+    - verification criteria and recovery path
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: task-boundary
+    input: new maintenance command
+    expected: task is thin orchestration with reusable domain logic
+  - name: namespace
+    input: custom Rake task
+    expected: task name communicates ownership and scope
+  - name: environment-gate
+    input: production data mutation
+    expected: wrong environments and missing prerequisites fail before side effects
+  - name: dry-run
+    input: high-volume cleanup
+    expected: preview reports scope without writes
+  - name: idempotency
+    input: interrupted backfill rerun
+    expected: repeated execution converges without duplicate side effects
+  - name: batching
+    input: million-row repair
+    expected: deterministic bounded batches and resume behavior
+  - name: locking
+    input: scheduled exclusive maintenance
+    expected: overlap is prevented and stale lock recovery is defined
+  - name: invariants
+    input: bulk update bypassing callbacks
+    expected: required invariants are identified and preserved
+  - name: partial-failure
+    input: one record fails in a long run
+    expected: failure policy and exit/result semantics are explicit
+  - name: observability
+    input: multi-minute maintenance task
+    expected: progress and final summary are safe and actionable
+  - name: scheduled-overlap
+    input: duplicate scheduler delivery
+    expected: duplicate execution is safe or explicitly locked
+  - name: verification
+    input: data repair
+    expected: postcondition and verification query are explicit
+  - name: runbook
+    input: production maintenance command
+    expected: invocation, prerequisites, stop conditions, recovery, and verification are documented
+grading:
+  functional: operational command performs the intended bounded workflow
+  tests: safety and failure semantics are executable
+  contract: scope, gates, rerun, concurrency, observability, and verification remain explicit
+  scope_control: no unrelated domain/framework migration is introduced
