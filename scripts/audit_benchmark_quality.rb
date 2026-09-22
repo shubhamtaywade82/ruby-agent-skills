@@ -117,18 +117,26 @@ unbenchmarked_paths = all_public_eval_paths.reject do |path|
   benchmarked_eval_ids.include?(id)
 end
 
+rails_eval_paths = Dir[File.join(EVAL_ROOT, "rails", "*.yml")].sort
+rails_eval_ids = rails_eval_paths.map do |path|
+  YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("id").to_s
+end.to_set
+rails_campaign = campaign_files.find { |path| File.basename(File.dirname(path)) == "rails" }
+rails_campaign_data = rails_campaign ? YAML.safe_load(File.read(rails_campaign, encoding: "UTF-8"), permitted_classes: [], aliases: false) : {}
+rails_benchmarked_ids = Set.new(Array(rails_campaign_data["evaluations"]).map(&:to_s))
+rails_unbenchmarked_ids = rails_eval_ids - rails_benchmarked_ids
+
+if rails_campaign_data.dig("controls", "require_all_public_evaluations") == true && !rails_unbenchmarked_ids.empty?
+  errors << "rails campaign does not cover all public Rails evaluations: #{rails_unbenchmarked_ids.to_a.sort.join(", ")}"
+end
+
 unless unbenchmarked_paths.empty?
   unbenchmarked_cases = unbenchmarked_paths.sum do |path|
     data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
     Array(data["cases"]).length
   end
-  if family == "rails" && campaign.fetch("controls", {})["require_all_public_evaluations"] == true
-    errors << "rails campaign does not cover all public Rails evaluations: #{unbenchmarked_paths.join(", ")}" unless unbenchmarked_paths.empty?
-  else
-    warnings << "public evaluations without a benchmark campaign: #{unbenchmarked_paths.length} files (#{unbenchmarked_cases} cases)"
-  end
+  warnings << "public evaluations without a benchmark campaign: #{unbenchmarked_paths.length} files (#{unbenchmarked_cases} cases)"
 end
-
 puts "Benchmark quality audit"
 puts "  campaigns: #{campaign_files.length}"
 puts "  campaign evaluations: #{campaign_files.sum { |path| YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("evaluations").length }}"
