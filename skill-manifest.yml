@@ -277,10 +277,25 @@ skills:
     family: rails
     path: skills/rails-rack-middleware-engineering/SKILL.md
     triggers: [Rack, rack, middleware, config.middleware, config.ru, bin/rails, bin/rails middleware, call(env), short-circuit, request ID, trusted proxy]
+  rails-engines-railties-engineering:
+    source: rails-engines-railties-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/engines-railties-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-initialization-configuration-engineering:
     family: rails
     path: skills/rails-initialization-configuration-engineering/SKILL.md
     triggers: [initializer, config.initializers, config/application.rb, config/environment.rb, config/boot.rb, config.ru, config.x, before_initialize, after_initialize, to_prepare, load_defaults]
+  rails-engines-railties-engineering:
+    family: rails
+    path: skills/rails-engines-railties-engineering/SKILL.md
+    triggers: [Rails::Engine, Rails::Railtie, Engine, Railtie, plugin, mountable, isolate_namespace, engine routes, engine, engine.rb, railtie.rb, generators, engine gemspec]
   rails-hotwire:
     family: rails
     path: skills/rails-hotwire/SKILL.md
@@ -568,6 +583,17 @@ patterns:
       - patterns/rails/asset-build-reproducibility.md
       - patterns/rails/asset-build-production-parity.md
       - patterns/rails/asset-dependency-boundary.md
+      - patterns/rails/engine-boundary-contract.md
+      - patterns/rails/engine-namespace-isolation.md
+      - patterns/rails/engine-mount-routing-contract.md
+      - patterns/rails/engine-configuration-boundary.md
+      - patterns/rails/railtie-initialization-boundary.md
+      - patterns/rails/engine-autoloading-contract.md
+      - patterns/rails/engine-dependency-compatibility.md
+      - patterns/rails/engine-host-override-contract.md
+      - patterns/rails/engine-generator-task-contract.md
+      - patterns/rails/engine-asset-integration-contract.md
+      - patterns/rails/engine-cross-engine-composition.md
       - patterns/rails/rack-request-response-contract.md
       - patterns/rails/middleware-stack-ordering.md
       - patterns/rails/custom-rack-middleware-contract.md
@@ -622,6 +648,7 @@ patterns:
       - patterns/testing/asset-build-testing.md
       - patterns/rails/middleware-testing.md
       - patterns/rails/initializer-testing-contract.md
+      - patterns/rails/engine-dummy-app-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
