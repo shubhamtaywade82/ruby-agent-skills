@@ -7,6 +7,7 @@ require "net/http"
 require "open3"
 require "optparse"
 require "shellwords"
+require "tmpdir"
 require "uri"
 
 ROOT = File.expand_path("..", __dir__)
