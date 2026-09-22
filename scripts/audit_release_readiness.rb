@@ -22,7 +22,7 @@ end
 readme = File.read(File.join(ROOT, "README.md"), encoding: "UTF-8")
 manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
-errors << "README is not at Iteration 48" unless readme.include?("Current milestone:** Iteration 48")
+errors << "README is not at a post-release milestone" unless readme.match?(/Current milestone:\*\* Iteration (?:48|49)/)
 errors << "README has no final release section" unless readme.include?("Final Release and Public-Readiness Hardening")
 errors << "README still claims Iteration 47 is current" if readme.include?("Current milestone:** Iteration 47")
 errors << "README contains stale evaluation count 206" if readme.include?("206 evaluation cases")
