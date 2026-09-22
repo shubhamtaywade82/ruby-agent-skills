@@ -61,3 +61,5 @@ ruby -I"$ROOT/test" "$ROOT/test/rails_serialization_globalid_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/rails_operational_tasks_maintenance_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_cross_boundary_authorization_security_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_staff_principal_architecture_system_test.rb"
