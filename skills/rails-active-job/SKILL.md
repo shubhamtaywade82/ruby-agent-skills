@@ -468,6 +468,11 @@ Verify the enqueue contract, execution behavior, failure policy, and relevant ad
 For Rails/Solid Queue changes, inspect actual queue configuration and use version-supported commands/tests.
 
 
+## Rails 8.1 current framework considerations
+
+- Rails 8.1 exposes `ActiveJob::Continuable` for resumable multi-step jobs. Inspect the repository's supported Rails version and job adapter before using continuations.
+- Design each continuation step around durable progress and restart semantics; a step boundary is not a substitute for idempotency or explicit retry behavior.
+
 ## Source foundation
 
 Primary Rails guidance:
