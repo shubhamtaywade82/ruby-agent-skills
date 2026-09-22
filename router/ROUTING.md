@@ -1207,3 +1207,31 @@ When a task changes Rack middleware, request/response wrapping, stack ordering, 
 | Forwarded/proxy headers | pattern:trusted-proxy-header-contract |
 | Middleware telemetry | pattern:middleware-observability-boundary |
 | Middleware tests | pattern:middleware-testing |
+
+
+## Rails Initialization and Configuration engineering
+
+When a task changes Rails boot, configuration, initializers, environment settings, lifecycle hooks, reload behavior, application config, or boot-time dependencies:
+  -> rails-initialization-configuration-engineering
+  -> zeitwerk for autoloading/reloading boundaries
+  -> rails-production-runtime for boot/process/readiness behavior
+  -> rails-security-engineering for credentials and configuration trust boundaries
+  -> rails-observability for boot diagnostics and error context
+  -> rails-reliability-engineering for external dependency/failure semantics
+  -> rails-test-engineering / rails-testing for configuration and boot contracts
+
+### Initialization/configuration pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Configuration ownership | pattern:configuration-ownership-contract |
+| Multiple configuration sources | pattern:configuration-precedence-contract |
+| Initializer dependency | pattern:initializer-dependency-contract |
+| Lifecycle hook choice | pattern:lifecycle-hook-contract |
+| Reload-sensitive registration | pattern:reload-safe-initializer |
+| External dependency during boot | pattern:boot-external-dependency-boundary |
+| Environment-specific configuration | pattern:environment-configuration-contract |
+| Required boot invariant | pattern:boot-failure-contract |
+| Application-owned config.x | pattern:application-config-contract |
+| Initializer/configuration testing | pattern:initializer-testing-contract |
+| Startup performance | pattern:boot-performance-contract |
