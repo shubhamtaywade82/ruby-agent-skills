@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 45 — Rails Staff and Principal Architecture  
+> **Current milestone:** Iteration 46 — Repository-wide Completeness and Gap Audit  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -55,7 +55,7 @@ The skill system is built from five connected layers:
 |---|---:|
 | Skills | **76** |
 | Implementation patterns | **393** |
-| Evaluation cases | **193** |
+| Evaluation cases | **206** |
 | Dedicated system/contract tests | **50+** |
 | Manifest version | **2** |
 
@@ -644,7 +644,7 @@ Completed deep Rails areas currently include:
 - Authorization engineering
 - Hotwire engineering
 
-Authentication Engineering is now a deep Rails boundary covering mechanism discovery, credential storage, authentication state transitions, session lifecycle, fixation/rotation, expiry/revocation, password recovery, abuse controls, persistent login, browser/API boundaries, context propagation, freshness, multi-device sessions, compromise response, observability, and deterministic security testing.\n\nThe next planned deep Rails boundary is **Authorization Engineering**, followed by Hotwire, frontend asset/build infrastructure, Rack/middleware, initialization/configuration, engines/Railties, encryption, serialization, operational tasks, cross-boundary authorization composition, and finally repository-level staff architecture evaluation.
+Authentication Engineering is now a deep Rails boundary covering mechanism discovery, credential storage, authentication state transitions, session lifecycle, fixation/rotation, expiry/revocation, password recovery, abuse controls, persistent login, browser/API boundaries, context propagation, freshness, multi-device sessions, compromise response, observability, and deterministic security testing.\n\nThe deep Rails framework sequence through Iteration 45 is complete; Iteration 46 audits repository-wide completeness and framework drift before evaluation hardening and release readiness.
 
 ---
 
@@ -700,3 +700,8 @@ Iteration 44 adds explicit security composition contracts across controllers, se
 ## Rails Staff and Principal Architecture
 
 Iteration 45 adds a staff/principal decision layer for dependency direction, bounded contexts, modular monoliths, data ownership, shared kernels, cross-cutting ownership, change coupling, process-extraction readiness, incremental architecture migration, ADRs, executable architecture fitness checks, system tradeoffs, and operational ownership.
+
+
+## Repository-wide Completeness and Gap Audit
+
+Iteration 46 adds repository-level completeness enforcement for manifest registration, pattern/evaluation registration, routing coverage, system-test execution, README inventory drift, and current Rails framework evolution. Rails 8/8.1 additions are routed to their existing owning skills rather than fragmented into duplicate skill boundaries.
