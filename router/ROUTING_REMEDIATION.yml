@@ -1,0 +1,11 @@
+version: 1
+id: skill-routing-remediation-v1
+baseline_required: true
+candidate_required: true
+gate:
+  require_complete_campaigns: true
+  max_primary_accuracy_drop: 0.0
+  max_secondary_recall_drop: 0.0
+  max_unexpected_secondary_count_increase: 0.0
+  reject_new_confusion_pairs: true
+  reject_case_accuracy_regression: true
