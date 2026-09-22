@@ -90,6 +90,13 @@ errors << "manifest Ollama adapter path missing" unless routing_contract["ollama
 
 ollama_adapter_path = File.join(ROOT, routing_contract.fetch("ollama_adapter", ""))
 errors << "routing Ollama adapter missing" unless File.file?(ollama_adapter_path)
+errors << "manifest campaign runner path missing" unless routing_contract["campaign_runner"].to_s == "bin/routing-campaign"
+errors << "manifest campaign analyzer path missing" unless routing_contract["campaign_analyzer"].to_s == "bin/routing-analyze"
+
+campaign_runner_path = File.join(ROOT, routing_contract.fetch("campaign_runner", ""))
+campaign_analyzer_path = File.join(ROOT, routing_contract.fetch("campaign_analyzer", ""))
+errors << "routing campaign runner missing" unless File.file?(campaign_runner_path)
+errors << "routing campaign analyzer missing" unless File.file?(campaign_analyzer_path)
 
 campaign_path = File.join(ROOT, routing_contract.fetch("campaign_manifest", ""))
 if File.file?(campaign_path)
