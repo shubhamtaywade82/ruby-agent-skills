@@ -18,6 +18,8 @@ Make persistence behavior explicit, correct, efficient, and aligned with the act
 - adding callbacks/scopes
 - investigating database-related bugs or performance
 
+For deep Active Record engineering (Relation composition, strict loading, bulk write behavior, serialized/typed attributes, or eager-loading/N+1 semantics beyond a routine model change), activate `rails-active-record` and treat this skill as supporting context.
+
 ## Repository inspection
 
 Always inspect:

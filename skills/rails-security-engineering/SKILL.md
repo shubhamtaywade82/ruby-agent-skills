@@ -41,6 +41,8 @@ identify assets
 
 Do not activate merely because a security-sensitive line changed. Use `rails-security` for narrow Rails control implementation.
 
+For direct secure-coding work on authentication, sessions, untrusted input, or scanner findings, `rails-security` is the lighter entry point; activate this skill for architecture-level security work.
+
 ## Repository inspection
 
 Inspect:

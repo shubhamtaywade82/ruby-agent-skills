@@ -17,6 +17,8 @@ Keep presentation expressive without allowing business rules and data-access con
 - fixing rendering bugs
 - moving logic out of an overgrown template
 
+For Action View engineering beyond template edits (strict locals, helper API design, html_safe/XSS boundaries, collection rendering performance, or template lookup), activate `rails-action-view` and treat this skill as supporting context.
+
 ## Repository inspection
 
 Inspect:

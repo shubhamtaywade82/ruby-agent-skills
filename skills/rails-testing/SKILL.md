@@ -18,6 +18,8 @@ Place tests at the boundary that owns the behavior and use integration tests whe
 - changing rendered user-visible behavior
 - reviewing test quality
 
+For test infrastructure engineering (helper/fixture/factory architecture, flaky-test diagnosis, parallel execution, transactional test behavior, or system/browser tests), activate `rails-test-engineering` and treat this skill as supporting context.
+
 ## Repository inspection
 
 Resolve:

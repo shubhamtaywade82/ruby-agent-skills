@@ -25,6 +25,8 @@ The controller owns request interpretation, boundary input filtering, request-sc
 - adding controller-level exception mapping with rescue_from
 - debugging unexpected dispatch, double renders, missing responses, or request/response behavior
 
+For a simple CRUD action, params handling, or a status/render/redirect change, `rails-controllers` is the lighter entry point; activate this skill only when the deeper boundaries above are actually in play.
+
 ## Boundary ownership
 
 | Concern | Controller owns | Prefer another boundary |

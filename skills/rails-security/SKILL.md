@@ -19,6 +19,8 @@ Primary source: the Rails Security Guide, which covers authentication, sessions,
 - reviewing Brakeman/bundler-audit/security findings
 - modifying CSP, CORS, HSTS, cookies, or host authorization
 
+For security architecture work (threat modeling, trust-boundary design, cross-tenant isolation review, secrets governance, or abuse-case design), activate `rails-security-engineering` and treat this skill as supporting context.
+
 ## Repository inspection
 Inspect runtime/version, auth/session strategy, authorization policies, privileged routes, controller input boundaries, views/helpers, raw SQL, command/file/network boundaries, webhooks, secrets, tenant scoping, dependency lockfile, security tooling, tests/CI, and relevant deployment configuration.
 

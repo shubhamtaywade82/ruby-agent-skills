@@ -26,6 +26,8 @@ This skill deepens the foundational rails-activerecord skill. It owns Active Rec
 - debugging differences between in-memory model state and persisted database state
 - reviewing Active Record code for accidental materialization or hidden queries
 
+For routine model, migration, or query changes, `rails-activerecord` is the lighter entry point; activate this skill only when the deep boundaries above are actually in play.
+
 ## Boundary ownership
 
 | Concern | Primary skill |

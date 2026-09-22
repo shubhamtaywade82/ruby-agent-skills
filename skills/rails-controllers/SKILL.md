@@ -17,6 +17,8 @@ Treat controllers as HTTP/application boundaries that translate requests into do
 - adding authorization/authentication checks
 - moving logic into/out of a controller
 
+For Action Controller behavior beyond a simple CRUD action (strong parameters edge cases, rescue_from exception mapping, conditional GET/ETag validation, streaming responses, or format negotiation), activate `rails-action-controller` and treat this skill as supporting context.
+
 ## Repository inspection
 
 Read:

@@ -39,6 +39,8 @@ Primary current Rails references:
 - introducing a second test framework or test library
 - testing reload/eager-load behavior
 
+For choosing or reviewing the test for an ordinary behavior change, `rails-testing` is the lighter entry point; activate this skill only when test infrastructure itself is the engineering target.
+
 ## Repository inspection
 Inspect:
 1. test framework: Minitest, RSpec, or another stack;

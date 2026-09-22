@@ -49,6 +49,8 @@ Core flow:
 
 Do not replace rails-views with this skill for simple view edits that do not involve an Action View runtime concern.
 
+For ordinary template, form, or partial edits, `rails-views` is the lighter entry point; activate this skill only when the deeper boundaries above are actually in play.
+
 ## Repository inspection
 
 Inspect before implementing:
