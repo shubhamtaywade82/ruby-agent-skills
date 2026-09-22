@@ -4,6 +4,7 @@ require "json"
 require "minitest/autorun"
 require "open3"
 require "tempfile"
+require "tmpdir"
 
 class RoutingRemediationSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
