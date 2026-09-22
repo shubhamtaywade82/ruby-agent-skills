@@ -90,6 +90,7 @@ verify_stdout, verify_stderr, verify_status = Open3.capture3(
   RbConfig.ruby,
   VERIFIER,
   campaign_json,
+  *(options[:runs] ? ["--expected-repetitions", options[:runs].to_s] : []),
   chdir: ROOT
 )
 warn verify_stderr unless verify_stderr.empty?
