@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "fileutils"
 require "json"
+require "open3"
+require "shellwords"
 require "optparse"
 require "set"
 require "yaml"
@@ -66,7 +69,6 @@ selected.each do |entry|
     "RUBY_AGENT_ROUTING_ROUTER_FILE" => File.join(ROOT, "router", "ROUTING.md")
   }
 
-  command = env.map { |key, value| "#{key}=#{Shellwords.escape(value)}" }.join(" ") + " " + options[:command]
   started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
   stdout = +""
   stderr = +""
