@@ -87,3 +87,16 @@ Provide provider/model metadata when measuring an external agent:
       --output /tmp/routing-campaign.json
 
 A campaign result is evidence for a specific agent configuration and routing-contract revision. Do not compare results across materially different agent/model/tool configurations as though they were one measurement.
+
+## Ollama adapter
+
+The repository includes `bin/routing-agent-ollama` as a concrete adapter for local Ollama-backed routing experiments. Configure `OLLAMA_URL` and `OLLAMA_MODEL`, then run:
+
+    ruby bin/routing-eval \
+      --command 'env RUBY_AGENT_PROVIDER=ollama RUBY_AGENT_MODEL=$OLLAMA_MODEL ruby bin/routing-agent-ollama' \
+      --provider ollama \
+      --model "$OLLAMA_MODEL" \
+      --tool-mode local-filesystem \
+      --output /tmp/routing-campaign.json
+
+The adapter asks the model for JSON-only routing output and validates the selected skills against `skill-manifest.yml`. It does not receive the expected routing labels. Ollama's current chat API supports JSON output through the `format` field; the adapter sets `stream=false` and `format=json` for normalized routing responses. citeturn544661view0
