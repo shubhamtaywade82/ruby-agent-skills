@@ -276,7 +276,7 @@ skills:
   rails-asset-build-engineering:
     family: rails
     path: skills/rails-asset-build-engineering/SKILL.md
-    triggers: [asset, assets, build, asset pipeline, Importmap, importmap-rails, jsbundling, jsbundling-rails, cssbundling, cssbundling-rails, Propshaft, Sprockets, bin/dev, Procfile.dev, precompile, JavaScript build, CSS build]
+    triggers: [asset, assets, build, asset pipeline, Importmap, importmap-rails, jsbundling, jsbundling-rails, cssbundling, cssbundling-rails, Propshaft, Sprockets, bin/dev, Procfile.dev, precompile, JavaScript build, CSS build, pipeline, JavaScript, CSS]
   rails-rack-middleware-engineering:
     family: rails
     path: skills/rails-rack-middleware-engineering/SKILL.md
