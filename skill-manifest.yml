@@ -269,6 +269,10 @@ skills:
     family: rails
     path: skills/rails-authorization/SKILL.md
     triggers: [authorization, policy, Pundit, CanCanCan, authorization policy, authorized scope, object-level authorization, IDOR, tenant isolation, role, permission, capability, ownership authorization, policy scope, access control]
+  rails-cross-boundary-authorization-security:
+    family: security
+    path: skills/rails-cross-boundary-authorization-security/SKILL.md
+    triggers: [cross-boundary authorization, authorization composition, authorization context, decision boundary, authorized resource, service authorization, controller service authorization, background re-authorization, API authorization, Action Cable authorization, realtime authorization, engine authorization, operational authorization, event authorization, capability propagation, authorization denial, authorization cache, authorization audit]
   rails-asset-build-engineering:
     family: rails
     path: skills/rails-asset-build-engineering/SKILL.md
@@ -565,6 +569,20 @@ patterns:
       - patterns/rails/action-cable-authorization-boundary.md
       - patterns/rails/authorization-cache-identity.md
       - patterns/rails/authorization-audit-contract.md
+      - patterns/rails/authorization-context-contract.md
+      - patterns/rails/authorization-decision-boundary.md
+      - patterns/rails/authorized-resource-resolution.md
+      - patterns/rails/controller-service-authorization-composition.md
+      - patterns/rails/background-reauthorization-composition.md
+      - patterns/rails/api-authorization-composition.md
+      - patterns/rails/realtime-authorization-composition.md
+      - patterns/rails/engine-authorization-composition.md
+      - patterns/rails/operational-authorization-composition.md
+      - patterns/rails/event-consumer-authorization-contract.md
+      - patterns/rails/capability-propagation-contract.md
+      - patterns/rails/authorization-denial-contract.md
+      - patterns/rails/authorization-cache-composition.md
+      - patterns/rails/authorization-audit-composition.md
       - patterns/rails/turbo-drive-navigation-contract.md
       - patterns/rails/turbo-frame-contract.md
       - patterns/rails/turbo-stream-response-contract.md
@@ -818,6 +836,17 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  rails-cross-boundary-authorization-security:
+    source: rails-cross-boundary-authorization-security-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/security/cross-boundary-authorization-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-operational-tasks-maintenance:
     source: rails-operational-tasks-maintenance-v1
     schema: docs/EVAL_SCHEMA.md
