@@ -19,6 +19,35 @@ class RoutingCampaignVerifierSystemTest < Minitest::Test
     end
   end
 
+  def test_accepts_explicit_repetition_override
+    Dir.mktmpdir("routing-campaign-intake") do |dir|
+      path = File.join(dir, "campaign.json")
+      campaign = {
+        "protocol_version"=>1,
+        "campaign"=>"skill-routing-public-v1",
+        "campaign_version"=>1,
+        "routing_case_count"=>14,
+        "requested_repetitions"=>1,
+        "requested_runs"=>14,
+        "completed_runs"=>14,
+        "complete"=>true,
+        "agent"=>{"provider"=>"ollama","model"=>"test-model"},
+        "cases"=>{}
+      }
+      File.write(path, JSON.pretty_generate(campaign))
+      _stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "routing-campaign-verify"),
+        path,
+        "--expected-repetitions", "1",
+        "--expected-runs", "14",
+        chdir: ROOT
+      )
+      refute status.success?
+      assert_includes stderr, "campaign cases must contain exactly the public routing case IDs"
+    end
+  end
+
   def test_rejects_incomplete_campaign
     Dir.mktmpdir("routing-campaign-intake") do |dir|
       path = File.join(dir, "campaign.json")
