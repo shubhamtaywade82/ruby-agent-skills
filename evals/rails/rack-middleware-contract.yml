@@ -1,0 +1,79 @@
+id: rails-rack-middleware-contract
+version: 1
+title: Preserve Rack middleware contracts, ordering, failure propagation, security boundaries, and concurrency safety
+category: rails
+source: rails-rack-middleware-v1
+skills:
+  - rails-rack-middleware-engineering
+  - rails-observability
+  - rails-security-engineering
+  - rails-reliability-engineering
+  - rails-production-runtime
+  - rails-performance
+  - rails-test-engineering
+  - ruby-concurrency
+  - ruby-runtime-compatibility
+patterns:
+  - rack-request-response-contract
+  - middleware-stack-ordering
+  - custom-rack-middleware-contract
+  - middleware-short-circuit-contract
+  - middleware-exception-propagation
+  - middleware-thread-safety
+  - request-id-correlation-boundary
+  - middleware-security-boundary
+  - middleware-rate-limit-boundary
+  - trusted-proxy-header-contract
+  - middleware-testing
+  - middleware-observability-boundary
+prompt: |
+  Implement or review a Rails/Rack middleware change using the repository's actual Ruby, Rails, Rack, server, proxy, security, and observability contracts. Preserve Rack response/body semantics, intentional stack ordering, exception ownership, request correlation, trusted-proxy assumptions, concurrency safety, and the smallest justified cross-cutting boundary.
+constraints:
+  required_design:
+    - valid Rack request/response contract
+    - explicit middleware ordering
+    - narrow cross-cutting responsibility
+    - no domain authorization leakage
+    - concurrency-safe request handling
+    - deterministic boundary tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: response-contract
+    input: custom middleware wrapping a Rails application
+    expected: env and response semantics remain valid and downstream delegation is explicit
+  - name: ordering
+    input: middleware requiring another layer before or after it
+    expected: ordering is justified and regression-tested
+  - name: short-circuit
+    input: middleware-owned rejection
+    expected: downstream execution is skipped intentionally and the response is complete
+  - name: exception
+    input: downstream exception
+    expected: ownership and propagation remain explicit without broad swallowing
+  - name: thread-safety
+    input: middleware with shared state
+    expected: request state is local or shared state is explicitly safe
+  - name: correlation
+    input: request ID and tracing metadata
+    expected: one authoritative correlation contract is preserved
+  - name: security
+    input: forwarded headers or transport security controls
+    expected: trust boundaries are explicit and resource authorization remains outside generic middleware
+  - name: rate-limit
+    input: request-level rate limiting
+    expected: keying, topology, state, and failure behavior are explicit
+  - name: testing
+    input: middleware registration change
+    expected: direct boundary and stack integration tests cover the affected contract
+  - name: observability
+    input: middleware-specific telemetry
+    expected: existing request telemetry is reused and sensitive data is excluded
+grading:
+  functional: middleware behavior matches the intended Rack/Rails request contract
+  tests: normal, failure, and boundary paths are executable
+  contract: ordering, security, lifecycle, and concurrency responsibilities remain explicit
+  scope_control: no unrelated middleware or application-layer migration is introduced
