@@ -50,14 +50,7 @@ benchmark_manifest.each do |name, entry|
       permitted_classes: [],
       aliases: false
     )
-    fixture_ids = registry.fetch("fixtures", {}).keys.to_set
-    benchmark_eval_ids = Dir[File.join(ROOT, "evals", name, "*.yml")].map do |path|
-      YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("id")
-    end.to_set
-    missing = benchmark_eval_ids - fixture_ids
-    extra = fixture_ids - benchmark_eval_ids
-    errors << "benchmark #{name} missing fixtures: #{missing.to_a.sort.join(", ")}" unless missing.empty?
-    errors << "benchmark #{name} has unregistered fixtures: #{extra.to_a.sort.join(", ")}" unless extra.empty?
+    fixture_ids = registry.fetch("fixtures", {}).keys.map(&:to_s).to_set
 
     campaign_path = File.join(ROOT, entry["campaign_manifest"].to_s)
     if File.file?(campaign_path)
@@ -67,16 +60,29 @@ benchmark_manifest.each do |name, entry|
         aliases: false
       )
       errors << "benchmark #{name} campaign id missing" if campaign["id"].to_s.empty?
-      required_campaign_fields = %w[id version fixture_root verifier evaluations execution]
+      required_campaign_fields = %w[id version evaluation_set fixture_root verifier evaluations execution]
       required_campaign_fields.each do |key|
         errors << "benchmark #{name} campaign missing #{key}" unless campaign.key?(key)
       end
+      errors << "benchmark #{name} campaign evaluation_set mismatch" unless campaign["evaluation_set"].to_s == name
       errors << "benchmark #{name} campaign fixture_root mismatch" unless campaign["fixture_root"].to_s == entry["fixture_root"].to_s
       errors << "benchmark #{name} campaign verifier mismatch" unless campaign["verifier"].to_s == entry["verifier"].to_s
       repetitions = campaign.fetch("execution", {}).fetch("repetitions", nil)
       errors << "benchmark #{name} campaign repetitions must be >= 1" unless repetitions.to_i >= 1
-      campaign_ids = Array(campaign["evaluations"]).to_set
-      errors << "benchmark #{name} campaign evaluations do not match registered evaluation ids" unless campaign_ids == benchmark_eval_ids
+
+      campaign_ids = Array(campaign["evaluations"]).map(&:to_s).to_set
+      errors << "benchmark #{name} campaign evaluations must be unique" unless campaign_ids.length == Array(campaign["evaluations"]).length
+      missing_fixtures = campaign_ids - fixture_ids
+      extra_fixtures = fixture_ids - campaign_ids
+      errors << "benchmark #{name} missing fixtures: #{missing_fixtures.to_a.sort.join(", ")}" unless missing_fixtures.empty?
+      errors << "benchmark #{name} has unregistered fixtures: #{extra_fixtures.to_a.sort.join(", ")}" unless extra_fixtures.empty?
+
+      public_ids = Dir[File.join(ROOT, "evals", name, "*.yml")].to_h do |path|
+        data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+        [data.fetch("id").to_s, path.delete_prefix(ROOT + "/")]
+      end
+      unknown = campaign_ids - public_ids.keys.to_set
+      errors << "benchmark #{name} campaign references unknown evaluations: #{unknown.to_a.sort.join(", ")}" unless unknown.empty?
     end
   rescue Psych::Exception, KeyError => e
     errors << "benchmark #{name} fixture registry/campaign invalid: #{e.message}"
