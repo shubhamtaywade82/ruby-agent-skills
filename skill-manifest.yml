@@ -264,7 +264,7 @@ skills:
   rails-authentication:
     family: rails
     path: skills/rails-authentication/SKILL.md
-    triggers: [authentication, session, sign in, sign out, protected route, password reset, session fixation, session revocation, remember me, bearer token, account lockout, login throttling, current user, reauthentication, authentication generator, Rails authentication generator]
+    triggers: [authentication, session, sign in, sign out, protected route, password reset, session fixation, session revocation, remember me, bearer token, account lockout, login throttling, current user, reauthentication, authentication generator, Rails authentication generator, sign, fixation, rotation]
   rails-authorization:
     family: rails
     path: skills/rails-authorization/SKILL.md
