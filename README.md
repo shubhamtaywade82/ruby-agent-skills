@@ -712,12 +712,13 @@ Iteration 47 hardens the benchmark system with fixture-seam validation, controll
 
 Iteration 49 started measured benchmark coverage for the deep Rails evaluation corpus. The public campaign established paired baseline/skills-enabled execution, deterministic fixtures, independent verification, and explicit coverage disclosure.
 
+## Final Release and Public-Readiness Hardening
+
+Iteration 48 adds public contribution and security entry points, a changelog baseline, and an executable release-readiness audit covering required publication metadata, stale inventory/release markers, and generated benchmark artifacts.
+
 ## CI Toolchain and Release-Guard Maintenance
 
 Iteration 52 removes the Node 20 checkout warning from CI, standardizes the repository on Node 24-compatible `actions/checkout@v7`, adds an executable CI toolchain audit, and makes the maintenance contract part of `bin/validate`.
-
-
-Iteration 48 adds public contribution and security entry points, a changelog baseline, and an executable release-readiness audit covering required publication metadata, stale inventory/release markers, and generated benchmark artifacts.
 
 
 ## Rails Security and Identity Benchmark Expansion
