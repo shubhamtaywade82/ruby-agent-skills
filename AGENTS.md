@@ -37,6 +37,14 @@ This repository is an agent-oriented Ruby/Rails skill library. Every coding agen
 - Keep persistence integrity in database constraints where application validation alone cannot guarantee it.
 - Do not create abstractions solely to satisfy a pattern vocabulary.
 
+## CI toolchain maintenance
+
+For GitHub Actions changes:
+- inspect the currently supported action runtime/version before changing a workflow;
+- keep `actions/checkout` on the repository's Node 24-compatible major;
+- run `ruby scripts/audit_ci_toolchain.rb` and `bin/validate`;
+- do not treat a green workflow with deprecation warnings as a finished maintenance state when the warning has an actionable supported upgrade.
+
 ## Verification contract
 
 A change is complete only when:
