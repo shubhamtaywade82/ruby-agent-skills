@@ -119,6 +119,12 @@ errors << "routing evidence archiver missing" unless File.file?(evidence_archive
 errors << "manifest evidence archive schema path missing" unless routing_contract["evidence_archive_schema"].to_s == "docs/ROUTING_EVIDENCE_ARCHIVE_SCHEMA.md"
 evidence_archive_schema_path = File.join(ROOT, routing_contract.fetch("evidence_archive_schema", ""))
 errors << "routing evidence archive schema missing" unless File.file?(evidence_archive_schema_path)
+errors << "manifest campaign verifier path missing" unless routing_contract["campaign_verifier"].to_s == "bin/routing-campaign-verify"
+campaign_verifier_path = File.join(ROOT, routing_contract.fetch("campaign_verifier", ""))
+errors << "routing campaign verifier missing" unless File.file?(campaign_verifier_path)
+errors << "manifest campaign intake schema path missing" unless routing_contract["campaign_intake_schema"].to_s == "docs/ROUTING_CAMPAIGN_INTAKE_SCHEMA.md"
+campaign_intake_schema_path = File.join(ROOT, routing_contract.fetch("campaign_intake_schema", ""))
+errors << "routing campaign intake schema missing" unless File.file?(campaign_intake_schema_path)
 errors << "manifest evidence schema path missing" unless routing_contract["evidence_schema"].to_s == "docs/ROUTING_EVIDENCE_SCHEMA.md"
 evidence_schema_path = File.join(ROOT, routing_contract.fetch("evidence_schema", ""))
 errors << "routing evidence schema missing" unless File.file?(evidence_schema_path)
