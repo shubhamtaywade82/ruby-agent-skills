@@ -741,3 +741,21 @@ For custom Rake tasks, runner commands, maintenance, cleanup, backfill, repair, 
 - require a verification query/postcondition and document recovery or rerun behavior;
 - test environment gates, idempotency, batching, lock contention, partial failures, and dry-run behavior;
 - do not treat successful process exit as proof that the data repair or maintenance objective was achieved.
+
+
+## Rails cross-boundary authorization/security changes
+
+For authorization or security changes spanning multiple execution boundaries:
+- resolve Ruby/Rails and authorization dependency versions first;
+- identify the repository's one authoritative authorization mechanism;
+- map every entry point for the protected operation, including controllers, services, jobs, APIs, realtime channels, engines, tasks, scheduled workflows, and event consumers;
+- define actor, action, resource, tenant/account, state, and execution context explicitly;
+- prefer authorized resource scopes before object resolution where lookup itself is security-sensitive;
+- do not rely on controller authorization to protect direct service, job, task, event, engine, or realtime callers;
+- re-authorize sensitive work when execution is delayed or permissions can change after enqueue/publication;
+- treat Global IDs, signed tokens, tenant IDs, role names, and serialized context as identity/input, not authorization by themselves;
+- define deliberate denial behavior per boundary without unnecessary existence disclosure;
+- review authorization caches for complete keys, tenant isolation, policy inputs, invalidation, and bounded freshness;
+- emit audit evidence at the authoritative decision boundary when required, without secrets;
+- test cross-tenant, revoked, stale, direct-invocation, replay, cache-staleness, and alternate-entry-point scenarios;
+- do not introduce a second authorization framework unless repository evidence requires it.
