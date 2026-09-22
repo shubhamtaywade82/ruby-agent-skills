@@ -24,12 +24,11 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       archive_root=File.join(dir,"archive")
       out,err,status=Open3.capture3(RbConfig.ruby,File.join(ROOT,"bin","routing-archive"),evidence_path,"--destination",archive_root,chdir:ROOT)
       assert status.success?, "#{out}\n#{err}"
-      archive_dir=File.join(archive_root,"bin","test-model",Dir::Tmpname rescue "")
       manifests=Dir[File.join(archive_root,"**","ARCHIVE_MANIFEST.json")]
       assert_equal 1, manifests.length
       manifest=JSON.parse(File.read(manifests.first,encoding:"UTF-8"))
       assert_equal "skill-routing-evidence-archive-v1",manifest.fetch("archive")
-      assert_equal 9,manifest.fetch("artifacts").length
+      assert_equal 10,manifest.fetch("artifacts").length
       assert_equal true,manifest.fetch("gate").fetch("passed")
       assert File.file?(File.join(File.dirname(manifests.first),"evidence.json"))
       _out,err,status=Open3.capture3(RbConfig.ruby,File.join(ROOT,"bin","routing-archive"),evidence_path,"--destination",archive_root,chdir:ROOT)
