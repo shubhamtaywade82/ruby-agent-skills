@@ -607,6 +607,11 @@ client
 
 Never claim realtime delivery, fan-out capacity, or reconnect safety without runtime evidence.
 
+## Rails 8 current framework considerations
+
+- Solid Cable provides a database-backed pub/sub option for Action Cable. Treat its retention, polling/pub/sub capacity, failure behavior, and deployment topology as runtime concerns.
+- Preserve the same authorization, stream identity, reconciliation, and overload protections regardless of whether Redis or Solid Cable is the transport.
+
 ## Source foundation
 
 Primary Rails guidance:
