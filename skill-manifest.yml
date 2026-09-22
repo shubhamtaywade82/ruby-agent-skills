@@ -277,6 +277,10 @@ skills:
     family: rails
     path: skills/rails-rack-middleware-engineering/SKILL.md
     triggers: [Rack, rack, middleware, config.middleware, config.ru, bin/rails, bin/rails middleware, call(env), short-circuit, request ID, trusted proxy]
+  rails-initialization-configuration-engineering:
+    family: rails
+    path: skills/rails-initialization-configuration-engineering/SKILL.md
+    triggers: [initializer, config.initializers, config/application.rb, config/environment.rb, config/boot.rb, config.ru, config.x, before_initialize, after_initialize, to_prepare, load_defaults]
   rails-hotwire:
     family: rails
     path: skills/rails-hotwire/SKILL.md
@@ -574,6 +578,16 @@ patterns:
       - patterns/rails/middleware-security-boundary.md
       - patterns/rails/middleware-rate-limit-boundary.md
       - patterns/rails/trusted-proxy-header-contract.md
+      - patterns/rails/configuration-ownership-contract.md
+      - patterns/rails/configuration-precedence-contract.md
+      - patterns/rails/initializer-dependency-contract.md
+      - patterns/rails/lifecycle-hook-contract.md
+      - patterns/rails/reload-safe-initializer.md
+      - patterns/rails/boot-external-dependency-boundary.md
+      - patterns/rails/environment-configuration-contract.md
+      - patterns/rails/boot-failure-contract.md
+      - patterns/rails/application-config-contract.md
+      - patterns/rails/boot-performance-contract.md
       - patterns/rails/middleware-observability-boundary.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, eventual consistency, incident triage, operational runbook, alert actionability, diagnostic context, incident timeline, safe production debugging, recovery verification, post-incident review]
 
@@ -607,6 +621,7 @@ patterns:
       - patterns/testing/hotwire-testing.md
       - patterns/testing/asset-build-testing.md
       - patterns/rails/middleware-testing.md
+      - patterns/rails/initializer-testing-contract.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
   algorithms:
@@ -964,6 +979,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/rack-middleware-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-initialization-configuration-engineering:
+    source: rails-initialization-configuration-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/initialization-configuration-contract.yml
     checks:
       - functional
       - tests
