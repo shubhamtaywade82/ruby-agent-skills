@@ -30,6 +30,8 @@ routing:
   evidence_archive_schema: docs/ROUTING_EVIDENCE_ARCHIVE_SCHEMA.md
   campaign_verifier: bin/routing-campaign-verify
   campaign_intake_schema: docs/ROUTING_CAMPAIGN_INTAKE_SCHEMA.md
+  campaign_evidence_packager: bin/routing-campaign-evidence
+  campaign_evidence_schema: docs/ROUTING_CAMPAIGN_EVIDENCE_SCHEMA.md
   evidence_schema: docs/ROUTING_EVIDENCE_SCHEMA.md
 
 skills:
