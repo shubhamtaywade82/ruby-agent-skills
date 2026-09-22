@@ -17,6 +17,7 @@ This file defines how an agent should select and compose skills.
 | Task | Primary | Secondary |
 |---|---|---|
 | Runtime/version compatibility | ruby-runtime-compatibility | ruby-core, ruby-gems-io-services, ruby-debugging |
+| Skill-system maintenance, completeness, registry, routing, or audit | agent-workflow | ruby-clean-code, ruby-tdd-refactoring |
 | Ruby syntax/semantics | ruby-core | ruby-clean-code |
 | Ruby values/data representation | ruby-data-types | ruby-core, ruby-clean-code |
 | Branches/loops/boolean logic | ruby-control-flow | ruby-core, ruby-clean-code |
