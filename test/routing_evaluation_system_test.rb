@@ -26,7 +26,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
 
   def test_routing_evaluator_produces_measurement
     Dir.mktmpdir("routing-eval") do |dir|
-      command = "ruby -rjson -e 'case_file=ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_FILE]); abort(%q[gold labels leaked]) if File.read(case_file).include?(%q[primary_skills]); result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); File.write(result, JSON.generate({protocol_version:1,case_id:ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]),primary_skill:%q[rails-authentication],secondary_skills:[%q[rails-security-engineering],%q[rails-test-engineering]],reason:%q[Authentication owns the identity lifecycle.]}) + %q[\\n])'"
+      command = "ruby -rjson -e 'case_file=ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_FILE]); abort(%q[gold labels leaked]) if File.read(case_file).include?(%q[primary_skills]); result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); File.write(result, JSON.generate({protocol_version:1,case_id:ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]),primary_skill:%q[rails-authentication],secondary_skills:[%q[rails-security-engineering],%q[rails-test-engineering]],reason:%q[Authentication owns the identity lifecycle.]})'"
 
       stdout, stderr, status = Open3.capture3(
         RbConfig.ruby,
