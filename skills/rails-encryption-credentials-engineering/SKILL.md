@@ -9,7 +9,7 @@ family: rails
 Use this skill when a Rails application stores, retrieves, encrypts, rotates, migrates, or operationalizes secrets or sensitive persisted data. Treat credentials, cryptographic keys, encrypted database attributes, cookies, logs, and deployment configuration as distinct security boundaries.
 
 ## Activate when
-Activate for config/credentials.yml.enc, environment-specific credentials files, config/master.key, RAILS_MASTER_KEY, bin/rails credentials:edit, bin/rails credentials:show, secret_key_base, Active Record Encryption, encrypts, deterministic encryption, encrypted migrations, key rotation, encrypted fixtures, parameter filtering, secret rotation, or production secret injection.
+Activate for config/credentials.yml.enc, environment-specific credentials files, config/master.key, RAILS_MASTER_KEY, bin/rails credentials:edit, bin/rails credentials:show, rails credentials:fetch, secret_key_base, Active Record Encryption, encrypts, deterministic encryption, encrypted migrations, key rotation, encrypted fixtures, parameter filtering, secret rotation, or production secret injection.
 
 ## Core contract
 Keep secret material out of source code and ordinary logs. Separate credential storage from runtime secret delivery, and separate application configuration secrets from data-at-rest encryption keys. Use the repository's actual Rails/Ruby version before choosing APIs. Prefer Rails-supported credential and encryption mechanisms when they fit the threat model. Do not claim encryption provides authorization, deletion, or compliance by itself.
