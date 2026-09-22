@@ -23,6 +23,7 @@ Primary references:
 - changing logging, log tags, or parameter filtering
 - adding `Rails.error` reporting
 - adding `ActiveSupport::Notifications` events/subscribers
+- adding structured event reporting with `Rails.event`
 - changing health/liveness/readiness endpoints
 - modifying middleware affecting request observability
 - diagnosing production request failures
