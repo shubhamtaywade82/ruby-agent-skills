@@ -31,6 +31,15 @@ class BenchmarkQualitySystemTest < Minitest::Test
     end
   end
 
+  def test_rails_campaign_covers_every_public_rails_evaluation
+    public_ids = Dir[File.join(ROOT, "evals", "rails", "*.yml")].map do |path|
+      YAML.safe_load(File.read(path, encoding: "UTF-8")).fetch("id")
+    end.sort
+    campaign = YAML.safe_load(File.read(File.join(ROOT, "benchmarks", "rails", "campaign.yml"), encoding: "UTF-8"))
+    assert_equal public_ids, Array(campaign.fetch("evaluations")).sort
+    assert_equal true, campaign.fetch("controls").fetch("require_all_public_evaluations")
+  end
+
   def test_benchmark_campaign_result_schema_keeps_provenance
     schema = File.read(File.join(ROOT, "docs", "BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md"), encoding: "UTF-8")
     %w[campaign_version evaluation_set source fixture_root verifier execution controls].each do |field|
