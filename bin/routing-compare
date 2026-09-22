@@ -27,6 +27,9 @@ errors << "baseline and candidate campaign ids differ" unless baseline.fetch("ca
 errors << "baseline and candidate campaign versions differ" unless baseline.fetch("campaign_version") == candidate.fetch("campaign_version")
 errors << "baseline and candidate agent configurations differ" unless baseline.fetch("agent") == candidate.fetch("agent")
 
+errors << "baseline and candidate routing case counts differ" unless baseline.fetch("routing_case_count") == candidate.fetch("routing_case_count")
+errors << "baseline and candidate repetition counts differ" unless baseline.fetch("requested_repetitions") == candidate.fetch("requested_repetitions")
+
 baseline_metrics = baseline.fetch("metrics")
 candidate_metrics = candidate.fetch("metrics")
 primary_delta = candidate_metrics.fetch("primary_accuracy") - baseline_metrics.fetch("primary_accuracy")
