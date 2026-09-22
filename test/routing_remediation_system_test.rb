@@ -15,6 +15,8 @@ class RoutingRemediationSystemTest < Minitest::Test
       "protocol_version" => 1,
       "campaign" => "skill-routing-public-v1",
       "campaign_version" => 1,
+      "routing_case_count" => 1,
+      "requested_repetitions" => 3,
       "complete" => true,
       "agent" => {"provider" => "test", "model" => "test-model"},
       "metrics" => {
