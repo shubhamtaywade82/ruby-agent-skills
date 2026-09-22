@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "optparse"
+
+options = {check_files: false, allow_dirty: false}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-evidence-verify EVIDENCE_JSON [options]"
+  opts.on("--check-files", "Verify SHA-256 hashes for recorded artifact paths") { options[:check_files] = true }
+  opts.on("--allow-dirty", "Accept evidence captured from an explicitly allowed dirty worktree") { options[:allow_dirty] = true }
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "evidence JSON is required" })
+abort "evidence file not found: #{path}" unless File.file?(path)
+
+evidence = JSON.parse(File.read(path, encoding: "UTF-8"))
+errors = []
+
+errors << "protocol_version must be 1" unless evidence["protocol_version"].to_i == 1
+errors << "evidence type must be skill-routing-experiment-v1" unless evidence["evidence"] == "skill-routing-experiment-v1"
+%w[repository agent compatibility artifacts metrics gate replay].each do |key|
+  errors << "missing top-level field #{key}" unless evidence.key?(key)
+end
+
+compatibility = evidence.fetch("compatibility", {})
+compatibility.each { |key, value| errors << "compatibility #{key} must be true" unless value == true }
+
+gate = evidence.fetch("gate", {})
+errors << "comparison gate did not pass" unless gate["passed"] == true
+
+repository = evidence.fetch("repository", {})
+if repository["worktree_clean"] == false && !options[:allow_dirty]
+  errors << "evidence was captured from a dirty worktree; use --allow-dirty only for an intentional dirty-tree experiment"
+end
+
+artifacts = evidence.fetch("artifacts", {})
+artifact_keys = %w[
+  baseline candidate comparison
+  baseline_routing_contract candidate_routing_contract
+  skill_manifest campaign_manifest result_schema remediation_policy evidence_schema
+]
+
+artifact_keys.each do |key|
+  artifact = artifacts[key]
+  unless artifact.is_a?(Hash)
+    errors << "artifact #{key} must be a mapping"
+    next
+  end
+
+  digest = artifact["sha256"].to_s
+  errors << "artifact #{key} sha256 must be 64 hex characters" unless digest.match?(/\A[0-9a-f]{64}\z/)
+
+  if options[:check_files]
+    artifact_path = artifact["path"].to_s
+    if artifact_path.empty?
+      errors << "artifact #{key} path is empty"
+    elsif !File.file?(artifact_path)
+      errors << "artifact #{key} is unavailable at #{artifact_path}"
+    elsif Digest::SHA256.file(artifact_path).hexdigest != digest
+      errors << "artifact #{key} SHA-256 mismatch"
+    end
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing evidence verification error(s)"
+end
+
+puts "Routing evidence verification"
+puts "  evidence: #{path}"
+puts "  repository SHA: #{repository.fetch("git_sha")}"
+puts "  worktree clean: #{repository.fetch("worktree_clean")}"
+puts "  compatibility: all true"
+puts "  gate: passed"
+puts "Routing evidence verification passed."
