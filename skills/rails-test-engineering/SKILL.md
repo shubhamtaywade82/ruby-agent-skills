@@ -27,6 +27,7 @@ Primary current Rails references:
 - choosing or reviewing model/request/integration/system/job tests
 - changing test helpers, fixtures, factories, or test database setup
 - diagnosing flaky tests
+- defining or running Rails Local CI with `config/ci.rb` and `bin/ci`
 - enabling or tuning parallel tests
 - changing transactional test behavior
 - testing asynchronous jobs/mailers
