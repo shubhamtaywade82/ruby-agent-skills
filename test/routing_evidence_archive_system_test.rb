@@ -37,6 +37,47 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
     end
   end
 
+  def test_archive_accepts_verified_single_campaign_evidence
+    require "digest"
+    Dir.mktmpdir("routing-campaign-archive") do |dir|
+      artifact = File.join(dir, "campaign.json")
+      File.write(artifact, "{}")
+      digest = Digest::SHA256.file(artifact).hexdigest
+      evidence = {
+        "protocol_version" => 1,
+        "evidence" => "skill-routing-campaign-v1",
+        "campaign" => "skill-routing-public-v1",
+        "campaign_version" => 1,
+        "routing_case_count" => 14,
+        "requested_repetitions" => 3,
+        "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
+        "agent" => {"provider" => "ollama", "model" => "test-model"},
+        "campaign_metrics" => {"primary_accuracy" => 1.0},
+        "analysis" => {"primary_mismatch_count" => 0},
+        "artifacts" => {
+          "campaign" => {"path" => artifact, "sha256" => digest, "bytes" => File.size(artifact)}
+        },
+        "intake" => {"verified" => true},
+        "replay" => {"campaign_runner" => "bin/routing-campaign"}
+      }
+      evidence_path = File.join(dir, "evidence.json")
+      File.write(evidence_path, JSON.pretty_generate(evidence))
+      archive_root = File.join(dir, "archive")
+      out, err, status = Open3.capture3(
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "routing-archive"),
+        evidence_path,
+        "--destination", archive_root,
+        chdir: ROOT
+      )
+      assert status.success?, "#{out}\n#{err}"
+      manifest_path = Dir[File.join(archive_root, "**", "ARCHIVE_MANIFEST.json")].first
+      manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+      assert_equal "skill-routing-campaign-v1", manifest.fetch("evidence_type")
+      assert_equal true, manifest.fetch("intake").fetch("verified")
+    end
+  end
+
   def test_validator_executes_this_system_test
     validator=File.read(File.join(ROOT,"bin","validate"),encoding:"UTF-8")
     assert_includes validator,"test/routing_evidence_archive_system_test.rb"
