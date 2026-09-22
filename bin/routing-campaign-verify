@@ -10,10 +10,11 @@ CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
 CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
 MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
 
-options = { expected_runs: nil }
+options = { expected_runs: nil, expected_repetitions: nil }
 
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-campaign-verify CAMPAIGN_JSON [options]"
+  opts.on("--expected-repetitions COUNT", Integer, "Override expected repetitions per case") { |value| options[:expected_repetitions] = value }
   opts.on("--expected-runs COUNT", Integer, "Override expected total run count") { |value| options[:expected_runs] = value }
 end.parse!
 
@@ -29,7 +30,7 @@ skills = YAML.safe_load(File.read(MANIFEST_PATH, encoding: "UTF-8"), permitted_c
 errors = []
 case_ids = routing_cases.map { |entry| entry.fetch("id") }.sort
 expected_case_count = routing_cases.length
-expected_repetitions = campaign_manifest.fetch("execution").fetch("repetitions").to_i
+expected_repetitions = options[:expected_repetitions] || campaign_manifest.fetch("execution").fetch("repetitions").to_i
 expected_runs = options[:expected_runs] || expected_case_count * expected_repetitions
 
 errors << "protocol_version must be 1" unless campaign["protocol_version"].to_i == 1
