@@ -17,9 +17,7 @@ class RoutingExperimentSystemTest < Minitest::Test
       File.write(baseline_router, "# Routing contract\nBASELINE\n")
       File.write(candidate_router, "# Routing contract\nCANDIDATE\n")
 
-      command = <<~RUBY.shellescape
-        ruby -rjson -e 'router=ENV.fetch(%q[RUBY_AGENT_ROUTING_ROUTER_FILE]); result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); candidate=File.read(router).include?(%q[CANDIDATE]); File.write(result, JSON.generate({protocol_version:1,case_id:ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]),primary_skill:(candidate ? %q[rails-authentication] : %q[rails-active-record]),secondary_skills:[],reason:%q[test]},JSON::State) + "\n")'
-      RUBY
+      command = "ruby -rjson -e 'router=ENV.fetch(%q[RUBY_AGENT_ROUTING_ROUTER_FILE]); result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); candidate=File.read(router).include?(%q[CANDIDATE]); payload={protocol_version:1,case_id:ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]),primary_skill:(candidate ? %q[rails-authentication] : %q[rails-active-record]),secondary_skills:[],reason:%q[test]}; File.write(result, JSON.generate(payload) + %q[\\n])'"
 
       stdout, stderr, status = Open3.capture3(
         RbConfig.ruby,
