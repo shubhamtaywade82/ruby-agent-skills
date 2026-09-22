@@ -628,6 +628,8 @@ For authentication changes:
 
 ## Rails Rack/middleware changes
 
+Review middleware ordering explicitly before changing the stack.
+
 For Rack and middleware changes:
 - resolve Ruby, Rails, Rack, server, and proxy/runtime versions before implementation;
 - inspect the actual middleware stack in relevant environments and use `bin/rails middleware` or equivalent evidence;
