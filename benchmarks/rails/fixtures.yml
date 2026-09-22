@@ -53,6 +53,8 @@ fixtures:
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
     required_regex:
+      - "class User"
+      - "class Organization"
       - "class Project"
       - "class Invitation"
       - "def valid?"
@@ -62,3 +64,4 @@ fixtures:
       - "class Errors"
       - "def add"
       - "tenant"
+      - "class ReusableDomainValidator"
