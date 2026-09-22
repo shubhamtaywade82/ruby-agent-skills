@@ -17,7 +17,7 @@ class RoutingExperimentSystemTest < Minitest::Test
       File.write(baseline_router, "# Routing contract\nBASELINE\n")
       File.write(candidate_router, "# Routing contract\nCANDIDATE\n")
 
-      command = "ruby -rjson -e 'router=ENV.fetch(%q[RUBY_AGENT_ROUTING_ROUTER_FILE]); result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); candidate=File.read(router).include?(%q[CANDIDATE]); payload={protocol_version:1,case_id:ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]),primary_skill:(candidate ? %q[rails-authentication] : %q[rails-active-record]),secondary_skills:[],reason:%q[test]}; File.write(result, JSON.generate(payload))'"
+      command = "ruby -rjson -e 'router=ENV.fetch(%q[RUBY_AGENT_ROUTING_ROUTER_FILE]); result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); candidate=File.read(router).include?(%q[CANDIDATE]); case_id=ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]); improved=(candidate && case_id == %q[password-recovery-not-authorization]); payload={protocol_version:1,case_id:case_id,primary_skill:(improved ? %q[rails-authentication] : %q[rails-active-record]),secondary_skills:[],reason:%q[test]}; File.write(result, JSON.generate(payload))'"
 
       stdout, stderr, status = Open3.capture3(
         RbConfig.ruby,
@@ -39,7 +39,7 @@ class RoutingExperimentSystemTest < Minitest::Test
       comparison = JSON.parse(File.read(File.join(output, "comparison.json"), encoding: "UTF-8"))
 
       assert_equal false, baseline.fetch("metrics").fetch("primary_accuracy") == 1.0
-      assert_equal 1.0, candidate.fetch("metrics").fetch("primary_accuracy")
+      assert_in_delta 1.0.fdiv(14), candidate.fetch("metrics").fetch("primary_accuracy"), 0.0001
       assert_equal true, comparison.fetch("gate").fetch("passed")
       assert_equal "test-model", baseline.fetch("agent").fetch("model")
       assert_equal "test-model", candidate.fetch("agent").fetch("model")
