@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Iteration 46–59 verify the skill system as a repository-wide product, not only as a collection of individual Rails topics.
+Iteration 46–60 verify the skill system as a repository-wide product, not only as a collection of individual Rails topics.
 
 The audit checks:
 
@@ -71,6 +71,8 @@ Iteration 57 adds the executable real-campaign wrapper and deterministic confusi
 Iteration 58 adds an explicit before/after routing remediation policy and comparator with regression gates for aggregate metrics, confusion pairs, and per-case primary accuracy.
 
 Iteration 59 adds a controlled baseline/candidate experiment runner that swaps only the routing-contract snapshot while keeping the agent invocation, model metadata, repetition count, and comparison gate consistent.
+
+Iteration 60 adds auditable evidence packaging for completed routing experiments, including artifact hashes, repository revision, compatibility metadata, and replay information.
 
 Run the audit directly with:
 ruby scripts/audit_repository_completeness.rb
