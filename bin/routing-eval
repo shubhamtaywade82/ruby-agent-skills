@@ -135,9 +135,15 @@ selected.each do |entry|
     result_file = File.join(run_dir, "result.json")
 
     File.write(prompt_file, entry.fetch("prompt").to_s + "\n", encoding: "UTF-8")
-    File.write(case_file, YAML.dump(entry), encoding: "UTF-8")
+    public_case = {
+      "protocol_version" => 1,
+      "case_id" => case_id,
+      "prompt" => entry.fetch("prompt").to_s
+    }
+    File.write(case_file, YAML.dump(public_case), encoding: "UTF-8")
 
     env = {
+      "RUBY_AGENT_ROUTING_PROTOCOL_VERSION" => "1",
       "RUBY_AGENT_ROUTING_CASE_ID" => case_id,
       "RUBY_AGENT_ROUTING_RUN_NUMBER" => run_number.to_s,
       "RUBY_AGENT_ROUTING_PROMPT_FILE" => prompt_file,
