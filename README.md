@@ -668,11 +668,9 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 50 — Rails Benchmark Coverage Expansion
+**Iteration 51 — Rails Benchmark Coverage Completion**
 
-Latest implementation is being validated by the repository CI pipeline.
-
-This milestone completes public benchmark coverage for the Rails evaluation corpus with disposable fixture seams, paired execution controls, independent verification, and zero unbenchmarked Rails evaluations.
+Latest implementation completes public benchmark coverage for the Rails evaluation corpus with disposable fixture seams, paired execution controls, independent verification, and zero unbenchmarked Rails evaluations.
 
 
 ## Rails Encryption and Credentials Engineering
