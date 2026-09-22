@@ -117,6 +117,11 @@ then debug from evidence.
 
 Use the repository's real CI/CD and staging/deployment checks. Never substitute a local test for a production deployment claim.
 
+## Rails 8 current framework considerations
+
+- Rails 8 applications are commonly provisioned with Kamal 2 and Thruster; Rails 8.1 also documents registry-free Kamal deployments for suitable setups.
+- Treat Kamal configuration, proxy behavior, image provenance, secret injection, health checks, and rollback/roll-forward behavior as deployment contracts rather than copying defaults blindly.
+
 ## Source foundation
 
 Grounded in the hosting/deployment activity from *The Ruby Workshop*. Production-readiness and evidence requirements are extended here for modern agent-assisted engineering.
