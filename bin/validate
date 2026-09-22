@@ -55,3 +55,5 @@ ruby -I"$ROOT/test" "$ROOT/test/rails_initialization_configuration_system_test.r
 ruby -I"$ROOT/test" "$ROOT/test/rails_engines_railties_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_encryption_credentials_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_serialization_globalid_system_test.rb"
