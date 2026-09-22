@@ -20,7 +20,7 @@ class RailsCrossBoundaryAuthorizationSecuritySystemTest < Minitest::Test
     patterns/rails/authorization-denial-contract.md
     patterns/rails/authorization-cache-composition.md
     patterns/rails/authorization-audit-composition.md
-    evals/security/cross-boundary-authorization-contract.yml
+    evals/rails/cross-boundary-authorization-contract.yml
   ].freeze
 
   def test_required_artifacts_exist
