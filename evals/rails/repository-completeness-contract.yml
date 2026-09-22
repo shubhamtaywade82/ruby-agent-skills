@@ -1,0 +1,78 @@
+id: rails-repository-completeness-contract
+version: 1
+title: Preserve repository-wide completeness while tracking current Rails framework evolution
+category: quality
+source: rails-repository-completeness-v1
+skills:
+  - agent-workflow
+  - rails-active-job
+  - rails-observability
+  - rails-action-view
+  - rails-associations
+  - rails-test-engineering
+  - rails-caching
+  - rails-action-cable
+  - rails-deployment
+  - rails-encryption-credentials-engineering
+patterns: []
+prompt: |
+  Audit a Ruby on Rails skill repository for registry completeness, routing coverage, validation coverage, executable system-test coverage, documentation inventory drift, and version-sensitive Rails framework gaps. Prefer existing skills and patterns, and treat current Rails documentation as the source of version-specific framework behavior.
+constraints:
+  required_design:
+    - every skill file is registered exactly once in the manifest
+    - every pattern file is registered at least once
+    - every evaluation file is registered
+    - every system test is executed by the canonical validator
+    - routing covers every selectable skill
+    - README inventory matches repository-derived counts
+    - version-sensitive Rails 8.1 deltas are routed to existing owning skills
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: registry
+    input: skill file exists but is absent from the manifest
+    expected: audit reports the unregistered skill instead of silently ignoring it
+  - name: pattern-registry
+    input: pattern file exists but has no manifest reference
+    expected: audit reports the orphaned pattern
+  - name: evaluation-registry
+    input: evaluation YAML exists outside registered evaluation paths
+    expected: audit reports the unregistered evaluation
+  - name: system-test
+    input: a system test exists but bin/validate does not invoke it
+    expected: audit fails until the validator invokes the test
+  - name: routing
+    input: a registered skill has no routing entry
+    expected: audit identifies the unrouted skill and requires a deliberate routing decision
+  - name: rails-continuation
+    input: Rails 8.1 resumable long-running jobs
+    expected: ActiveJob::Continuable is routed to rails-active-job with version-aware guidance
+  - name: rails-events
+    input: Rails 8.1 structured event reporting
+    expected: Rails.event is routed to observability without replacing authoritative instrumentation contracts
+  - name: rails-markdown
+    input: Rails 8.1 controller Markdown rendering
+    expected: Markdown response behavior is treated as an explicit Action View/HTTP contract
+  - name: rails-local-ci
+    input: Rails 8.1 local CI declaration
+    expected: config/ci.rb and bin/ci are covered by Rails test-engineering guidance
+  - name: rails-solid
+    input: Rails 8 Solid Cache and Solid Cable
+    expected: database-backed cache/pubsub behavior is covered by their owning Rails infrastructure skills
+  - name: rails-deploy
+    input: Rails 8 Kamal 2 and registry-free deployment
+    expected: deployment guidance treats Kamal and deployment-proxy behavior as version-sensitive runtime concerns
+  - name: rails-credentials
+    input: Rails 8.1 credentials command-line fetch
+    expected: deploy-time credential fetching remains inside the credentials/secrets boundary
+  - name: rails-authentication-generator
+    input: Rails 8 authentication system generator
+    expected: generated authentication remains version-aware and is reconciled with repository authentication boundaries
+grading:
+  functional: the repository's registries, routing, test execution, and framework coverage remain internally coherent
+  tests: structural and evaluation checks detect drift before release
+  contract: ownership and version-sensitive boundaries are explicit
+  scope_control: audit changes do not create duplicate skills where existing skills can own the capability
