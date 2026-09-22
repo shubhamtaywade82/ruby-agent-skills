@@ -150,3 +150,298 @@ fixtures:
       - "HMAC"
       - "expires_at"
       - "purpose"
+action-cable-contract:
+    root: benchmarks/rails/fixtures/action-cable-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class RealtimeConnection"
+      - "class NotificationsChannel"
+      - "def subscribe"
+      - "def broadcast"
+    forbidden_regex:
+      - "Redis"
+    contract_regex:
+      - "authenticated?"
+      - "tenant_id"
+      - "version"
+      - "reconcile"
+
+  action-mailbox-contract:
+    root: benchmarks/rails/fixtures/action-mailbox-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class IngressAuthenticator"
+      - "class SupportMailbox"
+      - "def process"
+      - "def route"
+    forbidden_regex:
+      - "Net::SMTP"
+    contract_regex:
+      - "authenticate"
+      - "eligible_senders"
+      - "duplicate"
+      - "quarantined"
+      - "expires_at"
+
+  action-mailer-contract:
+    root: benchmarks/rails/fixtures/action-mailer-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class SecurityMailer"
+      - "def security_notice"
+      - "def deliver_later"
+    forbidden_regex:
+      - "Net::HTTP"
+    contract_regex:
+      - "tenant_id"
+      - "ActionMailer::MailDeliveryJob"
+      - "to:"
+
+  action-text-contract:
+    root: benchmarks/rails/fixtures/action-text-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ArticleContent"
+      - "def sanitize"
+      - "def render"
+    forbidden_regex:
+      - "innerHTML"
+    contract_regex:
+      - "authorize_attachable"
+      - "api_representation"
+      - "content"
+
+  action-view-contract:
+    root: benchmarks/rails/fixtures/action-view-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ArticleView"
+      - "def render_partial"
+      - "def localized_template"
+    forbidden_regex:
+      - "ActiveRecord"
+    contract_regex:
+      - "strict"
+      - "render_layout"
+      - "sanitize"
+      - "helper_format"
+
+  active-model-contract:
+    root: benchmarks/rails/fixtures/active-model-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class SignupForm"
+      - "def valid?"
+      - "def to_model"
+    forbidden_regex:
+      - "ActiveRecord"
+    contract_regex:
+      - "model_name"
+      - "as_json"
+      - "errors"
+
+  active-storage-contract:
+    root: benchmarks/rails/fixtures/active-storage-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class DocumentAttachment"
+      - "def authorize!"
+      - "def attach"
+      - "def purge_later"
+    forbidden_regex:
+      - "Aws::S3::Client"
+    contract_regex:
+      - "tenant_id"
+      - "MAX_BYTES"
+      - "ActiveStorage::PurgeJob"
+      - "serve"
+
+  active-support-contract:
+    root: benchmarks/rails/fixtures/active-support-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "module TenantConcern"
+      - "class Component"
+      - "class CurrentContext"
+    forbidden_regex:
+      - "Object.const_get"
+    contract_regex:
+      - "with_tenant"
+      - "emit"
+      - "resolve_type"
+      - "CurrentContext"
+
+  rails-asset-build-contract:
+    root: benchmarks/rails/fixtures/rails-asset-build-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class AssetBuild"
+      - "def build"
+      - "def precompile"
+    forbidden_regex:
+      - "rm -rf"
+    contract_regex:
+      - "strategy_selection"
+      - "reproducible"
+      - "cache_key"
+      - "dependency_contract"
+
+  associations-contract:
+    root: benchmarks/rails/fixtures/associations-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class Account"
+      - "class Membership"
+      - "class AttachmentTarget"
+      - "class AssociationContract"
+    forbidden_regex:
+      - "HABTM"
+    contract_regex:
+      - "tenant_id"
+      - "ALLOWED_TYPES"
+      - "autosave"
+      - "each_recent"
+
+  engines-railties-contract:
+    root: benchmarks/rails/fixtures/engines-railties-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ReportsEngine"
+      - "class ReportsRailtie"
+      - "isolate_namespace"
+      - "gemspec_contract"
+    forbidden_regex:
+      - "load_paths <<"
+    contract_regex:
+      - "mount_path"
+      - "initialize_hook"
+      - "generator_output"
+      - "required_rails"
+
+  hotwire-contract:
+    root: benchmarks/rails/fixtures/hotwire-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class HotwireContract"
+      - "def frame_response"
+      - "def stream_response"
+      - "def csrf_valid?"
+    forbidden_regex:
+      - "authorize_client_only"
+    contract_regex:
+      - "target"
+      - "cache_key"
+      - "tenant_id"
+      - "controller_disconnect"
+
+  i18n-contract:
+    root: benchmarks/rails/fixtures/i18n-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class LocaleResolver"
+      - "class NotificationTranslator"
+      - "def pluralize"
+      - "def cache_key"
+    forbidden_regex:
+      - "I18n.locale ="
+    contract_regex:
+      - "SUPPORTED"
+      - "with_locale"
+      - "propagate_to_job"
+      - "locale"
+
+  rails-initialization-configuration-contract:
+    root: benchmarks/rails/fixtures/rails-initialization-configuration-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class AppConfig"
+      - "class Initializer"
+      - "class BootContract"
+      - "def boot"
+    forbidden_regex:
+      - "sleep("
+    contract_regex:
+      - "env"
+      - "reload"
+      - "required"
+      - "timeout"
+
+  rails-operational-tasks-maintenance-contract:
+    root: benchmarks/rails/fixtures/rails-operational-tasks-maintenance-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class MaintenanceRunner"
+      - "def dry_run"
+      - "def run"
+      - "def verify"
+    forbidden_regex:
+      - "delete_all"
+    contract_regex:
+      - "batch_size"
+      - "lock"
+      - "processed"
+      - "failed"
+
+  rails-rack-middleware-contract:
+    root: benchmarks/rails/fixtures/rails-rack-middleware-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class RequestIdMiddleware"
+      - "def call"
+      - "x-request-id"
+    forbidden_regex:
+      - "rescue Exception"
+    contract_regex:
+      - "rate_limited"
+      - "request_id"
+      - "downstream"
+
+  rails-repository-completeness-contract:
+    root: benchmarks/rails/fixtures/repository-completeness-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class CompletenessAuditor"
+      - "def registry_complete?"
+      - "def routing_complete?"
+      - "def system_test_complete?"
+    forbidden_regex:
+      - "skip"
+    contract_regex:
+      - "rails_8_1_coverage"
+      - "config/ci.rb"
+      - "Rails.event"
+      - "ActiveJob::Continuable"
+
+  rails-staff-principal-architecture-contract:
+    root: benchmarks/rails/fixtures/staff-principal-architecture-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ArchitectureDecision"
+      - "class ArchitectureReview"
+      - "def alternatives"
+      - "def migration_plan"
+    forbidden_regex:
+      - "microservice_by_default"
+    contract_regex:
+      - "no_change"
+      - "data_owner"
+      - "dependency_direction"
+      - "fitness_rule"
