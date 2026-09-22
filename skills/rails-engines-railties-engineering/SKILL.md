@@ -1,0 +1,75 @@
+---
+name: rails-engines-railties-engineering
+description: Design and review Rails Engines and Railties as isolated extension boundaries with explicit boot, routing, configuration, loading, dependency, and host-application contracts.
+family: rails
+---
+# Rails Engines and Railties Engineering
+
+## Purpose
+Use this skill when a Rails codebase introduces, modifies, embeds, mounts, publishes, or integrates an Engine, Railtie, Rails plugin, mountable component, or reusable Rails extension.
+
+## Activate when
+Activate for Rails::Engine, Rails::Railtie, Rails plugins and mountable engines, isolate_namespace, engine routes and mounting, engine controllers/models/jobs/mailers/helpers/views, engine configuration, engine initializers and lifecycle hooks, engine generators and rake tasks, engine assets, engine gem dependencies, host overrides/decorations, engine testing, and compatibility changes.
+
+## Core contract
+An Engine is an extension boundary within a host Rails application. A Railtie is a narrower extension point for hooking into Rails configuration and lifecycle without necessarily owning a full application boundary. Preserve clear separation between engine ownership, host-application authority, configuration, mount/route exposure, and dependency compatibility. The Rails Engines guide documents engines as miniature applications with isolation, mounting, configuration, testing, autoloading, assets, and overrides.
+
+## Repository inspection
+Resolve Ruby, Rails, Bundler, and relevant gem versions. Identify full engine, mountable engine, Railtie-only plugin, or ordinary gem. Inspect engine.rb, railtie.rb, top-level lib file, gemspec, isolate_namespace, engine routes, host mounts, initializers, Zeitwerk paths, generators, rake tasks, assets, migrations, host overrides, dummy application, and compatibility constraints.
+
+## Engine boundary and isolation
+Use namespace isolation when engine-owned controllers, models, helpers, routes, tables, and constants must not collide with the host or other engines. Isolation does not provide authorization or tenancy semantics.
+
+## Mounting and routing
+Treat mounting as a host-application integration decision. Review mount path, route helpers, constraints, authentication and authorization, URL generation, collisions, and public exposure.
+
+## Engine configuration
+Treat engine configuration as a public contract. Define owner, namespace, default, required status, initialization timing, host override semantics, and compatibility. Prefer explicit configuration over arbitrary host globals.
+
+## Railtie and initialization
+Use a Railtie when the extension primarily needs Rails configuration, initialization hooks, generators, or framework extension points without a full application boundary. Keep setup narrow and idempotent where lifecycle requires it.
+
+## Engine code ownership
+Keep engine-owned classes in the engine namespace where isolation is intended. Prefer supported extension points, composition, callbacks, or narrow decorators over undocumented monkey patches. The host application retains final authority over environment-wide behavior.
+
+## Dependencies and compatibility
+Treat the engine gemspec as an executable compatibility contract. Inspect Ruby and Rails requirements, runtime dependencies, transitive framework assumptions, and supported version matrices. Do not depend on private host implementation details without an explicit contract.
+
+## Autoloading and load order
+Engine paths and namespaces must satisfy the actual loader contract. Review app directories, lib files, eager loading, autoload roots, reloadable versus once-loaded code, and Railtie/Engine boot timing. Do not add arbitrary require calls to hide structural Zeitwerk errors.
+
+## Generators, tasks, and migrations
+Generators, engine tasks, install hooks, and migrations are extension surfaces. Namespace tasks, make generated changes explicit, review migration ownership and reversibility, and avoid unexpected host mutation.
+
+## Assets and frontend integration
+Engine assets belong to an explicit ownership boundary. Respect the host application's established asset/build strategy, manifest, precompile, fingerprinting, and artifact contracts.
+
+## Testing strategy
+Use isolated engine tests plus dummy-application/host integration tests. Cover namespace isolation, mount and routes, configuration, boot, autoloading, host overrides, generators/tasks/migrations, assets, and supported compatibility paths.
+
+## Anti-patterns / failure modes
+Avoid unisolated engine leakage, using a Railtie as a full application boundary without justification, arbitrary host constant access, undocumented monkey patches, implicit initializer ordering, routes mounted without explicit security review, hidden global engine configuration, migration collisions, generator side effects, asset-contract bypasses, broad require calls masking Zeitwerk errors, and claiming isolation provides authorization.
+
+## Agent review checklist
+- [ ] Engine/Railtie/plugin boundary identified
+- [ ] Ruby/Rails/dependency versions resolved
+- [ ] namespace/isolation contract explicit
+- [ ] mount and route ownership explicit
+- [ ] configuration boundary explicit
+- [ ] initialization lifecycle inspected
+- [ ] autoloading/load order verified
+- [ ] gemspec compatibility reviewed
+- [ ] host overrides are explicit and narrow
+- [ ] generators/tasks/migrations reviewed
+- [ ] asset/build integration reviewed
+- [ ] dummy/host integration tests exist
+
+## Verification
+Resolve versions -> classify Engine vs Railtie -> inspect namespace, mount, configuration, and lifecycle -> inspect autoloading and gemspec -> implement the smallest boundary -> run engine/host integration tests -> run route/autoload/configuration checks -> run repository validation -> inspect CI evidence. Do not claim engine compatibility or isolation from static structure alone.
+
+## Source foundation
+- https://guides.rubyonrails.org/engines.html
+- https://api.rubyonrails.org/classes/Rails/Engine.html
+- https://api.rubyonrails.org/classes/Rails/Railtie.html
+- https://guides.rubyonrails.org/autoloading_and_reloading_constants.html
+- https://guides.rubyonrails.org/configuring.html
