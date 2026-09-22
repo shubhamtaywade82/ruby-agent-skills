@@ -12,7 +12,7 @@ fixtures:
       - "def index"
       - "def download"
     forbidden_regex:
-      - "redirect_to\s+params"
+      - 'redirect_to\\s+params'
     contract_regex:
       - "class ReportsController"
       - "def authorize"
@@ -27,7 +27,7 @@ fixtures:
       - "class OrderReport"
       - "def each_batch"
     forbidden_regex:
-      - "all_records\.map"
+      - 'all_records\\.map'
     contract_regex:
       - "def after_commit"
       - "def pluck"
