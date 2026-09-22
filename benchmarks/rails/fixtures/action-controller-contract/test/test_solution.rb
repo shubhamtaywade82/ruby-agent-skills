@@ -12,12 +12,21 @@ class ReportsControllerTest < Minitest::Test
   end
 
   def test_json_and_html_have_explicit_response_contract
-    json = @controller.index(params: { id: 1 }, current_user: 7, format: :json)
-    html = @controller.index(params: { id: 1 }, current_user: 7, format: :html)
+    json = @controller.index(params: { report: { id: 1, ignored: "attack" } }, current_user: 7, format: :json)
+    html = @controller.index(params: { report: { id: 1 } }, current_user: 7, format: :html)
 
     assert_equal 200, json[:status]
     assert_equal "application/json", json[:content_type]
     assert_equal "text/html", html[:content_type]
+    refute json[:body].is_a?(Hash) && json[:body].key?(:ignored)
+  end
+
+  def test_invalid_nested_input_and_unsupported_format_are_deterministic
+    invalid = @controller.index(params: { report: {} }, current_user: 7, format: :json)
+    unsupported = @controller.index(params: { report: { id: 1 } }, current_user: 7, format: :xml)
+
+    assert_equal 400, invalid[:status]
+    assert_equal 406, unsupported[:status]
   end
 
   def test_unauthorized_resource_is_rejected
