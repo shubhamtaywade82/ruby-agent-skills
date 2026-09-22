@@ -59,3 +59,22 @@ Evidence packages may be stored outside the source repository or attached to a r
 
 A result without an evidence package remains a valid experiment result, but it is not considered fully auditable release evidence.
 
+
+
+## Repository integrity
+
+Iteration 61 records repository identity and worktree state:
+
+- `git_sha`
+- `git_branch`
+- `git_status`
+- `worktree_clean`
+- `status_entries`
+
+Evidence packaging rejects a dirty worktree by default. `--allow-dirty` is an explicit opt-in for experiments that intentionally capture an uncommitted routing-contract change.
+
+## Evidence verification
+
+`bin/routing-evidence-verify` independently validates routing evidence before it is stored or attached to a benchmark/release record.
+
+Default verification checks protocol identity, required fields, compatibility flags, remediation-gate state, digest shape, and repository worktree policy. `--check-files` additionally recalculates SHA-256 for every recorded artifact path and rejects mismatches.
