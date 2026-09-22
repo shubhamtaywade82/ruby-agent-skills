@@ -289,17 +289,6 @@ skills:
     family: rails
     path: skills/rails-engines-railties-engineering/SKILL.md
     triggers: [Rails::Engine, Rails::Railtie, Engine, Railtie, plugin, mountable, isolate_namespace, engine routes, engine, engine.rb, railtie.rb, generators, engine gemspec]
-  rails-engines-railties-engineering:
-    source: rails-engines-railties-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/engines-railties-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
   rails-hotwire:
     family: rails
     path: skills/rails-hotwire/SKILL.md
