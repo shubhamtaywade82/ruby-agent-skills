@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 57 — Real Agent Routing Campaign and Confusion Analysis  
+> **Current milestone:** Iteration 58 — Routing Remediation and Before/After Regression Gate  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -56,7 +56,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **47** |
+| Dedicated system/contract tests | **48** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -753,3 +753,7 @@ Iteration 56 adds an actual Ollama-backed routing adapter and closes a benchmark
 ## Iteration 57 — Real Agent Routing Campaign and Confusion Analysis
 
 Iteration 57 adds the executable `bin/routing-campaign` command and `bin/routing-analyze` report generator. The runner validates Ollama availability/model presence, executes the configured repeated routing campaign, then produces per-case stability and expected-primary versus observed-primary confusion evidence. A missing model/runtime is reported explicitly rather than producing synthetic benchmark results.
+
+## Iteration 58 — Routing Remediation and Before/After Regression Gate
+
+Iteration 58 adds `router/ROUTING_REMEDIATION.yml` and `bin/routing-compare`. The comparator takes a baseline and candidate campaign and reports metric deltas, resolved/new confusion pairs, and per-case routing changes. The remediation gate rejects incomplete campaigns, primary/secondary regressions, newly introduced primary confusion pairs, and case-level primary regressions according to explicit thresholds.
