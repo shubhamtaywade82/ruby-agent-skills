@@ -9,12 +9,12 @@ skills:
   - ruby-api-design
   - ruby-tdd-refactoring
 patterns:
-  - command
+  - command-object
 prompt: |
   Implement User::Deactivate as a focused command object. It receives a User, exposes one call operation, deactivates the user, and returns the user. Do not create a broad UserService or Manager.
 constraints:
   required_design:
-    - command
+    - command-object
 checks:
   - functional
   - tests

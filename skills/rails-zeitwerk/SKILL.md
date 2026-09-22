@@ -8,7 +8,7 @@ description: Use when creating, moving, renaming, loading, reloading, eager-load
 ## Purpose
 Treat Ruby file layout, constant definitions, namespaces, autoload paths, reloading, eager loading, and initialization as one executable contract.
 
-Rails uses Zeitwerk loaders for application autoloading, reloading, and eager loading. Within autoload paths, file names must match the constants they define and directories act as namespaces. citeturn742101view1
+Rails uses Zeitwerk loaders for application autoloading, reloading, and eager loading. Within autoload paths, file names must match the constants they define and directories act as namespaces.
 
 ## Activate when
 - adding, moving, or renaming classes/modules
@@ -34,51 +34,51 @@ Within a Zeitwerk-managed root:
 users_controller.rb -> UsersController
 admin/payments_controller.rb -> Admin::PaymentsController
 ```
-Rails documents this file/constant contract. citeturn742101view1
+Rails documents this file/constant contract.
 
-Apply the one-file/one-top-level-constant rule. Rails upgrade guidance explicitly requires separating unrelated top-level constants into their own files under Zeitwerk. citeturn183770search0
+Apply the one-file/one-top-level-constant rule. Rails upgrade guidance explicitly requires separating unrelated top-level constants into their own files under Zeitwerk.
 
 ## Roots and namespaces
 Each autoload root represents a top-level namespace by default. Avoid nested autoload roots unless their namespace semantics are deliberate.
 
-Prefer existing Rails autoload paths. Rails automatically manages existing app subdirectories, while custom paths should use config.autoload_paths. citeturn742101view1
+Prefer existing Rails autoload paths. Rails automatically manages existing app subdirectories, while custom paths should use config.autoload_paths.
 
 Do not use wildcard autoload roots to make arbitrary subdirectories roots.
 
 ## lib handling
-Modern Rails supports config.autoload_lib(ignore:) for application code that should be autoloaded/eager-loaded while excluding non-application subdirectories such as assets, tasks, templates, and generators. citeturn742101view1
+Modern Rails supports config.autoload_lib(ignore:) for application code that should be autoloaded/eager-loaded while excluding non-application subdirectories such as assets, tasks, templates, and generators.
 
 Before autoloading lib: inventory its subdirectories, identify non-Ruby/runtime files, configure ignores, and verify eager loading.
 
 ## Initializers and reloadable constants
 Initializers run at boot and do not repeat on reload. Do not directly reference reloadable application constants from initializers when the configuration must track reloads.
 
-Use config.to_prepare when reloadable code must be configured on boot and after reload. Rails documents this pattern and notes the callback should be idempotent. citeturn742101view2
+Use config.to_prepare when reloadable code must be configured on boot and after reload. Rails documents this pattern and notes the callback should be idempotent.
 
 Use after_initialize only for behavior intentionally limited to boot.
 
 ## Reloadable vs once-loaded
-Main application code is normally managed by the main loader and can reload. Once-loaded code is managed separately and is appropriate when long-lived framework configuration stores the class/module object across reloads. Rails documents this for middleware and serializers. citeturn742101view2
+Main application code is normally managed by the main loader and can reload. Once-loaded code is managed separately and is appropriate when long-lived framework configuration stores the class/module object across reloads. Rails documents this for middleware and serializers.
 
 Do not cache reloadable class/module objects in long-lived registries, constants, framework configuration, or singletons.
 
 ## Stale objects
-Reloading replaces class/module objects. Existing instances can remain instances of the old class after reload. Rails explicitly warns against caching reloadable classes/modules. citeturn742101view2
+Reloading replaces class/module objects. Existing instances can remain instances of the old class after reload. Rails explicitly warns against caching reloadable classes/modules.
 
 ## Inflections
-Rails normally maps basenames using String#camelize. If html_parser.rb must define HTMLParser, configure an intentional inflection/acronym rather than renaming unrelated code. Rails supports global acronyms and per-loader inflector overrides. citeturn742101view3
+Rails normally maps basenames using String#camelize. If html_parser.rb must define HTMLParser, configure an intentional inflection/acronym rather than renaming unrelated code. Rails supports global acronyms and per-loader inflector overrides.
 
 Prefer the narrowest inflection change that fits the repository contract.
 
 ## require and require_dependency
-Do not add require calls for application constants managed by Rails autoloaders. Rails documents that application classes are available without manual requires. citeturn742101view1
+Do not add require calls for application constants managed by Rails autoloaders. Rails documents that application classes are available without manual requires.
 
-Investigate legacy require_dependency usage instead of copying it into new Zeitwerk code. Rails upgrade guidance notes known require_dependency use cases have been eliminated under Zeitwerk. citeturn183770search0
+Investigate legacy require_dependency usage instead of copying it into new Zeitwerk code. Rails upgrade guidance notes known require_dependency use cases have been eliminated under Zeitwerk.
 
 Ordinary require remains appropriate for code outside the managed autoload boundary or intentionally explicit load boundaries.
 
 ## Eager loading
-Treat eager loading as both a production boot concern and a structural consistency check. Under Zeitwerk, autoloading and eager loading should agree on the file/constant contract. citeturn183770search0
+Treat eager loading as both a production boot concern and a structural consistency check. Under Zeitwerk, autoloading and eager loading should agree on the file/constant contract.
 
 For production-only loading failures:
 ```text
@@ -87,10 +87,10 @@ development autoload -> production eager load -> derive expected constant -> ins
 
 ## Circular dependencies and shadowing
 Avoid constant-level circular dependencies. Inspect duplicate filenames across roots, duplicate constant ownership, ignored paths defining managed constants, and generated/source collisions.
-Zeitwerk documents circular dependencies, shadowed files, and introspection as explicit concerns. citeturn742101view0
+Zeitwerk documents circular dependencies, shadowed files, and introspection as explicit concerns.
 
 ## Engines and custom root namespaces
-When an engine or custom namespace is involved, inspect its loader configuration and root ownership instead of assuming the main application's Object namespace. Zeitwerk supports custom root namespaces. citeturn742101view3
+When an engine or custom namespace is involved, inspect its loader configuration and root ownership instead of assuming the main application's Object namespace. Zeitwerk supports custom root namespaces.
 
 ## Debugging procedure
 ```text

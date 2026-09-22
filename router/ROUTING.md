@@ -21,12 +21,15 @@ This file defines how an agent should select and compose skills.
 | Ruby syntax/semantics | ruby-core | ruby-clean-code |
 | Ruby values/data representation | ruby-data-types | ruby-core, ruby-clean-code |
 | Branches/loops/boolean logic | ruby-control-flow | ruby-core, ruby-clean-code |
-| Arrays/hashes/Enumerable | ruby-collections | ruby-enumerables, ruby-data-types, ruby-clean-code |\n| Blocks/Procs/lambdas | ruby-blocks-procs-lambdas | ruby-method-design, ruby-tdd-refactoring |\n| Public Ruby API contract | ruby-api-design | ruby-method-design, ruby-oop, ruby-tdd-refactoring |
+| Arrays/hashes/Enumerable | ruby-collections | ruby-enumerables, ruby-data-types, ruby-clean-code |
+| Blocks/Procs/lambdas | ruby-blocks-procs-lambdas | ruby-method-design, ruby-tdd-refactoring |
+| Public Ruby API contract | ruby-api-design | ruby-method-design, ruby-oop, ruby-tdd-refactoring |
 | Plain Ruby object extraction | ruby-poro | ruby-oop, ruby-object-composition, ruby-tdd-refactoring |
 | Application workflow | ruby-service-objects | ruby-poro, ruby-api-design, ruby-tdd-refactoring, pattern:service-object |
 | Business concept/invariant modeling | ruby-domain-modeling | ruby-poro, ruby-oop, ruby-clean-code, ruby-tdd-refactoring |
 | Replaceable/external collaborator | ruby-dependency-injection | ruby-poro, ruby-api-design, pattern:dependency-injection, ruby-tdd-refactoring |
-| Inheritance/coupling refactor | ruby-object-composition | ruby-oop, ruby-dependency-injection, pattern:composition-over-inheritance, ruby-tdd-refactoring |\n| Complex boolean predicates | ruby-boolean-logic | ruby-control-flow, ruby-method-design, ruby-clean-code |
+| Inheritance/coupling refactor | ruby-object-composition | ruby-oop, ruby-dependency-injection, pattern:composition-over-inheritance, ruby-tdd-refactoring |
+| Complex boolean predicates | ruby-boolean-logic | ruby-control-flow, ruby-method-design, ruby-clean-code |
 | New/refactored method | ruby-method-design | ruby-clean-code, ruby-tdd-refactoring |
 | Class/domain design | ruby-oop | ruby-method-design, ruby-clean-code |
 | Shared behavior/namespaces | ruby-modules-mixins | ruby-oop, ruby-clean-code |
@@ -34,7 +37,8 @@ This file defines how an agent should select and compose skills.
 | File/CSV/HTTP/dependency boundary | ruby-gems-io-services | ruby-api-design, ruby-debugging, ruby-tdd-refactoring, pattern:external-api-client |
 | Runtime failure/exception | ruby-debugging | ruby-tdd-refactoring |
 | Rails application structure | rails-architecture | ruby-clean-code |
-| Rails routes | rails-routing | rails-controllers, rails-testing |\n| Rails Routing deep engineering | rails-routing | rails-action-controller, rails-controllers, rails-authentication, rails-security, rails-i18n, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |
+| Rails routes | rails-routing | rails-controllers, rails-testing |
+| Rails Routing deep engineering | rails-routing | rails-action-controller, rails-controllers, rails-authentication, rails-security, rails-i18n, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |
 | Rails controller action | rails-controllers | rails-routing, ruby-method-design, rails-testing |
 | Rails Action Controller HTTP boundary | rails-action-controller | rails-routing, rails-controllers, rails-authentication, rails-security, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-test-engineering, rails-testing |
 | Rails view/form | rails-views | rails-controllers, rails-testing |
@@ -46,8 +50,17 @@ This file defines how an agent should select and compose skills.
 | Rails Validation deep engineering | rails-validations | rails-active-record, rails-active-model, rails-associations, rails-database-engineering, rails-action-controller, rails-action-view, rails-api-integration, rails-i18n, rails-security, rails-performance, rails-test-engineering, rails-testing |
 | Authentication/session | rails-authentication | rails-controllers, rails-testing, session-fixation-rotation |
 | Rails test design | rails-testing | relevant implementation skill, ruby-tdd-refactoring |
-| Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |\n| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |\n| Route precedence/shadowing | rails-routing | rails-action-controller, rails-testing, pattern:route-precedence-contract |\n| Nested/shallow route design | rails-routing | rails-associations, rails-authentication, rails-testing, pattern:nested-route-boundary |\n| Route scopes/namespaces/constraints | rails-routing | rails-action-controller, rails-security, rails-testing, pattern:route-scope-namespace-contract, pattern:route-constraint-contract |\n| URL helper/polymorphic routing | rails-routing | rails-action-view, rails-action-mailer, rails-i18n, rails-testing, pattern:route-helper-contract |\n| Routing concerns/direct/resolve | rails-routing | rails-testing, pattern:route-concern-contract, pattern:direct-route-resolution |\n| Mounted Rack/engine endpoint | rails-routing | rails-security, rails-testing, pattern:mounted-endpoint-boundary |\n| Catch-all/redirect fallback routing | rails-routing | rails-action-controller, rails-security, rails-testing, pattern:catch-all-route-boundary |
-| Rails Authentication engineering | rails-authentication | rails-action-controller, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |\n| Rails Authorization engineering | rails-authorization | rails-authentication, rails-security, rails-security-engineering, rails-active-record, rails-active-job, rails-action-cable, rails-api-integration, rails-database-engineering, rails-test-engineering, rails-testing, pattern:authorized-scope-boundary, pattern:tenant-isolation-authorization |
+| Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |
+| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |
+| Route precedence/shadowing | rails-routing | rails-action-controller, rails-testing, pattern:route-precedence-contract |
+| Nested/shallow route design | rails-routing | rails-associations, rails-authentication, rails-testing, pattern:nested-route-boundary |
+| Route scopes/namespaces/constraints | rails-routing | rails-action-controller, rails-security, rails-testing, pattern:route-scope-namespace-contract, pattern:route-constraint-contract |
+| URL helper/polymorphic routing | rails-routing | rails-action-view, rails-action-mailer, rails-i18n, rails-testing, pattern:route-helper-contract |
+| Routing concerns/direct/resolve | rails-routing | rails-testing, pattern:route-concern-contract, pattern:direct-route-resolution |
+| Mounted Rack/engine endpoint | rails-routing | rails-security, rails-testing, pattern:mounted-endpoint-boundary |
+| Catch-all/redirect fallback routing | rails-routing | rails-action-controller, rails-security, rails-testing, pattern:catch-all-route-boundary |
+| Rails Authentication engineering | rails-authentication | rails-action-controller, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |
+| Rails Authorization engineering | rails-authorization | rails-authentication, rails-security, rails-security-engineering, rails-active-record, rails-active-job, rails-action-cable, rails-api-integration, rails-database-engineering, rails-test-engineering, rails-testing, pattern:authorized-scope-boundary, pattern:tenant-isolation-authorization |
 | Rails Hotwire engineering | rails-hotwire | rails-action-controller, rails-action-view, rails-authentication, rails-authorization, rails-security, rails-i18n, rails-action-cable, rails-caching, rails-test-engineering, rails-testing, pattern:turbo-frame-contract, pattern:stimulus-controller-boundary |
 | Rails Asset and Build Infrastructure engineering | rails-asset-build-engineering | rails-hotwire, rails-production-runtime, rails-deployment, rails-release-engineering, rails-security-engineering, ruby-runtime-compatibility, rails-test-engineering |
 | Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
@@ -71,7 +84,7 @@ This file defines how an agent should select and compose skills.
 | Test-driven change | ruby-tdd-refactoring | relevant implementation skill |
 | Primitive with domain behavior | ruby-data-types | ruby-oop, pattern:value-object |
 | Multi-step application workflow | ruby-service-objects | ruby-poro, ruby-domain-modeling, pattern:service-object, pattern:application-service, ruby-tdd-refactoring |
-| Explicit application command | ruby-service-objects | ruby-api-design, pattern:command, ruby-tdd-refactoring |
+| Explicit application command | ruby-service-objects | ruby-api-design, pattern:command-object, ruby-tdd-refactoring |
 | Reusable business decision | ruby-domain-modeling | pattern:policy-object, pattern:specification, ruby-tdd-refactoring |
 | Interchangeable implementation | ruby-object-composition | ruby-dependency-injection, pattern:strategy-object, pattern:factory, ruby-tdd-refactoring |
 | External boundary | ruby-dependency-injection | pattern:adapter, pattern:dependency-injection, pattern:external-api-client |
@@ -84,7 +97,8 @@ This file defines how an agent should select and compose skills.
 | Rails presentation transformation | rails-views | pattern:presenter, rails-testing |
 | Interchangeable algorithm/policy | ruby-oop | pattern:strategy-object |
 | Replace inheritance with collaborators | ruby-oop | pattern:composition-over-inheritance |
-| External/legacy API boundary | ruby-gems-io-services | ruby-api-design, pattern:external-api-client, pattern:adapter, ruby-debugging |\n| Reusable Ruby gem/library | ruby-gems-io-services | ruby-api-design, pattern:ruby-gem |
+| External/legacy API boundary | ruby-gems-io-services | ruby-api-design, pattern:external-api-client, pattern:adapter, ruby-debugging |
+| Reusable Ruby gem/library | ruby-gems-io-services | ruby-api-design, pattern:ruby-gem |
 | Complex/read-oriented Rails query | rails-activerecord | pattern:query-object, rails-testing |
 | Multi-model/input validation boundary | rails-controllers | pattern:form-object, rails-validations |
 | Authorization boundary | rails-authentication | pattern:policy-boundary, rails-testing |

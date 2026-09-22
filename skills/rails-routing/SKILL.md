@@ -57,7 +57,7 @@ Use member/collection routes only for coherent resource operations. Prefer an ex
 
 ## Route precedence and shadowing
 
-Rails matches routes in declaration order; the first matching route wins. A generic dynamic route such as /photos/:id can therefore capture a literal path such as /photos/poll when the literal route appears later. citeturn297997view0
+Rails matches routes in declaration order; the first matching route wins. A generic dynamic route such as /photos/:id can therefore capture a literal path such as /photos/poll when the literal route appears later.
 
 When adding a route:
 
@@ -72,7 +72,7 @@ Do not add arbitrary constraints merely to hide a route-order defect.
 
 Use nesting to encode a real parent-child addressing contract, not merely a database association.
 
-Keep nested routes shallow enough that URLs and helpers remain comprehensible. Rails explicitly recommends limiting deep nesting and supports shallow routing when only collection actions need parent context while member routes are uniquely identifiable by the child. citeturn297997view0
+Keep nested routes shallow enough that URLs and helpers remain comprehensible. Rails explicitly recommends limiting deep nesting and supports shallow routing when only collection actions need parent context while member routes are uniquely identifiable by the child.
 
 Before nesting, answer:
 
@@ -104,7 +104,7 @@ Typical constraints include segment formats, host/subdomain, request properties,
 
 Keep constraints cheap, deterministic, and side-effect free. Do not perform database writes, network calls, authorization workflows, or business transactions inside constraints.
 
-Constraints shape dispatch; they are not authorization, validation, or domain invariants. Rails notes that request constraint values should match the corresponding Request method value type. citeturn943890search0
+Constraints shape dispatch; they are not authorization, validation, or domain invariants. Rails notes that request constraint values should match the corresponding Request method value type.
 
 ## Route helpers and URL generation
 
@@ -165,7 +165,7 @@ A catch-all route needs an explicit purpose and owner. Do not use it as a generi
 
 ## Rack mounts and engines
 
-Rails routing can forward requests to Rack endpoints, and engines contribute additional route sets. Treat a mount as a separate dispatch and security boundary. citeturn297997view0turn943890search10
+Rails routing can forward requests to Rack endpoints, and engines contribute additional route sets. Treat a mount as a separate dispatch and security boundary.
 
 When mounting:
 
@@ -237,7 +237,7 @@ Use the smallest boundary that proves the route contract:
 - request/integration tests for dispatch plus controller behavior;
 - system tests when browser navigation or redirects matter.
 
-Rails documents these route-specific assertions for generation and recognition. citeturn297997view0
+Rails documents these route-specific assertions for generation and recognition.
 
 Always include negative cases when relevant: wrong verb, mismatched constraint, shadowed route, unsupported format, wrong host/subdomain, unauthorized namespace access, and catch-all behavior.
 
@@ -272,4 +272,4 @@ Then run request/integration/system tests that own the affected endpoint. Review
 
 ## Source foundation
 
-Derived from the Rails Routing Guide's resource routing, helper generation, controller namespaces/scopes, nested resources, routing concerns, constraints, direct routes, resolve, Rack mounting, route inspection, and routing-test contracts; supplemented by the repository's existing routing/REST/testing/security material. citeturn297997view0
+Derived from the Rails Routing Guide's resource routing, helper generation, controller namespaces/scopes, nested resources, routing concerns, constraints, direct routes, resolve, Rack mounting, route inspection, and routing-test contracts; supplemented by the repository's existing routing/REST/testing/security material.

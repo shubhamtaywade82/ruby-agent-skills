@@ -363,7 +363,7 @@ patterns:
       - patterns/ruby-design/ruby-gem.md
       - patterns/ruby-design/metaprogramming-boundary.md
       - patterns/ruby-design/application-service.md
-      - patterns/ruby-design/command.md
+      - patterns/ruby-design/command-object.md
       - patterns/ruby-design/policy-object.md
       - patterns/ruby-design/null-object.md
       - patterns/ruby-design/factory.md

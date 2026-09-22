@@ -2,7 +2,7 @@
 
 This repository incorporates the RSpec Style Guide at https://rspec.rubystyle.guide/ as the specification-layer guidance for RSpec tests.
 
-The upstream guide states that it targets RSpec 3 or later and that `rubocop-rspec` provides a way to enforce its rules. citeturn198163view0
+The upstream guide states that it targets RSpec 3 or later and that `rubocop-rspec` provides a way to enforce its rules.
 
 ## Covered areas
 
@@ -27,7 +27,7 @@ The guide is organized around complete spec-file structure and covers:
 - appropriate test-data volume;
 - integration-vs-unit test considerations.
 
-The upstream guide is a living document and notes that RSpec practices evolve over time. citeturn198163view0
+The upstream guide is a living document and notes that RSpec practices evolve over time.
 
 ## Executable enforcement
 
@@ -70,8 +70,8 @@ inspect RSpec version
   -> review the diff for readability and test isolation
 ```
 
-The guide does not mean that every repetition must be abstracted away. It explicitly cautions against premature DRYing in test suites and favors readability when duplication improves understanding. citeturn198163view0
+The guide does not mean that every repetition must be abstracted away. It explicitly cautions against premature DRYing in test suites and favors readability when duplication improves understanding.
 
 ## Compatibility
 
-Repository policy should follow the RSpec version actually installed. The guide currently assumes RSpec 3 or later. citeturn198163view0
+Repository policy should follow the RSpec version actually installed. The guide currently assumes RSpec 3 or later.

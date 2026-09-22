@@ -8,7 +8,7 @@ This repository includes a dedicated security-engineering layer for AI coding as
 - Brakeman: https://github.com/presidentbeef/brakeman
 - bundler-audit: https://github.com/rubysec/bundler-audit
 
-The Rails guide covers authentication, sessions, CSRF, redirection/files, user management, injection, unsafe query generation, HTTP security headers, admin security, credentials, and dependency security. citeturn429055view0
+The Rails guide covers authentication, sessions, CSRF, redirection/files, user management, injection, unsafe query generation, HTTP security headers, admin security, credentials, and dependency security.
 
 ## Architecture
 
@@ -37,9 +37,9 @@ security scanners
 | Brakeman | Rails static security analysis |
 | bundler-audit | Gem dependency advisory checking |
 
-Brakeman supports multiple machine-readable formats and configurable checks/ignores. It returns a non-zero status by default when security warnings or scan errors are present. citeturn429055search0
+Brakeman supports multiple machine-readable formats and configurable checks/ignores. It returns a non-zero status by default when security warnings or scan errors are present.
 
-bundler-audit checks Bundler dependencies against the Ruby Advisory Database; its compatibility is version-sensitive, so the installed version and repository lockfile govern invocation details. citeturn290116search0
+bundler-audit checks Bundler dependencies against the Ruby Advisory Database; its compatibility is version-sensitive, so the installed version and repository lockfile govern invocation details.
 
 ## Agent command
 

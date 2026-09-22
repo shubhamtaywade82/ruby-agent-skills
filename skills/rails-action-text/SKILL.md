@@ -606,7 +606,7 @@ Primary Rails source:
 - https://guides.rubyonrails.org/action_text_overview.html
 - https://api.rubyonrails.org/classes/ActionText/RichText.html
 
-The Rails guide documents Trix, RichText persistence, sanitized HTML rendering, Active Storage attachments, Signed Global ID attachables, custom attachment rendering, and preloading RichText/embeds. citeturn551930search0turn551930search6
+The Rails guide documents Trix, RichText persistence, sanitized HTML rendering, Active Storage attachments, Signed Global ID attachables, custom attachment rendering, and preloading RichText/embeds.
 
 Composed repository skills:
 

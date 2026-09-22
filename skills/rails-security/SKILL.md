@@ -8,7 +8,7 @@ description: Use when implementing, reviewing, testing, or debugging security-se
 ## Purpose
 Treat security as an application-wide property across HTTP, authentication, authorization, input handling, persistence, rendering, files, secrets, dependencies, and deployment.
 
-Primary source: the Rails Security Guide, which covers authentication, sessions, CSRF, redirects/files, user management, injection, unsafe query generation, security headers, admin security, credentials, and dependency CVEs. citeturn429055view0
+Primary source: the Rails Security Guide, which covers authentication, sessions, CSRF, redirects/files, user management, injection, unsafe query generation, security headers, admin security, credentials, and dependency CVEs.
 
 ## Activate when
 - authentication or authorization changes
@@ -35,7 +35,7 @@ Review password storage/verification, session creation/destruction, reset tokens
 
 Do not treat authentication as authorization.
 
-Rails 8 includes an authentication generator, but application-specific signup and authorization policy still require application code. citeturn429055view0
+Rails 8 includes an authentication generator, but application-specific signup and authorization policy still require application code.
 
 ## Authorization
 Verify authorization at the resource/action boundary. Audit IDOR/BOLA, tenant scoping, privilege escalation, security-sensitive attribute assignment, admin routes, background jobs, and alternate endpoints.
@@ -65,7 +65,7 @@ Review dynamic redirects for open redirects. Review uploads/downloads for path t
 Treat user-controlled URLs as SSRF risks; validate scheme, host/IP, redirects, private/link-local destinations, metadata-service access, and timeouts.
 
 ## Headers and browser security
-Review Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, frame/clickjacking protection, Referrer-Policy, CORS, secure cookies, and host authorization. The Rails Security Guide documents these controls. citeturn429055view0
+Review Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, frame/clickjacking protection, Referrer-Policy, CORS, secure cookies, and host authorization. The Rails Security Guide documents these controls.
 
 ## Secrets
 Never commit passwords, API keys, tokens, private keys, database credentials, or session secrets. Inspect Rails credentials, environment/CI/container secrets, logs, fixtures, exception payloads, and scripts. Never log credentials or bearer tokens.
@@ -78,9 +78,9 @@ For multi-tenancy, enforce tenant scope at server/persistence boundaries and aud
 ## Dependency security
 Treat dependency security as a separate verification dimension.
 
-Brakeman is a static-analysis scanner for Rails security vulnerabilities. It supports confidence levels, multiple machine-readable report formats, configurable checks/ignores, and non-zero exits on warnings/errors by default. citeturn429055search0
+Brakeman is a static-analysis scanner for Rails security vulnerabilities. It supports confidence levels, multiple machine-readable report formats, configurable checks/ignores, and non-zero exits on warnings/errors by default.
 
-bundler-audit performs patch-level verification of Bundler dependencies against the Ruby Advisory Database. Use the installed version and repository configuration as the compatibility authority. citeturn290116search0
+bundler-audit performs patch-level verification of Bundler dependencies against the Ruby Advisory Database. Use the installed version and repository configuration as the compatibility authority.
 
 ## Scanner interpretation
 For each finding:
@@ -94,7 +94,7 @@ For each finding:
 8. rerun broader security checks
 9. document justified false positives/accepted risk
 
-Scanner confidence is prioritization evidence, not proof of exploitability. citeturn429055view0
+Scanner confidence is prioritization evidence, not proof of exploitability.
 
 ## Security tests
 Add executable tests for unauthorized access, cross-tenant access, malicious input, unsafe redirects, injection payloads, path traversal, webhook signature failures/replays, privilege escalation, session invalidation, and security-sensitive authorization/serialization.
@@ -167,4 +167,4 @@ bundle exec bundler-audit check --format json
 Never claim a clean security scan unless it actually ran.
 
 ## Source foundation
-Ruby on Rails Security Guide. citeturn429055view0 Brakeman and bundler-audit documentation/repositories. citeturn429055search0turn290116search0
+Ruby on Rails Security Guide. Brakeman and bundler-audit documentation/repositories.

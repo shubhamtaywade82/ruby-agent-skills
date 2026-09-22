@@ -18,7 +18,7 @@ This skill composes existing capabilities:
 - `rails-test-engineering` owns test-boundary and deterministic test strategy;
 - this skill owns Action Mailer-specific content, recipient, delivery, provider, and message lifecycle decisions.
 
-Rails currently documents both immediate `deliver_now` and Active Job-backed `deliver_later`; asynchronous delivery should be treated as a durable side-effect workflow rather than merely a faster controller call. citeturn280435view0
+Rails currently documents both immediate `deliver_now` and Active Job-backed `deliver_later`; asynchronous delivery should be treated as a durable side-effect workflow rather than merely a faster controller call.
 
 Core flow:
 
@@ -112,7 +112,7 @@ Use `rails-security` and `rails-security-engineering` when the message contains 
 
 ## Delivery mode
 
-Use `deliver_later` when delivery should not block the caller and the repository's queue/job contract supports durable asynchronous execution. Rails documents `deliver_later` as backed by Active Job. citeturn280435view0
+Use `deliver_later` when delivery should not block the caller and the repository's queue/job contract supports durable asynchronous execution. Rails documents `deliver_later` as backed by Active Job.
 
 Use `deliver_now` only when synchronous delivery is explicitly part of the contract and the latency/failure implications are acceptable.
 
@@ -183,7 +183,7 @@ Define:
 - attachment set;
 - optional headers.
 
-For user-facing HTML email, provide a plain-text counterpart when appropriate. Rails documents multipart generation when matching text and HTML templates are present. citeturn280435view3
+For user-facing HTML email, provide a plain-text counterpart when appropriate. Rails documents multipart generation when matching text and HTML templates are present.
 
 Do not embed business logic, database queries, network calls, or authorization decisions inside views.
 
@@ -247,7 +247,7 @@ Do not retry invalid recipients, authorization failures, malformed requests, or 
 
 ## Configuration and secrets
 
-Action Mailer configuration is environment-sensitive. Rails documents delivery method, delivery toggles, error handling, defaults, SMTP settings, and credentials-based provider configuration. citeturn280435view3
+Action Mailer configuration is environment-sensitive. Rails documents delivery method, delivery toggles, error handling, defaults, SMTP settings, and credentials-based provider configuration.
 
 Verify:
 
@@ -267,7 +267,7 @@ Use repository secret management rather than hard-coded credentials.
 
 ## Previews and development safety
 
-Rails provides Action Mailer previews for visually inspecting rendered messages. citeturn280435view1
+Rails provides Action Mailer previews for visually inspecting rendered messages.
 
 Use previews for content/layout verification without sending real mail.
 
@@ -321,7 +321,7 @@ Useful fields include:
 
 Avoid logging full bodies, attachments, recipient lists, or sensitive headers by default.
 
-Rails supports delivery lifecycle observers/interceptors for email processing and observation. citeturn280435view2
+Rails supports delivery lifecycle observers/interceptors for email processing and observation.
 
 Use observers/interceptors for genuinely cross-cutting delivery concerns rather than embedding business workflows there.
 

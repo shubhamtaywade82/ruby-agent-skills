@@ -125,7 +125,7 @@ The goal is not to maximize skill count. The goal is to make routing precise whi
 
 ## rails_best_practices
 
-The repository incorporates the documented review taxonomy from [flyerhzm/rails_best_practices](https://github.com/flyerhzm/rails_best_practices), a Rails code-metric tool. Its documented checks cover model responsibility, associations/query access, database indexes, RESTful routes, controller/view/helper boundaries, migrations, mailers, exception handling, and unused methods. citeturn0search0
+The repository incorporates the documented review taxonomy from [flyerhzm/rails_best_practices](https://github.com/flyerhzm/rails_best_practices), a Rails code-metric tool. Its documented checks cover model responsibility, associations/query access, database indexes, RESTful routes, controller/view/helper boundaries, migrations, mailers, exception handling, and unused methods.
 
 | Source area | Agent coverage |
 |---|---|
@@ -154,7 +154,7 @@ Coverage is implemented through:
 Source: https://docs.rubocop.org/rubocop/latest/plugins.html
 ## RSpec Style Guide
 
-The repository now includes the RSpec Style Guide at https://rspec.rubystyle.guide/ as the style source for RSpec specifications. The guide assumes RSpec 3 or later and points to `rubocop-rspec` as the executable enforcement mechanism. citeturn198163view0
+The repository now includes the RSpec Style Guide at https://rspec.rubystyle.guide/ as the style source for RSpec specifications. The guide assumes RSpec 3 or later and points to `rubocop-rspec` as the executable enforcement mechanism.
 
 Coverage is implemented through:
 - `skills/rubocop/SKILL.md` — RSpec-aware RuboCop workflow
@@ -162,7 +162,7 @@ Coverage is implemented through:
 - `docs/RSPEC_STYLE_GUIDE.md` — source-to-enforcement map
 - `rubocop-rspec` — executable RSpec cop implementation
 
-Key source areas include spec layout, example-group structure, subject/let/hooks, contexts, expectations, matchers, doubles, test isolation, naming, and controlled DRYing. The upstream guide explicitly treats itself as a living document, so agents must check installed RSpec/rubocop-rspec versions before assuming a rule is current. citeturn198163view0
+Key source areas include spec layout, example-group structure, subject/let/hooks, contexts, expectations, matchers, doubles, test isolation, naming, and controlled DRYing. The upstream guide explicitly treats itself as a living document, so agents must check installed RSpec/rubocop-rspec versions before assuming a rule is current.
 ## Runtime compatibility
 
 The repository now includes `ruby-runtime-compatibility` as the runtime/version intelligence layer for AI coding agents. It separates concrete resolved versions, declared constraints, CI-supported matrices, tooling targets, and conflicting evidence.
@@ -184,7 +184,7 @@ The concurrency layer adds:
 
 ## Rails security
 
-The security layer incorporates the Rails Security Guide and operational tooling for Brakeman and bundler-audit. citeturn429055view0turn429055search0turn290116search0
+The security layer incorporates the Rails Security Guide and operational tooling for Brakeman and bundler-audit.
 
 Coverage includes authentication, authorization, sessions, CSRF, XSS, SQL/query safety, command injection, redirects, file access, SSRF, security headers, secrets, webhooks, tenant isolation, dependency security, scanner interpretation, and abuse-case tests.
 

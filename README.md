@@ -56,7 +56,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **50** |
+| Dedicated system/contract tests | **52** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -646,7 +646,9 @@ Completed deep Rails areas currently include:
 - Authorization engineering
 - Hotwire engineering
 
-Authentication Engineering is now a deep Rails boundary covering mechanism discovery, credential storage, authentication state transitions, session lifecycle, fixation/rotation, expiry/revocation, password recovery, abuse controls, persistent login, browser/API boundaries, context propagation, freshness, multi-device sessions, compromise response, observability, and deterministic security testing.\n\nThe deep Rails framework sequence through Iteration 45 is complete; Iteration 46 audits repository-wide completeness and framework drift before evaluation hardening and release readiness.
+Authentication Engineering is now a deep Rails boundary covering mechanism discovery, credential storage, authentication state transitions, session lifecycle, fixation/rotation, expiry/revocation, password recovery, abuse controls, persistent login, browser/API boundaries, context propagation, freshness, multi-device sessions, compromise response, observability, and deterministic security testing.
+
+The deep Rails framework sequence through Iteration 45 is complete; Iteration 46 audits repository-wide completeness and framework drift before evaluation hardening and release readiness.
 
 ---
 

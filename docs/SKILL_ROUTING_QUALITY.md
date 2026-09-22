@@ -99,7 +99,7 @@ The repository includes `bin/routing-agent-ollama` as a concrete adapter for loc
       --tool-mode local-filesystem \
       --output /tmp/routing-campaign.json
 
-The adapter asks the model for JSON-only routing output and validates the selected skills against `skill-manifest.yml`. It does not receive the expected routing labels. Ollama's current chat API supports JSON output through the `format` field; the adapter sets `stream=false` and `format=json` for normalized routing responses. citeturn544661view0
+The adapter asks the model for JSON-only routing output and validates the selected skills against `skill-manifest.yml`. It does not receive the expected routing labels. Ollama's current chat API supports JSON output through the `format` field; the adapter sets `stream=false` and `format=json` for normalized routing responses.
 
 
 ## Real routing campaign

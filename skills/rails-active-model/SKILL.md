@@ -9,7 +9,7 @@ description: "Use when designing, implementing, reviewing, testing, or integrati
 
 Use Active Model when a plain Ruby object needs a deliberate subset of Rails model behavior without becoming an Active Record persistence object.
 
-Active Model is the Rails model-like layer for non-database objects. Rails documents ActiveModel::Model as a recommended entry point and describes modules for attributes, callbacks, conversion, dirty tracking, validations, naming, serialization, translation, and linting. citeturn189969search0
+Active Model is the Rails model-like layer for non-database objects. Rails documents ActiveModel::Model as a recommended entry point and describes modules for attributes, callbacks, conversion, dirty tracking, validations, naming, serialization, translation, and linting.
 
 This skill owns:
 
@@ -100,7 +100,7 @@ Do not accept arbitrary constructor hashes merely because Active Model can initi
 
 ## Attributes and type semantics
 
-ActiveModel::Attributes provides typed attributes, defaults, casting, and serialization for plain Ruby objects. citeturn189969search0
+ActiveModel::Attributes provides typed attributes, defaults, casting, and serialization for plain Ruby objects.
 
 Define:
 
@@ -141,7 +141,7 @@ Preserve error keys/messages and translation contracts.
 
 ## Conversion and naming
 
-Active Model conversion allows model-like objects to participate in Rails forms/routes/views. Define persisted?, to_model, to_key, to_param, and model_name deliberately. citeturn189969search0
+Active Model conversion allows model-like objects to participate in Rails forms/routes/views. Define persisted?, to_model, to_key, to_param, and model_name deliberately.
 
 Transient objects must not accidentally appear persisted.
 
@@ -151,7 +151,7 @@ Test the actual Rails consumer, not only the conversion methods in isolation.
 
 ## Dirty tracking
 
-ActiveModel::Dirty can track changes on non-persisted objects, but the object owns the apply/reset lifecycle. citeturn189969search0
+ActiveModel::Dirty can track changes on non-persisted objects, but the object owns the apply/reset lifecycle.
 
 Define:
 
@@ -167,7 +167,7 @@ Test current/previous values and reset semantics.
 
 ## Callbacks
 
-ActiveModel::Callbacks can expose explicit lifecycle events on plain Ruby objects. The object defines events and runs the callback chain explicitly. citeturn189969search0
+ActiveModel::Callbacks can expose explicit lifecycle events on plain Ruby objects. The object defines events and runs the callback chain explicitly.
 
 Use callbacks only when lifecycle hooks are intrinsic to the model protocol.
 
@@ -182,7 +182,7 @@ When callbacks are justified, define events, timing, failure behavior, ordering,
 
 ## Serialization
 
-ActiveModel::Serialization requires an explicit string-keyed attributes contract and exposes serializable_hash. Treat serialization as a representation boundary. citeturn189969search0
+ActiveModel::Serialization requires an explicit string-keyed attributes contract and exposes serializable_hash. Treat serialization as a representation boundary.
 
 Define included fields, excluded/sensitive fields, computed values, nested representation, and compatibility requirements.
 
@@ -192,7 +192,7 @@ Coordinate external API representations with rails-api-integration.
 
 ## Translation
 
-ActiveModel::Translation integrates model-like objects with I18n and humanized attribute names. citeturn189969search0
+ActiveModel::Translation integrates model-like objects with I18n and humanized attribute names.
 
 Coordinate with rails-i18n for locale context, translation keys, fallback, and errors.
 
@@ -239,7 +239,7 @@ Never expose secrets through serialization, errors, to_param, or debugging outpu
 
 ## Testing and linting
 
-Rails provides Active Model lint tests for validating the model protocol expected by Rails consumers. Use lint tests for reusable model-like objects. citeturn189969search0
+Rails provides Active Model lint tests for validating the model protocol expected by Rails consumers. Use lint tests for reusable model-like objects.
 
 Test at the smallest boundary:
 
@@ -321,7 +321,7 @@ Primary Rails source:
 - https://api.rubyonrails.org/classes/ActiveModel/Serialization.html
 - https://api.rubyonrails.org/classes/ActiveModel/Validations.html
 
-Rails documents Active Model as the model-like layer for non-persisted Ruby objects and describes its attributes, callbacks, conversion, dirty tracking, serialization, translation, validations, and linting facilities. citeturn189969search0
+Rails documents Active Model as the model-like layer for non-persisted Ruby objects and describes its attributes, callbacks, conversion, dirty tracking, serialization, translation, validations, and linting facilities.
 
 Composed repository skills:
 

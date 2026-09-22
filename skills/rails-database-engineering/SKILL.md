@@ -84,19 +84,19 @@ Once a migration has been applied in shared environments, treat it as historical
 
 Do not rewrite an old production migration to change its meaning. Add a new migration unless the migration is demonstrably local and unapplied.
 
-Rails identifies migrations by timestamp and runs them in version order. Rails also updates schema.rb after db:migrate. citeturn698907view0
+Rails identifies migrations by timestamp and runs them in version order. Rails also updates schema.rb after db:migrate.
 
 ## Reversibility
 Prefer `change` when Rails can infer the reverse operation.
 
 When the operation is not automatically reversible, use `reversible` or explicit `up`/`down` methods.
 
-For destructive operations, explicitly decide whether rollback is meaningful. Rails supports `ActiveRecord::IrreversibleMigration` when a down migration cannot safely recreate destroyed state. citeturn895258view1
+For destructive operations, explicitly decide whether rollback is meaningful. Rails supports `ActiveRecord::IrreversibleMigration` when a down migration cannot safely recreate destroyed state.
 
 Never promise rollback safety if the migration destroyed data.
 
 ## DDL transactions
-Rails wraps migrations in transactions when the database supports transactional DDL. Some operations cannot run inside a transaction and require `disable_ddl_transaction!`. Rails documents both behaviors. citeturn162654view3
+Rails wraps migrations in transactions when the database supports transactional DDL. Some operations cannot run inside a transaction and require `disable_ddl_transaction!`. Rails documents both behaviors.
 
 When disabling migration transactions:
 - understand the partial-application failure state;
@@ -118,7 +118,7 @@ Before adding one, inspect:
 Index column order must reflect actual query shapes. Do not add independent indexes simply because columns appear in WHERE clauses.
 
 ## PostgreSQL production indexes
-PostgreSQL `CREATE INDEX CONCURRENTLY` avoids locks that prevent concurrent inserts, updates, and deletes, but requires more work and cannot run inside a transaction block. A failed concurrent build can leave an invalid index requiring cleanup. citeturn372781search1
+PostgreSQL `CREATE INDEX CONCURRENTLY` avoids locks that prevent concurrent inserts, updates, and deletes, but requires more work and cannot run inside a transaction block. A failed concurrent build can leave an invalid index requiring cleanup.
 
 When adding a large-table production index on PostgreSQL:
 
@@ -199,7 +199,7 @@ Prefer:
 
 Avoid loading millions of records into Ruby memory just to transform them.
 
-Active Record bulk methods such as `update_all` operate with a single SQL statement and bypass model callbacks/validations; the repository must explicitly account for those skipped behaviors. citeturn162654view2
+Active Record bulk methods such as `update_all` operate with a single SQL statement and bypass model callbacks/validations; the repository must explicitly account for those skipped behaviors.
 
 Never mix irreversible destructive cleanup into a backfill unless the data-recovery story is explicit.
 
@@ -210,7 +210,7 @@ Do not treat a transaction as a lock or distributed coordination primitive.
 
 Transactions define database atomicity. They do not automatically make external API calls, jobs, caches, or other systems atomic with the database.
 
-Use `after_commit` when an external side effect must occur only after successful commit. Rails provides `after_commit` and related callbacks for this boundary. citeturn162654view0
+Use `after_commit` when an external side effect must occur only after successful commit. Rails provides `after_commit` and related callbacks for this boundary.
 
 Keep transactions short. Avoid network calls or long CPU work while holding a transaction unless the architecture explicitly requires it.
 
@@ -233,13 +233,13 @@ Choose the least expensive isolation/locking model that guarantees the required 
 Do not raise isolation merely because concurrency feels unsafe.
 
 ## Pessimistic locking
-Rails supports row locking through `lock!`, `with_lock`, and relation-level `lock` clauses. `with_lock` runs the block inside a transaction and locks the record before yielding. citeturn895258view2
+Rails supports row locking through `lock!`, `with_lock`, and relation-level `lock` clauses. `with_lock` runs the block inside a transaction and locks the record before yielding.
 
 Use row locks when two transactions can otherwise modify the same state concurrently and the lock boundary is the invariant.
 
 Keep the locked section short.
 
-Explicit database-specific clauses such as PostgreSQL `FOR UPDATE NOWAIT` can be appropriate when the failure-fast behavior is part of the contract. Rails exposes custom locking clauses. citeturn895258view2
+Explicit database-specific clauses such as PostgreSQL `FOR UPDATE NOWAIT` can be appropriate when the failure-fast behavior is part of the contract. Rails exposes custom locking clauses.
 
 Do not use locks to compensate for missing unique constraints or idempotency.
 
@@ -267,7 +267,7 @@ relation.to_a  -> loads records
 update_all     -> single SQL UPDATE, skips callbacks/validations
 ```
 
-Rails' current Relation API documents that `size` counts when the relation is not loaded, while loaded relations use in-memory length. It also documents that `update_all` issues one SQL UPDATE without instantiating models or running callbacks/validations. citeturn162654view2
+Rails' current Relation API documents that `size` counts when the relation is not loaded, while loaded relations use in-memory length. It also documents that `update_all` issues one SQL UPDATE without instantiating models or running callbacks/validations.
 
 Use `to_sql`, database query plans, logs, and benchmarks to validate actual query behavior.
 
@@ -299,7 +299,7 @@ Each concurrent execution context can need a database connection. Pool sizing mu
 - multiple databases/shards;
 - database server connection limits.
 
-Rails currently exposes pool controls including `checkout_timeout`, `max_connections`, `min_connections`, `idle_timeout`, `keepalive`, and `max_age`. The current connection pool API documents a default maximum of 5 connections unless configured otherwise. citeturn162654view1
+Rails currently exposes pool controls including `checkout_timeout`, `max_connections`, `min_connections`, `idle_timeout`, `keepalive`, and `max_age`. The current connection pool API documents a default maximum of 5 connections unless configured otherwise.
 
 Do not increase pool size in isolation. Confirm the database server can support the aggregate number of connections across all application processes/roles.
 

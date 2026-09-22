@@ -9,7 +9,7 @@ description: "Use when designing, implementing, reviewing, testing, or optimizin
 
 Treat Active Support as a reusable framework foundation, not as a miscellaneous bag of convenience methods.
 
-Active Support provides Rails utility classes, Ruby extensions, and cross-cutting framework primitives. The current Rails guides document both selective core-extension loading and an instrumentation API; current APIs also cover Concern composition, inheritable class attributes, and request-scoped CurrentAttributes. citeturn653037search0turn399121search0turn354157view0turn399121search1turn354157view2
+Active Support provides Rails utility classes, Ruby extensions, and cross-cutting framework primitives. The current Rails guides document both selective core-extension loading and an instrumentation API; current APIs also cover Concern composition, inheritable class attributes, and request-scoped CurrentAttributes.
 
 This skill owns:
 
@@ -69,7 +69,7 @@ Search for an existing local abstraction before creating another concern, contex
 
 ## Core extensions and loading
 
-Active Support can be loaded selectively: active_support/core_ext/some_class, a specific extension file, all core extensions, or active_support/all. Rails applications normally load Active Support unless active_support.bare is configured. citeturn653037search0
+Active Support can be loaded selectively: active_support/core_ext/some_class, a specific extension file, all core extensions, or active_support/all. Rails applications normally load Active Support unless active_support.bare is configured.
 
 Choose the narrowest loading boundary that is practical.
 
@@ -89,7 +89,7 @@ Treat a core extension as a compatibility dependency.
 
 ## ActiveSupport::Concern
 
-ActiveSupport::Concern provides dependency-aware module composition plus included/prepended blocks and class_methods. Rails documents it as a way to encapsulate reusable behavior and correctly resolve module dependencies. citeturn354157view0
+ActiveSupport::Concern provides dependency-aware module composition plus included/prepended blocks and class_methods. Rails documents it as a way to encapsulate reusable behavior and correctly resolve module dependencies.
 
 Use a concern when:
 
@@ -114,7 +114,7 @@ Prefer namespaced, narrow concerns with a clear host contract.
 
 ## class_attribute and reusable configuration
 
-Active Support's class_attribute provides inheritable class-level values that subclasses can override without mutating the parent configuration. Current Rails also provides options for instance accessors and defaults. citeturn399121search1
+Active Support's class_attribute provides inheritable class-level values that subclasses can override without mutating the parent configuration. Current Rails also provides options for instance accessors and defaults.
 
 Use class_attribute for configuration that is intentionally inherited/overridden.
 
@@ -137,7 +137,7 @@ When configuration varies per request/user/tenant, use explicit context rather t
 
 ## CurrentAttributes and execution context
 
-CurrentAttributes exposes thread-isolated singleton-like request attributes and resets them around requests. Rails' current API also supports reset hooks for related context such as Time.zone. citeturn354157view2
+CurrentAttributes exposes thread-isolated singleton-like request attributes and resets them around requests. Rails' current API also supports reset hooks for related context such as Time.zone.
 
 Use CurrentAttributes only for narrow request/execution context that would otherwise have to be threaded through a large number of layers.
 
@@ -191,7 +191,7 @@ Do not use callbacks to hide network calls, transactions, authorization, or unre
 
 ## ActiveSupport::Notifications
 
-ActiveSupport::Notifications provides instrumentation for Ruby/Rails code. Events have names and arbitrary payloads; subscribers can observe duration, allocations, payloads, and exceptions. Rails recommends a library-oriented event naming convention such as event.library. citeturn354157view1turn399121search0
+ActiveSupport::Notifications provides instrumentation for Ruby/Rails code. Events have names and arbitrary payloads; subscribers can observe duration, allocations, payloads, and exceptions. Rails recommends a library-oriented event naming convention such as event.library.
 
 For custom events define:
 
@@ -211,7 +211,7 @@ Prefer:
 
 over opaque or user-derived event names.
 
-Use monotonic subscriptions when elapsed duration accuracy matters. citeturn354157view1
+Use monotonic subscriptions when elapsed duration accuracy matters.
 
 Do not use instrumentation as the business event bus.
 
@@ -238,7 +238,7 @@ Prefer Time.zone-aware application logic where Rails local time matters.
 
 Persist durable timestamps in the repository's authoritative timezone convention.
 
-Do not use local wall-clock time for duration measurement; use monotonic timing where elapsed accuracy matters, including Notifications monotonic subscriptions. citeturn354157view1
+Do not use local wall-clock time for duration measurement; use monotonic timing where elapsed accuracy matters, including Notifications monotonic subscriptions.
 
 Never convert a timezone choice into authorization or tenant identity.
 
@@ -310,7 +310,7 @@ Test at the smallest owning boundary:
 - inflection and constantization allowlists;
 - test isolation across examples.
 
-Use temporary Notifications subscriptions sparingly; the Rails API notes that temporary subscription can affect internal caches and performance, so long-lived subscribers are preferred for normal instrumentation. citeturn354157view1
+Use temporary Notifications subscriptions sparingly; the Rails API notes that temporary subscription can affect internal caches and performance, so long-lived subscribers are preferred for normal instrumentation.
 
 Do not rely on global state left behind by another test.
 
@@ -378,7 +378,7 @@ Primary Rails sources:
 - https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html
 - https://api.rubyonrails.org/classes/Class.html
 
-These sources document Active Support loading/core extensions, Concern composition, CurrentAttributes, instrumentation/subscriptions, and class_attribute behavior. citeturn653037search0turn354157view0turn354157view1turn354157view2turn399121search1
+These sources document Active Support loading/core extensions, Concern composition, CurrentAttributes, instrumentation/subscriptions, and class_attribute behavior.
 
 Composed repository skills:
 

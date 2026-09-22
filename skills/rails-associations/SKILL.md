@@ -153,7 +153,7 @@ Inspect the join model's:
 
 For writable through associations, explicitly determine what Rails creates or removes in the join table when assigning or mutating the association.
 
-Remember that deleting/replacing through join records is not necessarily equivalent to destroying the target records. The current Rails guide notes that automatic deletion of join models can be direct and does not invoke destroy callbacks. citeturn598725view0
+Remember that deleting/replacing through join records is not necessarily equivalent to destroying the target records. The current Rails guide notes that automatic deletion of join models can be direct and does not invoke destroy callbacks.
 
 Avoid HABTM when the join itself carries domain attributes or behavior. Prefer a join model so those semantics have an explicit owner.
 
@@ -227,7 +227,7 @@ Important distinctions include destroy, delete, nullify, restrict_with_exception
 
 Do not combine database cascading and application destruction callbacks without proving their combined semantics.
 
-For asynchronous dependent destruction, verify the queue/runtime contract and whether database foreign keys are compatible with the chosen mode. Current Rails documentation explicitly warns about combining asynchronous association destruction with foreign-key constraints. citeturn598725view0
+For asynchronous dependent destruction, verify the queue/runtime contract and whether database foreign keys are compatible with the chosen mode. Current Rails documentation explicitly warns about combining asynchronous association destruction with foreign-key constraints.
 
 ## Counter caches and touch
 
@@ -407,7 +407,7 @@ Primary current Rails source:
 
 - Active Record Associations Guide: https://guides.rubyonrails.org/association_basics.html
 
-The current guide documents association cardinality, foreign-key integrity, collection mutation methods, through associations, bidirectional/inverse behavior, dependent options, validation, callbacks, association extensions, and association options. citeturn598725view0
+The current guide documents association cardinality, foreign-key integrity, collection mutation methods, through associations, bidirectional/inverse behavior, dependent options, validation, callbacks, association extensions, and association options.
 
 Version-sensitive behavior must be resolved against the repository's actual Rails version.
 

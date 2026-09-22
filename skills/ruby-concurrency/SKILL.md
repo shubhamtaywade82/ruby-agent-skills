@@ -13,7 +13,7 @@ Concurrency is not automatically parallel CPU execution. Identify the workload a
 
 ## Activate when
 
-- \`Thread\`, \`Queue\`, \`Mutex\`, \`Monitor\`, or thread pools are introduced
+- `Thread`, `Queue`, `Mutex`, `Monitor`, or thread pools are introduced
 - shared mutable state is accessed concurrently
 - an intermittent race, ordering bug, deadlock, or starvation issue exists
 - Rails jobs/services perform concurrent I/O
@@ -46,8 +46,8 @@ Resolve runtime compatibility before relying on engine-specific behavior.
 |---|---|
 | independent blocking I/O | bounded threads/thread pool |
 | CPU-heavy Ruby work | processes or an appropriate external worker |
-| producer/consumer | \`Queue\` or existing bounded queue |
-| shared small mutable state | \`Mutex\`/ \`Monitor\` around the invariant |
+| producer/consumer | `Queue` or existing bounded queue |
+| shared small mutable state | `Mutex`/ `Monitor` around the invariant |
 | state-transition waiting | condition variable or existing coordination abstraction |
 | asynchronous I/O | Fibers/scheduler only when supported |
 | Rails background work | existing job/executor infrastructure |
@@ -69,9 +69,9 @@ Protect an invariant, not an entire service.
 
 Prefer a narrow critical section:
 
-\`\`\`ruby
+```ruby
 mutex.synchronize { @balance += amount }
-\`\`\`
+```
 
 Keep critical sections small. Avoid database/network I/O while holding a lock.
 
@@ -79,9 +79,9 @@ Keep critical sections small. Avoid database/network I/O while holding a lock.
 
 Every worker/executor needs:
 
-\`\`\`text
+```text
 create -> start -> perform -> observe failure -> stop/join -> release
-\`\`\`
+```
 
 Do not leave application-managed threads detached from shutdown.
 
@@ -91,9 +91,9 @@ Worker failures must be observable. Define whether the parent fails, remaining w
 
 ## Mutex, Monitor, and Queue
 
-Use \`Mutex\` for narrow mutual exclusion. Use \`Monitor\` only when re-entrant coordination is actually required.
+Use `Mutex` for narrow mutual exclusion. Use `Monitor` only when re-entrant coordination is actually required.
 
-Use \`Queue\` for thread-safe producer/consumer coordination.
+Use `Queue` for thread-safe producer/consumer coordination.
 
 Avoid nested locks with inconsistent ordering, sleeping while locked, and calling unknown collaborators while locked.
 
@@ -125,7 +125,7 @@ When Active Record is used concurrently:
 - follow the repository's connection-management conventions;
 - do not assume a transaction in one thread covers work in another;
 - use database constraints, atomic updates, transactions, or locking for persisted invariants;
-- remember that an in-process \`Mutex\` cannot coordinate separate processes, workers, containers, or hosts.
+- remember that an in-process `Mutex` cannot coordinate separate processes, workers, containers, or hosts.
 
 For jobs, assume concurrent execution and retries. Make important state transitions idempotent.
 
@@ -159,11 +159,11 @@ Do not introduce Fibers merely because they are lightweight.
 
 Look for check-then-act sequences:
 
-\`\`\`ruby
+```ruby
 if cache[key].nil?
   cache[key] = expensive_load
 end
-\`\`\`
+```
 
 If correctness depends on interleaving, establish an atomic/locked boundary or use a data structure with the required contract.
 
@@ -177,14 +177,14 @@ For multiple locks, establish one acquisition order.
 
 Diagnosis:
 
-\`\`\`text
+```text
 blocked stacks
 -> held/waited resources
 -> wait-for graph
 -> cycle
 -> remove/reorder dependency
 -> regression test
-\`\`\`
+```
 
 Do not "fix" deadlocks with larger timeouts or sleeps without identifying the cycle.
 
@@ -192,7 +192,7 @@ Do not "fix" deadlocks with larger timeouts or sleeps without identifying the cy
 
 Classify shared objects as:
 
-\`\`\`text
+```text
 immutable
 thread-confined
 synchronized
@@ -200,7 +200,7 @@ atomic
 process-local
 externally synchronized
 unsafe
-\`\`\`
+```
 
 Do not call an object thread-safe merely because of Ruby's GVL/GIL-like implementation detail. Establish safety from the object contract and access pattern.
 
@@ -213,7 +213,7 @@ Prefer deterministic synchronization:
 - injected collaborators
 - explicit state transitions
 
-Avoid \`sleep\` as the primary synchronization mechanism.
+Avoid `sleep` as the primary synchronization mechanism.
 
 Test normal completion, concurrent updates, worker failure, shutdown, retries/idempotency, and bounded resource behavior.
 

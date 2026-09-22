@@ -18,7 +18,7 @@ Keep secret material out of source code and ordinary logs. Separate credential s
 Resolve Ruby, Rails, Active Record, and deployment versions. Inspect credential files and key paths, environment-specific credential conventions, config.require_master_key, secret_key_base ownership, deployment secret injection, logging/filtering configuration, models using encrypted attributes, migrations, fixtures, background jobs, data exports, and backup/restore procedures. Inspect whether the application supports key rotation and how incidents revoke or replace compromised secrets.
 
 ## Credential stores and environment selection
-Rails supports encrypted credentials and can select environment-specific credentials paths. Current Rails configuration defaults to config/credentials/#{Rails.env}.yml.enc when present, otherwise config/credentials.yml.enc; key selection similarly prefers config/credentials/#{Rails.env}.key and otherwise config/master.key. Make the chosen environment and key path explicit when customizing them. urlRails Configuring Applications guidehttps://guides.rubyonrails.org/configuring.html
+Rails supports encrypted credentials and can select environment-specific credentials paths. Current Rails configuration defaults to config/credentials/#{Rails.env}.yml.enc when present, otherwise config/credentials.yml.enc; key selection similarly prefers config/credentials/#{Rails.env}.key and otherwise config/master.key. Make the chosen environment and key path explicit when customizing them. [Rails Configuring Applications guide](https://guides.rubyonrails.org/configuring.html)
 
 ## Master-key boundary
 The encrypted credentials file may be version-controlled because it is encrypted, but the decryption key must remain outside the repository's ordinary source distribution. Rails accepts the configured key path and can use RAILS_MASTER_KEY. Production boot requirements must be explicit; config.require_master_key can fail closed when credentials are required. 
@@ -27,19 +27,19 @@ The encrypted credentials file may be version-controlled because it is encrypted
 Treat generation, distribution, consumption, rotation, revocation, and destruction as separate operations. Document who/what can read a secret, where it is injected, how rotation overlaps old/new values, and how dependent services observe the change. Never print secret material while debugging.
 
 ## Application-level encryption
-Active Record Encryption encrypts declared model attributes transparently and supports non-deterministic and deterministic schemes. Non-deterministic encryption is the default and is preferable unless equality querying requires deterministic encryption. Deterministic encryption trades some security properties for queryability. citeturn921425view0
+Active Record Encryption encrypts declared model attributes transparently and supports non-deterministic and deterministic schemes. Non-deterministic encryption is the default and is preferable unless equality querying requires deterministic encryption. Deterministic encryption trades some security properties for queryability.
 
 ## Key management
 Rails Active Record Encryption can be initialized with generated keys stored in credentials or another secure runtime source. Keep primary, deterministic, and key-derivation-salt material in the intended secret store. Custom key providers and envelope-encryption designs require explicit threat-model and lifecycle review.
 
 ## Storage and query implications
-Encrypted attributes have storage overhead and can change indexing/query semantics. Review column sizing, deterministic query requirements, unique validations/indexes, ordering, search behavior, exports, and data repair procedures before encrypting an existing field. Rails documents that encrypted payloads carry metadata and Base64 encoding overhead. citeturn921425view0
+Encrypted attributes have storage overhead and can change indexing/query semantics. Review column sizing, deterministic query requirements, unique validations/indexes, ordering, search behavior, exports, and data repair procedures before encrypting an existing field. Rails documents that encrypted payloads carry metadata and Base64 encoding overhead.
 
 ## Migration and rotation
 For existing plaintext data, use an expand/transform/verify/cutover strategy. Never irreversibly encrypt data without a verified recovery path and backup/restore evidence. When changing encryption schemes or keys, support old data during transition when the Rails capability and threat model justify it, then retire old material deliberately.
 
 ## Secret-safe observability
-Use parameter and attribute filtering for secrets and encrypted values. Review structured logs, exceptions, tracing, SQL logs, job arguments, admin consoles, metrics labels, exports, and support tooling. Rails documents filtering of sensitive parameters and encrypted Active Record values. citeturn665459view0turn921425view0
+Use parameter and attribute filtering for secrets and encrypted values. Review structured logs, exceptions, tracing, SQL logs, job arguments, admin consoles, metrics labels, exports, and support tooling. Rails documents filtering of sensitive parameters and encrypted Active Record values.
 
 ## Testing strategy
 Test credential loading without exposing values, missing-key failure behavior, environment selection, encrypted attribute round trips, deterministic query behavior where required, migrations, rotation compatibility, parameter filtering, and production-like boot. Use fixtures and test secrets that cannot be mistaken for production material.

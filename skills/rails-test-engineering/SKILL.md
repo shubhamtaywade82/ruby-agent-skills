@@ -89,7 +89,7 @@ Action Cable protocol
 
 Use more than one level when the tests prove different contracts. Do not duplicate the same assertion at every layer merely for coverage count.
 
-Rails' current testing guide distinguishes unit/model, functional, integration, system, job, mailer, Action Cable, and other test types. Integration tests are intended for interactions between multiple application components, while system tests exercise the application as a user would. citeturn337423view0turn943311view0
+Rails' current testing guide distinguishes unit/model, functional, integration, system, job, mailer, Action Cable, and other test types. Integration tests are intended for interactions between multiple application components, while system tests exercise the application as a user would.
 
 ## Contract-focused assertions
 Prefer assertions on externally meaningful outcomes:
@@ -124,7 +124,7 @@ Default to transactional isolation where it proves the behavior and the applicat
 
 When testing concurrent transactions, threads/processes that need independent connections, or behavior involving committed state, inspect whether transactional tests must be disabled for that test case.
 
-Rails documents that parallel transaction tests can block when nested under implicit test transactions and shows disabling transactional tests for that class. Cleanup then becomes the test's responsibility. citeturn332644view0
+Rails documents that parallel transaction tests can block when nested under implicit test transactions and shows disabling transactional tests for that class. Cleanup then becomes the test's responsibility.
 
 Do not globally disable transactional tests to fix one concurrency test.
 
@@ -140,7 +140,7 @@ request
 -> important persistence or side effect
 -> authorization
 
-Rails integration tests are intended for workflows that cross multiple components. citeturn943311view0
+Rails integration tests are intended for workflows that cross multiple components.
 
 ## System tests
 System tests exercise the application from the user's perspective, including browser interaction and JavaScript behavior.
@@ -155,7 +155,7 @@ Use them when the contract depends on:
 
 Do not turn every request test into a browser test. System tests are slower and should protect user journeys that cannot be proven reliably lower in the stack.
 
-Rails provides system test support and screenshot helpers for failures. citeturn943311view1
+Rails provides system test support and screenshot helpers for failures.
 
 ## Active Job testing
 Test jobs at two boundaries when both matter:
@@ -168,7 +168,7 @@ job itself
 
 Use ActiveJob::TestHelper assertions for queueing behavior and perform_enqueued_jobs when you want the test adapter to actually execute enqueued work.
 
-Rails documents that the test adapter does not execute jobs until perform_enqueued_jobs is invoked and that the queue is cleared between tests. It also recommends perform_later plus perform_enqueued_jobs when testing retry-aware execution because direct perform bypasses some framework behavior. citeturn943311view2
+Rails documents that the test adapter does not execute jobs until perform_enqueued_jobs is invoked and that the queue is cleared between tests. It also recommends perform_later plus perform_enqueued_jobs when testing retry-aware execution because direct perform bypasses some framework behavior.
 
 Use direct perform only when the test intentionally needs to assert an exception path that framework job execution would intercept, and document that trade-off.
 
@@ -206,12 +206,12 @@ A deterministic test should not depend on:
 - implicit timezone assumptions;
 - leftover database records.
 
-Use Rails time helpers such as travel_to when the behavior depends on current time. Rails documents ActiveSupport::Testing::TimeHelpers for this purpose. citeturn332644view0
+Use Rails time helpers such as travel_to when the behavior depends on current time. Rails documents ActiveSupport::Testing::TimeHelpers for this purpose.
 
 Prefer condition-driven synchronization over sleeps.
 
 ## Parallel test safety
-Rails supports parallel testing with processes by default and also supports threads. The number of workers can be configured directly or via PARALLEL_WORKERS. Rails creates separate test databases for process workers. citeturn332644view0
+Rails supports parallel testing with processes by default and also supports threads. The number of workers can be configured directly or via PARALLEL_WORKERS. Rails creates separate test databases for process workers.
 
 Before enabling or increasing parallelism, audit:
 - global mutable state;
@@ -241,12 +241,12 @@ test database/server capacity
 
 When multiple databases/shards/roles are configured, verify worker setup for each one.
 
-Rails exposes parallelize_setup and parallelize_teardown hooks for process-based parallel test setup when needed. citeturn332644view0
+Rails exposes parallelize_setup and parallelize_teardown hooks for process-based parallel test setup when needed.
 
 ## Test parallelization threshold
 Parallelization has startup/database/fixture overhead.
 
-Do not force parallel execution for tiny suites. Rails itself has a configurable threshold and currently avoids parallelizing suites below the default threshold. citeturn332644view0
+Do not force parallel execution for tiny suites. Rails itself has a configurable threshold and currently avoids parallelizing suites below the default threshold.
 
 Benchmark before changing threshold values.
 
@@ -320,7 +320,7 @@ Common high-value changes include:
 - avoiding real external I/O;
 - reducing redundant system tests.
 
-Rails warns that eagerly requiring all test helpers increases boot time compared with requiring only needed helpers. citeturn943311view1
+Rails warns that eagerly requiring all test helpers increases boot time compared with requiring only needed helpers.
 
 Do not optimize by weakening assertions or removing coverage without an explicit contract decision.
 
@@ -335,14 +335,14 @@ fast focused tests
 -> eager-load verification
 -> lint/security/static checks
 
-Rails documents that bin/rails test does not run system tests by default; bin/rails test:system or bin/rails test:all can include them. Rails also documents eager loading during CI as a way to detect load failures before production. citeturn332644view0
+Rails documents that bin/rails test does not run system tests by default; bin/rails test:system or bin/rails test:all can include them. Rails also documents eager loading during CI as a way to detect load failures before production.
 
 Use repository-specific CI commands rather than assuming these exact commands apply.
 
 ## Eager-loading test
 When Rails code is sensitive to autoloading structure, CI should exercise eager loading where practical.
 
-Rails documents enabling eager loading in CI and also provides an explicit Rails.application.eager_load! test pattern. citeturn332644view0
+Rails documents enabling eager loading in CI and also provides an explicit Rails.application.eager_load! test pattern.
 
 Pair this with rails-zeitwerk rather than duplicating loader rules in tests.
 

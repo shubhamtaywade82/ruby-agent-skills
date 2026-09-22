@@ -84,4 +84,4 @@ Some original checks reflect older Rails conventions such as before_filter, lega
 Run the repository's configured RailsBestPractices command when installed and compatible. Also run focused tests and relevant CI checks. Treat analyzer output as review input: resolve, suppress with documented justification, or intentionally accept findings according to repository policy. Never claim a clean run unless it was actually executed.
 
 ## Source foundation
-Based on the documented checks and workflow of flyerhzm/rails_best_practices: model/controller/view/helper responsibility, RESTful routing, database indexes, migrations, exception handling, unused code, and related Rails quality checks. citeturn0search0 The repository's agent system adds modern-Rails compatibility and contract-first interpretation.
+Based on the documented checks and workflow of flyerhzm/rails_best_practices: model/controller/view/helper responsibility, RESTful routing, database indexes, migrations, exception handling, unused code, and related Rails quality checks. The repository's agent system adds modern-Rails compatibility and contract-first interpretation.
