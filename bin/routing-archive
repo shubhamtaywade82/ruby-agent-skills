@@ -25,13 +25,21 @@ abort "--destination is required" unless options[:destination]
 evidence_sha = Digest::SHA256.file(evidence_path).hexdigest
 evidence = JSON.parse(File.read(evidence_path, encoding: "UTF-8"))
 
-verify_args = [RbConfig.ruby, VERIFYER, evidence_path, "--check-files"]
-if evidence.dig("repository", "worktree_clean") == false
-  verify_args << "--allow-dirty"
+evidence_type = evidence.fetch("evidence").to_s
+
+if evidence_type == "skill-routing-experiment-v1"
+  verify_args = [RbConfig.ruby, VERIFYER, evidence_path, "--check-files"]
+  verify_args << "--allow-dirty" if evidence.dig("repository", "worktree_clean") == false
+  verify_out, verify_err, verify_status = Open3.capture3(*verify_args, chdir: ROOT)
+  warn verify_err unless verify_err.empty?
+  abort "evidence verification failed" unless verify_status.success?
+elsif evidence_type == "skill-routing-campaign-v1"
+  abort "campaign evidence intake is not verified" unless evidence.dig("intake", "verified") == true
+  abort "campaign evidence has no artifacts" unless evidence.fetch("artifacts").is_a?(Hash) && !evidence.fetch("artifacts").empty?
+  abort "campaign evidence worktree is dirty" if evidence.dig("repository", "worktree_clean") == false
+else
+  abort "unsupported routing evidence type: #{evidence_type}"
 end
-verify_out, verify_err, verify_status = Open3.capture3(*verify_args, chdir: ROOT)
-warn verify_err unless verify_err.empty?
-abort "evidence verification failed" unless verify_status.success?
 
 def safe_component(value)
   value.to_s.strip.downcase.gsub(/[^a-z0-9._-]+/, "-").gsub(/\A-+|-+\z/, "").yield_self { |v| v.empty? ? "unknown" : v }
@@ -79,8 +87,12 @@ manifest = {
   },
   "repository" => evidence.fetch("repository"),
   "agent" => evidence.fetch("agent"),
-  "compatibility" => evidence.fetch("compatibility"),
-  "gate" => evidence.fetch("gate"),
+  "evidence_type" => evidence_type,
+  "compatibility" => evidence["compatibility"],
+  "gate" => evidence["gate"],
+  "intake" => evidence["intake"],
+  "campaign_metrics" => evidence["campaign_metrics"],
+  "analysis" => evidence["analysis"],
   "artifacts" => archive_artifacts
 }
 manifest_path = File.join(archive_dir, "ARCHIVE_MANIFEST.json")
