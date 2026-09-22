@@ -786,6 +786,15 @@ For material architecture changes:
 
 authentication and authorization remain separate concerns: authentication establishes identity and session state; authorization decides permitted actions within that context.
 
+## Release and public-readiness changes
+
+For final release or publication changes:
+- keep README inventory, current milestone, manifest, router, validators, and CI evidence synchronized;
+- require explicit public contribution and security entry points without inventing unsupported contact channels;
+- keep changelog entries factual and scoped to repository changes actually implemented;
+- do not commit generated benchmark outputs, credentials, local paths, or provider-specific secrets;
+- run the release-readiness audit and the full canonical validator before calling the repository publication-ready.
+
 ## Evaluation and benchmark changes
 
 For evaluation or benchmark changes:
