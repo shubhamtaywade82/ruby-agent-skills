@@ -34,7 +34,7 @@ class RailsCrossBoundaryAuthorizationSecuritySystemTest < Minitest::Test
     %w[authorization cross-boundary policy tenant service job API Action Cable engine operational command event capability denial cache audit].each { |t| assert_includes s.fetch("triggers"), t }
     rails=m.fetch("patterns").fetch("rails").fetch("paths")
     REQUIRED_PATHS.grep(%r{^patterns/rails/}).each { |p| assert_includes rails,p }
-    assert_includes m.fetch("evaluations").fetch("rails-cross-boundary-authorization-security").fetch("paths"), "evals/security/cross-boundary-authorization-contract.yml"
+    assert_includes m.fetch("evaluations").fetch("rails-cross-boundary-authorization-security").fetch("paths"), "evals/rails/cross-boundary-authorization-contract.yml"
   end
 
   def test_router_agents_validator
