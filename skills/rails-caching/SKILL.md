@@ -28,6 +28,7 @@ measure cost -> define freshness/correctness -> choose cache layer -> design key
 - investigating stale, incorrect, cross-user, or cross-tenant cached responses;
 - reviewing cache invalidation after model/domain changes;
 - diagnosing cache stampede, thundering-herd, hot-key, or eviction problems;
+- configuring or reviewing Solid Cache;
 - introducing cache warming or precomputation;
 - changing cache stores, serialization, namespaces, or deployment topology;
 - deciding whether a value should be cached at all;
