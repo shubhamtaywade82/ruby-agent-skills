@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 34 — Rails Authentication Engineering  
+> **Current milestone:** Iteration 38 — Rails Rack/Middleware Engineering  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -53,9 +53,9 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **68** |
-| Implementation patterns | **292** |
-| Evaluation cases | **94** |
+| Skills | **69** |
+| Implementation patterns | **304** |
+| Evaluation cases | **104** |
 | Dedicated system/contract tests | **50+** |
 | Manifest version | **2** |
 
@@ -259,6 +259,43 @@ Artifacts:
 - `evals/rails/asset-build-contract.yml`
 - `test/rails_asset_build_system_test.rb`
 
+
+## Rails Rack / Middleware Engineering
+
+The current milestone deepens the Rails request boundary into explicit Rack/middleware engineering coverage.
+
+### Coverage
+
+- Rack request/response and environment contracts
+- middleware stack ordering and environment-specific composition
+- custom middleware responsibility boundaries
+- short-circuit responses and downstream execution
+- exception propagation and error ownership
+- request-ID/correlation and middleware observability
+- trusted proxy and forwarded-header security
+- transport/security middleware boundaries
+- request-level rate limiting and deployment topology
+- thread/fiber/process safety and middleware lifecycle
+- hot-path performance and capacity considerations
+- deterministic Rack, integration, and stack tests
+
+### Rack/middleware artifacts
+
+- `skills/rails-rack-middleware-engineering/SKILL.md`
+- `patterns/rails/rack-request-response-contract.md`
+- `patterns/rails/middleware-stack-ordering.md`
+- `patterns/rails/custom-rack-middleware-contract.md`
+- `patterns/rails/middleware-short-circuit-contract.md`
+- `patterns/rails/middleware-exception-propagation.md`
+- `patterns/rails/middleware-thread-safety.md`
+- `patterns/rails/request-id-correlation-boundary.md`
+- `patterns/rails/middleware-security-boundary.md`
+- `patterns/rails/middleware-rate-limit-boundary.md`
+- `patterns/rails/trusted-proxy-header-contract.md`
+- `patterns/rails/middleware-observability-boundary.md`
+- `patterns/rails/middleware-testing.md`
+- `evals/rails/rack-middleware-contract.yml`
+- `test/rails_rack_middleware_system_test.rb`
 
 # Agent operating model
 
@@ -496,9 +533,9 @@ Validation covers:
 The validation suite currently reports:
 
 ```text
-68 skills
-292 implementation patterns
-94 evaluation cases
+69 skills
+304 implementation patterns
+104 evaluation cases
 ```
 
 ---
