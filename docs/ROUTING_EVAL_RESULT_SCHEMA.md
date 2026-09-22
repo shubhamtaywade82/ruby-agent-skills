@@ -1,8 +1,8 @@
 # Routing Evaluation Result Schema
 
-Iteration 54 defines a provider-neutral result contract for measuring actual agent skill selection against the repository's adversarial routing cases.
+Iteration 54 defines the provider-neutral result contract for measuring actual agent skill selection. Iteration 55 extends it to repeated public campaigns and primary-skill confusion analysis.
 
-## Required result
+## Case result
 
 Example JSON:
 
@@ -20,26 +20,44 @@ Example JSON:
 
 ## Rules
 
-- `case_id` must match a registered routing case.
-- `primary_skill` must be one registered skill.
-- `secondary_skills` must be an array of registered skills and must not contain the primary skill.
-- `reason` should state the ownership/boundary rationale without reproducing hidden benchmark material.
-- Agent/provider metadata is optional and may be included under `metadata`.
-- The evaluator treats the expected secondary skills as required supporting coverage, not as an exhaustive prohibition on additional context.
-- The evaluator does not score reasoning quality yet; it records the reason for auditability.
+- case_id must match a registered routing case.
+- primary_skill must be one registered skill.
+- secondary_skills must contain registered skills and must not contain the primary skill.
+- reason should state the ownership/boundary rationale without reproducing hidden benchmark material.
+- Provider/model metadata may be recorded by the adapter but must not contain secrets.
+- Expected secondary skills are required supporting coverage, not an exhaustive prohibition on additional context.
 
-## Scoring
+## Campaign result
 
-For each case:
+A campaign records independent repetitions for each routing case and aggregates them without discarding the individual evidence.
 
-- `primary_accuracy`: exact match between expected and observed primary skill.
-- `secondary_recall`: proportion of expected secondary skills observed.
-- `unexpected_secondary_count`: observed secondary skills not declared by the routing case.
+Required campaign fields include:
 
-For a campaign:
+- requested_repetitions
+- requested_runs
+- completed_runs
+- complete
+- metrics
+- confusion_matrix
+- cases
 
-- `primary_accuracy`: exact-primary matches / completed cases.
-- `secondary_recall`: total matched required secondary skills / total required secondary skills.
-- `complete`: every selected case produced a valid result.
+## Metrics
 
-The individual case results remain the source of truth.
+For each completed repetition:
+
+- primary_accuracy = exact expected-primary match.
+- secondary_recall = matched expected secondary skills / expected secondary skills.
+- unexpected_secondary_count = observed secondary skills not declared by the routing case.
+
+For the campaign:
+
+- primary_accuracy = exact-primary matches / valid completed repetitions.
+- secondary_recall = matched required secondary skills / total required secondary skills.
+- average_unexpected_secondary_count = mean unexpected secondary selections per valid repetition.
+- confusion_matrix = expected primary skill -> observed primary skill -> count.
+
+The confusion matrix is the key diagnostic surface for cross-boundary routing errors. A perfect routing campaign has only diagonal entries.
+
+## Evidence policy
+
+Individual run results remain the source of truth. Aggregate metrics are descriptive measurements, not quality claims. Public routing cases do not constitute hidden evaluations; hidden/adversarial additions remain external-only.
