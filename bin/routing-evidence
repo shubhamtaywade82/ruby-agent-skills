@@ -47,6 +47,7 @@ manifest_path = File.join(ROOT, "skill-manifest.yml")
 campaign_manifest_path = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
 result_schema_path = File.join(ROOT, "docs", "ROUTING_EVAL_RESULT_SCHEMA.md")
 remediation_policy_path = File.join(ROOT, "router", "ROUTING_REMEDIATION.yml")
+evidence_schema_path = File.join(ROOT, "docs", "ROUTING_EVIDENCE_SCHEMA.md")
 
 evidence = {
   "protocol_version" => 1,
@@ -72,7 +73,8 @@ evidence = {
     "skill_manifest" => {"path" => manifest_path, "sha256" => sha256(manifest_path)},
     "campaign_manifest" => {"path" => campaign_manifest_path, "sha256" => sha256(campaign_manifest_path)},
     "result_schema" => {"path" => result_schema_path, "sha256" => sha256(result_schema_path)},
-    "remediation_policy" => {"path" => remediation_policy_path, "sha256" => sha256(remediation_policy_path)}
+    "remediation_policy" => {"path" => remediation_policy_path, "sha256" => sha256(remediation_policy_path)},
+    "evidence_schema" => {"path" => evidence_schema_path, "sha256" => sha256(evidence_schema_path)}
   },
   "metrics" => {
     "baseline" => baseline.fetch("metrics"),
