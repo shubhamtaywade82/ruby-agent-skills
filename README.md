@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 43 — Rails Operational Tasks and Maintenance  
+> **Current milestone:** Iteration 44 — Rails Cross-Boundary Authorization and Security Composition  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -53,9 +53,9 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **74** |
-| Implementation patterns | **364** |
-| Evaluation cases | **164** |
+| Skills | **75** |
+| Implementation patterns | **378** |
+| Evaluation cases | **178** |
 | Dedicated system/contract tests | **50+** |
 | Manifest version | **2** |
 
@@ -668,7 +668,7 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 43 — Rails Operational Tasks and Maintenance**
+**Iteration 44 — Rails Cross-Boundary Authorization and Security Composition**
 
 Latest implementation is being validated by the repository CI pipeline.
 
@@ -690,3 +690,8 @@ Iteration 42 adds explicit contracts for Rails serialization ownership, JSON rep
 ## Rails Operational Tasks and Maintenance
 
 Iteration 43 adds executable contracts for custom Rake tasks, runner workflows, maintenance and cleanup, environment gates, dry-runs, idempotency, batching/checkpointing, locking, invariant preservation, partial failures, operational observability, scheduler overlap, data-repair verification, and production runbooks.
+
+
+## Rails Cross-Boundary Authorization and Security Composition
+
+Iteration 44 adds explicit security composition contracts across controllers, services, jobs, APIs, realtime channels, engines, operational commands, asynchronous event consumers, capabilities, denial semantics, authorization caches, and audit boundaries.
