@@ -783,7 +783,7 @@ For material architecture changes:
 
 ## Authentication and authorization boundary
 
-Authentication and authorization remain separate concerns: authentication establishes identity and session state; authorization decides permitted actions within that context.
+authentication and authorization remain separate concerns: authentication establishes identity and session state; authorization decides permitted actions within that context.
 
 ## Repository completeness and framework drift changes
 
