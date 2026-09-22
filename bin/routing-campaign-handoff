@@ -1,0 +1,112 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "optparse"
+require "open3"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
+CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
+CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
+SCHEMA_PATH = File.join(ROOT, "docs", "ROUTING_EVAL_RESULT_SCHEMA.md")
+
+options = {
+  model: nil,
+  url: ENV.fetch("OLLAMA_URL", "http://127.0.0.1:11434"),
+  runs: nil,
+  timeout: 300,
+  output: File.join(ROOT, "routing-handoff")
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign-handoff --model MODEL [options]"
+  opts.on("--model NAME", "Ollama model name to execute on the target runtime") { |v| options[:model] = v }
+  opts.on("--url URL", "Target Ollama base URL") { |v| options[:url] = v }
+  opts.on("--runs COUNT", Integer, "Repetitions per case") { |v| options[:runs] = v }
+  opts.on("--timeout SECONDS", Integer, "Per-run timeout") { |v| options[:timeout] = v }
+  opts.on("--output DIR", "Handoff directory") { |v| options[:output] = File.expand_path(v) }
+end.parse!
+
+abort "--model is required" if options[:model].to_s.empty?
+abort "--runs must be >= 1" if options[:runs] && options[:runs] < 1
+abort "--timeout must be >= 1" if options[:timeout].to_i < 1
+
+yaml = ->(path) { YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false) }
+campaign = yaml.call(CAMPAIGN_PATH)
+cases = Array(yaml.call(CASES_PATH).fetch("cases"))
+
+repetitions = options[:runs] || campaign.fetch("execution").fetch("repetitions").to_i
+expected_runs = cases.length * repetitions
+
+git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_status.success?
+
+git_status_output, git_status_state = Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all")
+abort "unable to inspect repository worktree" unless git_status_state.success?
+worktree_clean = git_status_output.strip.empty?
+abort "repository worktree is dirty; commit it before creating a handoff" unless worktree_clean
+
+hash = ->(path) { Digest::SHA256.file(path).hexdigest }
+
+FileUtils.mkdir_p(options[:output]) if defined?(FileUtils)
+require "fileutils"
+FileUtils.mkdir_p(options[:output])
+
+handoff = {
+  "protocol_version" => 1,
+  "handoff" => "skill-routing-external-run-v1",
+  "campaign" => {
+    "id" => campaign.fetch("id"),
+    "version" => campaign.fetch("version"),
+    "case_count" => cases.length,
+    "repetitions" => repetitions,
+    "expected_runs" => expected_runs
+  },
+  "runtime" => {
+    "provider" => "ollama",
+    "url" => options[:url].sub(%r{/+$}, ""),
+    "model" => options[:model]
+  },
+  "execution" => {
+    "timeout_seconds" => options[:timeout],
+    "command" => "ruby bin/routing-campaign --model #{options[:model].shellescape} --url #{options[:url].shellescape} --runs #{repetitions} --timeout #{options[:timeout]} --output ./routing-campaign-output"
+  },
+  "repository" => {
+    "git_sha" => git_sha.strip,
+    "worktree_clean" => true
+  },
+  "artifacts" => {
+    "skill_manifest_sha256" => hash.call(MANIFEST_PATH),
+    "campaign_manifest_sha256" => hash.call(CAMPAIGN_PATH),
+    "routing_cases_sha256" => hash.call(CASES_PATH),
+    "result_schema_sha256" => hash.call(SCHEMA_PATH)
+  },
+  "instructions" => {
+    "preflight_required" => true,
+    "expected_runs" => expected_runs,
+    "do_not_edit_public_routing_cases" => true,
+    "do_not_publish_gold_labels_to_agent_workspace" => true
+  }
+}
+
+json_path = File.join(options[:output], "HANDOFF.json")
+File.write(json_path, JSON.pretty_generate(handoff) + "\n", encoding: "UTF-8")
+
+script_path = File.join(options[:output], "run-campaign.sh")
+script = <<~SH
+  #!/usr/bin/env bash
+  set -euo pipefail
+  ruby bin/routing-campaign \
+    --model #{options[:model].shellescape} \
+    --url #{options[:url].shellescape} \
+    --runs #{repetitions} \
+    --timeout #{options[:timeout]} \
+    --output ./routing-campaign-output
+SH
+File.write(script_path, script, encoding: "UTF-8")
+FileUtils.chmod(0o755, script_path)
+
+puts JSON.pretty_generate(handoff)
