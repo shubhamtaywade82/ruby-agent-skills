@@ -721,3 +721,23 @@ For serialization, JSON, Global ID, Signed Global ID, or Active Job argument cha
 - define explicit policy for ActiveJob deserialization failures;
 - verify exact payloads, sensitive-field omission, query performance, identity/security semantics, and compatibility fixtures;
 - do not claim serialization compatibility or identity security from one happy-path test.
+
+
+## Rails operational task/maintenance changes
+
+For custom Rake tasks, runner commands, maintenance, cleanup, backfill, repair, or reconciliation work:
+- resolve Ruby/Rails versions and inspect existing task namespaces and operational conventions;
+- classify the task's scope, owner, environment, mutability, workload size, and recovery requirements;
+- keep task orchestration thin and reuse tested services/domain objects where business logic deserves a boundary;
+- gate destructive or production-sensitive commands explicitly before side effects;
+- make repeated execution converge safely; for large operations use deterministic batching and checkpoint/resume semantics;
+- define transaction boundaries deliberately and avoid unbounded transactions for large maintenance workloads;
+- choose an explicit concurrency/locking mechanism when overlap is unsafe;
+- audit callbacks, validations, authorization, counters, timestamps, audit events, and downstream jobs before bulk writes;
+- provide dry-run/preview behavior for destructive or high-blast-radius tasks when practical;
+- define fail-fast, collect-and-report, selective retry, or reconciliation behavior for partial failures;
+- emit bounded progress and final result evidence without logging secrets or sensitive payloads;
+- design recurring tasks for duplicate, delayed, overlapping, and restarted execution;
+- require a verification query/postcondition and document recovery or rerun behavior;
+- test environment gates, idempotency, batching, lock contention, partial failures, and dry-run behavior;
+- do not treat successful process exit as proof that the data repair or maintenance objective was achieved.
