@@ -15,18 +15,18 @@ evaluations:
   - active-record-contract
   - active-storage-contract
   - active-support-contract
-  - asset-build-contract
+  - rails-asset-build-contract
   - associations-contract
   - authentication-contract
   - authorization-contract
-  - cross-boundary-authorization-security-contract
-  - encryption-credentials-contract
-  - engines-railties-contract
+  - rails-cross-boundary-authorization-security-contract
+  - rails-encryption-credentials-contract
+  - rails-engines-railties-contract
   - hotwire-contract
   - i18n-contract
-  - initialization-configuration-contract
-  - operational-tasks-maintenance-contract
-  - rack-middleware-contract
+  - rails-initialization-configuration-contract
+  - rails-operational-tasks-maintenance-contract
+  - rails-rack-middleware-contract
   - rails-repository-completeness-contract
   - rails-routing-contract
   - rails-serialization-globalid-contract
