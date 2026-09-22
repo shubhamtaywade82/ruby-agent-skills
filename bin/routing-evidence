@@ -9,11 +9,12 @@ require "yaml"
 
 ROOT = File.expand_path("..", __dir__)
 
-options = { output: nil }
+options = { output: nil, allow_dirty: false }
 
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-evidence EXPERIMENT_DIR [options]"
   opts.on("--output PATH", "Write evidence JSON to PATH") { |value| options[:output] = File.expand_path(value) }
+  opts.on("--allow-dirty", "Allow packaging evidence from a dirty Git worktree") { options[:allow_dirty] = true }
 end.parse!
 
 experiment_dir = File.expand_path(ARGV.fetch(0) { abort "experiment directory is required" })
@@ -42,7 +43,15 @@ def contract_metadata(campaign)
   }
 end
 
-git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+git_sha_stdout, git_sha_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_sha_status.success?
+git_branch_stdout, git_branch_status = Open3.capture2("git", "-C", ROOT, "symbolic-ref", "--short", "HEAD")
+abort "unable to resolve repository branch" unless git_branch_status.success?
+git_status_stdout, git_status_status = Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all")
+abort "unable to inspect repository worktree" unless git_status_status.success?
+worktree_entries = git_status_stdout.lines.map(&:strip).reject(&:empty?)
+worktree_clean = worktree_entries.empty?
+abort "repository worktree is dirty; use --allow-dirty only when intentionally capturing non-clean evidence" unless worktree_clean || options[:allow_dirty]
 manifest_path = File.join(ROOT, "skill-manifest.yml")
 campaign_manifest_path = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
 result_schema_path = File.join(ROOT, "docs", "ROUTING_EVAL_RESULT_SCHEMA.md")
@@ -53,8 +62,11 @@ evidence = {
   "protocol_version" => 1,
   "evidence" => "skill-routing-experiment-v1",
   "repository" => {
-    "git_sha" => git_sha.strip,
-    "git_status" => git_status.success? ? "clean-head-resolved" : "unknown"
+    "git_sha" => git_sha_stdout.strip,
+    "git_branch" => git_branch_stdout.strip,
+    "git_status" => worktree_clean ? "clean" : "dirty-allowed",
+    "worktree_clean" => worktree_clean,
+    "status_entries" => worktree_entries
   },
   "agent" => baseline.fetch("agent"),
   "compatibility" => {
