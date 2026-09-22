@@ -272,7 +272,7 @@ skills:
   rails-cross-boundary-authorization-security:
     family: security
     path: skills/rails-cross-boundary-authorization-security/SKILL.md
-    triggers: [cross-boundary authorization, authorization composition, authorization context, decision boundary, authorized resource, service authorization, controller service authorization, background re-authorization, API authorization, Action Cable authorization, realtime authorization, engine authorization, operational authorization, event authorization, capability propagation, authorization denial, authorization cache, authorization audit, authorization]
+    triggers: [cross-boundary authorization, authorization composition, authorization context, decision boundary, authorized resource, service authorization, controller service authorization, background re-authorization, API authorization, Action Cable authorization, realtime authorization, engine authorization, operational authorization, event authorization, capability propagation, authorization denial, authorization cache, authorization audit, authorization, cross-boundary, policy, tenant, service, job, API, Action, Cable, engine, operational, command, event, capability, denial, cache, audit]
   rails-asset-build-engineering:
     family: rails
     path: skills/rails-asset-build-engineering/SKILL.md
