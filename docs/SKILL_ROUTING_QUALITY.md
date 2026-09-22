@@ -119,3 +119,14 @@ The command first checks `/api/tags` and requires the requested local model to b
 The report identifies expected-primary/observed-primary confusion pairs, unstable cases across repetitions, mismatch rate, and per-case primary distributions.
 
 A failed or unavailable model run is not converted into a score. This preserves the distinction between **not measured** and **measured with failures**.
+
+## Routing remediation loop
+
+Iteration 58 adds a before/after gate for routing changes:
+
+    ruby bin/routing-compare \
+      /path/to/baseline/campaign.json \
+      /path/to/candidate/campaign.json \
+      --output /tmp/routing-remediation.json
+
+The comparator reports primary-accuracy, secondary-recall, and unexpected-secondary deltas; resolved and newly introduced primary confusion pairs; and per-case accuracy changes. The default policy in `router/ROUTING_REMEDIATION.yml` rejects regressions and new primary confusion pairs. This is a regression gate, not a quality score.
