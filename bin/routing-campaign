@@ -1,0 +1,100 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+require "json"
+require "net/http"
+require "open3"
+require "optparse"
+require "shellwords"
+require "uri"
+
+ROOT = File.expand_path("..", __dir__)
+EVALUATOR = File.join(ROOT, "bin", "routing-eval")
+ADAPTER = File.join(ROOT, "bin", "routing-agent-ollama")
+ANALYZER = File.join(ROOT, "bin", "routing-analyze")
+
+options = {
+  url: ENV.fetch("OLLAMA_URL", "http://127.0.0.1:11434"),
+  model: ENV["OLLAMA_MODEL"],
+  output: File.join(Dir.tmpdir, "ruby-agent-routing-campaign"),
+  runs: nil,
+  timeout: 300
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign --model MODEL [options]"
+  opts.on("--model NAME", "Local Ollama model name") { |value| options[:model] = value }
+  opts.on("--url URL", "Ollama base URL (default: OLLAMA_URL or http://127.0.0.1:11434)") { |value| options[:url] = value }
+  opts.on("--runs COUNT", Integer, "Override routing repetitions") { |value| options[:runs] = value }
+  opts.on("--timeout SECONDS", Integer, "Maximum runtime per routing repetition") { |value| options[:timeout] = value }
+  opts.on("--output DIR", "Campaign output directory") { |value| options[:output] = value }
+end.parse!
+
+abort "--model is required" if options[:model].to_s.empty?
+
+def get_json(url)
+  uri = URI(url)
+  request = Net::HTTP::Get.new(uri)
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = uri.scheme == "https"
+  response = http.request(request)
+  abort "Ollama unavailable at #{url}: #{response.code} #{response.message}" unless response.is_a?(Net::HTTPSuccess)
+
+  JSON.parse(response.body)
+rescue SocketError, Errno::ECONNREFUSED, Errno::ETIMEDOUT, Net::OpenTimeout, Net::ReadTimeout => e
+  abort "Ollama unavailable at #{url}: #{e.message}"
+end
+
+base_url = options[:url].sub(%r{/+$}, "")
+tags = get_json("#{base_url}/api/tags")
+models = Array(tags["models"]).map { |entry| entry["name"].to_s }
+unless models.include?(options[:model])
+  abort "Ollama model not installed: #{options[:model]}. Available: #{models.join(", ")}"
+end
+
+FileUtils.mkdir_p(options[:output]) unless Dir.exist?(options[:output])
+campaign_json = File.join(options[:output], "campaign.json")
+report_json = File.join(options[:output], "routing-report.json")
+
+command = [
+  "env",
+  "RUBY_AGENT_PROVIDER=ollama",
+  "RUBY_AGENT_MODEL=#{options[:model]}",
+  "OLLAMA_URL=#{base_url}",
+  "OLLAMA_MODEL=#{options[:model]}",
+  RbConfig.ruby,
+  ADAPTER
+].map { |part| Shellwords.escape(part) }.join(" ")
+
+evaluator_args = [
+  RbConfig.ruby,
+  EVALUATOR,
+  "--command", command,
+  "--provider", "ollama",
+  "--model", options[:model],
+  "--tool-mode", "local-filesystem",
+  "--timeout", options[:timeout].to_s,
+  "--output", campaign_json
+]
+evaluator_args.insert(evaluator_args.index("--output"), "--runs", options[:runs].to_s) if options[:runs]
+
+stdout, stderr, status = Open3.capture3(*evaluator_args, chdir: ROOT)
+warn stderr unless stderr.empty?
+puts stdout
+abort "routing evaluator failed with exit code #{status.exitstatus}" unless status.success?
+
+analysis_stdout, analysis_stderr, analysis_status = Open3.capture3(
+  RbConfig.ruby,
+  ANALYZER,
+  campaign_json,
+  "--output",
+  report_json,
+  chdir: ROOT
+)
+warn analysis_stderr unless analysis_stderr.empty?
+puts analysis_stdout
+abort "routing analysis failed with exit code #{analysis_status.exitstatus}" unless analysis_status.success?
+
+puts "Routing campaign complete: #{campaign_json}"
+puts "Routing analysis: #{report_json}"
