@@ -145,3 +145,12 @@ Iteration 59 adds a single wrapper for controlled routing remediation experiment
       --output /tmp/routing-experiment
 
 The wrapper runs both campaigns with the same agent command and configuration, changing only the routing-contract snapshot supplied to the agent. It then invokes `bin/routing-compare`. The experiment produces `baseline.json`, `candidate.json`, and `comparison.json`.
+
+## Experiment evidence
+
+Iteration 60 adds an evidence packager:
+
+    ruby bin/routing-evidence /tmp/routing-experiment \
+      --output /tmp/routing-experiment/evidence.json
+
+The evidence file records the repository SHA, agent configuration, compatibility checks, SHA-256 hashes for baseline/candidate results and routing contracts, and hashes of the manifest/campaign/result-schema/remediation-policy artifacts. It also records the comparison gate and the replay command shape.
