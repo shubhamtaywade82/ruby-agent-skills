@@ -217,6 +217,19 @@ Avoid:
 - claiming thread safety without exercising the shared state
 - using middleware to compensate for a missing application-layer abstraction
 
+## Agent review checklist
+
+- [ ] Ruby, Rails, and Rack versions resolved
+- [ ] actual middleware stack inspected
+- [ ] ordering dependencies documented
+- [ ] Rack response/body contract preserved
+- [ ] short-circuit and exception ownership explicit
+- [ ] request state is concurrency-safe
+- [ ] proxy/header trust assumptions verified
+- [ ] domain authorization remains at the resource/action boundary
+- [ ] focused Rack and stack tests exist
+- [ ] production/runtime differences considered
+
 ## Verification
 
 Before reporting completion:
@@ -229,6 +242,13 @@ Before reporting completion:
 6. Run the repository's normal regression suite for behavior changes.
 7. Inspect the final diff for unnecessary stack changes.
 8. Record exact verification evidence; do not claim middleware correctness from static inspection alone.
+
+## Source foundation
+
+- Rack SPEC: https://rack.github.io/rack/3.2/SPEC_rdoc.html
+- Rails Configuration guide: https://guides.rubyonrails.org/configuring.html
+- Rails Security guide: https://guides.rubyonrails.org/security.html
+- Rails Testing guide: https://guides.rubyonrails.org/testing.html
 
 ## Related skills
 
