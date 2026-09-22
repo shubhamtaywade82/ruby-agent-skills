@@ -150,7 +150,7 @@ fixtures:
       - "HMAC"
       - "expires_at"
       - "purpose"
-action-cable-contract:
+  action-cable-contract:
     root: benchmarks/rails/fixtures/action-cable-contract
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
