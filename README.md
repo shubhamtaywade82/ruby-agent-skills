@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 62 — Routing Evidence Archive & Benchmark Intake  
+> **Current milestone:** Iteration 63 — Routing Campaign Intake Gate  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -761,6 +761,10 @@ Iteration 58 adds `router/ROUTING_REMEDIATION.yml` and `bin/routing-compare`. Th
 ## Iteration 59 — Reproducible Routing Baseline/Candidate Experiment
 
 Iteration 59 adds `bin/routing-experiment`, which runs baseline and candidate routing-contract snapshots with the same agent command, model metadata, timeout, and repetitions, then applies the Iteration 58 comparison gate. This makes routing remediation experiments reproducible and isolates the routing contract as the intended experimental variable.
+
+## Iteration 63 — Routing Campaign Intake Gate
+
+Iteration 63 adds a strict acceptance boundary for externally produced routing campaigns. The intake verifier requires the configured public corpus, repetition count, complete case coverage, valid registered skills, and complete agent metadata before a real model campaign can be treated as evidence. The current public protocol therefore requires 14 cases × 3 repetitions = 42 completed routing decisions.
 
 ## Iteration 62 — Routing Evidence Archive & Benchmark Intake
 
