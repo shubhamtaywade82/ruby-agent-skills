@@ -65,7 +65,11 @@ options = {
   output: File.join(ROOT, "routing-results", "campaign.json"),
   case_id: nil,
   runs: nil,
-  timeout: 300
+  timeout: 300,
+  provider: ENV["RUBY_AGENT_PROVIDER"],
+  model: ENV["RUBY_AGENT_MODEL"],
+  model_version: ENV["RUBY_AGENT_MODEL_VERSION"],
+  tool_mode: ENV["RUBY_AGENT_TOOL_MODE"]
 }
 
 OptionParser.new do |opts|
@@ -75,6 +79,10 @@ OptionParser.new do |opts|
   opts.on("--runs COUNT", Integer, "Repetitions per case; campaign default is used when omitted") { |value| options[:runs] = value }
   opts.on("--output DIR_OR_FILE", "Output directory or campaign JSON path") { |value| options[:output] = value }
   opts.on("--timeout SECONDS", Integer, "Maximum agent runtime per case repetition") { |value| options[:timeout] = value }
+  opts.on("--provider NAME") { |value| options[:provider] = value }
+  opts.on("--model NAME") { |value| options[:model] = value }
+  opts.on("--model-version VALUE") { |value| options[:model_version] = value }
+  opts.on("--tool-mode VALUE") { |value| options[:tool_mode] = value }
 end.parse!
 
 abort "usage: ruby bin/routing-eval --command COMMAND [options]" unless options[:command]
@@ -240,6 +248,12 @@ campaign = {
   "evaluation" => "skill-routing-v1",
   "campaign" => campaign_config.fetch("id"),
   "campaign_version" => campaign_config.fetch("version"),
+  "agent" => {
+    "provider" => options[:provider],
+    "model" => options[:model],
+    "model_version" => options[:model_version],
+    "tool_mode" => options[:tool_mode]
+  },
   "routing_case_count" => selected.length,
   "requested_repetitions" => repetitions,
   "requested_runs" => requested_repetitions,
