@@ -1357,3 +1357,40 @@ When a task changes custom Rake tasks, bin/rails runner workflows, maintenance c
 | Scheduler overlap | pattern:scheduled-maintenance-overlap-contract |
 | Data repair verification | pattern:data-repair-verification-contract |
 | Production runbook | pattern:production-runbook-command-contract |
+
+
+## Rails Cross-Boundary Authorization and Security Composition
+
+When authorization/security changes cross controllers, services, jobs, APIs, Action Cable, engines, operational commands, events, capabilities, tenant scopes, or authorization caches:
+  -> rails-cross-boundary-authorization-security
+  -> rails-authorization for the authoritative policy/ability/permission mechanism
+  -> rails-authentication for actor/session establishment
+  -> rails-security-engineering for threat modeling and trust boundaries
+  -> rails-active-record for authorized resource lookup
+  -> rails-active-job for delayed execution and re-authorization
+  -> rails-action-cable for realtime access boundaries
+  -> rails-engines-railties-engineering for engine route and namespace composition
+  -> rails-operational-tasks-maintenance for privileged task execution
+  -> rails-event-driven-messaging for asynchronous consumer boundaries
+  -> rails-caching for authorization-result cache identity/invalidation
+  -> rails-observability for audit/correlation
+  -> rails-test-engineering for cross-boundary regression tests
+
+### Cross-boundary authorization pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Explicit actor/tenant/context | pattern:authorization-context-contract |
+| One authoritative decision | pattern:authorization-decision-boundary |
+| Authorized resource lookup | pattern:authorized-resource-resolution |
+| Controller/service parity | pattern:controller-service-authorization-composition |
+| Background re-authorization | pattern:background-reauthorization-composition |
+| API composition | pattern:api-authorization-composition |
+| Realtime composition | pattern:realtime-authorization-composition |
+| Engine composition | pattern:engine-authorization-composition |
+| Operational commands | pattern:operational-authorization-composition |
+| Event consumers | pattern:event-consumer-authorization-contract |
+| Capability propagation | pattern:capability-propagation-contract |
+| Denial semantics | pattern:authorization-denial-contract |
+| Authorization cache | pattern:authorization-cache-composition |
+| Authorization audit | pattern:authorization-audit-composition |
