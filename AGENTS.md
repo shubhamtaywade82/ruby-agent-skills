@@ -614,6 +614,7 @@ For authentication changes:
 - resolve the Ruby/Rails version and identify the actual mechanism in use before implementation;
 - inspect generated Rails authentication, Devise, custom concerns, middleware, session stores, token stores, and alternate authentication paths;
 - keep authentication and authorization separate and preserve the repository's authoritative policy boundary;
+- authentication and authorization remain separate contracts even when they share request/session plumbing;
 - treat credential material, password reset tokens, session cookies, and bearer tokens as secrets that must not enter logs, jobs, events, or telemetry;
 - model authentication as explicit state transitions: credential verification, session/token establishment, request context, logout, expiry, and revocation;
 - verify session fixation resistance and fresh session state after successful login;
