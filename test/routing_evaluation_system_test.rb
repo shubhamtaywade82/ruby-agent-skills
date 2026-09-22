@@ -4,6 +4,7 @@ require "json"
 require "minitest/autorun"
 require "open3"
 require "tmpdir"
+require "socket"
 require "yaml"
 
 class RoutingEvaluationSystemTest < Minitest::Test
@@ -25,7 +26,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
 
   def test_routing_evaluator_produces_measurement
     Dir.mktmpdir("routing-eval") do |dir|
-      command = "ruby -rjson -e 'result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); File.write(result, JSON.generate({protocol_version:1,case_id:ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]),primary_skill:%q[rails-authentication],secondary_skills:[%q[rails-security-engineering],%q[rails-test-engineering]],reason:%q[Authentication owns the identity lifecycle.]}) + %q[\n])'"
+      command = "ruby -rjson -e 'case_file=ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_FILE]); abort(%q[gold labels leaked]) if File.read(case_file).include?(%q[primary_skills]); result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); File.write(result, JSON.generate({protocol_version:1,case_id:ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]),primary_skill:%q[rails-authentication],secondary_skills:[%q[rails-security-engineering],%q[rails-test-engineering]],reason:%q[Authentication owns the identity lifecycle.]}) + %q[\\n])'"
 
       stdout, stderr, status = Open3.capture3(
         RbConfig.ruby,
@@ -84,5 +85,80 @@ class RoutingCampaignContractSystemTest < Minitest::Test
     assert_equal 3, campaign.fetch("execution").fetch("repetitions")
     assert_equal true, campaign.fetch("execution").fetch("fresh_workspace_per_run")
     assert_equal "external-only", campaign.fetch("controls").fetch("hidden_cases")
+  end
+end
+
+
+class OllamaRoutingAgentSystemTest < Minitest::Test
+  ROOT = File.expand_path("..", __dir__)
+
+  def test_ollama_adapter_normalizes_model_output
+    server = TCPServer.new("127.0.0.1", 0)
+    port = server.addr[1]
+    request_body = nil
+
+    server_thread = Thread.new do
+      socket = server.accept
+      request = +""
+      request << socket.readpartial(16_384)
+      header, body = request.split("\r\n\r\n", 2)
+      content_length = header[/Content-Length:\s*(\d+)/i, 1].to_i
+      while body.bytesize < content_length
+        body << socket.readpartial(16_384)
+      end
+      request_body = JSON.parse(body)
+
+      response_body = JSON.generate(
+        "message" => {
+          "content" => JSON.generate(
+            "primary_skill" => "rails-authentication",
+            "secondary_skills" => ["rails-security-engineering"],
+            "reason" => "The task concerns identity lifecycle."
+          )
+        }
+      )
+
+      socket.write(
+        "HTTP/1.1 200 OK\r\n"         "Content-Type: application/json\r\n"         "Content-Length: #{response_body.bytesize}\r\n"         "Connection: close\r\n\r\n#{response_body}"
+      )
+      socket.close
+    end
+
+    Dir.mktmpdir("ollama-routing") do |dir|
+      prompt_file = File.join(dir, "prompt.txt")
+      result_file = File.join(dir, "result.json")
+      File.write(prompt_file, "Implement password reset with replay protection.\n")
+
+      env = {
+        "RUBY_AGENT_ROUTING_PROTOCOL_VERSION" => "1",
+        "RUBY_AGENT_ROUTING_CASE_ID" => "password-recovery-not-authorization",
+        "RUBY_AGENT_ROUTING_PROMPT_FILE" => prompt_file,
+        "RUBY_AGENT_ROUTING_RESULT_FILE" => result_file,
+        "RUBY_AGENT_ROUTING_MANIFEST_FILE" => File.join(ROOT, "skill-manifest.yml"),
+        "RUBY_AGENT_ROUTING_ROUTER_FILE" => File.join(ROOT, "router", "ROUTING.md"),
+        "OLLAMA_URL" => "http://127.0.0.1:#{port}",
+        "OLLAMA_MODEL" => "test-model"
+      }
+
+      _stdout, stderr, status = Open3.capture3(
+        env,
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "routing-agent-ollama"),
+        chdir: ROOT
+      )
+
+      assert status.success?, stderr
+
+      result = JSON.parse(File.read(result_file, encoding: "UTF-8"))
+      assert_equal "password-recovery-not-authorization", result.fetch("case_id")
+      assert_equal "rails-authentication", result.fetch("primary_skill")
+      assert_equal ["rails-security-engineering"], result.fetch("secondary_skills")
+      assert_equal "test-model", request_body.fetch("model")
+      assert_equal false, request_body.fetch("stream")
+      assert_equal "json", request_body.fetch("format")
+    end
+  ensure
+    server.close if server
+    server_thread.join if server_thread
   end
 end
