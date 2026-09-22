@@ -23,6 +23,10 @@ errors = []
 
 errors << "both baseline and candidate campaigns must be complete" unless baseline.fetch("complete") && candidate.fetch("complete")
 
+errors << "baseline and candidate campaign ids differ" unless baseline.fetch("campaign") == candidate.fetch("campaign")
+errors << "baseline and candidate campaign versions differ" unless baseline.fetch("campaign_version") == candidate.fetch("campaign_version")
+errors << "baseline and candidate agent configurations differ" unless baseline.fetch("agent") == candidate.fetch("agent")
+
 baseline_metrics = baseline.fetch("metrics")
 candidate_metrics = candidate.fetch("metrics")
 primary_delta = candidate_metrics.fetch("primary_accuracy") - baseline_metrics.fetch("primary_accuracy")
