@@ -150,10 +150,23 @@ when "campaign"
   output_dir = File.expand_path(options.fetch(:output))
   FileUtils.mkdir_p(output_dir)
 
+  manifest_display = if File.expand_path(manifest_path).start_with?("#{ROOT}/")
+    File.expand_path(manifest_path).delete_prefix("#{ROOT}/")
+  else
+    File.expand_path(manifest_path)
+  end
+
   campaign_result = {
     "protocol_version" => 1,
     "campaign" => campaign.fetch("id"),
-    "manifest" => File.expand_path(manifest_path),
+    "campaign_version" => campaign.fetch("version"),
+    "evaluation_set" => campaign.fetch("evaluation_set"),
+    "source" => campaign.fetch("source"),
+    "manifest" => manifest_display,
+    "fixture_root" => campaign_fixture_root.delete_prefix("#{ROOT}/"),
+    "verifier" => campaign_verifier.delete_prefix("#{ROOT}/"),
+    "execution" => campaign.fetch("execution"),
+    "controls" => campaign.fetch("controls"),
     "repetitions" => repetitions,
     "evaluations" => {}
   }
