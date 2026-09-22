@@ -780,6 +780,10 @@ For material architecture changes:
 - distinguish measured evidence from architectural hypotheses and do not claim structural improvements without verification.
 
 
+## Authentication and authorization boundary
+
+Authentication and authorization remain separate concerns: authentication establishes identity and session state; authorization decides permitted actions within that context.
+
 ## Repository completeness and framework drift changes
 
 For changes to the skill repository itself:
