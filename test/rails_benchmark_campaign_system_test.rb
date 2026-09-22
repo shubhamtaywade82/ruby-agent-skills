@@ -6,7 +6,7 @@ require "yaml"
 class RailsBenchmarkCampaignSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
 
-  def test_rails_campaign_is_registered_and_incremental
+  def test_rails_campaign_is_registered_and_complete
     manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
     benchmark = manifest.fetch("benchmarks").fetch("rails")
     assert_equal "benchmarks/rails/fixtures.yml", benchmark.fetch("fixture_registry")
@@ -27,6 +27,6 @@ class RailsBenchmarkCampaignSystemTest < Minitest::Test
     assert_equal ids.sort, fixture_registry.fetch("fixtures").keys.sort
 
     unbenchmarked = public_ids.keys - ids
-    assert_operator unbenchmarked.length, :>, 0, "coverage expansion should remain incremental"
+    assert_empty unbenchmarked, "all public Rails evaluations must be benchmarked"
   end
 end
