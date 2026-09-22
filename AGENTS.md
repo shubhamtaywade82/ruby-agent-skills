@@ -28,6 +28,16 @@ This repository is an agent-oriented Ruby/Rails skill library. Every coding agen
 - Never weaken a validator or test merely to make an agent run green.
 - Preserve public contracts unless the task explicitly changes them.
 
+## Routing quality
+
+- Treat trigger matching as an activation signal, not proof that a skill owns the task.
+- Identify a primary skill from the dominant engineering boundary.
+- Add secondary skills only for real dependent constraints or execution boundaries.
+- Consult router/ROUTING.md and router/ROUTING_CASES.yml for overlap-heavy tasks.
+- Keep authentication and authorization separate; identity establishment does not prove permission.
+- For cross-boundary authorization, re-authorize at the execution boundary instead of inheriting trust from an earlier controller or request.
+- Prefer composing existing skills over creating a new skill for every cross-cutting concern.
+
 ## Design rules
 
 - Prefer the simplest implementation satisfying the contract.
