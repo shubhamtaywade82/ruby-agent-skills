@@ -1,0 +1,86 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "optparse"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
+CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
+MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
+
+options = { expected_runs: nil }
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign-verify CAMPAIGN_JSON [options]"
+  opts.on("--expected-runs COUNT", Integer, "Override expected total run count") { |value| options[:expected_runs] = value }
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "campaign JSON is required" })
+abort "campaign JSON not found: #{path}" unless File.file?(path)
+
+load_yaml = ->(file) { YAML.safe_load(File.read(file, encoding: "UTF-8"), permitted_classes: [], aliases: false) }
+campaign = JSON.parse(File.read(path, encoding: "UTF-8"))
+routing_cases = Array(load_yaml.call(CASES_PATH).fetch("cases"))
+campaign_manifest = load_yaml.call(CAMPAIGN_PATH)
+skills = YAML.safe_load(File.read(MANIFEST_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("skills").keys
+
+errors = []
+case_ids = routing_cases.map { |entry| entry.fetch("id") }.sort
+expected_case_count = routing_cases.length
+expected_repetitions = campaign_manifest.fetch("execution").fetch("repetitions").to_i
+expected_runs = options[:expected_runs] || expected_case_count * expected_repetitions
+
+errors << "protocol_version must be 1" unless campaign["protocol_version"].to_i == 1
+errors << "campaign id mismatch" unless campaign["campaign"] == campaign_manifest.fetch("id")
+errors << "campaign version mismatch" unless campaign["campaign_version"].to_i == campaign_manifest.fetch("version").to_i
+errors << "routing_case_count must equal #{expected_case_count}" unless campaign["routing_case_count"].to_i == expected_case_count
+errors << "requested_repetitions must equal #{expected_repetitions}" unless campaign["requested_repetitions"].to_i == expected_repetitions
+errors << "requested_runs must equal #{expected_runs}" unless campaign["requested_runs"].to_i == expected_runs
+errors << "completed_runs must equal requested_runs" unless campaign["completed_runs"].to_i == campaign["requested_runs"].to_i
+errors << "campaign must be marked complete" unless campaign["complete"] == true
+
+agent = campaign.fetch("agent", {})
+errors << "agent provider is missing" if agent["provider"].to_s.strip.empty?
+errors << "agent model is missing" if agent["model"].to_s.strip.empty?
+
+cases = campaign.fetch("cases", {})
+errors << "campaign cases must contain exactly the public routing case IDs" unless cases.keys.sort == case_ids
+
+routing_cases.each do |expected_case|
+  id = expected_case.fetch("id")
+  data = cases[id]
+  next unless data
+
+  errors << "#{id}: requested_repetitions mismatch" unless data["requested_repetitions"].to_i == expected_repetitions
+  runs = Array(data["runs"])
+  errors << "#{id}: expected #{expected_repetitions} runs, got #{runs.length}" unless runs.length == expected_repetitions
+  errors << "#{id}: completed_repetitions mismatch" unless data["completed_repetitions"].to_i == expected_repetitions
+  errors << "#{id}: case must be complete" unless data["complete"] == true
+  errors << "#{id}: expected primary mismatch" unless data["expected_primary_skill"] == expected_case.fetch("primary_skills").first
+
+  runs.each_with_index do |run, index|
+    errors << "#{id}: run #{index + 1} is not completed" unless run["status"] == "completed"
+    observed = run["observed"] || {}
+    primary = observed["primary_skill"].to_s
+    errors << "#{id}: run #{index + 1} has unknown primary skill #{primary}" unless skills.include?(primary)
+    secondary = Array(observed["secondary_skills"]).map(&:to_s)
+    unknown = secondary.reject { |skill| skills.include?(skill) }
+    errors << "#{id}: run #{index + 1} has unknown secondary skills #{unknown.join(", ")}" unless unknown.empty?
+    errors << "#{id}: run #{index + 1} contains primary skill in secondary list" if secondary.include?(primary)
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing campaign intake error(s)"
+end
+
+puts "Routing campaign intake verification"
+puts "  campaign: #{campaign.fetch("campaign")}"
+puts "  cases: #{campaign.fetch("routing_case_count")}"
+puts "  repetitions: #{campaign.fetch("requested_repetitions")}"
+puts "  total runs: #{campaign.fetch("requested_runs")}"
+puts "  agent: #{agent.fetch("provider")}/#{agent.fetch("model")}"
+puts "Routing campaign intake verification passed."
