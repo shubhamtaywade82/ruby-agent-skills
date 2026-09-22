@@ -1,0 +1,17 @@
+version: 1
+id: skill-routing-hidden-v1
+source: external-only
+visibility: private
+cases:
+  storage: external-only
+  gold_labels: external-only
+  agent_workspace_exposure: prompt-only
+  repository_storage: forbidden
+protocol:
+  result_schema: docs/ROUTING_EVAL_RESULT_SCHEMA.md
+  primary_skill_required: true
+  secondary_skills_required: true
+  no_gold_labels_to_agent: true
+controls:
+  public_campaign_must_not_depend_on_hidden_cases: true
+  hidden_case_count_must_not_be_inferred_from_public_corpus: true

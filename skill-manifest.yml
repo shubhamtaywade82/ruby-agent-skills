@@ -30,6 +30,13 @@ routing:
   evidence_archive_schema: docs/ROUTING_EVIDENCE_ARCHIVE_SCHEMA.md
   campaign_verifier: bin/routing-campaign-verify
   campaign_intake_schema: docs/ROUTING_CAMPAIGN_INTAKE_SCHEMA.md
+  campaign_evidence_packager: bin/routing-campaign-evidence
+  campaign_evidence_schema: docs/ROUTING_CAMPAIGN_EVIDENCE_SCHEMA.md
+  campaign_preflight: bin/routing-campaign-preflight
+  campaign_preflight_schema: docs/ROUTING_CAMPAIGN_PREFLIGHT_SCHEMA.md
+  external_handoff: bin/routing-campaign-handoff
+  external_handoff_schema: docs/ROUTING_EXTERNAL_CAMPAIGN_SCHEMA.md
+  hidden_benchmark_contract: router/ROUTING_HIDDEN_BENCHMARK.yml
   evidence_schema: docs/ROUTING_EVIDENCE_SCHEMA.md
 
 skills:
