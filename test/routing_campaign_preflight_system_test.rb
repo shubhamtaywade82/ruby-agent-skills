@@ -24,8 +24,8 @@ class RoutingCampaignPreflightSystemTest < Minitest::Test
 
   def test_campaign_runner_requires_preflight_before_evaluation
     runner = File.read(File.join(ROOT, "bin", "routing-campaign"), encoding: "UTF-8")
-    preflight_index = runner.index("PREFLIGHT")
-    evaluator_index = runner.index("EVALUATOR")
+    preflight_index = runner.index("preflight_args = [")
+    evaluator_index = runner.index("evaluator_args = [")
     refute_nil preflight_index
     refute_nil evaluator_index
     assert_operator preflight_index, :<, evaluator_index
