@@ -285,6 +285,10 @@ skills:
     family: rails
     path: skills/rails-serialization-globalid-engineering/SKILL.md
     triggers: [serialization, serializable_hash, as_json, to_json, ActiveModel::Serialization, ActiveModel::Serializers::JSON, JSON representation, serializer, nested serialization, GlobalID, GlobalId, SignedGlobalID, Global ID, GlobalID::Locator, to_global_id, to_signed_global_id, to_sgid, Active Job arguments, custom serializer, deserialization]
+  rails-operational-tasks-maintenance:
+    family: rails
+    path: skills/rails-operational-tasks-maintenance/SKILL.md
+    triggers: [Rake, task, lib/tasks, bin/rails runner, runner, maintenance, cleanup, backfill, repair, reconciliation, data repair, dry-run, idempotent, checkpoint, batch, lock, runbook, operational task]
   rails-initialization-configuration-engineering:
     family: rails
     path: skills/rails-initialization-configuration-engineering/SKILL.md
@@ -609,6 +613,19 @@ patterns:
       - patterns/rails/nested-serialization-boundary.md
       - patterns/rails/sensitive-serialization-contract.md
       - patterns/rails/serialization-versioning-contract.md
+      - patterns/rails/operational-task-boundary.md
+      - patterns/rails/task-namespace-contract.md
+      - patterns/rails/environment-gate-contract.md
+      - patterns/rails/operational-dry-run-contract.md
+      - patterns/rails/idempotent-maintenance-contract.md
+      - patterns/rails/batch-checkpoint-contract.md
+      - patterns/rails/maintenance-lock-contract.md
+      - patterns/rails/mutation-invariant-contract.md
+      - patterns/rails/partial-failure-contract.md
+      - patterns/rails/operational-observability-contract.md
+      - patterns/rails/scheduled-maintenance-overlap-contract.md
+      - patterns/rails/data-repair-verification-contract.md
+      - patterns/rails/production-runbook-command-contract.md
       - patterns/rails/globalid-identity-contract.md
       - patterns/rails/signed-globalid-integrity-contract.md
       - patterns/rails/globalid-locator-allowlist.md
@@ -800,6 +817,17 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  rails-operational-tasks-maintenance:
+    source: rails-operational-tasks-maintenance-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/operational-tasks-maintenance-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-engines-railties-engineering:
     source: rails-engines-railties-v1
     schema: docs/EVAL_SCHEMA.md
