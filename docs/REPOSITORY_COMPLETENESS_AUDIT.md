@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Iteration 46 verifies the skill system as a repository-wide product, not only as a collection of individual Rails topics.
+Iteration 46–51 verify the skill system as a repository-wide product, not only as a collection of individual Rails topics.
 
 The audit checks:
 
@@ -19,7 +19,7 @@ The audit checks:
 
 At Iteration 46 the repository contains **76 skills**, **393 implementation patterns**, and **392 evaluation cases**.
 
-The repository-wide validator executes **40 system tests**. Every system test is required to appear in bin/validate.
+The repository-wide validator executes **43 system tests**. Every system test is required to appear in bin/validate.
 
 ## Framework drift review
 
@@ -45,11 +45,12 @@ Iteration 46 routes these version-sensitive concerns to existing owners rather t
 1. All 76 skill paths match the manifest.
 2. All 393 implementation pattern files are registered; the four additional registry references are intentional testing-category aliases.
 3. All evaluation YAMLs are registered.
-4. All 40 system tests are now executed by the canonical validator.
+4. All 43 system tests are now executed by the canonical validator.
 5. Router coverage is explicit for every skill, including the meta-level agent-workflow skill.
 6. README inventory and milestone text are checked by the audit.
 7. Stale pre-Iteration-46 roadmap text is removed.
 8. Rails 8.1 framework drift is represented in the owning skills and completeness evaluation.
+9. Iteration 51 completes the public Rails benchmark campaign: all **27** Rails evaluations have disposable fixture seams and controlled campaign entries.
 
 ## Guardrails
 
