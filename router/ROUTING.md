@@ -1394,3 +1394,40 @@ When authorization/security changes cross controllers, services, jobs, APIs, Act
 | Denial semantics | pattern:authorization-denial-contract |
 | Authorization cache | pattern:authorization-cache-composition |
 | Authorization audit | pattern:authorization-audit-composition |
+
+
+## Rails Staff and Principal Architecture
+
+When a task materially changes dependency direction, domain ownership, modularity, data ownership, cross-team boundaries, process/service decomposition, architecture migration, or system-wide tradeoffs:
+  -> rails-staff-principal-architecture
+  -> rails-architecture for ordinary cross-layer Rails structure
+  -> rails-domain-modeling for domain ownership and invariants
+  -> rails-cross-boundary-authorization-security for security composition
+  -> rails-engines-railties-engineering for Engine/plugin boundaries
+  -> rails-distributed-systems for process and consistency boundaries
+  -> rails-release-engineering for staged architectural migrations
+  -> rails-reliability-engineering for failure/recovery tradeoffs
+  -> rails-security-engineering for trust-boundary analysis
+  -> rails-database-engineering for data ownership/schema transitions
+  -> rails-observability for architecture-level evidence
+  -> rails-test-engineering for executable architecture checks
+
+### Staff/Principal architecture pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| State the actual architecture problem | pattern:architecture-problem-statement |
+| Dependency direction | pattern:dependency-direction-contract |
+| Bounded context | pattern:bounded-context-contract |
+| Modular monolith | pattern:modular-monolith-boundary |
+| Data ownership | pattern:data-ownership-contract |
+| Shared kernel | pattern:shared-kernel-contract |
+| Application service | pattern:application-service-boundary |
+| Cross-cutting concern ownership | pattern:cross-cutting-ownership-contract |
+| Change coupling | pattern:change-coupling-contract |
+| Process/service extraction readiness | pattern:distributed-boundary-readiness |
+| Incremental architecture migration | pattern:architectural-migration-contract |
+| ADR | pattern:architecture-decision-record-contract |
+| Executable architecture rule | pattern:architecture-fitness-check |
+| System tradeoffs | pattern:architecture-tradeoff-contract |
+| Operational/team ownership | pattern:architecture-ownership-contract |
