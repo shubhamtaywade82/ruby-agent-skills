@@ -240,7 +240,7 @@ skills:
   rails-action-controller:
     family: rails
     path: skills/rails-action-controller/SKILL.md
-    triggers: [Action Controller, ActionController, ActionController::Base, strong parameters, params.expect, params.permit, params.require, request object, response object, session, cookies, flash, controller callbacks, before_action, after_action, around_action, content negotiation, respond_to, ETag, Last-Modified, conditional GET, 304 Not Modified, streaming, send_data, send_file, ActionController::Live, rescue_from, controller exception handling]
+    triggers: [Action Controller, ActionController, ActionController::Base, strong parameters, params.expect, params.permit, params.require, request object, response object, session, cookies, flash, controller callbacks, before_action, after_action, around_action, content negotiation, respond_to, ETag, Last-Modified, conditional GET, 304 Not Modified, streaming, send_data, send_file, ActionController::Live, render markdown, Markdown rendering, rescue_from, controller exception handling]
   rails-views:
     family: rails
     path: skills/rails-views/SKILL.md
