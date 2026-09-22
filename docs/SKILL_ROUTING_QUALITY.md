@@ -51,6 +51,8 @@ Do not invent a new skill merely because a task crosses two existing boundaries.
 
 Iteration 54 adds a provider-neutral routing evaluation runner. An external agent command receives the routing case through environment variables and writes a JSON result containing the selected primary and secondary skills.
 
+Iteration 55 turns this into a public campaign with three fresh repetitions per case, per-run evidence, completion enforcement, agent provenance, and an expected-primary versus observed-primary confusion matrix.
+
 Run a single case:
 
     ruby bin/routing-eval --command 'YOUR_ROUTING_AGENT_COMMAND' --case tenant-scoped-resource-access --output /tmp/routing-result.json
@@ -71,3 +73,17 @@ Run:
     ruby -Itest test/skill_routing_system_test.rb
 
 The canonical bin/validate command executes the routing system test as part of the repository-wide verification path.
+
+## Campaign reproducibility
+
+Provide provider/model metadata when measuring an external agent:
+
+    ruby bin/routing-eval \
+      --command 'YOUR_ROUTING_AGENT_COMMAND' \
+      --provider your-provider \
+      --model your-model \
+      --model-version your-version \
+      --tool-mode filesystem \
+      --output /tmp/routing-campaign.json
+
+A campaign result is evidence for a specific agent configuration and routing-contract revision. Do not compare results across materially different agent/model/tool configurations as though they were one measurement.
