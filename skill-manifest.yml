@@ -26,6 +26,8 @@ routing:
   experiment_runner: bin/routing-experiment
   evidence_packager: bin/routing-evidence
   evidence_verifier: bin/routing-evidence-verify
+  evidence_archiver: bin/routing-archive
+  evidence_archive_schema: docs/ROUTING_EVIDENCE_ARCHIVE_SCHEMA.md
   evidence_schema: docs/ROUTING_EVIDENCE_SCHEMA.md
 
 skills:
