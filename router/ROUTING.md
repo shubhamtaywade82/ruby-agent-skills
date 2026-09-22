@@ -1325,3 +1325,35 @@ When a task changes ActiveModel serialization, serializable_hash, as_json/to_jso
 | Locator failure semantics | pattern:globalid-resolution-failure-contract |
 | Active Job arguments | pattern:activejob-argument-serialization-contract |
 | Custom Active Job serializer | pattern:custom-activejob-serializer-contract |
+
+
+## Rails Operational Tasks and Maintenance engineering
+
+When a task changes custom Rake tasks, bin/rails runner workflows, maintenance commands, backfills, cleanup, reconciliation, data repair, dry-run tooling, operational locking, or production runbooks:
+  -> rails-operational-tasks-maintenance
+  -> rails-database-engineering for batching, constraints, locks, and migrations
+  -> rails-active-job for scheduled/recurring operational work
+  -> rails-production-runtime for production execution and environment gates
+  -> rails-reliability-engineering for partial failure, recovery, and concurrency
+  -> rails-observability for progress and result reporting
+  -> rails-incident-engineering for incident/recovery runbooks
+  -> rails-release-engineering for release sequencing and production gates
+  -> rails-authorization / rails-security-engineering for sensitive administrative operations
+
+### Operational task pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Task ownership | pattern:operational-task-boundary |
+| Task naming/namespace | pattern:task-namespace-contract |
+| Environment safety | pattern:environment-gate-contract |
+| Preview/no-write mode | pattern:operational-dry-run-contract |
+| Rerun safety | pattern:idempotent-maintenance-contract |
+| Large-data processing | pattern:batch-checkpoint-contract |
+| Exclusive execution | pattern:maintenance-lock-contract |
+| Bulk-write invariants | pattern:mutation-invariant-contract |
+| Partial failures | pattern:partial-failure-contract |
+| Progress/result reporting | pattern:operational-observability-contract |
+| Scheduler overlap | pattern:scheduled-maintenance-overlap-contract |
+| Data repair verification | pattern:data-repair-verification-contract |
+| Production runbook | pattern:production-runbook-command-contract |
