@@ -116,7 +116,7 @@ A benchmark family may cover a deliberate subset of its public evaluation corpus
 
 ## Rails framework campaign
 
-The first Rails campaign is defined at benchmarks/rails/campaign.yml and currently covers Action Controller, Active Record, Routing, and Validations.
+The Rails campaign is defined at benchmarks/rails/campaign.yml and now covers nine evaluations: Action Controller, Active Record, Routing, Validations, Authentication, Authorization, Cross-Boundary Authorization, Encryption/Credentials, and Serialization/Global ID. The campaign intentionally leaves the remaining 20 public Rails evaluations unbenchmarked until fixture and verifier quality are added.
 
 ## Multiple campaign families
 
