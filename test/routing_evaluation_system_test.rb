@@ -42,6 +42,9 @@ class RoutingEvaluationSystemTest < Minitest::Test
       assert_equal true, campaign.fetch("complete")
       assert_in_delta 1.0, campaign.fetch("metrics").fetch("primary_accuracy"), 0.0001
       assert_in_delta 1.0, campaign.fetch("metrics").fetch("secondary_recall"), 0.0001
+      assert_equal 3, campaign.fetch("requested_repetitions")
+      assert_equal 3, campaign.fetch("completed_runs")
+      assert_equal 3, campaign.fetch("confusion_matrix").fetch("rails-authentication").fetch("rails-authentication")
     end
   end
 
@@ -58,10 +61,28 @@ class RoutingEvaluationSystemTest < Minitest::Test
     assert_equal "scripts/audit_skill_routing.rb", routing.fetch("audit")
     assert_equal "docs/ROUTING_EVAL_RESULT_SCHEMA.md", routing.fetch("result_schema")
     assert_equal "bin/routing-eval", routing.fetch("evaluation_runner")
+    assert_equal "router/ROUTING_CAMPAIGN.yml", routing.fetch("campaign_manifest")
   end
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
     assert_includes validator, "test/routing_evaluation_system_test.rb"
+  end
+end
+
+class RoutingCampaignContractSystemTest < Minitest::Test
+  ROOT = File.expand_path("..", __dir__)
+
+  def test_campaign_manifest_is_three_repetition_and_external_hidden_case_safe
+    campaign = YAML.safe_load(
+      File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+
+    assert_equal "skill-routing-public-v1", campaign.fetch("id")
+    assert_equal 3, campaign.fetch("execution").fetch("repetitions")
+    assert_equal true, campaign.fetch("execution").fetch("fresh_workspace_per_run")
+    assert_equal "external-only", campaign.fetch("controls").fetch("hidden_cases")
   end
 end
