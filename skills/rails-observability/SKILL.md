@@ -180,6 +180,11 @@ Prefer structured assertions over brittle full-log snapshots.
 ## Verification
 Never claim production observability is complete from a passing controller test alone. Verify the request boundary, failure behavior, correlation, filtering, instrumentation, and health semantics actually changed.
 
+## Rails 8.1 current framework considerations
+
+- Rails 8.1 adds structured Event Reporting through `Rails.event`. Treat structured events as an explicit operational contract rather than parsing human-oriented log text.
+- Keep event payloads bounded, correlation-aware, and free of secrets or sensitive request data; continue to use the owning instrumentation/error boundary for durable application telemetry.
+
 ## Source foundation
 
 Primary Rails guidance:
