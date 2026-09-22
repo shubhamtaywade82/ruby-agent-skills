@@ -668,7 +668,7 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 48 — Final Release and Public-Readiness Hardening**
+**Iteration 49 — Rails Benchmark Coverage Expansion
 
 Latest implementation is being validated by the repository CI pipeline.
 
@@ -709,6 +709,10 @@ Iteration 46 adds repository-level completeness enforcement for manifest registr
 
 Iteration 47 hardens the benchmark system with fixture-seam validation, controlled campaign requirements, public/hidden coverage disclosure, and campaign provenance preserved in campaign results. Public evaluation families without campaigns are reported explicitly rather than being treated as measured benchmark evidence.
 
+
+## Rails Benchmark Coverage Expansion
+
+Iteration 49 starts measured benchmark coverage for the deep Rails evaluation corpus. The first public campaign covers Action Controller, Active Record, Routing, and Validations with paired baseline/skills-enabled runs, deterministic fixtures, independent verification, and explicit disclosure of remaining unbenchmarked Rails evaluations.
 
 ## Final Release and Public-Readiness Hardening
 
