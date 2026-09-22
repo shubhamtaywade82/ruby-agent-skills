@@ -10,17 +10,9 @@ The first campaign is intentionally incremental. It does not claim that every Ra
 
 The Rails corpus contains **27 public evaluation files** covering **263 cases**.
 
-The first public campaign covers:
+The public campaign now covers all 27 evaluation files. The benchmark-quality audit requires complete Rails campaign coverage, so no public Rails evaluation is treated as unmeasured.
 
-| Evaluation | Cases |
-|---|---:|
-| Action Controller | 9 |
-| Active Record | 9 |
-| Routing | 10 |
-| Validations | 10 |
-| **Measured in Iteration 49** | **38** |
-
-The remaining **23 Rails evaluation files / 225 cases** are reported by the benchmark-quality audit as public but unbenchmarked.
+**Completed in Iteration 51:** 27 evaluations / 263 cases.
 
 ## Campaign contract
 
