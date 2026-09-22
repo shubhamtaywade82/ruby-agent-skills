@@ -15,7 +15,7 @@ skills:
   rails-test-engineering:
     family: rails-quality
     path: skills/rails-test-engineering/SKILL.md
-    triggers: [test engineering, Rails test suite, flaky test, flaky tests, parallel tests, parallelize, test isolation, test performance, slow tests, system tests, integration tests, request tests, job tests, test database, transactional tests, test helpers, fixtures, factories, deterministic tests, CI tests]
+    triggers: [test engineering, Rails test suite, flaky test, flaky tests, parallel tests, parallelize, test isolation, test performance, slow tests, system tests, integration tests, request tests, job tests, test database, transactional tests, test helpers, fixtures, factories, deterministic tests, CI tests, config/ci.rb, bin/ci, local CI]
   rails-production-runtime:
     family: rails
     path: skills/rails-production-runtime/SKILL.md
@@ -27,11 +27,11 @@ skills:
   rails-observability:
     family: rails
     path: skills/rails-observability/SKILL.md
-    triggers: [observability, Rails.error, error reporting, ActiveSupport::Notifications, instrumentation, request ID, correlation ID, logging, log tags, health check, readiness, liveness, API error handling, rescue_from]
+    triggers: [observability, Rails.error, error reporting, ActiveSupport::Notifications, instrumentation, request ID, correlation ID, logging, log tags, health check, readiness, liveness, API error handling, rescue_from, Rails.event, Event Reporter, structured event reporting]
   rails-active-job:
     family: rails
     path: skills/rails-active-job/SKILL.md
-    triggers: [Active Job, ApplicationJob, background job, perform_later, perform_now, perform_all_later, retry_on, discard_on, job retry, job queue, Solid Queue, concurrency controls, recurring jobs, scheduled jobs, idempotency, transactional enqueue]
+    triggers: [Active Job, ApplicationJob, background job, perform_later, perform_now, perform_all_later, retry_on, discard_on, job retry, job queue, Solid Queue, concurrency controls, recurring jobs, scheduled jobs, idempotency, transactional enqueue, ActiveJob::Continuable, job continuation]
   rails-zeitwerk:
     family: rails
     path: skills/rails-zeitwerk/SKILL.md
@@ -71,7 +71,7 @@ skills:
   rails-caching:
     family: performance
     path: skills/rails-caching/SKILL.md
-    triggers: [Rails caching, cache engineering, cache key, cache key isolation, cache invalidation, cache freshness, cache store, cache stampede, cache warming, cache failure, cache eviction, cache capacity, fragment cache, low-level cache, response cache, stale cache]
+    triggers: [Rails caching, cache engineering, cache key, cache key isolation, cache invalidation, cache freshness, cache store, cache stampede, cache warming, cache failure, cache eviction, cache capacity, fragment cache, low-level cache, response cache, stale cache, Solid Cache, database-backed cache]
   rails-active-support:
     family: rails
     path: skills/rails-active-support/SKILL.md
@@ -85,7 +85,7 @@ skills:
   rails-action-view:
     family: rails
     path: skills/rails-action-view/SKILL.md
-    triggers: [Action View, ActionView, view rendering, Action View rendering, partial contract, partials, strict locals, locals signature, layout contract, view helpers, helper boundary, output safety, html_safe, raw HTML, sanitize, localized views, collection rendering, view rendering performance]
+    triggers: [Action View, ActionView, view rendering, Action View rendering, partial contract, partials, strict locals, locals signature, layout contract, view helpers, helper boundary, output safety, html_safe, raw HTML, sanitize, localized views, collection rendering, view rendering performance, markdown rendering, render markdown]
 
   rails-action-mailbox:
     family: rails
@@ -99,7 +99,7 @@ skills:
   rails-action-cable:
     family: rails
     path: skills/rails-action-cable/SKILL.md
-    triggers: [Action Cable, ActionCable, WebSocket, WebSockets, realtime Rails, realtime, ApplicationCable::Connection, ApplicationCable::Channel, cable connection, cable channel, channel authorization, subscription, stream_from, stream_for, broadcast_to, broadcasting, pub/sub realtime, Redis pubsub, Action Cable testing, reconnect, resubscribe, realtime capacity]
+    triggers: [Action Cable, ActionCable, WebSocket, WebSockets, realtime Rails, realtime, ApplicationCable::Connection, ApplicationCable::Channel, cable connection, cable channel, channel authorization, subscription, stream_from, stream_for, broadcast_to, broadcasting, pub/sub realtime, Redis pubsub, Action Cable testing, reconnect, resubscribe, realtime capacity, Solid Cable, database-backed pubsub]
   rails-i18n:
     family: rails
     path: skills/rails-i18n/SKILL.md
@@ -256,7 +256,7 @@ skills:
   rails-associations:
     family: rails
     path: skills/rails-associations/SKILL.md
-    triggers: [belongs_to, has_one, has_many, through, has_many :through, HABTM, relationship, association cardinality, association ownership, inverse_of, class_name, foreign_key, primary_key, polymorphic, dependent, destroy_async, restrict_with_exception, restrict_with_error, nullify, autosave, nested attributes, counter_cache, touch, association callbacks, before_add, after_add, before_remove, after_remove, association extension]
+    triggers: [belongs_to, has_one, has_many, through, has_many :through, HABTM, relationship, association cardinality, association ownership, inverse_of, class_name, foreign_key, primary_key, polymorphic, dependent, destroy_async, restrict_with_exception, restrict_with_error, nullify, autosave, nested attributes, counter_cache, touch, association callbacks, before_add, after_add, before_remove, after_remove, association extension, deprecated association, association deprecation]
   rails-validations:
     family: rails
     path: skills/rails-validations/SKILL.md
@@ -264,7 +264,7 @@ skills:
   rails-authentication:
     family: rails
     path: skills/rails-authentication/SKILL.md
-    triggers: [authentication, session, sign in, sign out, protected route, password reset, session fixation, session revocation, remember me, bearer token, account lockout, login throttling, current user, reauthentication]
+    triggers: [authentication, session, sign in, sign out, protected route, password reset, session fixation, session revocation, remember me, bearer token, account lockout, login throttling, current user, reauthentication, authentication generator, Rails authentication generator]
   rails-authorization:
     family: rails
     path: skills/rails-authorization/SKILL.md
@@ -284,7 +284,7 @@ skills:
   rails-encryption-credentials-engineering:
     family: rails
     path: skills/rails-encryption-credentials-engineering/SKILL.md
-    triggers: [credentials, config/credentials.yml.enc, config/credentials, master.key, RAILS_MASTER_KEY, credentials:edit, credentials:show, secret_key_base, Active Record Encryption, ActiveRecord::Encryption, encrypts, deterministic encryption, encrypted attribute, db:encryption:init, key rotation]
+    triggers: [credentials, config/credentials.yml.enc, config/credentials, master.key, RAILS_MASTER_KEY, credentials:edit, credentials:show, secret_key_base, Active Record Encryption, ActiveRecord::Encryption, encrypts, deterministic encryption, encrypted attribute, db:encryption:init, key rotation, rails credentials:fetch, credential fetch]
   rails-serialization-globalid-engineering:
     family: rails
     path: skills/rails-serialization-globalid-engineering/SKILL.md
@@ -293,6 +293,17 @@ skills:
     family: rails
     path: skills/rails-operational-tasks-maintenance/SKILL.md
     triggers: [Rake, task, lib/tasks, bin/rails runner, runner, maintenance, cleanup, backfill, repair, reconciliation, data repair, dry-run, idempotent, checkpoint, batch, lock, runbook, operational task]
+  rails-repository-completeness:
+    source: rails-repository-completeness-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/repository-completeness-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-staff-principal-architecture:
     family: architecture
     path: skills/rails-staff-principal-architecture/SKILL.md
@@ -320,7 +331,7 @@ skills:
   rails-deployment:
     family: operations
     path: skills/rails-deployment/SKILL.md
-    triggers: [deployment, hosting, production, environment, release]
+    triggers: [deployment, hosting, production, environment, release, Kamal, Kamal 2, registry-free deploy, Thruster]
 
 patterns:
   ruby-design:
