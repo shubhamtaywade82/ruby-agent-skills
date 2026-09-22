@@ -28,6 +28,7 @@ The current Rails guide documents Active Job as the common interface for backgro
 - changing enqueue behavior inside database transactions
 - adding idempotency/deduplication
 - adding concurrency limits
+- using or reviewing Rails 8.1 Active Job Continuations (`ActiveJob::Continuable`)
 - configuring Solid Queue workers/processes/dispatchers/schedulers
 - adding recurring jobs
 - changing job shutdown/recovery semantics
