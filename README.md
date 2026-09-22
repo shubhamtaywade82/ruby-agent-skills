@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 65 — Routing Campaign Runtime Preflight  
+> **Current milestone:** Iteration 66 — External Routing Campaign Handoff  
 > **Branch:** `feat/routing-campaign-preflight-v1`
 
 ---
@@ -761,6 +761,10 @@ Iteration 58 adds `router/ROUTING_REMEDIATION.yml` and `bin/routing-compare`. Th
 ## Iteration 59 — Reproducible Routing Baseline/Candidate Experiment
 
 Iteration 59 adds `bin/routing-experiment`, which runs baseline and candidate routing-contract snapshots with the same agent command, model metadata, timeout, and repetitions, then applies the Iteration 58 comparison gate. This makes routing remediation experiments reproducible and isolates the routing contract as the intended experimental variable.
+
+## Iteration 66 — External Routing Campaign Handoff
+
+Iteration 66 adds a portable external-runtime handoff for the public routing campaign and defines the private/hidden benchmark boundary. The handoff captures the exact repository SHA, public 14-case/3-repetition protocol, model/runtime settings, and contract hashes, then emits an executable campaign command. Hidden routing cases and gold labels remain external-only and are explicitly forbidden from repository storage or agent exposure.
 
 ## Iteration 65 — Routing Campaign Runtime Preflight
 
