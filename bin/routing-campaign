@@ -36,25 +36,7 @@ end.parse!
 
 abort "--model is required" if options[:model].to_s.empty?
 
-def get_json(url)
-  uri = URI(url)
-  request = Net::HTTP::Get.new(uri)
-  http = Net::HTTP.new(uri.host, uri.port)
-  http.use_ssl = uri.scheme == "https"
-  response = http.request(request)
-  abort "Ollama unavailable at #{url}: #{response.code} #{response.message}" unless response.is_a?(Net::HTTPSuccess)
-
-  JSON.parse(response.body)
-rescue SocketError, Errno::ECONNREFUSED, Errno::ETIMEDOUT, Net::OpenTimeout, Net::ReadTimeout => e
-  abort "Ollama unavailable at #{url}: #{e.message}"
-end
-
 base_url = options[:url].sub(%r{/+$}, "")
-tags = get_json("#{base_url}/api/tags")
-models = Array(tags["models"]).map { |entry| entry["name"].to_s }
-unless models.include?(options[:model])
-  abort "Ollama model not installed: #{options[:model]}. Available: #{models.join(", ")}"
-end
 
 FileUtils.mkdir_p(options[:output]) unless Dir.exist?(options[:output])
 campaign_json = File.join(options[:output], "campaign.json")
