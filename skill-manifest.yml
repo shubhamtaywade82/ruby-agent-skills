@@ -268,7 +268,7 @@ skills:
   rails-authorization:
     family: rails
     path: skills/rails-authorization/SKILL.md
-    triggers: [authorization, policy, Pundit, CanCanCan, authorization policy, authorized scope, object-level authorization, IDOR, tenant isolation, role, permission, capability, ownership authorization, policy scope, access control]
+    triggers: [authorization, policy, Pundit, CanCanCan, authorization policy, authorized scope, object-level authorization, IDOR, tenant isolation, role, permission, capability, ownership authorization, policy scope, access control, tenant]
   rails-cross-boundary-authorization-security:
     family: security
     path: skills/rails-cross-boundary-authorization-security/SKILL.md
