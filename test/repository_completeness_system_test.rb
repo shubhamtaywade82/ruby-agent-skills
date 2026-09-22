@@ -29,7 +29,8 @@ class RepositoryCompletenessSystemTest < Minitest::Test
     readme = File.read(File.join(ROOT, "README.md"), encoding: "UTF-8")
     audit = File.read(File.join(ROOT, "docs", "REPOSITORY_COMPLETENESS_AUDIT.md"), encoding: "UTF-8")
 
-    assert_includes readme, "Iteration 46 — Repository-wide Completeness and Gap Audit"
+    assert_includes readme, "## Repository-wide Completeness and Gap Audit"
+    assert_includes readme, "Iteration 47 — Evaluation and Benchmark Hardening"
     %w[
       ActiveJob::Continuable
       Rails.event
