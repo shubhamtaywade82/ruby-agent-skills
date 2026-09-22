@@ -292,7 +292,7 @@ skills:
   rails-operational-tasks-maintenance:
     family: rails
     path: skills/rails-operational-tasks-maintenance/SKILL.md
-    triggers: [Rake, task, lib/tasks, bin/rails runner, runner, maintenance, cleanup, backfill, repair, reconciliation, data repair, dry-run, idempotent, checkpoint, batch, lock, runbook, operational task]
+    triggers: [Rake, task, lib/tasks, bin/rails runner, runner, maintenance, cleanup, backfill, repair, reconciliation, data repair, dry-run, idempotent, checkpoint, batch, lock, runbook, operational task, bin/rails]
   rails-staff-principal-architecture:
     family: architecture
     path: skills/rails-staff-principal-architecture/SKILL.md
