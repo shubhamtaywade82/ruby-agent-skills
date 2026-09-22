@@ -1,0 +1,88 @@
+id: rails-serialization-globalid-contract
+version: 1
+title: Preserve Rails serialization, JSON, Global ID, Signed Global ID, and Active Job representation contracts
+category: rails
+source: rails-serialization-globalid-v1
+skills:
+  - rails-serialization-globalid-engineering
+  - rails-active-model
+  - rails-active-job
+  - rails-api-integration
+  - rails-action-controller
+  - rails-performance
+  - rails-security-engineering
+  - rails-authorization
+  - rails-reliability-engineering
+  - rails-initialization-configuration-engineering
+  - rails-test-engineering
+patterns:
+  - serialization-boundary-contract
+  - serializable-hash-allowlist
+  - json-representation-contract
+  - nested-serialization-boundary
+  - sensitive-serialization-contract
+  - serialization-versioning-contract
+  - globalid-identity-contract
+  - signed-globalid-integrity-contract
+  - globalid-locator-allowlist
+  - globalid-resolution-failure-contract
+  - activejob-argument-serialization-contract
+  - custom-activejob-serializer-contract
+prompt: |
+  Implement or review a Rails serialization, JSON, Global ID, Signed Global ID, or Active Job argument change using the repository's actual versions and consumers. Preserve explicit output schemas, sensitive-field boundaries, performance constraints, identity semantics, authorization after resolution, and compatibility across queued or external representations.
+constraints:
+  required_design:
+    - explicit serialized representation owner and schema
+    - sensitive fields excluded unless explicitly justified
+    - nested serialization bounded and query-aware
+    - Global ID and Signed Global ID semantics are distinct
+    - identity resolution is not authorization
+    - Active Job payloads are queue-safe and version-tolerant
+    - deserialization failures have explicit policy
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: serialization-boundary
+    input: new externally consumed model representation
+    expected: explicit fields, owner, and compatibility contract
+  - name: allowlist
+    input: model with newly added sensitive column
+    expected: serialized payload does not expand accidentally
+  - name: json
+    input: response representation change
+    expected: as_json representation and JSON transport remain distinct
+  - name: nested
+    input: include association in payload
+    expected: bounded nesting, preloads, and query/payload checks
+  - name: sensitive
+    input: credentials or private attribute
+    expected: field is excluded unless an explicit consumer contract requires it
+  - name: versioning
+    input: breaking payload semantic change
+    expected: compatibility/version/deprecation policy is explicit
+  - name: globalid
+    input: Active Record object passed to a job
+    expected: Global ID identity semantics and deleted-record behavior are explicit
+  - name: signed-globalid
+    input: browser-exposed identity token
+    expected: signature, purpose, expiry, and post-resolution authorization are explicit
+  - name: locator
+    input: external Global ID
+    expected: model/application allowlist is enforced
+  - name: resolution-failure
+    input: deleted vs unavailable record
+    expected: distinct operational responses
+  - name: active-job-serialization
+    input: custom job argument type
+    expected: supported wire representation and compatibility contract
+  - name: custom-serializer
+    input: ObjectSerializer implementation
+    expected: safe registration, lifecycle, discriminator, and round-trip behavior
+grading:
+  functional: representation and identity behavior matches the intended contract
+  tests: output, failure, performance, and compatibility paths are executable
+  contract: serialization, identity, authorization, lifecycle, and compatibility boundaries remain explicit
+  scope_control: no unrelated API or framework migration is introduced
