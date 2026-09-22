@@ -94,6 +94,31 @@ When the repository tests user-facing behavior, preserve important labels, form 
 - conditionals repeated across many views
 - relying on client-side state for server authorization
 
+## Reference example
+
+Presentation logic in a helper with arguments, template calls kept to named locals, and no queries hidden in views.
+
+```ruby
+module ProjectsHelper
+  # Presentation only: no queries, no writes, no instance variables from the controller.
+  def status_dot(project)
+    tag.span(class: "dot dot--#{project.status}")
+  end
+
+  def formatted_deadline(project)
+    project.deadline ? l(project.deadline, format: :short) : t("projects.no_deadline")
+  end
+end
+
+# app/views/projects/_card.html.erb (locals in, markup out):
+#   <article class="card">
+#     <%= link_to project.name, project, class: "card__title" %>
+#     <%= status_dot(project) %>
+#     <p><%= truncate project.description, length: 120 %></p>
+#     <time><%= formatted_deadline(project) %></time>
+#   </article>
+```
+
 ## Agent review checklist
 
 - [ ] template is presentation-focused

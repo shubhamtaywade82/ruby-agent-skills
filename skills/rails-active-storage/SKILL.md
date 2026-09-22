@@ -663,6 +663,40 @@ Use the Active Storage test service and local fixtures rather than live cloud pr
 
 Do not make the test suite depend on networked object storage unless that is an intentional integration environment.
 
+## Reference example
+
+One attachment with an explicit, validated file contract, served only after authorization.
+
+```ruby
+class Document < ApplicationRecord
+  has_one_attached :file
+
+  ALLOWED_TYPES = %w[application/pdf image/png].freeze
+  MAX_BYTES = 25.megabytes
+
+  validate :enforce_file_contract
+
+  private
+
+  def enforce_file_contract
+    return unless file.attached?
+
+    errors.add(:file, "exceeds 25 MB") if file.byte_size > MAX_BYTES
+    errors.add(:file, "must be PDF or PNG") unless file.content_type.in?(ALLOWED_TYPES)
+  end
+end
+
+class DocumentsController < ApplicationController
+  def show
+    document = current_account.documents.find(params[:id]) # authorize before serving bytes
+    redirect_to document.file.url(disposition: :attachment)
+  end
+end
+
+# Variants are processed on demand and cached; never inline-transform in a request:
+#   document.file.variant(resize_to_limit: [800, 800]).processed.url
+```
+
 ## Agent review checklist
 
 - [ ] Active Storage/version semantics resolved

@@ -345,6 +345,31 @@ Where applicable test:
 
 Prefer behavior tests over brittle assertions on generated method names.
 
+## Reference example
+
+Associations declared with inverse_of and counter_cache, including a distinct through-association for a many-to-many read.
+
+```ruby
+class Clinic < ApplicationRecord
+  has_many :appointments
+  has_many :patients, -> { distinct }, through: :appointments
+  has_one :address, as: :addressable, dependent: :destroy
+end
+
+class Appointment < ApplicationRecord
+  belongs_to :clinic, inverse_of: :appointments
+  belongs_to :patient, counter_cache: true
+end
+
+class Patient < ApplicationRecord
+  has_many :appointments
+  has_many :clinics, through: :appointments
+end
+
+# inverse_of keeps both in-memory sides coherent:
+#   clinic.appointments.build(patient: patient).patient.clinic == clinic  # => true
+```
+
 ## Agent review checklist
 
 - [ ] both association directions inspected

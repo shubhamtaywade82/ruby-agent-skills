@@ -77,6 +77,38 @@ Prefer an adapter, wrapper, refinement, collaborator, or module when those expre
 - monkey patches that break after dependency upgrades
 - dynamic dispatch that cannot be statically searched or easily tested
 
+## Reference example
+
+Delegation done correctly: method_missing forwards, respond_to_missing? tells the truth, and undefined names still raise NoMethodError.
+
+```ruby
+class AuditedRecord
+  FORWARD = %i[save reload].to_h { |m| [m, ->(r) { "audited #{m}" }] }.freeze
+
+  def respond_to_missing?(name, include_private = false)
+    FORWARD.key?(name) || super
+  end
+
+  def method_missing(name, *args)
+    if (op = FORWARD[name])
+      op.call(self)
+    else
+      super # preserve NoMethodError semantics
+    end
+  end
+end
+
+record = AuditedRecord.new
+raise "respond_to? must agree" unless record.respond_to?(:save)
+raise "must not claim :destroy" if record.respond_to?(:destroy)
+puts record.save
+begin
+  record.destroy
+rescue NoMethodError => e
+  puts "undefined stays undefined: #{e.class}"
+end
+```
+
 ## Agent review checklist
 
 - [ ] ordinary Ruby considered first

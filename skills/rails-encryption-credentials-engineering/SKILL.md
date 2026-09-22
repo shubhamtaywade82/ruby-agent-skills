@@ -47,6 +47,28 @@ Test credential loading without exposing values, missing-key failure behavior, e
 ## Anti-patterns / failure modes
 Avoid plaintext secrets in Git, credentials committed with key files, secret values in logs, one global key for unrelated security domains, deterministic encryption by default when querying is unnecessary, encrypted columns with unreviewed size/index behavior, irreversible bulk encryption without recovery evidence, environment ambiguity, hard-coded secret fallbacks, and tests that assert or print real secret material.
 
+## Reference example
+
+Reading encrypted credentials through a narrow accessor, never scattering Rails.application.credentials through the codebase.
+
+```ruby
+# config/credentials.yml.enc (edited via: bin/rails credentials:edit)
+#   billing:
+#     api_key: ...
+#     endpoint: https://api.example.com
+
+class Billing
+  def self.api_key
+    Rails.application.credentials.dig(:billing, :api_key) or
+      raise MissingCredentialError, "billing.api_key not configured for #{Rails.env}"
+  end
+end
+
+# Per-environment key selection is automatic (config/credentials/#{Rails.env}.yml.enc
+# when present), and the decryption key never enters the repository.
+# Local development without a key must fail loudly, not silently fall back.
+```
+
 ## Agent review checklist
 - [ ] Rails/Ruby version resolved
 - [ ] credential store and key path explicit

@@ -287,6 +287,37 @@ Consider old/new clients, old/new webhook processors, and old/new queued payload
 
 For provider migrations, isolate provider-specific behavior behind an adapter instead of spreading conditionals through the domain.
 
+## Reference example
+
+An external client whose timeout is explicit, whose failure is a typed error, and whose retry/idempotency policy lives at the transport layer.
+
+```ruby
+class ExternalBillingClient
+  TIMEOUT = 5.seconds
+
+  def initialize(transport:)
+    @transport = transport
+  end
+
+  def charge(order)
+    @transport.post("/charges", timeout: TIMEOUT) do |request|
+      request.headers["Idempotency-Key"] = "order-#{order.id}"
+      request.body = { order_id: order.id, amount_cents: order.total_cents }
+    end
+  end
+
+  def charge!(order)
+    response = charge(order)
+    raise ApiError.new(:provider_declined, :unprocessable_entity) unless response.success?
+
+    response
+  end
+end
+
+# Controllers depend on the typed error, not on transport exceptions:
+#   rescue_from ApiError -> { |e| render json: { error: e.code }, status: e.status }
+```
+
 ## Agent review checklist
 
 - [ ] boundary classified

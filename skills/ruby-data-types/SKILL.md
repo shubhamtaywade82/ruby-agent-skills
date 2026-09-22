@@ -110,6 +110,30 @@ Do not combine all five responsibilities into one method.
 - data classes with no behavior when a simple hash would suffice
 - domain behavior embedded in serializers/parsers
 
+## Reference example
+
+A value type: Struct with Comparable, frozen at construction, where equality follows field values rather than identity.
+
+```ruby
+Money = Struct.new(:cents, :currency) do
+  include Comparable
+
+  def self.of(amount, currency) = new((amount * 100).round, currency).freeze
+
+  def +(other)
+    raise "currency mismatch" unless currency == other.currency
+    Money.new(cents + other.cents, currency).freeze
+  end
+
+  def <=>(other) = [cents, currency] <=> [other.cents, other.currency]
+  def to_s = format("%.2f %s", cents / 100.0, currency)
+end
+
+price = Money.of(19.99, :eur)
+raise "value equality broken" unless price == Money.of(19.99, :eur)
+puts "#{price} + #{price} = #{price + price}"
+```
+
 ## Agent review checklist
 
 - [ ] value contract is explicit

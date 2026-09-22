@@ -228,6 +228,28 @@ Treat a failed release as an operational event:
 
 Do not overwrite evidence by immediately rebuilding and redeploying without preserving the failed artifact/version and observed failure.
 
+## Reference example
+
+Release gates as an executable script: the same checks that gate the tag are the ones a human would otherwise re-type.
+
+```ruby
+# bin/release-verify - run before tagging a release
+GATES = [
+  "bin/rails zeitwerk:check",
+  "bin/rails db:migrate:status",     # fails on pending/down migrations
+  "bin/rails test",
+  "bin/rails assets:precompile"
+].freeze
+
+GATES.each do |gate|
+  puts "== #{gate}"
+  system(gate) or abort("release gate failed: #{gate}")
+end
+
+puts "all release gates passed"
+# Tag only after this exits 0; the tag records the exact commit that passed.
+```
+
 ## Agent review checklist
 - [ ] change risk classified
 - [ ] artifact identity/provenance established

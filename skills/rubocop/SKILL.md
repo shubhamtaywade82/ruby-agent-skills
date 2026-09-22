@@ -229,6 +229,36 @@ When introducing RuboCop into an existing codebase:
 
 Prefer explicit documented exclusions to unexplained broad disabling.
 
+## Reference example
+
+A pinned, reviewable RuboCop configuration: new cops enabled consciously, and every deviation from default justified in place.
+
+```yaml
+# .rubocop.yml
+plugins: [rubocop-rails]
+
+AllCops:
+  NewCops: enable          # new rules appear loudly, not silently
+  SuggestExtensions: false
+  Exclude:
+    - db/schema.rb
+    - vendor/**/*
+
+Style/Documentation:
+  Enabled: false           # this repo documents skills, not every PORO
+
+Metrics/MethodLength:
+  Max: 12
+  CountAsOne: [array, hash, heredoc]
+
+Rails/Output:
+  Exclude:
+    - lib/tasks/**/*       # rake tasks legitimately print
+
+# Prefer correcting with `bin/rubocop -a`, then reviewing the diff - never
+# auto-commit corrections with generated bulk changes mixed in.
+```
+
 ## Agent review checklist
 
 - [ ] Ruby/Rails version resolved

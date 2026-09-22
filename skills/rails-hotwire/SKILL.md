@@ -164,6 +164,31 @@ Keep core tests deterministic and avoid live browser/WebSocket/external CDN depe
 - relying on JavaScript-only authorization or validation;
 - changing DOM IDs without updating stream/broadcast contracts.
 
+## Reference example
+
+A Turbo Stream broadcast after a state change, with the frame that consumes it and a Stimulus controller limited to presentation.
+
+```ruby
+class InvoicesController < ApplicationController
+  def create
+    @invoice = current_account.invoices.create!(invoice_params)
+
+    respond_to do |format|
+      format.turbo_stream { broadcast_append_to @invoice.account, :invoices, target: "invoices" }
+      format.html { redirect_to invoices_path }
+    end
+  end
+end
+
+# app/views/invoices/_invoice.html.erb:
+#   <%= turbo_frame_tag dom_id(invoice) do %>
+#     <%= render invoice %>  <!-- server-rendered; no client state duplication -->
+#   <% end %>
+#
+# app/javascript/controllers/reveal_controller.js keeps DOM-only concerns (show/hide)
+# and never owns domain state - state changes flow through Turbo Stream updates.
+```
+
 ## Agent review checklist
 
 - [ ] Ruby/Rails and Hotwire dependency versions resolved

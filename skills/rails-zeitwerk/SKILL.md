@@ -133,6 +133,29 @@ For a non-Rails loader, use the installed Zeitwerk loader's check/eager-load/int
 - mutating private ActiveSupport::Dependencies internals
 - global inflections for one local naming edge case
 
+## Reference example
+
+Zeitwerk made checkable: the directory is the namespace, acronyms are declared once, and bin/rails zeitwerk:check runs in CI.
+
+```ruby
+# config/initializers/inflections.rb
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.acronym "API"
+end
+
+# Directory is the namespace - these pairings are what zeitwerk:check asserts:
+#   app/services/billing/engine.rb      -> Billing::Engine
+#   app/services/billing/api_client.rb  -> Billing::APIClient   (acronym-aware)
+#   app/models/invoice.rb               -> Invoice
+#
+# Rules that keep autoload sound:
+#   - one constant per file, file name matches the constant's last segment
+#   - no manual require of autoloadable paths
+#   - app/ defaults are eager-loaded in production; verify with zeitwerk:check
+#
+# CI gate: bin/rails runner "Rails.autoloaders.main.eager_load; puts 'eager ok'"
+```
+
 ## Agent review checklist
 - [ ] runtime/Rails version resolved
 - [ ] loader/root identified

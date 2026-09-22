@@ -103,6 +103,29 @@ Review the implementation across:
 
 Then ask whether every abstraction earns its complexity.
 
+## Reference example
+
+A minimal task-routing decision that mirrors the workflow contract: classify, inspect, then select the smallest covering skill set.
+
+```ruby
+# Sketch of the routing decision an agent makes before editing files.
+CANDIDATES = {
+  "add password reset to a Rails controller" => %w[rails-authentication rails-security rails-testing],
+  "extract a service object from a controller" => %w[ruby-service-objects ruby-poro ruby-clean-code],
+  "fix a flaky system test" => %w[rails-test-engineering ruby-tdd-refactoring]
+}
+
+def select_skills(task)
+  CANDIDATES.fetch(task).then { |all| all.take(2) } # smallest covering set
+end
+
+task = "fix a flaky system test"
+selected = select_skills(task)
+raise "primary missing" unless selected.first == "rails-test-engineering"
+puts "task: #{task}"
+puts "selected: #{selected.join(', ')}"
+```
+
 ## Agent review checklist
 
 - [ ] applicable skills discovered

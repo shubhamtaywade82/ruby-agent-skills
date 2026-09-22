@@ -345,6 +345,38 @@ Do not make tests depend on a live SMTP provider.
 
 Prefer deterministic mailer tests plus Active Job assertions and focused provider-boundary tests.
 
+## Reference example
+
+A mailer that keeps rendering deterministic, the subject translated, and delivery asynchronous.
+
+```ruby
+class InvoiceMailer < ApplicationMailer
+  def issued(invoice)
+    @invoice = invoice
+    attach_pdf(invoice)
+
+    mail(
+      to: invoice.customer_email,
+      reply_to: "support@example.com",
+      subject: t(".subject", ref: invoice.reference)
+    )
+  end
+
+  private
+
+  def attach_pdf(invoice)
+    pdf = InvoicePdf.render(invoice) # rendering delegated to a tested PORO, not the mailer
+    attachments["invoice-#{invoice.reference}.pdf"] = {
+      mime_type: "application/pdf",
+      content: pdf
+    }
+  end
+end
+
+# Always enqueue, never render synchronously in a request:
+# InvoiceMailer.with(invoice: invoice).issued.deliver_later
+```
+
 ## Agent review checklist
 
 - [ ] ApplicationMailer hierarchy inspected

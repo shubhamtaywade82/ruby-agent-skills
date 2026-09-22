@@ -123,6 +123,38 @@ Investigate, rather than mechanically "fix":
 - model/controller bloat
 - comments compensating for poor structure
 
+## Reference example
+
+The same rule expressed twice: a condition-nested method, then the guard-clause and extract-method version reviewers should push toward.
+
+```ruby
+Order = Struct.new(:paid, :shipped, :items) do
+  # before: nested conditions, mixed levels of abstraction
+  def status_before
+    if items.any?
+      if paid
+        if shipped then "closed" else "awaiting_shipment" end
+      else
+        "awaiting_payment"
+      end
+    else
+      "empty"
+    end
+  end
+
+  # after: guard clauses + one decision per method
+  def status
+    return "empty" if items.empty?
+    return "awaiting_payment" unless paid
+    shipped ? "closed" : "awaiting_shipment"
+  end
+end
+
+order = Order.new(false, false, ["book"])
+raise "mismatch" unless order.status == order.status_before
+puts order.status
+```
+
 ## Agent review checklist
 
 - [ ] names reveal intent

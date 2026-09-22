@@ -53,6 +53,34 @@ Preserve short-circuiting where the right-hand side may have side effects or may
 - hidden side effects inside boolean expressions
 - extracting trivial predicates until the flow becomes fragmented
 
+## Reference example
+
+Only nil and false are falsy; extract compound conditions into named predicates instead of leaving boolean soup inline.
+
+```ruby
+Request = Struct.new(:user, :tenant) do
+  # named predicates keep the call site declarative
+  def deletable?
+    owned_by_actor? && actor_is_admin?
+  end
+
+  private
+
+  def owned_by_actor?  = user && user.owner
+  def actor_is_admin?  = user && user.admin
+end
+
+User = Struct.new(:owner, :admin)
+actor = Request.new(User.new(true, true))
+raise "should be deletable" unless actor.deletable?
+anonymous = Request.new(nil, nil)
+
+# truthiness: 0 and "" are truthy in Ruby, unlike C/JS
+puts "0 is truthy: #{!!0}"
+puts "empty string is truthy: #{!!""}"
+puts "anonymous is deletable: #{!!anonymous.deletable?}"
+```
+
 ## Agent review checklist
 
 - [ ] business condition has a meaningful name where needed

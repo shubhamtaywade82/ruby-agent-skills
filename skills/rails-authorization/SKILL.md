@@ -173,6 +173,41 @@ Required categories include actor/resource ownership, cross-tenant access, colle
 
 Prefer policy/unit tests for decision logic and request/system tests for boundary wiring.
 
+## Reference example
+
+Authorization as objects: a policy answering one question per method, and a scope that owns the query boundary.
+
+```ruby
+class InvoicePolicy
+  def initialize(user, invoice)
+    @user = user
+    @invoice = invoice
+  end
+
+  def show?    = owner? || @user.admin?
+  def destroy? = false          # invoices are voided, never destroyed
+
+  private
+
+  def owner? = @invoice.user_id == @user.id
+end
+
+class InvoiceScope
+  def initialize(user, scope)
+    @user = user
+    @scope = scope
+  end
+
+  def resolve
+    @user.admin? ? @scope.all : @scope.where(user_id: @user.id)
+  end
+end
+
+# Controller usage:
+#   head :forbidden unless InvoicePolicy.new(current_user, @invoice).show?
+#   @invoices = InvoiceScope.new(current_user, Invoice).resolve
+```
+
 ## Agent review checklist
 
 - Is authentication distinct from authorization?

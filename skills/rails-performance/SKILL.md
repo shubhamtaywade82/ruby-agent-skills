@@ -420,6 +420,30 @@ Use these combinations deliberately:
 - treating one faster benchmark as proof of production scalability;
 - hiding a bottleneck by moving it to another subsystem.
 
+## Reference example
+
+N+1 eliminated by planning loads up front, with query count asserted in the test rather than hoped for in production.
+
+```ruby
+class StatementsController < ApplicationController
+  def index
+    @statements = current_account.statements
+      .includes(:invoice, :customer)   # one planned query, not 1 + N lazy loads
+      .order(issued_on: :desc)
+      .limit(50)
+  end
+end
+
+# test/performance/statements_query_test.rb
+#   it "renders 50 statements without N+1" do
+#     create_list(:statement, 50, account: account)
+#     assert_queries(2) { get statements_path } # count the SQL, not the feeling
+#   end
+#
+# Evidence first: Bullet/sql.event trace identifies the association before includes
+# is added, and the assertion keeps it from regressing.
+```
+
 ## Agent review checklist
 
 - [ ] Ruby/Rails/runtime versions inspected

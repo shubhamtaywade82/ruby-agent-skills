@@ -57,6 +57,32 @@ Do not use POROs merely to increase the class count.
 - generic Manager or Processor classes with unclear responsibility
 - extraction solely to satisfy a pattern name
 
+## Reference example
+
+A PORO extracted from a controller: plain object, explicit dependencies, no framework ancestors required.
+
+```ruby
+# app/models or app/poros - no ActiveRecord inheritance anywhere
+class CartTotal
+  def initialize(items, tax_rate:)
+    @items = items
+    @tax_rate = tax_rate
+  end
+
+  def gross = @items.sum(&:price)
+  def total = (gross * (1 + @tax_rate)).round(2)
+
+  def breakdown
+    { items: @items.size, gross: gross, tax: (total - gross).round(2), total: total }
+  end
+end
+
+Item = Struct.new(:price, keyword_init: true)
+cart = CartTotal.new([Item.new(price: 10.0), Item.new(price: 5.5)], tax_rate: 0.1)
+raise "total wrong" unless cart.total == 17.05
+puts cart.breakdown.inspect
+```
+
 ## Agent review checklist
 
 - Is the object framework-independent where appropriate?

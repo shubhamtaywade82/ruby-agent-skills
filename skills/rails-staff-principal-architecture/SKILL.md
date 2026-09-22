@@ -107,6 +107,41 @@ Prefer executable architecture checks for stable invariants and system tests for
 ## Anti-patterns / failure modes
 Avoid distributed monoliths, service-for-everything designs, generic shared modules, premature microservices, dual ownership of mutable data, dependency cycles, hidden global state, architecture by folder naming alone, one giant domain layer, synchronized cross-service transactions, and documentation-only architecture rules.
 
+## Reference example
+
+Architecture rules that are executable: a dependency-direction check the staff review can point at, instead of a diagram nobody re-verifies.
+
+```ruby
+# One fitness function: the domain layer must not reference the HTTP layer.
+# In a real repository, scan app/models (or app/domain) instead of the fixture below.
+FORBIDDEN_IN_DOMAIN = %w[ActionController ActionDispatch ActionView].freeze
+
+require "tmpdir"
+Dir.mktmpdir do |domain|
+  File.write(File.join(domain, "invoice.rb"), <<~RUBY)
+    class Invoice
+      def total_cents = 100
+    end
+  RUBY
+  File.write(File.join(domain, "report.rb"), <<~RUBY)
+    class Report
+      include ActionController::Live # wrong direction: domain -> HTTP layer
+    end
+  RUBY
+
+  violations = Dir[File.join(domain, "*.rb")].flat_map do |path|
+    File.readlines(path).each_with_index.filter_map do |line, index|
+      token = FORBIDDEN_IN_DOMAIN.find { |t| line.include?(t) }
+      "#{File.basename(path)}:#{index + 1} references #{token}" if token
+    end
+  end
+
+  raise "checker must find exactly one violation" unless violations.length == 1
+  puts violations.first
+  puts "dependency rule check: violation detected and reported (exit 1 in CI)"
+end
+```
+
 ## Agent review checklist
 - [ ] actual problem and invariants stated
 - [ ] current dependency graph inspected

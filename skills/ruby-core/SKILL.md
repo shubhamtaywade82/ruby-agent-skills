@@ -84,6 +84,30 @@ Never assume a bang method always mutates or that it always returns `nil`.
 - changing an implicit return while refactoring unrelated code
 - assuming a method mutates because its name ends in `!`
 
+## Reference example
+
+Object identity versus equality, dup versus clone, and freeze as a real immutability boundary for shared literals.
+
+```ruby
+a = "cfg"
+b = "cfg"
+puts "equal content: #{a == b}"
+puts "distinct objects: #{a.equal?(b)}"
+
+# dup copies content; clone also copies singleton state (frozen included here)
+frozen = "default".freeze
+soft = frozen.dup
+soft << "-overridden" # dup is mutable even when source was frozen
+puts soft
+
+# a frozen object fails loudly on mutation
+begin
+  frozen << "x"
+rescue FrozenError => e
+  puts "frozen: #{e.class}"
+end
+```
+
 ## Agent review checklist
 
 - [ ] Ruby version resolved

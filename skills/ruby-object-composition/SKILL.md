@@ -53,6 +53,31 @@ Use Strategy for algorithmic variation, Adapter for external interface variation
 - leaking concrete collaborator types
 - changing behavior during an architectural refactor
 
+## Reference example
+
+Composition over inheritance: behavior assembled from collaborators, with explicit delegation instead of an is-a chain.
+
+```ruby
+require "forwardable"
+
+class Report
+  extend Forwardable
+  def_delegators :@source, :rows  # narrow, declared surface
+
+  def initialize(source, formatter:)
+    @source = source
+    @formatter = formatter
+  end
+
+  def render = @formatter.(rows)
+end
+
+csv = Struct.new(:rows).new([%w[a b], %w[c d]])
+html = ->(rows) { "<table>#{rows.size} rows</table>" }
+puts Report.new(csv, formatter: html).render
+puts Report.new(csv, formatter: html).rows.inspect
+```
+
 ## Agent review checklist
 
 - Is the variation genuinely independent?

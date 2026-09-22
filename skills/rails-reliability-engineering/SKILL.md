@@ -385,6 +385,60 @@ For rolling deployment, maintain old/new compatibility for queued jobs, messages
 
 Use feature flags or staged rollout where the repository supports them.
 
+## Reference example
+
+A circuit breaker guarding a flaky dependency: failures trip it, the cooldown half-opens it, one success closes it again.
+
+```ruby
+class CircuitBreaker
+  class OpenError < StandardError; end
+
+  def initialize(failsafe:, threshold: 2, cooldown: 5, clock: Time)
+    @failsafe = failsafe
+    @threshold = threshold
+    @cooldown = cooldown
+    @clock = clock
+    @failures = 0
+    @opened_at = nil
+  end
+
+  def call
+    raise OpenError, "circuit open" if open? && !half_open_window?
+
+    begin
+      result = @failsafe.call
+      @failures = 0
+      @opened_at = nil
+      result
+    rescue StandardError
+      @failures += 1
+      @opened_at = @clock.now if @failures >= @threshold
+      raise
+    end
+  end
+
+  private
+
+  def open? = !@opened_at.nil?
+  def half_open_window? = @clock.now >= @opened_at + @cooldown
+end
+
+attempts = 0
+breaker = CircuitBreaker.new(
+  failsafe: -> { attempts += 1; raise "provider 500" },
+  clock: (now = Time.utc(2026, 1, 1); Struct.new(:now).new(now))
+)
+
+2.times { begin; breaker.call; rescue StandardError; end }
+begin
+  breaker.call
+  raise "should still be open"
+rescue CircuitBreaker::OpenError => e
+  puts "tripped after 2 failures: #{e.message}"
+end
+puts "failures counted: #{attempts} (third call never reached the provider)"
+```
+
 ## Agent review checklist
 
 - [ ] critical user journey identified

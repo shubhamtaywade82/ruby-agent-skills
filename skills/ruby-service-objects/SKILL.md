@@ -59,6 +59,42 @@ A one-public-method convention is useful, but the repository's established entry
 - speculative extraction of trivial behavior
 - deep service-to-service chains with unclear ownership
 
+## Reference example
+
+One public call, an explicit result object instead of exceptions for expected failure, and dependencies injected for testing.
+
+```ruby
+Result = Struct.new(:ok?, :value, :error, keyword_init: true) do
+  def self.success(value) = new(ok?: true, value: value)
+  def self.failure(error) = new(ok?: false, error: error)
+end
+
+class ChargeCard
+  def initialize(gateway:) = @gateway = gateway
+
+  def call(amount_cents:)
+    return Result.failure("amount must be positive") unless amount_cents.positive?
+
+    txn = @gateway.charge(amount_cents)
+    txn[:approved] ? Result.success(txn[:id]) : Result.failure(txn[:reason])
+  end
+end
+
+gateway = Struct.new(:decline_above) do
+  def charge(cents)
+    cents < decline_above ? { approved: true, id: "txn_1" } : { approved: false, reason: "declined" }
+  end
+end.new(10_000)
+service = ChargeCard.new(gateway: gateway)
+
+declined = service.call(amount_cents: 20_000)
+raise "decline must be a failure" if declined.ok?
+puts declined.error
+
+approved = service.call(amount_cents: 5_000)
+puts "charged: #{approved.value}"
+```
+
 ## Agent review checklist
 
 - Does the service have one coherent operation?

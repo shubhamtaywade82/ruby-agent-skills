@@ -117,6 +117,31 @@ A task is complete only when:
 - final diff has no accidental scope expansion
 - any unrun verification is disclosed
 
+## Reference example
+
+Red-green-refactor as an executable loop: the test states the behavior first, then the implementation earns it.
+
+```ruby
+require "minitest/autorun"
+
+# red: written first, fails against an empty implementation
+class SlugTest < Minitest::Test
+  def test_slugifies_title_cased_input
+    assert_equal "four-great-ruby-books", Slug.call("Four Great Ruby Books!")
+  end
+
+  def test_collapses_repeated_separators
+    assert_equal "a-b", Slug.call("a --  b")
+  end
+end
+
+class Slug
+  def self.call(title) = title.downcase.gsub(/[^a-z0-9]+/, "-").gsub(/^-|-$/, "")
+end
+
+# green: run `ruby slug_test.rb` - both assertions pass, no app code was touched first.
+```
+
 ## Agent review checklist
 
 - [ ] repository test stack identified

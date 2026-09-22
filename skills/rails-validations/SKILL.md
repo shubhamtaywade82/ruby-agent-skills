@@ -322,6 +322,39 @@ Watch for:
 - bulk write paths that bypass the only protection;
 - validation callbacks with external side effects.
 
+## Reference example
+
+A reusable each-validator with an I18n-ready error key, plus an invariant the database constraint ultimately enforces.
+
+```ruby
+class CurrencyValidator < ActiveModel::EachValidator
+  SUPPORTED = %w[usd eur gbp].freeze
+
+  def validate_each(record, attribute, value)
+    return if value.nil? # presence is a separate, explicit validation
+
+    record.errors.add(attribute, :unsupported_currency, value: value) unless SUPPORTED.include?(value)
+  end
+end
+
+class Invoice < ApplicationRecord
+  validates :currency, currency: true, presence: true
+
+  validate :due_on_is_future
+
+  private
+
+  def due_on_is_future
+    return if due_on.blank? || due_on > Date.current
+
+    errors.add(:due_on, "must be in the future")
+  end
+end
+
+# The database check constraint remains the last line of defense under
+# concurrent writers; model validation is feedback, not the guarantee.
+```
+
 ## Agent review checklist
 
 - [ ] rule owner is explicit

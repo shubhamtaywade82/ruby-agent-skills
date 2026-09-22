@@ -72,6 +72,27 @@ Do not mutate a caller-owned collection merely because an Enumerable alternative
 - converting to arrays unnecessarily
 - using Enumerable to bypass a benchmark's required algorithm
 
+## Reference example
+
+Including Enumerable is a one-method contract; lazy pipelines defer work until the terminal operation.
+
+```ruby
+class ReadingLog
+  include Enumerable
+
+  def initialize(entries) = @entries = entries
+  def each(&blk) = @entries.each(&blk)
+end
+
+log = ReadingLog.new(%w[ok ok err ok warn err])
+puts log.count { |e| e == "err" }
+puts log.tally.inspect
+
+# lazy: no intermediate 1M-element array is materialized
+squares = (1..Float::INFINITY).lazy.map { |n| n * n }.select(&:even?).first(3)
+puts squares.inspect
+```
+
 ## Agent review checklist
 
 - [ ] operation matches intent

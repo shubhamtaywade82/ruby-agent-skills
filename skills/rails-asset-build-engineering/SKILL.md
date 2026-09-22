@@ -214,6 +214,27 @@ Avoid relying solely on screenshots or manual browser verification.
 - assuming Sprockets/Propshaft performs JavaScript/CSS transformation it does not perform;
 - claiming production parity from development success.
 
+## Reference example
+
+Importmap-based asset wiring with an explicit vendor path, leaving fingerprints and digest URLs to Propshaft.
+
+```ruby
+# config/importmap.rb
+pin "application"
+pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: true
+pin "@hotwired/stimulus", to: "stimulus.min.js"
+
+# config/initializers/assets.rb
+Rails.application.config.assets.paths << Rails.root.join("vendor/javascript")
+
+# app/javascript/application.js - the single entry point importmap loads:
+#   import "@hotwired/turbo-rails"
+#   import "controllers"
+#
+# Propshaft fingerprints and serves; no node toolchain unless the repo says so.
+# Precompile is exercised in CI (bin/rails assets:precompile) - not discovered in prod.
+```
+
 ## Agent review checklist
 
 - [ ] Rails/Ruby and asset-related dependency versions resolved

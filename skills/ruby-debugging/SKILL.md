@@ -119,6 +119,31 @@ Then add a regression test that would have failed before the fix.
 
 If a check cannot be run, state that explicitly.
 
+## Reference example
+
+Reproduce first, then narrow: a minimal failing script with a filtered backtrace, before touching any application code.
+
+```ruby
+# repro.rb - the smallest script that exhibits the defect
+def normalize(zip)
+  zip.to_s.gsub(/\D/, "").rjust(5, "0")
+end
+
+expected = "00401"
+actual = normalize(401)
+if actual != expected
+  puts "FAIL: expected #{expected.inspect}, got #{actual.inspect}"
+  begin
+    raise ArgumentError, "repro captured"
+  rescue => e
+    puts e.backtrace.first(2)
+  end
+else
+  puts "PASS"
+end
+# next step: add a regression test that encodes this expectation
+```
+
 ## Agent review checklist
 
 - [ ] evidence captured

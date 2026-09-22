@@ -256,6 +256,33 @@ Test at the smallest boundary:
 
 Use request/system tests only where actual Rails integration is part of the contract.
 
+## Reference example
+
+A form object with Active Model behavior but no persistence: typed attributes, validations, and a single submit entry point.
+
+```ruby
+class OnboardingForm
+  include ActiveModel::Model        # validations, naming, conversion
+  include ActiveModel::Attributes   # typed cast attributes
+
+  attribute :email, :string
+  attribute :plan, :string, default: "trial"
+  attribute :seats, :integer
+
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :seats, numericality: { only_integer: true, greater_than: 0 }
+
+  def submit
+    return false unless valid?
+
+    Account.create!(email: email, plan: plan, seats: seats)
+  end
+end
+
+# Controller: OnboardingForm.new(onboarding_params).submit
+# The form object owns input handling; Account keeps persistence rules.
+```
+
 ## Agent review checklist
 
 - [ ] Active Model justified over PORO/value object

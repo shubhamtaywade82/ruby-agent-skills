@@ -120,6 +120,31 @@ Delete comments that merely narrate syntax.
 - comments explaining obvious code
 - extraction with no meaningful abstraction
 
+## Reference example
+
+One method, one job: keyword arguments for the caller, a query/predicate split, and module_function for stateless helpers.
+
+```ruby
+module Shipping
+  module_function
+
+  # command: changes something, imperative name, returns a receipt
+  def dispatch(order_id, carrier:)
+    receipt = { order: order_id, carrier: carrier, cost: rate_for(carrier) }
+    receipt
+  end
+
+  # query: pure, no side effects, predicate naming
+  def dispatchable?(order_id) = !order_id.to_s.empty?
+
+  def rate_for(carrier) = carrier == :express ? 12.5 : 4.5
+end
+
+raise "express rate wrong" unless Shipping.rate_for(:express) == 12.5
+puts Shipping.dispatch("ORD-1", carrier: :express).inspect
+puts Shipping.dispatchable?("ORD-1")
+```
+
 ## Agent review checklist
 
 - [ ] one primary responsibility

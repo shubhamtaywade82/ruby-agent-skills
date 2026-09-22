@@ -246,6 +246,30 @@ Cover the applicable contract:
 
 Prefer deterministic tests and repository-provided cache helpers.
 
+## Reference example
+
+A read-through cache entry with an explicit TTL and race-condition protection, keyed by the versioned record cache key.
+
+```ruby
+class InvoiceStats
+  def self.for(account)
+    Rails.cache.fetch(["invoice-stats/v2", account, account.invoices.maximum(:updated_at)],
+                      expires_in: 15.minutes,
+                      race_condition_ttl: 10.seconds) do
+      {
+        open_count: account.invoices.unpaid.count,
+        overdue_cents: account.invoices.overdue.sum(:total_cents)
+      }
+    end
+  end
+end
+
+# Key discipline:
+#   - version the key namespace ("v2") so format changes cannot serve stale shapes
+#   - embed the max(updated_at) so the entry self-invalidates on writes
+#   - never cache a value whose authorization depends on the current viewer
+```
+
 ## Agent review checklist
 - [ ] workload and bottleneck evidence exists
 - [ ] cache layer matches the sharing/freshness contract

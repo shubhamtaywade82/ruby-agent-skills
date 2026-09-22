@@ -314,6 +314,29 @@ Use temporary Notifications subscriptions sparingly; the Rails API notes that te
 
 Do not rely on global state left behind by another test.
 
+## Reference example
+
+A Concern with a class_attribute default, and a notification subscriber kept free of application work.
+
+```ruby
+module Billable
+  extend ActiveSupport::Concern
+
+  included do
+    class_attribute :billing_currency, default: :usd
+  end
+
+  def billed_this_month?(at: Time.current)
+    last_billed_at.present? && last_billed_at >= at.beginning_of_month
+  end
+end
+
+# Subscribers must stay trivial; enqueue when real work is needed:
+ActiveSupport::Notifications.subscribe("charge.completed") do |event|
+  ChargeMetricJob.perform_later(event.payload[:charge_id])
+end
+```
+
 ## Agent review checklist
 
 - [ ] Rails/Active Support version resolved

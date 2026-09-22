@@ -88,6 +88,32 @@ Use custom actions when standard resource semantics do not fit, and keep them ex
 - inventing a new layer when the repository has no need for it
 - mixing unrelated refactors into a feature
 
+## Reference example
+
+Request flow layered by responsibility: the HTTP boundary stays stateless and thin, the workflow owns the transaction, the model owns invariants.
+
+```ruby
+# app/controllers/checkouts_controller.rb - HTTP boundary only
+class CheckoutsController < ApplicationController
+  def create
+    result = Checkout::Complete.call(user: current_user, cart: current_cart)
+
+    if result.success?
+      redirect_to result.value, notice: t(".completed")
+    else
+      redirect_to cart_path, alert: result.error
+    end
+  end
+end
+
+# app/operations/checkout/complete.rb - workflow boundary (transaction, collaborators)
+# app/models/order.rb - persistence and invariants
+#
+# Dependencies point inward: controller -> operation -> model.
+# A model that needs checkout steps is the wrong direction; re-route through the
+# operation instead of reaching outward from the persistence layer.
+```
+
 ## Agent review checklist
 
 - [ ] request flow understood

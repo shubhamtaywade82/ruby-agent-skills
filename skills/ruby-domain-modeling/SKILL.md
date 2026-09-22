@@ -51,6 +51,40 @@ Do not create a domain layer merely because the label sounds desirable.
 - moving persistence behavior away from Active Record without evidence
 - modeling every noun as a class
 
+## Reference example
+
+A domain entity that refuses invalid states: invariants enforced at construction, intention revealed by named constructors.
+
+```ruby
+require "date"
+
+# A domain entity that refuses invalid states: invariants enforced at
+# construction, intention revealed by named constructors.
+class Subscription
+  attr_reader :plan, :renews_on
+
+  def self.trial(days: 14) = new(:trial, Date.today + days)
+  def self.paid(plan, renews_on) = new(plan, renews_on)
+
+  def initialize(plan, renews_on)
+    raise ArgumentError, "renewal date required" if renews_on.nil?
+    @plan, @renews_on = plan, renews_on
+    freeze
+  end
+
+  def active?(today = Date.today) = renews_on >= today
+end
+
+trial = Subscription.trial(days: 7)
+raise "trial must be active" unless trial.active?
+begin
+  Subscription.paid(:pro, nil)
+rescue ArgumentError => e
+  puts "invariant held: #{e.message}"
+end
+puts "#{trial.plan} renews #{trial.renews_on}"
+```
+
 ## Agent review checklist
 
 - Is the business concept explicit?

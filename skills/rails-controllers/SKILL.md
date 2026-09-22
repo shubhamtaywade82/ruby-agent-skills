@@ -79,6 +79,34 @@ When an action becomes a workflow involving several concepts, consider a service
 
 Do not assume hidden fields or UI state are trusted. Authorization must be enforced at the server boundary.
 
+## Reference example
+
+A plain CRUD controller: strong parameters, one lookup, explicit status, nothing else.
+
+```ruby
+class ProjectsController < ApplicationController
+  def index
+    @projects = current_user.projects.order(created_at: :desc)
+  end
+
+  def create
+    @project = current_user.projects.build(project_params)
+
+    if @project.save
+      redirect_to @project, notice: t(".created")
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def project_params
+    params.require(:project).permit(:name, :description)
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] route/action relationship checked

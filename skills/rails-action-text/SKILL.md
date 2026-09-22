@@ -526,6 +526,28 @@ Do not make ordinary tests depend on external cloud storage or a browser session
 
 For XSS/security regressions, add negative tests containing representative malicious markup and URL schemes.
 
+## Reference example
+
+Rich text declared on the model, rendered through its sanitized fragment, never through html_safe of editor input.
+
+```ruby
+class Article < ApplicationRecord
+  has_rich_text :body
+
+  validates :body, presence: true
+end
+
+# app/views/articles/_form.html.erb:
+#   <%= f.rich_text_area :body %>
+#
+# Rendering contract:
+#   article.body.to_s  -> sanitized HTML fragment, safe for templates and API payloads
+#   Direct editor input is never trusted; sanitization happens on save, not on render.
+#
+# Attachments inside rich text are signed Global ID attachables:
+#   ActionText::Attachment carries sgid://... references resolved server-side.
+```
+
 ## Agent review checklist
 
 - [ ] Action Text/Rails version resolved

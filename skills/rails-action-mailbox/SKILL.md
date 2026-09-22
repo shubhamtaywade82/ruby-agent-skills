@@ -463,6 +463,39 @@ Ordinary CI should use deterministic local adapters/storage and fake provider bo
 
 Do not use a live email provider to prove ordinary mailbox business logic.
 
+## Reference example
+
+A mailbox that authenticates the sender before processing, creates its record, and hands attachments to Active Storage.
+
+```ruby
+class SupportMailbox < ApplicationMailbox
+  routing /^support\+/i => :support
+
+  before_processing :ensure_known_sender
+
+  def process
+    ticket = current_account.tickets.create!(
+      subject: mail.subject,
+      from_address: mail.from.address
+    )
+
+    mail.attachments.each do |attachment|
+      ticket.attachments.attach(
+        io: attachment.body.to_io,
+        filename: attachment.filename,
+        content_type: attachment.mime_type
+      )
+    end
+  end
+
+  private
+
+  def ensure_known_sender
+    bounce_with Mailer.unrecognized_sender(mail) unless mail.from.address.end_with?("@example.com")
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] Rails/Action Mailbox version resolved

@@ -51,6 +51,33 @@ Prefer a narrow injected collaborator interface over hidden global lookup when t
 - service locators hidden behind injection
 - mocks that assert implementation details rather than behavior
 
+## Reference example
+
+Constructor injection with keyword collaborators: the production wiring and the test double differ only in the objects passed in.
+
+```ruby
+class InvoiceMailer
+  def initialize(clock:, transport:)
+    @clock = clock
+    @transport = transport
+  end
+
+  def deliver(invoice)
+    body = "invoice #{invoice} at #{@clock.now}"
+    @transport.call(body)
+  end
+end
+
+sent = []
+clock = Struct.new(:now).new(Time.utc(2026, 1, 1))
+transport = ->(body) { sent << body; :queued }
+
+mailer = InvoiceMailer.new(clock: clock, transport: transport)
+mailer.deliver("INV-17")
+raise "not delivered" unless sent.first.include?("INV-17")
+puts sent.first
+```
+
 ## Agent review checklist
 
 - Is the dependency genuinely variable or external?

@@ -561,6 +561,34 @@ Test at least the representative locale variants whose grammar/formatting differ
 
 Do not assert entire translated documents when a stable key/semantic fragment is sufficient.
 
+## Reference example
+
+All user-visible strings through I18n with lazy-lookup keys, plus locale-aware formatting for numbers and dates.
+
+```ruby
+class InvoicesController < ApplicationController
+  def create
+    if @invoice.save
+      redirect_to @invoice, notice: t(".created", reference: @invoice.reference)
+    else
+      flash.now[:alert] = t(".rejected")
+      render :new, status: :unprocessable_entity
+    end
+  end
+end
+
+# config/locales/en.yml:
+#   en:
+#     invoices:
+#       create:
+#         created: "Invoice %{reference} issued."
+#         rejected: "We could not issue this invoice."
+#
+# Locale-aware presentation:
+#   l(invoice.due_on)                 # -> "2026-09-30" per locale format
+#   number_to_currency(cents / 100.0) # -> "19,99 EUR" per locale
+```
+
 ## Agent review checklist
 
 - [ ] supported locales explicit

@@ -50,6 +50,32 @@ Use isolated engine tests plus dummy-application/host integration tests. Cover n
 ## Anti-patterns / failure modes
 Avoid unisolated engine leakage, using a Railtie as a full application boundary without justification, arbitrary host constant access, undocumented monkey patches, implicit initializer ordering, routes mounted without explicit security review, hidden global engine configuration, migration collisions, generator side effects, asset-contract bypasses, broad require calls masking Zeitwerk errors, and claiming isolation provides authorization.
 
+## Reference example
+
+An engine with an isolated namespace that exposes its routes and a documented extension point to the host application.
+
+```ruby
+# billing/lib/billing/engine.rb
+module Billing
+  class Engine < ::Rails::Engine
+    isolate_namespace Billing
+
+    initializer "billing.append_routes" do |app|
+      app.routes.append do
+        mount Billing::Engine => "/billing", as: :billing
+      end
+    end
+  end
+end
+
+# Host applications extend the engine through its documented interface:
+#   Billing.configure do |config|
+#     config.invoice_owner = :account
+#   end
+#
+# Engines must not reach into host internals; all hooks flow through configure.
+```
+
 ## Agent review checklist
 - [ ] Engine/Railtie/plugin boundary identified
 - [ ] Ruby/Rails/dependency versions resolved

@@ -56,6 +56,32 @@ Test exact serialized keys, sensitive-field omission, nested payload boundaries,
 ## Anti-patterns / failure modes
 Avoid serializing entire models by default, exposing authentication or credential internals, coupling public payloads to database schema, hidden queries in serializers, recursive nested graphs, oversized job arguments, using Global IDs as authorization, unrestricted locators, silent semantic field changes, reload-unsafe serializers, and swallowing deserialization failures without policy.
 
+## Reference example
+
+A JSON contract that is sliced to an explicit field list, and job payloads that carry Global IDs resolved at execution time.
+
+```ruby
+class Statement < ApplicationRecord
+  # Public serialization is an explicit contract, not attribute reflection:
+  def as_json(options = {})
+    super(options)
+      .slice("id", "reference", "issued_on", "total_cents")
+      .merge("issued_on" => issued_on&.iso8601)
+  end
+end
+
+class StatementReminderJob < ApplicationJob
+  def perform(statement_gid)
+    statement = GlobalID::Locator.locate(statement_gid)
+    StatementMailer.with(statement: statement).issued.deliver_later
+  end
+end
+
+# Enqueue with the global id, not the record - deserialization failures become
+# a scoped job retry instead of a marshalled-object compatibility trap:
+#   StatementReminderJob.perform_later(statement.to_gid.to_s)
+```
+
 ## Agent review checklist
 - [ ] serialization boundary identified
 - [ ] consumer and compatibility requirements identified

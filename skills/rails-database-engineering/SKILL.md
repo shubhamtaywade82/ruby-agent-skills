@@ -339,6 +339,29 @@ deployment order known
 observability known
 ```
 
+## Reference example
+
+A production-safe migration: concurrent index outside a transaction, plus a check constraint enforcing the invariant the model only suggests.
+
+```ruby
+class AddConcurrentIndexAndConstraint < ActiveRecord::Migration[8.0]
+  disable_ddl_transaction! # required for algorithm: :concurrently
+
+  def up
+    add_index :invoices, :customer_id, algorithm: :concurrently
+    add_check_constraint :invoices, "total_cents >= 0", name: "invoices_total_cents_nonnegative"
+  end
+
+  def down
+    remove_check_constraint :invoices, name: "invoices_total_cents_nonnegative"
+    remove_index :invoices, :customer_id, algorithm: :concurrently
+  end
+end
+
+# Model-level validation gives feedback; the constraint survives concurrent writers:
+#   validates :total_cents, numericality: { greater_than_or_equal_to: 0 }
+```
+
 ## Agent review checklist
 - [ ] runtime and database versions resolved
 - [ ] schema and existing constraints/indexes inspected

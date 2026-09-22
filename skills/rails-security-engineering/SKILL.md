@@ -309,6 +309,31 @@ Verify at four levels:
 
 A passing scanner is evidence for the checks it performs, not a complete security assessment.
 
+## Reference example
+
+An abuse case as a regression test: cross-tenant reachability is probed through every known path, asserting 404 so existence is not leaked.
+
+```ruby
+class TenantIsolationAbuseTest < ActionDispatch::IntegrationTest
+  test "tenant A cannot reach tenant B statements through any known path" do
+    sign_in users(:tenant_a_admin)
+    foreign = statements(:tenant_b)
+
+    [
+      "/billing/statements/#{foreign.id}",
+      "/api/v1/statements/#{foreign.id}",
+      "/billing/statements/#{foreign.id}.json"
+    ].each do |path|
+      get path
+      assert_response :not_found, path  # 404: no existence oracle, no 403 tell
+    end
+  end
+end
+
+# Abuse cases are written from the attacker's goal, not from the happy path,
+# and they run in CI so a new route cannot silently reopen the boundary.
+```
+
 ## Agent review checklist
 
 - [ ] assets identified

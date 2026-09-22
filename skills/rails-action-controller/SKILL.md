@@ -253,6 +253,40 @@ At minimum, test relevant:
 
 Use deterministic local doubles for external providers and storage.
 
+## Reference example
+
+A controller action with tenant-scoped lookup, strict strong parameters, and a declared exception-to-response mapping.
+
+```ruby
+class InvoicesController < ApplicationController
+  before_action :set_invoice, only: %i[show update destroy]
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
+  def update
+    if @invoice.update(invoice_params)
+      render :show, status: :ok
+    else
+      render json: { errors: @invoice.errors }, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def set_invoice
+    # Scoped lookup: never Invoice.find(params[:id]) in a multi-tenant app.
+    @invoice = current_account.invoices.find(params[:id])
+  end
+
+  def invoice_params
+    params.require(:invoice).permit(:due_on, line_items_attributes: %i[id description amount _destroy])
+  end
+
+  def record_not_found
+    head :not_found
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] Rails/Ruby version resolved

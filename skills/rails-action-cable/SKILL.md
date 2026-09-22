@@ -534,6 +534,29 @@ Do not make ordinary tests depend on a live Redis cluster.
 
 For frontend consumer behavior, use focused client tests rather than testing browser rendering through every server-side channel test.
 
+## Reference example
+
+A channel that authorizes the subscription before streaming, and pairs an implicit resource stream with an explicit lifecycle stream.
+
+```ruby
+class RoomChannel < ApplicationCable::Channel
+  def subscribed
+    room = Room.find_by(id: params[:room_id])
+    return reject unless room && current_user.member_of?(room)
+
+    stream_for room                      # broadcast_to(room, ...) reaches these subscribers
+    stream_from "room:#{room.id}:system" # explicit stream for join/leave lifecycle events
+  end
+
+  def unsubscribed
+    StopPresenceTrackingJob.perform_later(current_user.id, params[:room_id])
+  end
+end
+
+# Server-side broadcast after a state change (never trust the client to echo state):
+# RoomBroadcastJob.perform_later(room)  ->  RoomChannel.broadcast_to(room, payload)
+```
+
 ## Agent review checklist
 
 - [ ] runtime/Action Cable version resolved

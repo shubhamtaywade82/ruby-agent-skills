@@ -88,6 +88,26 @@ Expand a pipeline when a reader must reconstruct several intermediate concepts. 
 - allocating large temporary collections unnecessarily
 - using Enumerable to obscure a required algorithm
 
+## Reference example
+
+Pick the container by access pattern; require set for membership, and prefer the expressive iterators over manual accumulation.
+
+```ruby
+require "set"
+
+# membership semantics, not just deduplication
+allowed = Set.new(%w[index show])
+puts "show allowed: #{allowed.include?("show")}"
+puts "destroy blocked: #{!allowed.include?("destroy")}"
+
+# iterator intent beats manual accumulator loops
+words = %w[alpha beta gamma delta]
+grouped = words.each_with_object({}) { |w, acc| acc[w[0]] ||= []; acc[w[0]] << w }
+counts  = words.tally
+puts grouped.inspect
+puts counts.inspect
+```
+
 ## Agent review checklist
 
 - [ ] collection contract is clear

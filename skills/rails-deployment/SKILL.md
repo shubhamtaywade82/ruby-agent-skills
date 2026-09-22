@@ -102,6 +102,35 @@ When deployment fails, capture:
 
 then debug from evidence.
 
+## Reference example
+
+A Kamal deployment definition with the Rails 8 healthcheck wired to the standard /up endpoint.
+
+```yaml
+# config/deploy.yml (Kamal 2)
+service: billing-app
+image: registry.example.com/billing-app
+
+servers:
+  - web:
+      hosts:
+        - 203.0.113.10
+
+registry:
+  username: deploy
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  clear:
+    RAILS_LOG_TO_STDOUT: "1"
+  secret:
+    - RAILS_MASTER_KEY
+
+healthcheck:
+  path: /up
+```
+
 ## Agent review checklist
 
 - [ ] platform/process model identified

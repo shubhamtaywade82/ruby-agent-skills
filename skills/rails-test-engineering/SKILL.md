@@ -384,6 +384,34 @@ Use integration tests to prove real component collaboration and unit tests to is
 - parallelizing stateful tests without isolation
 - deleting assertions to reduce runtime
 
+## Reference example
+
+A deterministic system test: time frozen, browser headless, and the assertion on user-visible state rather than implementation.
+
+```ruby
+class CheckoutFlowTest < ActionDispatch::SystemTestCase
+  driven_by :selenium, using: :headless_chrome, screen_size: [1400, 900]
+
+  test "guest completes checkout within the offer window" do
+    travel_to Time.utc(2026, 1, 15, 12) do
+      visit product_path(products(:teapot))
+      click_on t("products.add_to_cart")
+      click_on t("carts.checkout")
+
+      fill_in t("orders.email"), with: "guest@example.com"
+      click_on t("orders.place")
+
+      assert_text t("orders.confirmation", email: "guest@example.com")
+      assert_equal 1, Order.count # user-visible outcome, then one state check
+    end
+  end
+end
+
+# test_helper.rb:
+#   parallelize(workers: :number_of_processors)
+#   # transactional fixtures per worker keep parallel runs isolated
+```
+
 ## Agent review checklist
 - [ ] test framework/conventions identified
 - [ ] smallest owning test boundary selected

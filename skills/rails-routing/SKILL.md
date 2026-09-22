@@ -241,6 +241,39 @@ Rails documents these route-specific assertions for generation and recognition.
 
 Always include negative cases when relevant: wrong verb, mismatched constraint, shadowed route, unsupported format, wrong host/subdomain, unauthorized namespace access, and catch-all behavior.
 
+## Reference example
+
+Routes that name the resource, reuse a concern, and keep the side-effectful transition explicit instead of verb-y.
+
+```ruby
+Rails.application.routes.draw do
+  root "dashboard#show"
+
+  concern :paginated do
+    get "page/:page", action: :index, on: :collection
+  end
+
+  scope "/billing", as: :billing do
+    resources :invoices, concerns: :paginated, param: :reference do
+      member do
+        put :void          # explicit state transition, not POST /invoices/:id/void-it
+      end
+      collection do
+        get :overdue
+      end
+    end
+  end
+
+  constraints(IpAllowlist.new) do
+    mount Sidekiq::Web => "/sidekiq" # administrative surface behind a constraint
+  end
+
+  direct :help_center do
+    "https://help.example.com"       # named URL helper for an external target
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] Ruby/Rails version resolved

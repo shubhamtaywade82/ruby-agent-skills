@@ -455,6 +455,42 @@ Do not assume changing the password invalidates every other credential type.
 - live external provider dependencies in every CI authentication test;
 - raw session IDs/tokens used as metric labels.
 
+## Reference example
+
+Session creation with the full fixation defense: reset_session on privilege change, constant responses, and status codes that match the outcome.
+
+```ruby
+class User < ApplicationRecord
+  has_secure_password # password_digest + authenticate
+end
+
+class SessionsController < ApplicationController
+  def create
+    user = User.find_by(email: session_params[:email])
+
+    if user&.authenticate(session_params[:password])
+      reset_session                  # rotate the session identifier on login (fixation defense)
+      session[:user_id] = user.id
+      redirect_to root_url, notice: t(".signed_in")
+    else
+      flash.now[:alert] = t(".invalid") # identical message for unknown email and bad password
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    reset_session
+    redirect_to root_url
+  end
+
+  private
+
+  def session_params
+    params.require(:session).permit(:email, :password)
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] Ruby/Rails version resolved

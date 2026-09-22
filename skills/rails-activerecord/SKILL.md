@@ -106,6 +106,29 @@ Use the repository's transaction conventions when multiple persistence changes m
 
 Do not assume external API calls participate in database transactions.
 
+## Reference example
+
+The routine path: a model with association and validation, SQL-side filtering, and a reversible migration with an index.
+
+```ruby
+class Invoice < ApplicationRecord
+  belongs_to :customer, counter_cache: true
+  has_many :line_items, dependent: :destroy
+
+  validates :reference, presence: true, uniqueness: true
+end
+
+# Filter and order in SQL; Ruby-side filtering only for tiny, in-memory sets.
+customer.invoices.where(paid: false).order(:due_on).limit(10)
+
+class AddReferenceToInvoices < ActiveRecord::Migration[8.0]
+  def change
+    add_column :invoices, :reference, :string, null: false, default: ""
+    add_index :invoices, :reference, unique: true
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] schema inspected

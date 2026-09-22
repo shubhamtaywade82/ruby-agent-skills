@@ -370,6 +370,32 @@ At minimum consider:
 
 Use deterministic seams and fake transports/brokers where possible. Do not rely on random sleeps to "prove" distributed correctness.
 
+## Reference example
+
+Idempotency at the edge plus an outbox row: the request may retry, the effect must not duplicate.
+
+```ruby
+class CreateCharge
+  def initialize(request_id, account)
+    @request_id = request_id
+    @account = account
+  end
+
+  def call(amount_cents:)
+    # First write records intent; the unique index makes retries converge.
+    outbox = OutboxEvent.create_or_find_by!(
+      request_id: @request_id,
+      kind: "charge.created"
+    ) { |event| event.payload = { account_id: @account.id, amount_cents: amount_cents } }
+
+    if outbox.previously_new_record?
+      ChargeProcessorJob.perform_later(outbox.id) # effect enqueued exactly once
+    end
+    Charge.find_by(request_id: @request_id)
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] boundary crosses an independent process/service/persistence/trust domain

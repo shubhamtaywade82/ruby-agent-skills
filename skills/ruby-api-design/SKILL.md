@@ -65,6 +65,37 @@ Avoid:
 - undocumented keyword/positional compatibility changes
 - changing visibility during refactoring
 
+## Reference example
+
+A small public API surface with explicit keyword arguments, private collaborators, and a documented deprecation path.
+
+```ruby
+class ExchangeRate
+  def initialize(fetcher:)          # collaborator injected, not global
+    @fetcher = fetcher
+  end
+
+  def convert(amount, from:, to:, at: :latest)
+    rate = @fetcher.rate(from, to)
+    (amount * rate).round(2)
+  end
+
+  # Deprecated bridge kept for one minor release, then removed.
+  def convert!(amount, from, to)
+    warn "convert! is deprecated; use convert(amount, from:, to:)"
+    convert(amount, from: from, to: to)
+  end
+  private attr_reader :fetcher
+end
+
+rates = Struct.new(:table) do
+  def rate(from, to) = table[[from, to]]
+end.new({ [:usd, :eur] => 0.92 })
+api = ExchangeRate.new(fetcher: rates)
+raise "wrong conversion" unless api.convert(100, from: :usd, to: :eur) == 92.0
+puts api.convert(250, from: :usd, to: :eur)
+```
+
 ## Agent review checklist
 
 - [ ] public contract is explicit

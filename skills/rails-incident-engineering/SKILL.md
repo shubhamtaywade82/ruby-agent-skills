@@ -235,6 +235,29 @@ Examples include request regressions, correlation fixes, SLO/alert changes, retr
 
 Do not treat the incident document as the final artifact if the failure can be prevented or diagnosed by changing the system.
 
+## Reference example
+
+Incident response as executable checks: a runbook script that gathers the exact evidence the runbook names, in one command.
+
+```ruby
+# lib/tasks/incident.rake
+namespace :incident do
+  desc "Collect first-five-minute evidence for a suspected payment incident"
+  task evidence: :environment do
+    since = 1.hour.ago
+
+    puts "failed charges (last hour): #{Charge.failed.where(updated_at: since..).count}"
+    puts "provider latency p95:       #{Metrics.p95("provider.request", since..)}"
+    puts "sidekiq queue depth:         #{Sidekiq::Queue.new("billing").size}"
+    puts "recent deploys:              #{Deploy.where(created_at: since..).pluck(:sha).join(", ")}"
+    # Mitigation comes next (feature flip, queue pause); evidence is collected first,
+    # and every claim in the incident channel cites a command that produced it.
+  end
+end
+
+# bin/rails incident:evidence > evidence.txt
+```
+
 ## Agent review checklist
 
 - [ ] existing observability and reliability conventions inspected

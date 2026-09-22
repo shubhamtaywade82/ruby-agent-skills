@@ -59,6 +59,30 @@ When the code depends on these distinctions, write tests for them.
 - accepting arbitrary callbacks without documenting their contract
 - using &block when yield is sufficient and no Proc object is needed
 
+## Reference example
+
+Block, Proc, and lambda differ in arity strictness and return semantics; both are shown with the failure each prevents.
+
+```ruby
+# lambda: strict arity, return exits only the lambda
+strict = ->(x, y) { x + y }
+begin
+  strict.call(1)
+rescue ArgumentError => e
+  puts "lambda arity: #{e.class}"
+end
+
+# proc: lax arity (missing args become nil), return would exit the method
+lax = proc { |x, y| [x, y].compact.sum }
+puts "proc arity: #{lax.call(7)}"
+
+# block: yielded, converted with & when passed along
+def apply(each_item, &blk)
+  each_item.map(&blk)
+end
+puts apply([1, 2, 3]) { |n| n * 10 }.inspect
+```
+
 ## Agent review checklist
 
 - [ ] callable lifetime is clear

@@ -71,6 +71,30 @@ For destructive generators or generators that replace files, inspect the generat
 
 Do not let a generator silently overwrite custom code.
 
+## Reference example
+
+A generator that declares its arguments, respects the force flag, and emits one reviewed template instead of scaffolding sprawl.
+
+```ruby
+# lib/generators/value_object/value_object_generator.rb
+class ValueObjectGenerator < Rails::Generators::NamedBase
+  source_root File.expand_path("templates", __dir__)
+
+  argument :fields, type: :array, default: [], banner: "field field"
+
+  def create_value_object
+    template "value_object.rb", File.join("app/values", class_path, "#{file_name}.rb")
+  end
+
+  def create_test
+    template "value_object_test.rb", File.join("test/values", class_path, "#{file_name}_test.rb")
+  end
+end
+
+# Usage: bin/rails g value_object Money cents currency
+# Generated code lands untracked; review the diff, then commit intentionally.
+```
+
 ## Agent review checklist
 
 - [ ] Rails version checked

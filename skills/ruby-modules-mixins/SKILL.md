@@ -79,6 +79,40 @@ Do not use a module when a collaborator object or dependency would make the beha
 - modules that carry unrelated domain state
 - mixins used only to avoid writing a collaborator
 
+## Reference example
+
+A mixin that stays honest: an included hook documents the contract, and prepend composes around the including class.
+
+```ruby
+module Timestamped
+  def self.included(base)
+    base.attr_accessor :created_at
+  end
+
+  def record_timestamp!
+    self.created_at = Time.now
+    self
+  end
+end
+
+module AuditTrail
+  def save
+    [:"audit", super].join(":") # prepend wraps the original
+  end
+end
+
+class Document
+  include Timestamped
+  prepend AuditTrail
+
+  def save = "saved"
+end
+
+doc = Document.new.record_timestamp!
+raise "timestamp missing" if doc.created_at.nil?
+puts doc.save
+```
+
 ## Agent review checklist
 
 - [ ] module has one coherent purpose

@@ -56,6 +56,35 @@ Test operational workflows as executable contracts. Cover environment gates, dry
 ## Anti-patterns / failure modes
 Avoid giant Rake tasks containing all business logic, environment checks based only on human convention, one-shot non-resumable production scripts, unbounded transactions, silent destructive operations, broad rescue that hides failures, task overlap without coordination, unbounded logging, direct production console instructions as the only recovery mechanism, and maintenance code with no verification query or success criteria.
 
+## Reference example
+
+An operational task that is idempotent, dry-runnable, and bounded: safe to re-run, safe to stop.
+
+```ruby
+# lib/tasks/backfill.rake
+namespace :backfill do
+  desc "Backfill invoices.currency; DRY_RUN=1 to preview"
+  task invoice_currency: :environment do
+    dry_run = ENV["DRY_RUN"].present?
+    batch_size = ENV.fetch("BATCH", "1_000").to_i
+
+    Invoice.where(currency: nil).find_each(batch_size: batch_size) do |invoice|
+      currency = invoice.customer&.currency || "usd"
+      say "#{invoice.id} -> #{currency}"
+      invoice.update_column(:currency, currency) unless dry_run # no callbacks by design
+    end
+  end
+
+  def say(line)
+    puts line
+    $stdout.flush
+  end
+end
+
+# bin/rails backfill:invoice_currency DRY_RUN=1 | head
+# Re-runs converge: the where(currency: nil) guard makes completion idempotent.
+```
+
 ## Agent review checklist
 - [ ] task or command ownership is explicit
 - [ ] production/environment gates are explicit

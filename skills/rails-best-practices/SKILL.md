@@ -66,6 +66,41 @@ Do not turn historical rules into absolute laws. In particular, do not interpret
 ## Modern Rails compatibility
 Some original checks reflect older Rails conventions such as before_filter, legacy mass-assignment APIs, and Turbo Sprockets-era asset behavior. Translate the underlying intent to the application's actual Rails version. Never introduce deprecated APIs to satisfy a historical rule.
 
+## Reference example
+
+The controller/contributor split the linter generation expects: assignment and response in the controller, the workflow in a callable object.
+
+```ruby
+class OrdersController < ApplicationController
+  def create
+    result = PlaceOrder.call(user: current_user, cart: current_cart)
+
+    if result.success?
+      redirect_to result.value, notice: t(".created")
+    else
+      flash.now[:alert] = result.error
+      render :checkout, status: :unprocessable_entity
+    end
+  end
+end
+
+class PlaceOrder
+  def self.call(user:, cart:) = new(user: user, cart: cart).call
+
+  def initialize(user:, cart:)
+    @user = user
+    @cart = cart
+  end
+
+  def call
+    order = @user.orders.create!(line_items_attributes: @cart.line_item_attributes)
+    Result.success(order)
+  rescue ActiveRecord::RecordInvalid => e
+    Result.failure(e.record.errors.full_messages.to_sentence)
+  end
+end
+```
+
 ## Agent review checklist
 - [ ] Rails/Ruby version resolved
 - [ ] relevant checks considered

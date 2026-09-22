@@ -257,6 +257,30 @@ Prefer deterministic view/request/system tests over brittle full-page snapshots 
 
 Do not make ordinary rendering tests depend on external network services.
 
+## Reference example
+
+A helper with explicit arguments and content-safe tags, plus the strict-locals partial call that keeps template contracts checkable.
+
+```ruby
+module InvoicesHelper
+  # Helpers take the object as an argument; they never read controller ivars.
+  def invoice_status_badge(invoice)
+    tag.span(class: "badge badge--#{invoice.status}") do
+      t(invoice.status, scope: "invoices.status")
+    end
+  end
+
+  def money(cents, currency:)
+    number_to_currency(cents / 100.0, unit: currency.to_s.upcase + " ")
+  end
+end
+
+# Template call sites:
+#   <%= invoice_status_badge(@invoice) %>
+#   <%= render "invoices/line_item", line_item: item, strict_locals: true %>
+# strict_locals: true turns a typo in a partial local into a raise, not a silent nil.
+```
+
 ## Agent review checklist
 
 - [ ] Rails/Action View version resolved

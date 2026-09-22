@@ -161,6 +161,29 @@ They must be distinguished from:
 
 If CI tests Ruby 3.2, 3.3, and 3.4, report a supported matrix rather than claiming one runtime is the runtime.
 
+## Reference example
+
+Version gates decide between APIs instead of rescue-ing NoMethodError; requirements state the supported floor.
+
+```ruby
+require "rubygems/version"
+
+RUBY_FLOOR = Gem::Version.new("3.1")
+raise "requires Ruby >= #{RUBY_FLOOR}" if Gem::Version.new(RUBY_VERSION) < RUBY_FLOOR
+
+def filter_present(list)
+  if RUBY_VERSION >= "3.4"          # targeted adoption of newer stdlib
+    list.filter_map { |v| v unless v.empty? }
+  else                              # documented fallback for the floor
+    list.reject(&:empty?)
+  end
+end
+
+result = filter_present(["a", "", "b"])
+raise "filter broken" unless result == %w[a b]
+puts "#{RUBY_VERSION}: #{result.inspect}"
+```
+
 ## Agent review checklist
 - [ ] Ruby engine resolved or explicitly marked unknown
 - [ ] Ruby runtime resolved or explicitly marked unknown

@@ -98,6 +98,30 @@ Avoid mocking every internal method; that can make tests pass while behavior is 
 
 A bug fix should ideally add a test that represents the previous failure.
 
+## Reference example
+
+A model test for the invariant and a request test for the boundary, each failing for exactly one reason.
+
+```ruby
+class InvoiceTest < ActiveSupport::TestCase
+  test "overdue scope excludes paid invoices" do
+    paid = invoices(:paid)
+    unpaid = invoices(:overdue)
+
+    assert_includes Invoice.overdue, unpaid
+    refute_includes Invoice.overdue, paid
+  end
+end
+
+class StatementsRequestTest < ActionDispatch::IntegrationTest
+  test "index redirects anonymous users to sign in" do
+    get statements_path
+
+    assert_redirected_to new_session_path
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] test stack and conventions inspected

@@ -415,6 +415,31 @@ Minimum cases:
 
 Use fake transports or broker test harnesses where possible. Do not rely on arbitrary sleeps for delivery timing.
 
+## Reference example
+
+Domain events over Active Support notifications with a queue-backed subscriber: publishing is synchronous, effects are not.
+
+```ruby
+module Billing
+  class Invoice
+    def mark_paid!(at: Time.current)
+      update!(paid_at: at)
+      ActiveSupport::Notifications.instrument(
+        "invoice.paid",
+        invoice_id: id, account_id: account_id, paid_at: at
+      )
+    end
+  end
+end
+
+Rails.application.config.to_prepare do
+  ActiveSupport::Notifications.subscribe("invoice.paid") do |event|
+    # Subscriber stays trivial; work is enqueued so publish() never blocks.
+    InvoicePaidHandlerJob.perform_later(event.payload.slice(:invoice_id, :account_id))
+  end
+end
+```
+
 ## Agent review checklist
 
 - [ ] message classified as command/event/notification/retry

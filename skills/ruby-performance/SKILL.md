@@ -217,6 +217,37 @@ reproduce
 - unstable timing thresholds in CI
 - optimizing a non-dominant operation
 
+## Reference example
+
+Measure before optimizing: allocation counts and wall time make the difference between two candidate implementations observable.
+
+```ruby
+require "benchmark"
+
+def concat_naive(n)
+  s = ""
+  n.times { s = s + "x" }   # allocates a new String per iteration
+  s
+end
+
+def concat_mutating(n)
+  s = +""
+  n.times { s << "x" }      # single buffer, mutated in place
+  s
+end
+
+n = 2_000
+Benchmark.bm(16) do |x|
+  x.report("naive (+)")     { concat_naive(n) }
+  x.report("in-place (<<)") { concat_mutating(n) }
+end
+
+allocs = GC.stat(:total_allocated_objects)
+concat_mutating(n)
+delta = GC.stat(:total_allocated_objects) - allocs
+puts "mutating version allocated #{delta} objects for #{n} appends"
+```
+
 ## Agent review checklist
 
 - [ ] workload defined

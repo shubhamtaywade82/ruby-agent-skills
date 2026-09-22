@@ -190,6 +190,28 @@ Verify actual runtime artifacts:
 
 Local unit tests alone cannot prove deployment safety.
 
+## Reference example
+
+Production runtime configuration: forced TLS, stdout structured logging, and the standard /up health endpoint left unauthenticated.
+
+```ruby
+# config/environments/production.rb
+Rails.application.configure do
+  config.force_ssl = true                       # HSTS + secure cookies + redirects
+  config.assume_ssl = true                      # trust the proxy's X-Forwarded-*
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
+
+  config.logger = ActiveSupport::Logger.new($stdout)
+    .tap { |logger| logger.formatter = ActiveSupport::Logger::SimpleFormatter.new }
+
+  config.active_record.dump_schema_after_migration = false
+end
+
+# The health endpoint must stay cheap and unauthenticated:
+#   get "/up", to: proc { [200, {}, ["ok"]] }
+# Liveness checks must not touch the database; readiness checks may.
+```
+
 ## Agent review checklist
 - [ ] runtime/framework versions resolved
 - [ ] actual deployment/process manager identified

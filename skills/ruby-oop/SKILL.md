@@ -100,6 +100,30 @@ Do not grade merely on the number of classes created.
 - domain logic hidden in controllers/views
 - classes created solely to satisfy a rubric
 
+## Reference example
+
+Subtypes honor the base contract (LSP) and callers depend on behavior, not concrete classes (duck typing).
+
+```ruby
+class Notifier
+  def notify(user, message) = raise NotImplementedError
+end
+
+class EmailNotifier < Notifier
+  def notify(user, message) = "email to #{user}: #{message}"
+end
+
+class SmsNotifier < Notifier
+  def notify(user, message) = "sms to #{user}: #{message}" # same contract, no surprises
+end
+
+# callers accept anything that quacks like notify(user, message)
+def blast(channel, user, message) = channel.notify(user, message)
+
+puts blast(EmailNotifier.new, "ada", "deployed")
+puts blast(SmsNotifier.new, "ada", "deployed")
+```
+
 ## Agent review checklist
 
 - [ ] class represents a real concept

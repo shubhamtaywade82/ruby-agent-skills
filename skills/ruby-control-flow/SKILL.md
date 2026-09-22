@@ -87,6 +87,41 @@ Do not replace a required algorithm with a convenient abstraction that violates 
 - algorithmic code that silently allocates additional space
 - clever one-line transformations that obscure control flow
 
+## Reference example
+
+case/in pattern matching for structure dispatch, guard clauses for early exit, and loop-with-break for unbounded streams.
+
+```ruby
+Event = Struct.new(:kind, :payload)
+
+def handle(event)
+  case event
+  in { kind: :order, payload: { total: Integer => t } } if t > 0
+    "charge #{t}"
+  in { kind: :order, payload: { total: 0 } }
+    "free order"
+  in { kind: :refund, payload: { id: } }
+    "refund #{id}"
+  else
+    "unhandled"
+  end
+end
+
+puts handle(Event.new(:order, { total: 420 }))
+puts handle(Event.new(:order, { total: 0 }))
+puts handle(Event.new(:refund, { id: "r_9" }))
+
+# bounded consumption loop
+stream = [1, 2, 3, nil, 4].each
+collected = []
+loop do
+  item = stream.next
+  break if item.nil?
+  collected << item
+end
+puts collected.inspect
+```
+
 ## Agent review checklist
 
 - [ ] branch structure is obvious

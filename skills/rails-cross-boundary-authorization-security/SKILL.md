@@ -63,6 +63,33 @@ Test each entry point and the shared authorization boundary. Include cross-tenan
 ## Anti-patterns / failure modes
 Avoid controller-only authorization, duplicated policy logic, ambient authorization state, trusting serialized roles or tenant IDs, signing without authorization, Global ID as permission, unscoped object lookup, stale background authorization, cache hits after revocation, engines assumed secure because the host is secure, maintenance tasks assumed trusted, and inconsistent bypass paths.
 
+## Reference example
+
+Authorization re-checked at the execution boundary, because the controller check proves nothing once the job runs later.
+
+```ruby
+class DestroyTenantResourceJob < ApplicationJob
+  def perform(actor_id, resource_id)
+    actor = User.find(actor_id)
+    resource = Resource.find(resource_id)
+
+    # The job re-authorizes: the controller's check happened in another request,
+    # possibly hours ago, under different records.
+    raise AuthorizationError, "cross-tenant access" unless resource.tenant_id == actor.tenant_id
+
+    resource.destroy!
+  end
+end
+
+class ResourcesController < ApplicationController
+  def destroy
+    resource = current_tenant.resources.find(params[:id])
+    DestroyTenantResourceJob.perform_later(current_user.id, resource.id)
+    head :accepted
+  end
+end
+```
+
 ## Agent review checklist
 - [ ] authoritative authorization mechanism identified
 - [ ] all entry points mapped

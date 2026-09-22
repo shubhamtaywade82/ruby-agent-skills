@@ -47,6 +47,34 @@ Use configuration tests for precedence, initializer tests for registration/lifec
 ## Anti-patterns / failure modes
 Avoid business workflows in initializers, hidden ordering dependencies, unbounded boot network calls/retries, secrets in logs/client configuration, duplicate reload registration, mutable constants as configuration stores, undeclared environment dependencies, unverified framework-default changes, swallowed boot errors, and tests that pass only because a developer machine supplies configuration.
 
+## Reference example
+
+Custom configuration declared on the app, validated once at boot, read through one accessor.
+
+```ruby
+# config/application.rb
+module Billing
+  class Application < Rails::Application
+    config.load_defaults 8.0
+
+    config.x.billing = {
+      provider: ENV.fetch("BILLING_PROVIDER", "sandbox"),
+      timeout_seconds: ENV.fetch("BILLING_TIMEOUT", "5").to_f
+    }
+  end
+end
+
+# config/initializers/00_config_contract.rb - fail at boot, not at first request
+Rails.application.config.after_initialize do
+  provider = Rails.configuration.x.billing[:provider]
+  unless %w[sandbox live].include?(provider)
+    raise ArgumentError, "BILLING_PROVIDER must be sandbox or live, got #{provider.inspect}"
+  end
+end
+
+# Call sites: Rails.configuration.x.billing.fetch(:timeout_seconds)
+```
+
 ## Agent review checklist
 - [ ] Ruby/Rails versions resolved
 - [ ] boot/configuration files inspected

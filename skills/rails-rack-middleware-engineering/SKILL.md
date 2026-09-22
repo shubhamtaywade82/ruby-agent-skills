@@ -217,6 +217,31 @@ Avoid:
 - claiming thread safety without exercising the shared state
 - Do not use middleware to compensate for a missing application-layer abstraction
 
+## Reference example
+
+A middleware that observes the environment and decorates the response without touching the app it wraps.
+
+```ruby
+# lib/middleware/tenant_header.rb
+class TenantHeader
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    status, headers, body = @app.call(env)
+    headers["X-Tenant"] = env["app.tenant"].to_s if env["app.tenant"]
+    [status, headers, body]
+  end
+end
+
+# config/application.rb
+#   config.middleware.insert_after Rack::Runtime, TenantHeader
+#
+# Contract: middleware must not raise on missing env keys, must not buffer large
+# response bodies, and must return the exact [status, headers, body] triple.
+```
+
 ## Agent review checklist
 
 - [ ] Ruby, Rails, and Rack versions resolved

@@ -135,6 +135,38 @@ Do not weaken security tooling or broaden ignores merely to get a green build.
 - treating confidence as proof
 - validation used as a substitute for an actual security control
 
+## Reference example
+
+A webhook ingress where the signature (timing-safe compare) replaces the CSRF token, and untrusted input never reaches params-style passthrough.
+
+```ruby
+class WebhooksController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: :create
+  before_action :verify_signature, only: :create
+
+  def create
+    payload = JSON.parse(request.body.read)
+    event = payload.slice("id", "type", "data").to_h  # explicit field allowlist
+
+    IngestWebhookJob.perform_later(event)             # work leaves the request
+    head :accepted
+  rescue JSON::ParserError
+    head :bad_request
+  end
+
+  private
+
+  def verify_signature
+    expected = Base64.strict_encode64(
+      OpenSSL::HMAC.digest("SHA256", webhook_secret, request.raw_post)
+    )
+    head :unauthorized unless ActiveSupport::SecurityUtils.secure_compare(
+      request.headers["X-Signature"].to_s, expected
+    )
+  end
+end
+```
+
 ## Agent review checklist
 - [ ] runtime/version resolved
 - [ ] authentication boundary identified

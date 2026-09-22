@@ -339,6 +339,30 @@ For bulk operations, test which validations/callbacks are intentionally absent o
 
 For strict loading, test that unintended lazy loading fails where that is the contract.
 
+## Reference example
+
+Deep Active Record work: composable scopes, strict loading to surface N+1, and a deliberate, commented bulk-write bypass.
+
+```ruby
+class Invoice < ApplicationRecord
+  has_many :line_items, inverse_of: :invoice
+
+  scope :unpaid, -> { where(paid_at: nil) }
+  scope :overdue, ->(as_of: Date.current) { unpaid.where(due_on: ...as_of) }
+
+  def self.account_digest(account)
+    where(account_id: account.id)
+      .includes(:line_items)   # eager load planned up front
+      .strict_loading          # any unplanned lazy load raises instead of N+1-ing
+      .map { |invoice| [invoice.reference, invoice.total_cents] }
+  end
+end
+
+# Bulk writes skip the model lifecycle by contract; state that explicitly:
+#   Invoice.insert_all!(rows, record_timestamps: true)  # no validations/callbacks
+#   invoice.update_columns(paid_at: Time.current)       # deliberate callback bypass
+```
+
 ## Agent review checklist
 
 - [ ] Rails/Active Record version resolved
