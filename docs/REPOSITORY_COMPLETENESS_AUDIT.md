@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Iteration 46–53 verify the skill system as a repository-wide product, not only as a collection of individual Rails topics.
+Iteration 46–54 verify the skill system as a repository-wide product, not only as a collection of individual Rails topics.
 
 The audit checks:
 
@@ -19,7 +19,7 @@ The audit checks:
 
 At Iteration 46 the repository contains **76 skills**, **393 implementation patterns**, and **392 evaluation cases**.
 
-At Iteration 53, the repository-wide validator executes **45 system tests**. Every system test is required to appear in bin/validate.
+At Iteration 54, the repository-wide validator executes **46 system tests**. Every system test is required to appear in bin/validate.
 
 ## Framework drift review
 
@@ -59,6 +59,8 @@ The completeness audit is intentionally a structural guardrail. It does not infe
 Iteration 52 adds CI toolchain-version validation to the canonical repository verification path.
 
 Iteration 53 adds adversarial routing-case validation so overlapping skill boundaries are checked as explicit primary/secondary ownership contracts.
+
+Iteration 54 adds a provider-neutral empirical routing evaluator and system test for measuring actual agent skill selection against those routing cases.
 
 Run the audit directly with:
 ruby scripts/audit_repository_completeness.rb
