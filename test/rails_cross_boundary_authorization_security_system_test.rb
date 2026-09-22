@@ -49,7 +49,7 @@ class RailsCrossBoundaryAuthorizationSecuritySystemTest < Minitest::Test
   end
 
   def test_evaluation_contract
-    e=YAML.safe_load(File.read(File.join(ROOT,"evals/security/cross-boundary-authorization-contract.yml"),encoding:"UTF-8"))
+    e=YAML.safe_load(File.read(File.join(ROOT,"evals/rails/cross-boundary-authorization-contract.yml"),encoding:"UTF-8"))
     assert_includes e.fetch("skills"),"rails-cross-boundary-authorization-security"
     assert_includes e.fetch("patterns"),"background-reauthorization-composition"
     assert_includes e.fetch("patterns"),"authorization-cache-composition"
