@@ -1,19 +1,37 @@
-id: rails-framework-public-v1
-version: 2
+id: rails-framework-public-v2
+version: 3
 evaluation_set: rails
-source: rails-framework-v2
+source: rails-framework-v3
 fixture_root: benchmarks/rails/fixtures
 verifier: scripts/verify_rails_eval.rb
 evaluations:
+  - action-cable-contract
   - action-controller-contract
+  - action-mailbox-contract
+  - action-mailer-contract
+  - action-text-contract
+  - action-view-contract
+  - active-model-contract
   - active-record-contract
-  - rails-routing-contract
-  - validations-contract
+  - active-storage-contract
+  - active-support-contract
+  - asset-build-contract
+  - associations-contract
   - authentication-contract
   - authorization-contract
-  - rails-cross-boundary-authorization-security-contract
-  - rails-encryption-credentials-contract
+  - cross-boundary-authorization-security-contract
+  - encryption-credentials-contract
+  - engines-railties-contract
+  - hotwire-contract
+  - i18n-contract
+  - initialization-configuration-contract
+  - operational-tasks-maintenance-contract
+  - rack-middleware-contract
+  - rails-repository-completeness-contract
+  - rails-routing-contract
   - rails-serialization-globalid-contract
+  - rails-staff-principal-architecture-contract
+  - validations-contract
 execution:
   repetitions: 3
   paired: true
@@ -24,3 +42,4 @@ controls:
   runtime:
     ruby: "3.3"
   hidden_cases: external-only
+  require_all_public_evaluations: true
