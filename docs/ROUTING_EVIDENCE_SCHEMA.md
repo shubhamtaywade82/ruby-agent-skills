@@ -8,6 +8,10 @@ A routing evidence package is an auditable record of one completed baseline/cand
 
 - `protocol_version`
 - `evidence`
+- `campaign`
+- `campaign_version`
+- `routing_case_count`
+- `requested_repetitions`
 - `repository`
 - `agent`
 - `compatibility`
