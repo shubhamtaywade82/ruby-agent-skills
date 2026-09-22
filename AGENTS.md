@@ -786,6 +786,19 @@ For material architecture changes:
 
 authentication and authorization remain separate concerns: authentication establishes identity and session state; authorization decides permitted actions within that context.
 
+## Evaluation and benchmark changes
+
+For evaluation or benchmark changes:
+- keep evaluation cases deterministic, source-traceable, and independent from one another;
+- distinguish the public evaluation corpus from benchmark-measured fixture/campaign coverage;
+- treat baseline versus skills-enabled comparisons as controlled paired experiments with identical runtime, fixture, verifier, and agent configuration unless a deliberate provider comparison is being run;
+- require fresh workspaces for paired runs and preserve individual run evidence rather than reducing results to one score;
+- keep hidden/adversarial benchmark cases outside the public repository and use the same evaluation/result protocol;
+- validate fixture roots and implementation/test seams before treating a campaign as executable;
+- preserve campaign version, source corpus, fixture/verifier identity, execution controls, and coverage provenance in aggregate results;
+- never interpret benchmark smoke tests as evidence of model capability improvement; smoke tests establish harness integrity only;
+- never weaken an evaluator, fixture, or verifier to make an agent pass.
+ 
 ## Repository completeness and framework drift changes
 
 For changes to the skill repository itself:
