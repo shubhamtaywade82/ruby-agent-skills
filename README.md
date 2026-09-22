@@ -411,7 +411,7 @@ Each evaluation can specify:
 - scope control
 - expected failure modes
 
-Current validated evaluation inventory: **206 cases**.
+Current validated evaluation inventory: **392 cases**.
 
 Important evaluation families include:
 
@@ -535,7 +535,7 @@ The validation suite currently reports:
 ```text
 76 skills
 393 implementation patterns
-206 evaluation cases
+392 evaluation cases
 ```
 
 ---
