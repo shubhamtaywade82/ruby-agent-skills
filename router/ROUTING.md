@@ -1235,3 +1235,33 @@ When a task changes Rails boot, configuration, initializers, environment setting
 | Application-owned config.x | pattern:application-config-contract |
 | Initializer/configuration testing | pattern:initializer-testing-contract |
 | Startup performance | pattern:boot-performance-contract |
+
+
+## Rails Engines and Railties engineering
+
+When a task changes Rails::Engine, Rails::Railtie, mountable engines, engine namespace isolation, engine routes, engine configuration, engine initialization, generators/tasks, engine assets, host overrides, or engine compatibility:
+  -> rails-engines-railties-engineering
+  -> rails-initialization-configuration-engineering for boot/configuration/lifecycle
+  -> rails-zeitwerk for engine autoloading and namespace contracts
+  -> rails-routing / rails-authorization for exposed engine routes and security
+  -> rails-asset-build-engineering for engine assets/build integration
+  -> rails-generators / rails-database-engineering for generators/tasks/migrations
+  -> ruby-runtime-compatibility for supported Ruby/Rails matrices
+  -> rails-test-engineering for dummy-application and integration testing
+
+### Engine/Railtie pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Engine ownership boundary | pattern:engine-boundary-contract |
+| Namespace isolation | pattern:engine-namespace-isolation |
+| Host mount and routing | pattern:engine-mount-routing-contract |
+| Engine public configuration | pattern:engine-configuration-boundary |
+| Railtie lifecycle setup | pattern:railtie-initialization-boundary |
+| Engine autoloading | pattern:engine-autoloading-contract |
+| Gem/dependency compatibility | pattern:engine-dependency-compatibility |
+| Host customization | pattern:engine-host-override-contract |
+| Generators/tasks/migrations | pattern:engine-generator-task-contract |
+| Engine assets | pattern:engine-asset-integration-contract |
+| Dummy application integration | pattern:engine-dummy-app-testing |
+| Multiple-engine composition | pattern:engine-cross-engine-composition |
