@@ -185,5 +185,15 @@ if errors.any?
   abort "#{errors.length} evaluation validation error(s)"
 end
 
-puts "Validated #{eval_files.length} evaluation cases."
+puts "Validated #{eval_files.length} evaluation files."
+evaluation_case_count = eval_files.sum do |path|
+  data = YAML.safe_load(
+    File.read(path, encoding: "UTF-8"),
+    permitted_classes: [],
+    aliases: false
+  )
+  Array(data.fetch("cases")).length
+end
+
+puts "Evaluation case count: #{evaluation_case_count}."
 puts "Evaluation contract: schema + known skills/patterns + deterministic cases + independent checks"
