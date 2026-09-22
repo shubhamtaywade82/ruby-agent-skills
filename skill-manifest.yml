@@ -23,6 +23,7 @@ routing:
   campaign_analyzer: bin/routing-analyze
   remediation_policy: router/ROUTING_REMEDIATION.yml
   remediation_comparator: bin/routing-compare
+  experiment_runner: bin/routing-experiment
 
 skills:
   rails-test-engineering:
