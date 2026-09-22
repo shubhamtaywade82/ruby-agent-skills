@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 52 — CI Toolchain and Release-Guard Maintenance  
+> **Current milestone:** Iteration 53 — Skill Routing and Activation Quality  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -56,7 +56,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **44** |
+| Dedicated system/contract tests | **45** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -528,6 +528,7 @@ Validation covers:
 - runtime/security/loader/observability/database/production/test-engineering system checks
 - manifest consistency
 - routing/activation contracts
+- adversarial routing quality contracts
 - benchmark fixture consistency
 
 The validation suite currently reports:
@@ -551,7 +552,8 @@ ruby-agent-skills/
 │   ├── testing/
 │   └── algorithms/
 ├── router/
-│   └── ROUTING.md             # cross-skill routing rules
+│   ├── ROUTING.md             # cross-skill routing rules
+│   └── ROUTING_CASES.yml      # adversarial routing contracts
 ├── docs/
 │   ├── SKILL_CONTRACT.md
 │   ├── PATTERN_SCHEMA.md
