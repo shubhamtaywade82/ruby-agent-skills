@@ -800,6 +800,17 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  rails-engines-railties-engineering:
+    source: rails-engines-railties-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/engines-railties-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   test-engineering:
     source: rails-test-engineering-v1
     schema: docs/EVAL_SCHEMA.md
