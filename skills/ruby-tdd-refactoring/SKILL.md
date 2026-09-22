@@ -1,53 +1,136 @@
 ---
 name: ruby-tdd-refactoring
-description: Use when implementing behavior changes, fixing defects, refactoring Ruby/Rails code or improving test coverage.
+description: Use when changing Ruby/Rails behavior, fixing bugs, adding coverage, refactoring, or working under a regression-risk constraint.
 ---
 
 # Ruby TDD and Refactoring
 
 ## Purpose
-Use tests as executable contracts and refactor in small, verifiable steps.
 
-## Change loop
-~~~
-text
-understand behavior
-  -> write/fix a focused test
-  -> implement minimum behavior
-  -> run focused tests
+Use tests as executable behavior contracts and keep structural changes small enough to verify continuously.
+
+## Activate when
+
+- behavior changes
+- a bug is fixed
+- a public method/API is modified
+- code is refactored
+- missing edge-case coverage is discovered
+- a task explicitly requires TDD
+
+## Repository inspection
+
+Before writing tests:
+
+- identify RSpec/Minitest/other stack
+- inspect existing test organization
+- inspect fixtures/factories/helpers
+- inspect CI commands
+- identify integration/system/request coverage
+- reuse existing matchers and conventions
+
+Do not introduce a second test framework without a reason.
+
+## TDD loop
+
+When practical:
+
+```text
+red
+  -> smallest behavior
+  -> green
   -> refactor
-  -> run regression suite
-~~~
+  -> regression suite
+```
 
-In an existing repository, follow its established test framework and helper conventions.
+For an existing bug, a regression test should demonstrate the defect before the fix when feasible.
 
-## Before coding
-Inspect tests, fixtures/factories, helpers, mocks/stubs, integration/request tests and CI commands.
-
-Do not introduce a second test style without a reason.
+TDD is a development discipline, not a requirement to force a literal red/green sequence when working in a constrained production/debugging workflow.
 
 ## Test quality
-Tests should verify behavior rather than implementation trivia.
 
-Cover normal cases, edge cases and failure behavior. For bugs, add regression coverage.
+A test should make the behavior easy to understand.
 
-## Refactoring safety
+Prefer behavior-focused expectations.
+
+Cover:
+
+- normal behavior
+- boundaries
+- invalid input
+- failure behavior
+- important side effects
+- regression conditions
+
+Avoid coupling tests to incidental private implementation details.
+
+## RSpec readability
+
+When the repository uses RSpec, organize related examples with meaningful `describe`/`context` structure and descriptions that state behavior.
+
+Use existing repository conventions for `subject`, helpers, shared examples, and factories.
+
+## Refactoring
+
 A refactor changes structure without intentionally changing observable behavior.
 
-Typical sequence:
-1. add missing coverage
-2. make one structural change
-3. run tests
-4. inspect the diff
-5. repeat
+Sequence:
 
-Do not combine a broad refactor with unrelated behavior changes.
+1. characterize current behavior
+2. add missing coverage
+3. make one structural change
+4. run focused tests
+5. inspect diff
+6. repeat
+7. run regression suite
 
-## Algorithm tasks
-Test normal, empty, singleton, duplicate and boundary cases. Record expected time and space complexity when the requirement specifies complexity.
+## Algorithm evaluations
 
-## Completion criteria
-A task is complete when behavior is implemented, relevant tests pass, regression coverage passes, and the final diff contains no unnecessary unrelated changes.
+When an algorithm requirement gives complexity targets, tests must prove output while a separate check/review substantiates complexity and auxiliary space.
+
+Include:
+
+- empty input
+- singleton
+- duplicates
+- already sorted/reverse-sorted
+- boundary values
+- impossible/no-result cases
+
+## Failure modes
+
+- tests that pass despite broken behavior
+- over-mocking the system under test
+- asserting implementation details
+- one huge integration test for every behavior
+- adding tests after a broad refactor with no characterization coverage
+- changing tests simply to make a failing implementation pass
+
+## Completion contract
+
+A task is complete only when:
+
+- intended behavior is implemented
+- relevant tests pass
+- regression coverage passes
+- applicable static/lint/CI checks pass
+- final diff has no accidental scope expansion
+- any unrun verification is disclosed
+
+## Agent review checklist
+
+- [ ] repository test stack identified
+- [ ] contract expressed by tests
+- [ ] edge/failure paths considered
+- [ ] regression case added when appropriate
+- [ ] focused tests pass
+- [ ] broader checks run where appropriate
+- [ ] tests remain readable
+
+## Verification
+
+Run the smallest useful test first, then the affected suite, then broader regression checks as justified by the change.
 
 ## Source foundation
-Based on the TDD, clean-test, implementation and refactoring material in Clean Ruby, combined with the exercise-driven practice model of The Ruby Workshop.
+
+Grounded in the TDD and clean-test material of *Clean Ruby*, including the emphasis on behavior clarity and readable RSpec structure, and reinforced by the exercise-driven Ruby practice model of *The Ruby Workshop*.

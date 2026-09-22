@@ -1,0 +1,33 @@
+id: builder-selection
+version: 1
+title: Use a Builder for staged report construction
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-object-composition
+  - ruby-poro
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - builder
+prompt: |
+  Implement ReportBuilder for staged construction of a report. Builder methods return self for chaining and build returns a final Report value.
+constraints:
+  required_design:
+    - builder
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: builder public API is present
+  pattern_selection: builder evidence is present and factory substitution is absent
+  scope_control: changes remain inside the disposable fixture

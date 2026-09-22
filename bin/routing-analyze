@@ -1,0 +1,95 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "optparse"
+
+options = { output: nil }
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-analyze CAMPAIGN_JSON [options]"
+  opts.on("--output PATH", "Write report JSON to PATH") { |value| options[:output] = value }
+end.parse!
+
+campaign_path = ARGV.fetch(0) { abort "campaign JSON path is required" }
+campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+
+cases = campaign.fetch("cases")
+confusions = []
+case_reports = []
+
+cases.each do |case_id, case_data|
+  runs = Array(case_data["runs"])
+  completed = runs.select { |run| run["status"] == "completed" }
+  expected = case_data.fetch("expected_primary_skill")
+
+  observed_counts = Hash.new(0)
+  completed.each do |run|
+    observed_counts[run.fetch("observed").fetch("primary_skill")] += 1
+  end
+
+  mismatches = completed.select do |run|
+    run.fetch("observed").fetch("primary_skill") != expected
+  end
+
+  mismatches.each do |run|
+    observed = run.fetch("observed").fetch("primary_skill")
+    existing = confusions.find { |entry| entry["expected_primary_skill"] == expected && entry["observed_primary_skill"] == observed }
+    if existing
+      existing["count"] += 1
+      existing["case_ids"] << case_id unless existing["case_ids"].include?(case_id)
+    else
+      confusions << {
+        "expected_primary_skill" => expected,
+        "observed_primary_skill" => observed,
+        "count" => 1,
+        "case_ids" => [case_id]
+      }
+    end
+  end
+
+  case_reports << {
+    "case_id" => case_id,
+    "expected_primary_skill" => expected,
+    "requested_repetitions" => case_data.fetch("requested_repetitions"),
+    "completed_repetitions" => completed.length,
+    "primary_accuracy" => completed.empty? ? 0.0 : completed.count { |run| run.fetch("observed").fetch("primary_skill") == expected }.fdiv(completed.length),
+    "observed_primary_distribution" => observed_counts,
+    "unstable" => observed_counts.length > 1,
+    "invalid_run_count" => runs.length - completed.length
+  }
+end
+
+confusions.sort_by! { |entry| [-entry["count"], entry["expected_primary_skill"], entry["observed_primary_skill"]] }
+unstable_cases = case_reports.select { |entry| entry["unstable"] }
+completed_runs = campaign.fetch("completed_runs").to_i
+mismatch_count = confusions.sum { |entry| entry["count"] }
+
+report = {
+  "protocol_version" => campaign.fetch("protocol_version"),
+  "analysis" => "skill-routing-confusion-v1",
+  "source_campaign" => {
+    "id" => campaign.fetch("campaign"),
+    "version" => campaign.fetch("campaign_version"),
+    "complete" => campaign.fetch("complete")
+  },
+  "agent" => campaign.fetch("agent"),
+  "summary" => {
+    "completed_runs" => completed_runs,
+    "primary_mismatch_count" => mismatch_count,
+    "primary_mismatch_rate" => completed_runs.zero? ? 0.0 : mismatch_count.fdiv(completed_runs),
+    "confusion_pair_count" => confusions.length,
+    "unstable_case_count" => unstable_cases.length
+  },
+  "primary_confusions" => confusions,
+  "unstable_cases" => unstable_cases,
+  "cases" => case_reports
+}
+
+output = options[:output]
+if output
+  File.write(output, JSON.pretty_generate(report) + "\n", encoding: "UTF-8")
+end
+
+puts JSON.pretty_generate(report)
+exit(1) unless campaign.fetch("complete")

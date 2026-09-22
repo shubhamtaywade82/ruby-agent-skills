@@ -16,3 +16,5 @@ log/
 .env
 .env.*
 !.env.example
+# Benchmark outputs
+benchmark-results/

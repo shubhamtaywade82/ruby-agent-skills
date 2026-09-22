@@ -1,0 +1,56 @@
+id: external-api-client
+version: 1
+title: Isolate and test an external API client
+category: ruby-workshop
+source: learn-rails-6
+skills:
+  - rails-api-integration
+  - ruby-gems-io-services
+  - ruby-api-design
+  - ruby-debugging
+  - ruby-tdd-refactoring
+patterns:
+  - external-api-client
+  - adapter
+prompt: |
+  Implement WeatherClient#fetch(city) around the injected HTTP transport.
+  Call the transport, validate the response status, parse the JSON body, and return a small normalized hash with city and temperature.
+  Non-success responses and malformed payloads must raise a predictable error.
+  Tests must use a fake transport and must not call the real network.
+constraints:
+  required_design:
+    - external boundary isolation
+    - injected transport
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: successful-response
+    input:
+      city: Pune
+      status: 200
+      body:
+        city: Pune
+        temperature: 28
+    expected:
+      city: Pune
+      temperature: 28
+  - name: remote-error
+    input:
+      city: Pune
+      status: 503
+      body: {}
+    expected: remote_error
+  - name: malformed-body
+    input:
+      city: Pune
+      status: 200
+      body: {}
+    expected: invalid_payload
+grading:
+  functional: successful response is normalized correctly
+  contract: remote and malformed responses fail predictably
+  tests: fake transport tests cover success and failure
+  scope_control: no real network or unrelated dependency is required

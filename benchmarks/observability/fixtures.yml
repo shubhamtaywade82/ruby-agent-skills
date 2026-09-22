@@ -1,0 +1,19 @@
+version: 1
+source: rails-observability-v1
+fixtures:
+  error-boundary:
+    root: benchmarks/observability/fixtures/error-boundary
+    implementation_files:
+      - app/controllers/orders_controller.rb
+  request-correlation:
+    root: benchmarks/observability/fixtures/request-correlation
+    implementation_files:
+      - config/application.rb
+  instrumentation-event:
+    root: benchmarks/observability/fixtures/instrumentation-event
+    implementation_files:
+      - app/services/order_checkout.rb
+  health-semantics:
+    root: benchmarks/observability/fixtures/health-semantics
+    implementation_files:
+      - config/routes.rb

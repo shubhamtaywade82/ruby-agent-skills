@@ -1,33 +1,124 @@
 ---
 name: rails-activerecord
-description: Use for Rails models, migrations, ActiveRecord associations, validations, querying, persistence and database behavior.
+description: Use for Rails models, migrations, Active Record querying, persistence, callbacks, scopes, constraints, and database behavior.
 ---
 
-# Rails ActiveRecord
+# Rails Active Record
 
-## Before changing a model
-Inspect schema, migrations, associations, validations, callbacks, scopes, dependent behavior, existing queries and tests.
+## Purpose
 
-Never infer database behavior from model code alone.
+Make persistence behavior explicit, correct, efficient, and aligned with the actual database schema.
 
-## Associations
-Choose associations from actual domain relationships. Verify foreign keys, nullability, uniqueness and dependent semantics.
+## Activate when
 
-## Validations
-Distinguish application validation from database constraints. For important invariants, evaluate whether a database constraint is also required.
+- changing a model
+- adding/changing a migration
+- modifying Active Record queries
+- changing persistence behavior
+- adding callbacks/scopes
+- investigating database-related bugs or performance
 
-Do not assume model validation alone prevents race-condition violations.
+## Repository inspection
 
-## Queries
-Watch for N+1 queries, accidental large loads, Ruby-side filtering that belongs in SQL, missing indexes, ambiguous ordering and duplicate rows from joins.
+Always inspect:
 
-Use scopes only when they remain readable and composable.
+- schema.rb/structure.sql
+- relevant migrations
+- model
+- associations
+- validations
+- callbacks
+- scopes
+- existing queries
+- factories/fixtures
+- tests
+- indexes/constraints where visible
+
+Never infer database behavior from the model file alone.
 
 ## Migrations
-Make schema intent explicit. Prefer reversible migrations when practical. Consider production data volume, indexes and constraints.
+
+A migration describes a schema transition.
+
+Review:
+
+- column type
+- nullability
+- defaults
+- foreign keys
+- indexes
+- uniqueness
+- reversibility
+- existing-data impact
+- table size/production safety
+
+Do not assume a migration is safe merely because it runs on an empty development database.
+
+## Models
+
+A model can contain behavior that naturally belongs to the persisted/domain record.
+
+Do not turn it into a universal service container.
+
+## Validations versus constraints
+
+Model validation provides application-level feedback.
+
+Database constraints provide stronger integrity guarantees, especially under concurrent writes.
+
+For important invariants, consider both.
+
+## Queries
+
+Watch for:
+
+- N+1 queries
+- accidental full-table loads
+- Ruby-side filtering that belongs in SQL
+- unnecessary joins
+- duplicate rows
+- ambiguous ordering
+- missing indexes
+- large `.to_a`/materialization
+- repeated queries inside loops
+
+Choose SQL versus Ruby based on data volume, correctness, and repository conventions.
+
+## Scopes
+
+Use scopes when they are named, composable, and unsurprising.
+
+Avoid scopes that hide large side effects or return surprising query shapes.
+
+## Callbacks
+
+Callbacks can make persistence side effects implicit.
+
+Before adding one, ask whether an explicit application/domain workflow is clearer.
+
+If callbacks already exist, map their lifecycle before refactoring.
+
+## Transactions
+
+Use the repository's transaction conventions when multiple persistence changes must succeed or fail together.
+
+Do not assume external API calls participate in database transactions.
+
+## Agent review checklist
+
+- [ ] schema inspected
+- [ ] migration impact considered
+- [ ] database constraints evaluated
+- [ ] query plan/performance considered where material
+- [ ] N+1 risk checked
+- [ ] callback side effects mapped
+- [ ] transaction boundary correct
+- [ ] tests cover persistence behavior
 
 ## Verification
-For persistence changes, verify migration behavior, model behavior, constraints/associations, query behavior and regression tests.
+
+Run migration/schema checks and model/query tests. For performance-sensitive changes, inspect generated SQL/query counts and use the repository's profiling tools where available.
 
 ## Source foundation
-Based on associations, validations, models, migrations and ORM material from The Ruby Workshop.
+
+Grounded in the models, migrations, Active Record, console, persistence, associations, and validations material in *The Ruby Workshop*, strengthened by the responsibility/refactoring guidance in *Clean Ruby*.

@@ -1,0 +1,29 @@
+id: transaction-lock
+version: 1
+title: Protect a concurrent state transition
+category: rails
+source: rails-database-engineering-v1
+skills:
+  - rails-database-engineering
+  - ruby-concurrency
+patterns:
+  - transaction-lock-boundary
+prompt: |
+  Two workers can attempt to reserve the same inventory item concurrently. Protect the persisted state transition so inventory cannot become negative or be reserved twice. Keep the transaction boundary minimal.
+constraints:
+  required_design:
+    - database concurrency boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: competing-reservations
+    input: two workers reserve one item
+    expected: one succeeds and one is rejected safely
+grading:
+  functional: concurrent transition preserves inventory invariant
+  tests: conflicting behavior is tested
+  contract: reservation API remains intact
+  scope_control: no unrelated inventory redesign

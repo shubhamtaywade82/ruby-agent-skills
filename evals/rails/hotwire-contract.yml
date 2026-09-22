@@ -1,0 +1,86 @@
+id: hotwire-contract
+version: 1
+title: Preserve Rails Hotwire navigation, DOM, security, lifecycle, and progressive-enhancement contracts
+category: rails
+source: rails-hotwire-v1
+skills:
+  - rails-hotwire
+  - rails-action-controller
+  - rails-action-view
+  - rails-authentication
+  - rails-authorization
+  - rails-security
+  - rails-action-cable
+  - rails-test-engineering
+patterns:
+  - turbo-drive-navigation-contract
+  - turbo-frame-contract
+  - turbo-stream-response-contract
+  - turbo-stream-broadcast-contract
+  - turbo-morph-identity
+  - turbo-form-contract
+  - stimulus-controller-boundary
+  - stimulus-target-value-contract
+  - stimulus-lifecycle-boundary
+  - hotwire-progressive-enhancement
+  - hotwire-csrf-security
+  - hotwire-testing
+prompt: |
+  Implement or review a Rails Hotwire change using the repository's current Turbo and Stimulus setup. Preserve server-side authentication/authorization, stable frame and stream contracts, deliberate form response semantics, deterministic Stimulus lifecycle cleanup, progressive enhancement, CSRF protection, accessibility, and private-content cache isolation.
+constraints:
+  required_design:
+    - repository-consistent Hotwire integration
+    - stable DOM/frame/stream contract
+    - server-side security
+    - Stimulus lifecycle safety
+    - deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: drive-lifecycle
+    input: Turbo navigation across pages with page-specific controllers
+    expected: page-specific resources are cleaned up and persistent shell state remains correct
+  - name: frame-contract
+    input: frame-targeted request
+    expected: response contains the expected frame contract and preserves authorization
+  - name: stream-response
+    input: successful and failed form submissions
+    expected: stream actions target stable DOM identities and invalid submissions preserve useful errors
+  - name: stream-broadcast
+    input: committed private resource update
+    expected: only authorized subscribers receive the correct stream and no pre-commit update is published
+  - name: morph-identity
+    input: refresh or morph with interactive client state
+    expected: required DOM/client state survives according to the declared identity contract
+  - name: form-security
+    input: Turbo non-GET form
+    expected: authentication, authorization, CSRF, validation, status, and redirect semantics remain server-side
+  - name: stimulus-boundary
+    input: controller connect/disconnect cycles
+    expected: listeners, timers, and observers are not duplicated or leaked
+  - name: progressive-enhancement
+    input: request without the Hotwire enhancement
+    expected: critical workflow remains usable through the server-rendered HTML contract where required
+  - name: cache-isolation
+    input: private frame or stream response for two actors or tenants
+    expected: cache identity does not share protected HTML across security contexts
+  - name: authorization
+    input: unauthorized frame or stream action
+    expected: Hotwire does not bypass normal authorization
+  - name: csrf
+    input: browser-authenticated state-changing request
+    expected: Rails CSRF contract is preserved
+  - name: accessibility
+    input: dynamic frame or stream update
+    expected: focus, error, and status semantics remain usable for keyboard and assistive technology workflows
+  - name: hotwire-testing
+    input: Hotwire behavior change
+    expected: deterministic boundary tests cover the changed protocol and lifecycle behavior
+grading:
+  functional: interaction behavior matches the repository contract
+  tests: DOM protocol, security, and lifecycle rejection paths are executable
+  contract: server-side Rails responsibilities remain authoritative
+  scope_control: no unrelated frontend framework or asset/build migration is introduced

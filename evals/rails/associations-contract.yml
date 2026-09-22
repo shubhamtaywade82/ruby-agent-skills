@@ -1,0 +1,82 @@
+id: associations-contract
+version: 1
+title: Preserve Rails association cardinality, inverse, join, polymorphic, lifecycle, autosave, and loading contracts
+category: rails
+source: rails-associations-v1
+skills:
+  - rails-associations
+  - rails-active-record
+  - rails-database-engineering
+  - rails-validations
+  - rails-security
+  - rails-active-job
+  - rails-active-storage
+  - rails-performance
+  - rails-test-engineering
+  - rails-testing
+patterns:
+  - association-cardinality-contract
+  - association-inverse-contract
+  - through-association-contract
+  - polymorphic-association-boundary
+  - association-dependent-lifecycle
+  - association-autosave-contract
+  - association-counter-touch-contract
+  - association-callback-contract
+  - association-loading-contract
+  - association-testing
+prompt: |
+  Refactor a Rails project/domain relationship layer involving accounts, projects, memberships, attachments, and auditable join records. Preserve relationship cardinality and database integrity, make inverse behavior explicit where automatic inference is insufficient, and keep tenant authorization outside association declarations. Model membership state through a join model rather than HABTM. Use a bounded polymorphic attachment target set. Review dependent behavior across database foreign keys and application cleanup. A parent save should persist only the associated changes explicitly owned by the association contract. An external effect from collection mutation must not be hidden in an association callback. A large project page should use deliberate association loading without globally eager-loading every child collection. Add deterministic tests for cardinality, inverse behavior, through mutations, polymorphic targets, dependent lifecycle, autosave failure, tenant isolation, and loading behavior.
+constraints:
+  required_design:
+    - association cardinality is explicit
+    - database integrity complements relationship declarations
+    - inverse behavior is intentional
+    - join-model ownership is explicit
+    - polymorphic target types are bounded
+    - dependent lifecycle is coordinated with database constraints
+    - autosave behavior is intentional
+    - association callbacks remain local
+    - loading strategy is narrow and evidence-based
+    - relationship behavior has deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: cardinality
+    input: one-to-one account setting with duplicate candidate rows
+    expected: the application contract and database enforcement agree on one-to-one semantics
+  - name: inverse
+    input: parent-built child with custom foreign_key/class_name
+    expected: inverse behavior is explicit and prevents unnecessary reloads or autosave inconsistencies
+  - name: through-mutation
+    input: project membership assignment and removal
+    expected: join records change without destroying target account/project records
+  - name: polymorphic-boundary
+    input: attachment target with supported and unsupported type values
+    expected: only allowed target classes are accepted and authorization remains target-aware
+  - name: dependent-lifecycle
+    input: owner deletion with dependent records and foreign-key constraints
+    expected: application/database deletion semantics are compatible and cleanup is deterministic
+  - name: autosave
+    input: parent save with valid and invalid associated changes
+    expected: only contractually-owned associated changes persist and failure behavior is deterministic
+  - name: counter-touch
+    input: child addition/removal affecting derived parent metadata
+    expected: counter/timestamp updates are understood and bypass paths remain accounted for
+  - name: association-callback
+    input: collection add/remove mutation
+    expected: local callback behavior is bounded and external workflows remain outside the callback
+  - name: loading
+    input: large project page traversing members and recent records
+    expected: the loading strategy is deliberate and does not globally materialize unrelated graphs
+  - name: authorization
+    input: cross-tenant association lookup or assignment
+    expected: relationship validity does not bypass explicit authorization
+grading:
+  functional: association behavior and lifecycle are correct
+  tests: cardinality, mutation, lifecycle, loading, and security cases are executable
+  contract: association ownership and database/application semantics are explicit
+  scope_control: relationships do not become hidden workflow or authorization engines

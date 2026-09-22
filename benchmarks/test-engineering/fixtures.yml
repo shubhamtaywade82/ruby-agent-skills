@@ -1,0 +1,27 @@
+version: 1
+source: rails-test-engineering-v1
+fixtures:
+  boundary-selection:
+    root: benchmarks/test-engineering/fixtures/boundary-selection
+    implementation_files:
+      - test/requests/orders_test.rb
+  deterministic-job:
+    root: benchmarks/test-engineering/fixtures/deterministic-job
+    implementation_files:
+      - test/jobs/notify_customer_job_test.rb
+  parallel-safety:
+    root: benchmarks/test-engineering/fixtures/parallel-safety
+    implementation_files:
+      - test/test_helper.rb
+  flaky-diagnosis:
+    root: benchmarks/test-engineering/fixtures/flaky-diagnosis
+    implementation_files:
+      - test/models/order_test.rb
+  system-contract:
+    root: benchmarks/test-engineering/fixtures/system-contract
+    implementation_files:
+      - test/system/checkout_test.rb
+  test-performance:
+    root: benchmarks/test-engineering/fixtures/test-performance
+    implementation_files:
+      - test/test_helper.rb

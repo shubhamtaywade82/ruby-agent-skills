@@ -1,0 +1,32 @@
+version: 1
+id: ruby-training-public-v1
+evaluation_set: ruby-training
+source: allerin-ruby-set-2
+
+fixture_root: benchmarks/ruby-training/fixtures
+verifier: scripts/verify_training_eval.rb
+evaluations:
+  - selection-sort
+  - recursive-selection-sort
+  - smallest-missing
+  - shopping-cart
+  - triplet-sum
+  - majority-element
+  - distinct-elements
+  - power-of-two
+  - chocolate-feast
+
+execution:
+  repetitions: 3
+  paired: true
+  fresh_workspace_per_run: true
+  same_fixture_for_pair: true
+  require_same_agent_command_when_using_agent_command: true
+
+controls:
+  runtime:
+    ruby: "3.3"
+  verifier: scripts/verify_training_eval.rb
+  generated_results_dir: benchmark-results
+  hidden_cases: external-only
+  require_complete_repetitions: true

@@ -1,0 +1,93 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "fileutils"
+require "json"
+require "open3"
+require "optparse"
+require "time"
+
+ROOT = File.expand_path("..", __dir__)
+VERIFYER = File.join(ROOT, "bin", "routing-evidence-verify")
+
+options = {destination: nil, label: nil}
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-archive EVIDENCE_JSON --destination DIR"
+  opts.on("--destination DIR", "Archive root directory") { |value| options[:destination] = File.expand_path(value) }
+  opts.on("--label NAME", "Optional human-readable archive label") { |value| options[:label] = value }
+end.parse!
+
+evidence_path = File.expand_path(ARGV.fetch(0) { abort "evidence JSON is required" })
+abort "evidence JSON not found: #{evidence_path}" unless File.file?(evidence_path)
+abort "--destination is required" unless options[:destination]
+
+evidence_sha = Digest::SHA256.file(evidence_path).hexdigest
+evidence = JSON.parse(File.read(evidence_path, encoding: "UTF-8"))
+
+verify_args = [RbConfig.ruby, VERIFYER, evidence_path, "--check-files"]
+if evidence.dig("repository", "worktree_clean") == false
+  verify_args << "--allow-dirty"
+end
+verify_out, verify_err, verify_status = Open3.capture3(*verify_args, chdir: ROOT)
+warn verify_err unless verify_err.empty?
+abort "evidence verification failed" unless verify_status.success?
+
+def safe_component(value)
+  value.to_s.strip.downcase.gsub(/[^a-z0-9._-]+/, "-").gsub(/\A-+|-+\z/, "").yield_self { |v| v.empty? ? "unknown" : v }
+end
+
+campaign = safe_component(evidence.fetch("campaign"))
+campaign_id = safe_component(evidence.dig("agent", "model"))
+git_sha = safe_component(evidence.dig("repository", "git_sha"))
+archive_root = options[:destination]
+archive_dir = File.join(archive_root, campaign, campaign_id, git_sha)
+abort "archive already exists: #{archive_dir}" if File.exist?(archive_dir)
+FileUtils.mkdir_p(archive_dir)
+artifact_dir = File.join(archive_dir, "artifacts")
+FileUtils.mkdir_p(artifact_dir)
+
+archive_artifacts = {}
+evidence.fetch("artifacts").each do |key, metadata|
+  source = metadata.fetch("path")
+  abort "artifact #{key} unavailable: #{source}" unless File.file?(source)
+  basename = File.basename(source).gsub(/[^A-Za-z0-9._-]+/, "-")
+  destination_name = "#{safe_component(key)}--#{basename}"
+  target = File.join(artifact_dir, destination_name)
+  FileUtils.cp(source, target)
+  digest = Digest::SHA256.file(target).hexdigest
+  abort "artifact #{key} changed during archival" unless digest == metadata.fetch("sha256")
+  archive_artifacts[key] = {
+    "source_path" => source,
+    "archive_path" => File.join("artifacts", destination_name),
+    "sha256" => digest,
+    "bytes" => File.size(target)
+  }
+end
+
+FileUtils.cp(evidence_path, File.join(archive_dir, "evidence.json"))
+manifest = {
+  "protocol_version" => 1,
+  "archive" => "skill-routing-evidence-archive-v1",
+  "archive_id" => [campaign, campaign_id, git_sha].join("/"),
+  "label" => options[:label],
+  "captured_at" => Time.now.utc.iso8601,
+  "source_evidence" => {
+    "path" => evidence_path,
+    "sha256" => evidence_sha,
+    "archive_path" => "evidence.json"
+  },
+  "repository" => evidence.fetch("repository"),
+  "agent" => evidence.fetch("agent"),
+  "compatibility" => evidence.fetch("compatibility"),
+  "gate" => evidence.fetch("gate"),
+  "artifacts" => archive_artifacts
+}
+manifest_path = File.join(archive_dir, "ARCHIVE_MANIFEST.json")
+File.write(manifest_path, JSON.pretty_generate(manifest) + "\n", encoding: "UTF-8")
+
+puts "Routing evidence archive created"
+puts "  directory: #{archive_dir}"
+puts "  evidence SHA-256: #{evidence_sha}"
+puts "  artifacts: #{archive_artifacts.length}"
+puts "  manifest: #{manifest_path}"

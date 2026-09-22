@@ -1,0 +1,172 @@
+version: 1
+description: >
+  Adversarial routing cases that document the intended primary and secondary
+  skill ownership for overlapping Ruby/Rails engineering tasks. These cases
+  are routing contracts, not a deterministic keyword classifier.
+
+cases:
+  - id: password-recovery-not-authorization
+    prompt: >
+      Add an expiring, single-use password reset flow with enumeration-safe
+      responses and replay protection.
+    primary_skills:
+      - rails-authentication
+    secondary_skills:
+      - rails-security-engineering
+      - rails-test-engineering
+    boundary: authentication-vs-authorization
+
+  - id: tenant-scoped-resource-access
+    prompt: >
+      Restrict invoice lookup to resources belonging to the authenticated
+      user's tenant and prevent cross-tenant access.
+    primary_skills:
+      - rails-authorization
+    secondary_skills:
+      - rails-active-record
+      - rails-security-engineering
+      - rails-test-engineering
+    boundary: authorization-vs-persistence
+
+  - id: delayed-resource-authorization
+    prompt: >
+      A queued job deletes a resource after a delay; authorization must still
+      be enforced when the job executes.
+    primary_skills:
+      - rails-cross-boundary-authorization-security
+    secondary_skills:
+      - rails-authorization
+      - rails-active-job
+      - rails-test-engineering
+    boundary: authorization-vs-background-execution
+
+  - id: realtime-subscription-authorization
+    prompt: >
+      Prevent an authenticated user from subscribing to another tenant's
+      Action Cable stream and define reconnect behavior.
+    primary_skills:
+      - rails-action-cable
+    secondary_skills:
+      - rails-authorization
+      - rails-cross-boundary-authorization-security
+      - rails-test-engineering
+    boundary: realtime-vs-authorization
+
+  - id: signed-webhook-ingress
+    prompt: >
+      Receive a provider webhook, verify its signature, reject replayed or
+      malformed requests, and only then process the event.
+    primary_skills:
+      - rails-api-integration
+    secondary_skills:
+      - rails-security-engineering
+      - rails-observability
+      - rails-test-engineering
+    boundary: api-vs-security
+
+  - id: api-version-compatibility
+    prompt: >
+      Add an API v2 response while keeping existing v1 clients compatible.
+    primary_skills:
+      - rails-api-integration
+    secondary_skills:
+      - rails-action-controller
+      - rails-serialization-globalid-engineering
+      - rails-test-engineering
+    boundary: api-vs-controller
+
+  - id: conditional-model-invariant
+    prompt: >
+      Add a validation that applies only in a named lifecycle context and
+      remains consistent with the database invariant.
+    primary_skills:
+      - rails-validations
+    secondary_skills:
+      - rails-active-record
+      - rails-database-engineering
+      - rails-test-engineering
+    boundary: validation-vs-database
+
+  - id: n-plus-one-query-regression
+    prompt: >
+      Diagnose and fix a slow Rails endpoint caused by repeated association
+      queries without changing the endpoint contract.
+    primary_skills:
+      - rails-performance
+    secondary_skills:
+      - rails-active-record
+      - ruby-performance
+      - rails-test-engineering
+    boundary: performance-vs-persistence
+
+  - id: autoloading-constant-mismatch
+    prompt: >
+      Fix a Zeitwerk::NameError caused by a file-to-constant mismatch while
+      preserving reload and eager-load behavior.
+    primary_skills:
+      - rails-zeitwerk
+    secondary_skills:
+      - ruby-runtime-compatibility
+      - rails-test-engineering
+    boundary: loading-vs-runtime
+
+  - id: route-shadowing-regression
+    prompt: >
+      Add a nested route without allowing an existing literal route to be
+      shadowed by resourceful routing.
+    primary_skills:
+      - rails-routing
+    secondary_skills:
+      - rails-controllers
+      - rails-test-engineering
+    boundary: routing-vs-controller
+
+  - id: boot-time-provider-dependency
+    prompt: >
+      Add an initializer that depends on an external provider while preserving
+      boot failure semantics, reload behavior, and readiness signaling.
+    primary_skills:
+      - rails-initialization-configuration-engineering
+    secondary_skills:
+      - rails-production-runtime
+      - rails-reliability-engineering
+      - rails-test-engineering
+    boundary: initialization-vs-runtime
+
+  - id: tenant-aware-authorization-cache
+    prompt: >
+      Cache an authorization decision without allowing one user's or tenant's
+      decision to leak to another request.
+    primary_skills:
+      - rails-caching
+    secondary_skills:
+      - rails-authorization
+      - rails-security-engineering
+      - rails-test-engineering
+    boundary: caching-vs-authorization
+
+  - id: engine-namespace-boundary
+    prompt: >
+      Mount a Rails engine with isolated constants and routes without leaking
+      host application authorization assumptions into the engine.
+    primary_skills:
+      - rails-engines-railties-engineering
+    secondary_skills:
+      - rails-routing
+      - rails-zeitwerk
+      - rails-authorization
+      - rails-test-engineering
+    boundary: engine-vs-host-routing
+
+  - id: credential-key-rotation
+    prompt: >
+      Rotate Rails encryption keys while preserving deployment compatibility,
+      secret handling, recovery, and verification of existing encrypted data.
+    primary_skills:
+      - rails-encryption-credentials-engineering
+    secondary_skills:
+      - rails-security-engineering
+      - rails-reliability-engineering
+      - rails-production-runtime
+      - rails-test-engineering
+    boundary: encryption-vs-operations

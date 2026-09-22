@@ -1,0 +1,41 @@
+id: action-mailer-contract
+version: 1
+title: Preserve Action Mailer delivery and privacy contracts
+category: rails
+source: rails-action-mailer-v1
+skills:
+  - rails-action-mailer
+  - rails-active-job
+  - rails-security
+patterns:
+  - mailer-contract
+  - mailer-delivery-semantics
+  - mailer-security-boundary
+prompt: |
+  Implement an account security notification mailer. The notification must use an explicitly authorized recipient, preserve tenant isolation, support asynchronous delivery through Active Job, and keep message rendering independent of the business state transition. Add focused tests for the message contract and enqueue behavior.
+constraints:
+  required_design:
+    - explicit recipient authorization
+    - asynchronous delivery semantics
+    - tenant-safe message boundary
+    - deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: authorized-recipient
+    input: account owner recipient
+    expected: security notification addressed to the authorized owner
+  - name: cross-tenant-recipient
+    input: recipient from another tenant
+    expected: message is not delivered across tenant boundary
+  - name: async-delivery
+    input: successful notification request
+    expected: Action Mailer delivery is enqueued through Active Job
+grading:
+  functional: message content and recipient behavior are correct
+  tests: mailer contract and asynchronous enqueue behavior are covered
+  contract: business eligibility is not moved into the template
+  scope_control: provider/network behavior is not introduced into mailer tests

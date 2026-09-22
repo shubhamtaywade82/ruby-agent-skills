@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "optparse"
+require "shellwords"
+
+root = File.expand_path("..", __dir__)
+adapter = File.join(root, "adapters", "command_agent.rb")
+benchmark = File.join(root, "bin", "benchmark")
+
+options = {
+  timeout: nil,
+  runs: nil,
+  output: nil,
+  evaluation: nil,
+  manifest: nil,
+  provider: "command",
+  model: nil,
+  model_version: nil,
+  tool_mode: nil,
+  temperature: nil
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/agent-benchmark --command COMMAND [options]"
+
+  opts.on("--command COMMAND", "Trusted command that drives the coding agent") { |value| options[:command] = value }
+  opts.on("--provider NAME") { |value| options[:provider] = value }
+  opts.on("--model NAME") { |value| options[:model] = value }
+  opts.on("--model-version VALUE") { |value| options[:model_version] = value }
+  opts.on("--tool-mode VALUE") { |value| options[:tool_mode] = value }
+  opts.on("--temperature VALUE") { |value| options[:temperature] = value }
+  opts.on("--manifest PATH") { |value| options[:manifest] = value }
+  opts.on("--evaluation ID") { |value| options[:evaluation] = value }
+  opts.on("--runs COUNT", Integer) { |value| options[:runs] = value }
+  opts.on("--timeout SECONDS", Integer) { |value| options[:timeout] = value }
+  opts.on("--output DIR") { |value| options[:output] = value }
+  opts.on("--continue-on-failure") { options[:continue_on_failure] = true }
+end.parse!
+
+abort "usage: ruby bin/agent-benchmark --command COMMAND [options]" unless options[:command]
+
+ENV["RUBY_AGENT_COMMAND"] = options[:command]
+ENV["RUBY_AGENT_PROVIDER"] = options[:provider]
+ENV["RUBY_AGENT_MODEL"] = options[:model] if options[:model]
+ENV["RUBY_AGENT_MODEL_VERSION"] = options[:model_version] if options[:model_version]
+ENV["RUBY_AGENT_TOOL_MODE"] = options[:tool_mode] if options[:tool_mode]
+ENV["RUBY_AGENT_TEMPERATURE"] = options[:temperature] if options[:temperature]
+
+args = ["ruby", benchmark, "campaign", "--agent-command", "ruby #{Shellwords.escape(adapter)}"]
+args += ["--manifest", options[:manifest]] if options[:manifest]
+args += ["--evaluation", options[:evaluation]] if options[:evaluation]
+args += ["--runs", options[:runs].to_s] if options[:runs]
+args += ["--timeout", options[:timeout].to_s] if options[:timeout]
+args += ["--output", options[:output]] if options[:output]
+args << "--continue-on-failure" if options[:continue_on_failure]
+
+exec(*args)

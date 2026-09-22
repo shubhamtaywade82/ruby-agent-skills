@@ -1,0 +1,33 @@
+id: null-object
+version: 1
+title: Use a Null Object for optional notification delivery
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-object-composition
+  - ruby-poro
+  - ruby-dependency-injection
+  - ruby-tdd-refactoring
+patterns:
+  - null-object
+prompt: |
+  Implement NotificationRouter so it receives a notifier collaborator. Use NullNotifier as a safe no-op instead of nil branching at call sites.
+constraints:
+  required_design:
+    - null-object
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: notifier interface remains stable
+  pattern_selection: NullNotifier is present and nil branching is absent
+  scope_control: changes remain inside the disposable fixture

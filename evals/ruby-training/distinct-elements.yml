@@ -1,0 +1,40 @@
+id: distinct-elements
+version: 1
+title: Distinct elements from an array with duplicates
+category: ruby-training
+source: allerin-ruby-set-2
+skills:
+  - ruby-collections
+  - ruby-method-design
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns:
+  - frequency-map
+prompt: |
+  Given an array that may contain duplicates, produce the distinct values.
+  Preserve the sorted order demonstrated by the assessment examples.
+constraints:
+  required_design:
+    - object-oriented design
+checks:
+  - functional
+  - oop
+  - tests
+  - edge_cases
+cases:
+  - name: source-example
+    input: [4, 7, 4, 1, 1, 4, 8, 10, 6, 7]
+    expected: [1, 4, 6, 7, 8, 10]
+  - name: repeated-values
+    input: [6, 6, 6, 6]
+    expected: [6]
+  - name: already-distinct
+    input: [1, 2, 3]
+    expected: [1, 2, 3]
+  - name: empty
+    input: []
+    expected: []
+grading:
+  functional: returns each distinct value once in ascending order.
+  oop: uses a cohesive object or equivalent repository-aligned OOP structure.
+  tests: covers duplicates, no duplicates and empty input.

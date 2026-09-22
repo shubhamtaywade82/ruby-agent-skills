@@ -1,0 +1,31 @@
+id: request-correlation
+version: 1
+title: Preserve request correlation in logs
+category: rails
+source: rails-observability-v1
+skills:
+  - rails-observability
+  - rails-incident-engineering
+patterns:
+  - request-observability
+prompt: |
+  Add request correlation to the existing Rails logging boundary. Reuse the framework-provided request ID instead of generating a second identifier and ensure sensitive authentication headers are not logged.
+constraints:
+  required_design:
+    - existing request identifier
+    - sensitive parameter filtering
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: request-id
+    input: request uuid
+    expected: same id available to logs
+  - name: secret-filter
+    input: Authorization header
+    expected: filtered
+grading:
+  functional: logging uses the request's existing correlation identifier
+  tests: correlation/filtering behavior is covered
+  contract: no second request identifier is introduced

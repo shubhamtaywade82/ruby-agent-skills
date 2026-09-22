@@ -1,0 +1,70 @@
+id: active-support-contract
+version: 1
+title: Preserve Rails Active Support loading, composition, context, instrumentation, and time semantics
+category: rails
+source: rails-active-support-v1
+skills:
+  - rails-active-support
+  - rails-observability
+  - rails-security
+  - rails-security-engineering
+  - ruby-concurrency
+  - rails-zeitwerk
+patterns:
+  - active-support-loading-boundary
+  - active-support-concern-composition
+  - active-support-class-configuration
+  - active-support-current-context
+  - active-support-notifications-contract
+  - active-support-callback-boundary
+  - active-support-time-semantics
+  - active-support-inflection-boundary
+  - active-support-testing
+prompt: |
+  Implement a reusable Rails framework component using Active Support. It must use a narrow Concern contract, intentionally inherited class configuration, request-local context without leaking into background work, stable Notifications instrumentation with bounded payloads, explicit callback lifecycle semantics, timezone-aware application behavior, and an allowlisted dynamic type mapping. Tests must isolate global/context state and must not depend on production services.
+constraints:
+  required_design:
+    - explicit Active Support loading boundary
+    - narrow Concern host contract
+    - safe class_attribute inheritance semantics
+    - explicit CurrentAttributes reset/job propagation boundary
+    - stable instrumentation event/payload contract
+    - bounded callback lifecycle
+    - explicit time/timezone semantics
+    - allowlisted dynamic constantization
+    - deterministic state-isolated tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: concern-composition
+    input: a host class includes a reusable Concern with a declared dependency
+    expected: dependency composition and included/class methods remain explicit and predictable
+  - name: class-configuration
+    input: a base class and subclass override inherited configuration
+    expected: subclass changes do not unexpectedly mutate parent configuration
+  - name: current-context
+    input: request-local user/tenant context is set and then a background job is scheduled
+    expected: request context resets and durable job context is passed explicitly rather than implicitly
+  - name: notifications
+    input: a component emits a domain operation instrumentation event
+    expected: event name/payload are stable, low-cardinality, non-sensitive, and observational
+  - name: callback-lifecycle
+    input: before/around/after lifecycle callbacks surround an operation
+    expected: ordering, abort, and exception semantics are deterministic
+  - name: time-semantics
+    input: application-local time crosses a timezone or DST boundary
+    expected: Time.zone semantics are explicit and elapsed duration uses a monotonic source where required
+  - name: dynamic-constantization
+    input: an external type name is supplied
+    expected: only explicitly allowlisted constants can be selected
+  - name: test-isolation
+    input: multiple tests mutate CurrentAttributes, timezone, inherited configuration, or subscriptions
+    expected: state is restored and tests do not depend on execution order
+grading:
+  functional: Active Support primitives behave according to their declared contracts
+  tests: composition, context, instrumentation, callback, time, and security boundaries are executable
+  contract: Active Support remains a framework primitive rather than a hidden global-state or business-event mechanism
+  scope_control: no unnecessary Active Record, broker, or production-service dependency is introduced

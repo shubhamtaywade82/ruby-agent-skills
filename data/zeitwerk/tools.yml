@@ -1,0 +1,27 @@
+version: 1
+source:
+  rails_guide: https://guides.rubyonrails.org/autoloading_and_reloading_constants.html
+  zeitwerk: https://github.com/fxn/zeitwerk
+
+tools:
+  rails-zeitwerk-check:
+    category: loader_verification
+    command: bundle exec rails zeitwerk:check
+    application_only: true
+  rails-eager-load:
+    category: eager_load_verification
+    command: bundle exec rails runner 'Rails.application.eager_load!'
+    application_only: true
+  zeitwerk-loader-check:
+    category: generic_loader_verification
+    application_only: false
+    notes:
+      - "Use the installed Zeitwerk version's public API."
+      - "Prefer eager-load and expected-constant introspection when available."
+
+selection:
+  rules:
+    - "Prefer the target repository's configured Rails/Zeitwerk checks."
+    - "Do not report skipped loader tooling as a clean check."
+    - "Use eager loading for production-only constant/path failures."
+    - "Inspect runtime and installed Zeitwerk version before using version-specific APIs."

@@ -1,0 +1,10 @@
+version: 1
+source: zeitwerk-v1
+description: Deterministic Zeitwerk structure fixtures.
+fixtures:
+  path-constant-contract:
+    root: benchmarks/zeitwerk/fixtures/path-constant-contract
+    implementation_file: app/services/payments/processor.rb
+  initializer-reload-boundary:
+    root: benchmarks/zeitwerk/fixtures/initializer-reload-boundary
+    implementation_file: config/initializers/api_gateway.rb

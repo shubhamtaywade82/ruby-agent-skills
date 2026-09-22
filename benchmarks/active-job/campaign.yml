@@ -1,0 +1,22 @@
+id: active-job-public-v1
+version: 1
+evaluation_set: active-job
+source: active-job-v1
+fixture_root: benchmarks/active-job/fixtures
+verifier: scripts/verify_active_job_eval.rb
+evaluations:
+  - idempotent-side-effect
+  - retry-policy
+  - transactional-enqueue
+  - concurrency-control
+execution:
+  repetitions: 3
+  paired: true
+  fresh_workspace_per_run: true
+  same_fixture_for_pair: true
+  require_same_agent_command_when_using_agent_command: true
+controls:
+  runtime:
+    ruby: "3.3"
+  hidden_cases: external-only
+  require_complete_repetitions: true

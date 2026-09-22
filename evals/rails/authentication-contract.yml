@@ -1,0 +1,99 @@
+id: authentication-contract
+version: 2
+title: Preserve Rails authentication identity, session, recovery, and revocation contracts
+category: rails
+source: rails-authentication-v2
+skills:
+  - rails-authentication
+  - rails-security
+  - rails-security-engineering
+  - rails-test-engineering
+patterns:
+  - authentication-mechanism-boundary
+  - credential-storage-contract
+  - session-lifecycle-contract
+  - session-fixation-rotation
+  - session-revocation-contract
+  - password-recovery-contract
+  - login-abuse-controls
+  - remember-me-contract
+  - browser-api-auth-boundary
+  - authentication-context-propagation
+  - authentication-freshness-boundary
+  - authentication-testing
+prompt: |
+  Implement or review a Rails authentication flow using the repository's existing mechanism. Preserve a clear identity boundary, safe credential storage, fresh post-login session state, explicit logout/revocation, enumeration-safe password recovery, bounded login abuse controls, and separate browser/API authentication semantics. Add deterministic security tests for successful and rejected authentication transitions.
+constraints:
+  required_design:
+    - authoritative authentication mechanism
+    - safe credential storage
+    - session lifecycle
+    - session fixation defense
+    - logout and revocation semantics
+    - password recovery semantics
+    - abuse controls
+    - browser/api boundary
+    - deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: mechanism-boundary
+    input: repository with an existing Rails authentication mechanism
+    expected: implementation reuses the authoritative mechanism without creating a parallel authentication path
+  - name: credential-storage
+    input: password credential
+    expected: plaintext credential is never persisted or logged and verification uses the canonical hashing API
+  - name: session-rotation
+    input: successful login from a pre-authentication session
+    expected: a fresh authenticated session context is established and fixation is prevented
+  - name: logout
+    input: authenticated session
+    expected: logout invalidates the authentication authority according to repository semantics
+  - name: revocation
+    input: revoked session or token
+    expected: subsequent authentication checks reject the stale credential
+  - name: password-recovery
+    input: reset request for existing and unknown account
+    expected: response does not unnecessarily reveal account existence and reset credentials expire and cannot be replayed
+  - name: login-abuse
+    input: repeated failed login attempts
+    expected: throttling/challenge semantics are bounded and successful recovery remains possible
+  - name: remember-me
+    input: persistent login credential when supported
+    expected: expiry, rotation, logout, and replay behavior are explicit
+  - name: browser-api-boundary
+    input: browser session request and API bearer request
+    expected: CSRF, expiry, error, and revocation semantics remain appropriate to each boundary
+  - name: context-propagation
+    input: authenticated request triggering a background job or realtime action
+    expected: actor attribution crosses the boundary without serializing live credentials and authorization is re-evaluated when required
+  - name: freshness
+    input: stale session attempting a security-sensitive action
+    expected: recent authentication or reauthentication is required where the policy demands it
+  - name: authentication-testing
+    input: authentication behavior change
+    expected: deterministic transition-focused security tests cover both success and rejection paths
+
+  - name: authentication-state-machine
+    input: anonymous, authenticated, expired, and revoked states
+    expected: each authentication state transition has an explicit server-side contract
+  - name: session-expiry
+    input: inactive or over-age session when expiry is configured
+    expected: stale session authority is rejected according to repository policy
+  - name: credential-change-revocation
+    input: password change or reset
+    expected: affected sessions and tokens are revoked according to explicit repository policy
+  - name: multi-device
+    input: multiple active sessions for one principal
+    expected: current-device, per-device, and global revocation semantics are explicit where supported
+  - name: compromise-response
+    input: suspected credential compromise
+    expected: affected credential classes can be revoked or rotated and subsequent authentication checks reject compromised authority
+grading:
+  functional: identity/session/recovery behavior matches the repository contract
+  tests: security transitions and rejection paths are executable
+  contract: authentication remains distinct from authorization and alternate auth paths
+  scope_control: no unrelated authentication framework replacement or live external dependency is introduced

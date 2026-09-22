@@ -1,0 +1,34 @@
+version: 1
+source:
+  rails_testing: https://guides.rubyonrails.org/testing.html
+  active_job: https://guides.rubyonrails.org/active_job_basics.html
+  rubocop: https://docs.rubocop.org/rubocop/latest/plugins.html
+
+tools:
+  rails-test:
+    category: test_runner
+    command: bin/rails test
+    application_only: true
+  rails-test-all:
+    category: test_runner
+    command: bin/rails test:all
+    application_only: true
+  rails-test-system:
+    category: system_test_runner
+    command: bin/rails test:system
+    application_only: true
+  rails-eager-load:
+    category: loading_verification
+    command: bundle exec rails runner 'Rails.application.eager_load!'
+    application_only: true
+  rails-rubocop:
+    category: lint
+    command: bundle exec rubocop
+    application_only: true
+
+selection:
+  rules:
+    - "Inspect repository test stack and CI commands before selecting test commands."
+    - "Use repository-specific test helpers, fixtures, factories, and external-service doubles."
+    - "Do not add retry loops to hide flaky tests."
+    - "Benchmark test-performance changes with the same workload before and after."

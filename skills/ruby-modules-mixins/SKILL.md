@@ -1,40 +1,97 @@
 ---
 name: ruby-modules-mixins
-description: Use for Ruby modules, shared behavior, namespaces, mixins and include/extend/prepend design.
+description: Use for Ruby modules, namespaces, shared behavior, include, extend, prepend, callbacks, and method lookup design.
 ---
 
 # Ruby Modules and Mixins
 
 ## Purpose
-Use modules for coherent reusable capabilities or namespaces, not as catch-all helper containers.
 
-## Choose deliberately
-Use a module for shared behavior, a coherent capability or namespacing. Use a class when the concept has identity, state or lifecycle.
+Use modules for coherent capabilities or namespacing while keeping method lookup understandable.
 
-## include, extend and prepend
-- include adds instance methods through the ancestor chain
-- extend adds behavior to the receiving object
-- prepend changes lookup order so the module can intercept/augment class methods
+## Activate when
 
-When using these features, inspect and test the resulting method lookup order.
+- behavior is shared by multiple classes
+- a namespace is needed
+- `include`, `extend`, or `prepend` appears
+- a module callback changes class behavior
+- inheritance is being considered as a code-reuse mechanism
 
-## Module cohesion
-A module should answer: what single concept is grouped here? If the answer contains multiple unrelated concepts, split it.
+## Repository inspection
 
-Avoid utility modules containing unrelated behavior.
+Inspect:
+
+- ancestor chains
+- existing modules
+- inclusion/extension callbacks
+- method visibility
+- tests around shared behavior
+- naming and namespace conventions
+
+Use a small reproduction when method lookup is unclear.
+
+## Module versus class
+
+Use a module for:
+
+- shared behavior
+- a coherent capability
+- namespacing
+
+Use a class when identity/state/lifecycle is central.
+
+Do not create a module that is merely a miscellaneous helper bucket.
+
+## include / extend / prepend
+
+- `include` contributes instance methods through the ancestor chain.
+- `extend` adds module methods to a receiving object.
+- `prepend` changes lookup order and can intercept or wrap behavior.
+
+When using these, reason explicitly about the resulting ancestor chain and super calls.
+
+## Cohesion
+
+A module should group one understandable concept.
+
+If you cannot explain the module in one sentence without "and also", reconsider the boundary.
+
+## Callbacks
+
+Inclusion/extension callbacks are powerful but implicit.
+
+Use them only when the callback contract is stable, tested, and clearer than explicit configuration.
 
 ## Namespaces
-Use namespaces to organize related constants and avoid collisions. Keep namespace depth proportional to the domain.
 
-## Callback caution
-Inclusion/extension callbacks introduce implicit behavior. Use them only when the integration contract is clear and tested.
+Keep namespace depth proportional to the domain. Avoid namespacing purely for ceremony.
 
-## Review procedure
-1. Identify the capability being reused.
-2. Determine whether it is shared behavior or domain state.
-3. Inspect existing ancestors.
-4. Choose include/extend/prepend intentionally.
-5. Add focused integration tests.
+## Shared behavior versus configuration
+
+Do not use a module when a collaborator object or dependency would make the behavior explicit and independently testable.
+
+## Anti-patterns
+
+- `Utils` or `Helpers` catch-alls
+- excessive mixin stacks
+- hidden callbacks
+- prepend without tests for lookup/order
+- modules that carry unrelated domain state
+- mixins used only to avoid writing a collaborator
+
+## Agent review checklist
+
+- [ ] module has one coherent purpose
+- [ ] class/module decision is explicit
+- [ ] ancestor chain is understood
+- [ ] include/extend/prepend choice is intentional
+- [ ] callback behavior is tested
+- [ ] composition was considered
+
+## Verification
+
+Test the consumer classes, method lookup, visibility, and `super` behavior where relevant. A focused ancestor-chain reproduction is appropriate for subtle lookup problems.
 
 ## Source foundation
-Based on modules, mixins, namespaces and prepend material in The Ruby Workshop, with cohesion guidance from Clean Ruby.
+
+Grounded in the modules, mixins, inheritance, encapsulation, and polymorphism material of *The Ruby Workshop*, combined with *Clean Ruby* guidance to split modules until the grouped concept is clear.

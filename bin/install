@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO="${RUBY_AGENT_SKILLS_REPO:-https://github.com/shubhamtaywade82/ruby-agent-skills.git}"
+REF="${RUBY_AGENT_SKILLS_REF:-main}"
+SCOPE="user"
+AGENT="agents"
+PROJECT_DIR="$(pwd)"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  bash bin/install [options]
+
+Options:
+  --scope user|project     Installation scope (default: user)
+  --agent agents|codex|claude|copilot
+                           Target agent layout (default: agents)
+  --project DIR            Project root for --scope project
+  --ref REF                Git branch, tag, or commit (default: main)
+  --help                   Show this help
+
+Examples:
+  bash bin/install --agent codex
+  bash bin/install --scope project --agent agents
+  bash bin/install --scope project --agent copilot --project /path/to/app
+  bash bin/install --ref v1.0.0 --agent claude
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --scope)
+      SCOPE="$2"; shift 2 ;;
+    --agent)
+      AGENT="$2"; shift 2 ;;
+    --project)
+      PROJECT_DIR="$2"; shift 2 ;;
+    --ref)
+      REF="$2"; shift 2 ;;
+    --help|-h)
+      usage; exit 0 ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      usage >&2
+      exit 1 ;;
+  esac
+done
+
+case "$SCOPE" in
+  user|project) ;;
+  *)
+    echo "Invalid --scope: $SCOPE" >&2
+    exit 1 ;;
+esac
+
+case "$AGENT" in
+  agents|codex|claude|copilot) ;;
+  *)
+    echo "Invalid --agent: $AGENT" >&2
+    exit 1 ;;
+esac
+
+if ! command -v git >/dev/null 2>&1; then
+  echo "git is required." >&2
+  exit 1
+fi
+
+case "$AGENT" in
+  agents|codex)
+    if [[ "$SCOPE" == "user" ]]; then
+      TARGET_ROOT="${HOME}/.agents/skills"
+    else
+      TARGET_ROOT="${PROJECT_DIR}/.agents/skills"
+    fi
+    ;;
+  claude)
+    if [[ "$SCOPE" == "user" ]]; then
+      TARGET_ROOT="${HOME}/.claude/skills"
+    else
+      TARGET_ROOT="${PROJECT_DIR}/.claude/skills"
+    fi
+    ;;
+  copilot)
+    if [[ "$SCOPE" == "user" ]]; then
+      TARGET_ROOT="${HOME}/.copilot/skills"
+    else
+      TARGET_ROOT="${PROJECT_DIR}/.github/skills"
+    fi
+    ;;
+esac
+
+TMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+echo "Installing Ruby Agent Skills from:"
+echo "  $REPO"
+echo "  ref: $REF"
+echo "  target: $TARGET_ROOT"
+echo
+echo "Review the repository/ref before installing untrusted skills."
+
+git clone --depth 1 --branch "$REF" "$REPO" "$TMP_DIR/repo" >/dev/null 2>&1 || {
+  echo "Unable to clone $REPO at ref $REF" >&2
+  exit 1
+}
+
+mkdir -p "$TARGET_ROOT"
+
+count=0
+for skill_dir in "$TMP_DIR/repo"/skills/*; do
+  [[ -d "$skill_dir" ]] || continue
+  [[ -f "$skill_dir/SKILL.md" ]] || continue
+
+  skill_name="$(basename "$skill_dir")"
+  rm -rf "$TARGET_ROOT/$skill_name"
+  cp -R "$skill_dir" "$TARGET_ROOT/$skill_name"
+  echo "installed $skill_name"
+  count=$((count + 1))
+done
+
+echo
+echo "Installed $count skills."

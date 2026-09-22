@@ -1,60 +1,143 @@
 ---
 name: ruby-clean-code
-description: Use globally for Ruby/Rails implementation and review when readability, extensibility, simplicity, naming, responsibility or maintainability matter.
+description: Use globally for Ruby/Rails implementation and review when readability, simplicity, changeability, naming, responsibility, boolean logic, or maintainability matter.
 ---
 
 # Ruby Clean Code
 
-## Primary quality model
-Good Ruby should be:
-1. readable
-2. easy to change
-3. straightforward
+## Purpose
 
-These qualities override cleverness.
+Optimize for code that is readable, easy to change, and straightforward without turning those qualities into rigid style rules.
+
+## Activate when
+
+Use for every non-trivial Ruby/Rails change and especially during review/refactoring.
+
+## Repository inspection
+
+Before judging code quality, inspect the surrounding implementation, tests, configuration, and repository conventions.
+
+## Primary quality model
+
+Ask:
+
+1. Can the next developer understand the intent quickly?
+2. Can the behavior be changed without unnecessary ripple effects?
+3. Is the implementation more complicated than the problem requires?
+
+These are decision criteria, not formatting rules.
 
 ## Naming
-Names should explain the role of the value or operation.
 
-Prefer names such as user_first_name, game_config, player_spawner and pay_bill over vague names such as data, info, manager, process or thing.
+A name should communicate role, intent, or domain meaning.
 
-Use Ruby naming conventions consistently with the codebase.
+Prefer names that answer "what is this?" or "what does this do?" rather than vague names such as `data`, `info`, `thing`, `process`, or unexplained `manager`.
+
+Naming should be consistent with the repository.
 
 ## Methods
-Check for single responsibility, useful names, reasonable parameter count, predictable returns, limited nesting and absence of redundant variables.
 
-Use guard clauses when they clarify preconditions.
+Review:
 
-## Classes and modules
-A class should have a clear purpose or role. A module should group a coherent capability or concept.
+- responsibility
+- parameters
+- return contract
+- guard clauses
+- nesting
+- boolean complexity
+- comments
+- duplication
 
-Beware of generic Manager or catch-all utility abstractions.
+Do not refactor solely to reduce line count.
 
-## Simplicity
-Before using metaprogramming, inheritance, complex patterns or framework abstractions, ask whether ordinary Ruby solves the problem more clearly.
+## Boolean logic
+
+For complex conditions, consider:
+
+- descriptive local variable
+- predicate method
+- guard clause
+- simpler composition
+
+Be especially cautious with double negatives, dense ternaries, and confusing operator precedence.
+
+## Classes/modules
+
+A class should have a clear role. A module should group a coherent capability or namespace.
+
+Avoid catch-all abstractions.
+
+When a Rails model accumulates unrelated domain roles, consider extracting the role into a focused object rather than repeatedly enlarging the model.
 
 ## Comments
-Keep comments that explain domain constraints, compatibility reasons, surprising external behavior or other information the code cannot communicate well.
 
-Delete comments that merely narrate obvious syntax.
+A useful comment explains:
 
-## Refactoring
-1. preserve behavior
-2. identify the smell
-3. make one coherent change
-4. run tests
-5. inspect the diff
-6. repeat
+- why
+- domain constraint
+- compatibility constraint
+- external behavior
+- intentional trade-off
 
-Do not mix unrelated style rewrites with functional changes.
+A poor comment repeats syntax.
 
-## Review questions
-- Can a new developer understand this quickly?
-- Do names communicate intent?
-- Is every abstraction justified?
-- Is responsibility focused?
-- Are branches and nesting understandable?
-- Are return contracts predictable?
+If code can communicate the reason clearly through naming/structure, prefer the code.
+
+## Simplicity / KISS
+
+Start with the simplest solution that satisfies the contract.
+
+Escalate to:
+
+- inheritance
+- metaprogramming
+- complex patterns
+- new dependencies
+- broad abstractions
+
+only when there is a concrete need.
+
+## Refactoring discipline
+
+```text
+characterize behavior
+  -> identify smell
+  -> one coherent change
+  -> test
+  -> inspect diff
+  -> repeat
+```
+
+Keep functional changes separate from opportunistic cleanup unless the cleanup is necessary for the feature.
+
+## Quality smells
+
+Investigate, rather than mechanically "fix":
+
+- god methods/classes
+- boolean flag methods with unrelated modes
+- unexplained duplication
+- generic abstractions
+- deep nesting
+- unstable APIs
+- model/controller bloat
+- comments compensating for poor structure
+
+## Agent review checklist
+
+- [ ] names reveal intent
+- [ ] responsibilities are focused
+- [ ] abstractions have a concrete purpose
+- [ ] boolean logic is readable
+- [ ] comments explain non-obvious constraints
+- [ ] refactor scope is controlled
+- [ ] repository conventions are respected
+- [ ] tests protect behavior
+
+## Verification
+
+Read the final diff as a reviewer. Run relevant tests and quality checks. Confirm that the refactor made the code easier to reason about without changing unrelated behavior.
 
 ## Source foundation
-Directly synthesized from the readability, extensibility, simplicity, naming, methods, classes/modules, boolean-logic and refactoring themes in Clean Ruby.
+
+This skill is directly synthesized from the three core qualities in *Clean Ruby*—readability, ease of change, and straightforwardness—and its guidance on naming, methods, boolean logic, classes, refactoring, and avoiding needless complexity. The practical Ruby syntax and Rails examples are cross-checked against *The Ruby Workshop*.

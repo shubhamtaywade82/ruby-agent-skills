@@ -1,0 +1,35 @@
+id: cache-key-boundary
+version: 1
+title: Preserve tenant isolation in a cache key
+category: performance
+source: performance-v1
+skills:
+  - rails-caching
+  - ruby-performance
+  - rails-performance
+  - rails-security
+patterns:
+  - cache-boundary
+  - cache-key-isolation
+prompt: |
+  Implement DashboardCache.key(tenant_id, dashboard_id) so cache entries cannot collide across tenants. Preserve the public API and add tests proving different tenants produce different keys while the same tenant/resource is stable.
+constraints:
+  required_design:
+    - tenant-aware cache key
+checks:
+  - functional
+  - tests
+  - contract
+  - performance
+cases:
+  - name: same-resource
+    input: [1, 9]
+    expected: stable
+  - name: different-tenant
+    input: [2, 9]
+    expected: different
+grading:
+  functional: same tenant/resource is stable and different tenants differ
+  tests: an executable test/spec is changed
+  contract: DashboardCache.key(tenant_id, dashboard_id) is preserved
+  performance: key generation is deterministic and does not perform database/network I/O

@@ -1,0 +1,63 @@
+id: active-model-contract
+version: 1
+title: Preserve Rails Active Model boundary, attribute, validation, conversion, and protocol contracts
+category: rails
+source: rails-active-model-v1
+skills:
+  - rails-active-model
+  - rails-validations
+  - rails-action-view
+  - rails-i18n
+  - rails-security
+patterns:
+  - active-model-boundary
+  - active-model-attributes-contract
+  - active-model-validation-contract
+  - active-model-dirty-lifecycle
+  - active-model-callback-boundary
+  - active-model-conversion-contract
+  - active-model-serialization-contract
+  - active-model-testing
+prompt: |
+  Implement a transient Rails model object for a multi-field signup form using Active Model. It must provide typed/default attributes, model validations and errors, Rails form/view conversion semantics, explicit serialization that excludes secrets, and deterministic tests including the Active Model protocol contract. It must not become an Active Record model or hide persistence/workflow behavior inside callbacks.
+constraints:
+  required_design:
+    - explicit Active Model versus Active Record boundary
+    - typed/default attributes
+    - model validation/error contract
+    - explicit conversion/naming semantics
+    - explicit serialization/privacy boundary
+    - Active Model lint/protocol tests
+    - deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: typed-attributes
+    input: string and blank inputs for typed/default fields
+    expected: values are cast/defaulted consistently and validation remains separate
+  - name: validation-errors
+    input: invalid signup data
+    expected: valid? is false and errors expose the expected model contract
+  - name: conversion
+    input: form/view integration
+    expected: to_model/model_name/form semantics are correct for a transient object
+  - name: serialization-privacy
+    input: object contains a secret field
+    expected: serialization exposes only intentional fields and excludes the secret
+  - name: boundary
+    input: object is used without persistence
+    expected: implementation remains Active Model/PORO rather than adding Active Record persistence
+  - name: callback-restraint
+    input: post-validation workflow is needed
+    expected: domain workflow is explicit rather than hidden in model callbacks
+  - name: lint-contract
+    input: Rails model protocol verification
+    expected: Active Model lint tests pass for required consumers
+grading:
+  functional: model behavior and Rails integration are correct
+  tests: attributes, validation, conversion, serialization, and protocol contracts are executable
+  contract: Active Model does not become a persistence or authorization boundary
+  scope_control: implementation uses the smallest model surface and no unnecessary Active Record dependency

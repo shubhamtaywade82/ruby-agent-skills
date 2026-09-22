@@ -1,0 +1,79 @@
+id: rails-routing-contract
+version: 1
+title: Preserve Rails route recognition, precedence, resource, scope, constraint, helper, and mounted-boundary contracts
+category: rails
+source: rails-routing-v2
+skills:
+  - rails-routing
+  - rails-action-controller
+  - rails-authentication
+  - rails-security
+  - rails-i18n
+  - rails-test-engineering
+  - rails-testing
+patterns:
+  - route-precedence-contract
+  - nested-route-boundary
+  - route-scope-namespace-contract
+  - route-constraint-contract
+  - route-helper-contract
+  - route-concern-contract
+  - direct-route-resolution
+  - mounted-endpoint-boundary
+  - catch-all-route-boundary
+  - route-testing
+prompt: |
+  Review and refactor a Rails route set for a multi-tenant application with public resources, admin resources, a nested project/member relationship, host-aware API routes, a localized storefront, a mounted integration endpoint, and a final frontend fallback. Preserve public helper contracts unless explicitly changed. Prevent a dynamic id route from shadowing a literal endpoint. Use shallow routing where member URLs do not need parent identity. Keep namespace, path, module, and helper dimensions explicit. Constrain host/subdomain/id/format routing without embedding authorization or database lookups into constraints. Review polymorphic/direct/object URL generation and verify route precedence around the mounted endpoint and catch-all. Keep authorization separate from routing. Add deterministic route-generation/recognition tests and request-level tests for important dispatch and negative cases.
+constraints:
+  required_design:
+    - route precedence is deliberate
+    - resource hierarchy is explicit
+    - nesting is justified or shallow
+    - scope and namespace dimensions are intentional
+    - constraints are cheap and non-authorizing
+    - helper contracts are preserved or intentionally migrated
+    - mounted boundary ownership is explicit
+    - catch-all behavior is bounded
+    - authorization remains separate from routing
+    - route behavior has deterministic tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: precedence
+    input: literal photos poll route beside resources photos
+    expected: the literal route wins and the generic member route still handles id requests
+  - name: nesting
+    input: project-scoped member routes
+    expected: collection context is nested while member routing is shallow when parent identity is not required
+  - name: scopes
+    input: admin path with Admin controller module and stable helpers
+    expected: path/module/helper dimensions match the intended contract
+  - name: constraints
+    input: id, subdomain, and JSON format constraints
+    expected: only intended requests recognize and constraints perform no business or authorization work
+  - name: helpers
+    input: persisted object and custom parameter routing
+    expected: path/url and object helpers generate intended stable URLs
+  - name: concerns
+    input: two resources sharing a route capability
+    expected: the concern expands only the intended route set without helper collisions
+  - name: direct-resolution
+    input: custom object-to-route mapping
+    expected: direct/resolve generation is deterministic and side-effect free
+  - name: mounted-endpoint
+    input: Rack or engine mount adjacent to application routes
+    expected: mount path, helper/proxy, precedence, and authorization boundary remain explicit
+  - name: catch-all
+    input: frontend fallback after application routes
+    expected: only unmatched intended requests fall through and sensitive endpoints are not swallowed
+  - name: testing
+    input: route change with recognition and generation requirements
+    expected: focused route assertions plus request-level verification cover the public contract
+grading:
+  functional: incoming requests recognize the intended route and generated URLs resolve to the intended public shape
+  tests: positive and negative routing behavior has deterministic executable coverage
+  contract: route/resource/helper/constraint boundaries are explicit
+  scope_control: routing remains a dispatch and URL-generation layer rather than authorization/business workflow

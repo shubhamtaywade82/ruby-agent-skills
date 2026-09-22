@@ -1,0 +1,64 @@
+id: action-view-contract
+version: 1
+title: Preserve Rails Action View rendering, output safety, local contract, localization, and performance boundaries
+category: rails
+source: rails-action-view-v1
+skills:
+  - rails-action-view
+  - rails-views
+  - rails-security
+  - rails-i18n
+  - rails-caching
+  - rails-performance
+patterns:
+  - action-view-partial-contract
+  - action-view-strict-locals
+  - action-view-output-safety
+  - action-view-layout-contract
+  - action-view-helper-boundary
+  - action-view-render-performance
+  - action-view-localized-template
+  - action-view-testing
+prompt: |
+  Implement an article presentation layer in Rails using Action View. The page should render a collection through an explicit partial contract, use strict locals where the partial interface is stable, preserve HTML escaping while safely sanitizing intentionally allowed content, use a deterministic layout, support a locale-specific template with canonical fallback, and avoid hidden queries or authorization logic in helpers. Add deterministic tests and do not depend on a live service.
+constraints:
+  required_design:
+    - explicit partial input contract
+    - justified strict locals
+    - server-side output safety
+    - presentation-only helpers/layouts
+    - explicit locale/fallback behavior
+    - evidence-driven render performance review
+    - deterministic rendering tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: partial-contract
+    input: article collection rendered through a reusable article partial
+    expected: partial receives explicit data and does not depend on hidden controller state
+  - name: strict-locals
+    input: partial declares required and default locals
+    expected: missing/unknown locals fail deterministically and valid callers render
+  - name: unsafe-output
+    input: user content contains HTML tags, event handlers, or unsafe URL protocols
+    expected: ordinary output remains escaped and intentionally allowed HTML is sanitized
+  - name: helper-boundary
+    input: a view needs formatted presentation data
+    expected: helper performs presentation work without domain mutation, external calls, or authorization ownership
+  - name: localized-view
+    input: supported locale has a localized template and unsupported locale does not
+    expected: localized template is selected for the supported locale and canonical fallback remains available
+  - name: layout
+    input: controllers use the application and alternate layouts
+    expected: layout selection is deterministic and not derived from user-controlled paths
+  - name: render-performance
+    input: a large collection renders repeated partials
+    expected: the implementation identifies query/render work separately and avoids claiming improvement without evidence
+grading:
+  functional: templates, locals, layout, helpers, escaping, and locale behavior are correct
+  tests: rendering, security, local-contract, and fallback behavior are executable
+  contract: presentation logic remains separate from domain authorization and persistence
+  scope_control: ordinary tests use deterministic local data and do not introduce unnecessary rendering abstractions

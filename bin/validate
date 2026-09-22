@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+ruby "$ROOT/scripts/validate_skills.rb"
+ruby "$ROOT/scripts/validate_patterns.rb"
+ruby "$ROOT/scripts/validate_evals.rb"
+ruby "$ROOT/scripts/audit_skill_routing.rb"
+ruby "$ROOT/scripts/audit_ci_toolchain.rb"
+ruby "$ROOT/scripts/audit_repository_completeness.rb"
+ruby "$ROOT/scripts/audit_benchmark_quality.rb"
+ruby "$ROOT/scripts/audit_release_readiness.rb"
+ruby -I"$ROOT/test" "$ROOT/test/runtime_profile_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/security_audit_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/zeitwerk_check_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/observability_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/database_engineering_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/production_runtime_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/test_engineering_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_performance_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_api_integration_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_distributed_systems_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_event_driven_messaging_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_reliability_engineering_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_security_engineering_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_incident_engineering_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_release_engineering_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_caching_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_action_mailer_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_active_storage_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_action_cable_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_i18n_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_action_text_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_action_mailbox_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_action_view_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_active_model_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_active_support_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_action_controller_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_active_record_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_associations_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_validations_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_rack_middleware_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_initialization_configuration_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_engines_railties_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_encryption_credentials_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_serialization_globalid_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_operational_tasks_maintenance_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_cross_boundary_authorization_security_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_staff_principal_architecture_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_asset_build_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_authentication_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_authorization_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_hotwire_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_routing_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/repository_completeness_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/skill_routing_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_evaluation_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_campaign_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_remediation_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_experiment_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_evidence_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_evidence_verifier_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_evidence_archive_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/ci_toolchain_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/benchmark_quality_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/release_readiness_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_benchmark_campaign_system_test.rb"

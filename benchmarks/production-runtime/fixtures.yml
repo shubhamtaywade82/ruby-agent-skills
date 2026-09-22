@@ -1,0 +1,23 @@
+version: 1
+source: rails-production-runtime-v1
+fixtures:
+  puma-capacity:
+    root: benchmarks/production-runtime/fixtures/puma-capacity
+    implementation_files:
+      - config/puma.rb
+  graceful-shutdown:
+    root: benchmarks/production-runtime/fixtures/graceful-shutdown
+    implementation_files:
+      - bin/entrypoint
+  zero-downtime-release:
+    root: benchmarks/production-runtime/fixtures/zero-downtime-release
+    implementation_files:
+      - docs/release.md
+  config-contract:
+    root: benchmarks/production-runtime/fixtures/config-contract
+    implementation_files:
+      - config/production.rb
+  migration-gate:
+    root: benchmarks/production-runtime/fixtures/migration-gate
+    implementation_files:
+      - docs/release-migrations.md

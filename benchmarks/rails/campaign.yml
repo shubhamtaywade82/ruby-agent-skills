@@ -1,0 +1,46 @@
+id: rails-framework-public-v2
+version: 3
+evaluation_set: rails
+source: rails-framework-v3
+fixture_root: benchmarks/rails/fixtures
+verifier: scripts/verify_rails_eval.rb
+evaluations:
+  - action-cable-contract
+  - action-controller-contract
+  - action-mailbox-contract
+  - action-mailer-contract
+  - action-text-contract
+  - action-view-contract
+  - active-model-contract
+  - active-record-contract
+  - active-storage-contract
+  - active-support-contract
+  - rails-asset-build-contract
+  - associations-contract
+  - authentication-contract
+  - authorization-contract
+  - rails-cross-boundary-authorization-security-contract
+  - rails-encryption-credentials-contract
+  - rails-engines-railties-contract
+  - hotwire-contract
+  - i18n-contract
+  - rails-initialization-configuration-contract
+  - rails-operational-tasks-maintenance-contract
+  - rails-rack-middleware-contract
+  - rails-repository-completeness-contract
+  - rails-routing-contract
+  - rails-serialization-globalid-contract
+  - rails-staff-principal-architecture-contract
+  - validations-contract
+execution:
+  repetitions: 3
+  paired: true
+  fresh_workspace_per_run: true
+  same_fixture_for_pair: true
+  require_same_agent_command_when_using_agent_command: true
+controls:
+  runtime:
+    ruby: "3.3"
+  hidden_cases: external-only
+  require_complete_repetitions: true
+  require_all_public_evaluations: true

@@ -1,0 +1,116 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "open3"
+require "optparse"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+
+options = { output: nil, allow_dirty: false }
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-evidence EXPERIMENT_DIR [options]"
+  opts.on("--output PATH", "Write evidence JSON to PATH") { |value| options[:output] = File.expand_path(value) }
+  opts.on("--allow-dirty", "Allow packaging evidence from a dirty Git worktree") { options[:allow_dirty] = true }
+end.parse!
+
+experiment_dir = File.expand_path(ARGV.fetch(0) { abort "experiment directory is required" })
+baseline_path = File.join(experiment_dir, "baseline.json")
+candidate_path = File.join(experiment_dir, "candidate.json")
+comparison_path = File.join(experiment_dir, "comparison.json")
+
+[baseline_path, candidate_path, comparison_path].each do |path|
+  abort "missing experiment artifact: #{path}" unless File.file?(path)
+end
+
+baseline = JSON.parse(File.read(baseline_path, encoding: "UTF-8"))
+candidate = JSON.parse(File.read(candidate_path, encoding: "UTF-8"))
+comparison = JSON.parse(File.read(comparison_path, encoding: "UTF-8"))
+
+def sha256(path)
+  Digest::SHA256.file(path).hexdigest
+end
+
+def contract_metadata(campaign)
+  path = campaign.fetch("routing_contract")
+  {
+    "path" => path,
+    "sha256" => sha256(path),
+    "bytes" => File.size(path)
+  }
+end
+
+git_sha_stdout, git_sha_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_sha_status.success?
+git_branch_stdout, git_branch_status = Open3.capture2("git", "-C", ROOT, "branch", "--show-current")
+git_branch = git_branch_status.success? ? git_branch_stdout.strip : ""
+git_branch = ENV["GITHUB_HEAD_REF"].to_s.strip if git_branch.empty?
+git_branch = ENV["GITHUB_REF_NAME"].to_s.strip if git_branch.empty?
+git_branch = "detached" if git_branch.empty?
+git_status_stdout, git_status_status = Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all")
+abort "unable to inspect repository worktree" unless git_status_status.success?
+worktree_entries = git_status_stdout.lines.map(&:strip).reject(&:empty?)
+worktree_clean = worktree_entries.empty?
+abort "repository worktree is dirty; use --allow-dirty only when intentionally capturing non-clean evidence" unless worktree_clean || options[:allow_dirty]
+manifest_path = File.join(ROOT, "skill-manifest.yml")
+campaign_manifest_path = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
+result_schema_path = File.join(ROOT, "docs", "ROUTING_EVAL_RESULT_SCHEMA.md")
+remediation_policy_path = File.join(ROOT, "router", "ROUTING_REMEDIATION.yml")
+evidence_schema_path = File.join(ROOT, "docs", "ROUTING_EVIDENCE_SCHEMA.md")
+
+evidence = {
+  "protocol_version" => 1,
+  "evidence" => "skill-routing-experiment-v1",
+  "campaign" => baseline.fetch("campaign"),
+  "campaign_version" => baseline.fetch("campaign_version"),
+  "routing_case_count" => baseline.fetch("routing_case_count"),
+  "requested_repetitions" => baseline.fetch("requested_repetitions"),
+  "repository" => {
+    "git_sha" => git_sha_stdout.strip,
+    "git_branch" => git_branch,
+    "git_status" => worktree_clean ? "clean" : "dirty-allowed",
+    "worktree_clean" => worktree_clean,
+    "status_entries" => worktree_entries
+  },
+  "agent" => baseline.fetch("agent"),
+  "compatibility" => {
+    "same_agent_configuration" => baseline.fetch("agent") == candidate.fetch("agent"),
+    "same_campaign" => baseline.fetch("campaign") == candidate.fetch("campaign"),
+    "same_campaign_version" => baseline.fetch("campaign_version") == candidate.fetch("campaign_version"),
+    "same_routing_case_count" => baseline.fetch("routing_case_count") == candidate.fetch("routing_case_count"),
+    "same_repetition_count" => baseline.fetch("requested_repetitions") == candidate.fetch("requested_repetitions")
+  },
+  "artifacts" => {
+    "baseline" => {"path" => baseline_path, "sha256" => sha256(baseline_path)},
+    "candidate" => {"path" => candidate_path, "sha256" => sha256(candidate_path)},
+    "comparison" => {"path" => comparison_path, "sha256" => sha256(comparison_path)},
+    "baseline_routing_contract" => contract_metadata(baseline),
+    "candidate_routing_contract" => contract_metadata(candidate),
+    "skill_manifest" => {"path" => manifest_path, "sha256" => sha256(manifest_path)},
+    "campaign_manifest" => {"path" => campaign_manifest_path, "sha256" => sha256(campaign_manifest_path)},
+    "result_schema" => {"path" => result_schema_path, "sha256" => sha256(result_schema_path)},
+    "remediation_policy" => {"path" => remediation_policy_path, "sha256" => sha256(remediation_policy_path)},
+    "evidence_schema" => {"path" => evidence_schema_path, "sha256" => sha256(evidence_schema_path)}
+  },
+  "metrics" => {
+    "baseline" => baseline.fetch("metrics"),
+    "candidate" => candidate.fetch("metrics"),
+    "comparison" => comparison.fetch("deltas")
+  },
+  "gate" => comparison.fetch("gate"),
+  "replay" => {
+    "campaign_runner" => "bin/routing-experiment",
+    "comparator" => "bin/routing-compare",
+    "command" => "ruby bin/routing-experiment --command '<same-agent-command>' --baseline-router '<baseline-router>' --candidate-router '<candidate-router>'"
+  }
+}
+
+abort "baseline/candidate compatibility mismatch" unless evidence.fetch("compatibility").values.all?
+if options[:output]
+  File.write(options[:output], JSON.pretty_generate(evidence) + "\n", encoding: "UTF-8")
+end
+
+puts JSON.pretty_generate(evidence)

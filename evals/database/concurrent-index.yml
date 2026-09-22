@@ -1,0 +1,29 @@
+id: concurrent-index
+version: 1
+title: Add a production-safe PostgreSQL index
+category: rails
+source: rails-database-engineering-v1
+skills:
+  - rails-database-engineering
+patterns:
+  - production-index
+prompt: |
+  Add an index for a high-write orders table in PostgreSQL. The index must be created using a production-safe concurrent strategy and the migration must account for the fact that concurrent index creation cannot run inside a transaction block.
+constraints:
+  required_design:
+    - concurrent index creation
+    - migration transaction handling
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: concurrent
+    input: large high-write orders table
+    expected: concurrent index strategy
+grading:
+  functional: migration uses concurrent index creation
+  tests: migration behavior is covered or statically verified
+  contract: migration transaction behavior is compatible with concurrent DDL
+  scope_control: no unrelated schema changes

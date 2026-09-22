@@ -1,0 +1,29 @@
+id: puma-capacity
+version: 1
+title: Configure Puma capacity from runtime constraints
+category: rails
+source: rails-production-runtime-v1
+skills:
+  - rails-release-engineering
+  - rails-production-runtime
+  - ruby-performance
+patterns:
+  - puma-capacity
+prompt: |
+  Review a Puma configuration for a production server with 4 CPU cores, 4 GB memory, a database pool of 12 connections, and 2 background worker processes. Adjust worker/thread settings so aggregate web concurrency is consistent with the resource budget. Preserve the existing port and preload policy.
+constraints:
+  required_design:
+    - capacity-based worker/thread choice
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: capacity
+    input: 4 cores, 4GB, DB pool 12, 2 job processes
+    expected: worker/thread settings account for aggregate concurrency
+grading:
+  functional: settings remain internally consistent
+  tests: capacity contract is validated
+  contract: port/preload behavior is preserved

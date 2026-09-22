@@ -1,0 +1,28 @@
+id: database-constraint
+version: 1
+title: Enforce a uniqueness invariant at the database boundary
+category: rails
+source: rails-database-engineering-v1
+skills:
+  - rails-database-engineering
+patterns:
+  - database-constraint
+prompt: |
+  Ensure that two orders cannot share the same tenant_id and external_reference. Keep application validation for friendly errors, but make the invariant race-safe at the database boundary.
+constraints:
+  required_design:
+    - unique database constraint
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: duplicate
+    input: same tenant_id and external_reference
+    expected: database rejects duplicate
+grading:
+  functional: durable unique constraint exists
+  tests: duplicate behavior is tested
+  contract: application validation remains compatible
+  scope_control: no unrelated model redesign

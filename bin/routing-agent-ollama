@@ -1,0 +1,101 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "net/http"
+require "uri"
+require "yaml"
+
+prompt_file = ENV.fetch("RUBY_AGENT_ROUTING_PROMPT_FILE")
+result_file = ENV.fetch("RUBY_AGENT_ROUTING_RESULT_FILE")
+manifest_file = ENV.fetch("RUBY_AGENT_ROUTING_MANIFEST_FILE")
+router_file = ENV.fetch("RUBY_AGENT_ROUTING_ROUTER_FILE")
+case_id = ENV.fetch("RUBY_AGENT_ROUTING_CASE_ID")
+protocol_version = ENV.fetch("RUBY_AGENT_ROUTING_PROTOCOL_VERSION", "1")
+ollama_url = ENV.fetch("OLLAMA_URL", "http://127.0.0.1:11434")
+model = ENV.fetch("OLLAMA_MODEL")
+
+prompt = File.read(prompt_file, encoding: "UTF-8")
+router = File.read(router_file, encoding: "UTF-8")
+manifest = YAML.safe_load(
+  File.read(manifest_file, encoding: "UTF-8"),
+  permitted_classes: [],
+  aliases: false
+)
+skills = manifest.fetch("skills").keys
+
+system_prompt = <<~SYSTEM
+  You are the skill-routing agent for a Ruby/Rails engineering repository.
+
+  Route the supplied engineering task to the smallest set of applicable skills.
+
+  Rules:
+  1. Select exactly one primary_skill: the skill that owns the dominant engineering boundary.
+  2. Select secondary_skills only for real dependent constraints or execution boundaries.
+  3. Do not create skill names; every skill must come from the supplied registry.
+  4. Do not treat keyword overlap as proof of ownership.
+  5. Keep authentication, authorization, security analysis, persistence, and execution-boundary ownership distinct.
+  6. Return JSON only with:
+     {
+       "primary_skill": "registered-skill",
+       "secondary_skills": ["registered-skill"],
+       "reason": "brief ownership rationale"
+     }
+
+  The routing corpus's expected answer is intentionally not provided to you. Make the routing decision from the task and the routing contract.
+
+  Registered skills:
+  #{skills.join(", ")}
+
+  Routing contract:
+  #{router}
+SYSTEM
+
+payload = {
+  "model" => model,
+  "messages" => [
+    {"role" => "system", "content" => system_prompt},
+    {"role" => "user", "content" => prompt}
+  ],
+  "format" => "json",
+  "stream" => false,
+  "think" => false,
+  "options" => {"temperature" => 0}
+}
+
+uri = URI.join(ollama_url.end_with?("/") ? ollama_url : "#{ollama_url}/", "api/chat")
+request = Net::HTTP::Post.new(uri)
+request["Content-Type"] = "application/json"
+request.body = JSON.generate(payload)
+
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = uri.scheme == "https"
+response = http.request(request)
+
+abort "Ollama request failed: #{response.code} #{response.message}: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+
+body = JSON.parse(response.body)
+content = body.fetch("message").fetch("content")
+agent_result = JSON.parse(content)
+
+primary = agent_result.fetch("primary_skill").to_s
+secondary = Array(agent_result.fetch("secondary_skills")).map(&:to_s).uniq
+reason = agent_result["reason"].to_s
+
+abort "primary_skill must be registered" unless skills.include?(primary)
+abort "secondary_skills contains unknown skill" unless (secondary - skills).empty?
+abort "secondary_skills contains primary_skill" if secondary.include?(primary)
+
+normalized = {
+  "protocol_version" => protocol_version.to_i,
+  "case_id" => case_id,
+  "primary_skill" => primary,
+  "secondary_skills" => secondary,
+  "reason" => reason,
+  "metadata" => {
+    "provider" => "ollama",
+    "model" => model
+  }
+}
+
+File.write(result_file, JSON.pretty_generate(normalized) + "\n", encoding: "UTF-8")

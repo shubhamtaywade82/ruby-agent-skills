@@ -1,32 +1,117 @@
 ---
 name: rails-architecture
-description: Use when implementing Rails features involving controllers, routes, REST endpoints, MVC boundaries, views or application structure.
+description: Use when implementing or reviewing Rails application structure, MVC boundaries, resource flows, REST behavior, or cross-layer feature changes.
 ---
 
 # Rails Architecture
 
-## Inspect first
-Inspect routes, controller, models, services/queries/policies, serializers/views, tests, authentication/authorization conventions and database structure before changing a feature.
+## Purpose
 
-Do not invent a new pattern if the application already has an established one.
+Map a Rails feature to the repository's existing request, domain, persistence, presentation, and integration boundaries.
+
+## Activate when
+
+- a feature crosses routes/controllers/models/views/services
+- a new Rails resource is introduced
+- an existing endpoint grows in scope
+- application boundaries are unclear
+- architecture is being refactored
+
+## Boundary with focused Rails skills
+
+Use this skill for cross-layer ownership and request-flow decisions. Delegate detailed route decisions to `rails-routing`, controller boundary decisions to `rails-controllers`, persistence decisions to `rails-activerecord`, and HTTP contract testing to `rails-testing`. Do not duplicate detailed guidance from those skills.
+
+## Repository inspection
+
+
+
+Read the smallest useful slice of the repository:
+
+```text
+routes
+  -> controller
+  -> authorization/authentication
+  -> domain/service/query
+  -> model/database
+  -> serializer/view
+  -> tests
+```
+
+Also inspect:
+
+- Gemfile/lockfile
+- schema/migrations
+- CI
+- existing conventions
+- background jobs/external services when involved
 
 ## MVC responsibilities
-Controllers receive requests, coordinate application behavior and return responses. Avoid substantial business rules in controllers.
 
-Domain behavior belongs with the domain concept when it is naturally expressed there. A service is useful for workflows spanning multiple concepts or external boundaries.
+Rails' MVC model separates request handling, presentation, and persistence/domain behavior.
 
-Presentation concerns stay in views/serializers.
+A controller should coordinate the request, not become a second domain layer.
 
-## REST
-Prefer conventional resource routes/actions when they express the behavior accurately.
+Views should present.
 
-## Change procedure
-1. identify the request/resource flow
-2. inspect project conventions
-3. choose responsibility boundaries
-4. implement the smallest coherent change
-5. add appropriate tests
-6. verify authorization and validation behavior
+Persistence models should represent persistence and domain behavior that naturally belongs there.
+
+Services/domain objects/query objects should be introduced when the workflow or query responsibility is genuinely separate from the existing object.
+
+## Thin controller / model responsibility
+
+The source material describes the traditional "thin controller, richer model" Rails style. Preserve the intent—controllers should not contain substantial business logic—but do not interpret "fat model" as permission to turn Active Record models into catch-alls.
+
+Repository conventions decide whether domain behavior belongs in models, services, form objects, policies, commands, or other boundaries.
+
+## REST/resource design
+
+Prefer conventional resources when they accurately represent the operation.
+
+Use custom actions when standard resource semantics do not fit, and keep them explicit.
+
+## Cross-layer procedure
+
+1. trace the current request flow
+2. identify the required behavior contract
+3. identify the owner of each responsibility
+4. reuse existing boundaries
+5. implement the smallest coherent change
+6. update focused tests
+7. verify authorization, validation, persistence, and response behavior
+
+## Architectural anti-patterns
+
+- fat controllers
+- Active Record models used as universal service objects
+- duplicated business rules across controller/model/view
+- introducing a service for a trivial single-object operation
+- inventing a new layer when the repository has no need for it
+- mixing unrelated refactors into a feature
+
+## Agent review checklist
+
+- [ ] request flow understood
+- [ ] boundary ownership explicit
+- [ ] existing conventions reused
+- [ ] controller remains orchestration-focused
+- [ ] persistence concerns are not duplicated
+- [ ] cross-layer tests exist where the contract crosses layers
+- [ ] architecture change is justified by actual complexity
+
+## Verification
+
+Trace the final feature end-to-end and run the appropriate request/model/system tests. Inspect the diff for responsibility leakage and accidental architectural expansion.
 
 ## Source foundation
-Uses MVC, Rails application anatomy, CRUD and REST foundations from The Ruby Workshop. Modern separation should follow the actual codebase rather than a rigid doctrine.
+
+Grounded in the MVC, Rails application anatomy, REST/CRUD, and Rails philosophy material in *The Ruby Workshop*, including DRY and convention-over-configuration. The boundary discipline is strengthened using *Clean Ruby*'s responsibility and refactoring guidance.
+
+## Book integration: request lifecycle
+
+For a cross-layer change, reason through the complete path:
+
+route -> authentication -> authorization -> params -> application/domain operation -> persistence -> representation -> HTTP response.
+
+REST resources should use conventional resource routes when the semantics fit. Custom actions are justified by actual domain operations, not by controller convenience.
+
+The traditional thin-controller/richer-domain guidance is useful, but do not turn Active Record models into universal workflow containers. Existing repository boundaries still decide where behavior belongs.

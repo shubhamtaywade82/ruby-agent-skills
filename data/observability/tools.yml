@@ -1,0 +1,24 @@
+version: 1
+source:
+  error_reporting: https://guides.rubyonrails.org/error_reporting.html
+  instrumentation: https://guides.rubyonrails.org/active_support_instrumentation.html
+  controller: https://guides.rubyonrails.org/action_controller_overview.html
+  configuring: https://guides.rubyonrails.org/configuring.html
+tools:
+  rails-test:
+    category: request_testing
+    command: bin/rails test
+    application_only: true
+  rails-routes:
+    category: request_inspection
+    command: bin/rails routes
+    application_only: true
+  rails-runner:
+    category: runtime_inspection
+    command: bundle exec rails runner
+    application_only: true
+selection:
+  rules:
+    - "Use repository request/test conventions."
+    - "Resolve Rails version before relying on version-specific controller or health behavior."
+    - "Do not treat logs as proof without correlating request and error context."

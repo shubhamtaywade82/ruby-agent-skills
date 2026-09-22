@@ -1,0 +1,47 @@
+id: recursive-selection-sort
+version: 1
+title: Recursive selection sort
+category: ruby-training
+source: allerin-ruby-set-2
+skills:
+  - ruby-collections
+  - ruby-method-design
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Implement recursive selection sort in Ruby. The implementation must sort
+  the supplied array correctly and express the selection-sort process through
+  recursion rather than merely delegating to a built-in sorting method.
+constraints:
+  time_complexity: O(n^2)
+  required_algorithm:
+    - select the minimum element for the current position
+    - recursively process the remaining suffix
+  required_design:
+    - object-oriented design
+checks:
+  - functional
+  - complexity
+  - oop
+  - tests
+  - edge_cases
+cases:
+  - name: unsorted
+    input: [64, 25, 12, 22, 11]
+    expected: [11, 12, 22, 25, 64]
+  - name: duplicates
+    input: [3, 1, 3, 2, 1]
+    expected: [1, 1, 2, 3, 3]
+  - name: singleton
+    input: [7]
+    expected: [7]
+  - name: empty
+    input: []
+    expected: []
+grading:
+  functional: recursive implementation produces correct ordering.
+  complexity: follows recursive selection sort with O(n^2) comparisons.
+  oop: algorithm responsibility is encapsulated cleanly.
+  tests: covers duplicates, singleton and empty input.
+  scope: no unrelated changes.

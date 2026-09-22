@@ -1,0 +1,48 @@
+id: majority-element
+version: 1
+title: Majority element
+category: ruby-training
+source: allerin-ruby-set-2
+skills:
+  - ruby-collections
+  - ruby-method-design
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Find the majority element in an array. A majority element appears more
+  than n/2 times. Return -1 when no majority element exists.
+constraints:
+  time_complexity: O(n)
+  auxiliary_space: O(1)
+  required_design:
+    - object-oriented design
+checks:
+  - functional
+  - complexity
+  - auxiliary_space
+  - oop
+  - tests
+  - edge_cases
+cases:
+  - name: source-no-majority
+    input: [2, 2, 3, 5, 2, 3]
+    expected: -1
+  - name: source-majority
+    input: [2, 2, 3, 5, 2, 3, 2, 2]
+    expected: 2
+  - name: single-element
+    input: [7]
+    expected: 7
+  - name: exact-half
+    input: [1, 1, 2, 2]
+    expected: -1
+  - name: empty
+    input: []
+    expected: -1
+grading:
+  functional: returns a true majority or -1.
+  complexity: remains linear in the number of elements.
+  auxiliary_space: uses constant auxiliary storage.
+  oop: encapsulates the algorithm without unnecessary global state.
+  tests: covers majority, no majority, exact-half, singleton and empty input.

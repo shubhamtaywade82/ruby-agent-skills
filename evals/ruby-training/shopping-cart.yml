@@ -1,0 +1,110 @@
+id: shopping-cart
+version: 1
+title: Shopping cart domain
+category: ruby-training
+source: allerin-ruby-set-2
+skills:
+  - ruby-oop
+  - ruby-data-types
+  - ruby-collections
+  - ruby-method-design
+  - ruby-tdd-refactoring
+patterns:
+  - service-object
+prompt: |
+  Build a shopping-cart program with these behaviors:
+  1. Add products to a mall inventory.
+  2. Add an available product to the shopping cart.
+  3. Remove a product from the shopping cart.
+  4. Show cart details including quantity, price per piece, line price and total.
+  Inventory limits must be respected.
+constraints:
+  required_design:
+    - object-oriented design
+  domain_rules:
+    - cannot add a product that is not in mall inventory
+    - cannot add more than available inventory
+    - cannot remove more than cart quantity
+checks:
+  - functional
+  - contract
+  - oop
+  - tests
+  - edge_cases
+cases:
+  - name: add-within-inventory
+    input:
+      inventory:
+        - name: Fruity
+          price: 12
+          quantity: 2
+      add_to_cart:
+        - name: Fruity
+          quantity: 2
+    expected:
+      cart:
+        - name: Fruity
+          quantity: 2
+          price: 12
+          line_total: 24
+      total: 24
+  - name: unavailable-product
+    input:
+      inventory:
+        - name: Fruity
+          price: 12
+          quantity: 2
+      add_to_cart:
+        - name: Slice
+          quantity: 1
+    expected:
+      error: product_not_available
+  - name: inventory-limit
+    input:
+      inventory:
+        - name: Fruity
+          price: 12
+          quantity: 2
+      add_to_cart:
+        - name: Fruity
+          quantity: 3
+    expected:
+      error: insufficient_inventory
+  - name: remove-from-cart
+    input:
+      inventory:
+        - name: Fruity
+          price: 12
+          quantity: 2
+      add_to_cart:
+        - name: Fruity
+          quantity: 2
+      remove_from_cart:
+        - name: Fruity
+          quantity: 1
+    expected:
+      cart:
+        - name: Fruity
+          quantity: 1
+          price: 12
+          line_total: 12
+      total: 12
+  - name: remove-too-much
+    input:
+      inventory:
+        - name: Fruity
+          price: 12
+          quantity: 2
+      add_to_cart:
+        - name: Fruity
+          quantity: 1
+      remove_from_cart:
+        - name: Fruity
+          quantity: 2
+    expected:
+      error: insufficient_cart_quantity
+grading:
+  functional: all domain rules and totals are correct.
+  oop: state and responsibilities are represented with cohesive objects rather than one procedural controller.
+  tests: inventory, unavailable products, add/remove limits and totals are tested.
+  scope: CLI presentation is not required unless the implementation chooses it; domain behavior must remain testable.

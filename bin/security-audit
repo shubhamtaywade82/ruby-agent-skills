@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "open3"
+
+root = File.expand_path(ARGV.fetch(0, Dir.pwd))
+abort "repository path does not exist: #{root}" unless File.directory?(root)
+
+def run_command(command, args, root)
+  stdout, stderr, status = Open3.capture3(command, *args, chdir: root)
+  {
+    "status" => status.success? ? "pass" : "fail",
+    "exit_code" => status.exitstatus,
+    "stdout" => stdout,
+    "stderr" => stderr
+  }
+rescue Errno::ENOENT
+  {
+    "status" => "skipped",
+    "reason" => "#{command} is not installed"
+  }
+end
+
+def bundled_command(root, executable)
+  File.file?(File.join(root, "Gemfile")) ? ["bundle", ["exec", executable]] : [executable, []]
+end
+
+results = {}
+
+brakeman_command, brakeman_args = bundled_command(root, "brakeman")
+results["brakeman"] = run_command(brakeman_command, brakeman_args, root)
+
+audit_command, audit_args = bundled_command(root, "bundler-audit")
+audit_args += ["check"]
+results["bundler-audit"] = run_command(audit_command, audit_args, root)
+
+results["summary"] = {
+  "pass" => results.values.count { |value| value.is_a?(Hash) && value["status"] == "pass" },
+  "fail" => results.values.count { |value| value.is_a?(Hash) && value["status"] == "fail" },
+  "skipped" => results.values.count { |value| value.is_a?(Hash) && value["status"] == "skipped" }
+}
+
+puts JSON.pretty_generate(
+  {
+    "schema_version" => 1,
+    "repository" => root,
+    "checks" => results
+  }
+)
+
+exit 1 if results.values.any? { |value| value.is_a?(Hash) && value["status"] == "fail" }

@@ -1,0 +1,32 @@
+id: poro-extraction
+version: 1
+title: Extract behavior into a focused PORO
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-poro
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns:
+  []
+prompt: |
+  Extract pricing behavior into a plain Ruby PriceCalculator object. It must accept a base price and tax rate, expose total, and remain independent of Rails and persistence. Keep the public API small.
+constraints:
+  required_design:
+    - plain Ruby object boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: required public API and implementation boundary are present
+  pattern_selection: required design evidence is present and forbidden competing abstractions are absent
+  scope_control: changes remain inside the disposable fixture

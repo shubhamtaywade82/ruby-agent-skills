@@ -1,0 +1,28 @@
+id: concurrency-counter
+version: 1
+title: Thread-safe counter
+category: concurrency
+source: concurrency-v1
+skills:
+  - ruby-concurrency
+patterns:
+  - bounded-concurrency
+prompt: |
+  Implement a thread-safe counter that can be incremented concurrently.
+constraints:
+  required_design:
+    - synchronize shared mutable state
+  forbidden:
+    - sleep-based synchronization
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: increments
+    input: 1000
+    expected: 1000
+grading:
+  functional: required
+  tests: required
+  contract: required

@@ -1,0 +1,32 @@
+id: expand-contract
+version: 1
+title: Evolve a production schema across rolling deployments
+category: rails
+source: rails-database-engineering-v1
+skills:
+  - rails-database-engineering
+patterns:
+  - expand-contract-migration
+prompt: |
+  Add a new customer display_name field while old application processes may still read the existing name field. Use a production-safe expand/backfill/cutover/contract plan instead of a breaking migration.
+constraints:
+  required_design:
+    - rolling-deployment compatibility
+    - expand-contract migration
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: compatible-expand
+    input: old and new app versions overlap
+    expected: old schema remains usable during expand
+  - name: contract-later
+    input: cutover complete
+    expected: destructive removal happens separately
+grading:
+  functional: implementation remains compatible during rollout
+  tests: intermediate behavior is covered
+  contract: old field contract is not broken during expansion
+  scope_control: migration sequence stays focused

@@ -1,0 +1,26 @@
+id: path-constant-contract
+version: 1
+title: Preserve Zeitwerk path-to-constant contract
+category: rails
+source: zeitwerk-v1
+skills:
+  - rails-zeitwerk
+patterns:
+  - zeitwerk-structure-review
+prompt: |
+  Implement the Payments::Processor class under app/services/payments/processor.rb so that it follows the Zeitwerk file-to-constant contract. Preserve the requested public API and add a test that exercises the constant.
+constraints:
+  required_design:
+    - path-to-constant contract
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: constant-loads
+    input: Payments::Processor
+    expected: loadable
+grading:
+  functional: the expected constant is defined by the file path
+  tests: an executable test/spec is changed
+  contract: Payments::Processor remains the public constant

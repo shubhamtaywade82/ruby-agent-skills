@@ -1,0 +1,33 @@
+id: repository-boundary
+version: 1
+title: Use a Repository for a complex persistence boundary
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-domain-modeling
+  - ruby-poro
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - repository
+prompt: |
+  Implement OrderRepository as the persistence boundary for finding and saving orders in the supplied in-memory store. Domain code should depend on OrderRepository rather than the store's internal hash.
+constraints:
+  required_design:
+    - repository
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: repository find/save API is present
+  pattern_selection: repository boundary is explicit and Active Record leakage is absent
+  scope_control: changes remain inside the disposable fixture

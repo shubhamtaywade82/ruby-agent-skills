@@ -1,0 +1,28 @@
+id: migration-gate
+version: 1
+title: Gate release on migration compatibility
+category: rails
+source: rails-production-runtime-v1
+skills:
+  - rails-release-engineering
+  - rails-production-runtime
+  - rails-database-engineering
+patterns:
+  - release-migration-gate
+prompt: |
+  A deployment contains a destructive migration that cannot be safely rolled back. Change the release process so readiness is checked only after the compatible migration/application sequence, and document that application rollback is not equivalent to database rollback.
+constraints:
+  required_design:
+    - migration compatibility gate
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: destructive-migration
+    input: irreversible schema change
+    expected: release gate prevents incompatible rollback assumptions
+grading:
+  functional: release process reflects irreversible migration semantics
+  tests: gate behavior is tested
+  contract: rollback limitation is documented

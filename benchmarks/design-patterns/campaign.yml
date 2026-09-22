@@ -1,0 +1,36 @@
+id: design-patterns-public-v1
+version: 1
+evaluation_set: design-patterns
+source: design-pattern-system-v1
+fixture_root: benchmarks/design-patterns/fixtures
+verifier: scripts/verify_design_pattern_eval.rb
+evaluations:
+  - poro-extraction
+  - service-object-selection
+  - command-object
+  - strategy-selection
+  - adapter-boundary
+  - policy-object
+  - dependency-injection
+  - factory-selection
+  - builder-selection
+  - null-object
+  - decorator
+  - facade
+  - repository-boundary
+  - specification
+  - state-object
+  - composition-over-inheritance
+  - presenter
+  - pattern-restraint
+execution:
+  repetitions: 3
+  paired: true
+  fresh_workspace_per_run: true
+  same_fixture_for_pair: true
+  require_same_agent_command_when_using_agent_command: true
+controls:
+  runtime:
+    ruby: "3.3"
+  hidden_cases: external-only
+  require_complete_repetitions: true

@@ -1,0 +1,33 @@
+id: state-object
+version: 1
+title: Move state-specific behavior into State objects
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-domain-modeling
+  - ruby-object-composition
+  - ruby-poro
+  - ruby-tdd-refactoring
+patterns:
+  - state-object
+prompt: |
+  Implement Order with State objects for pending and paid behavior. Shipping is allowed only when the order is paid. Avoid a growing case statement on order status.
+constraints:
+  required_design:
+    - state-object
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: Order exposes state and delegates state-specific behavior
+  pattern_selection: state classes are explicit and status case statements are absent
+  scope_control: changes remain inside the disposable fixture

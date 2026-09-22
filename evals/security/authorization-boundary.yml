@@ -1,0 +1,32 @@
+id: authorization-boundary
+version: 1
+title: Enforce resource authorization at the boundary
+category: security
+source: rails-security-v1
+skills:
+  - rails-security
+  - rails-security-engineering
+  - rails-authentication
+patterns:
+  - security-boundary-review
+prompt: |
+  Implement DocumentPolicy so only the document owner or an administrator can update the document. Keep authorization in the policy boundary and add tests for owner, admin, and unrelated user access.
+constraints:
+  required_design:
+    - explicit authorization boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - security
+cases:
+  - name: owner
+    input: owner
+    expected: true
+  - name: unrelated-user
+    input: unrelated
+    expected: false
+grading:
+  functional: owner and administrator are authorized; unrelated user is denied
+  tests: an executable test/spec is changed
+  contract: DocumentPolicy#update? is preserved

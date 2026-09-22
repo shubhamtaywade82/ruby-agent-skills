@@ -1,0 +1,29 @@
+id: transactional-enqueue
+version: 1
+title: Enqueue only after transaction commit when required
+category: rails
+source: active-job-v1
+skills:
+  - rails-active-job
+patterns:
+  - transactional-job-enqueue
+prompt: |
+  A PublishAccountJob reads Account data that is created in the surrounding transaction. Change the enqueue behavior so the job does not depend on uncommitted state. Preserve the public API and test commit and rollback semantics.
+constraints:
+  required_design:
+    - transaction-aware enqueue boundary
+checks:
+  - functional
+  - tests
+  - contract
+cases:
+  - name: commit-enqueues
+    input: transaction commits
+    expected: job can run against committed Account
+  - name: rollback
+    input: transaction rolls back
+    expected: job is not incorrectly published
+grading:
+  functional: enqueue timing matches required transaction semantics
+  tests: commit and rollback behavior is covered
+  contract: PublishAccountJob API remains intact

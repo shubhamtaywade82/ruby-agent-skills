@@ -1,0 +1,69 @@
+id: action-mailbox-contract
+version: 1
+title: Preserve Rails Action Mailbox ingress, routing, authorization, idempotency, and failure contracts
+category: rails
+source: rails-action-mailbox-v1
+skills:
+  - rails-action-mailbox
+  - rails-api-integration
+  - rails-security
+  - rails-security-engineering
+  - rails-active-job
+  - rails-active-storage
+  - rails-action-mailer
+patterns:
+  - action-mailbox-ingress-boundary
+  - action-mailbox-routing-contract
+  - action-mailbox-authenticity-security
+  - action-mailbox-idempotency
+  - action-mailbox-processing-lifecycle
+  - action-mailbox-tenant-association
+  - action-mailbox-failure-quarantine
+  - action-mailbox-testing
+prompt: |
+  Implement inbound email handling for a tenant-scoped support workflow using Rails Action Mailbox. The system must authenticate the configured ingress, route specific recipients deterministically, authorize sender and tenant/resource access separately from ingress trust, make business effects safe under duplicate delivery, process through an explicit transaction/async boundary, contain malformed or poison messages, retain raw inbound mail only for the configured forensic window, and support deterministic tests without a live provider.
+constraints:
+  required_design:
+    - explicit ingress authentication boundary
+    - deterministic mailbox routing
+    - sender/resource/tenant authorization distinct from ingress authentication
+    - durable idempotency for business effects
+    - explicit transaction and async boundary
+    - bounded failure/retry/quarantine behavior
+    - explicit raw-message retention policy
+    - deterministic mailbox tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: authorized-inbound
+    input: authenticated ingress receives mail for a supported tenant alias from an eligible sender
+    expected: the correct mailbox processes it and persists the domain effect under the owning tenant
+  - name: spoofed-sender
+    input: ingress is trusted but the From address is not an eligible identity
+    expected: the message is rejected/bounced without unauthorized domain mutation
+  - name: cross-tenant-target
+    input: sender is valid in tenant A but message targets a resource in tenant B
+    expected: authorization rejects the cross-tenant mutation
+  - name: duplicate-delivery
+    input: the same message identity is received twice
+    expected: the business effect is applied at most once and duplicate handling is deterministic
+  - name: unmatched-recipient
+    input: authenticated inbound mail targets an unsupported recipient
+    expected: the configured backstop/bounce behavior is explicit and observable
+  - name: poison-message
+    input: mailbox processing hits a permanent malformed/unsafe input
+    expected: the message is contained without an unbounded retry loop
+  - name: post-commit-follow-up
+    input: successful processing requires a follow-up job/event
+    expected: downstream work is not allowed to observe uncommitted business state
+  - name: retention
+    input: a processed InboundEmail reaches the configured retention boundary
+    expected: raw inbound data is eligible for incineration without implying deletion of independently retained domain data
+grading:
+  functional: ingress, routing, authorization, processing, and lifecycle behavior are correct
+  tests: duplicate, security, failure, transaction, and retention contracts are executable
+  contract: provider ingress and Action Mailbox framework boundaries are kept separate from business ownership and authorization
+  scope_control: ordinary tests use deterministic local/provider doubles rather than live email infrastructure

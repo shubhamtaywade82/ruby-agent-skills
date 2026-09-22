@@ -1,43 +1,103 @@
 ---
 name: ruby-core
-description: Use when implementing or reviewing Ruby language behavior, syntax, object semantics, typing, truthiness, strings, numbers, symbols, execution or method dispatch.
+description: Use when implementing, reviewing, or debugging Ruby language behavior, syntax, object semantics, truthiness, method dispatch, runtime behavior, or version-sensitive Ruby code.
 ---
 
 # Ruby Core
 
 ## Purpose
-Write Ruby using Ruby's actual object model and language conventions rather than mechanically translating patterns from statically typed languages.
+
+Make the agent reason from Ruby's actual execution model instead of translating habits from statically typed languages.
 
 ## Activate when
-- implementing Ruby without a framework
-- reasoning about Ruby syntax or runtime behavior
-- debugging unexpected Ruby semantics
-- reviewing code that treats Ruby like Java, C# or TypeScript
 
-## Core rules
-1. Treat values as objects and reason from the receiver's behavior.
-2. Remember Ruby is dynamically typed; do not invent compile-time guarantees.
-3. Use duck typing when the required interface is the important contract.
-4. Only nil and false are falsey.
-5. Prefer expressions and implicit returns when they improve clarity.
-6. Use predicate names ending in ? for boolean intent.
-7. Use ! only when mutation or stronger side effects justify it.
-8. Respect the project's supported Ruby version.
+- the task is primarily Ruby rather than Rails
+- syntax or runtime semantics are uncertain
+- a bug depends on receiver, return value, truthiness, coercion, scope, or dispatch
+- code uses Ruby-specific features such as blocks, symbols, keyword arguments, pattern matching, or implicit returns
+- the supported Ruby version may change the available behavior
+
+## Repository inspection
+
+Before changing code:
+
+1. Read `.ruby-version`, `.tool-versions`, Gemfile and CI/runtime configuration.
+2. Inspect neighboring code for the project's preferred Ruby idioms.
+3. Identify public method contracts and important callers.
+4. Read focused tests before changing semantics.
+
+Never infer the supported Ruby version from memory.
+
+## Decision rules
+
+### Objects and dispatch
+
+Treat every value as an object with behavior. Ask:
+
+- What is the receiver?
+- Which method is actually dispatched?
+- Is the call public, private, delegated, or dynamically resolved?
+- What does the method return on every relevant branch?
+
+Use duck typing when a stable interface is enough. Do not add class checks merely to make dynamic code look statically typed.
+
+### Truthiness
+
+Ruby treats only `nil` and `false` as falsey. Empty strings, arrays, and hashes are truthy.
+
+Do not "fix" Ruby code by assuming JavaScript-style truthiness.
+
+### Expressions and returns
+
+Prefer Ruby expressions and implicit returns when they improve readability. Make an explicit `return` when early exit or a return contract is materially clearer.
+
+Do not refactor return behavior merely for style.
+
+### Mutation
+
+Distinguish:
+
+- mutating methods
+- non-mutating alternatives
+- bang methods whose semantics are repository-specific
+
+Never assume a bang method always mutates or that it always returns `nil`.
 
 ## Procedure
-1. Identify the Ruby/runtime version.
-2. Inspect local style and nearby examples.
-3. Determine the object and method contract.
-4. Implement the smallest clear expression.
-5. Run a focused test or reproduction.
-6. Check version-specific behavior when relevant.
 
-## Common traps
-- treating empty strings, arrays or hashes as falsey
-- unnecessary class/type checks
-- confusing nil with false
-- assuming newer syntax is available
-- using metaprogramming for ordinary dispatch
+1. Resolve the runtime version.
+2. Identify the precise semantic question.
+3. Reduce the behavior to a small reproduction when needed.
+4. Inspect the existing contract/tests.
+5. Implement the smallest compatible change.
+6. Run the focused test/reproduction.
+7. Run relevant regression checks.
+8. Inspect the diff for accidental semantic changes.
+
+## Common failure modes
+
+- treating empty collections as falsey
+- inventing static type guarantees
+- using `is_a?` branches where duck typing is sufficient
+- confusing `nil` with `false`
+- relying on syntax unavailable in the project's Ruby version
+- changing an implicit return while refactoring unrelated code
+- assuming a method mutates because its name ends in `!`
+
+## Agent review checklist
+
+- [ ] Ruby version resolved
+- [ ] receiver and return contract understood
+- [ ] truthiness handled correctly
+- [ ] mutation behavior preserved
+- [ ] dynamic behavior not invented
+- [ ] version-sensitive syntax verified
+- [ ] focused and regression tests run
 
 ## Verification
-The behavior should be explainable directly from Ruby semantics and the repository's supported runtime.
+
+Use a minimal reproduction for semantic questions, then run the repository's focused tests and relevant suite. Verify version-sensitive behavior against the actual runtime rather than an assumed modern Ruby.
+
+## Source foundation
+
+Grounded in the Ruby language fundamentals and execution-focused approach of *The Ruby Workshop*, with the quality principle from *Clean Ruby* that code should be readable, straightforward, and easy to change.

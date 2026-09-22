@@ -1,0 +1,53 @@
+version: 1
+source: book-integration-v2
+description: Deterministic disposable workspaces for the Ruby workshop and Rails book integration evaluation family.
+
+fixtures:
+  enumerable-transform:
+    root: benchmarks/ruby-workshop/fixtures/enumerable-transform
+    implementation_file: lib/solution.rb
+    classes:
+      - Catalog
+
+  method-contract:
+    root: benchmarks/ruby-workshop/fixtures/method-contract
+    implementation_file: lib/solution.rb
+    classes:
+      - NotificationFormatter
+
+  voting-application:
+    root: benchmarks/ruby-workshop/fixtures/voting-application
+    implementation_file: lib/solution.rb
+    classes:
+      - VotingMachine
+
+  service-object:
+    root: benchmarks/ruby-workshop/fixtures/service-object
+    implementation_file: lib/post/creator.rb
+    classes:
+      - ApplicationService
+      - Post
+
+  external-api-client:
+    root: benchmarks/ruby-workshop/fixtures/external-api-client
+    implementation_file: lib/weather_client.rb
+    classes:
+      - WeatherClient
+
+  ruby-gem-boundary:
+    root: benchmarks/ruby-workshop/fixtures/ruby-gem-boundary
+    implementation_file: lib/inventory_client.rb
+    modules:
+      - InventoryClient
+
+  rails-rest-contract:
+    root: benchmarks/ruby-workshop/fixtures/rails-rest-contract
+    implementation_file: app/controllers/posts_controller.rb
+    classes:
+      - PostsController
+
+  rails-authentication-boundary:
+    root: benchmarks/ruby-workshop/fixtures/rails-authentication-boundary
+    implementation_file: app/controllers/dashboard_controller.rb
+    classes:
+      - DashboardController

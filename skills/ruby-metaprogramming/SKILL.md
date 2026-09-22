@@ -1,31 +1,109 @@
 ---
 name: ruby-metaprogramming
-description: Use when reflection or runtime code generation is explicitly useful, including send, define_method, method_missing, open classes and controlled dynamic dispatch.
+description: Use when reflection, dynamic dispatch, runtime method creation, open classes, monkey patches, method_missing, define_method, or controlled metaprogramming are explicitly relevant.
 ---
 
 # Ruby Metaprogramming
 
-## Default policy
-Prefer ordinary Ruby first. Metaprogramming must provide a concrete benefit such as eliminating repetitive declarations or implementing controlled framework-style behavior.
+## Purpose
 
-## Risk model
-Evaluate discoverability, debugging, stack traces, tooling, test coverage and security before adding runtime behavior.
+Use Ruby's dynamic capabilities when they provide a concrete architectural benefit, while protecting discoverability, debuggability, security, and testability.
+
+## Activate when
+
+- method names are generated dynamically
+- reflection is required
+- a DSL or framework-style declaration is being implemented
+- `method_missing`, `define_method`, `send`, `public_send`, `class_eval`, or `prepend` is used
+- an existing class must be extended for compatibility reasons
+
+## Default rule
+
+Prefer ordinary Ruby first.
+
+Metaprogramming is justified when it materially reduces duplication, implements a stable DSL/protocol, or integrates with an established framework mechanism.
+
+## Repository inspection
+
+Before adding dynamic behavior:
+
+1. inspect existing conventions
+2. inspect supported Ruby version
+3. identify all call sites
+4. inspect tests that describe dynamic behavior
+5. identify security/trust boundaries
+6. determine whether explicit code would be easier to maintain
 
 ## Reflection
-Use respond_to?, method, public_send and send deliberately.
-Prefer public_send when invoking a public API from dynamic names. Never dispatch unchecked untrusted method names.
+
+Use:
+
+- `respond_to?` to test protocol availability
+- `method` when a callable object is needed
+- `public_send` for dynamic public API invocation
+- `send` only when private dispatch is intentionally required
+
+Never pass unchecked user-controlled method names into dynamic invocation.
 
 ## method_missing
-Treat method_missing as an advanced protocol. Constrain accepted names and implement respond_to_missing? consistently.
+
+Treat `method_missing` as a protocol.
+
+If implementing it:
+
+- constrain accepted names
+- produce a predictable result/error for unsupported names
+- implement `respond_to_missing?` consistently
+- test both invocation and reflection
 
 ## define_method
-Use only when methods are generated from a trusted and deterministic set of definitions. Prefer ordinary methods when they are clearer.
 
-## Open classes and monkey patching
-Avoid changing core/library classes unless there is a strong compatibility reason and the project explicitly accepts the risk.
+Use when method definitions are generated from a trusted, deterministic source.
 
-## Review question
-Would a competent Ruby developer understand this faster if the implementation were explicit? If yes, prefer explicit Ruby.
+Prefer explicit methods when the generated code would be harder to inspect.
+
+## Open classes and monkey patches
+
+Avoid modifying third-party/core classes unless there is a strong compatibility reason and the patch scope is explicit.
+
+Prefer an adapter, wrapper, refinement, collaborator, or module when those express intent more safely.
+
+## Failure modes
+
+- magic that hides the public API
+- reflection that bypasses authorization
+- dynamically generated methods with inconsistent signatures
+- `method_missing` that swallows unrelated typos
+- monkey patches that break after dependency upgrades
+- dynamic dispatch that cannot be statically searched or easily tested
+
+## Agent review checklist
+
+- [ ] ordinary Ruby considered first
+- [ ] dynamic names are trusted/validated
+- [ ] public API remains discoverable
+- [ ] method_missing has respond_to_missing?
+- [ ] monkey patch has a compatibility reason
+- [ ] tests exercise dynamic behavior
+- [ ] upgrade risks are documented where necessary
+
+## Verification
+
+Write focused tests for generated methods, reflection, method visibility, missing-method behavior, and dependency compatibility. Exercise unsupported names to ensure failures are safe and predictable.
 
 ## Source foundation
-Based on the metaprogramming/reflection chapters of The Ruby Workshop, constrained by the simplicity and maintainability principles in Clean Ruby.
+
+Based on the metaprogramming, open-class, monkey-patching, and dynamic-method material in *The Ruby Workshop*. The simplicity and maintainability constraints come from *Clean Ruby*: choose the straightforward solution unless dynamic behavior has a concrete benefit.
+
+## Book integration: dynamic boundary rule
+
+The book demonstrates how Rails-style declarations can use runtime method generation. Treat this as a framework/library technique, not a default application technique.
+
+Before using dynamic method generation, record:
+- what input names are trusted
+- which methods will be generated
+- why explicit methods are insufficient
+- how reflection will behave
+- how unsupported names fail
+
+Prefer explicit Ruby for ordinary application code. Dynamic behavior should remain bounded and testable.

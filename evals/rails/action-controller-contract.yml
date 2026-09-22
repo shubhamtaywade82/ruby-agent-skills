@@ -1,0 +1,78 @@
+id: action-controller-contract
+version: 1
+title: Preserve Rails Action Controller request, response, state, HTTP cache, streaming, and exception boundaries
+category: rails
+source: rails-action-controller-v1
+skills:
+  - rails-action-controller
+  - rails-controllers
+  - rails-routing
+  - rails-authentication
+  - rails-security
+  - rails-observability
+  - rails-caching
+  - rails-active-storage
+  - rails-test-engineering
+  - rails-testing
+patterns:
+  - action-controller-request-boundary
+  - strong-parameters-contract
+  - controller-response-contract
+  - controller-session-cookie-boundary
+  - action-controller-callback-contract
+  - controller-content-negotiation
+  - conditional-response-cache
+  - controller-streaming-download
+  - controller-exception-boundary
+  - action-controller-testing
+prompt: |
+  Implement a Rails reporting controller that exposes an authenticated report resource to HTML and JSON clients. The action must use an explicit nested input contract, preserve authorization at the resource boundary, use a narrow before_action for request prerequisites, map domain failures to stable HTTP responses, and keep session/cookie state minimal. A read endpoint should support conditional HTTP responses where the representation is safely cacheable. A CSV download should have explicit authorization, content headers, and bounded response generation rather than loading an unbounded dataset into memory. Add deterministic request tests covering valid/invalid input, unsupported format, authorization, redirect/error behavior, conditional requests, and download response semantics. Do not move business workflows into callbacks, do not trust a user-provided redirect target, and do not rescue unexpected programmer failures into success responses.
+constraints:
+  required_design:
+    - explicit request/strong-parameter boundary
+    - authentication versus authorization separation
+    - narrow controller callback scope
+    - explicit response/status/format contract
+    - minimal session/cookie state
+    - deterministic exception mapping
+    - safe conditional response semantics
+    - bounded download/streaming design
+    - request-level regression tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: parameter-boundary
+    input: nested report filters with extra keys
+    expected: only the declared shape reaches the application operation
+  - name: callback-scope
+    input: public and authenticated actions in one controller
+    expected: only the intended actions require the callback
+  - name: response-contract
+    input: successful HTML and JSON requests
+    expected: status, content type, body/representation, and redirect behavior match the declared contract
+  - name: authorization
+    input: authenticated request for another user's or tenant's report
+    expected: resource authorization rejects the operation
+  - name: session-state
+    input: preference/flash/authentication state
+    expected: session/cookie payload remains minimal and does not become the authorization source
+  - name: content-negotiation
+    input: supported and unsupported formats
+    expected: supported formats render their explicit representation and unsupported formats fail deterministically
+  - name: conditional-response
+    input: matching and non-matching ETag/Last-Modified validators
+    expected: equivalent representation can return 304 while changed or variant representations return 200
+  - name: download
+    input: authorized CSV request for a large dataset
+    expected: content headers are explicit and generation is bounded without loading all rows into memory
+  - name: exception-boundary
+    input: expected domain failure and unexpected programmer error
+    expected: expected failure maps to a stable HTTP response while unexpected defects retain normal failure/observability behavior
+grading:
+  functional: controller behavior and representation contracts are correct
+  tests: boundary and negative cases are executable
+  contract: HTTP state/security/cache/streaming semantics are explicit
+  scope_control: business logic remains outside callbacks and controller-only abstractions remain narrow

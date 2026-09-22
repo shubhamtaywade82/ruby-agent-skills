@@ -1,0 +1,32 @@
+version: 1
+source:
+  active_job: https://guides.rubyonrails.org/active_job_basics.html
+  testing: https://guides.rubyonrails.org/testing.html
+  solid_queue: https://github.com/rails/solid_queue
+
+tools:
+  rails-job-test:
+    category: job_testing
+    command: bin/rails test
+    application_only: true
+  solid-queue-start:
+    category: queue_operations
+    command: bin/jobs start
+    application_only: true
+    optional: true
+  solid-queue-start:
+    category: queue_operations
+    command: bin/jobs start
+    application_only: true
+    optional: true
+  active-job-queue-check:
+    category: runtime_inspection
+    command: bundle exec rails runner 'puts ActiveJob::Base.queue_adapter.class.name'
+    application_only: true
+
+selection:
+  rules:
+    - "Resolve Rails and Active Job versions before using version-sensitive APIs."
+    - "Prefer repository-configured job test commands."
+    - "Inspect queue adapter and worker configuration before diagnosing delivery failures."
+    - "Treat skipped operational tooling as unverified."

@@ -1,0 +1,33 @@
+id: factory-selection
+version: 1
+title: Use a Factory for type-based construction
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-object-composition
+  - ruby-poro
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - factory
+prompt: |
+  Implement ParserFactory.for(format) to construct JsonParser or CsvParser. Keep type-based construction in the factory.
+constraints:
+  required_design:
+    - factory
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: factory public API is present
+  pattern_selection: factory evidence is present and competing conditional construction is absent
+  scope_control: changes remain inside the disposable fixture

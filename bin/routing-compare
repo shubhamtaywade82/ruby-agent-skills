@@ -1,0 +1,107 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "optparse"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+DEFAULT_POLICY = File.join(ROOT, "router", "ROUTING_REMEDIATION.yml")
+options = { policy: DEFAULT_POLICY, output: nil }
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-compare BASELINE_JSON CANDIDATE_JSON [options]"
+  opts.on("--policy PATH", "Remediation policy YAML") { |value| options[:policy] = value }
+  opts.on("--output PATH", "Write comparison JSON to PATH") { |value| options[:output] = value }
+end.parse!
+
+baseline = JSON.parse(File.read(ARGV.fetch(0), encoding: "UTF-8"))
+candidate = JSON.parse(File.read(ARGV.fetch(1), encoding: "UTF-8"))
+policy = YAML.safe_load(File.read(options[:policy], encoding: "UTF-8"), permitted_classes: [], aliases: false)
+gate = policy.fetch("gate")
+errors = []
+
+errors << "both baseline and candidate campaigns must be complete" unless baseline.fetch("complete") && candidate.fetch("complete")
+
+errors << "baseline and candidate campaign ids differ" unless baseline.fetch("campaign") == candidate.fetch("campaign")
+errors << "baseline and candidate campaign versions differ" unless baseline.fetch("campaign_version") == candidate.fetch("campaign_version")
+errors << "baseline and candidate agent configurations differ" unless baseline.fetch("agent") == candidate.fetch("agent")
+
+errors << "baseline and candidate routing case counts differ" unless baseline.fetch("routing_case_count") == candidate.fetch("routing_case_count")
+errors << "baseline and candidate repetition counts differ" unless baseline.fetch("requested_repetitions") == candidate.fetch("requested_repetitions")
+
+baseline_metrics = baseline.fetch("metrics")
+candidate_metrics = candidate.fetch("metrics")
+primary_delta = candidate_metrics.fetch("primary_accuracy") - baseline_metrics.fetch("primary_accuracy")
+secondary_delta = candidate_metrics.fetch("secondary_recall") - baseline_metrics.fetch("secondary_recall")
+unexpected_delta = candidate_metrics.fetch("average_unexpected_secondary_count") - baseline_metrics.fetch("average_unexpected_secondary_count")
+
+errors << "primary accuracy regressed beyond allowed threshold" if primary_delta < -gate.fetch("max_primary_accuracy_drop").to_f
+errors << "secondary recall regressed beyond allowed threshold" if secondary_delta < -gate.fetch("max_secondary_recall_drop").to_f
+errors << "unexpected secondary count increased beyond allowed threshold" if unexpected_delta > gate.fetch("max_unexpected_secondary_count_increase").to_f
+
+def confusion_counts(campaign)
+  counts = Hash.new(0)
+  campaign.fetch("cases").each_value do |case_data|
+    case_data.fetch("runs").each do |run|
+      next unless run["status"] == "completed"
+      expected = run.fetch("expected").fetch("primary_skill")
+      observed = run.fetch("observed").fetch("primary_skill")
+      next if expected == observed
+      counts[[expected, observed]] += 1
+    end
+  end
+  counts
+end
+
+baseline_confusions = confusion_counts(baseline)
+candidate_confusions = confusion_counts(candidate)
+new_confusions = candidate_confusions.keys - baseline_confusions.keys
+resolved_confusions = baseline_confusions.keys - candidate_confusions.keys
+errors << "candidate introduced new primary confusion pairs" if gate.fetch("reject_new_confusion_pairs") && !new_confusions.empty?
+
+case_deltas = []
+(baseline.fetch("cases").keys | candidate.fetch("cases").keys).sort.each do |case_id|
+  before = baseline.fetch("cases").fetch(case_id, nil)
+  after = candidate.fetch("cases").fetch(case_id, nil)
+  next unless before && after
+
+  before_runs = before.fetch("runs").select { |run| run["status"] == "completed" }
+  after_runs = after.fetch("runs").select { |run| run["status"] == "completed" }
+  expected = before.fetch("expected_primary_skill")
+  before_accuracy = before_runs.empty? ? 0.0 : before_runs.count { |run| run.fetch("observed").fetch("primary_skill") == expected }.fdiv(before_runs.length)
+  after_accuracy = after_runs.empty? ? 0.0 : after_runs.count { |run| run.fetch("observed").fetch("primary_skill") == expected }.fdiv(after_runs.length)
+  delta = after_accuracy - before_accuracy
+  errors << "case #{case_id} regressed in primary accuracy" if gate.fetch("reject_case_accuracy_regression") && delta < 0
+  case_deltas << {
+    "case_id" => case_id,
+    "baseline_primary_accuracy" => before_accuracy,
+    "candidate_primary_accuracy" => after_accuracy,
+    "delta" => delta,
+    "status" => delta.positive? ? "improved" : delta.negative? ? "regressed" : "unchanged"
+  }
+end
+
+report = {
+  "protocol_version" => 1,
+  "analysis" => "skill-routing-remediation-v1",
+  "baseline" => {"campaign" => baseline.fetch("campaign"), "agent" => baseline.fetch("agent")},
+  "candidate" => {"campaign" => candidate.fetch("campaign"), "agent" => candidate.fetch("agent")},
+  "deltas" => {
+    "primary_accuracy" => primary_delta,
+    "secondary_recall" => secondary_delta,
+    "average_unexpected_secondary_count" => unexpected_delta
+  },
+  "confusions" => {
+    "resolved" => resolved_confusions,
+    "new" => new_confusions,
+    "baseline" => baseline_confusions,
+    "candidate" => candidate_confusions
+  },
+  "case_deltas" => case_deltas,
+  "gate" => {"passed" => errors.empty?, "errors" => errors}
+}
+
+File.write(options[:output], JSON.pretty_generate(report) + "\n", encoding: "UTF-8") if options[:output]
+puts JSON.pretty_generate(report)
+exit(1) unless errors.empty?

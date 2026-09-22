@@ -1,0 +1,23 @@
+version: 1
+source: rails-database-engineering-v1
+fixtures:
+  expand-contract:
+    root: benchmarks/database-engineering/fixtures/expand-contract
+    implementation_files:
+      - db/migrate/20260921000001_expand_customer_name.rb
+  concurrent-index:
+    root: benchmarks/database-engineering/fixtures/concurrent-index
+    implementation_files:
+      - db/migrate/20260921000002_add_orders_status_index.rb
+  database-constraint:
+    root: benchmarks/database-engineering/fixtures/database-constraint
+    implementation_files:
+      - db/migrate/20260921000003_add_order_reference_constraint.rb
+  batched-backfill:
+    root: benchmarks/database-engineering/fixtures/batched-backfill
+    implementation_files:
+      - lib/backfill_normalized_email.rb
+  transaction-lock:
+    root: benchmarks/database-engineering/fixtures/transaction-lock
+    implementation_files:
+      - app/services/inventory_reservation.rb

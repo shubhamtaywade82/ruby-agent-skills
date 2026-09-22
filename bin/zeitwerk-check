@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "open3"
+
+root = File.expand_path(ARGV.fetch(0, Dir.pwd))
+abort "repository path does not exist: #{root}" unless File.directory?(root)
+
+def run(command, args, root)
+  stdout, stderr, status = Open3.capture3(command, *args, chdir: root)
+  {
+    "status" => status.success? ? "pass" : "fail",
+    "exit_code" => status.exitstatus,
+    "stdout" => stdout,
+    "stderr" => stderr
+  }
+rescue Errno::ENOENT
+  { "status" => "skipped", "reason" => "#{command} is not installed" }
+end
+
+if File.file?(File.join(root, "bin/rails"))
+  command = File.file?(File.join(root, "Gemfile")) ? "bundle" : "bin/rails"
+  args = command == "bundle" ? ["exec", "rails", "zeitwerk:check"] : ["zeitwerk:check"]
+  check = run(command, args, root)
+  puts JSON.pretty_generate(
+    {
+      "schema_version" => 1,
+      "repository" => root,
+      "mode" => "rails",
+      "checks" => { "zeitwerk:check" => check }
+    }
+  )
+  exit 1 if check["status"] == "fail"
+else
+  result = {
+    "schema_version" => 1,
+    "repository" => root,
+    "mode" => "generic",
+    "checks" => {
+      "rails_zeitwerk_check" => {
+        "status" => "skipped",
+        "reason" => "bin/rails is not present; use the target Zeitwerk loader's version-specific check/eager-load API"
+      }
+    }
+  }
+  puts JSON.pretty_generate(result)
+end

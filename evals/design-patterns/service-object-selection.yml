@@ -1,0 +1,35 @@
+id: service-object-selection
+version: 1
+title: Select and implement a focused service object
+category: design-patterns
+source: design-pattern-system-v1
+skills:
+  - ruby-service-objects
+  - ruby-poro
+  - ruby-api-design
+  - ruby-tdd-refactoring
+patterns:
+  - service-object
+  - application-service
+prompt: |
+  Implement Order::Checkout as the application operation for checking out an order. Preserve the ApplicationService.call convenience entry point. The operation should validate that the order is payable, mark it checked out, and return it. Avoid a broad OrderService or Manager class.
+constraints:
+  required_design:
+    - service-object
+    - application-service
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: required public API and implementation boundary are present
+  pattern_selection: required design evidence is present and forbidden competing abstractions are absent
+  scope_control: changes remain inside the disposable fixture

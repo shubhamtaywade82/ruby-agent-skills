@@ -1,0 +1,51 @@
+id: i18n-contract
+version: 1
+title: Preserve Rails I18n locale isolation and translation contracts
+category: rails
+source: rails-i18n-v1
+skills:
+  - rails-i18n
+  - rails-security
+  - rails-active-job
+patterns:
+  - i18n-locale-resolution
+  - i18n-translation-key-contract
+  - i18n-pluralization-formatting
+  - i18n-context-propagation
+  - i18n-cache-identity
+prompt: |
+  Implement localized account notifications with explicit supported locales, scoped locale resolution, semantic translation keys, pluralized output, and background-job locale propagation. Locale input must be validated, locale must not act as authorization, and localized cache identities must not collide when the representation differs by locale. Add deterministic tests proving locale isolation and unsupported-locale fallback.
+constraints:
+  required_design:
+    - explicit supported locales
+    - scoped locale context
+    - semantic translation keys
+    - pluralization through I18n
+    - explicit async locale semantics
+    - locale-aware cache identity when output varies
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: supported-locale-resolution
+    input: supported locale selected by request
+    expected: request executes inside that locale context
+  - name: unsupported-locale
+    input: unsupported locale value
+    expected: application uses deterministic fallback/rejection policy
+  - name: locale-isolation
+    input: consecutive requests/jobs with different locales
+    expected: one execution context cannot leak locale into another
+  - name: pluralization
+    input: locale-aware count
+    expected: I18n pluralization rules determine the translated form
+  - name: locale-cache-identity
+    input: same resource represented in two locales
+    expected: locale-dependent cached values do not collide
+grading:
+  functional: locale resolution and translated behavior are correct
+  tests: locale isolation, fallback, pluralization, and cache identity are executable
+  contract: locale is presentation context and not authorization
+  scope_control: no unrelated translation backend or global localization framework is introduced

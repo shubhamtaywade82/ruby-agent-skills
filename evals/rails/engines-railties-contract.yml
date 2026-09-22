@@ -1,0 +1,86 @@
+id: rails-engines-railties-contract
+version: 1
+title: Preserve Rails Engine and Railtie boundaries, isolation, integration, loading, compatibility, and host contracts
+category: rails
+source: rails-engines-railties-v1
+skills:
+  - rails-engines-railties-engineering
+  - rails-initialization-configuration-engineering
+  - rails-zeitwerk
+  - rails-routing
+  - rails-authorization
+  - rails-asset-build-engineering
+  - rails-generators
+  - rails-database-engineering
+  - rails-test-engineering
+  - ruby-runtime-compatibility
+patterns:
+  - engine-boundary-contract
+  - engine-namespace-isolation
+  - engine-mount-routing-contract
+  - engine-configuration-boundary
+  - railtie-initialization-boundary
+  - engine-autoloading-contract
+  - engine-dependency-compatibility
+  - engine-host-override-contract
+  - engine-generator-task-contract
+  - engine-asset-integration-contract
+  - engine-dummy-app-testing
+  - engine-cross-engine-composition
+prompt: |
+  Implement or review a Rails Engine or Railtie change using the repository's actual Rails/Ruby versions, extension type, namespace/isolation contract, host routing, configuration, initialization, Zeitwerk, gemspec, generator/task, asset, and testing conventions. Preserve host application authority and the smallest justified extension boundary.
+constraints:
+  required_design:
+    - explicit Engine vs Railtie boundary
+    - explicit namespace/isolation contract
+    - explicit host mount/configuration contract
+    - version-aware dependency compatibility
+    - no hidden host implementation coupling
+    - deterministic engine/host integration tests
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: engine-boundary
+    input: new Rails extension
+    expected: Engine/Railtie choice matches required extension surface
+  - name: namespace-isolation
+    input: mountable engine with overlapping host names
+    expected: isolation and file/constant/table contracts are explicit
+  - name: mount-routing
+    input: engine route exposed through a host
+    expected: mount, helper, constraints, and security boundary are tested
+  - name: configuration
+    input: host-configurable engine
+    expected: namespaced config, defaults, overrides, and timing are explicit
+  - name: railtie
+    input: plugin requiring Rails initialization
+    expected: Railtie hook is narrow, lifecycle-aware, and idempotent where required
+  - name: autoloading
+    input: engine namespace/file change
+    expected: Zeitwerk paths and eager loading remain valid
+  - name: compatibility
+    input: engine gemspec or Rails dependency update
+    expected: supported Ruby/Rails constraints and dependency graph remain explicit
+  - name: host-override
+    input: application customization of engine behavior
+    expected: supported extension points or narrow explicit overrides are used
+  - name: generators
+    input: engine generator/task/migration change
+    expected: generated artifacts and host side effects are controlled and tested
+  - name: assets
+    input: engine asset change
+    expected: host build/precompile contract is preserved
+  - name: dummy-app
+    input: host integration change
+    expected: dummy application verifies mount/configuration/boot behavior
+  - name: composition
+    input: two engines with dependencies
+    expected: dependency graph and shared interfaces avoid private/load-order coupling
+grading:
+  functional: engine/Railtie behavior matches the intended extension contract
+  tests: engine and host integration paths are executable
+  contract: isolation, routing, configuration, lifecycle, loading, compatibility, and ownership remain explicit
+  scope_control: no unrelated application architecture or framework migration is introduced

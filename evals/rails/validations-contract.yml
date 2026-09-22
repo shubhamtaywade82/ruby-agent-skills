@@ -1,0 +1,87 @@
+id: validations-contract
+version: 1
+title: Preserve Rails validation lifecycle, context, error, uniqueness, custom-validator, and bypass contracts
+category: rails
+source: rails-validations-v2
+skills:
+  - rails-validations
+  - rails-active-record
+  - rails-active-model
+  - rails-associations
+  - rails-database-engineering
+  - rails-action-controller
+  - rails-action-view
+  - rails-api-integration
+  - rails-i18n
+  - rails-security
+  - rails-performance
+  - rails-test-engineering
+  - rails-testing
+patterns:
+  - validation-boundary
+  - validation-context-contract
+  - validation-condition-contract
+  - validation-uniqueness-database-contract
+  - validation-associated-graph
+  - validation-custom-validator
+  - validation-strict-failure
+  - validation-error-contract
+  - validation-callback-boundary
+  - validation-bypass-audit
+  - validation-testing
+prompt: |
+  Refactor a Rails domain containing users, organizations, projects, and invitations. Preserve ordinary model validation while introducing a publish-specific validation context for a project, conditional validation for invitations, a reusable validation rule used by more than one model, and stable API error details. Account for tenant-scoped uniqueness and a bulk import path that bypasses Active Record validations. Keep authorization outside validation. Do not turn validation callbacks into workflow orchestration. Add database enforcement for authoritative uniqueness, bound associated validation to owned records, and test default/create/update/custom-context behavior plus error shape and bypass writes.
+constraints:
+  required_design:
+    - validation ownership is explicit
+    - contexts do not silently weaken ordinary saves
+    - conditional rules are deterministic
+    - reusable validators justify their abstraction
+    - database constraints protect authoritative uniqueness
+    - associated validation is bounded
+    - strict failures are intentional
+    - error identity is stable
+    - validation callbacks remain side-effect free
+    - bypass write paths are audited
+    - authorization is separate from validation
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: lifecycle
+    input: invalid model through valid?, save, save!, create, and update
+    expected: validation executes or raises according to each documented write contract
+  - name: context
+    input: draft and publish paths with shared and publish-only rules
+    expected: default persistence remains safe and publish-specific rules run only for the explicit context
+  - name: conditional
+    input: invitations with different delivery/state combinations
+    expected: only the rules whose predicates are active execute
+  - name: uniqueness
+    input: duplicate invitation token within one organization and same token across organizations
+    expected: logical tenant scope is enforced by both application feedback and database integrity
+  - name: errors
+    input: multiple invalid attributes and a base-level business error
+    expected: stable attribute/type/detail behavior and consumer-compatible serialization
+  - name: associated
+    input: project with one valid and one invalid owned association
+    expected: bounded validation graph reports deterministic failure behavior
+  - name: custom-validator
+    input: models sharing the same reusable domain rule
+    expected: one justified validator contract serves both consumers without external side effects
+  - name: strict
+    input: fail-fast validation on a protected command boundary
+    expected: documented strict exception is raised and not accidentally converted to ordinary errors
+  - name: bypass
+    input: import using a validation-skipping bulk write
+    expected: authoritative database constraints still protect critical invariants and the bypass is explicitly characterized
+  - name: callback
+    input: normalization before validation
+    expected: validator ordering and final state are deterministic without external workflow side effects
+grading:
+  functional: validation behavior and boundary semantics are correct
+  tests: lifecycle, context, errors, database, association, and bypass cases are executable
+  contract: application and database ownership are explicit and compatible
+  scope_control: validation does not become authorization or workflow orchestration

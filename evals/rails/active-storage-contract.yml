@@ -1,0 +1,46 @@
+id: active-storage-contract
+version: 1
+title: Preserve Active Storage ownership, access, and lifecycle contracts
+category: rails
+source: rails-active-storage-v1
+skills:
+  - rails-active-storage
+  - rails-security
+  - rails-active-job
+patterns:
+  - active-storage-boundary
+  - active-storage-upload-security
+  - active-storage-serving
+  - active-storage-purge
+prompt: |
+  Implement private document attachments for a tenant-scoped account resource using Rails Active Storage. The feature must validate the upload boundary, attach only to an authorized account, keep file access tenant-safe, support asynchronous cleanup, and avoid direct dependence on a live cloud provider in ordinary tests. Add focused tests for authorized access, cross-tenant rejection, attachment lifecycle, and cleanup semantics.
+constraints:
+  required_design:
+    - explicit resource ownership
+    - tenant-safe file access
+    - untrusted upload handling
+    - asynchronous cleanup semantics
+    - deterministic local/test storage
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: authorized-attachment
+    input: valid file for owned account
+    expected: attachment is associated with the authorized account
+  - name: cross-tenant-access
+    input: attachment owned by another tenant
+    expected: file access is rejected across the tenant boundary
+  - name: invalid-upload
+    input: disallowed or oversized file
+    expected: upload is rejected by the application boundary
+  - name: async-cleanup
+    input: removed attachment
+    expected: purge/cleanup follows the repository's asynchronous lifecycle contract
+grading:
+  functional: attachment behavior and access ownership are correct
+  tests: security, lifecycle, and cleanup semantics are executable
+  contract: blob identity is not treated as authorization
+  scope_control: ordinary tests do not require a live cloud bucket
