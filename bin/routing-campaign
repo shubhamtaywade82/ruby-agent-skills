@@ -14,6 +14,7 @@ ROOT = File.expand_path("..", __dir__)
 EVALUATOR = File.join(ROOT, "bin", "routing-eval")
 ADAPTER = File.join(ROOT, "bin", "routing-agent-ollama")
 ANALYZER = File.join(ROOT, "bin", "routing-analyze")
+VERIFIER = File.join(ROOT, "bin", "routing-campaign-verify")
 
 options = {
   url: ENV.fetch("OLLAMA_URL", "http://127.0.0.1:11434"),
@@ -84,6 +85,17 @@ stdout, stderr, status = Open3.capture3(*evaluator_args, chdir: ROOT)
 warn stderr unless stderr.empty?
 puts stdout
 abort "routing evaluator failed with exit code #{status.exitstatus}" unless status.success?
+
+verify_stdout, verify_stderr, verify_status = Open3.capture3(
+  RbConfig.ruby,
+  VERIFIER,
+  campaign_json,
+  *(options[:runs] ? ["--expected-repetitions", options[:runs].to_s] : []),
+  chdir: ROOT
+)
+warn verify_stderr unless verify_stderr.empty?
+puts verify_stdout
+abort "routing campaign intake verification failed with exit code #{verify_status.exitstatus}" unless verify_status.success?
 
 analysis_stdout, analysis_stderr, analysis_status = Open3.capture3(
   RbConfig.ruby,

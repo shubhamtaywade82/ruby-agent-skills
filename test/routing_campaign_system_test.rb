@@ -73,6 +73,12 @@ class RoutingCampaignSystemTest < Minitest::Test
     end
   end
 
+  def test_campaign_command_enforces_intake_verification
+    runner = File.read(File.join(ROOT, "bin", "routing-campaign"), encoding: "UTF-8")
+    assert_includes runner, "routing-campaign-verify"
+    assert_includes runner, "routing campaign intake verification failed"
+  end
+
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
     assert_includes validator, "test/routing_campaign_system_test.rb"
