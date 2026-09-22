@@ -778,3 +778,14 @@ For material architecture changes:
 - record consequential decisions, rejected alternatives, consequences, and review triggers;
 - encode stable architecture rules as executable checks where practical;
 - distinguish measured evidence from architectural hypotheses and do not claim structural improvements without verification.
+
+
+## Repository completeness and framework drift changes
+
+For changes to the skill repository itself:
+- treat the manifest, router, validator, system-test suite, evaluations, benchmarks, README inventory, and agent guidance as one consistency surface;
+- preserve one owning skill for a framework capability unless repository evidence justifies a new boundary;
+- register every new artifact and make the canonical validator execute every repository system test;
+- resolve current Rails behavior from the supported Rails version before adding triggers or guidance;
+- treat Rails 8/8.1 additions such as ActiveJob::Continuable, structured Event Reporting, Local CI, Solid Cache/Cable, Kamal, and CLI credential fetching as version-sensitive framework concerns;
+- do not claim repository completeness from counts alone; verify executable registration, routing, evaluation coverage, and regression tests.
