@@ -677,3 +677,23 @@ For Rails Engine, Railtie, plugin, or mountable-extension changes:
 - prefer supported host extension points over undocumented monkey patches;
 - test engine boot, dummy-host integration, routes/mounting, autoloading, configuration, and changed generators/tasks/assets;
 - do not claim Engine compatibility or isolation without executable evidence.
+
+
+## Rails encryption/credentials changes
+
+For credentials, secret, cryptographic key, or Active Record Encryption changes:
+- resolve Ruby/Rails/Active Record versions first;
+- identify whether the value is application configuration, a deployment secret, a Rails master key, a cryptographic data-encryption key, or persisted sensitive data;
+- choose an explicit approved secret store and separate ciphertext from decryption keys;
+- inspect config.credentials.content_path and config.credentials.key_path when environment-specific credentials are involved;
+- keep config/master.key and equivalent key material outside ordinary source distribution;
+- make RAILS_MASTER_KEY or the repository's runtime secret injection mechanism explicit and verify production boot behavior;
+- treat secret_key_base as a foundational cryptographic secret and review session/cookie/Active Storage impact before rotation;
+- use Active Record Encryption only with explicit attribute, key, query, storage, and migration contracts;
+- use deterministic encryption only when equality querying/uniqueness requires it and document the security tradeoff;
+- review encrypted column sizing, indexes, validations, exports, backups, and operational tooling;
+- design data migrations and key rotations as resumable, observable, recoverable transitions;
+- filter parameters, model inspection, SQL, job arguments, traces, and exception output that can expose sensitive values;
+- use synthetic secrets in tests and never print real credentials;
+- verify missing-key and failure-closed behavior in production-like environments;
+- do not claim security from encryption alone: access control, key custody, logging, backup, rotation, and recovery remain separate contracts.
