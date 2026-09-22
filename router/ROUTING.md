@@ -1176,3 +1176,34 @@ When a task changes identity, sessions, credentials, recovery, or protected requ
 - define fresh-authentication requirements for security-sensitive changes;
 - test success, failure, expiry, revocation, fixation, recovery replay, and abuse controls deterministically;
 - do not claim security from framework defaults alone; verify the actual repository path.
+
+
+## Rails Rack/Middleware engineering
+
+When a task changes Rack middleware, request/response wrapping, stack ordering, short-circuiting, trusted proxies, middleware security, request correlation, or middleware concurrency:
+  -> rails-rack-middleware-engineering
+  -> rails-observability for request/correlation/telemetry ownership
+  -> rails-security-engineering / rails-security for trust boundaries and transport controls
+  -> rails-reliability-engineering for rate-limit/dependency failure and overload semantics
+  -> rails-production-runtime for server/process/proxy topology
+  -> rails-performance / ruby-performance for hot-path capacity evidence
+  -> ruby-concurrency for shared middleware state
+  -> rails-action-controller / rails-authorization for application/resource ownership
+  -> rails-test-engineering / rails-testing for Rack boundary and stack regression tests
+
+### Rack/Middleware pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Rack request/response tuple and env contract | pattern:rack-request-response-contract |
+| Middleware placement/order | pattern:middleware-stack-ordering |
+| New custom middleware | pattern:custom-rack-middleware-contract |
+| Infrastructure-owned early response | pattern:middleware-short-circuit-contract |
+| Middleware exception handling | pattern:middleware-exception-propagation |
+| Shared middleware state | pattern:middleware-thread-safety |
+| Request ID/correlation | pattern:request-id-correlation-boundary |
+| Transport/security middleware | pattern:middleware-security-boundary |
+| Request-level rate limiting | pattern:middleware-rate-limit-boundary |
+| Forwarded/proxy headers | pattern:trusted-proxy-header-contract |
+| Middleware telemetry | pattern:middleware-observability-boundary |
+| Middleware tests | pattern:middleware-testing |
