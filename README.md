@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 56 — Real Agent Routing Benchmark Adapter  
+> **Current milestone:** Iteration 57 — Real Agent Routing Campaign and Confusion Analysis  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -749,3 +749,7 @@ Iteration 55 turns the evaluator into a repeated campaign: three fresh repetitio
 ## Iteration 56 — Real Agent Routing Benchmark Adapter
 
 Iteration 56 adds an actual Ollama-backed routing adapter and closes a benchmark-integrity gap: agent workspaces receive only the task prompt and protocol metadata, never the gold primary/secondary labels. The adapter uses Ollama chat JSON output, normalizes it to the routing result contract, and preserves provider/model provenance for campaign evidence.
+
+## Iteration 57 — Real Agent Routing Campaign and Confusion Analysis
+
+Iteration 57 adds the executable `bin/routing-campaign` command and `bin/routing-analyze` report generator. The runner validates Ollama availability/model presence, executes the configured repeated routing campaign, then produces per-case stability and expected-primary versus observed-primary confusion evidence. A missing model/runtime is reported explicitly rather than producing synthetic benchmark results.
