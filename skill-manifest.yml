@@ -671,6 +671,7 @@ patterns:
       - patterns/rails/boot-failure-contract.md
       - patterns/rails/application-config-contract.md
       - patterns/rails/boot-performance-contract.md
+      - patterns/rails/initializer-testing-contract.md
       - patterns/rails/middleware-observability-boundary.md
       - patterns/rails/middleware-testing.md
     triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, eventual consistency, incident triage, operational runbook, alert actionability, diagnostic context, incident timeline, safe production debugging, recovery verification, post-incident review]
