@@ -630,6 +630,7 @@ patterns:
       - patterns/rails/engine-dependency-compatibility.md
       - patterns/rails/engine-host-override-contract.md
       - patterns/rails/engine-generator-task-contract.md
+      - patterns/rails/engine-dummy-app-testing.md
       - patterns/rails/engine-asset-integration-contract.md
       - patterns/rails/engine-cross-engine-composition.md
       - patterns/rails/credentials-store-contract.md
