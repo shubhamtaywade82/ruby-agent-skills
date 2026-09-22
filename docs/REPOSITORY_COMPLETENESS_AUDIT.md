@@ -23,7 +23,7 @@ The repository-wide validator executes **40 system tests**. Every system test is
 
 ## Framework drift review
 
-The canonical Rails Guides currently document Rails **8.1.3.1**. Rails 8.1 adds Active Job Continuations, Structured Event Reporting, Local CI, Markdown Rendering, command-line credential fetching, deprecated associations, and registry-free Kamal deployments. Rails 8 also established Solid Cache, Solid Queue, Solid Cable, Propshaft, Kamal 2, Thruster, and the authentication generator as major framework/platform changes.
+The official Rails 8.1 release notes identify the major framework additions reviewed in this audit. Rails 8.1 adds Active Job Continuations, Structured Event Reporting, Local CI, Markdown Rendering, command-line credential fetching, deprecated associations, and registry-free Kamal deployments. Rails 8 also established Solid Cache, Solid Queue, Solid Cable, Propshaft, Kamal 2, Thruster, and the authentication generator as major framework/platform changes.
 
 Iteration 46 routes these version-sensitive concerns to existing owners rather than fragmenting the library:
 
@@ -31,7 +31,7 @@ Iteration 46 routes these version-sensitive concerns to existing owners rather t
 |---|---|
 | ActiveJob::Continuable | rails-active-job |
 | Rails.event / structured Event Reporting | rails-observability |
-| Markdown rendering from controllers/views | rails-action-view |
+| Markdown rendering from controllers | rails-action-controller |
 | Deprecated Active Record associations | rails-associations |
 | config/ci.rb / bin/ci Local CI | rails-test-engineering |
 | Solid Cache | rails-caching |
