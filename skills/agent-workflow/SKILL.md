@@ -66,7 +66,7 @@ Patterns are optional. Select a pattern only when repository evidence or task re
 - Add **Secondary skills** for dependent constraints or additional execution boundaries.
 - Do not choose a skill only because a trigger token appears.
 - Inspect the repository and consult router/ROUTING.md before resolving overlapping ownership.
-- Use router/ROUTING_CASES.yml as adversarial routing guidance for high-risk boundary overlaps.
+- Use router/ROUTING_CASES.yml as adversarial routing guidance for high-risk boundary overlaps. This is the repository's routing quality contract.
 - Do not create a new skill merely because a task crosses two existing boundaries.
 
 ## Pattern-selection rule
