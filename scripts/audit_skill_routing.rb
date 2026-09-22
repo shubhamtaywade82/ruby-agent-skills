@@ -107,6 +107,9 @@ errors << "routing remediation comparator missing" unless File.file?(remediation
 errors << "manifest experiment runner path missing" unless routing_contract["experiment_runner"].to_s == "bin/routing-experiment"
 experiment_runner_path = File.join(ROOT, routing_contract.fetch("experiment_runner", ""))
 errors << "routing experiment runner missing" unless File.file?(experiment_runner_path)
+errors << "manifest evidence packager path missing" unless routing_contract["evidence_packager"].to_s == "bin/routing-evidence"
+evidence_packager_path = File.join(ROOT, routing_contract.fetch("evidence_packager", ""))
+errors << "routing evidence packager missing" unless File.file?(evidence_packager_path)
 
 campaign_path = File.join(ROOT, routing_contract.fetch("campaign_manifest", ""))
 if File.file?(campaign_path)
