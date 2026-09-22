@@ -35,17 +35,17 @@ class RailsAuthorizationSystemTest < Minitest::Test
     skill = manifest.fetch("skills").fetch("rails-authorization")
 
     assert_equal "skills/rails-authorization/SKILL.md", skill.fetch("path")
-    %w[
-      authorization
-      policy
-      Pundit
-      CanCanCan
-      tenant isolation
-      object-level authorization
-      IDOR
-      authorized scope
-      role
-      permission
+    [
+      "authorization",
+      "policy",
+      "Pundit",
+      "CanCanCan",
+      "tenant isolation",
+      "object-level authorization",
+      "IDOR",
+      "authorized scope",
+      "role",
+      "permission"
     ].each { |trigger| assert_includes skill.fetch("triggers"), trigger }
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
