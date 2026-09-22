@@ -34,17 +34,17 @@ class RailsAuthenticationSystemTest < Minitest::Test
     skill = manifest.fetch("skills").fetch("rails-authentication")
 
     assert_equal "skills/rails-authentication/SKILL.md", skill.fetch("path")
-    %w[
-      authentication
-      session
-      sign in
-      sign out
-      password reset
-      session fixation
-      session revocation
-      remember me
-      bearer token
-      account lockout
+    [
+      "authentication",
+      "session",
+      "sign in",
+      "sign out",
+      "password reset",
+      "session fixation",
+      "session revocation",
+      "remember me",
+      "bearer token",
+      "account lockout"
     ].each { |trigger| assert_includes skill.fetch("triggers"), trigger }
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
