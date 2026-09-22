@@ -21,7 +21,7 @@ errors = []
 
 errors << "protocol_version must be 1" unless evidence["protocol_version"].to_i == 1
 errors << "evidence type must be skill-routing-experiment-v1" unless evidence["evidence"] == "skill-routing-experiment-v1"
-%w[repository agent compatibility artifacts metrics gate replay].each do |key|
+%w[campaign campaign_version routing_case_count requested_repetitions repository agent compatibility artifacts metrics gate replay].each do |key|
   errors << "missing top-level field #{key}" unless evidence.key?(key)
 end
 
