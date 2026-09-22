@@ -293,6 +293,10 @@ skills:
     family: rails
     path: skills/rails-operational-tasks-maintenance/SKILL.md
     triggers: [Rake, task, lib/tasks, bin/rails runner, runner, maintenance, cleanup, backfill, repair, reconciliation, data repair, dry-run, idempotent, checkpoint, batch, lock, runbook, operational task]
+  rails-staff-principal-architecture:
+    family: architecture
+    path: skills/rails-staff-principal-architecture/SKILL.md
+    triggers: [architecture, staff architecture, principal architecture, architectural decision, modular monolith, bounded context, dependency direction, data ownership, shared kernel, change coupling, service extraction, distributed boundary, architecture migration, ADR, architecture fitness, architecture tradeoff, architecture ownership]
   rails-initialization-configuration-engineering:
     family: rails
     path: skills/rails-initialization-configuration-engineering/SKILL.md
@@ -583,6 +587,21 @@ patterns:
       - patterns/rails/authorization-denial-contract.md
       - patterns/rails/authorization-cache-composition.md
       - patterns/rails/authorization-audit-composition.md
+      - patterns/rails/architecture-problem-statement.md
+      - patterns/rails/dependency-direction-contract.md
+      - patterns/rails/bounded-context-contract.md
+      - patterns/rails/modular-monolith-boundary.md
+      - patterns/rails/data-ownership-contract.md
+      - patterns/rails/shared-kernel-contract.md
+      - patterns/rails/application-service-boundary.md
+      - patterns/rails/cross-cutting-ownership-contract.md
+      - patterns/rails/change-coupling-contract.md
+      - patterns/rails/distributed-boundary-readiness.md
+      - patterns/rails/architectural-migration-contract.md
+      - patterns/rails/architecture-decision-record-contract.md
+      - patterns/rails/architecture-fitness-check.md
+      - patterns/rails/architecture-tradeoff-contract.md
+      - patterns/rails/architecture-ownership-contract.md
       - patterns/rails/turbo-drive-navigation-contract.md
       - patterns/rails/turbo-frame-contract.md
       - patterns/rails/turbo-stream-response-contract.md
@@ -837,6 +856,17 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  rails-staff-principal-architecture:
+    source: rails-staff-principal-architecture-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/staff-principal-architecture-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-cross-boundary-authorization-security:
     source: rails-cross-boundary-authorization-security-v1
     schema: docs/EVAL_SCHEMA.md
