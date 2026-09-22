@@ -1,0 +1,64 @@
+version: 1
+source: rails-framework-v1
+description: Disposable Rails-boundary fixtures for incremental public benchmark coverage.
+
+fixtures:
+  action-controller-contract:
+    root: benchmarks/rails/fixtures/action-controller-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ReportsController"
+      - "def index"
+      - "def download"
+    forbidden_regex:
+      - "redirect_to\s+params"
+    contract_regex:
+      - "class ReportsController"
+      - "def authorize"
+      - "Enumerator"
+
+  active-record-contract:
+    root: benchmarks/rails/fixtures/active-record-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class Relation"
+      - "class OrderReport"
+      - "def each_batch"
+    forbidden_regex:
+      - "all_records\.map"
+    contract_regex:
+      - "def after_commit"
+      - "def pluck"
+      - "def destroy"
+
+  rails-routing-contract:
+    root: benchmarks/rails/fixtures/routing-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class RouteSet"
+      - "def recognize"
+      - "def url_for"
+    forbidden_regex:
+      - "authorize"
+    contract_regex:
+      - "class RouteSet"
+      - "def recognize"
+      - "def url_for"
+
+  validations-contract:
+    root: benchmarks/rails/fixtures/validations-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class Project"
+      - "class Invitation"
+      - "def valid?"
+    forbidden_regex:
+      - "def authorize"
+    contract_regex:
+      - "class Errors"
+      - "def add"
+      - "tenant"
