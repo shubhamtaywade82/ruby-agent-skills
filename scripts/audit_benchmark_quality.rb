@@ -122,7 +122,11 @@ unless unbenchmarked_paths.empty?
     data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
     Array(data["cases"]).length
   end
-  warnings << "public evaluations without a benchmark campaign: #{unbenchmarked_paths.length} files (#{unbenchmarked_cases} cases)"
+  if family == "rails" && campaign.fetch("controls", {})["require_all_public_evaluations"] == true
+    errors << "rails campaign does not cover all public Rails evaluations: #{unbenchmarked_paths.join(", ")}" unless unbenchmarked_paths.empty?
+  else
+    warnings << "public evaluations without a benchmark campaign: #{unbenchmarked_paths.length} files (#{unbenchmarked_cases} cases)"
+  end
 end
 
 puts "Benchmark quality audit"
