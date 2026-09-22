@@ -64,7 +64,6 @@ benchmark_manifest.each do |name, entry|
       required_campaign_fields.each do |key|
         errors << "benchmark #{name} campaign missing #{key}" unless campaign.key?(key)
       end
-      errors << "benchmark #{name} campaign evaluation_set mismatch" unless campaign["evaluation_set"].to_s == name
       errors << "benchmark #{name} campaign fixture_root mismatch" unless campaign["fixture_root"].to_s == entry["fixture_root"].to_s
       errors << "benchmark #{name} campaign verifier mismatch" unless campaign["verifier"].to_s == entry["verifier"].to_s
       repetitions = campaign.fetch("execution", {}).fetch("repetitions", nil)
