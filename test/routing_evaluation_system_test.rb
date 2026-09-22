@@ -70,6 +70,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
     assert_equal "bin/routing-compare", routing.fetch("remediation_comparator")
     assert_equal "bin/routing-experiment", routing.fetch("experiment_runner")
     assert_equal "bin/routing-evidence", routing.fetch("evidence_packager")
+    assert_equal "docs/ROUTING_EVIDENCE_SCHEMA.md", routing.fetch("evidence_schema")
   end
 
   def test_validator_executes_this_system_test
