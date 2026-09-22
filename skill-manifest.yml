@@ -277,6 +277,10 @@ skills:
     family: rails
     path: skills/rails-rack-middleware-engineering/SKILL.md
     triggers: [Rack, rack, middleware, config.middleware, config.ru, bin/rails, bin/rails middleware, call(env), short-circuit, request ID, trusted proxy]
+  rails-encryption-credentials-engineering:
+    family: rails
+    path: skills/rails-encryption-credentials-engineering/SKILL.md
+    triggers: [credentials, config/credentials.yml.enc, config/credentials, master.key, RAILS_MASTER_KEY, credentials:edit, credentials:show, secret_key_base, Active Record Encryption, ActiveRecord::Encryption, encrypts, deterministic encryption, encrypted attribute, db:encryption:init, key rotation]
   rails-initialization-configuration-engineering:
     family: rails
     path: skills/rails-initialization-configuration-engineering/SKILL.md
@@ -594,6 +598,19 @@ patterns:
       - patterns/rails/engine-generator-task-contract.md
       - patterns/rails/engine-asset-integration-contract.md
       - patterns/rails/engine-cross-engine-composition.md
+      - patterns/rails/credentials-store-contract.md
+      - patterns/rails/credentials-environment-selection.md
+      - patterns/rails/master-key-boundary.md
+      - patterns/rails/credentials-editing-workflow.md
+      - patterns/rails/secret-key-base-contract.md
+      - patterns/rails/credentials-redaction-contract.md
+      - patterns/rails/active-record-encryption-contract.md
+      - patterns/rails/deterministic-encryption-query-contract.md
+      - patterns/rails/encrypted-storage-capacity-contract.md
+      - patterns/rails/encrypted-data-migration-contract.md
+      - patterns/rails/encryption-key-rotation-contract.md
+      - patterns/rails/credentials-testing-contract.md
+
       - patterns/rails/rack-request-response-contract.md
       - patterns/rails/middleware-stack-ordering.md
       - patterns/rails/custom-rack-middleware-contract.md
@@ -1006,6 +1023,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/rack-middleware-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-encryption-credentials-engineering:
+    source: rails-encryption-credentials-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/encryption-credentials-contract.yml
     checks:
       - functional
       - tests
