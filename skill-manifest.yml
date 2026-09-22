@@ -288,7 +288,7 @@ skills:
   rails-serialization-globalid-engineering:
     family: rails
     path: skills/rails-serialization-globalid-engineering/SKILL.md
-    triggers: [serialization, serializable_hash, as_json, to_json, ActiveModel::Serialization, ActiveModel::Serializers::JSON, JSON representation, serializer, nested serialization, GlobalID, GlobalId, SignedGlobalID, Global ID, GlobalID::Locator, to_global_id, to_signed_global_id, to_sgid, Active Job arguments, custom serializer, deserialization]
+    triggers: [serialization, serializable_hash, as_json, to_json, ActiveModel::Serialization, ActiveModel::Serializers::JSON, JSON representation, serializer, nested serialization, GlobalID, GlobalId, SignedGlobalID, Global ID, GlobalID::Locator, to_global_id, to_signed_global_id, to_sgid, Active Job arguments, custom serializer, deserialization, Active, Job, arguments, custom]
   rails-operational-tasks-maintenance:
     family: rails
     path: skills/rails-operational-tasks-maintenance/SKILL.md
