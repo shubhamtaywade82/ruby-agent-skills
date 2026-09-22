@@ -68,6 +68,8 @@ Iteration 56 adds a concrete Ollama routing adapter and verifies that routing go
 
 Iteration 57 adds the executable real-campaign wrapper and deterministic confusion analyzer, plus explicit model-availability gating so unavailable agents never produce synthetic routing evidence.
 
+Iteration 58 adds an explicit before/after routing remediation policy and comparator with regression gates for aggregate metrics, confusion pairs, and per-case primary accuracy.
+
 Run the audit directly with:
 ruby scripts/audit_repository_completeness.rb
 
