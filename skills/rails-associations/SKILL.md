@@ -17,6 +17,7 @@ This skill deepens the foundational association guidance. Active Record query se
 
 - adding or changing belongs_to, has_one, has_many, has_many :through, or HABTM
 - changing association options such as class_name, foreign_key, primary_key, inverse_of, source, or source_type
+- marking or migrating away from deprecated Active Record associations
 - introducing polymorphic associations
 - changing dependent behavior
 - changing association creation/removal or collection mutation
