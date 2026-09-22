@@ -24,6 +24,7 @@ routing:
   remediation_policy: router/ROUTING_REMEDIATION.yml
   remediation_comparator: bin/routing-compare
   experiment_runner: bin/routing-experiment
+  evidence_packager: bin/routing-evidence
 
 skills:
   rails-test-engineering:
