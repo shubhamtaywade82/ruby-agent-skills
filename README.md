@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 41 — Rails Encryption and Credentials Engineering  
+> **Current milestone:** Iteration 42 — Rails Serialization and Global IDs Engineering  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -53,9 +53,9 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **72** |
-| Implementation patterns | **339** |
-| Evaluation cases | **139** |
+| Skills | **73** |
+| Implementation patterns | **351** |
+| Evaluation cases | **151** |
 | Dedicated system/contract tests | **50+** |
 | Manifest version | **2** |
 
@@ -668,7 +668,7 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 41 — Rails Encryption and Credentials Engineering**
+**Iteration 42 — Rails Serialization and Global IDs Engineering**
 
 Latest implementation is being validated by the repository CI pipeline.
 
@@ -680,3 +680,8 @@ Next milestone:
 ## Rails Encryption and Credentials Engineering
 
 Iteration 41 adds explicit contracts for Rails encrypted credentials, master-key delivery, environment-specific credential selection, secret redaction, Active Record Encryption, deterministic encrypted queries, storage sizing, encrypted-data migration, key rotation, and synthetic-secret testing.
+
+
+## Rails Serialization and Global IDs Engineering
+
+Iteration 42 adds explicit contracts for Rails serialization ownership, JSON representation, nested payloads, sensitive-field exclusion, serialized payload compatibility, Global ID identity, Signed Global ID integrity, locator restrictions, resolution failures, Active Job arguments, and custom serializers.
