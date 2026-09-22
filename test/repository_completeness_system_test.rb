@@ -33,7 +33,7 @@ class RepositoryCompletenessSystemTest < Minitest::Test
     %w[
       ActiveJob::Continuable
       Rails.event
-      markdown rendering
+      Markdown rendering
       deprecated associations
       config/ci.rb
       Solid Cache
