@@ -11,6 +11,11 @@ defaults:
   prefer_existing_conventions: true
   require_version_awareness: true
 
+routing:
+  contract: router/ROUTING.md
+  cases: router/ROUTING_CASES.yml
+  audit: scripts/audit_skill_routing.rb
+
 skills:
   rails-test-engineering:
     family: rails-quality
