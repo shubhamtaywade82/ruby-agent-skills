@@ -17,6 +17,7 @@ routing:
   audit: scripts/audit_skill_routing.rb
   result_schema: docs/ROUTING_EVAL_RESULT_SCHEMA.md
   evaluation_runner: bin/routing-eval
+  campaign_manifest: router/ROUTING_CAMPAIGN.yml
 
 skills:
   rails-test-engineering:
