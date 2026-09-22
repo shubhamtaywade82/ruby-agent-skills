@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "digest"
 require "fileutils"
 require "json"
 require "optparse"
@@ -156,8 +157,10 @@ when "campaign"
     File.expand_path(manifest_path)
   end
 
+  registry_path = File.join(ROOT, "benchmarks", campaign.fetch("evaluation_set"), "fixtures.yml")
   campaign_result = {
     "protocol_version" => 1,
+    "campaign_result_schema_version" => 2,
     "campaign" => campaign.fetch("id"),
     "campaign_version" => campaign.fetch("version"),
     "evaluation_set" => campaign.fetch("evaluation_set"),
@@ -167,6 +170,21 @@ when "campaign"
     "verifier" => campaign_verifier.delete_prefix("#{ROOT}/"),
     "execution" => campaign.fetch("execution"),
     "controls" => campaign.fetch("controls"),
+    "selection" => {
+      "mode" => options[:evaluation] ? "evaluation" : "campaign",
+      "evaluations" => selected_ids
+    },
+    "provenance" => {
+      "manifest_sha256" => Digest::SHA256.file(File.expand_path(manifest_path)).hexdigest,
+      "verifier_sha256" => Digest::SHA256.file(campaign_verifier).hexdigest,
+      "fixture_registry_sha256" => File.file?(registry_path) ? Digest::SHA256.file(registry_path).hexdigest : nil
+    },
+    "measurement" => {
+      "requested_repetitions" => repetitions,
+      "complete" => false,
+      "evaluations_requested" => selected_ids.length,
+      "evaluations_complete" => 0
+    },
     "repetitions" => repetitions,
     "evaluations" => {}
   }
@@ -218,16 +236,30 @@ when "campaign"
       }
     end
 
+    complete = baseline_runs.length == repetitions && skills_runs.length == repetitions
     campaign_result["evaluations"][eval_id] = {
+      "requested_repetitions" => repetitions,
+      "baseline_completed_repetitions" => baseline_runs.length,
+      "skills_completed_repetitions" => skills_runs.length,
+      "complete" => complete,
       "baseline_results" => baseline_runs,
       "skills_results" => skills_runs,
       "dimensions" => aggregate
     }
   end
 
+  complete_evaluations = campaign_result["evaluations"].count { |_id, value| value.fetch("complete") }
+  campaign_result["measurement"]["evaluations_complete"] = complete_evaluations
+  campaign_result["measurement"]["complete"] =
+    campaign_result["evaluations"].length == selected_ids.length && complete_evaluations == selected_ids.length
+
   comparison_path = File.join(output_dir, "campaign.json")
   write_json(comparison_path, campaign_result)
   puts JSON.pretty_generate(campaign_result)
+
+  if campaign.fetch("controls", {}).fetch("require_complete_repetitions", false) && !campaign_result["measurement"]["complete"]
+    abort "campaign incomplete: one or more evaluations did not complete all requested paired repetitions"
+  end
 
 when "report"
   baseline_path = ARGV.shift
