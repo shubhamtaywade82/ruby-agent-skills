@@ -33,3 +33,4 @@ controls:
   runtime:
     ruby: "3.3"
   hidden_cases: external-only
+  require_complete_repetitions: true
