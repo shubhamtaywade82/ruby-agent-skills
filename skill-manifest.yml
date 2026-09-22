@@ -19,6 +19,8 @@ routing:
   evaluation_runner: bin/routing-eval
   campaign_manifest: router/ROUTING_CAMPAIGN.yml
   ollama_adapter: bin/routing-agent-ollama
+  campaign_runner: bin/routing-campaign
+  campaign_analyzer: bin/routing-analyze
 
 skills:
   rails-test-engineering:
