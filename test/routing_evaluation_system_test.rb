@@ -64,6 +64,8 @@ class RoutingEvaluationSystemTest < Minitest::Test
     assert_equal "bin/routing-eval", routing.fetch("evaluation_runner")
     assert_equal "router/ROUTING_CAMPAIGN.yml", routing.fetch("campaign_manifest")
     assert_equal "bin/routing-agent-ollama", routing.fetch("ollama_adapter")
+    assert_equal "bin/routing-campaign", routing.fetch("campaign_runner")
+    assert_equal "bin/routing-analyze", routing.fetch("campaign_analyzer")
   end
 
   def test_validator_executes_this_system_test
