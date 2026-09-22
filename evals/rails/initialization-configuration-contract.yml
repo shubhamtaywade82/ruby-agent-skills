@@ -5,7 +5,7 @@ category: rails
 source: rails-initialization-configuration-v1
 skills:
   - rails-initialization-configuration-engineering
-  - zeitwerk
+  - rails-zeitwerk
   - rails-production-runtime
   - rails-security-engineering
   - rails-observability
