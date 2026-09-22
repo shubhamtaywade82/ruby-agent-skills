@@ -293,17 +293,6 @@ skills:
     family: rails
     path: skills/rails-operational-tasks-maintenance/SKILL.md
     triggers: [Rake, task, lib/tasks, bin/rails runner, runner, maintenance, cleanup, backfill, repair, reconciliation, data repair, dry-run, idempotent, checkpoint, batch, lock, runbook, operational task]
-  rails-repository-completeness:
-    source: rails-repository-completeness-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/repository-completeness-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
   rails-staff-principal-architecture:
     family: architecture
     path: skills/rails-staff-principal-architecture/SKILL.md
@@ -868,6 +857,17 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  rails-repository-completeness:
+    source: rails-repository-completeness-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/repository-completeness-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-staff-principal-architecture:
     source: rails-staff-principal-architecture-v1
     schema: docs/EVAL_SCHEMA.md
