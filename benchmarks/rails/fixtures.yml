@@ -280,7 +280,7 @@ fixtures:
       - "CurrentContext"
 
   rails-asset-build-contract:
-    root: benchmarks/rails/fixtures/rails-asset-build-contract
+    root: benchmarks/rails/fixtures/asset-build-contract
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
     required_regex:
@@ -364,7 +364,7 @@ fixtures:
       - "locale"
 
   rails-initialization-configuration-contract:
-    root: benchmarks/rails/fixtures/rails-initialization-configuration-contract
+    root: benchmarks/rails/fixtures/initialization-configuration-contract
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
     required_regex:
@@ -381,7 +381,7 @@ fixtures:
       - "timeout"
 
   rails-operational-tasks-maintenance-contract:
-    root: benchmarks/rails/fixtures/rails-operational-tasks-maintenance-contract
+    root: benchmarks/rails/fixtures/operational-tasks-maintenance-contract
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
     required_regex:
@@ -398,7 +398,7 @@ fixtures:
       - "failed"
 
   rails-rack-middleware-contract:
-    root: benchmarks/rails/fixtures/rails-rack-middleware-contract
+    root: benchmarks/rails/fixtures/rack-middleware-contract
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
     required_regex:
