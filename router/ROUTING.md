@@ -1295,3 +1295,33 @@ When a task changes Rails credentials, master keys, secret_key_base, Active Reco
 | Existing-data encryption migration | pattern:encrypted-data-migration-contract |
 | Encryption key rotation | pattern:encryption-key-rotation-contract |
 | Testing | pattern:credentials-testing-contract |
+
+
+## Rails Serialization and Global IDs engineering
+
+When a task changes ActiveModel serialization, serializable_hash, as_json/to_json, API payloads, nested serialization, sensitive-field representation, GlobalID, SignedGlobalID, GlobalID locators, Active Job argument serialization, or custom job serializers:
+  -> rails-serialization-globalid-engineering
+  -> rails-active-model for ActiveModel serialization contracts
+  -> rails-active-job for job argument lifecycle and deserialization
+  -> rails-api-integration / rails-action-controller for transport contracts
+  -> rails-performance for nested/query/payload behavior
+  -> rails-security-engineering / rails-authorization for sensitive fields and post-resolution authorization
+  -> rails-reliability-engineering for lookup failure and retry policy
+  -> rails-initialization-configuration-engineering for serializer lifecycle
+
+### Serialization/Global ID pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Representation ownership | pattern:serialization-boundary-contract |
+| Serializable hash allowlist | pattern:serializable-hash-allowlist |
+| JSON representation | pattern:json-representation-contract |
+| Nested serialization | pattern:nested-serialization-boundary |
+| Sensitive fields | pattern:sensitive-serialization-contract |
+| Payload compatibility/versioning | pattern:serialization-versioning-contract |
+| Model identity reference | pattern:globalid-identity-contract |
+| Tamper-resistant identity | pattern:signed-globalid-integrity-contract |
+| Global ID locator restrictions | pattern:globalid-locator-allowlist |
+| Locator failure semantics | pattern:globalid-resolution-failure-contract |
+| Active Job arguments | pattern:activejob-argument-serialization-contract |
+| Custom Active Job serializer | pattern:custom-activejob-serializer-contract |
