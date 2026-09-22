@@ -30,7 +30,7 @@ Do not introduce layers, services, packages, engines, abstractions, or distribut
 9. Define fitness checks and operational evidence.
 10. Record tradeoffs and rejected alternatives.
 
-## Repository reconnaissance
+## Repository inspection
 Inspect application structure, domains/modules, routes, controllers, services, jobs, events, models, database ownership, external providers, engines, initializers, configuration, tests, deployment topology, CI, dependency graph, and runtime boundaries. Search actual call sites before declaring a dependency or subsystem boundary.
 
 ## Boundary design
