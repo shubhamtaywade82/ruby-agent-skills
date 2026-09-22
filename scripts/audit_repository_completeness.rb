@@ -99,7 +99,7 @@ inventory.each do |label, expected|
   errors << "README #{label} count #{actual.inspect} != #{expected}" unless actual == expected
 end
 
-errors << "README current milestone is not Iteration 47" unless readme.include?("Current milestone:** Iteration 47")
+errors << "README current milestone is not Iteration 48" unless readme.include?("Current milestone:** Iteration 48")
 errors << "README still contains the stale pre-Iteration-46 roadmap text" if readme.include?("The next planned deep Rails boundary is **Authorization Engineering**")
 
 puts "Repository completeness audit"
