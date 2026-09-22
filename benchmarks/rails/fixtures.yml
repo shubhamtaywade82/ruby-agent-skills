@@ -312,7 +312,7 @@ fixtures:
       - "autosave"
       - "each_recent"
 
-  engines-railties-contract:
+  rails-engines-railties-contract:
     root: benchmarks/rails/fixtures/engines-railties-contract
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
