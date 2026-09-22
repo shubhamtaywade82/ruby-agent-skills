@@ -290,6 +290,11 @@ after: ...
 
 Never claim that caching improved production performance without measurement or a structurally demonstrated reduction in repeated work.
 
+## Rails 8 current framework considerations
+
+- Solid Cache is the default cache store for new Rails 8 applications and uses database-backed storage. Inspect cache database ownership, capacity, isolation, and migration conventions before relying on it.
+- Do not equate database-backed cache storage with authoritative application data; cache invalidation and failure semantics remain separate concerns.
+
 ## Source foundation
 Primary Rails guidance:
 - https://guides.rubyonrails.org/caching_with_rails.html
