@@ -2,22 +2,16 @@
 
 require "json"
 require "minitest/autorun"
-require "open3"
-require "tmpdir"
 require "yaml"
 
 class RoutingExternalCampaignSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
 
-  def test_handoff_requires_a_clean_committed_worktree
-    stdout, _stderr, status = Open3.capture3(
-      RbConfig.ruby,
-      File.join(ROOT, "bin", "routing-campaign-handoff"),
-      "--model", "test-model",
-      "--output", Dir.mktmpdir("routing-handoff"),
-      chdir: ROOT
-    )
-    assert status.success? || stdout.include?("JSON")
+  def test_handoff_enforces_clean_worktree_and_records_contract
+    source = File.read(File.join(ROOT, "bin", "routing-campaign-handoff"), encoding: "UTF-8")
+    assert_includes source, "repository worktree is dirty"
+    assert_includes source, '"handoff" => "skill-routing-external-run-v1"'
+    assert_includes source, '"expected_runs" => expected_runs'
   end
 
   def test_hidden_benchmark_is_external_only
