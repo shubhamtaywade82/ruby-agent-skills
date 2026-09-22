@@ -277,17 +277,6 @@ skills:
     family: rails
     path: skills/rails-rack-middleware-engineering/SKILL.md
     triggers: [Rack, rack, middleware, config.middleware, config.ru, bin/rails, bin/rails middleware, call(env), short-circuit, request ID, trusted proxy]
-  rails-engines-railties-engineering:
-    source: rails-engines-railties-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/engines-railties-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
   rails-initialization-configuration-engineering:
     family: rails
     path: skills/rails-initialization-configuration-engineering/SKILL.md
