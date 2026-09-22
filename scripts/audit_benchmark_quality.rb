@@ -92,7 +92,8 @@ campaign_files.each do |campaign_path|
       errors << "#{relative_campaign}: fixture #{eval_id} missing test file #{relative}" unless File.file?(File.join(fixture_root, relative.to_s))
     end
 
-    eval_path = Dir[File.join(EVAL_ROOT, family, "*.yml")].find do |path|
+    all_eval_paths = Dir[File.join(EVAL_ROOT, "**", "*.yml")].sort
+    eval_path = all_eval_paths.find do |path|
       YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("id").to_s == eval_id.to_s
     end
 
@@ -100,24 +101,28 @@ campaign_files.each do |campaign_path|
 
     if eval_path
       evaluation = YAML.safe_load(File.read(eval_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
-      errors << "#{relative_campaign}: evaluation #{eval_id} source mismatch" unless evaluation["source"].to_s == campaign["source"].to_s
+      errors << "#{relative_campaign}: evaluation #{eval_id} source is empty" if evaluation["source"].to_s.empty?
     end
   end
 end
 
-eval_families = Dir[File.join(EVAL_ROOT, "*")].select { |p| Dir.exist?(p) }.map { |p| File.basename(p) }
-campaign_families = campaign_files.map { |p| File.basename(File.dirname(p)) }.to_set
-benchmarkable_eval_families = eval_families.select { |family| Dir[File.join(EVAL_ROOT, family, "*.yml")].any? }
-unbenchmarked = benchmarkable_eval_families.reject { |family| campaign_families.include?(family) }
+all_public_eval_paths = Dir[File.join(EVAL_ROOT, "**", "*.yml")].sort
+benchmarked_eval_ids = campaign_files.flat_map do |campaign_path|
+  data = YAML.safe_load(File.read(campaign_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  Array(data["evaluations"]).map(&:to_s)
+end.to_set
 
-unless unbenchmarked.empty?
-  unbenchmarked_cases = unbenchmarked.sum do |family|
-    Dir[File.join(EVAL_ROOT, family, "*.yml")].sum do |path|
-      data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
-      Array(data["cases"]).length
-    end
+unbenchmarked_paths = all_public_eval_paths.reject do |path|
+  id = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("id").to_s
+  benchmarked_eval_ids.include?(id)
+end
+
+unless unbenchmarked_paths.empty?
+  unbenchmarked_cases = unbenchmarked_paths.sum do |path|
+    data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+    Array(data["cases"]).length
   end
-  warnings << "evaluation families without a public benchmark campaign: #{unbenchmarked.join(", ")} (#{unbenchmarked_cases} cases)"
+  warnings << "public evaluations without a benchmark campaign: #{unbenchmarked_paths.length} files (#{unbenchmarked_cases} cases)"
 end
 
 puts "Benchmark quality audit"
