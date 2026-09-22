@@ -100,3 +100,22 @@ The repository includes `bin/routing-agent-ollama` as a concrete adapter for loc
       --output /tmp/routing-campaign.json
 
 The adapter asks the model for JSON-only routing output and validates the selected skills against `skill-manifest.yml`. It does not receive the expected routing labels. Ollama's current chat API supports JSON output through the `format` field; the adapter sets `stream=false` and `format=json` for normalized routing responses. citeturn544661view0
+
+
+## Real routing campaign
+
+Iteration 57 provides a single command for the concrete Ollama campaign:
+
+    ruby bin/routing-campaign \
+      --model "$OLLAMA_MODEL" \
+      --url "${OLLAMA_URL:-http://127.0.0.1:11434}" \
+      --output /tmp/routing-campaign
+
+The command first checks `/api/tags` and requires the requested local model to be present. It then runs the configured routing corpus through `bin/routing-eval` and produces:
+
+    /tmp/routing-campaign/campaign.json
+    /tmp/routing-campaign/routing-report.json
+
+The report identifies expected-primary/observed-primary confusion pairs, unstable cases across repetitions, mismatch rate, and per-case primary distributions.
+
+A failed or unavailable model run is not converted into a score. This preserves the distinction between **not measured** and **measured with failures**.
