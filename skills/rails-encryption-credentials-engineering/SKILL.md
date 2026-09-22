@@ -64,6 +64,11 @@ Avoid plaintext secrets in Git, credentials committed with key files, secret val
 ## Verification
 Resolve versions -> identify secret/encryption boundary -> inspect storage and runtime delivery -> select Rails-supported mechanism -> define lifecycle and rotation semantics -> test failure and recovery paths -> verify filtering -> run repository validation -> inspect CI evidence. Do not claim a secret is secure merely because it is encrypted at rest.
 
+## Rails 8.1 current framework considerations
+
+- Rails 8.1 supports command-line credential fetching, such as `rails credentials:fetch`, for deploy-time integrations.
+- Keep credential lookup within the encrypted credentials boundary and verify that command output, shell environment handling, and logging do not expose secret values.
+
 ## Source foundation
 - https://guides.rubyonrails.org/active_record_encryption.html
 - https://guides.rubyonrails.org/security.html
