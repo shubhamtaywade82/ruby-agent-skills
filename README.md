@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 50 — Rails Benchmark Coverage Expansion  
+> **Current milestone:** Iteration 51 — Rails Benchmark Coverage Completion  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -672,7 +672,7 @@ When adding a new skill or deepening an existing one:
 
 Latest implementation is being validated by the repository CI pipeline.
 
-This milestone closes the engineering/evaluation buildout with public contribution, security, changelog, and release-readiness contracts.
+This milestone completes public benchmark coverage for the Rails evaluation corpus with disposable fixture seams, paired execution controls, independent verification, and zero unbenchmarked Rails evaluations.
 
 
 ## Rails Encryption and Credentials Engineering
@@ -712,7 +712,7 @@ Iteration 47 hardens the benchmark system with fixture-seam validation, controll
 
 ## Rails Benchmark Coverage Expansion
 
-Iteration 49 starts measured benchmark coverage for the deep Rails evaluation corpus. The public campaign now covers Action Controller, Active Record, Routing, Validations, Authentication, Authorization, Cross-Boundary Authorization, Encryption/Credentials, and Serialization/Global ID with paired baseline/skills-enabled runs, deterministic fixtures, independent verification, and explicit disclosure of the remaining **18** unbenchmarked Rails evaluations.
+Iteration 49 started measured benchmark coverage for the deep Rails evaluation corpus. The public campaign established paired baseline/skills-enabled execution, deterministic fixtures, independent verification, and explicit coverage disclosure.
 
 ## Final Release and Public-Readiness Hardening
 
@@ -721,8 +721,11 @@ Iteration 48 adds public contribution and security entry points, a changelog bas
 
 ## Rails Security and Identity Benchmark Expansion
 
-Iteration 50 extends the public Rails benchmark campaign with five high-risk boundary evaluations: `authentication-contract`, `authorization-contract`, `rails-cross-boundary-authorization-security-contract`, `rails-encryption-credentials-contract`, and `rails-serialization-globalid-contract`.
+Iteration 50 expanded the Rails benchmark campaign with five high-risk identity/security boundaries: `authentication-contract`, `authorization-contract`, `rails-cross-boundary-authorization-security-contract`, `rails-encryption-credentials-contract`, and `rails-serialization-globalid-contract`. These fixtures exercise identity lifecycle, tenant/resource authorization, delayed execution, secret/encryption boundaries, representation allowlists, Global ID integrity, and signed-identifier verification.
 
-These fixtures deliberately exercise identity lifecycle, tenant/resource authorization, delayed execution, secret/encryption boundaries, representation allowlists, Global ID integrity, and signed-identifier verification. They measure functional behavior, tests, contract adherence, and scope control rather than textual similarity.
 
-The Rails benchmark campaign now covers **9** public evaluations. **18** public Rails evaluations remain outside the public campaign and are intentionally disclosed by the benchmark-quality audit.
+## Rails Benchmark Coverage Completion
+
+Iteration 51 completes the public Rails benchmark campaign. All **27** Rails evaluation families now have disposable implementation/test seams and are registered in the controlled benchmarks/rails/campaign.yml. The campaign enforces paired execution, three repetitions, fresh workspaces, shared fixtures for baseline/skills-enabled comparisons, and explicit hidden-case disclosure.
+
+The benchmark-quality audit now treats missing public Rails coverage as an error rather than a warning.
