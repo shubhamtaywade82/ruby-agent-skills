@@ -5,7 +5,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
 > **Current milestone:** Iteration 63 — Routing Campaign Intake Gate  
-> **Branch:** `feat/ai-skill-system-v2`
+> **Branch:** `feat/routing-campaign-intake-v1`
 
 ---
 
