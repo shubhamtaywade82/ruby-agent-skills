@@ -4,8 +4,8 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 63 — Routing Campaign Intake Gate  
-> **Branch:** `feat/routing-campaign-intake-v1`
+> **Current milestone:** Iteration 66 — External Routing Campaign Handoff  
+> **Branch:** `feat/routing-campaign-preflight-v1`
 
 ---
 
@@ -761,6 +761,18 @@ Iteration 58 adds `router/ROUTING_REMEDIATION.yml` and `bin/routing-compare`. Th
 ## Iteration 59 — Reproducible Routing Baseline/Candidate Experiment
 
 Iteration 59 adds `bin/routing-experiment`, which runs baseline and candidate routing-contract snapshots with the same agent command, model metadata, timeout, and repetitions, then applies the Iteration 58 comparison gate. This makes routing remediation experiments reproducible and isolates the routing contract as the intended experimental variable.
+
+## Iteration 66 — External Routing Campaign Handoff
+
+Iteration 66 adds a portable external-runtime handoff for the public routing campaign and defines the private/hidden benchmark boundary. The handoff captures the exact repository SHA, public 14-case/3-repetition protocol, model/runtime settings, and contract hashes, then emits an executable campaign command. Hidden routing cases and gold labels remain external-only and are explicitly forbidden from repository storage or agent exposure.
+
+## Iteration 65 — Routing Campaign Runtime Preflight
+
+Iteration 65 adds a pre-run runtime gate for the real routing campaign. Before any model case executes, the runner records the Ollama runtime version, exact model identity/digest, public case count, repetitions, expected total runs, execution controls, and repository contract hashes. The preflight JSON is preserved as part of campaign evidence when a real run is executed.
+
+## Iteration 64 — Real Routing Campaign Evidence Pack
+
+Iteration 64 adds `bin/routing-campaign-evidence`, which packages a completed public routing campaign together with its analysis, routing contract, repository contracts, and every raw per-run result file. The packager first enforces the Iteration 63 intake gate and records SHA-256 identities plus repository state. It creates a portable evidence boundary without fabricating a result when the external model runtime is unavailable.
 
 ## Iteration 63 — Routing Campaign Intake Gate
 

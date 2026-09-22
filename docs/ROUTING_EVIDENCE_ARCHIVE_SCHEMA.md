@@ -2,7 +2,7 @@
 
 Protocol version: 1
 
-An archive is a portable historical snapshot of a completed routing experiment evidence package.
+An archive is a portable historical snapshot of completed routing evidence. It accepts both skill-routing-experiment-v1 packages and skill-routing-campaign-v1 packages.
 
 ## Required structure
 
@@ -48,3 +48,10 @@ Every archived artifact records its original source path, archive-relative path,
 Archives therefore preserve the exact measured inputs and outputs used to create the evidence package. The archive itself must not be treated as a benchmark result unless its evidence package has a passing experiment gate.
 
 Generated archives are intended to live outside the source repository unless explicitly curated as release artifacts.
+
+## Evidence types
+
+- Experiment evidence uses skill-routing-experiment-v1 and its baseline/candidate remediation gate.
+- Single-campaign evidence uses skill-routing-campaign-v1 and the Iteration 63 intake gate.
+- Both evidence types require artifact hashes.
+- Campaign evidence must carry intake.verified = true.

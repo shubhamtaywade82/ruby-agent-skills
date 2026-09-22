@@ -14,6 +14,7 @@ ROOT = File.expand_path("..", __dir__)
 EVALUATOR = File.join(ROOT, "bin", "routing-eval")
 ADAPTER = File.join(ROOT, "bin", "routing-agent-ollama")
 ANALYZER = File.join(ROOT, "bin", "routing-analyze")
+PREFLIGHT = File.join(ROOT, "bin", "routing-campaign-preflight")
 VERIFIER = File.join(ROOT, "bin", "routing-campaign-verify")
 
 options = {
@@ -35,30 +36,27 @@ end.parse!
 
 abort "--model is required" if options[:model].to_s.empty?
 
-def get_json(url)
-  uri = URI(url)
-  request = Net::HTTP::Get.new(uri)
-  http = Net::HTTP.new(uri.host, uri.port)
-  http.use_ssl = uri.scheme == "https"
-  response = http.request(request)
-  abort "Ollama unavailable at #{url}: #{response.code} #{response.message}" unless response.is_a?(Net::HTTPSuccess)
-
-  JSON.parse(response.body)
-rescue SocketError, Errno::ECONNREFUSED, Errno::ETIMEDOUT, Net::OpenTimeout, Net::ReadTimeout => e
-  abort "Ollama unavailable at #{url}: #{e.message}"
-end
-
 base_url = options[:url].sub(%r{/+$}, "")
-tags = get_json("#{base_url}/api/tags")
-models = Array(tags["models"]).map { |entry| entry["name"].to_s }
-unless models.include?(options[:model])
-  abort "Ollama model not installed: #{options[:model]}. Available: #{models.join(", ")}"
-end
 
 FileUtils.mkdir_p(options[:output]) unless Dir.exist?(options[:output])
 campaign_json = File.join(options[:output], "campaign.json")
 report_json = File.join(options[:output], "routing-report.json")
+preflight_json = File.join(options[:output], "preflight.json")
 
+preflight_args = [
+  RbConfig.ruby,
+  PREFLIGHT,
+  "--model", options[:model],
+  "--url", base_url,
+  "--timeout", options[:timeout].to_s,
+  "--output", preflight_json
+]
+preflight_args.insert(4, "--runs", options[:runs].to_s) if options[:runs]
+
+preflight_stdout, preflight_stderr, preflight_status = Open3.capture3(*preflight_args, chdir: ROOT)
+warn preflight_stderr unless preflight_stderr.empty?
+puts preflight_stdout
+abort "routing campaign preflight failed with exit code #{preflight_status.exitstatus}" unless preflight_status.success?
 command = [
   "env",
   "RUBY_AGENT_PROVIDER=ollama",

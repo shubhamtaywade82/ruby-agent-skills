@@ -125,6 +125,31 @@ errors << "routing campaign verifier missing" unless File.file?(campaign_verifie
 errors << "manifest campaign intake schema path missing" unless routing_contract["campaign_intake_schema"].to_s == "docs/ROUTING_CAMPAIGN_INTAKE_SCHEMA.md"
 campaign_intake_schema_path = File.join(ROOT, routing_contract.fetch("campaign_intake_schema", ""))
 errors << "routing campaign intake schema missing" unless File.file?(campaign_intake_schema_path)
+errors << "manifest campaign evidence packager path missing" unless routing_contract["campaign_evidence_packager"].to_s == "bin/routing-campaign-evidence"
+campaign_evidence_packager_path = File.join(ROOT, routing_contract.fetch("campaign_evidence_packager", ""))
+errors << "routing campaign evidence packager missing" unless File.file?(campaign_evidence_packager_path)
+errors << "manifest campaign evidence schema path missing" unless routing_contract["campaign_evidence_schema"].to_s == "docs/ROUTING_CAMPAIGN_EVIDENCE_SCHEMA.md"
+campaign_evidence_schema_path = File.join(ROOT, routing_contract.fetch("campaign_evidence_schema", ""))
+errors << "routing campaign evidence schema missing" unless File.file?(campaign_evidence_schema_path)
+errors << "manifest campaign preflight path missing" unless routing_contract["campaign_preflight"].to_s == "bin/routing-campaign-preflight"
+campaign_preflight_path = File.join(ROOT, routing_contract.fetch("campaign_preflight", ""))
+errors << "routing campaign preflight missing" unless File.file?(campaign_preflight_path)
+errors << "manifest campaign preflight schema path missing" unless routing_contract["campaign_preflight_schema"].to_s == "docs/ROUTING_CAMPAIGN_PREFLIGHT_SCHEMA.md"
+campaign_preflight_schema_path = File.join(ROOT, routing_contract.fetch("campaign_preflight_schema", ""))
+errors << "routing campaign preflight schema missing" unless File.file?(campaign_preflight_schema_path)
+errors << "manifest external handoff path missing" unless routing_contract["external_handoff"].to_s == "bin/routing-campaign-handoff"
+external_handoff_path = File.join(ROOT, routing_contract.fetch("external_handoff", ""))
+errors << "routing external handoff missing" unless File.file?(external_handoff_path)
+errors << "manifest external handoff schema path missing" unless routing_contract["external_handoff_schema"].to_s == "docs/ROUTING_EXTERNAL_CAMPAIGN_SCHEMA.md"
+external_handoff_schema_path = File.join(ROOT, routing_contract.fetch("external_handoff_schema", ""))
+errors << "routing external handoff schema missing" unless File.file?(external_handoff_schema_path)
+errors << "manifest hidden benchmark contract path missing" unless routing_contract["hidden_benchmark_contract"].to_s == "router/ROUTING_HIDDEN_BENCHMARK.yml"
+hidden_benchmark_path = File.join(ROOT, routing_contract.fetch("hidden_benchmark_contract", ""))
+errors << "hidden benchmark contract missing" unless File.file?(hidden_benchmark_path)
+hidden_benchmark = YAML.safe_load(File.read(hidden_benchmark_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+errors << "hidden benchmark must be external-only" unless hidden_benchmark["source"] == "external-only"
+errors << "hidden benchmark gold labels must remain external-only" unless hidden_benchmark.fetch("cases", {})["gold_labels"] == "external-only"
+errors << "hidden benchmark repository storage must be forbidden" unless hidden_benchmark.fetch("cases", {})["repository_storage"] == "forbidden"
 errors << "manifest evidence schema path missing" unless routing_contract["evidence_schema"].to_s == "docs/ROUTING_EVIDENCE_SCHEMA.md"
 evidence_schema_path = File.join(ROOT, routing_contract.fetch("evidence_schema", ""))
 errors << "routing evidence schema missing" unless File.file?(evidence_schema_path)

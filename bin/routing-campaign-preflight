@@ -1,0 +1,110 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "net/http"
+require "open3"
+require "optparse"
+require "yaml"
+require "uri"
+
+ROOT = File.expand_path("..", __dir__)
+CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
+CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
+MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
+
+options = {
+  url: ENV.fetch("OLLAMA_URL", "http://127.0.0.1:11434"),
+  model: ENV["OLLAMA_MODEL"],
+  runs: nil,
+  timeout: 300,
+  output: nil
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign-preflight --model MODEL [options]"
+  opts.on("--model NAME", "Ollama model name") { |value| options[:model] = value }
+  opts.on("--url URL", "Ollama base URL") { |value| options[:url] = value }
+  opts.on("--runs COUNT", Integer, "Override repetitions per case") { |value| options[:runs] = value }
+  opts.on("--timeout SECONDS", Integer, "Planned per-run timeout") { |value| options[:timeout] = value }
+  opts.on("--output PATH", "Write preflight JSON to PATH") { |value| options[:output] = File.expand_path(value) }
+end.parse!
+
+abort "--model is required" if options[:model].to_s.empty?
+abort "--runs must be >= 1" if options[:runs] && options[:runs] < 1
+abort "--timeout must be >= 1" if options[:timeout].to_i < 1
+
+load_yaml = lambda do |path|
+  YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+end
+
+campaign = load_yaml.call(CAMPAIGN_PATH)
+cases = Array(load_yaml.call(CASES_PATH).fetch("cases"))
+manifest = load_yaml.call(MANIFEST_PATH)
+
+repetitions = options[:runs] || campaign.fetch("execution").fetch("repetitions").to_i
+expected_runs = cases.length * repetitions
+
+def get_json(url)
+  uri = URI(url)
+  request = Net::HTTP::Get.new(uri)
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = uri.scheme == "https"
+  response = http.request(request)
+  abort "Ollama unavailable at #{url}: #{response.code} #{response.message}" unless response.is_a?(Net::HTTPSuccess)
+  JSON.parse(response.body)
+rescue SocketError, Errno::ECONNREFUSED, Errno::ETIMEDOUT, Net::OpenTimeout, Net::ReadTimeout => e
+  abort "Ollama unavailable at #{url}: #{e.message}"
+end
+
+base_url = options[:url].sub(%r{/+$}, "")
+version = get_json("#{base_url}/api/version")
+tags = get_json("#{base_url}/api/tags")
+matches = Array(tags["models"]).select { |entry| entry["name"].to_s == options[:model] }
+abort "Ollama model not installed: #{options[:model]}" if matches.empty?
+model = matches.first
+
+git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_status.success?
+
+preflight = {
+  "protocol_version" => 1,
+  "preflight" => "skill-routing-preflight-v1",
+  "campaign" => {
+    "id" => campaign.fetch("id"),
+    "version" => campaign.fetch("version"),
+    "evaluation_set" => campaign.fetch("evaluation_set"),
+    "case_count" => cases.length,
+    "repetitions" => repetitions,
+    "expected_runs" => expected_runs
+  },
+  "runtime" => {
+    "provider" => "ollama",
+    "url" => base_url,
+    "version" => version,
+    "model" => {
+      "name" => model["name"],
+      "digest" => model["digest"],
+      "size" => model["size"],
+      "modified_at" => model["modified_at"]
+    }
+  },
+  "execution" => {
+    "timeout_seconds" => options[:timeout],
+    "fresh_workspace_per_run" => campaign.fetch("execution").fetch("fresh_workspace_per_run"),
+    "same_command_for_all_runs" => campaign.fetch("execution").fetch("same_command_for_all_runs")
+  },
+  "repository" => {
+    "git_sha" => git_sha.strip,
+    "manifest_sha256" => Digest::SHA256.file(MANIFEST_PATH).hexdigest,
+    "campaign_manifest_sha256" => Digest::SHA256.file(CAMPAIGN_PATH).hexdigest,
+    "routing_cases_sha256" => Digest::SHA256.file(CASES_PATH).hexdigest
+  }
+}
+
+if options[:output]
+  File.write(options[:output], JSON.pretty_generate(preflight) + "\n", encoding: "UTF-8")
+end
+
+puts JSON.pretty_generate(preflight)

@@ -1,0 +1,110 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "open3"
+require "optparse"
+
+ROOT = File.expand_path("..", __dir__)
+VERIFIER = File.join(ROOT, "bin", "routing-campaign-verify")
+
+options = { output: nil, allow_dirty: false }
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign-evidence CAMPAIGN_DIR [options]"
+  opts.on("--output PATH", "Write campaign evidence JSON to PATH") { |value| options[:output] = File.expand_path(value) }
+  opts.on("--allow-dirty", "Allow evidence capture from a dirty Git worktree") { options[:allow_dirty] = true }
+end.parse!
+
+campaign_dir = File.expand_path(ARGV.fetch(0) { abort "campaign directory is required" })
+campaign_path = File.join(campaign_dir, "campaign.json")
+report_path = File.join(campaign_dir, "routing-report.json")
+abort "campaign.json not found: #{campaign_path}" unless File.file?(campaign_path)
+abort "routing-report.json not found: #{report_path}" unless File.file?(report_path)
+
+campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+report = JSON.parse(File.read(report_path, encoding: "UTF-8"))
+
+verify_command = [RbConfig.ruby, VERIFIER, campaign_path]
+verify_command << "--allow-dirty" if options[:allow_dirty]
+_stdout, stderr, status = Open3.capture3(*verify_command, chdir: ROOT)
+warn stderr unless stderr.empty?
+abort "campaign intake verification failed" unless status.success?
+
+def sha256(path)
+  Digest::SHA256.file(path).hexdigest
+end
+
+git_sha_out, git_sha_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_sha_status.success?
+branch_out, branch_status = Open3.capture2("git", "-C", ROOT, "branch", "--show-current")
+git_branch = branch_status.success? ? branch_out.strip : ""
+git_branch = ENV["GITHUB_HEAD_REF"].to_s.strip if git_branch.empty?
+git_branch = ENV["GITHUB_REF_NAME"].to_s.strip if git_branch.empty?
+git_branch = "detached" if git_branch.empty?
+status_out, status_status = Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all")
+abort "unable to inspect repository worktree" unless status_status.success?
+status_entries = status_out.lines.map(&:strip).reject(&:empty?)
+worktree_clean = status_entries.empty?
+abort "repository worktree is dirty; use --allow-dirty to capture it explicitly" unless worktree_clean || options[:allow_dirty]
+
+routing_contract = campaign.fetch("routing_contract")
+artifact_paths = {
+  "campaign" => campaign_path,
+  "routing_report" => report_path,
+  "routing_contract" => routing_contract,
+  "skill_manifest" => File.join(ROOT, "skill-manifest.yml"),
+  "campaign_manifest" => File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"),
+  "routing_cases" => File.join(ROOT, "router", "ROUTING_CASES.yml"),
+  "result_schema" => File.join(ROOT, "docs", "ROUTING_EVAL_RESULT_SCHEMA.md"),
+  "campaign_intake_schema" => File.join(ROOT, "docs", "ROUTING_CAMPAIGN_INTAKE_SCHEMA.md")
+}
+
+preflight_path = File.join(File.dirname(campaign_path), "preflight.json")
+artifact_paths["preflight"] = preflight_path if File.file?(preflight_path)
+
+campaign.fetch("cases").each do |case_id, case_data|
+  Array(case_data.fetch("runs")).each do |run|
+    raw_path = run["raw_result_file"].to_s
+    next if raw_path.empty?
+    artifact_paths["raw_#{case_id}_run_#{run.fetch("run_number")}"] = raw_path
+  end
+end
+
+artifacts = {}
+artifact_paths.each do |key, path|
+  abort "artifact #{key} not found: #{path}" unless File.file?(path)
+  artifacts[key] = {
+    "path" => File.expand_path(path),
+    "sha256" => sha256(path),
+    "bytes" => File.size(path)
+  }
+end
+
+evidence = {
+  "protocol_version" => 1,
+  "evidence" => "skill-routing-campaign-v1",
+  "campaign" => campaign.fetch("campaign"),
+  "campaign_version" => campaign.fetch("campaign_version"),
+  "routing_case_count" => campaign.fetch("routing_case_count"),
+  "requested_repetitions" => campaign.fetch("requested_repetitions"),
+  "repository" => {
+    "git_sha" => git_sha_out.strip,
+    "git_branch" => git_branch,
+    "git_status" => worktree_clean ? "clean" : "dirty-allowed",
+    "worktree_clean" => worktree_clean,
+    "status_entries" => status_entries
+  },
+  "agent" => campaign.fetch("agent"),
+  "campaign_metrics" => campaign.fetch("metrics"),
+  "analysis" => report.fetch("summary"),
+  "artifacts" => artifacts,
+  "intake" => { "verified" => true, "verifier" => "bin/routing-campaign-verify" },
+  "replay" => { "campaign_runner" => "bin/routing-campaign" }
+}
+
+if options[:output]
+  File.write(options[:output], JSON.pretty_generate(evidence) + "\n", encoding: "UTF-8")
+end
+
+puts JSON.pretty_generate(evidence)
