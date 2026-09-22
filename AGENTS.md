@@ -697,3 +697,25 @@ For credentials, secret, cryptographic key, or Active Record Encryption changes:
 - use synthetic secrets in tests and never print real credentials;
 - verify missing-key and failure-closed behavior in production-like environments;
 - do not claim security from encryption alone: access control, key custody, logging, backup, rotation, and recovery remain separate contracts.
+
+
+## Rails serialization/Global ID changes
+
+For serialization, JSON, Global ID, Signed Global ID, or Active Job argument changes:
+- resolve Ruby/Rails/Active Model/Active Job/GlobalID versions first;
+- classify the representation as internal, API-facing, browser-facing, queued, persisted, or cross-application;
+- define the serialized schema and owner explicitly rather than exposing model/database shape accidentally;
+- prefer explicit allowlists and exclude sensitive attributes by default;
+- inspect nested association cardinality, preloading, query count, recursion, and payload size;
+- distinguish as_json representation from final JSON encoding;
+- treat serialized payloads as compatibility surfaces and classify additive versus breaking changes;
+- use Global ID for identity references and do not treat it as authorization;
+- use Signed Global ID when tamper resistance is needed; define purpose and expiry explicitly;
+- restrict Global ID locator classes/applications where untrusted identifiers are resolved;
+- authorize the resolved object after identity verification;
+- distinguish malformed, missing, and temporarily unavailable Global ID targets;
+- keep Active Job arguments small, deterministic, queue-safe, and deployment-compatible;
+- custom serializers must use supported primitive/container representations and respect initialization/reload lifecycle;
+- define explicit policy for ActiveJob deserialization failures;
+- verify exact payloads, sensitive-field omission, query performance, identity/security semantics, and compatibility fixtures;
+- do not claim serialization compatibility or identity security from one happy-path test.
