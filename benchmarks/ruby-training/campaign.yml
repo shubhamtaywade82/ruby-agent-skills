@@ -29,3 +29,4 @@ controls:
   verifier: scripts/verify_training_eval.rb
   generated_results_dir: benchmark-results
   hidden_cases: external-only
+  require_complete_repetitions: true
