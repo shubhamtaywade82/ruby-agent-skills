@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 42 — Rails Serialization and Global IDs Engineering  
+> **Current milestone:** Iteration 43 — Rails Operational Tasks and Maintenance  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -53,9 +53,9 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **73** |
-| Implementation patterns | **351** |
-| Evaluation cases | **151** |
+| Skills | **74** |
+| Implementation patterns | **364** |
+| Evaluation cases | **164** |
 | Dedicated system/contract tests | **50+** |
 | Manifest version | **2** |
 
@@ -668,13 +668,13 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 42 — Rails Serialization and Global IDs Engineering**
+**Iteration 43 — Rails Operational Tasks and Maintenance**
 
 Latest implementation is being validated by the repository CI pipeline.
 
 Next milestone:
 
-**Iteration 42 — Rails Serialization and Global IDs Engineering**
+**Iteration 43 — Rails Operational Tasks and Maintenance**
 
 
 ## Rails Encryption and Credentials Engineering
@@ -685,3 +685,8 @@ Iteration 41 adds explicit contracts for Rails encrypted credentials, master-key
 ## Rails Serialization and Global IDs Engineering
 
 Iteration 42 adds explicit contracts for Rails serialization ownership, JSON representation, nested payloads, sensitive-field exclusion, serialized payload compatibility, Global ID identity, Signed Global ID integrity, locator restrictions, resolution failures, Active Job arguments, and custom serializers.
+
+ 
+## Rails Operational Tasks and Maintenance
+
+Iteration 43 adds executable contracts for custom Rake tasks, runner workflows, maintenance and cleanup, environment gates, dry-runs, idempotency, batching/checkpointing, locking, invariant preservation, partial failures, operational observability, scheduler overlap, data-repair verification, and production runbooks.
