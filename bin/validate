@@ -52,3 +52,4 @@ ruby -I"$ROOT/test" "$ROOT/test/rails_validations_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_rack_middleware_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/rails_initialization_configuration_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_engines_railties_system_test.rb"
