@@ -34,16 +34,16 @@ class RailsHotwireSystemTest < Minitest::Test
     skill = manifest.fetch("skills").fetch("rails-hotwire")
 
     assert_equal "skills/rails-hotwire/SKILL.md", skill.fetch("path")
-    %w[
-      Turbo
-      Hotwire
-      Turbo Drive
-      Turbo Frames
-      Turbo Streams
-      Stimulus
-      morphing
-      progressive enhancement
-      turbo-rails
+    [
+      "Turbo",
+      "Hotwire",
+      "Turbo Drive",
+      "Turbo Frames",
+      "Turbo Streams",
+      "Stimulus",
+      "morphing",
+      "progressive enhancement",
+      "turbo-rails"
     ].each { |trigger| assert_includes skill.fetch("triggers"), trigger }
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
