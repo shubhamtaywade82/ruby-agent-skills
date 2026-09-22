@@ -66,6 +66,7 @@ options = {
   case_id: nil,
   runs: nil,
   timeout: 300,
+  router: File.join(ROOT, "router", "ROUTING.md"),
   provider: ENV["RUBY_AGENT_PROVIDER"],
   model: ENV["RUBY_AGENT_MODEL"],
   model_version: ENV["RUBY_AGENT_MODEL_VERSION"],
@@ -79,6 +80,7 @@ OptionParser.new do |opts|
   opts.on("--runs COUNT", Integer, "Repetitions per case; campaign default is used when omitted") { |value| options[:runs] = value }
   opts.on("--output DIR_OR_FILE", "Output directory or campaign JSON path") { |value| options[:output] = value }
   opts.on("--timeout SECONDS", Integer, "Maximum agent runtime per case repetition") { |value| options[:timeout] = value }
+  opts.on("--router PATH", "Routing contract to expose to the agent") { |value| options[:router] = File.expand_path(value) }
   opts.on("--provider NAME") { |value| options[:provider] = value }
   opts.on("--model NAME") { |value| options[:model] = value }
   opts.on("--model-version VALUE") { |value| options[:model_version] = value }
@@ -150,7 +152,7 @@ selected.each do |entry|
       "RUBY_AGENT_ROUTING_CASE_FILE" => case_file,
       "RUBY_AGENT_ROUTING_RESULT_FILE" => result_file,
       "RUBY_AGENT_ROUTING_MANIFEST_FILE" => MANIFEST_PATH,
-      "RUBY_AGENT_ROUTING_ROUTER_FILE" => File.join(ROOT, "router", "ROUTING.md")
+      "RUBY_AGENT_ROUTING_ROUTER_FILE" => options[:router]
     }
 
     execution = execute_agent(env, options[:command], run_dir, options[:timeout])
@@ -254,6 +256,7 @@ campaign = {
   "evaluation" => "skill-routing-v1",
   "campaign" => campaign_config.fetch("id"),
   "campaign_version" => campaign_config.fetch("version"),
+  "routing_contract" => File.expand_path(options[:router]),
   "agent" => {
     "provider" => options[:provider],
     "model" => options[:model],
