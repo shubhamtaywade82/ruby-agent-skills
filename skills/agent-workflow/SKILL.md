@@ -59,6 +59,16 @@ Add focused skills for the actual behavior. For cross-layer Rails changes, inclu
 
 Patterns are optional. Select a pattern only when repository evidence or task requirements justify it.
 
+## Routing quality
+
+- Treat activation triggers as signals, not automatic routing verdicts.
+- Select a **Primary skill** that owns the dominant engineering boundary.
+- Add **Secondary skills** for dependent constraints or additional execution boundaries.
+- Do not choose a skill only because a trigger token appears.
+- Inspect the repository and consult router/ROUTING.md before resolving overlapping ownership.
+- Use router/ROUTING_CASES.yml as adversarial routing guidance for high-risk boundary overlaps.
+- Do not create a new skill merely because a task crosses two existing boundaries.
+
 ## Pattern-selection rule
 
 Use this evidence order:
