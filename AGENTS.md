@@ -594,6 +594,7 @@ For Rails asset/build changes:
 ## Rails Hotwire changes
 
 For Hotwire changes:
+- preserve Turbo Frames as explicit DOM replacement boundaries and treat their IDs/targets as identifiers rather than authorization;
 - resolve the Ruby/Rails and turbo-rails/Stimulus versions and inspect the JavaScript loading strategy before implementation;
 - classify the interaction as Turbo Drive, Frame, Stream, morph/refresh, Stimulus lifecycle, or a cross-boundary composition;
 - preserve server-side authentication, authorization, validation, CSRF, status, redirect, and caching semantics;
