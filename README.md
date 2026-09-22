@@ -668,13 +668,13 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 48 — Final Release and Public-Readiness Hardening**
+**Iteration 47 — Evaluation and Benchmark Hardening**
 
 Latest implementation is being validated by the repository CI pipeline.
 
 Next milestone:
 
-**Iteration 47 — Evaluation and Benchmark Hardening**
+**Iteration 48 — Final Release and Public-Readiness Hardening**
 
 
 ## Rails Encryption and Credentials Engineering
