@@ -63,3 +63,10 @@ ruby -I"$ROOT/test" "$ROOT/test/rails_operational_tasks_maintenance_system_test.
 ruby -I"$ROOT/test" "$ROOT/test/rails_cross_boundary_authorization_security_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_staff_principal_architecture_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/rails_asset_build_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_authentication_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_authorization_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_hotwire_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_routing_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/repository_completeness_system_test.rb"
