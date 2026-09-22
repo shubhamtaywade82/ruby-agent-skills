@@ -671,7 +671,7 @@ For Rails Engine, Railtie, plugin, or mountable-extension changes:
 - classify the extension as Engine, mountable Engine, Railtie-only plugin, or ordinary gem;
 - inspect engine/railtie files, gemspec, namespace, mounts, routes, initializers, generators, tasks, assets, migrations, and dummy application;
 - keep host application authority explicit; do not leak engine internals into host behavior without a supported contract;
-- use namespace isolation when ownership requires it and do not confuse isolation with authorization;
+- use namespace isolation and `isolate_namespace` when ownership requires it and do not confuse isolation with authorization;
 - treat engine mounts/routes as explicit exposure and security boundaries;
 - define engine configuration as a public namespaced contract rather than reading arbitrary host globals;
 - coordinate Engine/Railtie lifecycle with initialization/configuration and Zeitwerk rules;
