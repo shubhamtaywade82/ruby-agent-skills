@@ -304,7 +304,7 @@ skills:
   rails-engines-railties-engineering:
     family: rails
     path: skills/rails-engines-railties-engineering/SKILL.md
-    triggers: [Rails::Engine, Rails::Railtie, Engine, Railtie, plugin, mountable, isolate_namespace, routes, engine routes, engine, engine.rb, railtie.rb, generators, engine gemspec]
+    triggers: [Rails::Engine, Rails::Railtie, Engine, Railtie, plugin, mountable, isolate_namespace, routes, engine routes, engine, engine.rb, railtie.rb, generators, gemspec, engine gemspec]
   rails-hotwire:
     family: rails
     path: skills/rails-hotwire/SKILL.md
