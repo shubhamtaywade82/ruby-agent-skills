@@ -47,6 +47,22 @@ When two skills appear equally plausible, inspect the ownership language in rout
 
 Do not invent a new skill merely because a task crosses two existing boundaries. Prefer composition of existing skills when ownership remains clear.
 
+## Empirical evaluation
+
+Iteration 54 adds a provider-neutral routing evaluation runner. An external agent command receives the routing case through environment variables and writes a JSON result containing the selected primary and secondary skills.
+
+Run a single case:
+
+    ruby bin/routing-eval --command 'YOUR_ROUTING_AGENT_COMMAND' --case tenant-scoped-resource-access --output /tmp/routing-result.json
+
+Run the complete routing corpus:
+
+    ruby bin/routing-eval --command 'YOUR_ROUTING_AGENT_COMMAND' --output /tmp/routing-campaign.json
+
+The runner reports primary-skill accuracy, required-secondary-skill recall, unexpected secondary selections, and completion. It measures actual agent behavior; it does not claim routing quality merely because the contract exists.
+
+See docs/ROUTING_EVAL_RESULT_SCHEMA.md for the result protocol.
+
 ## Validation
 
 Run:
