@@ -1,7 +1,7 @@
 id: rails-framework-public-v1
-version: 1
+version: 2
 evaluation_set: rails
-source: rails-framework-v1
+source: rails-framework-v2
 fixture_root: benchmarks/rails/fixtures
 verifier: scripts/verify_rails_eval.rb
 evaluations:
@@ -9,6 +9,11 @@ evaluations:
   - active-record-contract
   - rails-routing-contract
   - validations-contract
+  - authentication-contract
+  - authorization-contract
+  - rails-cross-boundary-authorization-security-contract
+  - rails-encryption-credentials-contract
+  - rails-serialization-globalid-contract
 execution:
   repetitions: 3
   paired: true
