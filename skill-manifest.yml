@@ -18,6 +18,7 @@ routing:
   result_schema: docs/ROUTING_EVAL_RESULT_SCHEMA.md
   evaluation_runner: bin/routing-eval
   campaign_manifest: router/ROUTING_CAMPAIGN.yml
+  ollama_adapter: bin/routing-agent-ollama
 
 skills:
   rails-test-engineering:
