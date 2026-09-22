@@ -99,7 +99,8 @@ inventory.each do |label, expected|
   errors << "README #{label} count #{actual.inspect} != #{expected}" unless actual == expected
 end
 
-errors << "README current milestone is not an active post-audit milestone" unless readme.match?(/Current milestone:\*\* Iteration (?:48|49|50|51)\b/)
+current_milestone = readme[/Current milestone:\*\* Iteration (\d+)/, 1].to_i
+errors << "README current milestone is not an active post-audit milestone" unless current_milestone >= 51
 errors << "README still contains the stale pre-Iteration-46 roadmap text" if readme.include?("The next planned deep Rails boundary is **Authorization Engineering**")
 
 puts "Repository completeness audit"
