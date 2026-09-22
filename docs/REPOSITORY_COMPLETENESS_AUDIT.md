@@ -17,7 +17,7 @@ The audit checks:
 
 ## Current inventory
 
-At Iteration 46 the repository contains **76 skills**, **393 implementation patterns**, and **206 evaluation cases**.
+At Iteration 46 the repository contains **76 skills**, **393 implementation patterns**, and **392 evaluation cases**.
 
 The repository-wide validator executes **40 system tests**. Every system test is required to appear in bin/validate.
 
