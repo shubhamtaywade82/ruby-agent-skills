@@ -624,3 +624,22 @@ For authentication changes:
 - require fresh authentication for security-sensitive credential/privilege changes when the product/security contract requires it;
 - add deterministic tests for success and rejection paths, expiry, revocation, fixation, recovery replay, and abuse controls;
 - run bin/validate and security tooling, and report only observed verification evidence.
+
+
+## Rails Rack/middleware changes
+
+For Rack and middleware changes:
+- resolve Ruby, Rails, Rack, server, and proxy/runtime versions before implementation;
+- inspect the actual middleware stack in relevant environments and use `bin/rails middleware` or equivalent evidence;
+- treat middleware order as behavior, not formatting;
+- keep custom middleware narrowly cross-cutting and out of domain authorization/business-rule ownership;
+- preserve the Rack `[status, headers, body]` contract and body lifecycle;
+- make short-circuit responses explicit about downstream execution, headers, telemetry, and security;
+- preserve intentional exception ownership and do not use broad middleware rescue as a generic error sink;
+- keep request state local and review shared state for thread/fiber/process safety;
+- reuse the repository's authoritative request-ID/correlation and telemetry mechanisms;
+- treat forwarded/proxy headers as untrusted until the deployment trust boundary establishes their authority;
+- ensure rate limiting accounts for worker/process/instance topology and bounded shared state;
+- test middleware directly and test registration/order when stack composition is contractual;
+- verify environment-specific stacks and production proxy behavior where relevant;
+- report measured verification evidence rather than claiming correctness from static inspection.
