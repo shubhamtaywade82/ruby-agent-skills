@@ -1,0 +1,13 @@
+version: 1
+id: skill-routing-public-v1
+evaluation_set: skill-routing
+source: repository-routing-contract-v1
+cases_file: router/ROUTING_CASES.yml
+execution:
+  repetitions: 3
+  fresh_workspace_per_run: true
+  same_command_for_all_runs: true
+controls:
+  require_complete_repetitions: true
+  hidden_cases: external-only
+  allow_additional_secondary_skills: true
