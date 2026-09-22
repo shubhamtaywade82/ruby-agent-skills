@@ -14,6 +14,7 @@ The controller owns request interpretation, boundary input filtering, request-sc
 ## Activate when
 
 - adding or changing Action Controller behavior beyond a simple CRUD action
+- rendering Markdown responses with `render markdown:`
 - changing params, strong parameters, nested input, or request metadata
 - changing render, redirect, status, headers, content type, or response body behavior
 - adding or changing sessions, cookies, or flash state
