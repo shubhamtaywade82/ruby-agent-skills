@@ -45,8 +45,11 @@ end
 
 git_sha_stdout, git_sha_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
 abort "unable to resolve repository HEAD" unless git_sha_status.success?
-git_branch_stdout, git_branch_status = Open3.capture2("git", "-C", ROOT, "symbolic-ref", "--short", "HEAD")
-abort "unable to resolve repository branch" unless git_branch_status.success?
+git_branch_stdout, git_branch_status = Open3.capture2("git", "-C", ROOT, "branch", "--show-current")
+git_branch = git_branch_status.success? ? git_branch_stdout.strip : ""
+git_branch = ENV["GITHUB_HEAD_REF"].to_s.strip if git_branch.empty?
+git_branch = ENV["GITHUB_REF_NAME"].to_s.strip if git_branch.empty?
+git_branch = "detached" if git_branch.empty?
 git_status_stdout, git_status_status = Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all")
 abort "unable to inspect repository worktree" unless git_status_status.success?
 worktree_entries = git_status_stdout.lines.map(&:strip).reject(&:empty?)
@@ -63,7 +66,7 @@ evidence = {
   "evidence" => "skill-routing-experiment-v1",
   "repository" => {
     "git_sha" => git_sha_stdout.strip,
-    "git_branch" => git_branch_stdout.strip,
+    "git_branch" => git_branch,
     "git_status" => worktree_clean ? "clean" : "dirty-allowed",
     "worktree_clean" => worktree_clean,
     "status_entries" => worktree_entries
