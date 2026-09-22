@@ -712,7 +712,7 @@ Iteration 47 hardens the benchmark system with fixture-seam validation, controll
 
 ## Rails Benchmark Coverage Expansion
 
-Iteration 49 starts measured benchmark coverage for the deep Rails evaluation corpus. The public campaign now covers Action Controller, Active Record, Routing, Validations, Authentication, Authorization, Cross-Boundary Authorization, Encryption/Credentials, and Serialization/Global ID with paired baseline/skills-enabled runs, deterministic fixtures, independent verification, and explicit disclosure of the remaining **19** unbenchmarked Rails evaluations.
+Iteration 49 starts measured benchmark coverage for the deep Rails evaluation corpus. The public campaign now covers Action Controller, Active Record, Routing, Validations, Authentication, Authorization, Cross-Boundary Authorization, Encryption/Credentials, and Serialization/Global ID with paired baseline/skills-enabled runs, deterministic fixtures, independent verification, and explicit disclosure of the remaining **18** unbenchmarked Rails evaluations.
 
 ## Final Release and Public-Readiness Hardening
 
@@ -725,4 +725,4 @@ Iteration 50 extends the public Rails benchmark campaign with five high-risk bou
 
 These fixtures deliberately exercise identity lifecycle, tenant/resource authorization, delayed execution, secret/encryption boundaries, representation allowlists, Global ID integrity, and signed-identifier verification. They measure functional behavior, tests, contract adherence, and scope control rather than textual similarity.
 
-The Rails benchmark campaign now covers **9** public evaluations. **19** public Rails evaluations remain outside the public campaign and are intentionally disclosed by the benchmark-quality audit.
+The Rails benchmark campaign now covers **9** public evaluations. **18** public Rails evaluations remain outside the public campaign and are intentionally disclosed by the benchmark-quality audit.
