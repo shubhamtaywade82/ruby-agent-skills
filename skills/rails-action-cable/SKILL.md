@@ -28,6 +28,7 @@ connection authentication
 Rails documents Action Cable around connections, consumers, channels, subscriptions, streams, and broadcastings. Broadcastings are online/time-dependent rather than durable message queues; clients that are not subscribed when a broadcast is emitted do not receive that past broadcast.
 
 ## Activate when
+- configuring or reviewing Solid Cable as the Action Cable pub/sub backend
 
 - adding or changing `ApplicationCable::Connection`;
 - adding or changing an Action Cable channel;
