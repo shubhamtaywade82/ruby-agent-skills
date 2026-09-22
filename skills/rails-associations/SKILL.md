@@ -395,6 +395,11 @@ Run, as applicable:
 
 Report actual verification evidence; never infer relationship correctness from a passing model boot.
 
+## Rails 8.1 current framework considerations
+
+- Rails 8.1 supports deprecated Active Record associations with reporting modes such as warning, raising, or notification.
+- Use association deprecation as migration evidence: identify callers, transition them to the replacement contract, and remove the deprecated boundary only after usage is eliminated.
+
 ## Source foundation
 
 Primary current Rails source:
