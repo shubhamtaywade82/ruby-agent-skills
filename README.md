@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 47 — Evaluation and Benchmark Hardening  
+> **Current milestone:** Iteration 48 — Final Release and Public-Readiness Hardening  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -56,7 +56,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **41** |
+| Dedicated system/contract tests | **42** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -668,13 +668,11 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 47 — Evaluation and Benchmark Hardening**
+**Iteration 48 — Final Release and Public-Readiness Hardening**
 
 Latest implementation is being validated by the repository CI pipeline.
 
-Next milestone:
-
-**Iteration 48 — Final Release and Public-Readiness Hardening**
+This milestone closes the engineering/evaluation buildout with public contribution, security, changelog, and release-readiness contracts.
 
 
 ## Rails Encryption and Credentials Engineering
@@ -710,3 +708,8 @@ Iteration 46 adds repository-level completeness enforcement for manifest registr
 ## Evaluation and Benchmark Hardening
 
 Iteration 47 hardens the benchmark system with fixture-seam validation, controlled campaign requirements, public/hidden coverage disclosure, and campaign provenance preserved in campaign results. Public evaluation families without campaigns are reported explicitly rather than being treated as measured benchmark evidence.
+
+
+## Final Release and Public-Readiness Hardening
+
+Iteration 48 adds public contribution and security entry points, a changelog baseline, and an executable release-readiness audit covering required publication metadata, stale inventory/release markers, and generated benchmark artifacts.
