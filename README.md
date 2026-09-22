@@ -712,7 +712,7 @@ Iteration 47 hardens the benchmark system with fixture-seam validation, controll
 
 Iteration 49 started measured benchmark coverage for the deep Rails evaluation corpus. The public campaign established paired baseline/skills-enabled execution, deterministic fixtures, independent verification, and explicit coverage disclosure.
 
-## Final Release and Public-Readiness Hardening
+## Iteration 48 — Final Release and Public-Readiness Hardening
 
 Iteration 48 adds public contribution and security entry points, a changelog baseline, and an executable release-readiness audit covering required publication metadata, stale inventory/release markers, and generated benchmark artifacts.
 
