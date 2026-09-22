@@ -68,6 +68,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
     assert_equal "bin/routing-analyze", routing.fetch("campaign_analyzer")
     assert_equal "router/ROUTING_REMEDIATION.yml", routing.fetch("remediation_policy")
     assert_equal "bin/routing-compare", routing.fetch("remediation_comparator")
+    assert_equal "bin/routing-experiment", routing.fetch("experiment_runner")
   end
 
   def test_validator_executes_this_system_test
