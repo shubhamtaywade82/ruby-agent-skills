@@ -215,7 +215,7 @@ Avoid:
 - environment-specific stack changes with no test coverage
 - assuming middleware order is cosmetic
 - claiming thread safety without exercising the shared state
-- using middleware to compensate for a missing application-layer abstraction
+- Do not use middleware to compensate for a missing application-layer abstraction
 
 ## Agent review checklist
 
