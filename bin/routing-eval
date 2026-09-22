@@ -1,0 +1,192 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "optparse"
+require "set"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
+MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
+
+options = {
+  output: File.join(ROOT, "routing-results", "campaign.json"),
+  case_id: nil,
+  timeout: 300
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-eval --command COMMAND [options]"
+  opts.on("--command COMMAND", "Trusted command that selects skills and writes the result JSON") { |value| options[:command] = value }
+  opts.on("--case ID", "Run one routing case") { |value| options[:case_id] = value }
+  opts.on("--output DIR_OR_FILE", "Output directory or campaign JSON path") { |value| options[:output] = value }
+  opts.on("--timeout SECONDS", Integer, "Reserved for adapter implementations") { |value| options[:timeout] = value }
+end.parse!
+
+abort "usage: ruby bin/routing-eval --command COMMAND [options]" unless options[:command]
+
+cases_data = YAML.safe_load(File.read(CASES_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+manifest = YAML.safe_load(File.read(MANIFEST_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+cases = Array(cases_data.fetch("cases"))
+skills = manifest.fetch("skills").keys.to_set
+
+selected = options[:case_id] ? cases.select { |entry| entry.fetch("id") == options[:case_id] } : cases
+abort "unknown routing case: #{options[:case_id]}" if options[:case_id] && selected.empty?
+
+output = File.expand_path(options[:output])
+output_dir = output.end_with?(".json") ? File.dirname(output) : output
+FileUtils.mkdir_p(output_dir) unless Dir.exist?(output_dir)
+
+results = {}
+primary_matches = 0
+secondary_expected = 0
+secondary_matched = 0
+
+selected.each do |entry|
+  case_id = entry.fetch("id")
+  case_dir = File.join(output_dir, case_id)
+  FileUtils.mkdir_p(case_dir)
+
+  prompt_file = File.join(case_dir, "prompt.txt")
+  case_file = File.join(case_dir, "case.yml")
+  result_file = File.join(case_dir, "result.json")
+
+  File.write(prompt_file, entry.fetch("prompt").to_s + "
+", encoding: "UTF-8")
+  File.write(case_file, YAML.dump(entry), encoding: "UTF-8")
+  FileUtils.rm_f(result_file)
+
+  env = {
+    "RUBY_AGENT_ROUTING_CASE_ID" => case_id,
+    "RUBY_AGENT_ROUTING_PROMPT_FILE" => prompt_file,
+    "RUBY_AGENT_ROUTING_CASE_FILE" => case_file,
+    "RUBY_AGENT_ROUTING_RESULT_FILE" => result_file,
+    "RUBY_AGENT_ROUTING_MANIFEST_FILE" => MANIFEST_PATH,
+    "RUBY_AGENT_ROUTING_ROUTER_FILE" => File.join(ROOT, "router", "ROUTING.md")
+  }
+
+  command = env.map { |key, value| "#{key}=#{Shellwords.escape(value)}" }.join(" ") + " " + options[:command]
+  started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+  stdout = +""
+  stderr = +""
+  status = nil
+
+  Open3.popen3(env, options[:command], chdir: case_dir) do |stdin, out, err, wait|
+    stdin.close
+    stdout = out.read
+    stderr = err.read
+    status = wait.value
+  end
+
+  duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
+
+  unless File.file?(result_file)
+    results[case_id] = {
+      "case_id" => case_id,
+      "status" => "invalid",
+      "error" => "agent did not write RUBY_AGENT_ROUTING_RESULT_FILE",
+      "agent" => {
+        "command" => options[:command],
+        "exit_code" => status&.exitstatus,
+        "stdout" => stdout,
+        "stderr" => stderr,
+        "duration_seconds" => duration.round(4)
+      }
+    }
+    next
+  end
+
+  begin
+    observed = JSON.parse(File.read(result_file, encoding: "UTF-8"))
+    primary = observed.fetch("primary_skill").to_s
+    secondary = Array(observed.fetch("secondary_skills")).map(&:to_s).uniq
+
+    validation_errors = []
+    validation_errors << "primary skill #{primary} is not registered" unless skills.include?(primary)
+    validation_errors << "secondary skills contain the primary skill" if secondary.include?(primary)
+    unknown_secondary = secondary.reject { |skill| skills.include?(skill) }
+    validation_errors << "unknown secondary skills: #{unknown_secondary.join(", ")}" unless unknown_secondary.empty?
+
+    expected_primary = entry.fetch("primary_skills").first
+    expected_secondary = Array(entry.fetch("secondary_skills"))
+    matched_secondary = expected_secondary & secondary
+    unexpected_secondary = secondary - expected_secondary
+
+    primary_match = primary == expected_primary
+    secondary_recall = expected_secondary.empty? ? 1.0 : matched_secondary.length.fdiv(expected_secondary.length)
+
+    primary_matches += 1 if primary_match && validation_errors.empty?
+    secondary_expected += expected_secondary.length
+    secondary_matched += matched_secondary.length
+
+    results[case_id] = {
+      "case_id" => case_id,
+      "status" => validation_errors.empty? ? "completed" : "invalid",
+      "expected" => {
+        "primary_skill" => expected_primary,
+        "secondary_skills" => expected_secondary,
+        "boundary" => entry.fetch("boundary")
+      },
+      "observed" => {
+        "primary_skill" => primary,
+        "secondary_skills" => secondary,
+        "reason" => observed["reason"]
+      },
+      "scoring" => {
+        "primary_accuracy" => primary_match,
+        "secondary_recall" => secondary_recall,
+        "unexpected_secondary_count" => unexpected_secondary.length
+      },
+      "validation_errors" => validation_errors,
+      "agent" => {
+        "command" => options[:command],
+        "exit_code" => status&.exitstatus,
+        "stdout" => stdout,
+        "stderr" => stderr,
+        "duration_seconds" => duration.round(4)
+      },
+      "raw_result_file" => result_file
+    }
+  rescue JSON::ParserError, KeyError => e
+    results[case_id] = {
+      "case_id" => case_id,
+      "status" => "invalid",
+      "error" => e.message,
+      "agent" => {
+        "command" => options[:command],
+        "exit_code" => status&.exitstatus,
+        "stdout" => stdout,
+        "stderr" => stderr,
+        "duration_seconds" => duration.round(4)
+      }
+    }
+  end
+end
+
+completed = results.values.count { |result| result["status"] == "completed" }
+primary_accuracy = completed.zero? ? 0.0 : primary_matches.fdiv(completed)
+secondary_recall = secondary_expected.zero? ? 1.0 : secondary_matched.fdiv(secondary_expected)
+
+campaign = {
+  "protocol_version" => 1,
+  "evaluation" => "skill-routing-v1",
+  "routing_case_count" => selected.length,
+  "completed_cases" => completed,
+  "complete" => completed == selected.length,
+  "metrics" => {
+    "primary_accuracy" => primary_accuracy,
+    "secondary_recall" => secondary_recall
+  },
+  "cases" => results
+}
+
+File.write(
+  output.end_with?(".json") ? output : File.join(output_dir, "campaign.json"),
+  JSON.pretty_generate(campaign) + "
+",
+  encoding: "UTF-8"
+)
+
+puts JSON.pretty_generate(campaign)
+exit(1) unless campaign.fetch("complete")
