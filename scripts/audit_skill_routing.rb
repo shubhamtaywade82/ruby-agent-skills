@@ -131,6 +131,12 @@ errors << "routing campaign evidence packager missing" unless File.file?(campaig
 errors << "manifest campaign evidence schema path missing" unless routing_contract["campaign_evidence_schema"].to_s == "docs/ROUTING_CAMPAIGN_EVIDENCE_SCHEMA.md"
 campaign_evidence_schema_path = File.join(ROOT, routing_contract.fetch("campaign_evidence_schema", ""))
 errors << "routing campaign evidence schema missing" unless File.file?(campaign_evidence_schema_path)
+errors << "manifest campaign preflight path missing" unless routing_contract["campaign_preflight"].to_s == "bin/routing-campaign-preflight"
+campaign_preflight_path = File.join(ROOT, routing_contract.fetch("campaign_preflight", ""))
+errors << "routing campaign preflight missing" unless File.file?(campaign_preflight_path)
+errors << "manifest campaign preflight schema path missing" unless routing_contract["campaign_preflight_schema"].to_s == "docs/ROUTING_CAMPAIGN_PREFLIGHT_SCHEMA.md"
+campaign_preflight_schema_path = File.join(ROOT, routing_contract.fetch("campaign_preflight_schema", ""))
+errors << "routing campaign preflight schema missing" unless File.file?(campaign_preflight_schema_path)
 errors << "manifest evidence schema path missing" unless routing_contract["evidence_schema"].to_s == "docs/ROUTING_EVIDENCE_SCHEMA.md"
 evidence_schema_path = File.join(ROOT, routing_contract.fetch("evidence_schema", ""))
 errors << "routing evidence schema missing" unless File.file?(evidence_schema_path)
