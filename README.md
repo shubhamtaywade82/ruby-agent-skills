@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 59 — Reproducible Routing Baseline/Candidate Experiment  
+> **Current milestone:** Iteration 60 — Auditable Routing Experiment Evidence  
 > **Branch:** `feat/ai-skill-system-v2`
 
 ---
@@ -56,7 +56,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **49** |
+| Dedicated system/contract tests | **50** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -761,3 +761,7 @@ Iteration 58 adds `router/ROUTING_REMEDIATION.yml` and `bin/routing-compare`. Th
 ## Iteration 59 — Reproducible Routing Baseline/Candidate Experiment
 
 Iteration 59 adds `bin/routing-experiment`, which runs baseline and candidate routing-contract snapshots with the same agent command, model metadata, timeout, and repetitions, then applies the Iteration 58 comparison gate. This makes routing remediation experiments reproducible and isolates the routing contract as the intended experimental variable.
+
+## Iteration 60 — Auditable Routing Experiment Evidence
+
+Iteration 60 adds `bin/routing-evidence`, which packages a completed routing experiment with the repository revision, baseline/candidate campaign hashes, exact routing-contract hashes, campaign/schema/remediation-policy hashes, agent configuration, comparison deltas, and replay metadata. This turns external model runs into auditable evidence rather than ephemeral local output.
