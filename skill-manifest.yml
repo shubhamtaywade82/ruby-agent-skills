@@ -840,7 +840,7 @@ evaluations:
     source: rails-cross-boundary-authorization-security-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/security/cross-boundary-authorization-contract.yml
+      - evals/rails/cross-boundary-authorization-contract.yml
     checks:
       - functional
       - tests
