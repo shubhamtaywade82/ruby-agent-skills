@@ -276,7 +276,7 @@ skills:
   rails-rack-middleware-engineering:
     family: rails
     path: skills/rails-rack-middleware-engineering/SKILL.md
-    triggers: [Rack, rack, middleware, config.middleware, config.ru, bin/rails middleware, call(env), short-circuit, request ID, trusted proxy]
+    triggers: [Rack, rack, middleware, config.middleware, config.ru, bin/rails, bin/rails middleware, call(env), short-circuit, request ID, trusted proxy]
   rails-hotwire:
     family: rails
     path: skills/rails-hotwire/SKILL.md
