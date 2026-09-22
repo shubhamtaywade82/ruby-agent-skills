@@ -83,6 +83,21 @@ routing_contract = manifest.fetch("routing", {})
 errors << "manifest routing contract path missing" unless routing_contract["contract"].to_s == "router/ROUTING.md"
 errors << "manifest routing cases path missing" unless routing_contract["cases"].to_s == "router/ROUTING_CASES.yml"
 errors << "manifest routing audit path missing" unless routing_contract["audit"].to_s == "scripts/audit_skill_routing.rb"
+errors << "manifest routing result schema path missing" unless routing_contract["result_schema"].to_s == "docs/ROUTING_EVAL_RESULT_SCHEMA.md"
+errors << "manifest routing evaluation runner path missing" unless routing_contract["evaluation_runner"].to_s == "bin/routing-eval"
+errors << "manifest routing campaign manifest path missing" unless routing_contract["campaign_manifest"].to_s == "router/ROUTING_CAMPAIGN.yml"
+
+campaign_path = File.join(ROOT, routing_contract.fetch("campaign_manifest", ""))
+if File.file?(campaign_path)
+  campaign = YAML.safe_load(File.read(campaign_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  errors << "routing campaign id missing" if campaign["id"].to_s.empty?
+  repetitions = campaign.fetch("execution", {}).fetch("repetitions", 0).to_i
+  errors << "routing campaign repetitions must be >= 1" unless repetitions >= 1
+  campaign_case_file = File.join(ROOT, campaign.fetch("cases_file", ""))
+  errors << "routing campaign cases_file missing" unless campaign_case_file == CASES_PATH
+else
+  errors << "routing campaign manifest missing #{routing_contract["campaign_manifest"]}"
+end
 
 required_router_sections = [
   "Routing quality contract",
