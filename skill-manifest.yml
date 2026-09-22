@@ -296,7 +296,7 @@ skills:
   rails-staff-principal-architecture:
     family: architecture
     path: skills/rails-staff-principal-architecture/SKILL.md
-    triggers: [architecture, staff architecture, principal architecture, architectural decision, modular monolith, bounded context, dependency direction, data ownership, shared kernel, change coupling, service extraction, distributed boundary, architecture migration, ADR, architecture fitness, architecture tradeoff, architecture ownership]
+    triggers: [architecture, staff architecture, principal architecture, architectural decision, modular monolith, bounded context, dependency direction, data ownership, shared kernel, change coupling, service extraction, distributed boundary, architecture migration, ADR, architecture fitness, architecture tradeoff, architecture ownership, staff, principal, modular, monolith, bounded, context, dependency, direction, data, ownership, coupling, extraction, migration, fitness, tradeoff]
   rails-initialization-configuration-engineering:
     family: rails
     path: skills/rails-initialization-configuration-engineering/SKILL.md
