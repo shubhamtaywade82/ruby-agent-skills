@@ -97,6 +97,13 @@ campaign_runner_path = File.join(ROOT, routing_contract.fetch("campaign_runner",
 campaign_analyzer_path = File.join(ROOT, routing_contract.fetch("campaign_analyzer", ""))
 errors << "routing campaign runner missing" unless File.file?(campaign_runner_path)
 errors << "routing campaign analyzer missing" unless File.file?(campaign_analyzer_path)
+errors << "manifest remediation policy path missing" unless routing_contract["remediation_policy"].to_s == "router/ROUTING_REMEDIATION.yml"
+errors << "manifest remediation comparator path missing" unless routing_contract["remediation_comparator"].to_s == "bin/routing-compare"
+
+remediation_policy_path = File.join(ROOT, routing_contract.fetch("remediation_policy", ""))
+remediation_comparator_path = File.join(ROOT, routing_contract.fetch("remediation_comparator", ""))
+errors << "routing remediation policy missing" unless File.file?(remediation_policy_path)
+errors << "routing remediation comparator missing" unless File.file?(remediation_comparator_path)
 
 campaign_path = File.join(ROOT, routing_contract.fetch("campaign_manifest", ""))
 if File.file?(campaign_path)
