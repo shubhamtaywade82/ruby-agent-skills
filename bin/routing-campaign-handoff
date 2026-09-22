@@ -5,6 +5,7 @@ require "digest"
 require "json"
 require "optparse"
 require "open3"
+require "shellwords"
 require "yaml"
 
 ROOT = File.expand_path("..", __dir__)
@@ -51,7 +52,6 @@ abort "repository worktree is dirty; commit it before creating a handoff" unless
 
 hash = ->(path) { Digest::SHA256.file(path).hexdigest }
 
-FileUtils.mkdir_p(options[:output]) if defined?(FileUtils)
 require "fileutils"
 FileUtils.mkdir_p(options[:output])
 
