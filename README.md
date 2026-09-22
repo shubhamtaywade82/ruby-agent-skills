@@ -533,9 +533,9 @@ Validation covers:
 The validation suite currently reports:
 
 ```text
-69 skills
-304 implementation patterns
-104 evaluation cases
+70 skills
+315 implementation patterns
+115 evaluation cases
 ```
 
 ---
