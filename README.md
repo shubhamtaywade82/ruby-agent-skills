@@ -668,9 +668,9 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 51 — Rails Benchmark Coverage Completion**
+**Iteration 52 — CI Toolchain and Release-Guard Maintenance**
 
-Latest implementation completes public benchmark coverage for the Rails evaluation corpus with disposable fixture seams, paired execution controls, independent verification, and zero unbenchmarked Rails evaluations.
+Latest implementation removes the Node 20 checkout warning, standardizes CI on the Node 24-compatible `actions/checkout@v7` line, and makes CI toolchain compatibility an executable repository contract.
 
 
 ## Rails Encryption and Credentials Engineering
