@@ -6,7 +6,7 @@ source: rails-staff-principal-architecture-v1
 skills:
   - rails-staff-principal-architecture
   - rails-architecture
-  - rails-domain-modeling
+  - ruby-domain-modeling
   - rails-cross-boundary-authorization-security
   - rails-engines-railties-engineering
   - rails-distributed-systems
