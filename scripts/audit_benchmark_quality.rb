@@ -128,7 +128,7 @@ end
 puts "Benchmark quality audit"
 puts "  campaigns: #{campaign_files.length}"
 puts "  campaign evaluations: #{campaign_files.sum { |path| YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("evaluations").length }}"
-puts "  unbenchmarked evaluation families: #{unbenchmarked.length}"
+puts "  unbenchmarked evaluations: #{unbenchmarked_paths.length}"
 warnings.each { |warning| puts "WARN: #{warning}" }
 
 if errors.any?
