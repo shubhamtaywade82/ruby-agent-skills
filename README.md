@@ -56,7 +56,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **206** |
-| Dedicated system/contract tests | **50+** |
+| Dedicated system/contract tests | **40** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -411,7 +411,7 @@ Each evaluation can specify:
 - scope control
 - expected failure modes
 
-Current validated evaluation inventory: **80 cases**.
+Current validated evaluation inventory: **206 cases**.
 
 Important evaluation families include:
 
@@ -533,9 +533,9 @@ Validation covers:
 The validation suite currently reports:
 
 ```text
-72 skills
-339 implementation patterns
-139 evaluation cases
+76 skills
+393 implementation patterns
+206 evaluation cases
 ```
 
 ---
@@ -668,13 +668,13 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 44 — Rails Cross-Boundary Authorization and Security Composition**
+**Iteration 46 — Repository-wide Completeness and Gap Audit**
 
 Latest implementation is being validated by the repository CI pipeline.
 
 Next milestone:
 
-**Iteration 43 — Rails Operational Tasks and Maintenance**
+**Iteration 47 — Evaluation and Benchmark Hardening**
 
 
 ## Rails Encryption and Credentials Engineering
