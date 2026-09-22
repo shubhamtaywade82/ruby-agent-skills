@@ -2,6 +2,7 @@
 
 require "minitest/autorun"
 require "open3"
+require "yaml"
 
 class BenchmarkQualitySystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
