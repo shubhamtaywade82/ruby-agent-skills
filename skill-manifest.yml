@@ -21,6 +21,8 @@ routing:
   ollama_adapter: bin/routing-agent-ollama
   campaign_runner: bin/routing-campaign
   campaign_analyzer: bin/routing-analyze
+  remediation_policy: router/ROUTING_REMEDIATION.yml
+  remediation_comparator: bin/routing-compare
 
 skills:
   rails-test-engineering:
