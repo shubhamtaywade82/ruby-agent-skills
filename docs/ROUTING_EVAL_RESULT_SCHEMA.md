@@ -60,4 +60,4 @@ The confusion matrix is the key diagnostic surface for cross-boundary routing er
 
 ## Evidence policy
 
-Individual run results remain the source of truth. Aggregate metrics are descriptive measurements, not quality claims. Public routing cases do not constitute hidden evaluations; hidden/adversarial additions remain external-only.
+Individual run results remain the source of truth. Aggregate metrics are descriptive measurements, not quality claims. Public routing cases do not constitute hidden evaluations; hidden/adversarial additions remain external-only. The evaluator must not expose gold routing labels to the agent workspace. Concrete adapters consume only the task prompt, routing contract, and registered skill inventory.
