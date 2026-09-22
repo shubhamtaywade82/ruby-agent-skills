@@ -665,6 +665,7 @@ patterns:
       - patterns/testing/asset-build-testing.md
       - patterns/rails/middleware-testing.md
       - patterns/rails/initializer-testing-contract.md
+      - patterns/rails/credentials-testing-contract.md
       - patterns/rails/engine-dummy-app-testing.md
     triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
 
