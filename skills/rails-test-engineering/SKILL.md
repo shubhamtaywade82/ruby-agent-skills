@@ -399,6 +399,11 @@ Use integration tests to prove real component collaboration and unit tests to is
 ## Verification
 Run focused tests first, then the affected suite, then broader CI-equivalent checks. When changing parallelization, transactional tests, system tests, job testing, or test infrastructure, verify the runtime behavior of the test system itself.
 
+## Rails 8.1 current framework considerations
+
+- Rails 8.1 provides Local CI through `config/ci.rb` and `bin/ci`. Treat local CI as part of the repository's executable verification contract when present.
+- Keep local and hosted CI commands aligned on security checks, test setup, and required gates; avoid having `bin/ci` silently exercise a weaker contract than the hosted workflow.
+
 ## Source foundation
 Primary source: Rails Testing Applications guide: https://guides.rubyonrails.org/testing.html
 Supporting source: Rails Active Job Basics: https://guides.rubyonrails.org/active_job_basics.html
