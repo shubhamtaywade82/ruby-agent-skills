@@ -40,7 +40,7 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
   def test_skill_contracts_have_required_sections
     SKILLS.each do |skill|
       content = File.read(File.join(ROOT, "skills", skill, "SKILL.md"), encoding: "UTF-8")
-      %w[Purpose Activate when Repository inspection Decision rules Implementation procedure Anti-patterns / failure modes Verification Source foundation].each do |section|
+      ["Purpose", "Activate when", "Repository inspection", "Decision rules", "Implementation procedure", "Anti-patterns / failure modes", "Agent review checklist", "Verification", "Source foundation"].each do |section|
         assert_includes content, "## #{section}", "#{skill} missing #{section}"
       end
     end
