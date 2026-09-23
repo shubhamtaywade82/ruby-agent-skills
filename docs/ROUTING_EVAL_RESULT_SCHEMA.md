@@ -64,4 +64,8 @@ Individual run results remain the source of truth. Aggregate metrics are descrip
 
 Public campaigns are accepted as externally measured routing evidence only after `bin/routing-campaign-verify` confirms corpus identity, repetition completeness, valid skill references, and agent metadata. The campaign runner executes this intake verification before generating the confusion analysis.
 
+## Checkpoint and resume semantics
+
+Campaign execution is checkpointed after each repetition. Each successfully validated repetition records a `run.json` receipt containing its case/run identity, execution metadata, and the SHA-256 digest of `result.json`. `bin/routing-eval --resume` reuses only repetitions with a valid receipt and matching result digest; missing or invalid repetitions are executed again. Resume requires compatible campaign identity, repetition count, routing contract, provider, model, tool mode, and model version. Incomplete checkpoints are never treated as completed evidence.
+
 Before/after remediation evidence is evaluated by `bin/routing-compare` against the explicit thresholds in `router/ROUTING_REMEDIATION.yml`. Comparisons must use compatible campaign and agent configurations. `bin/routing-experiment` enforces the same invocation/configuration for the two sides while allowing the routing contract path to differ. `bin/routing-evidence` records hashes and repository metadata needed to audit or replay the resulting experiment.
