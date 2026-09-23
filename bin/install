@@ -130,6 +130,22 @@ ROUTING_SHA256="$(sha256_file "$TMP_DIR/repo/router/ROUTING.md")"
 SKILL_COUNT="$(find "$TMP_DIR/repo/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -type f | wc -l | tr -d ' ')"
 PATTERN_COUNT="$(find "$TMP_DIR/repo/patterns" -type f -name '*.md' ! -name README.md | wc -l | tr -d ' ')"
 
+SKILL_FILE_HASHES="$(ruby -rdigest -rjson -e '
+root = ARGV.fetch(0)
+paths = Dir[File.join(root, "skills", "*", "SKILL.md")].sort
+puts JSON.generate(paths.map { |path|
+  {"path" => path.delete_prefix(root + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
+})
+' "$TMP_DIR/repo")"
+
+PATTERN_FILE_HASHES="$(ruby -rdigest -rjson -e '
+root = ARGV.fetch(0)
+paths = Dir[File.join(root, "patterns", "**", "*.md")].reject { |path| path.end_with?("/README.md") }.sort
+puts JSON.generate(paths.map { |path|
+  {"path" => path.delete_prefix(root + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
+})
+' "$TMP_DIR/repo")"
+
 OLD_INSTALLATION="$TARGET_ROOT/.ruby-agent-skills/INSTALLATION.json"
 if [[ -f "$OLD_INSTALLATION" ]]; then
   while IFS= read -r old_skill; do
@@ -165,7 +181,9 @@ cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
   },
   "integrity": {
     "skill_manifest_sha256": "$MANIFEST_SHA256",
-    "routing_contract_sha256": "$ROUTING_SHA256"
+    "routing_contract_sha256": "$ROUTING_SHA256",
+    "skill_files": $SKILL_FILE_HASHES,
+    "pattern_files": $PATTERN_FILE_HASHES
   },
   "inventory": {
     "skills": $SKILL_COUNT,
