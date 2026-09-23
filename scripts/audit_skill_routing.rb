@@ -179,6 +179,12 @@ hidden_intake_schema_path = File.join(ROOT, routing_contract.fetch("hidden_bench
 errors << "hidden benchmark intake schema missing" unless File.file?(hidden_intake_schema_path)
 errors << "hidden benchmark must forbid repository evidence copies" unless hidden_benchmark.fetch("ingestion", {})["evidence_copy_into_repository"] == "forbidden"
 errors << "manifest campaign preflight verifier path missing" unless routing_contract["campaign_preflight_verifier"].to_s == "bin/routing-campaign-preflight-verify"
+errors << "manifest campaign provenance verifier path missing" unless routing_contract["campaign_provenance_verifier"].to_s == "bin/routing-campaign-provenance-verify"
+campaign_provenance_verifier_path = File.join(ROOT, routing_contract.fetch("campaign_provenance_verifier", ""))
+errors << "campaign provenance verifier missing" unless File.file?(campaign_provenance_verifier_path)
+errors << "manifest campaign provenance schema path missing" unless routing_contract["campaign_provenance_schema"].to_s == "docs/ROUTING_CAMPAIGN_PROVENANCE_BINDING.md"
+campaign_provenance_schema_path = File.join(ROOT, routing_contract.fetch("campaign_provenance_schema", ""))
+errors << "campaign provenance schema missing" unless File.file?(campaign_provenance_schema_path)
 campaign_preflight_verifier_path = File.join(ROOT, routing_contract.fetch("campaign_preflight_verifier", ""))
 errors << "routing campaign preflight verifier missing" unless File.file?(campaign_preflight_verifier_path)
 errors << "manifest campaign intake v2 path missing" unless routing_contract["campaign_intake_v2"].to_s == "bin/routing-campaign-import"
