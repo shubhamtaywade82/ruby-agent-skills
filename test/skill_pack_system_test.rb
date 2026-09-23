@@ -51,6 +51,29 @@ class SkillPackSystemTest < Minitest::Test
     assert File.directory?(result.fetch("patterns_dir"))
   end
 
+  def test_materialized_patterns_preserve_relative_paths
+    root = build_pack
+    workspace = Dir.mktmpdir("workspace")
+    pack = RubyAgentSkills::SkillPack.new(root: root)
+
+    result = pack.materialize(
+      evaluation: {
+        "prompt" => "Demo",
+        "skills" => ["demo"],
+        "patterns" => [
+          "pattern:patterns/one/shared",
+          "pattern:patterns/two/shared"
+        ]
+      },
+      workspace: workspace
+    )
+
+    one = File.join(result.fetch("patterns_dir"), "one", "shared.md")
+    two = File.join(result.fetch("patterns_dir"), "two", "shared.md")
+    assert_equal "# One\n", File.read(one, encoding: "UTF-8")
+    assert_equal "# Two\n", File.read(two, encoding: "UTF-8")
+  end
+
   def test_baseline_materialization_creates_empty_skill_and_pattern_directories
     root = build_pack
     workspace = Dir.mktmpdir("workspace")
