@@ -1,14 +1,17 @@
-version: 1
-id: skill-routing-model-matrix-v1
+version: 2
+id: skill-routing-model-matrix-v2
 campaign: skill-routing-public-v1
 source: explicit-runtime-configuration
 models: []
 execution:
+  provider: ollama
   same_public_corpus: true
   same_repetitions: true
   same_timeout: true
   fresh_workspace_per_run: true
+  independent_archive_per_model: true
 controls:
   do_not_compare_unexecuted_models: true
   results_must_be_independently_archived: true
   descriptive_comparison_only: true
+  no_synthetic_results: true
