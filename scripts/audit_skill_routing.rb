@@ -150,6 +150,15 @@ hidden_benchmark = YAML.safe_load(File.read(hidden_benchmark_path, encoding: "UT
 errors << "hidden benchmark must be external-only" unless hidden_benchmark["source"] == "external-only"
 errors << "hidden benchmark gold labels must remain external-only" unless hidden_benchmark.fetch("cases", {})["gold_labels"] == "external-only"
 errors << "hidden benchmark repository storage must be forbidden" unless hidden_benchmark.fetch("cases", {})["repository_storage"] == "forbidden"
+errors << "manifest campaign preflight verifier path missing" unless routing_contract["campaign_preflight_verifier"].to_s == "bin/routing-campaign-preflight-verify"
+campaign_preflight_verifier_path = File.join(ROOT, routing_contract.fetch("campaign_preflight_verifier", ""))
+errors << "routing campaign preflight verifier missing" unless File.file?(campaign_preflight_verifier_path)
+errors << "manifest campaign intake v2 path missing" unless routing_contract["campaign_intake_v2"].to_s == "bin/routing-campaign-import"
+campaign_intake_v2_path = File.join(ROOT, routing_contract.fetch("campaign_intake_v2", ""))
+errors << "routing campaign intake v2 missing" unless File.file?(campaign_intake_v2_path)
+errors << "manifest campaign intake v2 schema path missing" unless routing_contract["campaign_intake_v2_schema"].to_s == "docs/ROUTING_CAMPAIGN_INTAKE_V2.md"
+campaign_intake_v2_schema_path = File.join(ROOT, routing_contract.fetch("campaign_intake_v2_schema", ""))
+errors << "routing campaign intake v2 schema missing" unless File.file?(campaign_intake_v2_schema_path)
 errors << "manifest evidence schema path missing" unless routing_contract["evidence_schema"].to_s == "docs/ROUTING_EVIDENCE_SCHEMA.md"
 evidence_schema_path = File.join(ROOT, routing_contract.fetch("evidence_schema", ""))
 errors << "routing evidence schema missing" unless File.file?(evidence_schema_path)
