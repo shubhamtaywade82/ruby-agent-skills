@@ -1,0 +1,18 @@
+version: 1
+id: skill-routing-release-v1
+campaign:
+  id: skill-routing-public-v1
+  expected_case_count: 14
+  expected_repetitions: 3
+  expected_runs: 42
+gates:
+  ci_required: true
+  public_campaign_evidence_required: true
+  public_campaign_evidence_must_be_complete: true
+  hidden_benchmark_external_only: true
+  immutable_archive_required: true
+  multi_model_comparison_optional: true
+controls:
+  no_unverified_results: true
+  no_synthetic_results: true
+  no_quality_ranking: true
