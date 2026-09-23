@@ -5,7 +5,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
 > **Current milestone:** Iteration 73 — Routing Campaign Provenance Binding  
-> **Branch:** `feat/routing-release-readiness-main-v1`
+> **Branch:** `feat/routing-campaign-handoff-binding-v1`
 
 ---
 
@@ -28,6 +28,10 @@ Hidden routing cases, gold labels, raw results, and hidden case counts now have 
 ## Iteration 73 — Routing Campaign Provenance Binding
 
 Campaign imports now bind evidence to the exact repository state captured by preflight. The importer verifies the recorded Git SHA and the SHA-256 hashes of the skill manifest, campaign manifest, public routing corpus, and routing contract before evidence is packaged and archived. This prevents a campaign from being silently attached to changed routing inputs.
+
+## Iteration 74 — Routing Campaign Handoff Binding
+
+External campaign handoffs are now verified against the receiving checkout before model execution. The verifier binds the handoff to the public campaign contract, expected 14-case × 3-repetition plan, exact Git SHA, routing-input hashes, and a clean worktree; the generated launcher refuses to start the campaign when these inputs do not match.
 
 ## What this repository contains
 
