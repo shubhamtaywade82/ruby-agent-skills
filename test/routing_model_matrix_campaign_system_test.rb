@@ -57,6 +57,24 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
     end
   end
 
+  def test_resume_requires_existing_checkpoint
+    Dir.mktmpdir("routing-model-matrix") do |dir|
+      _out, err, status = run_runner(
+        "--model", "model-a",
+        "--output", dir,
+        "--resume"
+      )
+      refute status.success?
+      assert_includes err, "cannot resume without an existing matrix checkpoint"
+    end
+  end
+
+  def test_resume_flag_is_exposed
+    source = File.read(RUNNER, encoding: "UTF-8")
+    assert_includes source, "--resume"
+    assert_includes source, "model matrix checkpoint"
+  end
+
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
     assert_includes validator, "test/routing_model_matrix_campaign_system_test.rb"
