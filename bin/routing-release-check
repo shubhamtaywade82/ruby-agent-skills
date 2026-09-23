@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "digest"
 require "json"
 require "open3"
 require "optparse"
@@ -52,6 +53,19 @@ errors << "completed run count mismatch" unless data["completed_runs"].to_i == c
 errors << "requested run count mismatch" unless data["requested_runs"].to_i == campaign["expected_runs"].to_i
 errors << "immutable archive is required" if config.dig("gates", "immutable_archive_required") && options[:archive].to_s.empty?
 errors << "archive directory not found" if options[:archive] && !Dir.exist?(options[:archive])
+if options[:archive]
+  matching_manifests = Dir[File.join(options[:archive], "**", "ARCHIVE_MANIFEST.json")]
+  errors << "archive contains no ARCHIVE_MANIFEST.json" if matching_manifests.empty?
+  unless matching_manifests.empty?
+    evidence_sha = Digest::SHA256.file(evidence).hexdigest
+    archive_match = matching_manifests.any? do |manifest_path|
+      manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+      manifest.dig("source_evidence", "sha256") == evidence_sha &&
+        manifest["evidence_type"] == "skill-routing-campaign-v1"
+    end
+    errors << "archive does not contain the supplied evidence package" unless archive_match
+  end
+end
 
 if errors.any?
   errors.each { |error| warn "ERROR: #{error}" }
