@@ -99,6 +99,7 @@ script_path = File.join(options[:output], "run-campaign.sh")
 script = <<~SH
   #!/usr/bin/env bash
   set -euo pipefail
+  ruby bin/routing-campaign-handoff-verify ./routing-handoff/HANDOFF.json
   ruby bin/routing-campaign \
     --model #{options[:model].shellescape} \
     --url #{options[:url].shellescape} \
