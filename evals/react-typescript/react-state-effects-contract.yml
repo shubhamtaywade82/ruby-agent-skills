@@ -1,0 +1,35 @@
+id: react-state-effects-contract
+version: 1
+title: React State and Effects Contract
+category: react-typescript
+source: react-typescript-engineering-v1
+skills:
+  - react-state-effects
+patterns:
+  - react-state-ownership
+  - react-effect-synchronization
+  - react-hook-dependency
+prompt: |
+  Fix an effect that derives state from another state value and races with an async refresh.
+  Inspect the repository before choosing the implementation shape. Preserve existing conventions, keep runtime validation separate from compile-time types, and add focused verification.
+constraints:
+  required_boundary: react-state-effects
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: design
+    input: Fix an effect that derives state from another state value and races with an async refresh.
+    expected:
+      react-effect-synchronization: explicit and justified
+  - name: failure-path
+    input: Fix an effect that derives state from another state value and races with an async refresh. with an invalid, asynchronous, or boundary-heavy variant
+    expected:
+      verification: focused tests cover the failure or recovery path
+grading:
+  functional: The resulting behavior satisfies the task contract.
+  tests: Verification covers the intended behavior and failure paths.
+  contract: The TypeScript or React boundary remains explicit and version-aware.
+  scope_control: No unrelated framework or build migration is introduced.
