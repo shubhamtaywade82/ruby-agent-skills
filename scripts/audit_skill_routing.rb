@@ -171,6 +171,13 @@ errors << "manifest model matrix campaign runner path missing" unless routing_co
 model_matrix_campaign_runner_path = File.join(ROOT, routing_contract.fetch("model_matrix_campaign_runner", ""))
 errors << "model matrix campaign runner missing" unless File.file?(model_matrix_campaign_runner_path)
 errors << "model matrix must use provider ollama" unless model_matrix.fetch("execution", {})["provider"] == "ollama"
+errors << "manifest hidden benchmark intake path missing" unless routing_contract["hidden_benchmark_intake"].to_s == "bin/routing-hidden-benchmark-intake"
+hidden_intake_path = File.join(ROOT, routing_contract.fetch("hidden_benchmark_intake", ""))
+errors << "hidden benchmark intake missing" unless File.file?(hidden_intake_path)
+errors << "manifest hidden benchmark intake schema path missing" unless routing_contract["hidden_benchmark_intake_schema"].to_s == "docs/ROUTING_HIDDEN_BENCHMARK_INTAKE.md"
+hidden_intake_schema_path = File.join(ROOT, routing_contract.fetch("hidden_benchmark_intake_schema", ""))
+errors << "hidden benchmark intake schema missing" unless File.file?(hidden_intake_schema_path)
+errors << "hidden benchmark must forbid repository evidence copies" unless hidden_benchmark.fetch("ingestion", {})["evidence_copy_into_repository"] == "forbidden"
 errors << "manifest campaign preflight verifier path missing" unless routing_contract["campaign_preflight_verifier"].to_s == "bin/routing-campaign-preflight-verify"
 campaign_preflight_verifier_path = File.join(ROOT, routing_contract.fetch("campaign_preflight_verifier", ""))
 errors << "routing campaign preflight verifier missing" unless File.file?(campaign_preflight_verifier_path)
