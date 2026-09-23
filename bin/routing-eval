@@ -68,7 +68,7 @@ rescue Errno::ESRCH
   }
 end
 
-def run_checkpoint(path, results:, campaign:, campaign_version:, routing_contract:, agent:, requested_repetitions:)
+def run_checkpoint(path, results:, selected_count:, campaign:, campaign_version:, routing_contract:, agent:, requested_repetitions:, routing_inputs:, mode:)
   completed = results.values.sum { |entry| entry.fetch("runs").count { |run| run["status"] == "completed" } }
 
   primary_matches = 0
@@ -104,15 +104,16 @@ def run_checkpoint(path, results:, campaign:, campaign_version:, routing_contrac
     "campaign_version" => campaign_version,
     "routing_contract" => routing_contract,
     "agent" => agent,
-    "routing_case_count" => results.length,
+    "routing_case_count" => selected_count,
     "requested_repetitions" => requested_repetitions,
     "requested_runs" => results.length * requested_repetitions,
     "completed_runs" => completed,
     "complete" => complete,
     "execution" => {
       "checkpointed" => true,
-      "mode" => "resumed"
+      "mode" => mode
     },
+    "routing_inputs" => routing_inputs,
     "metrics" => {
       "primary_accuracy" => valid_runs.zero? ? 0.0 : primary_matches.fdiv(valid_runs),
       "secondary_recall" => secondary_expected.zero? ? 1.0 : secondary_matched.fdiv(secondary_expected),
@@ -126,13 +127,17 @@ def run_checkpoint(path, results:, campaign:, campaign_version:, routing_contrac
   payload
 end
 
-def validate_existing_campaign!(campaign, selected_count:, repetitions:, routing_contract:, provider:, model:, tool_mode:)
+def validate_existing_campaign!(campaign, selected_count:, repetitions:, routing_contract:, provider:, model:, tool_mode:, routing_inputs:)
   errors = []
   errors << "campaign identity mismatch" unless campaign["campaign"] == "skill-routing-public-v1"
   errors << "campaign version mismatch" unless campaign["campaign_version"].to_i == 1
   errors << "routing case count mismatch" unless campaign["routing_case_count"].to_i == selected_count
   errors << "repetition count mismatch" unless campaign["requested_repetitions"].to_i == repetitions
   errors << "routing contract mismatch" unless File.expand_path(campaign["routing_contract"].to_s) == File.expand_path(routing_contract)
+  existing_inputs = campaign.fetch("routing_inputs", {})
+  routing_inputs.each do |key, expected|
+    errors << "routing input #{key} mismatch" unless existing_inputs[key].to_s == expected
+  end
 
   existing_agent = campaign.fetch("agent", {})
   errors << "provider mismatch" if provider && existing_agent["provider"].to_s != provider.to_s
@@ -243,6 +248,13 @@ output_dir = output.end_with?(".json") ? File.dirname(output) : output
 FileUtils.mkdir_p(output_dir)
 campaign_path = output.end_with?(".json") ? output : File.join(output_dir, "campaign.json")
 
+routing_inputs = {
+  "manifest_sha256" => Digest::SHA256.file(MANIFEST_PATH).hexdigest,
+  "campaign_manifest_sha256" => Digest::SHA256.file(CAMPAIGN_PATH).hexdigest,
+  "routing_cases_sha256" => Digest::SHA256.file(CASES_PATH).hexdigest,
+  "routing_contract_sha256" => Digest::SHA256.file(options[:router]).hexdigest
+}
+
 if options[:resume]
   abort "cannot resume without an existing campaign checkpoint: #{campaign_path}" unless File.file?(campaign_path)
   existing_campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
@@ -253,7 +265,8 @@ if options[:resume]
     routing_contract: options[:router],
     provider: options[:provider],
     model: options[:model],
-    tool_mode: options[:tool_mode]
+    tool_mode: options[:tool_mode],
+    routing_inputs: routing_inputs
   )
 end
 
@@ -294,6 +307,7 @@ selected.each do |entry|
         run_checkpoint(
           campaign_path,
           results: results,
+          selected_count: selected.length,
           campaign: campaign_config.fetch("id"),
           campaign_version: campaign_config.fetch("version"),
           routing_contract: File.expand_path(options[:router]),
@@ -303,7 +317,9 @@ selected.each do |entry|
             "model_version" => options[:model_version],
             "tool_mode" => options[:tool_mode]
           },
-          requested_repetitions: repetitions
+          requested_repetitions: repetitions,
+          routing_inputs: routing_inputs,
+          mode: "resumed"
         )
         next
       end
@@ -434,6 +450,7 @@ selected.each do |entry|
     run_checkpoint(
       campaign_path,
       results: results,
+      selected_count: selected.length,
       campaign: campaign_config.fetch("id"),
       campaign_version: campaign_config.fetch("version"),
       routing_contract: File.expand_path(options[:router]),
@@ -443,7 +460,9 @@ selected.each do |entry|
         "model_version" => options[:model_version],
         "tool_mode" => options[:tool_mode]
       },
-      requested_repetitions: repetitions
+      requested_repetitions: repetitions,
+      routing_inputs: routing_inputs,
+      mode: options[:resume] ? "resumed" : "fresh"
     )
   end
 end
@@ -451,6 +470,7 @@ end
 checkpoint = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
 checkpoint["execution"]["mode"] = options[:resume] ? "resumed" : "fresh"
 checkpoint["execution"]["checkpointed"] = true
+checkpoint["routing_inputs"] = routing_inputs
 File.write(campaign_path, JSON.pretty_generate(checkpoint) + "\n", encoding: "UTF-8")
 
 puts JSON.pretty_generate(checkpoint)
