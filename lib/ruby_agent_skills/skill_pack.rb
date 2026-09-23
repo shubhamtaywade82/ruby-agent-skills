@@ -50,6 +50,7 @@ module RubyAgentSkills
       manifest = {
         "protocol_version" => 1,
         "skills_enabled" => true,
+        "skill_manifest_sha256" => Digest::SHA256.file(@manifest_path).hexdigest,
         "skills" => skill_files,
         "patterns" => pattern_files
       }
@@ -75,9 +76,13 @@ module RubyAgentSkills
       target = File.join(workspace, ".ruby-agent-eval", "skill-pack")
       FileUtils.mkdir_p(target)
 
+      FileUtils.mkdir_p(File.join(target, "skills"))
+      FileUtils.mkdir_p(File.join(target, "patterns"))
+
       manifest = {
         "protocol_version" => 1,
         "skills_enabled" => false,
+        "skill_manifest_sha256" => Digest::SHA256.file(@manifest_path).hexdigest,
         "skills" => [],
         "patterns" => []
       }
@@ -108,10 +113,13 @@ module RubyAgentSkills
       paths = @manifest.fetch("patterns").values.flat_map { |entry| entry.fetch("paths") }
       relative = pattern.sub(%r{\Apatterns/}, "")
       exact = paths.find { |path| path.delete_prefix("patterns/").delete_suffix(".md") == relative }
-      exact ||= paths.find { |path| File.basename(path, ".md") == File.basename(relative) }
-      raise Error, "unknown pattern: #{pattern}" unless exact
+      return exact if exact
 
-      exact
+      candidates = paths.select { |path| File.basename(path, ".md") == File.basename(relative) }
+      return candidates.first if candidates.length == 1
+
+      raise Error, "ambiguous pattern: #{pattern} (#{candidates.join(", ")})" if candidates.length > 1
+      raise Error, "unknown pattern: #{pattern}"
     end
 
     def copy_file(source_relative, destination)
