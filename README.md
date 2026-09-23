@@ -57,6 +57,10 @@ Skills:
 
 The pack includes 24 reusable implementation patterns and 9 public evaluations covering type modeling, runtime boundaries, component composition, state/effect ownership, server-state caching, testing, accessibility/focus, rendering performance, and frontend architecture.
 
+## Agent installation verification
+
+After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-root>` to verify the installed metadata, skill inventory, embedded verifier, and content integrity before using the pack in a controlled agent environment.
+
 ## What this repository contains
 
 The skill system is built from five connected layers:
