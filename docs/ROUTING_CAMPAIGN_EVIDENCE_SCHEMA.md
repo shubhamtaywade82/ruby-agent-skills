@@ -35,3 +35,9 @@ Dirty worktrees are rejected by default and require explicit `--allow-dirty`.
 This package records observed model output. It does not convert routing measurements into a quality score or claim that one model is better than another.
 
 Generated evidence should remain outside the source repository unless intentionally curated as a release artifact.
+
+## Runtime preflight
+
+A completed campaign evidence pack should include `preflight.json` when the campaign was produced through `bin/routing-campaign`. The preflight artifact records the runtime version, exact model identity, public campaign cardinality, repository SHA, and routing-contract hashes before model execution.
+
+For externally executed campaigns, `bin/routing-campaign-import` validates the preflight and campaign as a pair before packaging evidence.
