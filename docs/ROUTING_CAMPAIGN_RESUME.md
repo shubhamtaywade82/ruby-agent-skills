@@ -48,7 +48,15 @@ An incomplete checkpoint is not valid release evidence and cannot pass the campa
 Resume an interrupted evaluator run with:
 
 ```bash
-ruby bin/routing-eval   --command "<trusted-agent-command>"   --model "<model>"   --provider ollama   --model-version "<model-digest>"   --tool-mode local-filesystem   --runs 3   --output ./routing-campaign-output/campaign.json   --resume
+ruby bin/routing-eval \
+  --command "<trusted-agent-command>" \
+  --model "<model>" \
+  --provider ollama \
+  --model-version "<model-digest>" \
+  --tool-mode local-filesystem \
+  --runs 3 \
+  --output ./routing-campaign-output/campaign.json \
+  --resume
 ```
 
 The evaluator verifies that the existing checkpoint uses the same campaign identity, repetition count, routing contract, provider, model, tool mode, and model version before reusing any prior run.
@@ -62,7 +70,12 @@ Missing, invalid, or unverifiable repetitions are executed again. No result is s
 The higher-level runner exposes the same operation:
 
 ```bash
-ruby bin/routing-campaign   --model "<model>"   --url "http://127.0.0.1:11434"   --runs 3   --output ./routing-campaign-output   --resume
+ruby bin/routing-campaign \
+  --model "<model>" \
+  --url "http://127.0.0.1:11434" \
+  --runs 3 \
+  --output ./routing-campaign-output \
+  --resume
 ```
 
 The wrapper still performs runtime preflight before evaluation and supplies the model digest as the evaluator's model version. A changed model digest is therefore treated as an incompatible campaign rather than silently mixing runtime identities.
