@@ -1,0 +1,195 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "fileutils"
+require "json"
+require "open3"
+require "optparse"
+require "time"
+require "tmpdir"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+MATRIX_PATH = File.join(ROOT, "router", "ROUTING_MODEL_MATRIX.yml")
+CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
+CAMPAIGN_RUNNER = File.join(ROOT, "bin", "routing-campaign")
+CAMPAIGN_IMPORT = File.join(ROOT, "bin", "routing-campaign-import")
+
+options = {
+  models: [],
+  url: ENV.fetch("OLLAMA_URL", "http://127.0.0.1:11434"),
+  runs: nil,
+  timeout: 300,
+  output: File.join(Dir.tmpdir, "ruby-agent-routing-model-matrix"),
+  archive: nil,
+  execute: false
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-model-matrix-campaign [options]"
+  opts.on("--model NAME", "Add an Ollama model to the matrix; repeatable") { |value| options[:models] << value }
+  opts.on("--url URL", "Common Ollama runtime URL") { |value| options[:url] = value }
+  opts.on("--runs COUNT", Integer, "Common repetitions per case") { |value| options[:runs] = value }
+  opts.on("--timeout SECONDS", Integer, "Common per-run timeout") { |value| options[:timeout] = value }
+  opts.on("--output DIR", "Matrix output directory") { |value| options[:output] = File.expand_path(value) }
+  opts.on("--archive DIR", "Immutable archive root for independently completed model campaigns") { |value| options[:archive] = File.expand_path(value) }
+  opts.on("--execute", "Actually execute model campaigns; default is plan-only") { options[:execute] = true }
+end.parse!
+
+abort "--runs must be >= 1" if options[:runs] && options[:runs] < 1
+abort "--timeout must be >= 1" if options[:timeout].to_i < 1
+abort "--archive is required with --execute" if options[:execute] && options[:archive].to_s.empty?
+
+matrix = YAML.safe_load(File.read(MATRIX_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+campaign = YAML.safe_load(File.read(CAMPAIGN_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+
+configured_models = Array(matrix.fetch("models")).map do |entry|
+  unless entry.is_a?(Hash)
+    abort "configured model entries must be mappings"
+  end
+  provider = entry["provider"].to_s
+  name = entry["name"].to_s.strip
+  abort "configured model provider must be ollama" unless provider == "ollama"
+  abort "configured model name must not be empty" if name.empty?
+  name
+end
+
+models = (configured_models + options[:models].map(&:strip)).reject(&:empty?).uniq
+abort "no models supplied; use --model NAME or configure router/ROUTING_MODEL_MATRIX.yml" if models.empty?
+
+abort "duplicate model names after normalization" unless models.uniq.length == models.length
+
+base_url = options[:url].sub(%r{/+$}, "")
+repetitions = options[:runs] || campaign.fetch("execution").fetch("repetitions").to_i
+cases_path = File.join(ROOT, "router", "ROUTING_CASES.yml")
+cases = YAML.safe_load(File.read(cases_path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases")
+expected_runs = Array(cases).length * repetitions
+
+git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_status.success?
+abort "repository worktree must be clean before matrix planning/execution" unless Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all").first.to_s.strip.empty?
+
+hash = ->(path) { Digest::SHA256.file(path).hexdigest }
+
+FileUtils.mkdir_p(options[:output])
+matrix_plan = {
+  "protocol_version" => 1,
+  "execution" => "skill-routing-model-matrix-campaign-v1",
+  "mode" => options[:execute] ? "execute" : "plan",
+  "campaign" => {
+    "id" => campaign.fetch("id"),
+    "version" => campaign.fetch("version"),
+    "repetitions" => repetitions,
+    "expected_runs_per_model" => expected_runs
+  },
+  "provenance" => {
+    "git_sha" => git_sha.strip,
+    "matrix_sha256" => hash.call(MATRIX_PATH),
+    "campaign_sha256" => hash.call(CAMPAIGN_PATH),
+    "routing_cases_sha256" => hash.call(cases_path)
+  },
+  "runtime" => {
+    "provider" => "ollama",
+    "url" => base_url,
+    "timeout_seconds" => options[:timeout]
+  },
+  "models" => models.map do |model|
+    {
+      "provider" => "ollama",
+      "name" => model,
+      "status" => "planned"
+    }
+  end,
+  "controls" => {
+    "same_public_corpus" => matrix.fetch("execution").fetch("same_public_corpus"),
+    "same_repetitions" => matrix.fetch("execution").fetch("same_repetitions"),
+    "same_timeout" => matrix.fetch("execution").fetch("same_timeout"),
+    "fresh_workspace_per_run" => matrix.fetch("execution").fetch("fresh_workspace_per_run"),
+    "independent_archive_per_model" => matrix.fetch("execution").fetch("independent_archive_per_model"),
+    "descriptive_comparison_only" => matrix.fetch("controls").fetch("descriptive_comparison_only"),
+    "no_synthetic_results" => matrix.fetch("controls").fetch("no_synthetic_results")
+  },
+  "results" => []
+}
+
+plan_path = File.join(options[:output], "matrix-plan.json")
+File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
+
+unless options[:execute]
+  puts JSON.pretty_generate(matrix_plan)
+  exit 0
+end
+
+FileUtils.mkdir_p(options[:archive])
+
+models.each do |model|
+  slug = "#{model.gsub(/[^A-Za-z0-9._-]+/, "_")}-#{Digest::SHA256.hexdigest(model)[0, 12]}"
+  model_root = File.join(options[:output], slug)
+  campaign_output = File.join(model_root, "routing-campaign-output")
+  FileUtils.mkdir_p(model_root)
+
+  started_at = Time.now.utc.iso8601
+  result = {
+    "provider" => "ollama",
+    "model" => model,
+    "status" => "started",
+    "started_at" => started_at,
+    "campaign_output" => campaign_output
+  }
+
+  command = [
+    RbConfig.ruby,
+    CAMPAIGN_RUNNER,
+    "--model", model,
+    "--url", base_url,
+    "--runs", repetitions.to_s,
+    "--timeout", options[:timeout].to_s,
+    "--output", campaign_output
+  ]
+
+  stdout, stderr, status = Open3.capture3(*command, chdir: ROOT)
+  File.write(File.join(model_root, "campaign.stdout.log"), stdout, encoding: "UTF-8")
+  File.write(File.join(model_root, "campaign.stderr.log"), stderr, encoding: "UTF-8")
+
+  unless status.success?
+    result["status"] = "failed"
+    result["exit_code"] = status.exitstatus
+    result["finished_at"] = Time.now.utc.iso8601
+    matrix_plan["models"].find { |entry| entry["name"] == model }["status"] = "failed"
+    matrix_plan["results"] << result
+    File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
+    warn "model campaign failed: #{model} (exit #{status.exitstatus}); continuing remaining models"
+    next
+  end
+
+  import_archive = File.join(options[:archive], slug)
+  FileUtils.mkdir_p(import_archive)
+  evidence_output = File.join(model_root, "campaign-evidence.json")
+  import_stdout, import_stderr, import_status = Open3.capture3(
+    RbConfig.ruby, CAMPAIGN_IMPORT, campaign_output,
+    "--output", evidence_output,
+    "--archive", import_archive,
+    chdir: ROOT
+  )
+  File.write(File.join(model_root, "import.stdout.log"), import_stdout, encoding: "UTF-8")
+  File.write(File.join(model_root, "import.stderr.log"), import_stderr, encoding: "UTF-8")
+
+  if import_status.success?
+    result["status"] = "completed_and_archived"
+    result["evidence"] = evidence_output
+    result["archive"] = import_archive
+  else
+    result["status"] = "verification_or_archive_failed"
+    result["exit_code"] = import_status.exitstatus
+  end
+  result["finished_at"] = Time.now.utc.iso8601
+  matrix_plan["models"].find { |entry| entry["name"] == model }["status"] =
+    result["status"]
+  matrix_plan["results"] << result
+  File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
+end
+
+failed = matrix_plan["results"].reject { |entry| entry["status"] == "completed_and_archived" }
+puts JSON.pretty_generate(matrix_plan)
+exit(failed.empty? ? 0 : 1)
