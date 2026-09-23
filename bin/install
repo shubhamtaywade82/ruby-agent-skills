@@ -162,7 +162,7 @@ cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
   "inventory": {
     "skills": $SKILL_COUNT,
     "patterns": $PATTERN_COUNT,
-    "skill_names": [$(find "$TMP_DIR/repo/skills" -mindepth 1 -maxdepth 1 -type d -exec basename {} ; | sort | awk '{printf "%s%s", sep, "\""$0"\""; sep=","}' )]
+    "skill_names": [$(find "$TMP_DIR/repo/skills" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort | awk '{printf "%s%s", sep, "\""$0"\""; sep=","}' )]
   },
   "target": {
     "agent": "$AGENT",
