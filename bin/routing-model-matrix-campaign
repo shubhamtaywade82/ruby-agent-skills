@@ -73,9 +73,9 @@ git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
 abort "unable to resolve repository HEAD" unless git_status.success?
 abort "repository worktree must be clean before matrix planning/execution" unless Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all").first.to_s.strip.empty?
 
-expected_provenance = {
+existing_provenance = {
   "git_sha" => git_sha.strip,
-  "matrix_sha256" => hash = Digest::SHA256.file(MATRIX_PATH).hexdigest,
+  "matrix_sha256" => Digest::SHA256.file(MATRIX_PATH).hexdigest,
   "campaign_sha256" => Digest::SHA256.file(CAMPAIGN_PATH).hexdigest,
   "routing_cases_sha256" => Digest::SHA256.file(cases_path).hexdigest
 }
@@ -91,7 +91,7 @@ matrix_plan = {
     "repetitions" => repetitions,
     "expected_runs_per_model" => expected_runs
   },
-  "provenance" => expected_provenance,
+  "provenance" => existing_provenance,
   "runtime" => {
     "provider" => "ollama",
     "url" => base_url,
@@ -129,7 +129,7 @@ if options[:resume]
   errors << "runtime URL mismatch" unless existing.dig("runtime", "url").to_s == base_url
   errors << "timeout mismatch" unless existing.dig("runtime", "timeout_seconds").to_i == options[:timeout].to_i
   errors << "model set mismatch" unless Array(existing["models"]).map { |entry| entry["name"] }.sort == models.sort
-  expected_provenance.each { |key, value| errors << "provenance #{key} mismatch" unless existing.dig("provenance", key).to_s == value.to_s }
+  existing_provenance.each { |key, value| errors << "provenance #{key} mismatch" unless existing.dig("provenance", key).to_s == value.to_s }
   abort "cannot resume incompatible matrix checkpoint: #{errors.join("; ")}" unless errors.empty?
   matrix_plan = existing
 else
@@ -179,6 +179,8 @@ models.each do |model|
   File.write(File.join(model_root, "campaign.stdout.log"), stdout, encoding: "UTF-8")
   File.write(File.join(model_root, "campaign.stderr.log"), stderr, encoding: "UTF-8")
 
+  matrix_plan["results"].reject! { |entry| entry["model"] == model }
+
   unless status.success?
     result["status"] = "failed"
     result["exit_code"] = status.exitstatus
@@ -217,6 +219,9 @@ models.each do |model|
   File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
 end
 
-failed = matrix_plan["results"].reject { |entry| entry["status"] == "completed_and_archived" }
+failed = models.any? do |model|
+  entry = matrix_plan["results"].find { |result| result["model"] == model }
+  entry.nil? || entry["status"] != "completed_and_archived"
+end
 puts JSON.pretty_generate(matrix_plan)
 exit(failed.empty? ? 0 : 1)
