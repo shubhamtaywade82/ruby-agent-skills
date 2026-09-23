@@ -160,6 +160,15 @@ model_matrix = YAML.safe_load(File.read(model_matrix_path, encoding: "UTF-8"), p
 errors << "model matrix must use explicit runtime configuration" unless model_matrix["source"] == "explicit-runtime-configuration"
 errors << "model matrix comparison must be descriptive-only" unless model_matrix.fetch("controls", {})["descriptive_comparison_only"] == true
 errors << "model matrix must reject unexecuted comparisons" unless model_matrix.fetch("controls", {})["do_not_compare_unexecuted_models"] == true
+errors << "manifest benchmark history path missing" unless routing_contract["benchmark_history"].to_s == "bin/routing-history"
+benchmark_history_path = File.join(ROOT, routing_contract.fetch("benchmark_history", ""))
+errors << "routing benchmark history missing" unless File.file?(benchmark_history_path)
+errors << "manifest benchmark history schema path missing" unless routing_contract["benchmark_history_schema"].to_s == "docs/ROUTING_BENCHMARK_HISTORY_SCHEMA.md"
+benchmark_history_schema_path = File.join(ROOT, routing_contract.fetch("benchmark_history_schema", ""))
+errors << "routing benchmark history schema missing" unless File.file?(benchmark_history_schema_path)
+errors << "manifest model matrix report path missing" unless routing_contract["model_matrix_report"].to_s == "bin/routing-model-matrix-report"
+model_matrix_report_path = File.join(ROOT, routing_contract.fetch("model_matrix_report", ""))
+errors << "routing model matrix report missing" unless File.file?(model_matrix_report_path)
 errors << "manifest campaign preflight verifier path missing" unless routing_contract["campaign_preflight_verifier"].to_s == "bin/routing-campaign-preflight-verify"
 campaign_preflight_verifier_path = File.join(ROOT, routing_contract.fetch("campaign_preflight_verifier", ""))
 errors << "routing campaign preflight verifier missing" unless File.file?(campaign_preflight_verifier_path)
