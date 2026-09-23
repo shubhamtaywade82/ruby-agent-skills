@@ -100,12 +100,19 @@ script = <<~SH
   #!/usr/bin/env bash
   set -euo pipefail
   ruby bin/routing-campaign-handoff-verify ./routing-handoff/HANDOFF.json
+
+  RESUME_ARGS=()
+  if [[ -f ./routing-campaign-output/campaign.json ]]; then
+    RESUME_ARGS=(--resume)
+  fi
+
   ruby bin/routing-campaign \
     --model #{options[:model].shellescape} \
     --url #{options[:url].shellescape} \
     --runs #{repetitions} \
     --timeout #{options[:timeout]} \
-    --output ./routing-campaign-output
+    --output ./routing-campaign-output \
+    "${RESUME_ARGS[@]}"
 SH
 File.write(script_path, script, encoding: "UTF-8")
 FileUtils.chmod(0o755, script_path)

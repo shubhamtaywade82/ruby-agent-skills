@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Routing campaign execution
+
+- Added checkpointed routing evaluation after every repetition.
+- Added hash-bound per-run receipts and explicit `--resume` recovery.
+- Resume rejects incompatible campaign, routing-contract, model, or runtime configuration and never synthesizes missing results.
+
+
 ### CI toolchain maintenance
 
 - Upgraded the validation workflow from `actions/checkout@v4` to `actions/checkout@v7`.

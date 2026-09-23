@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "digest"
 require "fileutils"
 require "json"
 require "open3"
 require "optparse"
 require "set"
+require "time"
 require "yaml"
 
 ROOT = File.expand_path("..", __dir__)
@@ -17,7 +19,16 @@ def load_yaml(path)
   YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
 end
 
+def atomic_write(path, content)
+  temp_path = "#{path}.tmp-#{Process.pid}"
+  File.write(temp_path, content, encoding: "UTF-8")
+  File.rename(temp_path, path)
+ensure
+  FileUtils.rm_f(temp_path) if temp_path
+end
+
 def execute_agent(env, command, workdir, timeout)
+  started_at = Time.now.utc.iso8601(6)
   started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
   stdout = +""
   stderr = +""
@@ -45,6 +56,8 @@ def execute_agent(env, command, workdir, timeout)
   end
 
   {
+    "started_at" => started_at,
+    "finished_at" => Time.now.utc.iso8601(6),
     "exit_code" => exit_code,
     "timed_out" => timed_out,
     "stdout" => stdout,
@@ -53,12 +66,143 @@ def execute_agent(env, command, workdir, timeout)
   }
 rescue Errno::ESRCH
   {
+    "started_at" => started_at,
+    "finished_at" => Time.now.utc.iso8601(6),
     "exit_code" => nil,
     "timed_out" => true,
     "stdout" => stdout,
     "stderr" => stderr,
     "duration_seconds" => (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).round(4)
   }
+end
+
+def run_checkpoint(path, results:, selected_count:, campaign:, campaign_version:, routing_contract:, agent:, requested_repetitions:, routing_inputs:, mode:)
+  completed = results.values.sum { |entry| entry.fetch("runs").count { |run| run["status"] == "completed" } }
+
+  primary_matches = 0
+  valid_runs = 0
+  secondary_expected = 0
+  secondary_matched = 0
+  unexpected_secondary_total = 0
+  confusion_matrix = Hash.new { |hash, key| hash[key] = Hash.new(0) }
+
+  results.each_value do |entry|
+    entry.fetch("runs").each do |run|
+      next unless run["status"] == "completed"
+
+      expected = run.fetch("expected")
+      observed = run.fetch("observed")
+      valid_runs += 1
+      primary_matches += 1 if observed.fetch("primary_skill") == expected.fetch("primary_skill")
+      expected_secondary = Array(expected.fetch("secondary_skills"))
+      observed_secondary = Array(observed.fetch("secondary_skills"))
+      matched_secondary = expected_secondary & observed_secondary
+      secondary_expected += expected_secondary.length
+      secondary_matched += matched_secondary.length
+      unexpected_secondary_total += (observed_secondary - expected_secondary).length
+      confusion_matrix[expected.fetch("primary_skill")][observed.fetch("primary_skill")] += 1
+    end
+  end
+
+  complete = completed == selected_count * requested_repetitions
+  payload = {
+    "protocol_version" => 1,
+    "evaluation" => "skill-routing-v1",
+    "campaign" => campaign,
+    "campaign_version" => campaign_version,
+    "routing_contract" => routing_contract,
+    "agent" => agent,
+    "routing_case_count" => selected_count,
+    "requested_repetitions" => requested_repetitions,
+    "requested_runs" => selected_count * requested_repetitions,
+    "completed_runs" => completed,
+    "complete" => complete,
+    "execution" => {
+      "checkpointed" => true,
+      "mode" => mode
+    },
+    "routing_inputs" => routing_inputs,
+    "metrics" => {
+      "primary_accuracy" => valid_runs.zero? ? 0.0 : primary_matches.fdiv(valid_runs),
+      "secondary_recall" => secondary_expected.zero? ? 1.0 : secondary_matched.fdiv(secondary_expected),
+      "average_unexpected_secondary_count" => valid_runs.zero? ? 0.0 : unexpected_secondary_total.fdiv(valid_runs)
+    },
+    "confusion_matrix" => confusion_matrix,
+    "cases" => results
+  }
+
+  atomic_write(path, JSON.pretty_generate(payload) + "\n")
+  payload
+end
+
+def validate_existing_campaign!(campaign, selected_count:, repetitions:, routing_contract:, provider:, model:, tool_mode:, routing_inputs:)
+  errors = []
+  errors << "campaign identity mismatch" unless campaign["campaign"] == "skill-routing-public-v1"
+  errors << "campaign version mismatch" unless campaign["campaign_version"].to_i == 1
+  errors << "routing case count mismatch" unless campaign["routing_case_count"].to_i == selected_count
+  errors << "repetition count mismatch" unless campaign["requested_repetitions"].to_i == repetitions
+  errors << "routing contract mismatch" unless File.expand_path(campaign["routing_contract"].to_s) == File.expand_path(routing_contract)
+  existing_inputs = campaign.fetch("routing_inputs", {})
+  routing_inputs.each do |key, expected|
+    errors << "routing input #{key} mismatch" unless existing_inputs[key].to_s == expected
+  end
+
+  existing_agent = campaign.fetch("agent", {})
+  errors << "provider mismatch" if provider && existing_agent["provider"].to_s != provider.to_s
+  errors << "model mismatch" if model && existing_agent["model"].to_s != model.to_s
+  errors << "tool mode mismatch" if tool_mode && existing_agent["tool_mode"].to_s != tool_mode.to_s
+
+  abort "cannot resume incompatible campaign: #{errors.join("; ")}" unless errors.empty?
+end
+
+def recover_run(run_dir:, case_id:, run_number:, expected_primary:, expected_secondary:, boundary:, skills:)
+  result_file = File.join(run_dir, "result.json")
+  receipt_file = File.join(run_dir, "run.json")
+  return nil unless File.file?(result_file) && File.file?(receipt_file)
+
+  receipt = JSON.parse(File.read(receipt_file, encoding: "UTF-8"))
+  return nil unless receipt["protocol_version"].to_i == 1
+  return nil unless receipt["case_id"] == case_id
+  return nil unless receipt["run_number"].to_i == run_number
+  return nil unless receipt["status"] == "completed"
+
+  observed = JSON.parse(File.read(result_file, encoding: "UTF-8"))
+  observed_primary = observed.fetch("primary_skill").to_s
+  observed_secondary = Array(observed.fetch("secondary_skills")).map(&:to_s).uniq
+  return nil unless skills.include?(observed_primary)
+  return nil if observed_secondary.include?(observed_primary)
+  return nil unless (observed_secondary - skills.to_a).empty?
+
+  expected_digest = receipt["result_sha256"].to_s
+  return nil if expected_digest.empty?
+  return nil unless Digest::SHA256.file(result_file).hexdigest == expected_digest
+
+  {
+    "run_number" => run_number,
+    "status" => "completed",
+    "expected" => {
+      "primary_skill" => expected_primary,
+      "secondary_skills" => expected_secondary,
+      "boundary" => boundary
+    },
+    "observed" => {
+      "primary_skill" => observed_primary,
+      "secondary_skills" => observed_secondary,
+      "reason" => observed["reason"]
+    },
+    "scoring" => {
+      "primary_accuracy" => observed_primary == expected_primary,
+      "secondary_recall" => expected_secondary.empty? ? 1.0 : (expected_secondary & observed_secondary).length.fdiv(expected_secondary.length),
+      "unexpected_secondary_count" => (observed_secondary - expected_secondary).length
+    },
+    "validation_errors" => [],
+    "agent" => receipt.fetch("execution"),
+    "raw_result_file" => result_file,
+    "run_receipt_file" => receipt_file,
+    "resumed" => true
+  }
+rescue JSON::ParserError, KeyError
+  nil
 end
 
 options = {
@@ -70,7 +214,8 @@ options = {
   provider: ENV["RUBY_AGENT_PROVIDER"],
   model: ENV["RUBY_AGENT_MODEL"],
   model_version: ENV["RUBY_AGENT_MODEL_VERSION"],
-  tool_mode: ENV["RUBY_AGENT_TOOL_MODE"]
+  tool_mode: ENV["RUBY_AGENT_TOOL_MODE"],
+  resume: false
 }
 
 OptionParser.new do |opts|
@@ -85,6 +230,7 @@ OptionParser.new do |opts|
   opts.on("--model NAME") { |value| options[:model] = value }
   opts.on("--model-version VALUE") { |value| options[:model_version] = value }
   opts.on("--tool-mode VALUE") { |value| options[:tool_mode] = value }
+  opts.on("--resume", "Resume completed runs from verified run receipts in the existing output") { options[:resume] = true }
 end.parse!
 
 abort "usage: ruby bin/routing-eval --command COMMAND [options]" unless options[:command]
@@ -92,7 +238,6 @@ abort "usage: ruby bin/routing-eval --command COMMAND [options]" unless options[
 cases_data = load_yaml(CASES_PATH)
 campaign_config = load_yaml(CAMPAIGN_PATH)
 manifest = load_yaml(MANIFEST_PATH)
-
 cases = Array(cases_data.fetch("cases"))
 skills = manifest.fetch("skills").keys.to_set
 
@@ -109,16 +254,31 @@ abort "runs must be >= 1" if repetitions < 1
 output = File.expand_path(options[:output])
 output_dir = output.end_with?(".json") ? File.dirname(output) : output
 FileUtils.mkdir_p(output_dir)
+campaign_path = output.end_with?(".json") ? output : File.join(output_dir, "campaign.json")
+
+routing_inputs = {
+  "manifest_sha256" => Digest::SHA256.file(MANIFEST_PATH).hexdigest,
+  "campaign_manifest_sha256" => Digest::SHA256.file(CAMPAIGN_PATH).hexdigest,
+  "routing_cases_sha256" => Digest::SHA256.file(CASES_PATH).hexdigest,
+  "routing_contract_sha256" => Digest::SHA256.file(options[:router]).hexdigest
+}
+
+if options[:resume]
+  abort "cannot resume without an existing campaign checkpoint: #{campaign_path}" unless File.file?(campaign_path)
+  existing_campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+  validate_existing_campaign!(
+    existing_campaign,
+    selected_count: selected.length,
+    repetitions: repetitions,
+    routing_contract: options[:router],
+    provider: options[:provider],
+    model: options[:model],
+    tool_mode: options[:tool_mode],
+    routing_inputs: routing_inputs
+  )
+end
 
 results = {}
-primary_confusion = Hash.new { |hash, key| hash[key] = Hash.new(0) }
-primary_expected_total = 0
-primary_matches = 0
-secondary_expected = 0
-secondary_matched = 0
-unexpected_secondary_total = 0
-completed_repetitions = 0
-requested_repetitions = selected.length * repetitions
 
 selected.each do |entry|
   case_id = entry.fetch("id")
@@ -129,6 +289,50 @@ selected.each do |entry|
   repetitions.times do |index|
     run_number = index + 1
     run_dir = File.join(output_dir, case_id, "run-#{run_number}")
+    FileUtils.mkdir_p(run_dir)
+
+    if options[:resume]
+      recovered = recover_run(
+        run_dir: run_dir,
+        case_id: case_id,
+        run_number: run_number,
+        expected_primary: expected_primary,
+        expected_secondary: expected_secondary,
+        boundary: entry.fetch("boundary"),
+        skills: skills
+      )
+      if recovered
+        case_runs << recovered
+        puts "Resumed #{case_id} run #{run_number}"
+        results[case_id] = {
+          "case_id" => case_id,
+          "requested_repetitions" => repetitions,
+          "completed_repetitions" => case_runs.count { |run| run["status"] == "completed" },
+          "complete" => case_runs.length == repetitions && case_runs.all? { |run| run["status"] == "completed" },
+          "expected_primary_skill" => expected_primary,
+          "runs" => case_runs
+        }
+        run_checkpoint(
+          campaign_path,
+          results: results,
+          selected_count: selected.length,
+          campaign: campaign_config.fetch("id"),
+          campaign_version: campaign_config.fetch("version"),
+          routing_contract: File.expand_path(options[:router]),
+          agent: {
+            "provider" => options[:provider],
+            "model" => options[:model],
+            "model_version" => options[:model_version],
+            "tool_mode" => options[:tool_mode]
+          },
+          requested_repetitions: repetitions,
+          routing_inputs: routing_inputs,
+          mode: "resumed"
+        )
+        next
+      end
+    end
+
     FileUtils.rm_rf(run_dir)
     FileUtils.mkdir_p(run_dir)
 
@@ -188,17 +392,7 @@ selected.each do |entry|
         primary_match = primary == expected_primary
         secondary_recall = expected_secondary.empty? ? 1.0 : matched_secondary.length.fdiv(expected_secondary.length)
 
-        if validation_errors.empty?
-          primary_expected_total += 1
-          primary_matches += 1 if primary_match
-          secondary_expected += expected_secondary.length
-          secondary_matched += matched_secondary.length
-          unexpected_secondary_total += unexpected_secondary.length
-          primary_confusion[expected_primary][primary] += 1
-          completed_repetitions += 1
-        end
-
-        case_runs << {
+        case_run = {
           "run_number" => run_number,
           "status" => validation_errors.empty? ? "completed" : "invalid",
           "expected" => {
@@ -220,6 +414,22 @@ selected.each do |entry|
           "agent" => execution,
           "raw_result_file" => result_file
         }
+        case_runs << case_run
+
+        if validation_errors.empty?
+          atomic_write(
+            File.join(run_dir, "run.json"),
+            JSON.pretty_generate(
+              "protocol_version" => 1,
+              "case_id" => case_id,
+              "run_number" => run_number,
+              "status" => "completed",
+              "result_sha256" => Digest::SHA256.file(result_file).hexdigest,
+              "execution" => execution
+            ) + "\n"
+          )
+          case_runs.last["run_receipt_file"] = File.join(run_dir, "run.json")
+        end
       rescue KeyError => e
         validation_errors << e.message
       end
@@ -234,51 +444,41 @@ selected.each do |entry|
         "raw_result_file" => result_file
       }
     end
-  end
 
-  completed_case_repetitions = case_runs.count { |run| run["status"] == "completed" }
-  results[case_id] = {
-    "case_id" => case_id,
-    "requested_repetitions" => repetitions,
-    "completed_repetitions" => completed_case_repetitions,
-    "complete" => completed_case_repetitions == repetitions,
-    "expected_primary_skill" => expected_primary,
-    "runs" => case_runs
-  }
+    results[case_id] = {
+      "case_id" => case_id,
+      "requested_repetitions" => repetitions,
+      "completed_repetitions" => case_runs.count { |run| run["status"] == "completed" },
+      "complete" => case_runs.length == repetitions && case_runs.all? { |run| run["status"] == "completed" },
+      "expected_primary_skill" => expected_primary,
+      "runs" => case_runs
+    }
+
+    run_checkpoint(
+      campaign_path,
+      results: results,
+      selected_count: selected.length,
+      campaign: campaign_config.fetch("id"),
+      campaign_version: campaign_config.fetch("version"),
+      routing_contract: File.expand_path(options[:router]),
+      agent: {
+        "provider" => options[:provider],
+        "model" => options[:model],
+        "model_version" => options[:model_version],
+        "tool_mode" => options[:tool_mode]
+      },
+      requested_repetitions: repetitions,
+      routing_inputs: routing_inputs,
+      mode: options[:resume] ? "resumed" : "fresh"
+    )
+  end
 end
 
-primary_accuracy = primary_expected_total.zero? ? 0.0 : primary_matches.fdiv(primary_expected_total)
-secondary_recall = secondary_expected.zero? ? 1.0 : secondary_matched.fdiv(secondary_expected)
-complete = completed_repetitions == requested_repetitions
+checkpoint = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+checkpoint["execution"]["mode"] = options[:resume] ? "resumed" : "fresh"
+checkpoint["execution"]["checkpointed"] = true
+checkpoint["routing_inputs"] = routing_inputs
+atomic_write(campaign_path, JSON.pretty_generate(checkpoint) + "\n")
 
-campaign = {
-  "protocol_version" => 1,
-  "evaluation" => "skill-routing-v1",
-  "campaign" => campaign_config.fetch("id"),
-  "campaign_version" => campaign_config.fetch("version"),
-  "routing_contract" => File.expand_path(options[:router]),
-  "agent" => {
-    "provider" => options[:provider],
-    "model" => options[:model],
-    "model_version" => options[:model_version],
-    "tool_mode" => options[:tool_mode]
-  },
-  "routing_case_count" => selected.length,
-  "requested_repetitions" => repetitions,
-  "requested_runs" => requested_repetitions,
-  "completed_runs" => completed_repetitions,
-  "complete" => complete,
-  "metrics" => {
-    "primary_accuracy" => primary_accuracy,
-    "secondary_recall" => secondary_recall,
-    "average_unexpected_secondary_count" => completed_repetitions.zero? ? 0.0 : unexpected_secondary_total.fdiv(completed_repetitions)
-  },
-  "confusion_matrix" => primary_confusion,
-  "cases" => results
-}
-
-campaign_path = output.end_with?(".json") ? output : File.join(output_dir, "campaign.json")
-File.write(campaign_path, JSON.pretty_generate(campaign) + "\n", encoding: "UTF-8")
-
-puts JSON.pretty_generate(campaign)
-exit(1) unless complete
+puts JSON.pretty_generate(checkpoint)
+exit(1) unless checkpoint.fetch("complete")
