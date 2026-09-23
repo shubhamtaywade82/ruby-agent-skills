@@ -975,7 +975,7 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/design-patterns/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
-
+evaluations:
   react-typescript-typescript-core:
     source: react-typescript-core-v1
     schema: docs/EVAL_SCHEMA.md
@@ -1074,7 +1074,6 @@ benchmarks:
       - tests
       - contract
       - scope_control
-evaluations:
   rails-repository-completeness:
     source: rails-repository-completeness-v1
     schema: docs/EVAL_SCHEMA.md
