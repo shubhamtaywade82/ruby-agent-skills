@@ -27,7 +27,7 @@ metadata = JSON.parse(File.read(metadata_path, encoding: "UTF-8"))
 manifest = YAML.safe_load(File.read(manifest_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
 errors = []
-errors << "unsupported installation protocol" unless metadata["protocol_version"].to_i == 1
+errors << "unsupported installation protocol" unless metadata["protocol_version"].to_i == 2
 errors << "manifest SHA-256 mismatch" unless Digest::SHA256.file(manifest_path).hexdigest == metadata.dig("integrity", "skill_manifest_sha256")
 errors << "routing contract SHA-256 mismatch" unless Digest::SHA256.file(routing_path).hexdigest == metadata.dig("integrity", "routing_contract_sha256")
 
@@ -62,35 +62,41 @@ errors << "installation pattern inventory mismatch" unless reported_patterns == 
 
 def verify_file_hashes(metadata_entries, root:, label:)
   entries = Array(metadata_entries)
-  expected = entries.to_h do |entry|
-    [entry.fetch("path"), entry.fetch("sha256")]
-  end
-
-  actual = {}
-  expected.each do |relative, digest|
-    path = File.expand_path(File.join(root, relative))
+  entries.each_with_object({}) do |entry, actual|
+    source = entry.fetch("source_path")
+    target = entry.fetch("target_path")
+    expected_digest = entry.fetch("sha256")
+    path = File.expand_path(File.join(root, target))
     root_prefix = File.expand_path(root) + File::SEPARATOR
-    raise "invalid #{label} path: #{relative}" unless path.start_with?(root_prefix)
-    raise "missing #{label}: #{relative}" unless File.file?(path)
-    actual[relative] = Digest::SHA256.file(path).hexdigest
-    raise "#{label} SHA-256 mismatch: #{relative}" unless actual[relative] == digest
+    raise "invalid #{label} target path: #{target}" unless path.start_with?(root_prefix)
+    raise "missing #{label}: #{target}" unless File.file?(path)
+    actual[target] = Digest::SHA256.file(path).hexdigest
+    raise "#{label} SHA-256 mismatch: #{target} (source #{source})" unless actual[target] == expected_digest
   end
-  actual
 rescue KeyError, TypeError
   raise "invalid #{label} integrity metadata"
 end
 
 begin
-  skill_hashes = verify_file_hashes(metadata.dig("integrity", "skill_files"), root: root, label: "skill file")
-  installed_skill_hash_paths = expected_skills.keys.map { |name| "#{name}/SKILL.md" }.sort
-  errors << "skill integrity set mismatch" unless skill_hashes.keys.sort == installed_skill_hash_paths
+  skill_hashes = verify_file_hashes(
+    metadata.dig("integrity", "skill_files"),
+    root: root,
+    label: "skill file"
+  )
+  expected_skill_hashes = expected_skills.values.map do |entry|
+    entry.fetch("path").sub(%r{\Askills/}, "")
+  end.sort
+  errors << "skill integrity set mismatch" unless skill_hashes.keys.sort == expected_skill_hashes
 
-  pattern_entries = Array(metadata.dig("integrity", "pattern_files")).map do |entry|
-    entry.merge("path" => entry.fetch("path").delete_prefix("patterns/"))
-  end
-  pattern_hashes = verify_file_hashes(pattern_entries, root: patterns_root, label: "pattern file")
-  installed_pattern_hash_paths = pattern_hashes.keys.map { |path| "patterns/#{path}" }.sort
-  errors << "pattern integrity set mismatch" unless installed_pattern_hash_paths == expected_patterns.sort
+  pattern_hashes = verify_file_hashes(
+    metadata.dig("integrity", "pattern_files"),
+    root: root,
+    label: "pattern file"
+  )
+  expected_pattern_hashes = expected_patterns.map do |path|
+    ".ruby-agent-skills/#{path}"
+  end.sort
+  errors << "pattern integrity set mismatch" unless pattern_hashes.keys.sort == expected_pattern_hashes
 rescue RuntimeError => e
   errors << e.message
 end
