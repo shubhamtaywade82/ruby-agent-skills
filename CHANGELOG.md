@@ -1,5 +1,12 @@
 # Changelog
 
+## Iteration 79 — Documentation consistency & empirical readiness
+
+- Synchronized README inventory and current implementation status with the verified Iteration 78 repository state.
+- Removed the stale validation inventory and stale Iteration 76 current-status claim from README.
+- Extended the repository completeness audit to validate the documented dedicated system/contract test count.
+
+
 ## Iteration 78 — Verified agent installation doctor
 
 - Added `bin/skill-pack-doctor` for deterministic installed-pack health checks.
