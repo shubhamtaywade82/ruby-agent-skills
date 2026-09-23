@@ -94,6 +94,8 @@ manifest = {
   "gate" => evidence["gate"],
   "intake" => evidence["intake"],
   "campaign_metrics" => evidence["campaign_metrics"],
+  "requested_runs" => evidence["requested_runs"],
+  "completed_runs" => evidence["completed_runs"],
   "analysis" => evidence["analysis"],
   "artifacts" => archive_artifacts
 }
