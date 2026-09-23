@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "open3"
+require "optparse"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+CONFIG_PATH = File.join(ROOT, "router", "ROUTING_RELEASE.yml")
+CAMPAIGN_EVIDENCE_VERIFY = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+HIDDEN_PATH = File.join(ROOT, "router", "ROUTING_HIDDEN_BENCHMARK.yml")
+
+options = { evidence: nil, archive: nil }
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-release-check [options]"
+  opts.on("--evidence PATH", "Completed public campaign evidence JSON") { |v| options[:evidence] = File.expand_path(v) }
+  opts.on("--archive DIR", "Immutable archive root containing the campaign evidence") { |v| options[:archive] = File.expand_path(v) }
+end.parse!
+
+config = YAML.safe_load(File.read(CONFIG_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+hidden = YAML.safe_load(File.read(HIDDEN_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+errors = []
+
+campaign = config.fetch("campaign")
+errors << "hidden benchmark is not external-only" unless config.dig("gates", "hidden_benchmark_external_only") == true && hidden["source"] == "external-only"
+errors << "synthetic result generation is prohibited by release policy" unless config.dig("controls", "no_synthetic_results") == true
+errors << "unverified results are prohibited by release policy" unless config.dig("controls", "no_unverified_results") == true
+errors << "quality ranking is prohibited by release policy" unless config.dig("controls", "no_quality_ranking") == true
+
+unless options[:evidence]
+  warn "Routing release check: static gates passed; real campaign evidence not supplied."
+  warn "Provide --evidence after an externally executed public campaign to evaluate empirical release gates."
+  puts "Routing release readiness: pending empirical campaign evidence"
+  exit 2
+end
+
+evidence = File.expand_path(options[:evidence])
+abort "campaign evidence not found: #{evidence}" unless File.file?(evidence)
+
+stdout, stderr, status = Open3.capture3(
+  RbConfig.ruby, CAMPAIGN_EVIDENCE_VERIFY, evidence, "--check-files", chdir: ROOT
+)
+warn stderr unless stderr.empty?
+abort "campaign evidence verification failed" unless status.success?
+
+data = JSON.parse(File.read(evidence, encoding: "UTF-8"))
+errors << "campaign id mismatch" unless data["campaign"] == campaign["id"]
+errors << "case count mismatch" unless data["routing_case_count"].to_i == campaign["expected_case_count"].to_i
+errors << "repetition mismatch" unless data["requested_repetitions"].to_i == campaign["expected_repetitions"].to_i
+errors << "completed run count mismatch" unless data["completed_runs"].to_i == campaign["expected_runs"].to_i
+errors << "requested run count mismatch" unless data["requested_runs"].to_i == campaign["expected_runs"].to_i
+errors << "immutable archive is required" if config.dig("gates", "immutable_archive_required") && options[:archive].to_s.empty?
+errors << "archive directory not found" if options[:archive] && !Dir.exist?(options[:archive])
+if options[:archive]
+  matching_manifests = Dir[File.join(options[:archive], "**", "ARCHIVE_MANIFEST.json")]
+  errors << "archive contains no ARCHIVE_MANIFEST.json" if matching_manifests.empty?
+  unless matching_manifests.empty?
+    evidence_sha = Digest::SHA256.file(evidence).hexdigest
+    archive_match = matching_manifests.any? do |manifest_path|
+      manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+      manifest.dig("source_evidence", "sha256") == evidence_sha &&
+        manifest["evidence_type"] == "skill-routing-campaign-v1"
+    end
+    errors << "archive does not contain the supplied evidence package" unless archive_match
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing release gate error(s)"
+end
+
+puts "Routing release readiness passed"
+puts "  campaign: #{data.fetch("campaign")}"
+puts "  runs: #{data.fetch("completed_runs")}/#{campaign.fetch("expected_runs")}"
+puts "  evidence: verified"
+puts "  archive: supplied"
