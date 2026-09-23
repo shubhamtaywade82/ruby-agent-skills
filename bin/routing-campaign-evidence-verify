@@ -1,0 +1,100 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "optparse"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
+CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
+
+options = { check_files: false }
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign-evidence-verify EVIDENCE_JSON [options]"
+  opts.on("--check-files", "Recalculate all recorded artifact hashes") { options[:check_files] = true }
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "campaign evidence JSON is required" })
+abort "campaign evidence JSON not found: #{path}" unless File.file?(path)
+
+evidence = JSON.parse(File.read(path, encoding: "UTF-8"))
+campaign_config = YAML.safe_load(File.read(CAMPAIGN_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+routing_cases = YAML.safe_load(File.read(CASES_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases")
+
+errors = []
+errors << "protocol_version must be 1" unless evidence["protocol_version"].to_i == 1
+errors << "evidence type must be skill-routing-campaign-v1" unless evidence["evidence"] == "skill-routing-campaign-v1"
+
+%w[campaign campaign_version routing_case_count requested_repetitions requested_runs completed_runs repository agent campaign_metrics analysis artifacts intake replay].each do |key|
+  errors << "missing top-level field #{key}" unless evidence.key?(key)
+end
+
+expected_cases = routing_cases.length
+expected_repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
+expected_runs = expected_cases * expected_repetitions
+
+errors << "campaign id mismatch" unless evidence["campaign"] == campaign_config.fetch("id")
+errors << "campaign version mismatch" unless evidence["campaign_version"].to_i == campaign_config.fetch("version").to_i
+errors << "routing_case_count mismatch" unless evidence["routing_case_count"].to_i == expected_cases
+errors << "requested_repetitions mismatch" unless evidence["requested_repetitions"].to_i == expected_repetitions
+errors << "requested_runs mismatch" unless evidence["requested_runs"].to_i == expected_runs
+errors << "completed_runs mismatch" unless evidence["completed_runs"].to_i == expected_runs
+errors << "intake verification missing" unless evidence.dig("intake", "verified") == true
+
+repository = evidence.fetch("repository", {})
+errors << "repository git SHA missing" if repository["git_sha"].to_s.strip.empty?
+errors << "evidence must come from a clean worktree" unless repository["worktree_clean"] == true
+
+agent = evidence.fetch("agent", {})
+errors << "agent provider missing" if agent["provider"].to_s.strip.empty?
+errors << "agent model missing" if agent["model"].to_s.strip.empty?
+
+artifacts = evidence.fetch("artifacts", {})
+errors << "artifact map must not be empty" unless artifacts.is_a?(Hash) && !artifacts.empty?
+errors << "preflight artifact is required" unless artifacts.key?("preflight")
+
+%w[campaign routing_report routing_contract skill_manifest campaign_manifest routing_cases result_schema campaign_intake_schema preflight].each do |key|
+  errors << "required artifact #{key} missing" unless artifacts[key].is_a?(Hash)
+end
+
+raw_artifact_keys = artifacts.keys.select { |key| key.start_with?("raw_") }
+errors << "raw artifact count #{raw_artifact_keys.length} != expected runs #{expected_runs}" unless raw_artifact_keys.length == expected_runs
+
+artifacts.each do |key, metadata|
+  unless metadata.is_a?(Hash)
+    errors << "artifact #{key} must be a mapping"
+    next
+  end
+
+  digest = metadata["sha256"].to_s
+  errors << "artifact #{key} sha256 must be 64 hex characters" unless digest.match?(/A[0-9a-f]{64}z/)
+  errors << "artifact #{key} bytes must be >= 0" unless metadata["bytes"].to_i >= 0
+
+  if options[:check_files]
+    artifact_path = metadata["path"].to_s
+    if artifact_path.empty?
+      errors << "artifact #{key} path is empty"
+    elsif !File.file?(artifact_path)
+      errors << "artifact #{key} unavailable at #{artifact_path}"
+    else
+      errors << "artifact #{key} SHA-256 mismatch" unless Digest::SHA256.file(artifact_path).hexdigest == digest
+      errors << "artifact #{key} byte size mismatch" unless File.size(artifact_path) == metadata["bytes"].to_i
+    end
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing campaign evidence verification error(s)"
+end
+
+puts "Routing campaign evidence verification"
+puts "  campaign: #{evidence.fetch("campaign")}"
+puts "  cases: #{evidence.fetch("routing_case_count")}"
+puts "  repetitions: #{evidence.fetch("requested_repetitions")}"
+puts "  completed runs: #{evidence.fetch("completed_runs")}/#{expected_runs}"
+puts "  raw artifacts: #{raw_artifact_keys.length}"
+puts "  preflight: present"
+puts "Routing campaign evidence verification passed."
