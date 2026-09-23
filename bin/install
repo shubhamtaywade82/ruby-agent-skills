@@ -125,7 +125,7 @@ PATTERN_COUNT="$(find "$TMP_DIR/repo/patterns" -type f -name '*.md' ! -name READ
 OLD_INSTALLATION="$TARGET_ROOT/.ruby-agent-skills/INSTALLATION.json"
 if [[ -f "$OLD_INSTALLATION" ]]; then
   while IFS= read -r old_skill; do
-    [[ -z "$old_skill" ]] && continue
+    [[ "$old_skill" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]] || continue
     [[ -d "$TMP_DIR/repo/skills/$old_skill" ]] && continue
     rm -rf "$TARGET_ROOT/$old_skill"
   done < <(ruby -rjson -e 'data=JSON.parse(File.read(ARGV.fetch(0))); Array(data.dig("inventory","skill_names")).each { |name| puts name }' "$OLD_INSTALLATION")
