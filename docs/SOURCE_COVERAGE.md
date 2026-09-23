@@ -697,3 +697,16 @@ Primary sources:
 - https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html
 
 Coverage focuses on authentication mechanism boundaries, credential storage, session lifecycle, fixation resistance, revocation, password recovery, abuse controls, persistent login, browser/API separation, context propagation, freshness, and deterministic security regression testing.
+
+## React and TypeScript engineering
+
+Iteration 77 adds a dedicated frontend engineering family covering TypeScript language/type boundaries, runtime validation, React component architecture, state/effects, server-state data fetching, deterministic UI testing, accessibility/focus, rendering performance, and feature-module architecture.
+
+The new material is operationalized as skills, reusable patterns, and public evaluation cases. It does not attempt to vendor external framework documentation or prescribe one package/library implementation.
+
+Sources:
+- https://www.typescriptlang.org/docs/handbook/intro.html
+- https://react.dev/learn
+- https://react.dev/reference/react
+- https://testing-library.com/docs/
+- https://www.w3.org/WAI/ARIA/apg/

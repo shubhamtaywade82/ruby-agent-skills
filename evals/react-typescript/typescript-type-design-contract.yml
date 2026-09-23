@@ -1,0 +1,34 @@
+id: typescript-type-design-contract
+version: 1
+title: TypeScript Type Design Contract
+category: react-typescript
+source: react-typescript-engineering-v1
+skills:
+  - typescript-type-design
+patterns:
+  - typescript-branded-identifier
+  - typescript-generic-result
+prompt: |
+  Design separate UserId and AccountId values and a reusable result contract.
+  Inspect the repository before choosing the implementation shape. Preserve existing conventions, keep runtime validation separate from compile-time types, and add focused verification.
+constraints:
+  required_boundary: typescript-type-design
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: design
+    input: Design separate UserId and AccountId values and a reusable result contract.
+    expected:
+      typescript-branded-identifier: explicit and justified
+  - name: failure-path
+    input: Design separate UserId and AccountId values and a reusable result contract. with an invalid, asynchronous, or boundary-heavy variant
+    expected:
+      verification: focused tests cover the failure or recovery path
+grading:
+  functional: The resulting behavior satisfies the task contract.
+  tests: Verification covers the intended behavior and failure paths.
+  contract: The TypeScript or React boundary remains explicit and version-aware.
+  scope_control: No unrelated framework or build migration is introduced.

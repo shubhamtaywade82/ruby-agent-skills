@@ -1,5 +1,14 @@
 # Changelog
 
+## Iteration 77 — React + TypeScript engineering pack
+
+- Added dedicated TypeScript core, type-design, and runtime-contract skills.
+- Added React component, state/effects, data-fetching, testing, accessibility/performance, and architecture skills.
+- Added 24 React/TypeScript implementation patterns and 9 public evaluations.
+- Added routing and system-test coverage for the new frontend skill family.
+- Preserved the existing evidence-first, version-aware, repository-inspection workflow.
+
+
 ## Unreleased
 
 ### Iteration 76 — Implementation hardening

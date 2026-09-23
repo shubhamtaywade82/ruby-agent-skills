@@ -2,14 +2,14 @@
 
 ## Repository-side implementation status
 
-The skill library, pattern library, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, and verified installer are implemented in the current release line.
+The skill library, pattern library, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, and React/TypeScript engineering layer are implemented in the current release line.
 
 Current inventory:
 
-- 76 skills
-- 393 implementation patterns
-- 392 evaluation cases
-- 70 system/contract tests
+- 85 skills
+- 417 implementation patterns
+- 410 evaluation cases
+- 71 system/contract tests
 
 ## First checkout
 

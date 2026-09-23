@@ -1,0 +1,34 @@
+id: typescript-core-contract
+version: 1
+title: TypeScript Core Contract
+category: react-typescript
+source: react-typescript-engineering-v1
+skills:
+  - typescript-core-engineering
+patterns:
+  - typescript-discriminated-union
+  - typescript-public-api-boundary
+prompt: |
+  Model a payment state API that prevents success and failure payloads from being mixed.
+  Inspect the repository before choosing the implementation shape. Preserve existing conventions, keep runtime validation separate from compile-time types, and add focused verification.
+constraints:
+  required_boundary: typescript-core-engineering
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: design
+    input: Model a payment state API that prevents success and failure payloads from being mixed.
+    expected:
+      typescript-discriminated-union: explicit and justified
+  - name: failure-path
+    input: Model a payment state API that prevents success and failure payloads from being mixed. with an invalid, asynchronous, or boundary-heavy variant
+    expected:
+      verification: focused tests cover the failure or recovery path
+grading:
+  functional: The resulting behavior satisfies the task contract.
+  tests: Verification covers the intended behavior and failure paths.
+  contract: The TypeScript or React boundary remains explicit and version-aware.
+  scope_control: No unrelated framework or build migration is introduced.

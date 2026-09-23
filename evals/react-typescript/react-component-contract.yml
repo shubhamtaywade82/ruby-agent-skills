@@ -1,0 +1,34 @@
+id: react-component-contract
+version: 1
+title: React Component Contract
+category: react-typescript
+source: react-typescript-engineering-v1
+skills:
+  - react-component-engineering
+patterns:
+  - react-component-boundary
+  - react-composition-over-boolean-props
+prompt: |
+  Refactor a configurable panel whose boolean props create invalid combinations into composable variants.
+  Inspect the repository before choosing the implementation shape. Preserve existing conventions, keep runtime validation separate from compile-time types, and add focused verification.
+constraints:
+  required_boundary: react-component-engineering
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: design
+    input: Refactor a configurable panel whose boolean props create invalid combinations into composable variants.
+    expected:
+      react-composition-over-boolean-props: explicit and justified
+  - name: failure-path
+    input: Refactor a configurable panel whose boolean props create invalid combinations into composable variants. with an invalid, asynchronous, or boundary-heavy variant
+    expected:
+      verification: focused tests cover the failure or recovery path
+grading:
+  functional: The resulting behavior satisfies the task contract.
+  tests: Verification covers the intended behavior and failure paths.
+  contract: The TypeScript or React boundary remains explicit and version-aware.
+  scope_control: No unrelated framework or build migration is introduced.

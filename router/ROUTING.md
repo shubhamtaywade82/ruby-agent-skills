@@ -1456,3 +1456,20 @@ When a task materially changes dependency direction, domain ownership, modularit
 | Executable architecture rule | pattern:architecture-fitness-check |
 | System tradeoffs | pattern:architecture-tradeoff-contract |
 | Operational/team ownership | pattern:architecture-ownership-contract |
+
+
+## React and TypeScript routing
+
+| Task | Primary | Secondary |
+|---|---|---|
+| TypeScript language/compiler/type error | typescript-core-engineering | typescript-type-design, typescript-runtime-contracts |
+| TypeScript domain type modeling | typescript-type-design | typescript-core-engineering |
+| Untrusted JSON/API/storage input | typescript-runtime-contracts | typescript-core-engineering, typescript-type-design |
+| React component design/composition | react-component-engineering | react-architecture, react-testing-engineering |
+| React state/effect/lifecycle change | react-state-effects | react-component-engineering, react-testing-engineering |
+| React API data fetching/cache/mutation | react-data-fetching | typescript-runtime-contracts, react-state-effects, react-testing-engineering |
+| React application structure/feature boundaries | react-architecture | react-component-engineering, react-state-effects, react-data-fetching |
+| React component/hook/UI tests | react-testing-engineering | react-component-engineering, typescript-runtime-contracts |
+| React accessibility/keyboard/focus | react-accessibility-performance | react-component-engineering, react-testing-engineering |
+| React render performance/memoization | react-accessibility-performance | react-state-effects, react-architecture |
+| TypeScript and React feature implementation | react-component-engineering | typescript-core-engineering, typescript-type-design, react-state-effects, react-testing-engineering |
