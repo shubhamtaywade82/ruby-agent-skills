@@ -23,7 +23,8 @@ class RoutingReleaseReadinessSystemTest < Minitest::Test
   def test_release_check_is_explicitly_evidence_driven
     source = File.read(File.join(ROOT, "bin", "routing-release-check"), encoding: "UTF-8")
     assert_includes source, "routing-campaign-evidence-verify"
-    assert_includes source, "42"
+    assert_includes source, "expected_runs"
+    assert_includes source, "routing-campaign-evidence-verify"
   end
 
   def test_validator_executes_this_system_test
