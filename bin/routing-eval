@@ -96,7 +96,7 @@ def run_checkpoint(path, results:, selected_count:, campaign:, campaign_version:
     end
   end
 
-  complete = completed == requested_repetitions
+  complete = completed == selected_count * requested_repetitions
   payload = {
     "protocol_version" => 1,
     "evaluation" => "skill-routing-v1",
