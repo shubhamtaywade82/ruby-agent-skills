@@ -85,8 +85,12 @@ begin
   installed_skill_hash_paths = expected_skills.keys.map { |name| "#{name}/SKILL.md" }.sort
   errors << "skill integrity set mismatch" unless skill_hashes.keys.sort == installed_skill_hash_paths
 
-  pattern_hashes = verify_file_hashes(metadata.dig("integrity", "pattern_files"), root: root, label: "pattern file")
-  errors << "pattern integrity set mismatch" unless pattern_hashes.keys.sort == expected_patterns.sort
+  pattern_entries = Array(metadata.dig("integrity", "pattern_files")).map do |entry|
+    entry.merge("path" => entry.fetch("path").delete_prefix("patterns/"))
+  end
+  pattern_hashes = verify_file_hashes(pattern_entries, root: patterns_root, label: "pattern file")
+  installed_pattern_hash_paths = pattern_hashes.keys.map { |path| "patterns/#{path}" }.sort
+  errors << "pattern integrity set mismatch" unless installed_pattern_hash_paths == expected_patterns.sort
 rescue RuntimeError => e
   errors << e.message
 end
