@@ -52,6 +52,10 @@ Verify an installed pack:
 
     ruby bin/skill-pack-verify --root ~/.claude/skills
 
+Run the higher-level installation doctor:
+
+    ruby bin/skill-pack-doctor --root ~/.claude/skills
+
 The verifier checks:
 
 - installation protocol;
@@ -63,6 +67,10 @@ The verifier checks:
 - SHA-256 for every installed skill and pattern file.
 
 A successful installation prints the source repository, requested ref, resolved Git SHA, and installed inventory.
+
+## Doctor contract
+
+`skill-pack-doctor` verifies the installation metadata, supported agent/scope values, exact recorded skill set, embedded verifier, and then runs the embedded integrity verifier. It is a local installation smoke test; it does not claim that a particular coding agent has loaded or executed a skill.
 
 ## Operational rule
 
