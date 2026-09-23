@@ -39,6 +39,12 @@ Inspect the test runner, DOM environment, Testing Library usage, network mocking
 - snapshot-only verification;
 - disabling accessibility warnings globally.
 
+## Agent review checklist
+- Do assertions describe user-observable behavior?
+- Are network/module mocks placed at a stable boundary?
+- Are async waits deterministic?
+- Are failure and recovery paths covered?
+
 ## Verification
 Run focused tests, relevant integration tests, typecheck, and lint.
 
