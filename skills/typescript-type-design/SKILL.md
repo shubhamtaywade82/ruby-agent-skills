@@ -40,6 +40,12 @@ Inspect existing exported types, naming, strict null checks, generated API types
 - generic abstractions that hide the real API;
 - assuming a type declaration validates runtime data.
 
+## Agent review checklist
+- Are invalid states unrepresentable where practical?
+- Do generics express real relationships?
+- Are transport and domain types separated where needed?
+- Could the same contract be simpler without losing safety?
+
 ## Verification
 Use typecheck-focused tests, exported API compilation checks, and runtime boundary tests for serialized or user-controlled data.
 
