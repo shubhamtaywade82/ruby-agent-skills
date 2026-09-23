@@ -111,8 +111,16 @@ echo "  target: $TARGET_ROOT"
 echo
 echo "Review the repository/ref before installing untrusted skills."
 
-git clone --depth 1 --branch "$REF" "$REPO" "$TMP_DIR/repo" >/dev/null 2>&1 || {
-  echo "Unable to clone $REPO at ref $REF" >&2
+git clone --no-checkout --depth 1 "$REPO" "$TMP_DIR/repo" >/dev/null 2>&1 || {
+  echo "Unable to clone $REPO" >&2
+  exit 1
+}
+if ! git -C "$TMP_DIR/repo" fetch --depth 1 origin "$REF" >/dev/null 2>&1; then
+  echo "Unable to fetch $REPO at ref $REF" >&2
+  exit 1
+fi
+git -C "$TMP_DIR/repo" checkout --detach FETCH_HEAD >/dev/null 2>&1 || {
+  echo "Unable to checkout resolved ref $REF" >&2
   exit 1
 }
 
