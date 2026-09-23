@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 75 — Checkpointed Routing Campaign Resume
+> **Current milestone:** Iteration 76 — Implementation Hardening & Verified Agent Installation
 
 ---
 
@@ -35,6 +35,9 @@ External campaign handoffs are now verified against the receiving checkout befor
 ## Iteration 75 — Checkpointed Routing Campaign Resume
 
 Routing campaign execution now checkpoints after every repetition and records a hash-bound `run.json` receipt for each successfully validated run. An interrupted campaign can be resumed with `--resume`; only compatible, receipt-backed runs whose result digest still matches are reused. Missing or invalid runs execute normally, and incomplete checkpoints remain ineligible for evidence import or release readiness.
+## Iteration 76 — Implementation Hardening & Verified Agent Installation
+
+The execution layer now supports resumable multi-model routing campaigns, and the agent installer installs both skills and reusable patterns with immutable source/ref provenance. Installed packs can be independently verified for manifest/routing integrity and exact skill/pattern inventory. Removed skills are cleaned up during upgrades, and installation behavior has system-test coverage.
 
 ## What this repository contains
 
@@ -83,7 +86,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **67** |
+| Dedicated system/contract tests | **69** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -679,6 +682,19 @@ The deep Rails framework sequence through Iteration 45 is complete; Iteration 46
 
 ---
 
+# Installation
+
+Install the agent-facing skill pack with:
+
+    bash bin/install --agent claude
+
+The installer supports user/project scopes and the `agents`, `codex`, `claude`, and `copilot` layouts. It installs skills directly into the target skill directory and keeps patterns, routing, the manifest, and installation provenance under `.ruby-agent-skills/`.
+
+Verify an installation with:
+
+    ruby bin/skill-pack-verify --root ~/.claude/skills
+
+See `docs/INSTALLATION.md` for pinned-ref, project-scope, and verification workflows.
 # Contributing / extending the system
 
 When adding a new skill or deepening an existing one:
