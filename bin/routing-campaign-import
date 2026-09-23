@@ -51,6 +51,8 @@ abort(errors.join("; ")) unless errors.empty?
 
 output = options[:output] || File.join(campaign_dir, "campaign-evidence.json")
 run!([RbConfig.ruby, EVIDENCE_PACKAGER, campaign_dir, "--output", output])
+EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+run!([RbConfig.ruby, EVIDENCE_VERIFIER, output, "--check-files"])
 
 if options[:archive]
   run!([RbConfig.ruby, ARCHIVER, output, "--destination", options[:archive]])
