@@ -68,7 +68,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **61** |
+| Dedicated system/contract tests | **62** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
