@@ -91,7 +91,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     assert verify_status.success?, "#{verify_out}\n#{verify_err}"
 
     metadata = JSON.parse(File.read(File.join(target, ".ruby-agent-skills", "INSTALLATION.json"), encoding: "UTF-8"))
-    assert_equal 1, metadata.fetch("protocol_version")
+    assert_equal 2, metadata.fetch("protocol_version")
     assert_equal 1, metadata.fetch("inventory").fetch("skills")
     assert_equal 1, metadata.fetch("inventory").fetch("patterns")
     assert_equal 40, metadata.fetch("source").fetch("resolved_git_sha").length
@@ -125,6 +125,23 @@ class SkillPackInstallerSystemTest < Minitest::Test
     )
     refute verify_status.success?
     assert_includes verify_err, "skill"
+  end
+
+  def test_verifier_rejects_tampered_pattern
+    source = build_source
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+    out, err, status = install(source, project)
+    assert status.success?, "#{out}\n#{err}"
+
+    target = File.join(project, ".agents", "skills")
+    pattern_path = File.join(target, ".ruby-agent-skills", "patterns", "ruby", "demo.md")
+    File.open(pattern_path, "a", encoding: "UTF-8") { |file| file.write("tampered\n") }
+
+    _verify_out, verify_err, verify_status = Open3.capture3(
+      RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
+    )
+    refute verify_status.success?
+    assert_includes verify_err, "pattern file SHA-256 mismatch"
   end
 
   def test_verifier_rejects_tampered_pattern
