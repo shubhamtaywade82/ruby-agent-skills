@@ -4,6 +4,7 @@ name: ruby-agent-skills
 installation:
   installer: bin/install
   verifier: bin/skill-pack-verify
+  doctor: bin/skill-pack-doctor
   metadata: .ruby-agent-skills/INSTALLATION.json
 
 defaults:

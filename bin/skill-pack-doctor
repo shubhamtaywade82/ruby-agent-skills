@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "optparse"
+require "yaml"
+require "open3"
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/skill-pack-doctor --root PATH"
+  opts.on("--root PATH", "Installed agent skill root") { |value| options[:root] = File.expand_path(value) }
+end.parse!
+
+root = options[:root] || ENV["RUBY_AGENT_SKILLS_ROOT"].to_s
+abort "--root is required (or set RUBY_AGENT_SKILLS_ROOT)" if root.empty?
+
+metadata_path = File.join(root, ".ruby-agent-skills", "INSTALLATION.json")
+manifest_path = File.join(root, ".ruby-agent-skills", "skill-manifest.yml")
+verifier_path = File.join(root, ".ruby-agent-skills", "skill-pack-verify")
+
+abort "installation record not found: #{metadata_path}" unless File.file?(metadata_path)
+abort "installed manifest not found: #{manifest_path}" unless File.file?(manifest_path)
+abort "embedded verifier not found: #{verifier_path}" unless File.file?(verifier_path)
+
+metadata = JSON.parse(File.read(metadata_path, encoding: "UTF-8"))
+manifest = YAML.safe_load(
+  File.read(manifest_path, encoding: "UTF-8"),
+  permitted_classes: [],
+  aliases: false
+)
+
+errors = []
+agent = metadata.dig("target", "agent").to_s
+scope = metadata.dig("target", "scope").to_s
+errors << "unsupported agent layout: #{agent}" unless %w[agents codex claude copilot].include?(agent)
+errors << "unsupported install scope: #{scope}" unless %w[user project].include?(scope)
+
+expected_skills = manifest.fetch("skills")
+installed_names = Array(metadata.dig("inventory", "skill_names")).map(&:to_s).sort
+manifest_names = expected_skills.keys.map(&:to_s).sort
+errors << "recorded skill names do not match manifest" unless installed_names == manifest_names
+
+missing_skills = manifest_names.reject { |name| File.file?(File.join(root, name, "SKILL.md")) }
+errors << "missing installed skills: #{missing_skills.join(", ")}" unless missing_skills.empty?
+
+errors << "embedded verifier is not executable" unless File.executable?(verifier_path)
+
+unless errors.any?
+  stdout, stderr, status = Open3.capture3(
+    RbConfig.ruby,
+    verifier_path,
+    "--root", root
+  )
+  errors << stderr unless status.success?
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} skill-pack doctor error(s)"
+end
+
+puts "Ruby Agent Skills doctor passed"
+puts "  agent layout: #{agent}"
+puts "  scope: #{scope}"
+puts "  source: #{metadata.dig("source", "repository")}"
+puts "  requested ref: #{metadata.dig("source", "requested_ref")}"
+puts "  resolved Git SHA: #{metadata.dig("source", "resolved_git_sha")}"
+puts "  skills: #{manifest_names.length}"
+puts "  patterns: #{metadata.dig("inventory", "patterns")}"
+puts "  content verification: passed"

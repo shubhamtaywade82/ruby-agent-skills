@@ -9,7 +9,7 @@ Current inventory:
 - 85 skills
 - 417 implementation patterns
 - 410 evaluation cases
-- 71 system/contract tests
+- 72 system/contract tests
 
 ## First checkout
 
@@ -40,6 +40,10 @@ For reproducibility, pin a trusted tag or commit:
 Verify the installed pack:
 
     ruby bin/skill-pack-verify --root /path/to/your/rails-app/.claude/skills
+
+Run the installation doctor:
+
+    ruby bin/skill-pack-doctor --root /path/to/your/rails-app/.claude/skills
 
 The installer records the resolved Git SHA plus manifest and routing hashes under `.ruby-agent-skills/INSTALLATION.json`.
 
@@ -90,6 +94,14 @@ Resume an interrupted matrix:
       --output ./routing-matrix-output \
       --resume
 
+## Installation doctor
+
+After installation and before controlled agent use:
+
+    ruby bin/skill-pack-doctor --root /path/to/agent-skill-root
+
+The doctor is intentionally narrower than an agent runtime test: it verifies the installed pack and then delegates content integrity to the embedded verifier. It does not claim that a particular coding agent has loaded or used the skills.
+
 ## Remaining non-implementation work
 
 1. Execute the real 42-run public routing campaign.
@@ -104,4 +116,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The current implementation hardening batch is carried in the open Iteration 76 PR. Merge it after the repository validation workflow passes for the final PR head.
+The repository-side implementation line is complete through Iteration 78. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
