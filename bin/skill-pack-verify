@@ -60,6 +60,39 @@ reported_patterns = metadata.dig("inventory", "patterns").to_i
 errors << "installation skill inventory mismatch" unless reported_skills == expected_skills.length
 errors << "installation pattern inventory mismatch" unless reported_patterns == installed_pattern_files.length
 
+def verify_file_hashes(metadata_entries, root:, label:)
+  entries = Array(metadata_entries)
+  expected = entries.to_h do |entry|
+    [entry.fetch("path"), entry.fetch("sha256")]
+  end
+
+  actual = {}
+  entries.each_key = nil if false
+  expected.each do |relative, digest|
+    path = File.expand_path(File.join(root, relative))
+    root_prefix = File.expand_path(root) + File::SEPARATOR
+    raise "invalid #{label} path: #{relative}" unless path.start_with?(root_prefix)
+    raise "missing #{label}: #{relative}" unless File.file?(path)
+    actual[relative] = Digest::SHA256.file(path).hexdigest
+    raise "#{label} SHA-256 mismatch: #{relative}" unless actual[relative] == digest
+  end
+  actual
+rescue KeyError, TypeError
+  raise "invalid #{label} integrity metadata"
+end
+
+begin
+  skill_hashes = verify_file_hashes(metadata.dig("integrity", "skill_files"), root: root, label: "skill file")
+  installed_skill_hash_paths = expected_skills.keys.map { |name| "#{name}/SKILL.md" }.sort
+  errors << "skill integrity set mismatch" unless skill_hashes.keys.sort == installed_skill_hash_paths
+
+  pattern_hashes = verify_file_hashes(metadata.dig("integrity", "pattern_files"), root: patterns_root, label: "pattern file")
+  pattern_hashes = pattern_hashes.transform_keys { |path| path.delete_prefix("patterns/") }
+  errors << "pattern integrity set mismatch" unless pattern_hashes.keys.sort == expected_patterns.map { |path| path.delete_prefix("patterns/") }.sort
+rescue RuntimeError => e
+  errors << e.message
+end
+
 if errors.any?
   errors.each { |error| warn "ERROR: #{error}" }
   abort "#{errors.length} installed skill-pack verification error(s)"
