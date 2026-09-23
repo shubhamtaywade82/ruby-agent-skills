@@ -40,6 +40,12 @@ Inspect component conventions, styling, routing/layout ownership, data-fetching 
 - reusable components tightly coupled to one endpoint;
 - tests that assert internal implementation.
 
+## Agent review checklist
+- Does the component have one coherent responsibility?
+- Is state/data ownership explicit?
+- Could composition replace flag-driven branching?
+- Are observable interaction and accessibility behaviors tested?
+
 ## Verification
 Run focused component tests, typecheck, lint, and relevant application integration tests.
 
