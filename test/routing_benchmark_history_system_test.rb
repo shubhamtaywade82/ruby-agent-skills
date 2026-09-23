@@ -3,6 +3,7 @@
 require "json"
 require "minitest/autorun"
 require "open3"
+require "fileutils"
 require "tmpdir"
 
 class RoutingBenchmarkHistorySystemTest < Minitest::Test
@@ -21,6 +22,8 @@ class RoutingBenchmarkHistorySystemTest < Minitest::Test
           "repository" => {"git_sha" => "sha", "worktree_clean" => true},
           "agent" => {"provider" => "ollama", "model" => "model-a"},
           "campaign_metrics" => {"primary_accuracy" => 0.5, "secondary_recall" => 0.4},
+          "requested_runs" => 42,
+          "completed_runs" => 42,
           "analysis" => {},
           "artifacts" => {"campaign" => {}}
         )
