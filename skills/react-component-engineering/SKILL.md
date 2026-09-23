@@ -1,0 +1,48 @@
+---
+name: react-component-engineering
+description: Use when designing React component boundaries, props, composition, rendering contracts, and reusable UI architecture.
+---
+
+# React Component Engineering
+
+## Purpose
+Keep components small, explicit, composable, and aligned with a user-visible responsibility.
+
+## Activate when
+- creating or refactoring React components;
+- designing props and composition;
+- deciding controlled versus uncontrolled interfaces;
+- reducing prop drilling or coupling.
+
+## Repository inspection
+Inspect component conventions, styling, routing/layout ownership, data-fetching infrastructure, design-system primitives, accessibility utilities, and test patterns.
+
+## Decision rules
+- Prefer semantic components with one clear responsibility.
+- Prefer composition over boolean-prop explosion.
+- Keep reusable components independent of application-specific data fetching where practical.
+- Use controlled inputs when the parent owns state; use uncontrolled inputs when local DOM ownership is deliberate.
+- Make loading, error, empty, and success states explicit.
+- Keep important side effects outside purely presentational components.
+
+## Implementation procedure
+1. Define the component contract.
+2. Separate data and state ownership from presentation.
+3. Keep props minimal and intention-revealing.
+4. Use composition for structural variation.
+5. Add focused observable tests.
+6. Verify keyboard and screen-reader behavior for interactive UI.
+
+## Anti-patterns / failure modes
+- components with unrelated responsibilities;
+- dozens of boolean props;
+- context used to hide ordinary dependency flow;
+- reusable components tightly coupled to one endpoint;
+- tests that assert internal implementation.
+
+## Verification
+Run focused component tests, typecheck, lint, and relevant application integration tests.
+
+## Source foundation
+- React Learn: https://react.dev/learn
+- React Reference: https://react.dev/reference/react
