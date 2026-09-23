@@ -19,6 +19,14 @@ def load_yaml(path)
   YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
 end
 
+def atomic_write(path, content)
+  temp_path = "#{path}.tmp-#{Process.pid}"
+  File.write(temp_path, content, encoding: "UTF-8")
+  File.rename(temp_path, path)
+ensure
+  FileUtils.rm_f(temp_path) if temp_path
+end
+
 def execute_agent(env, command, workdir, timeout)
   started_at = Time.now.utc.iso8601(6)
   started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
@@ -123,7 +131,7 @@ def run_checkpoint(path, results:, selected_count:, campaign:, campaign_version:
     "cases" => results
   }
 
-  File.write(path, JSON.pretty_generate(payload) + "\n", encoding: "UTF-8")
+  atomic_write(path, JSON.pretty_generate(payload) + "\n")
   payload
 end
 
@@ -409,7 +417,7 @@ selected.each do |entry|
         case_runs << case_run
 
         if validation_errors.empty?
-          File.write(
+          atomic_write(
             File.join(run_dir, "run.json"),
             JSON.pretty_generate(
               "protocol_version" => 1,
@@ -418,8 +426,7 @@ selected.each do |entry|
               "status" => "completed",
               "result_sha256" => Digest::SHA256.file(result_file).hexdigest,
               "execution" => execution
-            ) + "\n",
-            encoding: "UTF-8"
+            ) + "\n"
           )
           case_runs.last["run_receipt_file"] = File.join(run_dir, "run.json")
         end
@@ -471,7 +478,7 @@ checkpoint = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
 checkpoint["execution"]["mode"] = options[:resume] ? "resumed" : "fresh"
 checkpoint["execution"]["checkpointed"] = true
 checkpoint["routing_inputs"] = routing_inputs
-File.write(campaign_path, JSON.pretty_generate(checkpoint) + "\n", encoding: "UTF-8")
+atomic_write(campaign_path, JSON.pretty_generate(checkpoint) + "\n")
 
 puts JSON.pretty_generate(checkpoint)
 exit(1) unless checkpoint.fetch("complete")
