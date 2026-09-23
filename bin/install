@@ -134,7 +134,7 @@ SKILL_FILE_HASHES="$(ruby -rdigest -rjson -e '
 root = ARGV.fetch(0)
 paths = Dir[File.join(root, "skills", "*", "SKILL.md")].sort
 puts JSON.generate(paths.map { |path|
-  {"path" => path.delete_prefix(root + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
+  {"path" => path.delete_prefix(File.join(root, "skills") + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
 })
 ' "$TMP_DIR/repo")"
 
