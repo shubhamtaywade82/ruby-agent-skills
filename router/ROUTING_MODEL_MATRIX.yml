@@ -1,0 +1,14 @@
+version: 1
+id: skill-routing-model-matrix-v1
+campaign: skill-routing-public-v1
+source: explicit-runtime-configuration
+models: []
+execution:
+  same_public_corpus: true
+  same_repetitions: true
+  same_timeout: true
+  fresh_workspace_per_run: true
+controls:
+  do_not_compare_unexecuted_models: true
+  results_must_be_independently_archived: true
+  descriptive_comparison_only: true

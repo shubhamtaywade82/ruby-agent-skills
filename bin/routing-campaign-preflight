@@ -13,6 +13,7 @@ ROOT = File.expand_path("..", __dir__)
 CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
 CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
 MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
+ROUTING_PATH = File.join(ROOT, "router", "ROUTING.md")
 
 options = {
   url: ENV.fetch("OLLAMA_URL", "http://127.0.0.1:11434"),
@@ -41,7 +42,7 @@ end
 
 campaign = load_yaml.call(CAMPAIGN_PATH)
 cases = Array(load_yaml.call(CASES_PATH).fetch("cases"))
-manifest = load_yaml.call(MANIFEST_PATH)
+load_yaml.call(MANIFEST_PATH)
 
 repetitions = options[:runs] || campaign.fetch("execution").fetch("repetitions").to_i
 expected_runs = cases.length * repetitions
@@ -99,7 +100,8 @@ preflight = {
     "git_sha" => git_sha.strip,
     "manifest_sha256" => Digest::SHA256.file(MANIFEST_PATH).hexdigest,
     "campaign_manifest_sha256" => Digest::SHA256.file(CAMPAIGN_PATH).hexdigest,
-    "routing_cases_sha256" => Digest::SHA256.file(CASES_PATH).hexdigest
+    "routing_cases_sha256" => Digest::SHA256.file(CASES_PATH).hexdigest,
+    "routing_contract_sha256" => Digest::SHA256.file(ROUTING_PATH).hexdigest
   }
 }
 

@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
+CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
+MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
+ROUTING_PATH = File.join(ROOT, "router", "ROUTING.md")
+
+path = File.expand_path(ARGV.fetch(0) { abort "preflight JSON is required" })
+abort "preflight JSON not found: #{path}" unless File.file?(path)
+
+load_yaml = ->(file) { YAML.safe_load(File.read(file, encoding: "UTF-8"), permitted_classes: [], aliases: false) }
+preflight = JSON.parse(File.read(path, encoding: "UTF-8"))
+campaign = load_yaml.call(CAMPAIGN_PATH)
+cases = Array(load_yaml.call(CASES_PATH).fetch("cases"))
+
+expected_repetitions = campaign.fetch("execution").fetch("repetitions").to_i
+expected_runs = cases.length * expected_repetitions
+
+errors = []
+errors << "protocol_version must be 1" unless preflight["protocol_version"].to_i == 1
+errors << "preflight type mismatch" unless preflight["preflight"] == "skill-routing-preflight-v1"
+
+pc = preflight.fetch("campaign", {})
+errors << "campaign id mismatch" unless pc["id"] == campaign.fetch("id")
+errors << "campaign version mismatch" unless pc["version"].to_i == campaign.fetch("version").to_i
+errors << "evaluation set mismatch" unless pc["evaluation_set"] == campaign.fetch("evaluation_set")
+errors << "case_count mismatch" unless pc["case_count"].to_i == cases.length
+errors << "repetitions mismatch" unless pc["repetitions"].to_i == expected_repetitions
+errors << "expected_runs mismatch" unless pc["expected_runs"].to_i == expected_runs
+
+runtime = preflight.fetch("runtime", {})
+errors << "runtime provider must be ollama" unless runtime["provider"] == "ollama"
+errors << "runtime URL missing" if runtime["url"].to_s.strip.empty?
+errors << "runtime version missing" unless runtime["version"].is_a?(Hash) && !runtime["version"].empty?
+model = runtime.fetch("model", {})
+errors << "model name missing" if model["name"].to_s.strip.empty?
+errors << "model digest missing" if model["digest"].to_s.strip.empty?
+
+repo = preflight.fetch("repository", {})
+expected_hashes = {
+  "manifest_sha256" => MANIFEST_PATH,
+  "campaign_manifest_sha256" => CAMPAIGN_PATH,
+  "routing_cases_sha256" => CASES_PATH,
+  "routing_contract_sha256" => ROUTING_PATH
+}
+expected_hashes.each do |key, file|
+  actual = Digest::SHA256.file(file).hexdigest
+  errors << "#{key} mismatch" unless repo[key] == actual
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing preflight verification error(s)"
+end
+
+puts "Routing campaign preflight verification"
+puts "  campaign: #{pc.fetch("id")}"
+puts "  cases: #{pc.fetch("case_count")}"
+puts "  repetitions: #{pc.fetch("repetitions")}"
+puts "  expected runs: #{pc.fetch("expected_runs")}"
+puts "  model: #{model.fetch("name")}"
+puts "Routing campaign preflight verification passed."
