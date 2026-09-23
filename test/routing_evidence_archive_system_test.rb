@@ -40,9 +40,31 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
   def test_archive_accepts_verified_single_campaign_evidence
     require "digest"
     Dir.mktmpdir("routing-campaign-archive") do |dir|
-      artifact = File.join(dir, "campaign.json")
-      File.write(artifact, "{}")
-      digest = Digest::SHA256.file(artifact).hexdigest
+      artifact_names = %w[
+        campaign routing_report routing_contract skill_manifest campaign_manifest
+        routing_cases result_schema campaign_intake_schema preflight
+      ]
+      artifacts = {}
+      artifact_names.each do |name|
+        path = File.join(dir, "#{name}.txt")
+        File.write(path, name)
+        artifacts[name] = {
+          "path" => path,
+          "sha256" => Digest::SHA256.file(path).hexdigest,
+          "bytes" => File.size(path)
+        }
+      end
+
+      42.times do |index|
+        path = File.join(dir, "raw-#{index + 1}.json")
+        File.write(path, "{}")
+        artifacts["raw_case_#{index + 1}"] = {
+          "path" => path,
+          "sha256" => Digest::SHA256.file(path).hexdigest,
+          "bytes" => File.size(path)
+        }
+      end
+
       evidence = {
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
@@ -50,13 +72,13 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "campaign_version" => 1,
         "routing_case_count" => 14,
         "requested_repetitions" => 3,
+        "requested_runs" => 42,
+        "completed_runs" => 42,
         "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
         "agent" => {"provider" => "ollama", "model" => "test-model"},
         "campaign_metrics" => {"primary_accuracy" => 1.0},
         "analysis" => {"primary_mismatch_count" => 0},
-        "artifacts" => {
-          "campaign" => {"path" => artifact, "sha256" => digest, "bytes" => File.size(artifact)}
-        },
+        "artifacts" => artifacts,
         "intake" => {"verified" => true},
         "replay" => {"campaign_runner" => "bin/routing-campaign"}
       }
@@ -75,6 +97,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
       assert_equal "skill-routing-campaign-v1", manifest.fetch("evidence_type")
       assert_equal true, manifest.fetch("intake").fetch("verified")
+      assert_equal 42, manifest.fetch("completed_runs")
     end
   end
 

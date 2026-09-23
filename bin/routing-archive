@@ -34,9 +34,11 @@ if evidence_type == "skill-routing-experiment-v1"
   warn verify_err unless verify_err.empty?
   abort "evidence verification failed" unless verify_status.success?
 elsif evidence_type == "skill-routing-campaign-v1"
-  abort "campaign evidence intake is not verified" unless evidence.dig("intake", "verified") == true
-  abort "campaign evidence has no artifacts" unless evidence.fetch("artifacts").is_a?(Hash) && !evidence.fetch("artifacts").empty?
-  abort "campaign evidence worktree is dirty" if evidence.dig("repository", "worktree_clean") == false
+  campaign_verifier = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+  verify_args = [RbConfig.ruby, campaign_verifier, evidence_path, "--check-files"]
+  verify_out, verify_err, verify_status = Open3.capture3(*verify_args, chdir: ROOT)
+  warn verify_err unless verify_err.empty?
+  abort "campaign evidence verification failed" unless verify_status.success?
 else
   abort "unsupported routing evidence type: #{evidence_type}"
 end

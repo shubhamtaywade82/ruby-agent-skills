@@ -12,6 +12,8 @@ A campaign evidence package captures one completed public routing campaign toget
 - `campaign_version`
 - `routing_case_count`
 - `requested_repetitions`
+- `requested_runs`
+- `completed_runs`
 - `repository`
 - `agent`
 - `campaign_metrics`
@@ -41,3 +43,8 @@ Generated evidence should remain outside the source repository unless intentiona
 A completed campaign evidence pack should include `preflight.json` when the campaign was produced through `bin/routing-campaign`. The preflight artifact records the runtime version, exact model identity, public campaign cardinality, repository SHA, and routing-contract hashes before model execution.
 
 For externally executed campaigns, `bin/routing-campaign-import` validates the preflight and campaign as a pair before packaging evidence.
+
+
+## Verification gate
+
+A campaign evidence package must pass `bin/routing-campaign-evidence-verify --check-files` before archival. This verifies raw-run cardinality and all recorded artifact hashes in addition to campaign intake.
