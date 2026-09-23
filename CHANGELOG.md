@@ -8,6 +8,7 @@
 - Added a provenance-aware installer that installs skills and reusable patterns and cleans removed skills on upgrade.
 - Added independent installed-pack verification for exact skill/pattern inventory and manifest/routing integrity.
 - Added installation, matrix-resume, and verifier system-test coverage.
+- Hardened `RubyAgentSkills::SkillPack` materialization with manifest provenance and deterministic pattern resolution.
 
 
 ### Routing campaign execution
