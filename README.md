@@ -4,10 +4,14 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 67 — External Routing Campaign Intake  
-> **Branch:** `feat/routing-campaign-intake-v2`
+> **Current milestone:** Iteration 69 — External Routing Campaign Intake  
+> **Branch:** `feat/routing-campaign-evidence-integrity-v1`
 
 ---
+
+## Iteration 69 — Routing Campaign Evidence Integrity
+
+Campaign evidence is now independently verifiable before archival. The evidence verifier checks public campaign cardinality, preflight presence, raw-run artifact count, provenance, and recorded SHA-256/byte-size metadata; the importer and archive now enforce that gate.
 
 ## What this repository contains
 
