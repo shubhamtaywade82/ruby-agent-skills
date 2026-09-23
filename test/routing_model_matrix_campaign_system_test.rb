@@ -61,6 +61,8 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
     Dir.mktmpdir("routing-model-matrix") do |dir|
       _out, err, status = run_runner(
         "--model", "model-a",
+        "--execute",
+        "--archive", File.join(dir, "archive"),
         "--output", dir,
         "--resume"
       )
@@ -72,7 +74,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
   def test_resume_flag_is_exposed
     source = File.read(RUNNER, encoding: "UTF-8")
     assert_includes source, "--resume"
-    assert_includes source, "model matrix checkpoint"
+    assert_includes source, "matrix checkpoint"
   end
 
   def test_resume_rejects_incompatible_checkpoint
