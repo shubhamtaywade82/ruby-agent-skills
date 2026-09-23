@@ -1,6 +1,11 @@
 version: 2
 name: ruby-agent-skills
 
+installation:
+  installer: bin/install
+  verifier: bin/skill-pack-verify
+  metadata: .ruby-agent-skills/INSTALLATION.json
+
 defaults:
   agent_workflow: agent-workflow
   always_consider:
