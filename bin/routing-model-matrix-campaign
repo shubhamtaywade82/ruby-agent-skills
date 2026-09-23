@@ -23,7 +23,8 @@ options = {
   timeout: 300,
   output: File.join(Dir.tmpdir, "ruby-agent-routing-model-matrix"),
   archive: nil,
-  execute: false
+  execute: false,
+  resume: false
 }
 
 OptionParser.new do |opts|
@@ -35,11 +36,13 @@ OptionParser.new do |opts|
   opts.on("--output DIR", "Matrix output directory") { |value| options[:output] = File.expand_path(value) }
   opts.on("--archive DIR", "Immutable archive root for independently completed model campaigns") { |value| options[:archive] = File.expand_path(value) }
   opts.on("--execute", "Actually execute model campaigns; default is plan-only") { options[:execute] = true }
+  opts.on("--resume", "Resume completed/incomplete model campaigns from an existing matrix checkpoint") { options[:resume] = true }
 end.parse!
 
 abort "--runs must be >= 1" if options[:runs] && options[:runs] < 1
 abort "--timeout must be >= 1" if options[:timeout].to_i < 1
 abort "--archive is required with --execute" if options[:execute] && options[:archive].to_s.empty?
+abort "--resume requires --execute" if options[:resume] && !options[:execute]
 
 matrix = YAML.safe_load(File.read(MATRIX_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
 campaign = YAML.safe_load(File.read(CAMPAIGN_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
@@ -70,7 +73,12 @@ git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
 abort "unable to resolve repository HEAD" unless git_status.success?
 abort "repository worktree must be clean before matrix planning/execution" unless Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all").first.to_s.strip.empty?
 
-hash = ->(path) { Digest::SHA256.file(path).hexdigest }
+expected_provenance = {
+  "git_sha" => git_sha.strip,
+  "matrix_sha256" => hash = Digest::SHA256.file(MATRIX_PATH).hexdigest,
+  "campaign_sha256" => Digest::SHA256.file(CAMPAIGN_PATH).hexdigest,
+  "routing_cases_sha256" => Digest::SHA256.file(cases_path).hexdigest
+}
 
 FileUtils.mkdir_p(options[:output])
 matrix_plan = {
@@ -83,12 +91,7 @@ matrix_plan = {
     "repetitions" => repetitions,
     "expected_runs_per_model" => expected_runs
   },
-  "provenance" => {
-    "git_sha" => git_sha.strip,
-    "matrix_sha256" => hash.call(MATRIX_PATH),
-    "campaign_sha256" => hash.call(CAMPAIGN_PATH),
-    "routing_cases_sha256" => hash.call(cases_path)
-  },
+  "provenance" => expected_provenance,
   "runtime" => {
     "provider" => "ollama",
     "url" => base_url,
@@ -114,7 +117,24 @@ matrix_plan = {
 }
 
 plan_path = File.join(options[:output], "matrix-plan.json")
-File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
+
+if options[:resume]
+  abort "cannot resume without an existing matrix checkpoint: #{plan_path}" unless File.file?(plan_path)
+  existing = JSON.parse(File.read(plan_path, encoding: "UTF-8"))
+  errors = []
+  errors << "campaign identity mismatch" unless existing.dig("campaign", "id") == matrix_plan.dig("campaign", "id")
+  errors << "campaign version mismatch" unless existing.dig("campaign", "version").to_i == matrix_plan.dig("campaign", "version").to_i
+  errors << "repetition mismatch" unless existing.dig("campaign", "repetitions").to_i == repetitions
+  errors << "expected run count mismatch" unless existing.dig("campaign", "expected_runs_per_model").to_i == expected_runs
+  errors << "runtime URL mismatch" unless existing.dig("runtime", "url").to_s == base_url
+  errors << "timeout mismatch" unless existing.dig("runtime", "timeout_seconds").to_i == options[:timeout].to_i
+  errors << "model set mismatch" unless Array(existing["models"]).map { |entry| entry["name"] }.sort == models.sort
+  expected_provenance.each { |key, value| errors << "provenance #{key} mismatch" unless existing.dig("provenance", key).to_s == value.to_s }
+  abort "cannot resume incompatible matrix checkpoint: #{errors.join("; ")}" unless errors.empty?
+  matrix_plan = existing
+else
+  File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
+end
 
 unless options[:execute]
   puts JSON.pretty_generate(matrix_plan)
@@ -130,6 +150,12 @@ models.each do |model|
   FileUtils.mkdir_p(model_root)
 
   started_at = Time.now.utc.iso8601
+  existing_result = matrix_plan["results"].find { |entry| entry["model"] == model }
+  if options[:resume] && existing_result && existing_result["status"] == "completed_and_archived"
+    puts "Resumed matrix model #{model}: already completed and archived"
+    next
+  end
+
   result = {
     "provider" => "ollama",
     "model" => model,
@@ -147,6 +173,7 @@ models.each do |model|
     "--timeout", options[:timeout].to_s,
     "--output", campaign_output
   ]
+  command << "--resume" if options[:resume] && File.file?(File.join(campaign_output, "campaign.json"))
 
   stdout, stderr, status = Open3.capture3(*command, chdir: ROOT)
   File.write(File.join(model_root, "campaign.stdout.log"), stdout, encoding: "UTF-8")
