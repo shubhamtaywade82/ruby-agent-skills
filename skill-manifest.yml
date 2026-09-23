@@ -405,6 +405,9 @@ skills:
     path: skills/rails-deployment/SKILL.md
     triggers: [deployment, hosting, production, environment, release, Kamal, Kamal 2, registry-free deploy, Thruster]
 
+
+
+patterns:
   react-typescript:
     paths:
       - patterns/react-typescript/typescript-discriminated-union.md
@@ -431,8 +434,6 @@ skills:
       - patterns/react-typescript/react-focus-management.md
       - patterns/react-typescript/react-render-performance-budget.md
       - patterns/react-typescript/react-memoization-evidence-gate.md
-
-patterns:
   ruby-design:
     paths:
       - patterns/ruby-design/value-object.md
