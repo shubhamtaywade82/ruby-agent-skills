@@ -4,8 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 75 — Checkpointed Routing Campaign Resume  
-> **Branch:** `feat/routing-campaign-resume-v1`
+> **Current milestone:** Iteration 75 — Checkpointed Routing Campaign Resume
 
 ---
 
