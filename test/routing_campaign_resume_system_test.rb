@@ -100,6 +100,32 @@ class RoutingCampaignResumeSystemTest < Minitest::Test
     end
   end
 
+  def test_resume_rejects_model_version_change
+    Dir.mktmpdir("routing-resume") do |dir|
+      success_agent = write_agent(dir, exit_on_run_two: false)
+      _stdout, _stderr, status = run_eval(success_agent, dir)
+      assert status.success?
+
+      _stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby,
+        EVALUATOR,
+        "--command", "#{RbConfig.ruby} #{success_agent}",
+        "--case", CASE_ID,
+        "--runs", "2",
+        "--provider", "ollama",
+        "--model", "test-model",
+        "--model-version", "different-digest",
+        "--tool-mode", "test",
+        "--output", File.join(dir, "campaign.json"),
+        "--resume",
+        chdir: ROOT
+      )
+
+      refute status.success?
+      assert_includes stderr, "model version mismatch"
+    end
+  end
+
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
     assert_includes validator, "test/routing_campaign_resume_system_test.rb"
