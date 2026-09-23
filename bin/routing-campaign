@@ -22,7 +22,8 @@ options = {
   model: ENV["OLLAMA_MODEL"],
   output: File.join(Dir.tmpdir, "ruby-agent-routing-campaign"),
   runs: nil,
-  timeout: 300
+  timeout: 300,
+  resume: false
 }
 
 OptionParser.new do |opts|
@@ -32,6 +33,7 @@ OptionParser.new do |opts|
   opts.on("--runs COUNT", Integer, "Override routing repetitions") { |value| options[:runs] = value }
   opts.on("--timeout SECONDS", Integer, "Maximum runtime per routing repetition") { |value| options[:timeout] = value }
   opts.on("--output DIR", "Campaign output directory") { |value| options[:output] = value }
+  opts.on("--resume", "Resume verified completed runs in the existing campaign output") { options[:resume] = true }
 end.parse!
 
 abort "--model is required" if options[:model].to_s.empty?
@@ -57,6 +59,8 @@ preflight_stdout, preflight_stderr, preflight_status = Open3.capture3(*preflight
 warn preflight_stderr unless preflight_stderr.empty?
 puts preflight_stdout
 abort "routing campaign preflight failed with exit code #{preflight_status.exitstatus}" unless preflight_status.success?
+preflight = JSON.parse(File.read(preflight_json, encoding: "UTF-8"))
+model_digest = preflight.dig("runtime", "model", "digest")
 command = [
   "env",
   "RUBY_AGENT_PROVIDER=ollama",
@@ -73,11 +77,13 @@ evaluator_args = [
   "--command", command,
   "--provider", "ollama",
   "--model", options[:model],
+  "--model-version", model_digest.to_s,
   "--tool-mode", "local-filesystem",
   "--timeout", options[:timeout].to_s,
   "--output", campaign_json
 ]
 evaluator_args.insert(evaluator_args.index("--output"), "--runs", options[:runs].to_s) if options[:runs]
+evaluator_args.insert(evaluator_args.index("--output"), "--resume") if options[:resume]
 
 stdout, stderr, status = Open3.capture3(*evaluator_args, chdir: ROOT)
 warn stderr unless stderr.empty?

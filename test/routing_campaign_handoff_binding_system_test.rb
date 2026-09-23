@@ -67,6 +67,8 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
     source = File.read(File.join(ROOT, "bin", "routing-campaign-handoff"), encoding: "UTF-8")
     assert_includes source, "routing-campaign-handoff-verify"
     assert_includes source, "HANDOFF.json"
+    assert_includes source, "RESUME_ARGS"
+    assert_includes source, "--resume"
   end
 
   def test_validator_executes_this_system_test
