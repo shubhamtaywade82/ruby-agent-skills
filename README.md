@@ -696,6 +696,7 @@ Verify an installation with:
     ruby bin/skill-pack-verify --root ~/.claude/skills
 
 See `docs/INSTALLATION.md` for pinned-ref, project-scope, and verification workflows.
+See `docs/IMPLEMENTATION_HANDOFF.md` for the complete clone, validation, installation, routing-campaign, and empirical handoff sequence.
 # Contributing / extending the system
 
 When adding a new skill or deepening an existing one:
