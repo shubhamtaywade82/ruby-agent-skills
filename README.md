@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 71 — Routing Model Matrix Execution  
+> **Current milestone:** Iteration 72 — Hidden Benchmark External Intake  
 > **Branch:** `feat/routing-release-readiness-main-v1`
 
 ---
@@ -20,6 +20,10 @@ A release gate now separates static repository readiness from empirical routing 
 ## Iteration 71 — Routing Model Matrix Execution
 
 The repository now has an explicit multi-model execution harness for the public routing campaign. It supports plan-only operation and, when explicitly requested, executes each named Ollama model with identical corpus/repetition/timeout settings, imports and verifies its evidence, and archives each completed model independently. It never ranks models or synthesizes missing results.
+
+## Iteration 72 — Hidden Benchmark External Intake
+
+Hidden routing cases, gold labels, raw results, and hidden case counts now have an explicit external-only intake contract. The repository can verify an externally supplied benchmark evidence artifact and emit a safe provenance receipt without importing hidden case content or gold labels, and hidden cardinality is supplied privately rather than inferred from the public routing corpus.
 
 ## What this repository contains
 
