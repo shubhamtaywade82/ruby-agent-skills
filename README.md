@@ -587,13 +587,9 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports:
+The validation suite currently reports the same inventory shown above: **85 skills**, **417 implementation patterns**, **410 evaluation cases**, and **72 dedicated system/contract tests**.
 
-```text
-76 skills
-393 implementation patterns
-392 evaluation cases
-```
+The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
 ---
 
@@ -740,11 +736,11 @@ When adding a new skill or deepening an existing one:
 
 ---
 
-# Current milestone
+# Current implementation status
 
-**Iteration 76 — Implementation Hardening & Verified Agent Installation**
+**Iteration 78 — Verified Agent Installation Doctor**
 
-The implementation layer now provides checkpointed routing campaigns, resumable multi-model execution, provenance-bound skill-pack installation, exact installed-pack verification, and upgrade cleanup. The remaining routing work is empirical execution against real models rather than additional core infrastructure.
+The repository-side implementation line is complete through Iteration 78. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, and the installed-pack doctor. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
 
 
 ## Rails Encryption and Credentials Engineering
