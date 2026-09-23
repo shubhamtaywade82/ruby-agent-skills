@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 77 — React + TypeScript Engineering Pack
+> **Current milestone:** Iteration 78 — Verified Agent Installation Doctor
 
 ---
 
@@ -39,6 +39,10 @@ Routing campaign execution now checkpoints after every repetition and records a 
 
 The execution layer now supports resumable multi-model routing campaigns, and the agent installer installs both skills and reusable patterns with immutable source/ref provenance. Installed packs can be independently verified for manifest/routing integrity and exact skill/pattern inventory. Removed skills are cleaned up during upgrades, and installation behavior has system-test coverage.
 The agent-facing `SkillPack` materializer now records the source manifest digest, creates stable baseline directories, and rejects ambiguous basename-only pattern resolution rather than selecting a non-deterministic match.
+
+## Iteration 78 — Verified Agent Installation Doctor
+
+The installed-pack workflow now has a deterministic local doctor command. It validates the installation metadata, supported agent/scope, recorded skill inventory, embedded verifier, and content integrity before a pack is used in a controlled agent environment.
 
 ## Iteration 77 — React + TypeScript Engineering Pack
 
@@ -108,7 +112,7 @@ The skill system is built from five connected layers:
 | Skills | **85** |
 | Implementation patterns | **417** |
 | Evaluation cases | **410** |
-| Dedicated system/contract tests | **71** |
+| Dedicated system/contract tests | **72** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
