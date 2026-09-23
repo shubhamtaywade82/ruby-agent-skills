@@ -147,6 +147,9 @@ errors << "manifest external handoff path missing" unless routing_contract["exte
 external_handoff_path = File.join(ROOT, routing_contract.fetch("external_handoff", ""))
 errors << "routing external handoff missing" unless File.file?(external_handoff_path)
 errors << "manifest external handoff schema path missing" unless routing_contract["external_handoff_schema"].to_s == "docs/ROUTING_EXTERNAL_CAMPAIGN_SCHEMA.md"
+errors << "manifest external handoff verifier path missing" unless routing_contract["external_handoff_verifier"].to_s == "bin/routing-campaign-handoff-verify"
+external_handoff_verifier_path = File.join(ROOT, routing_contract.fetch("external_handoff_verifier", ""))
+errors << "external handoff verifier missing" unless File.file?(external_handoff_verifier_path)
 external_handoff_schema_path = File.join(ROOT, routing_contract.fetch("external_handoff_schema", ""))
 errors << "routing external handoff schema missing" unless File.file?(external_handoff_schema_path)
 errors << "manifest hidden benchmark contract path missing" unless routing_contract["hidden_benchmark_contract"].to_s == "router/ROUTING_HIDDEN_BENCHMARK.yml"

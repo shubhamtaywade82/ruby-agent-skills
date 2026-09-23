@@ -1,0 +1,101 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "open3"
+require "optparse"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+
+options = { allow_git_sha_drift: false }
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign-handoff-verify HANDOFF_JSON"
+  opts.on("--allow-git-sha-drift", "Allow Git SHA drift only when all content hashes still match") do
+    options[:allow_git_sha_drift] = true
+  end
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "handoff JSON is required" })
+abort "handoff JSON not found: #{path}" unless File.file?(path)
+
+handoff = JSON.parse(File.read(path, encoding: "UTF-8"))
+errors = []
+
+errors << "protocol_version must be 1" unless handoff["protocol_version"].to_i == 1
+errors << "handoff type must be skill-routing-external-run-v1" unless handoff["handoff"] == "skill-routing-external-run-v1"
+
+campaign = handoff.fetch("campaign", {})
+runtime = handoff.fetch("runtime", {})
+repository = handoff.fetch("repository", {})
+artifacts = handoff.fetch("artifacts", {})
+
+%w[id version case_count repetitions expected_runs].each do |key|
+  errors << "handoff campaign #{key} is missing" unless campaign.key?(key)
+end
+%w[provider url model].each do |key|
+  errors << "handoff runtime #{key} is missing" unless runtime.key?(key)
+end
+errors << "handoff repository git_sha is missing" if repository["git_sha"].to_s.empty?
+
+campaign_config = YAML.safe_load(
+  File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+  permitted_classes: [],
+  aliases: false
+)
+cases = YAML.safe_load(
+  File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+  permitted_classes: [],
+  aliases: false
+).fetch("cases")
+
+expected_repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
+expected_cases = Array(cases).length
+expected_runs = expected_cases * expected_repetitions
+
+errors << "campaign id mismatch" unless campaign["id"] == campaign_config["id"]
+errors << "campaign version mismatch" unless campaign["version"].to_i == campaign_config["version"].to_i
+errors << "case count mismatch" unless campaign["case_count"].to_i == expected_cases
+errors << "repetitions mismatch" unless campaign["repetitions"].to_i == expected_repetitions
+errors << "expected run count mismatch" unless campaign["expected_runs"].to_i == expected_runs
+errors << "provider must be ollama" unless runtime["provider"] == "ollama"
+
+current_git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_status.success?
+current_git_sha = current_git_sha.strip
+
+if current_git_sha != repository["git_sha"].to_s
+  message = "repository Git SHA mismatch: handoff=#{repository["git_sha"]} current=#{current_git_sha}"
+  options[:allow_git_sha_drift] ? warn("WARN: #{message}") : errors << message
+end
+
+paths = {
+  "skill_manifest_sha256" => File.join(ROOT, "skill-manifest.yml"),
+  "campaign_manifest_sha256" => File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"),
+  "routing_cases_sha256" => File.join(ROOT, "router", "ROUTING_CASES.yml"),
+  "result_schema_sha256" => File.join(ROOT, "docs", "ROUTING_EVAL_RESULT_SCHEMA.md")
+}
+
+paths.each do |key, path_value|
+  expected = artifacts[key].to_s
+  errors << "handoff artifact hash #{key} missing" if expected.empty?
+  actual = Digest::SHA256.file(path_value).hexdigest
+  errors << "#{key} mismatch: handoff=#{expected} current=#{actual}" unless actual == expected
+end
+
+status_output, status = Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all")
+abort "unable to inspect repository worktree" unless status.success?
+errors << "repository worktree is dirty" unless status_output.strip.empty?
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing campaign handoff verification error(s)"
+end
+
+puts "Routing campaign handoff verification passed"
+puts "  campaign: #{campaign.fetch("id")}"
+puts "  cases: #{campaign.fetch("case_count")}"
+puts "  repetitions: #{campaign.fetch("repetitions")}"
+puts "  expected runs: #{campaign.fetch("expected_runs")}"
+puts "  repository content hashes: matched"
