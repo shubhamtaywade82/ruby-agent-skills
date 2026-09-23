@@ -135,7 +135,7 @@ def run_checkpoint(path, results:, selected_count:, campaign:, campaign_version:
   payload
 end
 
-def validate_existing_campaign!(campaign, selected_count:, repetitions:, routing_contract:, provider:, model:, tool_mode:, routing_inputs:)
+def validate_existing_campaign!(campaign, selected_count:, repetitions:, routing_contract:, provider:, model:, model_version:, tool_mode:, routing_inputs:)
   errors = []
   errors << "campaign identity mismatch" unless campaign["campaign"] == "skill-routing-public-v1"
   errors << "campaign version mismatch" unless campaign["campaign_version"].to_i == 1
@@ -150,6 +150,7 @@ def validate_existing_campaign!(campaign, selected_count:, repetitions:, routing
   existing_agent = campaign.fetch("agent", {})
   errors << "provider mismatch" if provider && existing_agent["provider"].to_s != provider.to_s
   errors << "model mismatch" if model && existing_agent["model"].to_s != model.to_s
+  errors << "model version mismatch" if model_version && existing_agent["model_version"].to_s != model_version.to_s
   errors << "tool mode mismatch" if tool_mode && existing_agent["tool_mode"].to_s != tool_mode.to_s
 
   abort "cannot resume incompatible campaign: #{errors.join("; ")}" unless errors.empty?
@@ -273,6 +274,7 @@ if options[:resume]
     routing_contract: options[:router],
     provider: options[:provider],
     model: options[:model],
+    model_version: options[:model_version],
     tool_mode: options[:tool_mode],
     routing_inputs: routing_inputs
   )
