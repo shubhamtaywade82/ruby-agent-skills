@@ -4,10 +4,14 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 67 — External Routing Campaign Intake  
-> **Branch:** `feat/routing-campaign-intake-v2`
+> **Current milestone:** Iteration 68 — External Routing Campaign Intake  
+> **Branch:** `feat/routing-benchmark-history-v1`
 
 ---
+
+## Iteration 68 — Routing Benchmark History
+
+The routing benchmark now has a persistent descriptive history layer over immutable campaign archives. `bin/routing-history` indexes archived public campaigns, while `bin/routing-model-matrix-report` groups independently archived executions by provider/model/model version and exposes observed metrics without ranking or selecting a winner. Archived campaign evidence now preserves requested and completed run counts.
 
 ## What this repository contains
 
