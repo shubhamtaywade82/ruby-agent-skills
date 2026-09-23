@@ -44,11 +44,16 @@ errors << "installed skill count mismatch" unless installed_skill_dirs.length ==
 errors << "installed skill set mismatch" unless installed_skill_dirs.sort == expected_skills.keys.sort
 
 expected_patterns = manifest.fetch("patterns").values.flat_map { |entry| Array(entry.fetch("paths")) }.uniq
-expected_patterns.each do |relative|
-  errors << "missing installed pattern: #{relative}" unless File.file?(File.join(patterns_root, relative.delete_prefix("patterns/")))
+expected_pattern_files = expected_patterns.map { |relative| File.join(patterns_root, relative.delete_prefix("patterns/")) }.sort
+expected_pattern_files.each do |path|
+  relative = path.delete_prefix(patterns_root + "/")
+  errors << "missing installed pattern: #{relative}" unless File.file?(path)
 end
-installed_patterns = Dir[File.join(patterns_root, "**", "*.md")].reject { |p| p.end_with?("/README.md") }
-errors << "installed pattern count mismatch" unless installed_patterns.length == expected_patterns.length
+installed_pattern_files = Dir[File.join(patterns_root, "**", "*.md")]
+  .reject { |p| p.end_with?("/README.md") }
+  .sort
+errors << "installed pattern count mismatch" unless installed_pattern_files.length == expected_pattern_files.length
+errors << "installed pattern set mismatch" unless installed_pattern_files == expected_pattern_files
 
 reported_skills = metadata.dig("inventory", "skills").to_i
 reported_patterns = metadata.dig("inventory", "patterns").to_i
