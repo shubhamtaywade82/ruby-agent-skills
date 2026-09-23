@@ -41,6 +41,12 @@ Inspect state ownership, provider scope, reducer conventions, effect patterns, a
 - context used as a global event bus;
 - dependency suppression used to silence lint.
 
+## Agent review checklist
+- What owns each piece of state?
+- Does every effect synchronize an external system?
+- Are dependencies and cleanup truthful?
+- Are stale and unmount races covered by tests?
+
 ## Verification
 Exercise mount/unmount, repeated updates, race conditions, and user event sequences. Run hooks/component tests plus typecheck and lint.
 
