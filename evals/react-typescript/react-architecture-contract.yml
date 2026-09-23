@@ -1,0 +1,33 @@
+id: react-architecture-contract
+version: 1
+title: React Architecture Contract
+category: react-typescript
+source: react-typescript-engineering-v1
+skills:
+  - react-architecture
+patterns:
+  - react-state-ownership
+  - react-server-state-boundary
+prompt: |
+  Reorganize a React application so feature modules have explicit dependency direction and shared state is not used as a global escape hatch. Inspect the current import graph and preserve behavior while reducing accidental coupling.
+constraints:
+  required_boundary: react-architecture
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: dependency-direction
+    input: Move a feature-specific API dependency behind an explicit module boundary.
+    expected:
+      react-architecture: explicit and justified
+  - name: shared-state-restraint
+    input: Remove an unnecessary global provider used only for local feature state.
+    expected:
+      verification: focused tests preserve feature behavior and provider scope
+grading:
+  functional: The application behavior remains correct.
+  tests: Verification covers affected feature behavior and architecture-sensitive boundaries.
+  contract: Dependency direction and state ownership are explicit.
+  scope_control: No unrelated frontend framework or build migration is introduced.
