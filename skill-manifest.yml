@@ -32,6 +32,8 @@ routing:
   campaign_intake_schema: docs/ROUTING_CAMPAIGN_INTAKE_SCHEMA.md
   campaign_evidence_packager: bin/routing-campaign-evidence
   campaign_evidence_schema: docs/ROUTING_CAMPAIGN_EVIDENCE_SCHEMA.md
+  campaign_evidence_verifier: bin/routing-campaign-evidence-verify
+  campaign_evidence_verification_schema: docs/ROUTING_CAMPAIGN_EVIDENCE_VERIFICATION_SCHEMA.md
   campaign_preflight: bin/routing-campaign-preflight
   campaign_preflight_schema: docs/ROUTING_CAMPAIGN_PREFLIGHT_SCHEMA.md
   external_handoff: bin/routing-campaign-handoff
@@ -39,9 +41,6 @@ routing:
   hidden_benchmark_contract: router/ROUTING_HIDDEN_BENCHMARK.yml
   model_matrix_contract: router/ROUTING_MODEL_MATRIX.yml
   model_matrix_schema: docs/ROUTING_MODEL_MATRIX_SCHEMA.md
-  benchmark_history: bin/routing-history
-  benchmark_history_schema: docs/ROUTING_BENCHMARK_HISTORY_SCHEMA.md
-  model_matrix_report: bin/routing-model-matrix-report
   campaign_preflight_verifier: bin/routing-campaign-preflight-verify
   campaign_intake_v2: bin/routing-campaign-import
   campaign_intake_v2_schema: docs/ROUTING_CAMPAIGN_INTAKE_V2.md
