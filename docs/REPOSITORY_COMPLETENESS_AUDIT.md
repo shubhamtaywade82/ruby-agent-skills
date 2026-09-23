@@ -12,7 +12,7 @@ The audit checks:
 - duplicate pattern registrations and intentional testing aliases;
 - routing coverage for every selectable skill;
 - execution coverage for every *_system_test.rb;
-- README inventory counts against repository-derived counts;
+- README inventory counts against repository-derived counts, including the dedicated system/contract test count and the manifest version, so any drift fails validation;
 - current Rails framework drift that should be routed into existing skills instead of creating unnecessary duplicate skills.
 
 ## Current inventory

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Inventory drift guard
+
+- Extended the repository completeness audit to verify every README inventory count (skills, implementation patterns, evaluation cases, dedicated system/contract tests, and manifest version) against repository-derived counts, failing validation on drift.
+- Added tamper-proof system tests that plant stale counts in an isolated repository copy and assert the audit rejects each drifted row.
+
 ### Routing campaign execution
 
 - Added checkpointed routing evaluation after every repetition.
