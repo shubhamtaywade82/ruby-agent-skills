@@ -39,6 +39,12 @@ Inspect transport clients, existing validation libraries, generated types, error
 - validation scattered across unrelated UI components;
 - logging full invalid responses containing secrets.
 
+## Agent review checklist
+- Is the trust boundary explicit?
+- Is external input validated before narrowing?
+- Are validation and transport failures distinguishable?
+- Are malformed and version-drift cases tested safely?
+
 ## Verification
 Exercise malformed payloads and schema drift as well as successful input. Verify caller behavior after validation failures.
 
