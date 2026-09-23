@@ -1,0 +1,34 @@
+id: typescript-runtime-contracts
+version: 1
+title: TypeScript Runtime Contract
+category: react-typescript
+source: react-typescript-engineering-v1
+skills:
+  - typescript-runtime-contracts
+patterns:
+  - typescript-runtime-schema-boundary
+  - typescript-async-error-normalization
+prompt: |
+  Consume an external JSON response that may be malformed and preserve a deliberate validation error.
+  Inspect the repository before choosing the implementation shape. Preserve existing conventions, keep runtime validation separate from compile-time types, and add focused verification.
+constraints:
+  required_boundary: typescript-runtime-contracts
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: design
+    input: Consume an external JSON response that may be malformed and preserve a deliberate validation error.
+    expected:
+      typescript-runtime-schema-boundary: explicit and justified
+  - name: failure-path
+    input: Consume an external JSON response that may be malformed and preserve a deliberate validation error. with an invalid, asynchronous, or boundary-heavy variant
+    expected:
+      verification: focused tests cover the failure or recovery path
+grading:
+  functional: The resulting behavior satisfies the task contract.
+  tests: Verification covers the intended behavior and failure paths.
+  contract: The TypeScript or React boundary remains explicit and version-aware.
+  scope_control: No unrelated framework or build migration is introduced.
