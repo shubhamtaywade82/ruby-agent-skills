@@ -22,12 +22,14 @@ class SkillPackInstallerSystemTest < Minitest::Test
     FileUtils.mkdir_p(File.join(dir, "patterns", "ruby"))
     FileUtils.mkdir_p(File.join(dir, "router"))
     FileUtils.mkdir_p(File.join(dir, "docs"))
+    FileUtils.mkdir_p(File.join(dir, "bin"))
 
     File.write(File.join(dir, "skills", skill_name, "SKILL.md"), "---\nname: #{skill_name}\ndescription: Test skill.\n---\n\n# Demo\n", encoding: "UTF-8")
     File.write(File.join(dir, "patterns", "ruby", "demo.md"), "# Demo pattern\n", encoding: "UTF-8")
     File.write(File.join(dir, "router", "ROUTING.md"), "# Routing\n", encoding: "UTF-8")
     File.write(File.join(dir, "docs", "SKILL_CONTRACT.md"), "# Contract\n", encoding: "UTF-8")
     File.write(File.join(dir, "AGENTS.md"), "# Agents\n", encoding: "UTF-8")
+    FileUtils.cp(VERIFIER, File.join(dir, "bin", "skill-pack-verify"))
     File.write(
       File.join(dir, "skill-manifest.yml"),
       <<~YAML,
@@ -57,13 +59,14 @@ class SkillPackInstallerSystemTest < Minitest::Test
     dir
   end
 
-  def install(source, project)
+  def install(source, project, ref: "main")
     ENV["RUBY_AGENT_SKILLS_REPO"] = source
     Open3.capture3(
       "bash", INSTALLER,
       "--scope", "project",
       "--agent", "agents",
       "--project", project,
+      "--ref", ref,
       chdir: ROOT
     )
   ensure
@@ -92,6 +95,19 @@ class SkillPackInstallerSystemTest < Minitest::Test
     assert_equal 1, metadata.fetch("inventory").fetch("skills")
     assert_equal 1, metadata.fetch("inventory").fetch("patterns")
     assert_equal 40, metadata.fetch("source").fetch("resolved_git_sha").length
+  end
+
+  def test_installer_accepts_a_commit_sha_ref
+    source = build_source
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+    source_sha = `git -C #{source} rev-parse HEAD`.strip
+
+    out, err, status = install(source, project, ref: source_sha)
+
+    assert status.success?, "#{out}\n#{err}"
+    target = File.join(project, ".agents", "skills")
+    metadata = JSON.parse(File.read(File.join(target, ".ruby-agent-skills", "INSTALLATION.json"), encoding: "UTF-8"))
+    assert_equal source_sha, metadata.fetch("source").fetch("resolved_git_sha")
   end
 
   def test_verifier_rejects_tampered_skill
