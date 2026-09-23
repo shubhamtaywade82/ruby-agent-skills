@@ -39,6 +39,12 @@ Inspect source layout, feature boundaries, import graph, routing, state/query in
 - shared utility modules that become dumping grounds;
 - architecture-only refactors with no measurable reduction in coupling.
 
+## Agent review checklist
+- Are dependency directions explicit?
+- Does shared infrastructure have demonstrated reuse?
+- Are server state, local UI state, and domain logic separated?
+- Did the change reduce coupling without unnecessary restructuring?
+
 ## Verification
 Run typecheck, tests, lint, dependency/cycle checks when available, and inspect the final import graph for unintended coupling.
 
