@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+require "json"
+require "open3"
+require "optparse"
+
+ROOT = File.expand_path("..", __dir__)
+CAMPAIGN_VERIFIER = File.join(ROOT, "bin", "routing-campaign-verify")
+PREFLIGHT_VERIFIER = File.join(ROOT, "bin", "routing-campaign-preflight-verify")
+EVIDENCE_PACKAGER = File.join(ROOT, "bin", "routing-campaign-evidence")
+ARCHIVER = File.join(ROOT, "bin", "routing-archive")
+
+options = { output: nil, archive: nil }
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign-import CAMPAIGN_DIR [options]"
+  opts.on("--output PATH", "Campaign evidence JSON output path") { |v| options[:output] = File.expand_path(v) }
+  opts.on("--archive DIR", "Archive root; creates immutable evidence archive") { |v| options[:archive] = File.expand_path(v) }
+end.parse!
+
+campaign_dir = File.expand_path(ARGV.fetch(0) { abort "campaign directory is required" })
+campaign_path = File.join(campaign_dir, "campaign.json")
+preflight_path = File.join(campaign_dir, "preflight.json")
+abort "campaign.json not found: #{campaign_path}" unless File.file?(campaign_path)
+abort "preflight.json not found: #{preflight_path}" unless File.file?(preflight_path)
+
+campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+preflight = JSON.parse(File.read(preflight_path, encoding: "UTF-8"))
+
+def run!(command)
+  stdout, stderr, status = Open3.capture3(*command, chdir: ROOT)
+  warn stderr unless stderr.empty?
+  abort "command failed: #{command.join(" ")}" unless status.success?
+  stdout
+end
+
+run!([RbConfig.ruby, CAMPAIGN_VERIFIER, campaign_path])
+run!([RbConfig.ruby, PREFLIGHT_VERIFIER, preflight_path])
+
+pc = preflight.fetch("campaign")
+errors = []
+errors << "campaign id does not match preflight" unless campaign["campaign"] == pc["id"]
+errors << "campaign version does not match preflight" unless campaign["campaign_version"].to_i == pc["version"].to_i
+errors << "case count does not match preflight" unless campaign["routing_case_count"].to_i == pc["case_count"].to_i
+errors << "repetition count does not match preflight" unless campaign["requested_repetitions"].to_i == pc["repetitions"].to_i
+errors << "requested runs do not match preflight" unless campaign["requested_runs"].to_i == pc["expected_runs"].to_i
+errors << "completed runs do not match preflight" unless campaign["completed_runs"].to_i == pc["expected_runs"].to_i
+errors << "campaign model does not match preflight" unless campaign.dig("agent", "model") == preflight.dig("runtime", "model", "name")
+abort(errors.join("; ")) unless errors.empty?
+
+output = options[:output] || File.join(campaign_dir, "campaign-evidence.json")
+run!([RbConfig.ruby, EVIDENCE_PACKAGER, campaign_dir, "--output", output])
+
+if options[:archive]
+  run!([RbConfig.ruby, ARCHIVER, output, "--destination", options[:archive]])
+end
+
+puts "Routing campaign import complete"
+puts "  campaign: #{campaign["campaign"]}"
+puts "  runs: #{campaign["completed_runs"]}/#{campaign["requested_runs"]}"
+puts "  evidence: #{output}"
+puts "  archive: #{options[:archive] || "not requested"}"
