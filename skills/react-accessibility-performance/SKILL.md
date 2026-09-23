@@ -40,6 +40,12 @@ Inspect semantic HTML, focus utilities, design-system primitives, profiler evide
 - virtualization that breaks interaction semantics;
 - performance claims without evidence.
 
+## Agent review checklist
+- Are native semantics preferred?
+- Are keyboard and focus transitions explicit?
+- What evidence justifies memoization or virtualization?
+- Are accessibility regressions tested at the owning boundary?
+
 ## Verification
 Use keyboard tests, accessible-role assertions, browser/integration checks when needed, and profiler or benchmark evidence for performance claims.
 
