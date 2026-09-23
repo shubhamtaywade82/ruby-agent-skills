@@ -42,7 +42,7 @@ module RubyAgentSkills
 
       pattern_files = selected_patterns.map do |pattern|
         source = resolve_pattern(pattern)
-        destination = File.join(patterns_dir, File.basename(source))
+        destination = File.join(patterns_dir, source.delete_prefix("patterns/"))
         copy_file(source, destination)
         { "id" => pattern, "path" => relative_path(destination), "sha256" => digest(source) }
       end
