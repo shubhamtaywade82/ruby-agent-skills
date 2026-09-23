@@ -4,8 +4,8 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 66 — External Routing Campaign Handoff  
-> **Branch:** `feat/routing-campaign-preflight-v1`
+> **Current milestone:** Iteration 67 — External Routing Campaign Intake  
+> **Branch:** `feat/routing-campaign-intake-v2`
 
 ---
 
@@ -763,6 +763,10 @@ Iteration 58 adds `router/ROUTING_REMEDIATION.yml` and `bin/routing-compare`. Th
 ## Iteration 59 — Reproducible Routing Baseline/Candidate Experiment
 
 Iteration 59 adds `bin/routing-experiment`, which runs baseline and candidate routing-contract snapshots with the same agent command, model metadata, timeout, and repetitions, then applies the Iteration 58 comparison gate. This makes routing remediation experiments reproducible and isolates the routing contract as the intended experimental variable.
+
+## Iteration 67 — External Routing Campaign Intake
+
+Iteration 67 completes the runtime handoff boundary. `bin/routing-campaign-preflight-verify` validates captured preflight without contacting Ollama, and `bin/routing-campaign-import` provides one intake command that verifies the completed campaign, cross-checks it against preflight, packages raw results as auditable campaign evidence, and optionally creates the immutable evidence archive. Hidden routing cases and gold labels remain external-only.
 
 ## Iteration 66 — External Routing Campaign Handoff
 
