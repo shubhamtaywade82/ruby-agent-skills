@@ -41,6 +41,12 @@ Inspect the existing HTTP client, query/cache library, cache-key conventions, au
 - duplicated fetching logic in leaf components;
 - server state placed in global UI context only for reachability.
 
+## Agent review checklist
+- Is server-state ownership separate from local UI state?
+- Do cache keys include every resource-identity dimension?
+- Are retries and mutations safe for their semantics?
+- Is rollback or reconciliation explicit for optimistic updates?
+
 ## Verification
 Test initial load, refetch, failure, cancellation, cache hit, invalidation, mutation success, and mutation failure.
 
