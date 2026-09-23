@@ -1,5 +1,12 @@
 # Changelog
 
+## Iteration 78 — Verified agent installation doctor
+
+- Added `bin/skill-pack-doctor` for deterministic installed-pack health checks.
+- Registered the doctor in the skill manifest, repository completeness audit, canonical validator, README, and implementation handoff.
+- Added success/tamper system coverage for the installed-pack doctor.
+
+
 ## Iteration 77 — React + TypeScript engineering pack
 
 - Added dedicated TypeScript core, type-design, and runtime-contract skills.
