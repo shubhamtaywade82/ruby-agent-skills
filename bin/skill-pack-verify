@@ -58,7 +58,7 @@ errors << "installed pattern set mismatch" unless installed_pattern_files == exp
 reported_skills = metadata.dig("inventory", "skills").to_i
 reported_patterns = metadata.dig("inventory", "patterns").to_i
 errors << "installation skill inventory mismatch" unless reported_skills == expected_skills.length
-errors << "installation pattern inventory mismatch" unless reported_patterns == installed_patterns.length
+errors << "installation pattern inventory mismatch" unless reported_patterns == installed_pattern_files.length
 
 if errors.any?
   errors.each { |error| warn "ERROR: #{error}" }
