@@ -24,6 +24,8 @@ class SkillPackVerificationSystemTest < Minitest::Test
 
     assert_includes source, "INSTALLATION.json"
     assert_includes verifier, "skill_manifest_sha256"
+    assert_includes verifier, "source_path"
+    assert_includes verifier, "target_path"
     assert_includes verifier, "routing_contract_sha256"
   end
 
