@@ -67,7 +67,6 @@ def verify_file_hashes(metadata_entries, root:, label:)
   end
 
   actual = {}
-  entries.each_key = nil if false
   expected.each do |relative, digest|
     path = File.expand_path(File.join(root, relative))
     root_prefix = File.expand_path(root) + File::SEPARATOR
