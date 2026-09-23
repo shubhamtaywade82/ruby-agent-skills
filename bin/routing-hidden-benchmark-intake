@@ -1,0 +1,99 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "optparse"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+CONTRACT_PATH = File.join(ROOT, "router", "ROUTING_HIDDEN_BENCHMARK.yml")
+
+options = {
+  expected_runs: nil,
+  provider: nil,
+  model: nil,
+  output: nil
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-hidden-benchmark-intake EVIDENCE_JSON [options]"
+  opts.on("--expected-runs COUNT", Integer, "Private benchmark operator supplied expected execution count") { |value| options[:expected_runs] = value }
+  opts.on("--provider NAME", "Expected external provider") { |value| options[:provider] = value }
+  opts.on("--model NAME", "Expected external model") { |value| options[:model] = value }
+  opts.on("--output PATH", "Write a safe evidence receipt") { |value| options[:output] = File.expand_path(value) }
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "external evidence JSON is required" })
+abort "external evidence JSON not found: #{path}" unless File.file?(path)
+abort "--expected-runs must be >= 1" unless options[:expected_runs].to_i >= 1
+abort "--provider is required" if options[:provider].to_s.strip.empty?
+abort "--model is required" if options[:model].to_s.strip.empty?
+
+contract = YAML.safe_load(File.read(CONTRACT_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+abort "hidden benchmark source must be external-only" unless contract["source"] == "external-only"
+abort "hidden benchmark repository storage must be forbidden" unless contract.dig("cases", "repository_storage") == "forbidden"
+abort "hidden evidence copy must be forbidden" unless contract.dig("controls", "hidden_evidence_must_not_be_copied_into_repository") == true
+abort "receipt must not contain hidden cases or gold labels" unless contract.dig("controls", "receipt_must_not_contain_hidden_cases_or_gold_labels") == true
+
+evidence = JSON.parse(File.read(path, encoding: "UTF-8"))
+required = %w[protocol_version benchmark source case_count repetitions completed_runs agent artifact]
+missing = required.reject { |key| evidence.key?(key) }
+abort "missing required evidence fields: #{missing.join(", ")}" unless missing.empty?
+
+abort "protocol_version must be 1" unless evidence["protocol_version"].to_i == 1
+abort "benchmark source must be external-only" unless evidence["source"] == "external-only"
+abort "benchmark case_count must be supplied externally" unless evidence["case_count"].to_i >= 1
+abort "repetitions must be >= 1" unless evidence["repetitions"].to_i >= 1
+abort "completed_runs must match private expected-runs" unless evidence["completed_runs"].to_i == options[:expected_runs].to_i
+
+agent = evidence.fetch("agent")
+abort "provider mismatch" unless agent["provider"] == options[:provider]
+abort "model mismatch" unless agent["model"] == options[:model]
+
+forbidden_keys = %w[cases gold_labels prompts hidden_cases]
+found_forbidden = forbidden_keys.select { |key| evidence.key?(key) }
+abort "external evidence contains forbidden hidden payload fields: #{found_forbidden.join(", ")}" unless found_forbidden.empty?
+
+artifact = evidence.fetch("artifact")
+abort "artifact must be a mapping" unless artifact.is_a?(Hash)
+artifact_path = artifact["path"].to_s
+artifact_sha = artifact["sha256"].to_s
+artifact_bytes = artifact["bytes"].to_i
+abort "artifact path is required" if artifact_path.empty?
+abort "artifact SHA-256 must be 64 hex characters" unless artifact_sha.match?(/\A[0-9a-f]{64}\z/)
+abort "artifact byte size must be >= 0" if artifact_bytes.negative?
+abort "external evidence artifact not found: #{artifact_path}" unless File.file?(artifact_path)
+
+actual_sha = Digest::SHA256.file(artifact_path).hexdigest
+abort "external evidence artifact SHA-256 mismatch" unless actual_sha == artifact_sha
+abort "external evidence artifact byte size mismatch" unless File.size(artifact_path) == artifact_bytes
+
+receipt = {
+  "protocol_version" => 1,
+  "receipt" => "skill-routing-hidden-benchmark-intake-v1",
+  "benchmark" => evidence["benchmark"],
+  "verification" => {
+    "passed" => true,
+    "source" => "external-only",
+    "repository_storage" => "forbidden",
+    "gold_labels_in_repository" => false,
+    "hidden_cases_in_repository" => false,
+    "public_corpus_used_to_derive_hidden_count" => false
+  },
+  "external_execution" => {
+    "case_count" => evidence["case_count"],
+    "repetitions" => evidence["repetitions"],
+    "completed_runs" => evidence["completed_runs"],
+    "provider" => agent["provider"],
+    "model" => agent["model"]
+  },
+  "artifact" => {
+    "path" => File.expand_path(artifact_path),
+    "sha256" => actual_sha,
+    "bytes" => File.size(artifact_path)
+  }
+}
+
+File.write(options[:output], JSON.pretty_generate(receipt) + "\n", encoding: "UTF-8") if options[:output]
+puts JSON.pretty_generate(receipt)
