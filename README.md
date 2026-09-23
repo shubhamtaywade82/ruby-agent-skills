@@ -715,9 +715,9 @@ When adding a new skill or deepening an existing one:
 
 # Current milestone
 
-**Iteration 55 — Real Agent Routing Campaign**
+**Iteration 76 — Implementation Hardening & Verified Agent Installation**
 
-Latest implementation removes the Node 20 checkout warning, standardizes CI on the Node 24-compatible `actions/checkout@v7` line, and makes CI toolchain compatibility an executable repository contract.
+The implementation layer now provides checkpointed routing campaigns, resumable multi-model execution, provenance-bound skill-pack installation, exact installed-pack verification, and upgrade cleanup. The remaining routing work is empirical execution against real models rather than additional core infrastructure.
 
 
 ## Rails Encryption and Credentials Engineering
