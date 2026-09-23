@@ -1,0 +1,35 @@
+id: react-data-fetching-contract
+version: 1
+title: React Data Fetching Contract
+category: react-typescript
+source: react-typescript-engineering-v1
+skills:
+  - react-data-fetching
+patterns:
+  - react-server-state-boundary
+  - react-query-key-cache
+  - react-optimistic-rollback
+prompt: |
+  Implement a filtered resource query with cache identity, refresh, and failed mutation rollback.
+  Inspect the repository before choosing the implementation shape. Preserve existing conventions, keep runtime validation separate from compile-time types, and add focused verification.
+constraints:
+  required_boundary: react-data-fetching
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: design
+    input: Implement a filtered resource query with cache identity, refresh, and failed mutation rollback.
+    expected:
+      react-query-key-cache: explicit and justified
+  - name: failure-path
+    input: Implement a filtered resource query with cache identity, refresh, and failed mutation rollback. with an invalid, asynchronous, or boundary-heavy variant
+    expected:
+      verification: focused tests cover the failure or recovery path
+grading:
+  functional: The resulting behavior satisfies the task contract.
+  tests: Verification covers the intended behavior and failure paths.
+  contract: The TypeScript or React boundary remains explicit and version-aware.
+  scope_control: No unrelated framework or build migration is introduced.
