@@ -21,6 +21,15 @@ manifest = YAML.safe_load(
 errors = []
 warnings = []
 
+installation = manifest.fetch("installation", {})
+installation_paths = {
+  "installer" => installation.fetch("installer"),
+  "verifier" => installation.fetch("verifier")
+}
+installation_paths.each do |kind, path|
+  errors << "manifest installation #{kind} missing file #{path}" unless File.file?(File.join(ROOT, path))
+end
+
 skill_files = Dir[File.join(ROOT, "skills", "*", "SKILL.md")].map { |p| p.delete_prefix(ROOT + "/") }.sort
 manifest_skills = manifest.fetch("skills")
 manifest_skill_paths = manifest_skills.values.map { |entry| entry.fetch("path") }.sort
