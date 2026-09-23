@@ -58,6 +58,43 @@ routing:
   evidence_schema: docs/ROUTING_EVIDENCE_SCHEMA.md
 
 skills:
+
+  typescript-core-engineering:
+    family: typescript
+    path: skills/typescript-core-engineering/SKILL.md
+    triggers: [TypeScript language, strictness, modules, type narrowing, generics, public type contracts]
+  typescript-type-design:
+    family: typescript
+    path: skills/typescript-type-design/SKILL.md
+    triggers: [TypeScript type design, discriminated unions, branded identifiers, utility types, generic API design]
+  typescript-runtime-contracts:
+    family: typescript
+    path: skills/typescript-runtime-contracts/SKILL.md
+    triggers: [TypeScript runtime validation, JSON, HTTP responses, environment values, browser storage, dynamic values]
+  react-component-engineering:
+    family: react-typescript
+    path: skills/react-component-engineering/SKILL.md
+    triggers: [React components, props, composition, controlled inputs, reusable UI boundaries]
+  react-state-effects:
+    family: react-typescript
+    path: skills/react-state-effects/SKILL.md
+    triggers: [React state, reducers, context, refs, effects, subscriptions, stale closures, lifecycle]
+  react-data-fetching:
+    family: react-typescript
+    path: skills/react-data-fetching/SKILL.md
+    triggers: [React data fetching, server state, query caches, mutations, optimistic updates, request races]
+  react-testing-engineering:
+    family: react-typescript
+    path: skills/react-testing-engineering/SKILL.md
+    triggers: [React component testing, hooks testing, user interactions, async UI, Testing Library]
+  react-accessibility-performance:
+    family: react-typescript
+    path: skills/react-accessibility-performance/SKILL.md
+    triggers: [React accessibility, keyboard, focus, render performance, memoization, virtualization]
+  react-architecture:
+    family: react-typescript
+    path: skills/react-architecture/SKILL.md
+    triggers: [React architecture, feature modules, dependency direction, shared state, frontend boundaries]
   rails-test-engineering:
     family: rails-quality
     path: skills/rails-test-engineering/SKILL.md
@@ -367,6 +404,33 @@ skills:
     family: operations
     path: skills/rails-deployment/SKILL.md
     triggers: [deployment, hosting, production, environment, release, Kamal, Kamal 2, registry-free deploy, Thruster]
+
+  react-typescript:
+    paths:
+      - patterns/react-typescript/typescript-discriminated-union.md
+      - patterns/react-typescript/typescript-branded-identifier.md
+      - patterns/react-typescript/typescript-generic-result.md
+      - patterns/react-typescript/typescript-public-api-boundary.md
+      - patterns/react-typescript/typescript-runtime-schema-boundary.md
+      - patterns/react-typescript/typescript-async-error-normalization.md
+      - patterns/react-typescript/react-component-boundary.md
+      - patterns/react-typescript/react-composition-over-boolean-props.md
+      - patterns/react-typescript/react-controlled-input.md
+      - patterns/react-typescript/react-state-ownership.md
+      - patterns/react-typescript/react-effect-synchronization.md
+      - patterns/react-typescript/react-hook-dependency.md
+      - patterns/react-typescript/react-reducer-state-machine.md
+      - patterns/react-typescript/react-context-scope.md
+      - patterns/react-typescript/react-server-state-boundary.md
+      - patterns/react-typescript/react-query-key-cache.md
+      - patterns/react-typescript/react-optimistic-rollback.md
+      - patterns/react-typescript/react-async-ui-state.md
+      - patterns/react-typescript/react-user-interaction-test.md
+      - patterns/react-typescript/react-network-mock-boundary.md
+      - patterns/react-typescript/react-accessible-interaction.md
+      - patterns/react-typescript/react-focus-management.md
+      - patterns/react-typescript/react-render-performance-budget.md
+      - patterns/react-typescript/react-memoization-evidence-gate.md
 
 patterns:
   ruby-design:
@@ -912,6 +976,104 @@ benchmarks:
     campaign_manifest: benchmarks/design-patterns/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
+  react-typescript-typescript-core:
+    source: react-typescript-core-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-core-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-typescript-type-design:
+    source: react-typescript-type-design-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-type-design-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-typescript-runtime-contracts:
+    source: react-typescript-runtime-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-runtime-contracts.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-component-engineering:
+    source: react-component-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-component-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-state-effects:
+    source: react-state-effects-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-state-effects-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-data-fetching:
+    source: react-data-fetching-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-data-fetching-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-testing-engineering:
+    source: react-testing-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-testing-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-accessibility-performance:
+    source: react-accessibility-performance-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-accessibility-performance-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-architecture:
+    source: react-architecture-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-architecture-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
 evaluations:
   rails-repository-completeness:
     source: rails-repository-completeness-v1
