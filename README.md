@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 76 — Implementation Hardening
+> **Current milestone:** Iteration 77 — React + TypeScript Engineering Pack
 
 ---
 
@@ -39,6 +39,23 @@ Routing campaign execution now checkpoints after every repetition and records a 
 
 The execution layer now supports resumable multi-model routing campaigns, and the agent installer installs both skills and reusable patterns with immutable source/ref provenance. Installed packs can be independently verified for manifest/routing integrity and exact skill/pattern inventory. Removed skills are cleaned up during upgrades, and installation behavior has system-test coverage.
 The agent-facing `SkillPack` materializer now records the source manifest digest, creates stable baseline directories, and rejects ambiguous basename-only pattern resolution rather than selecting a non-deterministic match.
+
+## Iteration 77 — React + TypeScript Engineering Pack
+
+The repository now includes a dedicated frontend engineering layer for React and TypeScript instead of relying on generic Rails asset guidance.
+
+Skills:
+- typescript-core-engineering
+- typescript-type-design
+- typescript-runtime-contracts
+- react-component-engineering
+- react-state-effects
+- react-data-fetching
+- react-testing-engineering
+- react-accessibility-performance
+- react-architecture
+
+The pack includes 24 reusable implementation patterns and 9 public evaluations covering type modeling, runtime boundaries, component composition, state/effect ownership, server-state caching, testing, accessibility/focus, rendering performance, and frontend architecture.
 
 ## What this repository contains
 
@@ -84,10 +101,10 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **76** |
-| Implementation patterns | **393** |
-| Evaluation cases | **392** |
-| Dedicated system/contract tests | **70** |
+| Skills | **85** |
+| Implementation patterns | **417** |
+| Evaluation cases | **410** |
+| Dedicated system/contract tests | **71** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
