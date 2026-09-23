@@ -4,8 +4,8 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 73 — Routing Campaign Provenance Binding  
-> **Branch:** `feat/routing-campaign-handoff-binding-v1`
+> **Current milestone:** Iteration 75 — Checkpointed Routing Campaign Resume  
+> **Branch:** `feat/routing-campaign-resume-v1`
 
 ---
 
@@ -32,6 +32,10 @@ Campaign imports now bind evidence to the exact repository state captured by pre
 ## Iteration 74 — Routing Campaign Handoff Binding
 
 External campaign handoffs are now verified against the receiving checkout before model execution. The verifier binds the handoff to the public campaign contract, expected 14-case × 3-repetition plan, exact Git SHA, routing-input hashes, and a clean worktree; the generated launcher refuses to start the campaign when these inputs do not match.
+
+## Iteration 75 — Checkpointed Routing Campaign Resume
+
+Routing campaign execution now checkpoints after every repetition and records a hash-bound `run.json` receipt for each successfully validated run. An interrupted campaign can be resumed with `--resume`; only compatible, receipt-backed runs whose result digest still matches are reused. Missing or invalid runs execute normally, and incomplete checkpoints remain ineligible for evidence import or release readiness.
 
 ## What this repository contains
 
@@ -80,7 +84,7 @@ The skill system is built from five connected layers:
 | Skills | **76** |
 | Implementation patterns | **393** |
 | Evaluation cases | **392** |
-| Dedicated system/contract tests | **62** |
+| Dedicated system/contract tests | **63** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
