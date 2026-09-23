@@ -176,7 +176,7 @@ cp "$TMP_DIR/repo/bin/skill-pack-verify" "$STAGE/.ruby-agent-skills/skill-pack-v
 
 cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
 {
-  "protocol_version": 1,
+  "protocol_version": 2,
   "source": {
     "repository": "$REPO",
     "requested_ref": "$REF",
