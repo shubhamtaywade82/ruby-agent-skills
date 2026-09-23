@@ -59,7 +59,8 @@ The verifier checks:
 - routing-contract SHA-256;
 - exact installed skill set;
 - exact installed pattern set;
-- recorded inventory counts;\n- SHA-256 for every installed skill and pattern file.
+- recorded inventory counts;
+- SHA-256 for every installed skill and pattern file.
 
 A successful installation prints the source repository, requested ref, resolved Git SHA, and installed inventory.
 
