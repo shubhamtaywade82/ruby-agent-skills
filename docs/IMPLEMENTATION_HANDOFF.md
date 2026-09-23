@@ -41,6 +41,10 @@ Verify the installed pack:
 
     ruby bin/skill-pack-verify --root /path/to/your/rails-app/.claude/skills
 
+Run the installation doctor:
+
+    ruby bin/skill-pack-doctor --root /path/to/your/rails-app/.claude/skills
+
 The installer records the resolved Git SHA plus manifest and routing hashes under `.ruby-agent-skills/INSTALLATION.json`.
 
 ## Public routing campaign
