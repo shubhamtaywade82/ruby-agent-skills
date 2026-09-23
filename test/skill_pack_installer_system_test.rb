@@ -80,6 +80,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     assert File.file?(File.join(target, "demo-skill", "SKILL.md"))
     assert File.file?(File.join(target, ".ruby-agent-skills", "patterns", "ruby", "demo.md"))
     assert File.file?(File.join(target, ".ruby-agent-skills", "skill-manifest.yml"))
+    assert File.file?(File.join(target, ".ruby-agent-skills", "skill-pack-verify"))
 
     verify_out, verify_err, verify_status = Open3.capture3(
       RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
