@@ -61,7 +61,15 @@ abort "duplicate model names after normalization" unless models.uniq.length == m
 
 base_url = options[:url].sub(%r{/+$}, "")
 repetitions = options[:runs] || campaign.fetch("execution").fetch("repetitions").to_i
-expected_runs = Array(YAML.safe_load(File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases")).length * repetitions
+cases_path = File.join(ROOT, "router", "ROUTING_CASES.yml")
+cases = YAML.safe_load(File.read(cases_path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases")
+expected_runs = Array(cases).length * repetitions
+
+git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_status.success?
+abort "repository worktree must be clean before matrix planning/execution" unless Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all").first.to_s.strip.empty?
+
+hash = ->(path) { Digest::SHA256.file(path).hexdigest }
 
 FileUtils.mkdir_p(options[:output])
 matrix_plan = {
@@ -73,6 +81,12 @@ matrix_plan = {
     "version" => campaign.fetch("version"),
     "repetitions" => repetitions,
     "expected_runs_per_model" => expected_runs
+  },
+  "provenance" => {
+    "git_sha" => git_sha.strip,
+    "matrix_sha256" => hash.call(MATRIX_PATH),
+    "campaign_sha256" => hash.call(CAMPAIGN_PATH),
+    "routing_cases_sha256" => hash.call(cases_path)
   },
   "runtime" => {
     "provider" => "ollama",
@@ -141,6 +155,7 @@ models.each do |model|
     result["status"] = "failed"
     result["exit_code"] = status.exitstatus
     result["finished_at"] = Time.now.utc.iso8601
+    matrix_plan["models"].find { |entry| entry["name"] == model }["status"] = "failed"
     matrix_plan["results"] << result
     File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
     warn "model campaign failed: #{model} (exit #{status.exitstatus}); continuing remaining models"
@@ -168,6 +183,8 @@ models.each do |model|
     result["exit_code"] = import_status.exitstatus
   end
   result["finished_at"] = Time.now.utc.iso8601
+  matrix_plan["models"].find { |entry| entry["name"] == model }["status"] =
+    result["status"]
   matrix_plan["results"] << result
   File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
 end
