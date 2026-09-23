@@ -41,6 +41,12 @@ Inspect tsconfig files, package manager, build and test commands, supported Node
 - exported types that leak internal details;
 - repository-wide strictness changes to accommodate one feature.
 
+## Agent review checklist
+- Are exported contracts explicit?
+- Are unknown and any used deliberately at runtime boundaries?
+- Was compiler/runtime compatibility resolved from repository evidence?
+- Do focused tests prove changed behavior?
+
 ## Verification
 Run typecheck, focused tests, lint, and relevant build verification. Test runtime behavior separately when boundary data is involved.
 
