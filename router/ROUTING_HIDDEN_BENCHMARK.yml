@@ -1,12 +1,17 @@
-version: 1
-id: skill-routing-hidden-v1
+version: 2
+id: skill-routing-hidden-v2
 source: external-only
 visibility: private
 cases:
   storage: external-only
   gold_labels: external-only
-  agent_workspace_exposure: prompt-only
+  raw_results: external-only
+  case_count: external-only
   repository_storage: forbidden
+ingestion:
+  mode: evidence-receipt-only
+  repository_receipt_allowed: true
+  evidence_copy_into_repository: forbidden
 protocol:
   result_schema: docs/ROUTING_EVAL_RESULT_SCHEMA.md
   primary_skill_required: true
@@ -15,3 +20,5 @@ protocol:
 controls:
   public_campaign_must_not_depend_on_hidden_cases: true
   hidden_case_count_must_not_be_inferred_from_public_corpus: true
+  hidden_evidence_must_not_be_copied_into_repository: true
+  receipt_must_not_contain_hidden_cases_or_gold_labels: true
