@@ -38,6 +38,7 @@ routing:
   campaign_preflight_schema: docs/ROUTING_CAMPAIGN_PREFLIGHT_SCHEMA.md
   external_handoff: bin/routing-campaign-handoff
   external_handoff_schema: docs/ROUTING_EXTERNAL_CAMPAIGN_SCHEMA.md
+  external_handoff_verifier: bin/routing-campaign-handoff-verify
   hidden_benchmark_contract: router/ROUTING_HIDDEN_BENCHMARK.yml
   model_matrix_contract: router/ROUTING_MODEL_MATRIX.yml
   model_matrix_schema: docs/ROUTING_MODEL_MATRIX_SCHEMA.md
