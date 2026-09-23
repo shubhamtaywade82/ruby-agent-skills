@@ -106,7 +106,7 @@ def run_checkpoint(path, results:, selected_count:, campaign:, campaign_version:
     "agent" => agent,
     "routing_case_count" => selected_count,
     "requested_repetitions" => requested_repetitions,
-    "requested_runs" => results.length * requested_repetitions,
+    "requested_runs" => selected_count * requested_repetitions,
     "completed_runs" => completed,
     "complete" => complete,
     "execution" => {
