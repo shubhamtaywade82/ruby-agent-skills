@@ -11,6 +11,15 @@ require "tmpdir"
 require "yaml"
 
 ROOT = File.expand_path("..", __dir__)
+
+def atomic_write(path, content)
+  temp_path = "#{path}.tmp-#{Process.pid}"
+  File.write(temp_path, content, encoding: "UTF-8")
+  File.rename(temp_path, path)
+ensure
+  FileUtils.rm_f(temp_path) if temp_path
+end
+
 MATRIX_PATH = File.join(ROOT, "router", "ROUTING_MODEL_MATRIX.yml")
 CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
 CAMPAIGN_RUNNER = File.join(ROOT, "bin", "routing-campaign")
@@ -133,7 +142,7 @@ if options[:resume]
   abort "cannot resume incompatible matrix checkpoint: #{errors.join("; ")}" unless errors.empty?
   matrix_plan = existing
 else
-  File.write(plan_path, JSON.pretty_generate(matrix_plan) + "\n", encoding: "UTF-8")
+  atomic_write(plan_path, JSON.pretty_generate(matrix_plan) + "\n")
 end
 
 unless options[:execute]
