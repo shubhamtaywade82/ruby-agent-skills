@@ -92,6 +92,7 @@ ruby -I"$ROOT/test" "$ROOT/test/routing_campaign_evidence_integrity_system_test.
 ruby -I"$ROOT/test" "$ROOT/test/routing_campaign_preflight_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_external_campaign_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_campaign_intake_v2_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_campaign_provenance_binding_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_model_matrix_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_model_matrix_campaign_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_hidden_benchmark_intake_system_test.rb"

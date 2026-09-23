@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "optparse"
+require "open3"
+
+ROOT = File.expand_path("..", __dir__)
+
+options = { allow_repository_drift: false }
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-campaign-provenance-verify CAMPAIGN_DIR"
+  opts.on("--allow-repository-drift", "Allow current repository identity to differ from recorded preflight; emit a warning") do
+    options[:allow_repository_drift] = true
+  end
+end.parse!
+
+campaign_dir = File.expand_path(ARGV.fetch(0) { abort "campaign directory is required" })
+preflight_path = File.join(campaign_dir, "preflight.json")
+abort "preflight.json not found: #{preflight_path}" unless File.file?(preflight_path)
+
+preflight = JSON.parse(File.read(preflight_path, encoding: "UTF-8"))
+repository = preflight.fetch("repository")
+expected = {
+  "git_sha" => repository.fetch("git_sha"),
+  "manifest_sha256" => repository.fetch("manifest_sha256"),
+  "campaign_manifest_sha256" => repository.fetch("campaign_manifest_sha256"),
+  "routing_cases_sha256" => repository.fetch("routing_cases_sha256"),
+  "routing_contract_sha256" => repository.fetch("routing_contract_sha256")
+}
+
+paths = {
+  "manifest_sha256" => File.join(ROOT, "skill-manifest.yml"),
+  "campaign_manifest_sha256" => File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"),
+  "routing_cases_sha256" => File.join(ROOT, "router", "ROUTING_CASES.yml"),
+  "routing_contract_sha256" => File.join(ROOT, "router", "ROUTING.md")
+}
+
+actual_sha, status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless status.success?
+actual = { "git_sha" => actual_sha.strip }
+paths.each { |key, path| actual[key] = Digest::SHA256.file(path).hexdigest }
+
+errors = []
+if actual["git_sha"] != expected["git_sha"]
+  message = "repository Git SHA mismatch: preflight=#{expected["git_sha"]} current=#{actual["git_sha"]}"
+  options[:allow_repository_drift] ? warn("WARN: #{message}") : errors << message
+end
+
+expected.each do |key, value|
+  next if key == "git_sha"
+  errors << "#{key} mismatch: preflight=#{value} current=#{actual[key]}" unless actual[key] == value
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing campaign provenance error(s)"
+end
+
+puts "Routing campaign provenance verification passed"
+puts "  git sha: #{expected["git_sha"]}"
+puts "  repository hashes: matched"
+if options[:allow_repository_drift]
+  warn "Repository drift was allowed only for Git SHA; content hashes still had to match."
+end

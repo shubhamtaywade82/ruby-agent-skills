@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 72 — Hidden Benchmark External Intake  
+> **Current milestone:** Iteration 73 — Routing Campaign Provenance Binding  
 > **Branch:** `feat/routing-release-readiness-main-v1`
 
 ---
@@ -24,6 +24,10 @@ The repository now has an explicit multi-model execution harness for the public 
 ## Iteration 72 — Hidden Benchmark External Intake
 
 Hidden routing cases, gold labels, raw results, and hidden case counts now have an explicit external-only intake contract. The repository can verify an externally supplied benchmark evidence artifact and emit a safe provenance receipt without importing hidden case content or gold labels, and hidden cardinality is supplied privately rather than inferred from the public routing corpus.
+
+## Iteration 73 — Routing Campaign Provenance Binding
+
+Campaign imports now bind evidence to the exact repository state captured by preflight. The importer verifies the recorded Git SHA and the SHA-256 hashes of the skill manifest, campaign manifest, public routing corpus, and routing contract before evidence is packaged and archived. This prevents a campaign from being silently attached to changed routing inputs.
 
 ## What this repository contains
 

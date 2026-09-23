@@ -45,6 +45,8 @@ routing:
   hidden_benchmark_intake: bin/routing-hidden-benchmark-intake
   hidden_benchmark_intake_schema: docs/ROUTING_HIDDEN_BENCHMARK_INTAKE.md
   campaign_preflight_verifier: bin/routing-campaign-preflight-verify
+  campaign_provenance_verifier: bin/routing-campaign-provenance-verify
+  campaign_provenance_schema: docs/ROUTING_CAMPAIGN_PROVENANCE_BINDING.md
   campaign_intake_v2: bin/routing-campaign-import
   campaign_intake_v2_schema: docs/ROUTING_CAMPAIGN_INTAKE_V2.md
   evidence_schema: docs/ROUTING_EVIDENCE_SCHEMA.md

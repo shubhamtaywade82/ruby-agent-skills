@@ -9,6 +9,7 @@ require "optparse"
 ROOT = File.expand_path("..", __dir__)
 CAMPAIGN_VERIFIER = File.join(ROOT, "bin", "routing-campaign-verify")
 PREFLIGHT_VERIFIER = File.join(ROOT, "bin", "routing-campaign-preflight-verify")
+CAMPAIGN_PROVENANCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-provenance-verify")
 EVIDENCE_PACKAGER = File.join(ROOT, "bin", "routing-campaign-evidence")
 ARCHIVER = File.join(ROOT, "bin", "routing-archive")
 
@@ -37,6 +38,7 @@ end
 
 run!([RbConfig.ruby, CAMPAIGN_VERIFIER, campaign_path])
 run!([RbConfig.ruby, PREFLIGHT_VERIFIER, preflight_path])
+run!([RbConfig.ruby, CAMPAIGN_PROVENANCE_VERIFIER, campaign_dir])
 
 pc = preflight.fetch("campaign")
 errors = []
