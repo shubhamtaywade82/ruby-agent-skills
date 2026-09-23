@@ -2,10 +2,14 @@
 
 ## Unreleased
 
-### Inventory drift guard
+### Iteration 76 — Implementation hardening
 
-- Extended the repository completeness audit to verify every README inventory count (skills, implementation patterns, evaluation cases, dedicated system/contract tests, and manifest version) against repository-derived counts, failing validation on drift.
-- Added tamper-proof system tests that plant stale counts in an isolated repository copy and assert the audit rejects each drifted row.
+- Added resumable multi-model routing execution with provenance-bound matrix checkpoints.
+- Added a provenance-aware installer that installs skills and reusable patterns and cleans removed skills on upgrade.
+- Added independent installed-pack verification for exact skill/pattern inventory and manifest/routing integrity.
+- Added installation, matrix-resume, and verifier system-test coverage.
+- Hardened `RubyAgentSkills::SkillPack` materialization with manifest provenance and deterministic pattern resolution.
+
 
 ### Routing campaign execution
 

@@ -66,6 +66,17 @@ if ! command -v git >/dev/null 2>&1; then
   exit 1
 fi
 
+sha256_file() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | awk '{print $1}'
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$1" | awk '{print $1}'
+  else
+    echo "sha256sum or shasum is required." >&2
+    exit 1
+  fi
+}
+
 case "$AGENT" in
   agents|codex)
     if [[ "$SCOPE" == "user" ]]; then
@@ -100,24 +111,109 @@ echo "  target: $TARGET_ROOT"
 echo
 echo "Review the repository/ref before installing untrusted skills."
 
-git clone --depth 1 --branch "$REF" "$REPO" "$TMP_DIR/repo" >/dev/null 2>&1 || {
-  echo "Unable to clone $REPO at ref $REF" >&2
+git clone --no-checkout --depth 1 "$REPO" "$TMP_DIR/repo" >/dev/null 2>&1 || {
+  echo "Unable to clone $REPO" >&2
+  exit 1
+}
+if ! git -C "$TMP_DIR/repo" fetch --depth 1 origin "$REF" >/dev/null 2>&1; then
+  echo "Unable to fetch $REPO at ref $REF" >&2
+  exit 1
+fi
+git -C "$TMP_DIR/repo" checkout --detach FETCH_HEAD >/dev/null 2>&1 || {
+  echo "Unable to checkout resolved ref $REF" >&2
   exit 1
 }
 
-mkdir -p "$TARGET_ROOT"
+RESOLVED_SHA="$(git -C "$TMP_DIR/repo" rev-parse HEAD)"
+MANIFEST_SHA256="$(sha256_file "$TMP_DIR/repo/skill-manifest.yml")"
+ROUTING_SHA256="$(sha256_file "$TMP_DIR/repo/router/ROUTING.md")"
+SKILL_COUNT="$(find "$TMP_DIR/repo/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -type f | wc -l | tr -d ' ')"
+PATTERN_COUNT="$(find "$TMP_DIR/repo/patterns" -type f -name '*.md' ! -name README.md | wc -l | tr -d ' ')"
 
-count=0
+SKILL_FILE_HASHES="$(ruby -rdigest -rjson -e '
+root = ARGV.fetch(0)
+paths = Dir[File.join(root, "skills", "*", "SKILL.md")].sort
+puts JSON.generate(paths.map { |path|
+  {"path" => path.delete_prefix(File.join(root, "skills") + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
+})
+' "$TMP_DIR/repo")"
+
+PATTERN_FILE_HASHES="$(ruby -rdigest -rjson -e '
+root = ARGV.fetch(0)
+paths = Dir[File.join(root, "patterns", "**", "*.md")].reject { |path| path.end_with?("/README.md") }.sort
+puts JSON.generate(paths.map { |path|
+  {"path" => path.delete_prefix(root + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
+})
+' "$TMP_DIR/repo")"
+
+OLD_INSTALLATION="$TARGET_ROOT/.ruby-agent-skills/INSTALLATION.json"
+if [[ -f "$OLD_INSTALLATION" ]]; then
+  while IFS= read -r old_skill; do
+    [[ "$old_skill" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]] || continue
+    [[ -d "$TMP_DIR/repo/skills/$old_skill" ]] && continue
+    rm -rf "$TARGET_ROOT/$old_skill"
+  done < <(ruby -rjson -e 'data=JSON.parse(File.read(ARGV.fetch(0))); Array(data.dig("inventory","skill_names")).each { |name| puts name }' "$OLD_INSTALLATION")
+fi
+
+STAGE="$TMP_DIR/stage"
+mkdir -p "$STAGE/skills" "$STAGE/.ruby-agent-skills/patterns" "$STAGE/.ruby-agent-skills/docs"
+
 for skill_dir in "$TMP_DIR/repo"/skills/*; do
   [[ -d "$skill_dir" ]] || continue
   [[ -f "$skill_dir/SKILL.md" ]] || continue
+  cp -R "$skill_dir" "$STAGE/skills/$(basename "$skill_dir")"
+done
 
+cp -R "$TMP_DIR/repo/patterns/." "$STAGE/.ruby-agent-skills/patterns/"
+cp "$TMP_DIR/repo/skill-manifest.yml" "$STAGE/.ruby-agent-skills/skill-manifest.yml"
+cp "$TMP_DIR/repo/router/ROUTING.md" "$STAGE/.ruby-agent-skills/ROUTING.md"
+cp "$TMP_DIR/repo/AGENTS.md" "$STAGE/.ruby-agent-skills/AGENTS.md"
+cp "$TMP_DIR/repo/docs/SKILL_CONTRACT.md" "$STAGE/.ruby-agent-skills/docs/SKILL_CONTRACT.md"
+cp "$TMP_DIR/repo/bin/skill-pack-verify" "$STAGE/.ruby-agent-skills/skill-pack-verify"
+
+cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
+{
+  "protocol_version": 1,
+  "source": {
+    "repository": "$REPO",
+    "requested_ref": "$REF",
+    "resolved_git_sha": "$RESOLVED_SHA"
+  },
+  "integrity": {
+    "skill_manifest_sha256": "$MANIFEST_SHA256",
+    "routing_contract_sha256": "$ROUTING_SHA256",
+    "skill_files": $SKILL_FILE_HASHES,
+    "pattern_files": $PATTERN_FILE_HASHES
+  },
+  "inventory": {
+    "skills": $SKILL_COUNT,
+    "patterns": $PATTERN_COUNT,
+    "skill_names": [$(find "$TMP_DIR/repo/skills" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort | awk '{printf "%s%s", sep, "\""$0"\""; sep=","}' )]
+  },
+  "target": {
+    "agent": "$AGENT",
+    "scope": "$SCOPE"
+  }
+}
+EOF
+
+mkdir -p "$TARGET_ROOT"
+for skill_dir in "$STAGE"/skills/*; do
+  [[ -d "$skill_dir" ]] || continue
   skill_name="$(basename "$skill_dir")"
   rm -rf "$TARGET_ROOT/$skill_name"
   cp -R "$skill_dir" "$TARGET_ROOT/$skill_name"
-  echo "installed $skill_name"
-  count=$((count + 1))
 done
 
+rm -rf "$TARGET_ROOT/.ruby-agent-skills.tmp"
+cp -R "$STAGE/.ruby-agent-skills" "$TARGET_ROOT/.ruby-agent-skills.tmp"
+rm -rf "$TARGET_ROOT/.ruby-agent-skills"
+mv "$TARGET_ROOT/.ruby-agent-skills.tmp" "$TARGET_ROOT/.ruby-agent-skills"
+
 echo
-echo "Installed $count skills."
+echo "Installed $SKILL_COUNT skills and $PATTERN_COUNT patterns."
+echo "Resolved commit: $RESOLVED_SHA"
+echo "Manifest SHA-256: $MANIFEST_SHA256"
+echo "Routing SHA-256:  $ROUTING_SHA256"
+echo "Installation record: $TARGET_ROOT/.ruby-agent-skills/INSTALLATION.json"
+ruby "$TARGET_ROOT/.ruby-agent-skills/skill-pack-verify" --root "$TARGET_ROOT"

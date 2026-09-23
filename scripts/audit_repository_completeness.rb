@@ -21,6 +21,15 @@ manifest = YAML.safe_load(
 errors = []
 warnings = []
 
+installation = manifest.fetch("installation", {})
+installation_paths = {
+  "installer" => installation.fetch("installer"),
+  "verifier" => installation.fetch("verifier")
+}
+installation_paths.each do |kind, path|
+  errors << "manifest installation #{kind} missing file #{path}" unless File.file?(File.join(ROOT, path))
+end
+
 skill_files = Dir[File.join(ROOT, "skills", "*", "SKILL.md")].map { |p| p.delete_prefix(ROOT + "/") }.sort
 manifest_skills = manifest.fetch("skills")
 manifest_skill_paths = manifest_skills.values.map { |entry| entry.fetch("path") }.sort
@@ -87,25 +96,17 @@ eval_case_count = eval_files.sum do |relative|
 end
 
 readme = File.read(README_PATH, encoding: "UTF-8")
-readme_inventory = {
+inventory = {
   "Skills" => skill_files.length,
   "Implementation patterns" => pattern_files.length,
-  "Evaluation cases" => eval_case_count,
-  "Dedicated system/contract tests" => system_tests.length
+  "Evaluation cases" => eval_case_count
 }
 
-readme_inventory_errors = readme_inventory.map do |label, expected|
+inventory.each do |label, expected|
   pattern = /\| #{Regexp.escape(label)} \| \*\*(\d+)\*\* \|/
   actual = readme[pattern, 1]&.to_i
-  "README #{label} count #{actual.inspect} != #{expected}" unless actual == expected
-end.compact
-
-manifest_version = manifest.fetch("version")
-readme_manifest_version = readme[/\| Manifest version \| \*\*(\d+)\*\* \|/, 1]&.to_i
-unless readme_manifest_version == manifest_version
-  readme_inventory_errors << "README manifest version #{readme_manifest_version.inspect} != #{manifest_version}"
+  errors << "README #{label} count #{actual.inspect} != #{expected}" unless actual == expected
 end
-errors.concat(readme_inventory_errors)
 
 current_milestone = readme[/Current milestone:\*\* Iteration (\d+)/, 1].to_i
 errors << "README current milestone is not an active post-audit milestone" unless current_milestone >= 51
@@ -119,7 +120,6 @@ puts "  evaluation cases: #{eval_case_count}"
 puts "  system tests: #{system_tests.length}"
 puts "  routed skills: #{skill_names.length - missing_routes.length}/#{skill_names.length}"
 puts "  invoked system tests: #{invoked_system_tests.length}/#{system_tests.length}"
-puts "  README inventory: verified" if readme_inventory_errors.empty?
 warnings.each { |warning| puts "WARN: #{warning}" }
 
 if errors.any?

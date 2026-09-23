@@ -77,6 +77,13 @@ When multiple skills apply:
 
 When skills conflict, stop and resolve the conflict rather than combining incompatible rules.
 
+## Skill-pack installation
+
+- Treat installed skills and patterns as executable agent configuration.
+- Review the requested repository/ref before installation and prefer immutable tags or commits for reproducible environments.
+- Verify the installed pack with `bin/skill-pack-verify` before using it in a controlled benchmark.
+- Do not mix skill packs from different revisions when collecting benchmark evidence; record the resolved Git SHA and manifest/routing hashes.
+- Remove or replace obsolete skills through the installer rather than manually mutating the installation tree.
 ## Benchmark integrity
 
 Evaluation fixtures and verifiers are measurement infrastructure. Do not make the evaluator easier by weakening constraints, accepting unverified output, or coupling the verifier to one agent's implementation. Public structural checks must be complemented by behavioral tests and, where appropriate, hidden/adversarial cases.
