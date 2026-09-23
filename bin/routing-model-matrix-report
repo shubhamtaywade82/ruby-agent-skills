@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "optparse"
+
+options = { output: nil, campaign: "skill-routing-public-v1" }
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-model-matrix-report HISTORY_JSON [options]"
+  opts.on("--campaign ID", "Campaign identifier to include") { |v| options[:campaign] = v }
+  opts.on("--output PATH", "Write descriptive comparison JSON") { |v| options[:output] = File.expand_path(v) }
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "history JSON is required" })
+abort "history JSON not found: #{path}" unless File.file?(path)
+
+history = JSON.parse(File.read(path, encoding: "UTF-8"))
+entries = Array(history.fetch("entries")).select { |entry| entry["campaign"] == options[:campaign] }
+abort "no archived campaign entries found for #{options[:campaign]}" if entries.empty?
+
+groups = entries.group_by { |entry| [entry.dig("agent", "provider"), entry.dig("agent", "model"), entry.dig("agent", "model_version")] }
+
+rows = groups.map do |identity, group|
+  metrics = group.map { |entry| entry.fetch("campaign_metrics") }
+  {
+    "provider" => identity[0],
+    "model" => identity[1],
+    "model_version" => identity[2],
+    "archives" => group.length,
+    "latest_capture" => group.map { |entry| entry["captured_at"] }.compact.max,
+    "runs" => metrics.map { |m| m["completed_runs"] || m["completed_run_count"] }.compact,
+    "primary_accuracy" => metrics.map { |m| m["primary_accuracy"] }.compact,
+    "secondary_recall" => metrics.map { |m| m["secondary_recall"] }.compact,
+    "average_unexpected_secondary_count" => metrics.map { |m| m["average_unexpected_secondary_count"] }.compact
+  }
+end
+
+report = {
+  "protocol_version" => 1,
+  "report" => "skill-routing-model-matrix-descriptive-v1",
+  "campaign" => options[:campaign],
+  "comparison" => "descriptive-only",
+  "rows" => rows
+}
+
+File.write(options[:output], JSON.pretty_generate(report) + "\n", encoding: "UTF-8") if options[:output]
+puts JSON.pretty_generate(report)
