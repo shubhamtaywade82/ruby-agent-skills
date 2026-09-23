@@ -75,6 +75,42 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
     assert_includes source, "model matrix checkpoint"
   end
 
+  def test_resume_rejects_incompatible_checkpoint
+    Dir.mktmpdir("routing-model-matrix") do |dir|
+      checkpoint = {
+        "protocol_version" => 1,
+        "campaign" => {
+          "id" => "skill-routing-public-v1",
+          "version" => 1,
+          "repetitions" => 99,
+          "expected_runs_per_model" => 1386
+        },
+        "provenance" => {},
+        "runtime" => {
+          "provider" => "ollama",
+          "url" => "http://127.0.0.1:11434",
+          "timeout_seconds" => 300
+        },
+        "models" => [{"provider" => "ollama", "name" => "model-a", "status" => "failed"}],
+        "controls" => {},
+        "results" => []
+      }
+      File.write(File.join(dir, "matrix-plan.json"), JSON.pretty_generate(checkpoint))
+
+      _out, err, status = run_runner(
+        "--model", "model-a",
+        "--runs", "3",
+        "--execute",
+        "--archive", File.join(dir, "archive"),
+        "--output", dir,
+        "--resume"
+      )
+
+      refute status.success?
+      assert_includes err, "repetition mismatch"
+    end
+  end
+
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
     assert_includes validator, "test/routing_model_matrix_campaign_system_test.rb"
