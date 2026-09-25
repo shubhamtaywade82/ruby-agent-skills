@@ -9,17 +9,18 @@ require "yaml"
 ROOT = File.expand_path("..", __dir__)
 MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
 
-options = { output: nil }
+options = { output: nil, manifest: MANIFEST_PATH }
 
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-analyze CAMPAIGN_JSON [options]"
   opts.on("--output PATH", "Write report JSON to PATH") { |value| options[:output] = value }
+  opts.on("--manifest PATH", "Skill manifest to use for registration validation") { |value| options[:manifest] = File.expand_path(value) }
 end.parse!
 
 campaign_path = ARGV.fetch(0) { abort "campaign JSON path is required" }
 campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
 manifest = YAML.safe_load(
-  File.read(MANIFEST_PATH, encoding: "UTF-8"),
+  File.read(options[:manifest], encoding: "UTF-8"),
   permitted_classes: [],
   aliases: false
 )
