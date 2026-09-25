@@ -91,6 +91,75 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
     end
   end
 
+
+  def test_verifier_rejects_tampered_campaign_metrics
+    Dir.mktmpdir("campaign-metric-integrity") do |dir|
+      campaign = build_complete_campaign(dir)
+      campaign_path = File.join(dir, "campaign.json")
+      report_path = File.join(dir, "routing-report.json")
+      File.write(campaign_path, JSON.pretty_generate(campaign) + "\n", encoding: "UTF-8")
+      stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "routing-analyze"),
+        campaign_path,
+        "--output", report_path,
+        chdir: ROOT
+      )
+      assert status.success?, "#{stdout}\n#{stderr}"
+
+      artifacts = {}
+      [campaign_path, report_path].each_with_index do |path, index|
+        artifacts[index.zero? ? "campaign" : "routing_report"] = {
+          "path" => path,
+          "sha256" => Digest::SHA256.file(path).hexdigest,
+          "bytes" => File.size(path)
+        }
+      end
+      %w[routing_contract skill_manifest campaign_manifest routing_cases result_schema campaign_intake_schema preflight].each do |key|
+        path = File.join(dir, "#{key}.txt")
+        File.write(path, key)
+        artifacts[key] = {"path" => path, "sha256" => Digest::SHA256.file(path).hexdigest, "bytes" => File.size(path)}
+      end
+      42.times do |index|
+        path = File.join(dir, "raw-#{index}.json")
+        File.write(path, "{}")
+        artifacts["raw_case_#{index}"] = {"path" => path, "sha256" => Digest::SHA256.file(path).hexdigest, "bytes" => File.size(path)}
+      end
+
+      evidence = {
+        "protocol_version" => 1,
+        "evidence" => "skill-routing-campaign-v1",
+        "campaign" => campaign.fetch("campaign"),
+        "campaign_version" => 1,
+        "routing_case_count" => 14,
+        "requested_repetitions" => 3,
+        "requested_runs" => 42,
+        "completed_runs" => 42,
+        "repository" => {"git_sha" => "abc", "worktree_clean" => true},
+        "agent" => campaign.fetch("agent"),
+        "campaign_metrics" => campaign.fetch("metrics"),
+        "analysis" => JSON.parse(File.read(report_path)).fetch("summary"),
+        "artifacts" => artifacts,
+        "intake" => {"verified" => true},
+        "replay" => {"campaign_runner" => "bin/routing-campaign"}
+      }
+      evidence["campaign_metrics"]["primary_accuracy"] = 0.0
+
+      evidence_path = File.join(dir, "evidence.json")
+      File.write(evidence_path, JSON.pretty_generate(evidence))
+      _stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "routing-campaign-evidence-verify"),
+        evidence_path,
+        "--check-files",
+        chdir: ROOT
+      )
+
+      refute status.success?
+      assert_includes stderr, "campaign metric primary_accuracy does not match recomputed analysis"
+    end
+  end
+
   def test_archive_invokes_campaign_evidence_verifier
     source = File.read(File.join(ROOT, "bin", "routing-archive"), encoding: "UTF-8")
     assert_includes source, "routing-campaign-evidence-verify"
