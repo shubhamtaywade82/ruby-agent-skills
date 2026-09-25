@@ -4,6 +4,7 @@ require "minitest/autorun"
 require "open3"
 require "json"
 require "tmpdir"
+require "fileutils"
 
 class StackMinimalityToolSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
