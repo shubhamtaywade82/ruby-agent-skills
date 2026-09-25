@@ -9,7 +9,7 @@ Current inventory:
 - 91 skills
 - 431 implementation patterns
 - 436 evaluation cases
-- 79 system/contract tests
+- 80 system/contract tests
 
 ## First checkout
 
@@ -134,6 +134,24 @@ Verify the resulting bundle independently:
     ruby bin/routing-release-bundle-verify ./routing-release-bundle --check-files
 
 The bundle contains a frozen release-policy copy and a cryptographic manifest for the public evidence, archive tree, and any optional empirical components.
+
+## Verified routing history
+
+Build historical archive data with integrity verification:
+
+    ruby bin/routing-history ./routing-archives \
+      --output ./routing-history.json \
+      --verify
+
+The verifier replays the independent archive verifier for every indexed archive and checks history entries against the archive manifests.
+
+For descriptive model-history reporting, require the same gate:
+
+    ruby bin/routing-model-matrix-report ./routing-history.json \
+      --verify \
+      --output ./routing-history-report.json
+
+The report remains descriptive-only and does not rank or select models.
 
 ## Release evidence bundle
 
