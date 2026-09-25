@@ -28,8 +28,12 @@ class StackMinimalityToolSystemTest < Minitest::Test
       stdout, stderr, status = Open3.capture3(COMMAND, "debt", dir, chdir: ROOT)
 
       assert status.success?, "#{stdout}\n#{stderr}"
-      assert_includes stdout, "1 marker"
-      assert_includes stdout, "app.rb:1"
+      data = JSON.parse(stdout)
+      assert_equal 1, data.fetch("marker_count")
+      assert_equal 0, data.fetch("no_trigger_count")
+      marker = data.fetch("markers").first
+      assert_equal "app.rb", marker.fetch("file")
+      assert_equal 1, marker.fetch("line")
       refute_includes stdout, "ignored.js"
     end
   end
