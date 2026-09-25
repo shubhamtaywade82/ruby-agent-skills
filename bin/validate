@@ -99,6 +99,7 @@ ruby -I"$ROOT/test" "$ROOT/test/routing_campaign_provenance_binding_system_test.
 ruby -I"$ROOT/test" "$ROOT/test/routing_model_matrix_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_model_matrix_campaign_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_model_matrix_evidence_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/routing_release_bundle_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/skill_pack_installer_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/skill_pack_verification_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/skill_pack_doctor_system_test.rb"
