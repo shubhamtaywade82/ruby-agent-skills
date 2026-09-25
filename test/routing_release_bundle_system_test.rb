@@ -13,11 +13,68 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
     File.read(File.join(ROOT, path), encoding: "UTF-8")
   end
 
+  def test_release_scripts_parse_as_ruby
+    %w[
+      bin/routing-hidden-benchmark-receipt-verify
+      bin/routing-release-bundle
+      bin/routing-release-bundle-verify
+    ].each do |path|
+      _stdout, stderr, status = Open3.capture3(RbConfig.ruby, "-c", File.join(ROOT, path), chdir: ROOT)
+      assert status.success?, "#{path}: #{stderr}"
+    end
+  end
+
   def test_hidden_receipt_has_standalone_verifier
     script = source("bin/routing-hidden-benchmark-receipt-verify")
     assert_includes script, "external-only"
     assert_includes script, "gold_labels"
     assert_includes script, "artifact"
+  end
+
+  def test_hidden_receipt_verifier_accepts_intact_receipt_and_rejects_tamper
+    Dir.mktmpdir("hidden-receipt") do |dir|
+      artifact = File.join(dir, "artifact.json")
+      File.write(artifact, '{"runs":1}', encoding: "UTF-8")
+      receipt = {
+        "protocol_version" => 1,
+        "receipt" => "skill-routing-hidden-benchmark-intake-v1",
+        "benchmark" => "skill-routing-hidden-v1",
+        "verification" => {
+          "passed" => true,
+          "source" => "external-only",
+          "repository_storage" => "forbidden",
+          "gold_labels_in_repository" => false,
+          "hidden_cases_in_repository" => false
+        },
+        "external_execution" => {
+          "case_count" => 1,
+          "repetitions" => 1,
+          "completed_runs" => 1,
+          "provider" => "ollama",
+          "model" => "external-model"
+        },
+        "artifact" => {
+          "path" => artifact,
+          "sha256" => Digest::SHA256.file(artifact).hexdigest,
+          "bytes" => File.size(artifact)
+        }
+      }
+      receipt_path = File.join(dir, "receipt.json")
+      File.write(receipt_path, JSON.pretty_generate(receipt), encoding: "UTF-8")
+      verifier = File.join(ROOT, "bin", "routing-hidden-benchmark-receipt-verify")
+
+      _stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby, verifier, receipt_path, "--check-files", chdir: ROOT
+      )
+      assert status.success?, stderr
+
+      File.write(artifact, '{"runs":2}', encoding: "UTF-8")
+      _stdout, mismatch_stderr, mismatch_status = Open3.capture3(
+        RbConfig.ruby, verifier, receipt_path, "--check-files", chdir: ROOT
+      )
+      refute mismatch_status.success?
+      assert_includes mismatch_stderr, "artifact SHA-256 mismatch"
+    end
   end
 
   def test_release_bundle_requires_public_evidence
