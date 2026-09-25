@@ -77,7 +77,7 @@ The baseline/candidate experiment path now verifies the comparison, packages `ev
 
 ## Routing campaign analysis
 
-After a public routing campaign completes, independently analyze the recorded campaign with:
+After a public routing campaign completes, the campaign finalization path regenerates the canonical routing analysis automatically. The underlying analyzer remains directly runnable for independent inspection:
 
     ruby bin/routing-analyze ./routing-campaign-output/campaign.json \
       --output ./routing-campaign-output/analysis.json
@@ -757,7 +757,7 @@ When adding a new skill or deepening an existing one:
 
 # Current implementation status
 
-**Iteration 79 — Repository Consistency & Empirical Analysis Hardening**
+**Iteration 87 — End-to-End Experiment Evidence Finalization**
 
 The repository-side implementation line is complete through Iteration 87. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
 
