@@ -157,6 +157,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
 
       refute status.success?
       assert_includes stderr, "campaign metric primary_accuracy does not match recomputed analysis"
+      assert_includes stderr, "routing campaign evidence verification error"
     end
   end
 
