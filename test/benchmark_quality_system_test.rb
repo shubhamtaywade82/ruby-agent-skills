@@ -54,6 +54,18 @@ class BenchmarkQualitySystemTest < Minitest::Test
     assert_equal public_ids, Array(campaign.fetch("evaluations")).sort
   end
 
+
+  def test_design_pattern_campaign_uses_current_corpus_revision
+    campaign = YAML.safe_load(
+      File.read(File.join(ROOT, "benchmarks", "design-patterns", "campaign.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    assert_equal 2, campaign.fetch("version")
+    assert_equal "design-pattern-system-v2", campaign.fetch("source")
+    assert_equal "design-patterns-public-v2", campaign.fetch("id")
+  end
+
   def test_benchmark_campaign_result_schema_keeps_provenance
     schema = File.read(File.join(ROOT, "docs", "BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md"), encoding: "UTF-8")
     %w[campaign_version evaluation_set source fixture_root verifier execution controls].each do |field|
