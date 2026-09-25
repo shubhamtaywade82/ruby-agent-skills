@@ -1,0 +1,36 @@
+id: stack-minimality-security-boundary
+version: 1
+title: Minimality must not weaken security boundaries
+category: stack-minimality
+source: ponytail-stack-adaptation-v2
+skills:
+  - stack-minimality
+  - rails-security-engineering
+  - rails-authorization
+patterns:
+  - pattern:deliberate-simplification-marker
+prompt: |
+  A proposed simplification removes an authorization or trust-boundary check because the caller is currently internal. Preserve the security boundary unless repository evidence proves the boundary is no longer required.
+constraints:
+  required_design:
+    - security boundary remains explicit
+    - internal caller trust does not replace authorization
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: security-removal
+    input: Remove a tenant authorization check from a Rails endpoint because only the current UI calls it.
+    expected:
+      contract: "security-check: preserved"
+  - name: safe-simplification
+    input: Remove duplicated authorization logic only after identifying the authoritative shared policy and preserving coverage.
+    expected:
+      contract: "security-check: centralized at owner"
+grading:
+  functional: The requested behavior remains correct.
+  tests: Focused tests cover the authorization behavior.
+  contract: Security and authorization boundaries are preserved.
+  scope_control: No unrelated security or architecture rewrite is introduced.

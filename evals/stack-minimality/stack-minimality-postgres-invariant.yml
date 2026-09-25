@@ -1,0 +1,36 @@
+id: stack-minimality-postgres-invariant
+version: 1
+title: Preserve durable invariants in PostgreSQL
+category: stack-minimality
+source: ponytail-stack-adaptation-v1
+skills:
+  - stack-minimality
+  - rails-database-engineering
+  - rails-validations
+patterns:
+  - pattern:postgres-constraint-before-application-check
+prompt: |
+  Enforce a durable uniqueness or state invariant in a Rails application backed by PostgreSQL. Keep useful application validation, but do not rely on it as concurrency-safe database enforcement.
+constraints:
+  required_design:
+    - database constraint owns the durable invariant
+    - rollout is compatible with existing data
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: primary-path
+    input: Choose the smallest design that preserves the stated contract.
+    expected:
+      stack-minimality: avoid speculative complexity
+  - name: boundary-exception
+    input: A real ownership, variation, or integration boundary exists.
+    expected:
+      stack-minimality: add only the boundary the contract actually requires
+grading:
+  functional: The requested behavior works.
+  tests: Focused verification covers changed behavior.
+  contract: The implementation preserves the owning boundary and its guarantees.
+  scope_control: No unrelated architecture or dependency migration is introduced.

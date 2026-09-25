@@ -4,9 +4,43 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 83 — Matrix Resume Integrity
+> **Current milestone:** Iteration 87 — Design-Pattern Corpus Revision
 
 ---
+
+## Iteration 87 — Design-Pattern Corpus Revision
+
+The design-pattern benchmark is now version 2. Its public campaign contains 24 cases, including six negative-selection cases integrated with stack-minimality. The campaign revision is recorded explicitly so future empirical results cannot be silently attached to the older 18-case corpus.
+
+## Iteration 86 — Pattern Selection Restraint Integration
+
+The design-pattern evaluation system now includes six negative-selection cases that explicitly require the agent to decline an otherwise familiar abstraction when the responsibility, variation, ownership, or lifecycle boundary has not been earned. The campaign expands from 18 to 24 public cases, and benchmark-quality tests require campaign coverage to match the complete public design-pattern evaluation set.
+
+## Iteration 85 — Stack Minimality Evaluation Guardrails
+
+The completeness audit now verifies that the stack-minimality evaluation registry matches the filesystem and that the adversarial corpus retains its minimum coverage. Dedicated system tests validate the schema of every stack-minimality evaluation.
+
+## Iteration 84 — Stack Minimality Adversarial Evaluation Expansion
+
+The minimality layer now has adversarial evaluations for security, accessibility, performance evidence, migration safety, service-boundary decisions, and React derived state. These cases explicitly prevent “fewer lines” from becoming a reason to weaken a required engineering guarantee.
+
+## Iteration 82 — Installed Stack Minimality Tooling
+
+The repository now includes a stack-aware minimality layer for Ruby, Rails, React, TypeScript, and PostgreSQL. It adapts Ponytail's useful discipline—YAGNI, repository reuse, framework/native primitives first, focused over-engineering review, repository-wide audit, explicit simplification debt, and evidence-backed measurement—to this stack.
+
+Skills:
+- stack-minimality
+- stack-minimality-review
+- stack-minimality-audit
+- stack-minimality-debt
+- stack-minimality-evidence
+- stack-minimality-help
+
+The pack is a cross-cutting modifier, not a replacement for Rails, React/TypeScript, PostgreSQL, security, accessibility, testing, performance, or API skills. It never treats smaller code as automatically safer and does not copy external benchmark numbers into repository measurements.
+
+See docs/STACK_MINIMALITY.md and the stack-minimality skill for the operational contract.
+
+The installed pack also provides `bin/stack-minimality` under `.ruby-agent-skills/bin/` for deterministic shortcut-ledger and Git-diff evidence reports.
 
 ## Iteration 69 — Routing Campaign Evidence Integrity
 
@@ -126,10 +160,10 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **85** |
-| Implementation patterns | **417** |
-| Evaluation cases | **410** |
-| Dedicated system/contract tests | **73** |
+| Skills | **91** |
+| Implementation patterns | **431** |
+| Evaluation cases | **442** |
+| Dedicated system/contract tests | **75** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.

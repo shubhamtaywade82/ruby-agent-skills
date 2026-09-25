@@ -1,0 +1,37 @@
+id: stack-minimality-migration-safety
+version: 1
+title: Minimal database changes must remain deployment-safe
+category: stack-minimality
+source: ponytail-stack-adaptation-v2
+skills:
+  - stack-minimality
+  - rails-database-engineering
+  - rails-release-engineering
+patterns:
+  - pattern:postgres-constraint-before-application-check
+  - pattern:postgres-index-from-query-evidence
+prompt: |
+  A schema change could be written as a single migration, but rolling deployment and existing data require compatibility. Choose the smallest migration sequence that is actually safe.
+constraints:
+  required_design:
+    - rolling-deployment compatibility is preserved
+    - existing data and concurrent access are considered
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: expand-contract
+    input: A new non-null invariant needs backfill before enforcement.
+    expected:
+      contract: "migration: compatible sequence"
+  - name: simple-ddl
+    input: A local disposable database permits direct DDL with no rolling deployment concern.
+    expected:
+      contract: "migration: direct when actually safe"
+grading:
+  functional: The resulting schema behavior is correct.
+  tests: Migration and data-integrity behavior are verified.
+  contract: Deployment compatibility is preserved.
+  scope_control: No unrelated schema changes are introduced.

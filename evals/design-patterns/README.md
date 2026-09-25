@@ -39,6 +39,38 @@ Pattern restraint is explicit: a simple behavior must remain a direct method rat
 - presenter
 - pattern-restraint
 
+
+## Negative pattern-selection cases
+
+The corpus now includes explicit negative-selection cases where a named pattern is tempting but not warranted by the contract. These cases pair `stack-minimality` with the Ruby design skills and require the verifier to reject speculative abstractions.
+
+Additional cases:
+
+- service-object-not-needed
+- strategy-not-needed
+- factory-not-needed
+- repository-not-needed
+- value-object-not-needed
+- presenter-not-needed
+
+The benchmark therefore tests both sides of pattern selection: when a pattern solves a real responsibility problem, and when the correct design decision is to use no pattern.
+
+
+## Negative pattern-selection cases
+
+The corpus now includes explicit negative-selection cases where a named pattern is tempting but not warranted by the contract. These cases pair `stack-minimality` with the Ruby design skills and require the verifier to reject speculative abstractions.
+
+Additional cases:
+
+- service-object-not-needed
+- strategy-not-needed
+- factory-not-needed
+- repository-not-needed
+- value-object-not-needed
+- presenter-not-needed
+
+The benchmark therefore tests both sides of pattern selection: when a pattern solves a real responsibility problem, and when the correct design decision is to use no pattern.
+
 ## Public benchmark limitation
 
 The corpus is intentionally public. Hidden evaluation should later vary naming, file layout, and equivalent implementations so agents cannot optimize for the public regexes.

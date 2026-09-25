@@ -1,7 +1,7 @@
-id: design-patterns-public-v1
-version: 1
+id: design-patterns-public-v2
+version: 2
 evaluation_set: design-patterns
-source: design-pattern-system-v1
+source: design-pattern-system-v2
 fixture_root: benchmarks/design-patterns/fixtures
 verifier: scripts/verify_design_pattern_eval.rb
 evaluations:
@@ -23,6 +23,12 @@ evaluations:
   - composition-over-inheritance
   - presenter
   - pattern-restraint
+  - service-object-not-needed
+  - strategy-not-needed
+  - factory-not-needed
+  - repository-not-needed
+  - value-object-not-needed
+  - presenter-not-needed
 execution:
   repetitions: 3
   paired: true

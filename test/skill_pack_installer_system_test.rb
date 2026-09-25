@@ -30,6 +30,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     File.write(File.join(dir, "docs", "SKILL_CONTRACT.md"), "# Contract\n", encoding: "UTF-8")
     File.write(File.join(dir, "AGENTS.md"), "# Agents\n", encoding: "UTF-8")
     FileUtils.cp(VERIFIER, File.join(dir, "bin", "skill-pack-verify"))
+    File.write(File.join(dir, "bin", "stack-minimality"), "#!/usr/bin/env ruby\nputs \"ok\"\n", encoding: "UTF-8")
     File.write(
       File.join(dir, "skill-manifest.yml"),
       <<~YAML,
@@ -84,6 +85,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     assert File.file?(File.join(target, ".ruby-agent-skills", "patterns", "ruby", "demo.md"))
     assert File.file?(File.join(target, ".ruby-agent-skills", "skill-manifest.yml"))
     assert File.file?(File.join(target, ".ruby-agent-skills", "skill-pack-verify"))
+    assert File.file?(File.join(target, ".ruby-agent-skills", "bin", "stack-minimality"))
 
     verify_out, verify_err, verify_status = Open3.capture3(
       RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
@@ -125,6 +127,23 @@ class SkillPackInstallerSystemTest < Minitest::Test
     )
     refute verify_status.success?
     assert_includes verify_err, "skill"
+  end
+
+  def test_verifier_rejects_tampered_minimality_tool
+    source = build_source
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+    out, err, status = install(source, project)
+    assert status.success?, "#{out}\n#{err}"
+
+    target = File.join(project, ".agents", "skills")
+    tool_path = File.join(target, ".ruby-agent-skills", "bin", "stack-minimality")
+    File.open(tool_path, "a", encoding: "UTF-8") { |file| file.write("tampered\n") }
+
+    _verify_out, verify_err, verify_status = Open3.capture3(
+      RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
+    )
+    refute verify_status.success?
+    assert_includes verify_err, "tool SHA-256 mismatch"
   end
 
   def test_verifier_rejects_tampered_pattern

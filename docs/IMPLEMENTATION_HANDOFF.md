@@ -2,14 +2,14 @@
 
 ## Repository-side implementation status
 
-The skill library, pattern library, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, and React/TypeScript engineering layer are implemented in the current release line.
+The skill library, pattern library, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, and stack-minimality layer are implemented in the current release line.
 
 Current inventory:
 
-- 85 skills
-- 417 implementation patterns
-- 410 evaluation cases
-- 73 system/contract tests
+- 91 skills
+- 431 implementation patterns
+- 436 evaluation cases
+- 78 system/contract tests
 
 ## First checkout
 
@@ -101,10 +101,6 @@ Resume an interrupted matrix:
       --output ./routing-matrix-output \
       --resume
 
-## Matrix resume integrity
-
-Resume revalidates completed/archive results by running both the campaign evidence verifier and archive integrity verifier before reuse.
-
 ## Installation doctor
 
 After installation and before controlled agent use:
@@ -112,6 +108,10 @@ After installation and before controlled agent use:
     ruby bin/skill-pack-doctor --root /path/to/agent-skill-root
 
 The doctor is intentionally narrower than an agent runtime test: it verifies the installed pack and then delegates content integrity to the embedded verifier. It does not claim that a particular coding agent has loaded or used the skills.
+
+## Stack minimality integration
+
+Use `stack-minimality` with the domain skill that owns the actual contract. The pack includes six skills, 14 implementation patterns, and 13 evaluation contracts. The installed pack also ships `.ruby-agent-skills/bin/stack-minimality` with integrity metadata and verification.
 
 ## Remaining non-implementation work
 
@@ -127,4 +127,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 83. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 84. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.

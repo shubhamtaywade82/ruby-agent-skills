@@ -1,3 +1,44 @@
+## Iteration 87 — Design-Pattern Corpus Revision
+
+- Versioned the design-pattern public campaign from v1 to v2 after expanding it from 18 to 24 cases.
+- Added a benchmark-quality guard for campaign corpus version/source identity.
+- Synchronized public benchmark documentation with the new campaign revision.
+
+## Iteration 86 — Pattern Selection Restraint Integration
+
+- Expanded the design-pattern evaluation corpus with six negative-selection cases where the correct choice is to introduce no pattern.
+- Expanded the public design-pattern campaign from 18 to 24 cases.
+- Registered all six new evaluations and fixture contracts.
+- Added campaign-quality coverage requiring the public campaign to cover every public design-pattern evaluation.
+- Documented the integration with stack-minimality and the existing pattern-selection verifier.
+
+## Iteration 85 — Stack Minimality Evaluation Guardrails
+
+- Extended repository completeness auditing to verify the stack-minimality evaluation registry against the filesystem.
+- Added schema-level system coverage for every stack-minimality evaluation.
+- Kept the adversarial corpus focused on security, accessibility, performance evidence, migration safety, service boundaries, and React state semantics.
+
+## Iteration 84 — Stack Minimality Adversarial Evaluation Expansion
+
+- Added adversarial evaluations for security, accessibility, performance evidence, migration safety, service-boundary decisions, and React derived state.
+- Expanded the stack-minimality corpus from 7 to 13 evaluation contracts.
+- Hardened the system test to require the complete minimality evaluation set.
+
+## Iteration 82 — Installed Stack Minimality Tooling
+
+- Added a deterministic `bin/stack-minimality` tool for shortcut-debt and real Git-diff evidence reports.
+- Extended the installer to ship the tool with the installed pack and record its SHA-256 provenance.
+- Extended installed-pack verification to reject tampered or missing minimality tooling.
+- Added system coverage for tool execution and installer integrity.
+
+## Iteration 81 — Ponytail-inspired Stack Minimality
+
+- Added six stack-minimality skills adapted from Ponytail for Ruby, Rails, React, TypeScript, and PostgreSQL.
+- Added 14 implementation patterns covering Rails conventions, Active Record, PostgreSQL invariants/query evidence, React state, TypeScript boundaries, dependencies, modularity, and shared-root bug fixes.
+- Added seven evaluation contracts and system-test coverage for manifest/routing completeness.
+- Integrated stack minimality into skill routing, AGENTS guidance, README, and canonical validation.
+- External Ponytail benchmark results are treated as source context, not as measurements of this repository.
+
 ## Iteration 83 — Matrix Resume Integrity
 
 - Revalidate completed-and-archived model results with the campaign evidence verifier during matrix resume.

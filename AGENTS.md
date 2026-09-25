@@ -47,6 +47,17 @@ This repository is an agent-oriented Ruby/Rails skill library. Every coding agen
 - Keep persistence integrity in database constraints where application validation alone cannot guarantee it.
 - Do not create abstractions solely to satisfy a pattern vocabulary.
 
+## Stack minimality
+
+For Ruby + Rails + React + TypeScript + PostgreSQL changes:
+- apply stack-minimality after identifying the domain skill that owns the contract;
+- inspect existing code, dependencies, framework primitives, browser APIs, and PostgreSQL capabilities before adding abstraction or infrastructure;
+- prefer the smallest coherent diff, not the smallest textual diff;
+- preserve security, accessibility, boundary validation, database integrity, observability, and required tests;
+- mark deliberate shortcuts with a concrete ceiling and revisit trigger;
+- never report hypothetical line, token, cost, or performance savings as measured evidence;
+- use stack-minimality-review for focused over-engineering review and stack-minimality-audit for repository-wide simplification audits.
+
 ## CI toolchain maintenance
 
 For GitHub Actions changes:

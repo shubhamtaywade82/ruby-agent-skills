@@ -87,6 +87,13 @@ stale_system_tests = invoked_system_tests.reject { |path| File.file?(File.join(R
 errors << "system tests not invoked by bin/validate: #{missing_system_tests.join(", ")}" unless missing_system_tests.empty?
 errors << "bin/validate invokes missing system tests: #{stale_system_tests.join(", ")}" unless stale_system_tests.empty?
 
+stack_minimality_files = eval_files.select { |path| path.start_with?("evals/stack-minimality/") }
+expected_stack_minimality_evals = Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")].
+  map { |p| p.delete_prefix(ROOT + "/") }.
+  sort
+errors << "stack-minimality evaluation registry mismatch" unless stack_minimality_files == expected_stack_minimality_evals
+errors << "stack-minimality evaluation count must be >= 13" unless stack_minimality_files.length >= 13
+
 eval_case_count = eval_files.sum do |relative|
   data = YAML.safe_load(
     File.read(File.join(ROOT, relative), encoding: "UTF-8"),

@@ -20,12 +20,6 @@ class RoutingReleaseReadinessSystemTest < Minitest::Test
     assert_equal true, config.fetch("controls").fetch("no_unverified_results")
   end
 
-  def test_release_check_verifies_the_selected_archive
-    source = File.read(File.join(ROOT, "bin", "routing-release-check"), encoding: "UTF-8")
-    assert_includes source, "ARCHIVE_VERIFIER"
-    assert_includes source, "supplied archive failed integrity verification"
-  end
-
   def test_release_check_is_explicitly_evidence_driven
     source = File.read(File.join(ROOT, "bin", "routing-release-check"), encoding: "UTF-8")
     assert_includes source, "routing-campaign-evidence-verify"

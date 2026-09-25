@@ -1,0 +1,37 @@
+id: stack-minimality-abstraction-restraint
+version: 1
+title: Do not build an abstraction for one use
+category: stack-minimality
+source: ponytail-stack-adaptation-v1
+skills:
+  - stack-minimality
+  - ruby-clean-code
+  - ruby-object-composition
+patterns:
+  - pattern:rails-convention-before-abstraction
+  - pattern:active-record-before-repository
+prompt: |
+  Implement a simple domain behavior with one caller and one implementation. Keep it direct unless there is a concrete ownership, variation, or integration boundary.
+constraints:
+  required_design:
+    - direct implementation
+    - no speculative interface, factory, or repository
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: primary-path
+    input: Choose the smallest design that preserves the stated contract.
+    expected:
+      stack-minimality: avoid speculative complexity
+  - name: boundary-exception
+    input: A real ownership, variation, or integration boundary exists.
+    expected:
+      stack-minimality: add only the boundary the contract actually requires
+grading:
+  functional: The requested behavior works.
+  tests: Focused verification covers changed behavior.
+  contract: The implementation preserves the owning boundary and its guarantees.
+  scope_control: No unrelated architecture or dependency migration is introduced.

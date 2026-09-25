@@ -1,0 +1,37 @@
+id: stack-minimality-fullstack-boundary
+version: 1
+title: Reuse the existing Rails/React boundary
+category: stack-minimality
+source: ponytail-stack-adaptation-v1
+skills:
+  - stack-minimality
+  - rails-api-integration
+  - react-data-fetching
+  - typescript-runtime-contracts
+patterns:
+  - pattern:fullstack-existing-boundary-before-adapter
+prompt: |
+  Connect a React feature to an existing Rails endpoint with established response and error contracts. Extend the existing client boundary rather than introducing a second API wrapper.
+constraints:
+  required_design:
+    - existing API boundary is reused
+    - dynamic data remains validated at its trust boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: primary-path
+    input: Choose the smallest design that preserves the stated contract.
+    expected:
+      stack-minimality: avoid speculative complexity
+  - name: boundary-exception
+    input: A real ownership, variation, or integration boundary exists.
+    expected:
+      stack-minimality: add only the boundary the contract actually requires
+grading:
+  functional: The requested behavior works.
+  tests: Focused verification covers changed behavior.
+  contract: The implementation preserves the owning boundary and its guarantees.
+  scope_control: No unrelated architecture or dependency migration is introduced.

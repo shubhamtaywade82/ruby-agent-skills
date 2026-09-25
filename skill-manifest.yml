@@ -12,6 +12,7 @@ defaults:
   always_consider:
     - ruby-clean-code
     - ruby-tdd-refactoring
+    - stack-minimality
   require_repository_inspection: true
   require_tests_for_behavior_changes: true
   prefer_existing_conventions: true
@@ -224,6 +225,30 @@ skills:
     family: meta
     path: skills/agent-workflow/SKILL.md
     triggers: [agent workflow, skill selection, repository agent process, context management, implementation workflow]
+  stack-minimality:
+    family: architecture-quality
+    path: skills/stack-minimality/SKILL.md
+    triggers: [minimal solution, simplest solution, less code, minimality, YAGNI, over-engineering, unnecessary abstraction, unnecessary dependency, simplify, reduce indirection, Ruby Rails React PostgreSQL minimality]
+  stack-minimality-review:
+    family: architecture-quality
+    path: skills/stack-minimality-review/SKILL.md
+    triggers: [minimality review, over-engineering review, simplify diff, delete list, unnecessary complexity]
+  stack-minimality-audit:
+    family: architecture-quality
+    path: skills/stack-minimality-audit/SKILL.md
+    triggers: [repo bloat audit, over-engineering audit, simplify repository, what can we delete]
+  stack-minimality-debt:
+    family: architecture-quality
+    path: skills/stack-minimality-debt/SKILL.md
+    triggers: [minimality debt, deferred simplification, stack-minimality markers, shortcuts ledger]
+  stack-minimality-evidence:
+    family: architecture-quality
+    path: skills/stack-minimality-evidence/SKILL.md
+    triggers: [minimality evidence, measure diff, actual savings, dependency delta, change size, performance evidence]
+  stack-minimality-help:
+    family: architecture-quality
+    path: skills/stack-minimality-help/SKILL.md
+    triggers: [minimality help, minimality skills, simplification commands]
   ruby-core:
     family: ruby
     path: skills/ruby-core/SKILL.md
@@ -435,6 +460,23 @@ patterns:
       - patterns/react-typescript/react-focus-management.md
       - patterns/react-typescript/react-render-performance-budget.md
       - patterns/react-typescript/react-memoization-evidence-gate.md
+  stack-minimality:
+    paths:
+      - patterns/stack-minimality/rails-convention-before-abstraction.md
+      - patterns/stack-minimality/active-record-before-repository.md
+      - patterns/stack-minimality/postgres-constraint-before-application-check.md
+      - patterns/stack-minimality/postgres-index-from-query-evidence.md
+      - patterns/stack-minimality/postgres-query-before-cache.md
+      - patterns/stack-minimality/react-local-state-before-context.md
+      - patterns/stack-minimality/react-derived-state-in-render.md
+      - patterns/stack-minimality/react-native-before-dependency.md
+      - patterns/stack-minimality/typescript-type-before-wrapper.md
+      - patterns/stack-minimality/fullstack-existing-boundary-before-adapter.md
+      - patterns/stack-minimality/existing-dependency-before-new-gem-package.md
+      - patterns/stack-minimality/modular-monolith-before-service-split.md
+      - patterns/stack-minimality/minimal-change-at-shared-root.md
+      - patterns/stack-minimality/deliberate-simplification-marker.md
+
   ruby-design:
     paths:
       - patterns/ruby-design/value-object.md
@@ -1546,9 +1588,38 @@ evaluations:
       - evals/design-patterns/composition-over-inheritance.yml
       - evals/design-patterns/presenter.yml
       - evals/design-patterns/pattern-restraint.yml
+      - evals/design-patterns/service-object-not-needed.yml
+      - evals/design-patterns/strategy-not-needed.yml
+      - evals/design-patterns/factory-not-needed.yml
+      - evals/design-patterns/repository-not-needed.yml
+      - evals/design-patterns/value-object-not-needed.yml
+      - evals/design-patterns/presenter-not-needed.yml
     checks:
       - functional
       - tests
       - contract
       - pattern_selection
+      - scope_control
+
+  stack-minimality:
+    source: ponytail-stack-adaptation-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-rails-direct-boundary.yml
+      - evals/stack-minimality/stack-minimality-postgres-invariant.yml
+      - evals/stack-minimality/stack-minimality-react-state-boundary.yml
+      - evals/stack-minimality/stack-minimality-native-before-dependency.yml
+      - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
+      - evals/stack-minimality/stack-minimality-minimal-change-root.yml
+      - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
+      - evals/stack-minimality/stack-minimality-security-boundary.yml
+      - evals/stack-minimality/stack-minimality-accessibility-boundary.yml
+      - evals/stack-minimality/stack-minimality-performance-evidence.yml
+      - evals/stack-minimality/stack-minimality-migration-safety.yml
+      - evals/stack-minimality/stack-minimality-service-boundary.yml
+      - evals/stack-minimality/stack-minimality-derived-state.yml
+    checks:
+      - functional
+      - tests
+      - contract
       - scope_control

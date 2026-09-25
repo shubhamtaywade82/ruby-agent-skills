@@ -138,6 +138,13 @@ puts JSON.generate(paths.map { |path|
 })
 ' "$TMP_DIR/repo")"
 
+STACK_MINIMALITY_TOOL_SHA256=""
+STACK_MINIMALITY_TOOL_METADATA="[]"
+if [[ -f "$TMP_DIR/repo/bin/stack-minimality" ]]; then
+  STACK_MINIMALITY_TOOL_SHA256="$(sha256_file "$TMP_DIR/repo/bin/stack-minimality")"
+  STACK_MINIMALITY_TOOL_METADATA='[{"path":"bin/stack-minimality","sha256":"'"$STACK_MINIMALITY_TOOL_SHA256"'"}]'
+fi
+
 PATTERN_FILE_HASHES="$(ruby -rdigest -rjson -e '
 root = ARGV.fetch(0)
 paths = Dir[File.join(root, "patterns", "**", "*.md")].reject { |path| path.end_with?("/README.md") }.sort
@@ -156,7 +163,7 @@ if [[ -f "$OLD_INSTALLATION" ]]; then
 fi
 
 STAGE="$TMP_DIR/stage"
-mkdir -p "$STAGE/skills" "$STAGE/.ruby-agent-skills/patterns" "$STAGE/.ruby-agent-skills/docs"
+mkdir -p "$STAGE/skills" "$STAGE/.ruby-agent-skills/patterns" "$STAGE/.ruby-agent-skills/docs" "$STAGE/.ruby-agent-skills/bin"
 
 for skill_dir in "$TMP_DIR/repo"/skills/*; do
   [[ -d "$skill_dir" ]] || continue
@@ -170,6 +177,9 @@ cp "$TMP_DIR/repo/router/ROUTING.md" "$STAGE/.ruby-agent-skills/ROUTING.md"
 cp "$TMP_DIR/repo/AGENTS.md" "$STAGE/.ruby-agent-skills/AGENTS.md"
 cp "$TMP_DIR/repo/docs/SKILL_CONTRACT.md" "$STAGE/.ruby-agent-skills/docs/SKILL_CONTRACT.md"
 cp "$TMP_DIR/repo/bin/skill-pack-verify" "$STAGE/.ruby-agent-skills/skill-pack-verify"
+if [[ -f "$TMP_DIR/repo/bin/stack-minimality" ]]; then
+  cp "$TMP_DIR/repo/bin/stack-minimality" "$STAGE/.ruby-agent-skills/bin/stack-minimality"
+fi
 
 cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
 {
@@ -183,7 +193,8 @@ cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
     "skill_manifest_sha256": "$MANIFEST_SHA256",
     "routing_contract_sha256": "$ROUTING_SHA256",
     "skill_files": $SKILL_FILE_HASHES,
-    "pattern_files": $PATTERN_FILE_HASHES
+    "pattern_files": $PATTERN_FILE_HASHES,
+    "tools": $STACK_MINIMALITY_TOOL_METADATA
   },
   "inventory": {
     "skills": $SKILL_COUNT,

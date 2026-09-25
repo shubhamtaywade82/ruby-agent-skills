@@ -710,3 +710,21 @@ Sources:
 - https://react.dev/reference/react
 - https://testing-library.com/docs/
 - https://www.w3.org/WAI/ARIA/apg/
+
+
+## Ponytail-inspired stack minimality
+
+The repository adds a stack-aware minimality layer inspired by Ponytail's progressive simplicity discipline. It is intentionally adapted rather than copied.
+
+| Source concept | Agent coverage |
+|---|---|
+| YAGNI / smallest working solution | stack-minimality |
+| Over-engineering review | stack-minimality-review |
+| Repository-wide bloat audit | stack-minimality-audit |
+| Deliberate shortcut/debt ledger | stack-minimality-debt |
+| Evidence-backed impact claims | stack-minimality-evidence |
+| Minimality command/help surface | stack-minimality-help |
+
+The implementation patterns make the discipline concrete for this stack: Rails conventions before unnecessary service layers, Active Record before pass-through repositories, PostgreSQL constraints before application-only invariants, query evidence before speculative indexes/caches, local React state before global context, derived values before duplicated state, native/platform capability before new npm/gem dependencies, existing full-stack boundaries before new adapters, modular monoliths before premature service splits, and fixing shared roots rather than caller-by-caller symptoms.
+
+The adversarial evaluation layer explicitly protects security, accessibility, migration safety, performance evidence, domain boundaries, and React semantics from being weakened in the name of minimality.

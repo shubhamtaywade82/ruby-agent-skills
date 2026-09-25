@@ -18,6 +18,7 @@ metadata_path = File.join(root, ".ruby-agent-skills", "INSTALLATION.json")
 manifest_path = File.join(root, ".ruby-agent-skills", "skill-manifest.yml")
 routing_path = File.join(root, ".ruby-agent-skills", "ROUTING.md")
 patterns_root = File.join(root, ".ruby-agent-skills", "patterns")
+tools_root = File.join(root, ".ruby-agent-skills", "bin")
 
 abort "installation record not found: #{metadata_path}" unless File.file?(metadata_path)
 abort "installed manifest not found: #{manifest_path}" unless File.file?(manifest_path)
@@ -54,6 +55,20 @@ installed_pattern_files = Dir[File.join(patterns_root, "**", "*.md")]
   .sort
 errors << "installed pattern count mismatch" unless installed_pattern_files.length == expected_pattern_files.length
 errors << "installed pattern set mismatch" unless installed_pattern_files == expected_pattern_files
+
+tool_entries = Array(metadata.dig("integrity", "tools"))
+unless tool_entries.empty?
+  tool_entries.each do |entry|
+    relative = entry.fetch("path")
+    path = File.expand_path(File.join(tools_root, relative.delete_prefix("bin/")))
+    root_prefix = File.expand_path(tools_root) + File::SEPARATOR
+    raise "invalid tool path: #{relative}" unless path.start_with?(root_prefix)
+    raise "missing tool: #{relative}" unless File.file?(path)
+    actual = Digest::SHA256.file(path).hexdigest
+    raise "tool SHA-256 mismatch: #{relative}" unless actual == entry.fetch("sha256")
+  end
+  errors << "tool inventory missing stack-minimality" unless tool_entries.any? { |entry| entry["path"] == "bin/stack-minimality" }
+end
 
 reported_skills = metadata.dig("inventory", "skills").to_i
 reported_patterns = metadata.dig("inventory", "patterns").to_i

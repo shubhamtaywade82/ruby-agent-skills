@@ -1,0 +1,33 @@
+---
+name: rails-convention-before-abstraction
+description: Rails Convention Before Abstraction
+family: stack-minimality
+---
+# Rails Convention Before Abstraction
+
+## Problem
+A Rails feature often needs only an existing controller, model, route, scope, serializer, or application service.
+
+## Use when
+Adding Rails behavior or deciding whether a new service or wrapper is necessary.
+
+## Do not use when
+A real boundary has independent ownership, external integration isolation, multiple implementations, or a different lifecycle.
+
+## Repository inspection
+Inspect the relevant application boundary, existing implementations, callers, dependencies, and runtime constraints before introducing a new layer.
+
+## Implementation procedure
+Search neighboring Rails code and callers. Start at the existing boundary that owns the behavior; add a new abstraction only when it creates real responsibility or change isolation.
+
+## Failure modes
+Service-per-action proliferation, wrapper controllers, generic BaseService, and for-later extension points.
+
+## Testing
+Cover behavior at the owning Rails boundary.
+
+## Review checklist
+[ ] repository evidence checked [ ] smallest valid boundary chosen [ ] required guarantees preserved
+
+## Related skills
+rails-architecture, rails-controllers, ruby-service-objects, stack-minimality

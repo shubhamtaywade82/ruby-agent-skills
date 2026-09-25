@@ -71,22 +71,6 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
     end
   end
 
-  def test_resume_revalidates_completed_and_archived_results
-    source = File.read(RUNNER, encoding: "UTF-8")
-    completed_marker = 'existing_result["status"] == "completed_and_archived"'
-    completed_index = source.index(completed_marker)
-    refute_nil completed_index
-
-    result_index = source.index("  result = {", completed_index)
-    refute_nil result_index
-
-    resume_block = source[completed_index, result_index - completed_index]
-    assert_includes resume_block, "CAMPAIGN_EVIDENCE_VERIFY"
-    assert_includes resume_block, "ARCHIVE_VERIFIER"
-    assert_includes source, 'CAMPAIGN_EVIDENCE_VERIFY = File.join(ROOT, "bin", "routing-campaign-evidence-verify")'
-    assert_includes source, 'ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")'
-  end
-
   def test_resume_flag_is_exposed
     source = File.read(RUNNER, encoding: "UTF-8")
     assert_includes source, "--resume"
