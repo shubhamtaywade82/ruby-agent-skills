@@ -129,6 +129,23 @@ class SkillPackInstallerSystemTest < Minitest::Test
     assert_includes verify_err, "skill"
   end
 
+  def test_verifier_rejects_tampered_minimality_tool
+    source = build_source
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+    out, err, status = install(source, project)
+    assert status.success?, "#{out}\n#{err}"
+
+    target = File.join(project, ".agents", "skills")
+    tool_path = File.join(target, ".ruby-agent-skills", "bin", "stack-minimality")
+    File.open(tool_path, "a", encoding: "UTF-8") { |file| file.write("tampered\n") }
+
+    _verify_out, verify_err, verify_status = Open3.capture3(
+      RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
+    )
+    refute verify_status.success?
+    assert_includes verify_err, "tool SHA-256 mismatch"
+  end
+
   def test_verifier_rejects_tampered_pattern
     source = build_source
     project = Dir.mktmpdir("ruby-agent-skills-project")
