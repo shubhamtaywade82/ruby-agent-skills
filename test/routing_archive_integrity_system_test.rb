@@ -53,6 +53,21 @@ class RoutingArchiveIntegritySystemTest < Minitest::Test
     end
   end
 
+  def test_verifier_rejects_symlinked_artifact_directory
+    Dir.mktmpdir("routing-archive") do |dir|
+      archive = build_archive(dir)
+      outside = File.join(dir, "outside")
+      FileUtils.mkdir_p(outside)
+      FileUtils.rm_rf(File.join(archive, "artifacts"))
+      File.symlink(outside, File.join(archive, "artifacts"))
+
+      _stdout, stderr, status = run_verifier(archive)
+
+      refute status.success?
+      assert_includes stderr, "archive path traverses a symlink"
+    end
+  end
+
   def test_verifier_rejects_tampered_evidence
     Dir.mktmpdir("routing-archive") do |dir|
       archive = build_archive(dir)
