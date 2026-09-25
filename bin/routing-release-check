@@ -12,12 +12,14 @@ CONFIG_PATH = File.join(ROOT, "router", "ROUTING_RELEASE.yml")
 CAMPAIGN_EVIDENCE_VERIFY = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
 ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
 HIDDEN_PATH = File.join(ROOT, "router", "ROUTING_HIDDEN_BENCHMARK.yml")
+BUNDLE_VERIFIER = File.join(ROOT, "bin", "routing-release-bundle-verify")
 
-options = { evidence: nil, archive: nil }
+options = { evidence: nil, archive: nil, bundle: nil }
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-release-check [options]"
   opts.on("--evidence PATH", "Completed public campaign evidence JSON") { |v| options[:evidence] = File.expand_path(v) }
   opts.on("--archive DIR", "Immutable archive root containing the campaign evidence") { |v| options[:archive] = File.expand_path(v) }
+  opts.on("--bundle DIR", "Verified release evidence bundle") { |v| options[:bundle] = File.expand_path(v) }
 end.parse!
 
 config = YAML.safe_load(File.read(CONFIG_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
@@ -29,6 +31,19 @@ errors << "hidden benchmark is not external-only" unless config.dig("gates", "hi
 errors << "synthetic result generation is prohibited by release policy" unless config.dig("controls", "no_synthetic_results") == true
 errors << "unverified results are prohibited by release policy" unless config.dig("controls", "no_unverified_results") == true
 errors << "quality ranking is prohibited by release policy" unless config.dig("controls", "no_quality_ranking") == true
+
+if options[:bundle]
+  abort "release bundle not found: #{options[:bundle]}" unless Dir.exist?(options[:bundle])
+  stdout, stderr, status = Open3.capture3(
+    RbConfig.ruby, BUNDLE_VERIFIER, options[:bundle], "--check-files", chdir: ROOT
+  )
+  warn stderr unless stderr.empty?
+  abort "release evidence bundle verification failed" unless status.success?
+  puts "Routing release readiness passed"
+  puts "  bundle: #{options[:bundle]}"
+  puts "  evidence: bundled and verified"
+  exit 0
+end
 
 unless options[:evidence]
   warn "Routing release check: static gates passed; real campaign evidence not supplied."
