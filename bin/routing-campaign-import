@@ -10,6 +10,7 @@ ROOT = File.expand_path("..", __dir__)
 CAMPAIGN_VERIFIER = File.join(ROOT, "bin", "routing-campaign-verify")
 PREFLIGHT_VERIFIER = File.join(ROOT, "bin", "routing-campaign-preflight-verify")
 CAMPAIGN_PROVENANCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-provenance-verify")
+ANALYZER = File.join(ROOT, "bin", "routing-analyze")
 EVIDENCE_PACKAGER = File.join(ROOT, "bin", "routing-campaign-evidence")
 ARCHIVER = File.join(ROOT, "bin", "routing-archive")
 
@@ -50,6 +51,14 @@ errors << "requested runs do not match preflight" unless campaign["requested_run
 errors << "completed runs do not match preflight" unless campaign["completed_runs"].to_i == pc["expected_runs"].to_i
 errors << "campaign model does not match preflight" unless campaign.dig("agent", "model") == preflight.dig("runtime", "model", "name")
 abort(errors.join("; ")) unless errors.empty?
+
+report_path = File.join(campaign_dir, "routing-report.json")
+analysis_stdout, analysis_stderr, analysis_status = Open3.capture3(
+  RbConfig.ruby, ANALYZER, campaign_path, "--output", report_path, chdir: ROOT
+)
+warn analysis_stderr unless analysis_stderr.empty?
+abort "routing analysis generation failed" unless analysis_status.success?
+abort "routing analysis report was not generated: #{report_path}" unless File.file?(report_path)
 
 output = options[:output] || File.join(campaign_dir, "campaign-evidence.json")
 run!([RbConfig.ruby, EVIDENCE_PACKAGER, campaign_dir, "--output", output])
