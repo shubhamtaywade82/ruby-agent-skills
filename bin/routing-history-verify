@@ -60,9 +60,10 @@ if entries.is_a?(Array)
       manifest_path = File.join(archive_path, "ARCHIVE_MANIFEST.json")
       manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
       %w[archive_id captured_at evidence_type repository agent campaign_metrics requested_runs completed_runs analysis].each do |key|
-        next unless key == "captured_at" || entry.key?(key)
         errors << "#{key} does not match archive manifest for #{entry["archive_id"]}" unless entry[key] == manifest[key]
       end
+      expected_campaign = manifest.fetch("archive_id").to_s.split("/").first
+      errors << "campaign does not match archive identity for #{entry["archive_id"]}" unless entry["campaign"] == expected_campaign
       errors << "artifact_count does not match archive manifest for #{entry["archive_id"]}" unless entry["artifact_count"].to_i == manifest.fetch("artifacts").length
     rescue Errno::ENOENT, JSON::ParserError, KeyError => e
       errors << "archive manifest invalid for #{entry["archive_id"]}: #{e.message}"
