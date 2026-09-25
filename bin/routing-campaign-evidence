@@ -117,6 +117,11 @@ evidence = {
   "agent" => campaign.fetch("agent"),
   "campaign_metrics" => campaign.fetch("metrics"),
   "analysis" => report.fetch("summary"),
+  "analysis_provenance" => {
+    "campaign_sha256" => sha256(campaign_path),
+    "report_sha256" => sha256(report_path),
+    "analyzer_sha256" => sha256(ANALYZER)
+  },
   "artifacts" => artifacts,
   "intake" => { "verified" => true, "verifier" => "bin/routing-campaign-verify" },
   "replay" => { "campaign_runner" => "bin/routing-campaign" }
