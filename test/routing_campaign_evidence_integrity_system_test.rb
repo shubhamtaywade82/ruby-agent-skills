@@ -2,9 +2,11 @@
 
 require "minitest/autorun"
 require "digest"
+require "fileutils"
 require "json"
 require "open3"
 require "tmpdir"
+require "yaml"
 
 class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
