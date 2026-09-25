@@ -69,6 +69,15 @@ The pack includes 24 reusable implementation patterns and 9 public evaluations c
 
 After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-root>` to verify the installed metadata, skill inventory, embedded verifier, and content integrity before using the pack in a controlled agent environment.
 
+## Routing campaign analysis
+
+After a public routing campaign completes, independently analyze the recorded campaign with:
+
+    ruby bin/routing-analyze ./routing-campaign-output/campaign.json \
+      --output ./routing-campaign-output/analysis.json
+
+The analyzer recomputes completion and routing metrics from the recorded runs and rejects structurally inconsistent or incomplete campaigns rather than filling missing measurements.
+
 ## What this repository contains
 
 The skill system is built from five connected layers:
