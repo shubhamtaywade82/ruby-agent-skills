@@ -1,0 +1,32 @@
+id: repository-not-needed
+version: 1
+title: Keep a direct domain collection operation without a repository abstraction
+category: design-patterns
+source: design-pattern-system-v2
+skills:
+  - stack-minimality
+  - ruby-method-design
+  - ruby-clean-code
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Implement Inventory#available?. The behavior has one implementation and no independent variation, ownership, or lifecycle boundary. Keep the solution direct and do not introduce an unjustified design-pattern abstraction.
+constraints:
+  required_design:
+    - direct implementation with no unjustified design-pattern abstraction
+checks:
+  - functional
+  - tests
+  - contract
+  - pattern_selection
+  - scope_control
+cases:
+  - name: primary-behavior
+    input: benchmark-fixture
+    expected: pass
+grading:
+  functional: fixture test suite passes
+  tests: executable tests are present and pass
+  contract: required public API remains present
+  pattern_selection: direct implementation remains and speculative pattern abstractions are absent
+  scope_control: changes remain inside the disposable fixture
