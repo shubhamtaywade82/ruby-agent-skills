@@ -10,6 +10,7 @@ ROOT = File.expand_path("..", __dir__)
 CAMPAIGN_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
 MATRIX_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-model-matrix-evidence-verify")
 HIDDEN_RECEIPT_VERIFIER = File.join(ROOT, "bin", "routing-hidden-benchmark-receipt-verify")
+ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
 
 options = {check_files: false}
 OptionParser.new do |opts|
@@ -28,6 +29,7 @@ errors << "protocol_version must be 1" unless manifest["protocol_version"].to_i 
 errors << "release bundle type must be skill-routing-release-evidence-v1" unless manifest["release_bundle"] == "skill-routing-release-evidence-v1"
 errors << "repository git SHA is missing" if manifest.dig("repository", "git_sha").to_s.strip.empty?
 errors << "release policy provenance is missing" unless manifest.dig("release_policy", "sha256")
+verify_file(manifest["release_policy"], errors, check_files: options[:check_files]) if manifest["release_policy"].is_a?(Hash)
 
 components = manifest["components"]
 errors << "components must be a mapping" unless components.is_a?(Hash)
@@ -97,6 +99,14 @@ if public_component.is_a?(Hash)
     )
     warn stderr unless stderr.empty?
     errors << "public campaign evidence verification failed" unless status.success?
+  end
+
+  if options[:check_files] && public_archive.is_a?(Hash) && Dir.exist?(public_archive["path"].to_s)
+    _out, stderr, status = Open3.capture3(
+      RbConfig.ruby, ARCHIVE_VERIFIER, public_archive["path"].to_s, chdir: ROOT
+    )
+    warn stderr unless stderr.empty?
+    errors << "public archive verification failed" unless status.success?
   end
 end
 
