@@ -9,7 +9,7 @@ Current inventory:
 - 91 skills
 - 431 implementation patterns
 - 436 evaluation cases
-- 78 system/contract tests
+- 77 system/contract tests
 
 ## First checkout
 
@@ -101,6 +101,13 @@ Resume an interrupted matrix:
       --output ./routing-matrix-output \
       --resume
 
+
+## Routing comparison and experiment finalization
+
+The baseline/candidate experiment path now verifies `comparison.json` against its exact source campaigns and policy, packages `evidence.json`, and verifies that evidence before reporting success.
+
+Use `bin/routing-compare-verify` to independently replay a comparison. The report records SHA-256 provenance for the baseline, candidate, remediation policy, and comparator implementation.
+
 ## Installation doctor
 
 After installation and before controlled agent use:
@@ -127,4 +134,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 84. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 91. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.

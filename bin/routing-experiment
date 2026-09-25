@@ -12,6 +12,9 @@ require "yaml"
 ROOT = File.expand_path("..", __dir__)
 EVALUATOR = File.join(ROOT, "bin", "routing-eval")
 COMPARATOR = File.join(ROOT, "bin", "routing-compare")
+COMPARISON_VERIFIER = File.join(ROOT, "bin", "routing-compare-verify")
+EVIDENCE_PACKAGER = File.join(ROOT, "bin", "routing-evidence")
+EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-evidence-verify")
 
 options = {
   output: File.join(Dir.tmpdir, "ruby-agent-routing-experiment"),
@@ -77,6 +80,28 @@ stdout, stderr, status = Open3.capture3(*compare_argv, chdir: ROOT)
 warn stderr unless stderr.empty?
 puts stdout
 abort "routing comparison gate failed with exit code #{status.exitstatus}" unless status.success?
+
+verify_stdout, verify_stderr, verify_status = Open3.capture3(
+  RbConfig.ruby, COMPARISON_VERIFIER, comparison, "--check-files", chdir: ROOT
+)
+warn verify_stderr unless verify_stderr.empty?
+puts verify_stdout
+abort "routing comparison verification failed" unless verify_status.success?
+
+evidence = File.join(options[:output], "evidence.json")
+evidence_stdout, evidence_stderr, evidence_status = Open3.capture3(
+  RbConfig.ruby, EVIDENCE_PACKAGER, options[:output], "--output", evidence, chdir: ROOT
+)
+warn evidence_stderr unless evidence_stderr.empty?
+puts evidence_stdout
+abort "routing evidence packaging failed" unless evidence_status.success?
+
+evidence_verify_stdout, evidence_verify_stderr, evidence_verify_status = Open3.capture3(
+  RbConfig.ruby, EVIDENCE_VERIFIER, evidence, "--check-files", chdir: ROOT
+)
+warn evidence_verify_stderr unless evidence_verify_stderr.empty?
+puts evidence_verify_stdout
+abort "routing evidence verification failed" unless evidence_verify_status.success?
 
 puts "Routing experiment complete:"
 puts "  baseline: #{baseline}"

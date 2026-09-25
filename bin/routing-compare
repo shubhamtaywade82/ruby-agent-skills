@@ -1,12 +1,18 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "digest"
 require "json"
 require "optparse"
 require "yaml"
 
 ROOT = File.expand_path("..", __dir__)
 DEFAULT_POLICY = File.join(ROOT, "router", "ROUTING_REMEDIATION.yml")
+
+def sha256(path)
+  Digest::SHA256.file(path).hexdigest
+end
+
 options = { policy: DEFAULT_POLICY, output: nil }
 
 OptionParser.new do |opts|
@@ -132,6 +138,12 @@ report = {
   "analysis" => "skill-routing-remediation-v1",
   "baseline" => {"campaign" => baseline.fetch("campaign"), "agent" => baseline.fetch("agent")},
   "candidate" => {"campaign" => candidate.fetch("campaign"), "agent" => candidate.fetch("agent")},
+  "provenance" => {
+    "baseline" => {"path" => File.expand_path(ARGV.fetch(0)), "sha256" => sha256(ARGV.fetch(0))},
+    "candidate" => {"path" => File.expand_path(ARGV.fetch(1)), "sha256" => sha256(ARGV.fetch(1))},
+    "remediation_policy" => {"path" => File.expand_path(options[:policy]), "sha256" => sha256(options[:policy])},
+    "comparator" => {"path" => File.expand_path(__FILE__), "sha256" => sha256(__FILE__)}
+  },
   "deltas" => {
     "primary_accuracy" => primary_delta,
     "secondary_recall" => secondary_delta,

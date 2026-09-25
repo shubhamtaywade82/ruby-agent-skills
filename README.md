@@ -4,9 +4,25 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 87 — Design-Pattern Corpus Revision
+> **Current milestone:** Iteration 91 — End-to-End Routing/Experiment Evidence
 
 ---
+
+## Iteration 91 — End-to-End Experiment Evidence Finalization
+
+The baseline/candidate remediation experiment now verifies comparison provenance, packages its `evidence.json`, and verifies the final evidence package before reporting success.
+
+## Iteration 90 — Routing Comparison Replay Verification
+
+`bin/routing-compare-verify` independently recomputes a stored comparison against its recorded baseline/candidate inputs and remediation policy, while checking provenance hashes.
+
+## Iteration 89 — Routing Comparison Provenance Binding
+
+`bin/routing-compare` records SHA-256 provenance for the exact baseline campaign, candidate campaign, remediation policy, and comparator implementation.
+
+## Iteration 88 — End-to-End Campaign Finalization
+
+Campaign import now regenerates the canonical routing analysis before evidence packaging, and the external handoff launcher invokes finalization automatically.
 
 ## Iteration 87 — Design-Pattern Corpus Revision
 
@@ -109,7 +125,7 @@ After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-r
 
 ## Routing campaign analysis
 
-After a public routing campaign completes, independently analyze the recorded campaign with:
+After a public routing campaign completes, the campaign finalization path regenerates the canonical routing analysis automatically. The analyzer remains directly runnable for independent inspection:
 
     ruby bin/routing-analyze ./routing-campaign-output/campaign.json \
       --output ./routing-campaign-output/analysis.json
@@ -163,7 +179,7 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **431** |
 | Evaluation cases | **442** |
-| Dedicated system/contract tests | **75** |
+| Dedicated system/contract tests | **77** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
