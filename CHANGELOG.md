@@ -1,3 +1,27 @@
+## Iteration 91 — End-to-End Experiment Evidence Finalization
+
+- Make baseline/candidate routing experiments replay-verify comparison provenance before packaging evidence.
+- Automatically package `evidence.json` after a successful comparison gate.
+- Verify final experiment evidence with recorded artifact hashes before reporting success.
+
+## Iteration 90 — Routing Comparison Replay Verification
+
+- Add `bin/routing-compare-verify` to independently recompute a stored comparison.
+- Bind verification to the recorded baseline/candidate inputs, remediation policy, and comparator implementation hashes.
+- Reject comparison reports that differ from the recomputed result.
+
+## Iteration 89 — Routing Comparison Provenance Binding
+
+- Record SHA-256 provenance for the exact baseline campaign, candidate campaign, remediation policy, and comparator implementation.
+- Preserve comparison provenance in experiment evidence.
+- Add regression coverage for comparison provenance and tamper detection.
+
+## Iteration 88 — End-to-End Campaign Finalization
+
+- Make campaign import regenerate the canonical routing analysis before evidence packaging.
+- Make the external campaign handoff run import, evidence verification, and optional archive creation automatically.
+- Add regression coverage for the complete campaign finalization path.
+
 ## Iteration 87 — Design-Pattern Corpus Revision
 
 - Versioned the design-pattern public campaign from v1 to v2 after expanding it from 18 to 24 cases.
