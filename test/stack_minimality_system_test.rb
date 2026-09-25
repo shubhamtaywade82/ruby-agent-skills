@@ -66,7 +66,7 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
     entries = manifest.fetch("evaluations").select do |name, _|
       name.to_s.start_with?(EVAL_PREFIX)
     end
-    assert_operator entries.length, :>=, 6
+    assert_equal 13, entries.length
     entries.each_value do |entry|
       Array(entry.fetch("paths")).each { |path| assert File.file?(File.join(ROOT, path)) }
     end
