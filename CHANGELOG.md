@@ -1,3 +1,20 @@
+## Iteration 101 — Verified Routing History
+
+- Add `routing-history --verify` for integrity-gated longitudinal history generation.
+- Validate every indexed archive against its independent archive verifier and manifest identity.
+- Keep historical model reporting descriptive-only.
+
+## Iteration 100 — Matrix Report Integrity Gate
+
+- Add `routing-model-matrix-report --verify` to reject histories containing unverified archives.
+- Reuse the independent routing history verifier before producing descriptive reports.
+
+## Iteration 99 — Routing History Integrity
+
+- Add `bin/routing-history-verify` for independent historical evidence validation.
+- Detect archive identity drift, duplicate archive IDs, missing entries, and archive-integrity failures.
+- Add regression coverage for tampered historical archives.
+
 ## Iteration 98 — Self-Verifying Release Evidence
 
 - Make release bundle creation replay its own manifest and component verifiers before reporting success.
