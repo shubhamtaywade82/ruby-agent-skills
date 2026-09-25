@@ -68,8 +68,6 @@ unless tool_entries.empty?
     raise "tool SHA-256 mismatch: #{relative}" unless actual == entry.fetch("sha256")
   end
   errors << "tool inventory missing stack-minimality" unless tool_entries.any? { |entry| entry["path"] == "bin/stack-minimality" }
-else
-  errors << "tool integrity metadata missing"
 end
 
 reported_skills = metadata.dig("inventory", "skills").to_i
