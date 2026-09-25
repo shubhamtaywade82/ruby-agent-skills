@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 94 — Verified Multi-Model Matrix Evidence
+> **Current milestone:** Iteration 97 — Verified Release Evidence Bundle
 
 ---
 
@@ -179,10 +179,22 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **431** |
 | Evaluation cases | **442** |
-| Dedicated system/contract tests | **78** |
+| Dedicated system/contract tests | **79** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
+
+## Iteration 97 — Verified Release Evidence Bundle
+
+Completed routing release inputs can now be composed into a frozen `RELEASE_MANIFEST.json` bundle. The bundle verifies the required public campaign evidence and immutable archive before capture, optionally includes verified multi-model matrix evidence and the external-only hidden benchmark receipt, and carries a frozen copy of the release policy.
+
+## Iteration 96 — Hidden Benchmark Receipt Verification
+
+`bin/routing-hidden-benchmark-receipt-verify` independently validates safe external hidden-benchmark receipts without importing hidden cases, prompts, or gold labels into the repository.
+
+## Iteration 95 — Routing Release Evidence Bundle
+
+`bin/routing-release-bundle` composes verified public routing evidence into a portable release-evidence directory and cryptographically records each component.
 
 ## Iteration 94 — Verified Multi-Model Matrix Evidence
 
@@ -819,7 +831,7 @@ When adding a new skill or deepening an existing one:
 
 **Iteration 79 — Repository Consistency & Empirical Analysis Hardening**
 
-The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
+The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and feed verified results into the release-evidence bundle.
 
 
 ## Iteration 83 — Matrix Resume Integrity
