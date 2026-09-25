@@ -150,7 +150,7 @@ The skill system is built from five connected layers:
 |---|---:|
 | Skills | **91** |
 | Implementation patterns | **431** |
-| Evaluation cases | **424** |
+| Evaluation cases | **436** |
 | Dedicated system/contract tests | **78** |
 | Manifest version | **2** |
 
