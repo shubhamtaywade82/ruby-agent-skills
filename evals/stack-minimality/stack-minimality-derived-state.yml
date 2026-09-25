@@ -1,0 +1,36 @@
+id: stack-minimality-derived-state
+version: 1
+title: Remove duplicated React state without changing semantics
+category: stack-minimality
+source: ponytail-stack-adaptation-v2
+skills:
+  - stack-minimality
+  - react-state-effects
+  - react-testing-engineering
+patterns:
+  - pattern:react-derived-state-in-render
+prompt: |
+  A React component stores a value that is deterministically derived from props and existing state, then synchronizes it with an effect. Remove the duplication without changing observable behavior.
+constraints:
+  required_design:
+    - derived value is computed from authoritative inputs
+    - no effect-driven synchronization for pure derivation
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: derived-value
+    input: A filtered list is stored separately from the source list and synchronized in an effect.
+    expected:
+      contract: "state: derived in render"
+  - name: independent-input
+    input: A draft value is independently edited by the user.
+    expected:
+      contract: "state: retained"
+grading:
+  functional: Rendered and interaction behavior remains correct.
+  tests: Rendering and user interaction are covered.
+  contract: Derived values are not duplicated as state while independent inputs remain stateful.
+  scope_control: No unrelated state-management rewrite is introduced.

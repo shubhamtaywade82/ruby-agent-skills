@@ -1,0 +1,37 @@
+id: stack-minimality-performance-evidence
+version: 1
+title: Minimality must distinguish structural simplicity from performance evidence
+category: stack-minimality
+source: ponytail-stack-adaptation-v2
+skills:
+  - stack-minimality
+  - rails-performance
+  - stack-minimality-evidence
+patterns:
+  - pattern:postgres-index-from-query-evidence
+  - pattern:postgres-query-before-cache
+prompt: |
+  A Rails/PostgreSQL endpoint is reported as slow and a cache or index is proposed. Inspect the actual query path and require evidence before claiming a performance improvement.
+constraints:
+  required_design:
+    - performance optimization is evidence-driven
+    - no unmeasured speed claim
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: query-plan-first
+    input: Inspect query shape and plan before adding an index.
+    expected:
+      contract: "evidence: required"
+  - name: cache-contract
+    input: A cache is introduced only with measured need and explicit freshness and invalidation semantics.
+    expected:
+      contract: "cache: justified"
+grading:
+  functional: The optimized query or cache preserves behavior.
+  tests: Regression coverage exists for the affected path.
+  contract: Performance claims are backed by real evidence.
+  scope_control: No speculative performance infrastructure is introduced.
