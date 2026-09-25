@@ -1,3 +1,9 @@
+## Iteration 85 — Stack Minimality Evaluation Guardrails
+
+- Extended repository completeness auditing to verify the stack-minimality evaluation registry against the filesystem.
+- Added schema-level system coverage for every stack-minimality evaluation.
+- Kept the adversarial corpus focused on security, accessibility, performance evidence, migration safety, service boundaries, and React state semantics.
+
 ## Iteration 84 — Stack Minimality Adversarial Evaluation Expansion
 
 - Added adversarial evaluations for security, accessibility, performance evidence, migration safety, service-boundary decisions, and React derived state.
