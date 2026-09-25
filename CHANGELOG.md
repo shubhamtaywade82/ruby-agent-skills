@@ -1,9 +1,23 @@
+## Iteration 81 — Ponytail-inspired Stack Minimality
+
+- Added six stack-minimality skills adapted from Ponytail for Ruby, Rails, React, TypeScript, and PostgreSQL.
+- Added 14 implementation patterns covering Rails conventions, Active Record, PostgreSQL invariants/query evidence, React state, TypeScript boundaries, dependencies, modularity, and shared-root bug fixes.
+- Added seven evaluation contracts and system-test coverage for manifest/routing completeness.
+- Integrated stack minimality into skill routing, AGENTS guidance, README, and canonical validation.
+- External Ponytail benchmark results are treated as source context, not as measurements of this repository.
+
+## Iteration 81 — Routing Analysis Provenance Binding
+
+- Bound preserved `routing-report.json` to an independent recomputation from `campaign.json` during evidence packaging.
+- Extended `routing-campaign-evidence-verify --check-files` to replay the analyzer and reject report/evidence/source-metric drift.
+- Added regression coverage for tampered routing analysis and upgraded archive fixtures to use semantically valid campaign/report artifacts.
+
+## Iteration 80 — Routing Evidence Integrity Gate
+
+- Hardened `routing-compare` to recompute primary accuracy, secondary recall, and unexpected-secondary metrics directly from recorded runs.
+- Added regression coverage proving tampered campaign metrics are rejected.
+
 # Changelog
-
-## Unreleased
-
-- Add a Ponytail-inspired stack-minimality pack for Ruby, Rails, React, TypeScript, and PostgreSQL.
-- Add stack-minimality patterns, evaluations, routing guidance, and repository documentation.
 
 ## Iteration 79 — Documentation consistency & empirical readiness
 
