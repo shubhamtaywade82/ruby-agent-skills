@@ -4,9 +4,13 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 86 — Pattern Selection Restraint Integration
+> **Current milestone:** Iteration 87 — Design-Pattern Corpus Revision
 
 ---
+
+## Iteration 87 — Design-Pattern Corpus Revision
+
+The design-pattern benchmark is now version 2. Its public campaign contains 24 cases, including six negative-selection cases integrated with stack-minimality. The campaign revision is recorded explicitly so future empirical results cannot be silently attached to the older 18-case corpus.
 
 ## Iteration 86 — Pattern Selection Restraint Integration
 
