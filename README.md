@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 84 — End-to-End Campaign Finalization
+> **Current milestone:** Iteration 87 — End-to-End Experiment Evidence Finalization
 
 ---
 
@@ -71,7 +71,9 @@ After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-r
 
 ## Routing evidence integrity
 
-`bin/routing-compare` now recomputes routing metrics from the recorded run data before applying the remediation gate. A campaign whose recorded metrics have been altered or drifted from its runs is rejected rather than treated as benchmark evidence.
+`bin/routing-compare` recomputes routing metrics from recorded run data before applying the remediation gate and now records cryptographic provenance for the exact baseline/candidate inputs, remediation policy, and comparator. `bin/routing-compare-verify` independently replays the comparison and rejects tampered or drifted reports.
+
+The baseline/candidate experiment path now verifies the comparison, packages `evidence.json`, and verifies that evidence before reporting success.
 
 ## Routing campaign analysis
 
@@ -129,7 +131,7 @@ The skill system is built from five connected layers:
 | Skills | **85** |
 | Implementation patterns | **417** |
 | Evaluation cases | **410** |
-| Dedicated system/contract tests | **74** |
+| Dedicated system/contract tests | **75** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -757,9 +759,21 @@ When adding a new skill or deepening an existing one:
 
 **Iteration 79 — Repository Consistency & Empirical Analysis Hardening**
 
-The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
+The repository-side implementation line is complete through Iteration 87. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
 
 
+## Iteration 87 — End-to-End Experiment Evidence Finalization
+
+The baseline/candidate experiment workflow now verifies the comparison provenance, packages its experiment evidence automatically, and runs the evidence verifier before reporting success. This removes the final manual evidence-packaging step from the remediation experiment path.
+
+## Iteration 86 — Routing Comparison Replay Verification
+
+`bin/routing-compare-verify` independently replays a stored comparison against its exact baseline/candidate inputs and policy, while checking provenance hashes when requested.
+
+## Iteration 85 — Routing Comparison Provenance Binding
+
+`bin/routing-compare` now records SHA-256 bindings for the exact baseline campaign, candidate campaign, remediation policy, and comparator implementation.
+  
 ## Iteration 84 — End-to-End Campaign Finalization
 
 The external routing workflow now finalizes a completed campaign in one command: import regenerates `routing-report.json` with `bin/routing-analyze`, packages and verifies campaign evidence, and optionally creates the independently verified immutable archive. The handoff runner invokes this finalization automatically after campaign execution.
