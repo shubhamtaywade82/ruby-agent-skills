@@ -72,7 +72,7 @@ cases.each do |case_id, case_data|
       observed_secondary = Array(observed["secondary_skills"]).map(&:to_s).uniq
 
       run_errors = []
-      run_number = run.fetch("run_number")
+      run_number = run["run_number"] || "unknown"
       run_errors << "expected primary disagrees with case contract" unless expected_run_primary == expected_primary
       run_errors << "observed primary #{observed_primary} is not registered" unless skills.include?(observed_primary)
       run_errors << "observed secondary skills contain primary #{observed_primary}" if observed_secondary.include?(observed_primary)
