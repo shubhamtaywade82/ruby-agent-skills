@@ -19,7 +19,8 @@ options = {
   url: ENV.fetch("OLLAMA_URL", "http://127.0.0.1:11434"),
   runs: nil,
   timeout: 300,
-  output: File.join(ROOT, "routing-handoff")
+  output: File.join(ROOT, "routing-handoff"),
+  archive: File.join(ROOT, "routing-archives")
 }
 
 OptionParser.new do |opts|
@@ -29,6 +30,7 @@ OptionParser.new do |opts|
   opts.on("--runs COUNT", Integer, "Repetitions per case") { |v| options[:runs] = v }
   opts.on("--timeout SECONDS", Integer, "Per-run timeout") { |v| options[:timeout] = v }
   opts.on("--output DIR", "Handoff directory") { |v| options[:output] = File.expand_path(v) }
+  opts.on("--archive DIR", "Archive root for finalized campaign evidence") { |v| options[:archive] = File.expand_path(v) }
 end.parse!
 
 abort "--model is required" if options[:model].to_s.empty?
@@ -113,6 +115,11 @@ script = <<~SH
     --timeout #{options[:timeout]} \
     --output ./routing-campaign-output \
     "${RESUME_ARGS[@]}"
+
+  ruby bin/routing-campaign-import \
+    ./routing-campaign-output \
+    --output ./routing-campaign-output/campaign-evidence.json \
+    --archive #{options[:archive].shellescape}
 SH
 File.write(script_path, script, encoding: "UTF-8")
 FileUtils.chmod(0o755, script_path)
