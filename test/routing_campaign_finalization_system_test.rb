@@ -12,7 +12,7 @@ class RoutingCampaignFinalizationSystemTest < Minitest::Test
   def test_import_runs_analysis_before_packaging_evidence
     script = source("bin/routing-campaign-import")
     assert_includes script, 'ANALYZER = File.join(ROOT, "bin", "routing-analyze")'
-    assert_includes script, 'ROUTING_REPORT = File.join(campaign_dir, "routing-report.json")'
+    assert_includes script, 'report_path = File.join(campaign_dir, "routing-report.json")'
     assert_includes script, 'routing-analyze'
     assert_operator script.index("ANALYZER"), :<, script.index("EVIDENCE_PACKAGER")
   end
