@@ -4,9 +4,13 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 85 — Stack Minimality Evaluation Guardrails
+> **Current milestone:** Iteration 86 — Pattern Selection Restraint Integration
 
 ---
+
+## Iteration 86 — Pattern Selection Restraint Integration
+
+The design-pattern evaluation system now includes six negative-selection cases that explicitly require the agent to decline an otherwise familiar abstraction when the responsibility, variation, ownership, or lifecycle boundary has not been earned. The campaign expands from 18 to 24 public cases, and benchmark-quality tests require campaign coverage to match the complete public design-pattern evaluation set.
 
 ## Iteration 85 — Stack Minimality Evaluation Guardrails
 
@@ -154,7 +158,7 @@ The skill system is built from five connected layers:
 |---|---:|
 | Skills | **91** |
 | Implementation patterns | **431** |
-| Evaluation cases | **436** |
+| Evaluation cases | **442** |
 | Dedicated system/contract tests | **78** |
 | Manifest version | **2** |
 
