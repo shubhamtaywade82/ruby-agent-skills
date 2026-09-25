@@ -3,11 +3,15 @@
 
 require "json"
 require "optparse"
+require "open3"
+require "tempfile"
 
-options = { output: nil }
+options = { output: nil, verify: false }
+VERIFYER = File.join(File.expand_path("..", __dir__), "bin", "routing-history-verify")
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-history ARCHIVE_ROOT [options]"
   opts.on("--output PATH", "Write history JSON") { |v| options[:output] = File.expand_path(v) }
+  opts.on("--verify", "Replay archive verification before reporting history") { options[:verify] = true }
 end.parse!
 
 root = File.expand_path(ARGV.fetch(0) { abort "archive root is required" })
@@ -41,5 +45,18 @@ history = {
   "entries" => entries
 }
 
-File.write(options[:output], JSON.pretty_generate(history) + "\n", encoding: "UTF-8") if options[:output]
-puts JSON.pretty_generate(history)
+json = JSON.pretty_generate(history) + "\n"
+if options[:verify]
+  Tempfile.create(["routing-history-", ".json"]) do |temp|
+    File.write(temp.path, json, encoding: "UTF-8")
+    stdout, stderr, status = Open3.capture3(
+      RbConfig.ruby, VERIFYER, temp.path, "--check-files", chdir: File.expand_path("..", __dir__)
+    )
+    warn stderr unless stderr.empty?
+    abort "routing history verification failed" unless status.success?
+    warn stdout unless stdout.empty?
+  end
+end
+
+File.write(options[:output], json, encoding: "UTF-8") if options[:output]
+puts json

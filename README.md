@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 98 — Verified Release Evidence Bundle
+> **Current milestone:** Iteration 101 — Verified Release Evidence Bundle
 
 ---
 
@@ -179,7 +179,7 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **431** |
 | Evaluation cases | **442** |
-| Dedicated system/contract tests | **79** |
+| Dedicated system/contract tests | **80** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -211,6 +211,18 @@ Completed routing release inputs can now be composed into a frozen `RELEASE_MANI
 ## Iteration 95 — Routing Release Evidence Bundle
 
 `bin/routing-release-bundle` composes verified public routing evidence into an auditable release-evidence directory and cryptographically records each component.
+
+## Iteration 101 — Verified Routing History
+
+Routing history can now be generated with `--verify`, which replays archive integrity checks before the historical dataset is reported. Historical model reports can also require verified history with `--verify`; the comparison remains descriptive-only.
+
+## Iteration 100 — Matrix Report Integrity Gate
+
+`bin/routing-model-matrix-report --verify` now refuses to consume history that references archives failing the independent archive verifier.
+
+## Iteration 99 — Routing History Integrity
+
+`bin/routing-history-verify` independently validates history structure, archive identity, and every referenced archive before trusted longitudinal reporting.
 
 ## Iteration 94 — Verified Multi-Model Matrix Evidence
 

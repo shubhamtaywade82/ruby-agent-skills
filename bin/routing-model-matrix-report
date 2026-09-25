@@ -3,16 +3,28 @@
 
 require "json"
 require "optparse"
+require "open3"
 
-options = { output: nil, campaign: "skill-routing-public-v1" }
+options = { output: nil, campaign: "skill-routing-public-v1", verify: false }
+HISTORY_VERIFIER = File.join(File.expand_path("..", __dir__), "bin", "routing-history-verify")
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-model-matrix-report HISTORY_JSON [options]"
   opts.on("--campaign ID", "Campaign identifier to include") { |v| options[:campaign] = v }
   opts.on("--output PATH", "Write descriptive comparison JSON") { |v| options[:output] = File.expand_path(v) }
+  opts.on("--verify", "Require every referenced archive to pass integrity verification") { options[:verify] = true }
 end.parse!
 
 path = File.expand_path(ARGV.fetch(0) { abort "history JSON is required" })
 abort "history JSON not found: #{path}" unless File.file?(path)
+
+if options[:verify]
+  stdout, stderr, status = Open3.capture3(
+    RbConfig.ruby, HISTORY_VERIFIER, path, "--check-files", chdir: File.expand_path("..", __dir__)
+  )
+  warn stderr unless stderr.empty?
+  warn stdout unless stdout.empty?
+  abort "routing history verification failed" unless status.success?
+end
 
 history = JSON.parse(File.read(path, encoding: "UTF-8"))
 entries = Array(history.fetch("entries")).select { |entry| entry["campaign"] == options[:campaign] }
