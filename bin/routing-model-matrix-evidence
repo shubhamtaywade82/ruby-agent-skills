@@ -1,0 +1,115 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "fileutils"
+require "json"
+require "optparse"
+
+options = { output: nil }
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-model-matrix-evidence MATRIX_PLAN_JSON [options]"
+  opts.on("--output PATH", "Write matrix evidence JSON to PATH") { |value| options[:output] = File.expand_path(value) }
+end.parse!
+
+plan_path = File.expand_path(ARGV.fetch(0) { abort "matrix plan JSON is required" })
+abort "matrix plan JSON not found: #{plan_path}" unless File.file?(plan_path)
+
+def sha256(path)
+  Digest::SHA256.file(path).hexdigest
+end
+
+def file_metadata(path)
+  {
+    "path" => File.expand_path(path),
+    "sha256" => sha256(path),
+    "bytes" => File.size(path)
+  }
+end
+
+def archive_metadata(path)
+  abort "archive directory not found: #{path}" unless Dir.exist?(path)
+  files = {}
+  Dir.glob(File.join(path, "**", "*"), File::FNM_DOTMATCH).sort.each do |entry|
+    next if [".", ".."].include?(File.basename(entry))
+    abort "archive contains a symlink: #{entry}" if File.symlink?(entry)
+    next unless File.file?(entry)
+
+    relative = entry.delete_prefix(File.expand_path(path) + "/")
+    files[relative] = {
+      "sha256" => sha256(entry),
+      "bytes" => File.size(entry)
+    }
+  end
+
+  canonical = files.sort.to_h
+  digest = Digest::SHA256.hexdigest(JSON.generate(canonical))
+  {
+    "path" => File.expand_path(path),
+    "tree_sha256" => digest,
+    "files" => canonical
+  }
+end
+
+plan = JSON.parse(File.read(plan_path, encoding: "UTF-8"))
+errors = []
+errors << "protocol_version must be 1" unless plan["protocol_version"].to_i == 1
+errors << "execution must be skill-routing-model-matrix-campaign-v1" unless plan["execution"] == "skill-routing-model-matrix-campaign-v1"
+errors << "matrix plan must be execute mode" unless plan["mode"] == "execute"
+
+models = Array(plan["models"])
+results = Array(plan["results"])
+errors << "matrix model set is empty" if models.empty?
+errors << "all matrix models must be completed_and_archived" unless models.all? { |entry| entry["status"] == "completed_and_archived" }
+errors << "matrix results must contain one result per model" unless results.length == models.length
+
+model_names = models.map { |entry| entry.fetch("name") }
+result_names = results.map { |entry| entry.fetch("model") }
+errors << "matrix model result names do not match plan" unless result_names.sort == model_names.sort
+errors << "duplicate matrix model results are not allowed" unless result_names.uniq.length == result_names.length
+
+abort(errors.join("; ")) unless errors.empty?
+
+index = results.to_h { |result| [result.fetch("model"), result] }
+model_entries = model_names.sort.map do |model|
+  result = index.fetch(model)
+  evidence_path = File.expand_path(result.fetch("evidence"))
+  archive_path = File.expand_path(result.fetch("archive"))
+  abort "evidence file not found for #{model}: #{evidence_path}" unless File.file?(evidence_path)
+
+  {
+    "provider" => result.fetch("provider"),
+    "model" => model,
+    "status" => result.fetch("status"),
+    "evidence" => file_metadata(evidence_path),
+    "archive" => archive_metadata(archive_path)
+  }
+end
+
+evidence = {
+  "protocol_version" => 1,
+  "execution" => "skill-routing-model-matrix-evidence-v1",
+  "complete" => true,
+  "source_plan" => file_metadata(plan_path),
+  "campaign" => plan.fetch("campaign"),
+  "runtime" => plan.fetch("runtime"),
+  "provenance" => plan.fetch("provenance"),
+  "controls" => {
+    "descriptive_comparison_only" => plan.fetch("controls").fetch("descriptive_comparison_only"),
+    "no_synthetic_results" => plan.fetch("controls").fetch("no_synthetic_results")
+  },
+  "model_count" => model_entries.length,
+  "models" => model_entries,
+  "replay" => {
+    "verifier" => "bin/routing-model-matrix-evidence-verify",
+    "model_campaign_runner" => "bin/routing-model-matrix-campaign"
+  }
+}
+
+if options[:output]
+  FileUtils.mkdir_p(File.dirname(options[:output]))
+  File.write(options[:output], JSON.pretty_generate(evidence) + "\n", encoding: "UTF-8")
+end
+
+puts JSON.pretty_generate(evidence)
