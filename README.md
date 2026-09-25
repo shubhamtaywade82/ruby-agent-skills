@@ -4,9 +4,13 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 82 — Installed Stack Minimality Tooling
+> **Current milestone:** Iteration 84 — Stack Minimality Adversarial Evaluation Expansion
 
 ---
+
+## Iteration 84 — Stack Minimality Adversarial Evaluation Expansion
+
+The minimality layer now has adversarial evaluations for security, accessibility, performance evidence, migration safety, service-boundary decisions, and React derived state. These cases explicitly prevent “fewer lines” from becoming a reason to weaken a required engineering guarantee.
 
 ## Iteration 82 — Installed Stack Minimality Tooling
 
