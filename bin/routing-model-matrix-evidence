@@ -62,6 +62,7 @@ models = Array(plan["models"])
 results = Array(plan["results"])
 errors << "matrix model set is empty" if models.empty?
 errors << "all matrix models must be completed_and_archived" unless models.all? { |entry| entry["status"] == "completed_and_archived" }
+errors << "all matrix results must be completed_and_archived" unless results.all? { |entry| entry["status"] == "completed_and_archived" }
 errors << "matrix results must contain one result per model" unless results.length == models.length
 
 model_names = models.map { |entry| entry.fetch("name") }
