@@ -60,7 +60,7 @@ class RoutingModelMatrixEvidenceSystemTest < Minitest::Test
       assert_equal "model-a", entry.fetch("model")
       assert_equal Digest::SHA256.file(evidence).hexdigest, entry.fetch("evidence").fetch("sha256")
       assert_equal Digest::SHA256.file(File.join(archive, "ARCHIVE.json")).hexdigest,
-        entry.fetch("archive").fetch("artifacts").fetch("ARCHIVE.json")
+        entry.fetch("archive").fetch("files").fetch("ARCHIVE.json").fetch("sha256")
     end
   end
 
