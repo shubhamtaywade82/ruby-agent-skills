@@ -75,7 +75,7 @@ class RoutingModelMatrixEvidenceSystemTest < Minitest::Test
         RbConfig.ruby, PACKAGER, plan, chdir: ROOT
       )
       refute status.success?
-      assert_includes stderr, "all matrix models must be completed_and_archived"
+      assert_includes stderr, "all matrix results must be completed_and_archived"
     end
   end
 
