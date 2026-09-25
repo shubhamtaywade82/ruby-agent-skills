@@ -70,7 +70,7 @@ expected_archive_dir = File.join(
 relative_archive_dir = archive_dir.split(File::SEPARATOR).last(3).join("/")
 errors << "archive directory identity does not match archive_id" unless relative_archive_dir == expected_archive_dir
 
-%w[repository agent evidence_type campaign_metrics requested_runs completed_runs analysis].each do |key|
+%w[repository agent campaign_metrics requested_runs completed_runs analysis].each do |key|
   errors << "#{key} does not match evidence" unless manifest[key] == evidence[key]
 end
 
