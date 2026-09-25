@@ -24,6 +24,8 @@ MATRIX_PATH = File.join(ROOT, "router", "ROUTING_MODEL_MATRIX.yml")
 CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
 CAMPAIGN_RUNNER = File.join(ROOT, "bin", "routing-campaign")
 CAMPAIGN_IMPORT = File.join(ROOT, "bin", "routing-campaign-import")
+CAMPAIGN_EVIDENCE_VERIFY = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
 
 options = {
   models: [],
@@ -161,7 +163,24 @@ models.each do |model|
   started_at = Time.now.utc.iso8601
   existing_result = matrix_plan["results"].find { |entry| entry["model"] == model }
   if options[:resume] && existing_result && existing_result["status"] == "completed_and_archived"
-    puts "Resumed matrix model #{model}: already completed and archived"
+    evidence_path = existing_result.fetch("evidence")
+    archive_dir = existing_result.fetch("archive")
+    abort "cannot resume #{model}: recorded evidence is missing: #{evidence_path}" unless File.file?(evidence_path)
+    abort "cannot resume #{model}: recorded archive is missing: #{archive_dir}" unless Dir.exist?(archive_dir)
+
+    _evidence_out, evidence_err, evidence_status = Open3.capture3(
+      RbConfig.ruby, CAMPAIGN_EVIDENCE_VERIFY, evidence_path, "--check-files", chdir: ROOT
+    )
+    warn evidence_err unless evidence_err.empty?
+    abort "cannot resume #{model}: campaign evidence verification failed" unless evidence_status.success?
+
+    _archive_out, archive_err, archive_status = Open3.capture3(
+      RbConfig.ruby, ARCHIVE_VERIFIER, archive_dir, chdir: ROOT
+    )
+    warn archive_err unless archive_err.empty?
+    abort "cannot resume #{model}: archive integrity verification failed" unless archive_status.success?
+
+    puts "Resumed matrix model #{model}: verified completed and archived evidence"
     next
   end
 
