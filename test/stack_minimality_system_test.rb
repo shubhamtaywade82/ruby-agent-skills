@@ -63,13 +63,10 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
   end
 
   def test_stack_minimality_evaluations_are_registered
-    entries = manifest.fetch("evaluations").select do |name, _|
-      name.to_s.start_with?(EVAL_PREFIX)
-    end
-    assert_equal 13, entries.length
-    entries.each_value do |entry|
-      Array(entry.fetch("paths")).each { |path| assert File.file?(File.join(ROOT, path)) }
-    end
+    entry = manifest.fetch("evaluations").fetch("stack-minimality")
+    paths = Array(entry.fetch("paths"))
+    assert_equal 13, paths.length
+    paths.each { |path| assert File.file?(File.join(ROOT, path)) }
   end
 
   def test_all_stack_minimality_evaluations_have_required_contract_shape
