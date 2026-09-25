@@ -13,18 +13,26 @@ ANALYZER = File.join(ROOT, "bin", "routing-analyze")
 CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
 CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
 
-options = { check_files: false }
+options = {
+  check_files: false,
+  campaign_config: CAMPAIGN_PATH,
+  routing_cases: CASES_PATH,
+  skill_manifest: File.join(ROOT, "skill-manifest.yml")
+}
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-campaign-evidence-verify EVIDENCE_JSON [options]"
   opts.on("--check-files", "Recalculate all recorded artifact hashes") { options[:check_files] = true }
+  opts.on("--campaign-config PATH", "Campaign manifest to validate against") { |value| options[:campaign_config] = File.expand_path(value) }
+  opts.on("--routing-cases PATH", "Routing cases to validate against") { |value| options[:routing_cases] = File.expand_path(value) }
+  opts.on("--skill-manifest PATH", "Skill manifest to validate registered skills against") { |value| options[:skill_manifest] = File.expand_path(value) }
 end.parse!
 
 path = File.expand_path(ARGV.fetch(0) { abort "campaign evidence JSON is required" })
 abort "campaign evidence JSON not found: #{path}" unless File.file?(path)
 
 evidence = JSON.parse(File.read(path, encoding: "UTF-8"))
-campaign_config = YAML.safe_load(File.read(CAMPAIGN_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false)
-routing_cases = YAML.safe_load(File.read(CASES_PATH, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases")
+campaign_config = YAML.safe_load(File.read(options[:campaign_config], encoding: "UTF-8"), permitted_classes: [], aliases: false)
+routing_cases = YAML.safe_load(File.read(options[:routing_cases], encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases")
 
 errors = []
 errors << "protocol_version must be 1" unless evidence["protocol_version"].to_i == 1
@@ -101,6 +109,7 @@ if options[:check_files] && errors.empty?
         ANALYZER,
         campaign_path,
         "--output", temp.path,
+        "--manifest", options[:skill_manifest],
         chdir: ROOT
       )
       warn stderr unless stderr.empty?
