@@ -77,7 +77,10 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
     completed_index = source.index(completed_marker)
     refute_nil completed_index
 
-    resume_block = source[completed_index, 1_500]
+    result_index = source.index("  result = {", completed_index)
+    refute_nil result_index
+
+    resume_block = source[completed_index, result_index - completed_index]
     assert_includes resume_block, "routing-campaign-evidence-verify"
     assert_includes resume_block, "routing-archive-verify"
   end
