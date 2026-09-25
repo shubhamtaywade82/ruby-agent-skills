@@ -12,6 +12,8 @@ The repository must maintain the routing campaign contract, evidence integrity c
 
 A completed public campaign evidence package is required.
 
+The release gate verifies the exact archived package containing the supplied evidence before accepting the immutable-archive requirement.
+
 The release contract currently expects:
 
 - 14 public routing cases;
