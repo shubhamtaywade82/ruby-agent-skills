@@ -61,6 +61,7 @@ run!([RbConfig.ruby, MATRIX_EVIDENCE_VERIFIER, options[:matrix_evidence], "--che
 run!([RbConfig.ruby, HIDDEN_RECEIPT_VERIFIER, options[:hidden_receipt], "--check-files"], "hidden benchmark receipt verification failed") if options[:hidden_receipt]
 
 FileUtils.mkdir_p(options[:output])
+FileUtils.cp(RELEASE_CONFIG, File.join(options[:output], "release-policy.yml"))
 FileUtils.mkdir_p(File.join(options[:output], "public"))
 FileUtils.mkdir_p(File.join(options[:output], "matrix"))
 FileUtils.mkdir_p(File.join(options[:output], "hidden"))
@@ -113,7 +114,7 @@ manifest = {
     "git_sha" => git_sha.strip,
     "worktree_clean" => true
   },
-  "release_policy" => file_metadata(RELEASE_CONFIG),
+  "release_policy" => file_metadata(File.join(options[:output], "release-policy.yml")),
   "components" => {
     "public" => {
       "evidence" => file_metadata(public_target),
