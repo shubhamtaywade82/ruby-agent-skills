@@ -15,38 +15,6 @@ OptionParser.new do |opts|
   opts.on("--output PATH", "Write comparison JSON to PATH") { |value| options[:output] = value }
 end.parse!
 
-baseline = JSON.parse(File.read(ARGV.fetch(0), encoding: "UTF-8"))
-candidate = JSON.parse(File.read(ARGV.fetch(1), encoding: "UTF-8"))
-policy = YAML.safe_load(File.read(options[:policy], encoding: "UTF-8"), permitted_classes: [], aliases: false)
-gate = policy.fetch("gate")
-errors = []
-
-errors << "both baseline and candidate campaigns must be complete" unless baseline.fetch("complete") && candidate.fetch("complete")
-
-errors << "baseline and candidate campaign ids differ" unless baseline.fetch("campaign") == candidate.fetch("campaign")
-errors << "baseline and candidate campaign versions differ" unless baseline.fetch("campaign_version") == candidate.fetch("campaign_version")
-errors << "baseline and candidate agent configurations differ" unless baseline.fetch("agent") == candidate.fetch("agent")
-
-errors << "baseline and candidate routing case counts differ" unless baseline.fetch("routing_case_count") == candidate.fetch("routing_case_count")
-errors << "baseline and candidate repetition counts differ" unless baseline.fetch("requested_repetitions") == candidate.fetch("requested_repetitions")
-
-baseline_metrics = baseline.fetch("metrics")
-candidate_metrics = candidate.fetch("metrics")
-baseline_recomputed = recomputed_metrics(baseline)
-candidate_recomputed = recomputed_metrics(candidate)
-
-unless metrics_match?(baseline_metrics, baseline_recomputed) && metrics_match?(candidate_metrics, candidate_recomputed)
-  errors << "metrics do not match recomputed run data"
-end
-
-primary_delta = candidate_recomputed.fetch("primary_accuracy") - baseline_recomputed.fetch("primary_accuracy")
-secondary_delta = candidate_recomputed.fetch("secondary_recall") - baseline_recomputed.fetch("secondary_recall")
-unexpected_delta = candidate_recomputed.fetch("average_unexpected_secondary_count") - baseline_recomputed.fetch("average_unexpected_secondary_count")
-
-errors << "primary accuracy regressed beyond allowed threshold" if primary_delta < -gate.fetch("max_primary_accuracy_drop").to_f
-errors << "secondary recall regressed beyond allowed threshold" if secondary_delta < -gate.fetch("max_secondary_recall_drop").to_f
-errors << "unexpected secondary count increased beyond allowed threshold" if unexpected_delta > gate.fetch("max_unexpected_secondary_count_increase").to_f
-
 def recomputed_metrics(campaign)
   completed = campaign.fetch("cases").values.flat_map { |case_data| case_data.fetch("runs") }
     .select { |run| run["status"] == "completed" }
@@ -83,6 +51,39 @@ def metrics_match?(recorded, recomputed)
     (recorded.fetch(key).to_f - value).abs <= 0.000001
   end
 end
+
+
+baseline = JSON.parse(File.read(ARGV.fetch(0), encoding: "UTF-8"))
+candidate = JSON.parse(File.read(ARGV.fetch(1), encoding: "UTF-8"))
+policy = YAML.safe_load(File.read(options[:policy], encoding: "UTF-8"), permitted_classes: [], aliases: false)
+gate = policy.fetch("gate")
+errors = []
+
+errors << "both baseline and candidate campaigns must be complete" unless baseline.fetch("complete") && candidate.fetch("complete")
+
+errors << "baseline and candidate campaign ids differ" unless baseline.fetch("campaign") == candidate.fetch("campaign")
+errors << "baseline and candidate campaign versions differ" unless baseline.fetch("campaign_version") == candidate.fetch("campaign_version")
+errors << "baseline and candidate agent configurations differ" unless baseline.fetch("agent") == candidate.fetch("agent")
+
+errors << "baseline and candidate routing case counts differ" unless baseline.fetch("routing_case_count") == candidate.fetch("routing_case_count")
+errors << "baseline and candidate repetition counts differ" unless baseline.fetch("requested_repetitions") == candidate.fetch("requested_repetitions")
+
+baseline_metrics = baseline.fetch("metrics")
+candidate_metrics = candidate.fetch("metrics")
+baseline_recomputed = recomputed_metrics(baseline)
+candidate_recomputed = recomputed_metrics(candidate)
+
+unless metrics_match?(baseline_metrics, baseline_recomputed) && metrics_match?(candidate_metrics, candidate_recomputed)
+  errors << "metrics do not match recomputed run data"
+end
+
+primary_delta = candidate_recomputed.fetch("primary_accuracy") - baseline_recomputed.fetch("primary_accuracy")
+secondary_delta = candidate_recomputed.fetch("secondary_recall") - baseline_recomputed.fetch("secondary_recall")
+unexpected_delta = candidate_recomputed.fetch("average_unexpected_secondary_count") - baseline_recomputed.fetch("average_unexpected_secondary_count")
+
+errors << "primary accuracy regressed beyond allowed threshold" if primary_delta < -gate.fetch("max_primary_accuracy_drop").to_f
+errors << "secondary recall regressed beyond allowed threshold" if secondary_delta < -gate.fetch("max_secondary_recall_drop").to_f
+errors << "unexpected secondary count increased beyond allowed threshold" if unexpected_delta > gate.fetch("max_unexpected_secondary_count_increase").to_f
 
 def confusion_counts(campaign)
   counts = Hash.new(0)
