@@ -54,6 +54,9 @@ Always consider:
 
 - `ruby-clean-code`
 - `ruby-tdd-refactoring`
+- `stack-minimality`
+
+`stack-minimality` is a cross-cutting modifier, not the owner of the business or framework contract. The focused domain skill remains Primary.
 
 Add focused skills for the actual behavior. For cross-layer Rails changes, include `rails-architecture` and the relevant Rails boundary skill.
 
@@ -132,6 +135,7 @@ puts "selected: #{selected.join(', ')}"
 - [ ] repository inspected before implementation
 - [ ] ambiguity resolved
 - [ ] smallest justified pattern selected
+- [ ] stack-minimality applied without weakening required guarantees
 - [ ] focused tests run
 - [ ] validators/CI-equivalent checks run
 - [ ] final diff reviewed
