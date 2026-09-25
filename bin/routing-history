@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "open3"
 require "optparse"
 
 options = { output: nil }
@@ -14,22 +15,37 @@ root = File.expand_path(ARGV.fetch(0) { abort "archive root is required" })
 abort "archive root not found: #{root}" unless Dir.exist?(root)
 
 entries = Dir[File.join(root, "**", "ARCHIVE_MANIFEST.json")].sort.map do |path|
+  archive_dir = File.dirname(path)
   manifest = JSON.parse(File.read(path, encoding: "UTF-8"))
   next unless manifest["evidence_type"] == "skill-routing-campaign-v1"
+
+  stdout, stderr, status = Open3.capture3(
+    RbConfig.ruby,
+    ARCHIVE_VERIFIER,
+    archive_dir,
+    chdir: ROOT
+  )
+  warn stderr unless stderr.empty?
+  abort "archive verification failed: #{archive_dir}" unless status.success?
+
+  evidence_path = File.join(archive_dir, "evidence.json")
+  evidence = JSON.parse(File.read(evidence_path, encoding: "UTF-8"))
 
   {
     "archive_id" => manifest["archive_id"],
     "captured_at" => manifest["captured_at"],
-    "campaign" => manifest["campaign_metrics"] ? manifest["archive_id"].split("/").first : nil,
-    "evidence_type" => manifest["evidence_type"],
-    "repository" => manifest["repository"],
-    "agent" => manifest["agent"],
-    "campaign_metrics" => manifest["campaign_metrics"],
-    "analysis" => manifest["analysis"],
+    "campaign" => evidence.fetch("campaign"),
+    "evidence_type" => evidence.fetch("evidence"),
+    "repository" => evidence.fetch("repository"),
+    "agent" => evidence.fetch("agent"),
+    "campaign_metrics" => evidence.fetch("campaign_metrics"),
+    "analysis" => evidence.fetch("analysis"),
     "artifact_count" => manifest.fetch("artifacts").length,
-    "archive_path" => File.dirname(path)
+    "archive_path" => archive_dir,
+    "verified" => true,
+    "verifier" => "bin/routing-archive-verify"
   }
-end.compact
+end
 
 entries.sort_by! { |entry| [entry["campaign"].to_s, entry["captured_at"].to_s, entry["archive_id"].to_s] }
 
