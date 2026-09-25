@@ -57,6 +57,24 @@ class RoutingBenchmarkHistorySystemTest < Minitest::Test
     end
   end
 
+  def test_history_rejects_tampered_archived_manifest
+    Dir.mktmpdir("routing-history") do |dir|
+      create_verified_archive(dir)
+      manifest_path = Dir[File.join(dir, "**", "ARCHIVE_MANIFEST.json")].fetch(0)
+      manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+      manifest["campaign_metrics"]["primary_accuracy"] = 0.0
+      File.write(manifest_path, JSON.pretty_generate(manifest) + "\n", encoding: "UTF-8")
+
+      stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby, File.join(ROOT, "bin", "routing-history"), dir, chdir: ROOT
+      )
+
+      refute status.success?
+      assert_includes stderr, "archive verification failed"
+      assert_equal "", stdout
+    end
+  end
+
   def test_history_rejects_tampered_archived_artifact
     Dir.mktmpdir("routing-history") do |dir|
       create_verified_archive(dir)
