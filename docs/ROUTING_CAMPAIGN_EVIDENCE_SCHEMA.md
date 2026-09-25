@@ -18,6 +18,7 @@ A campaign evidence package captures one completed public routing campaign toget
 - `agent`
 - `campaign_metrics`
 - `analysis`
+- `analysis_provenance` (emitted by the current packager)
 - `artifacts`
 - `intake`
 - `replay`
@@ -28,7 +29,7 @@ The package is accepted only after `bin/routing-campaign-verify` passes.
 
 Every artifact records its absolute path, SHA-256 digest, and byte size.
 
-The `routing_report` artifact is also semantically bound to `campaign`: the packager independently re-runs `bin/routing-analyze` against the captured campaign and requires the parsed report to match exactly.
+The `routing_report` artifact is also semantically bound to `campaign`: the packager independently re-runs `bin/routing-analyze` against the captured campaign and requires the parsed report to match exactly. Current evidence additionally records SHA-256 identities for the campaign, report, and analyzer implementation. The verifier checks those provenance hashes when present.
 
 Raw per-run result files are included explicitly so that aggregate campaign JSON cannot become the only preserved evidence.
 
