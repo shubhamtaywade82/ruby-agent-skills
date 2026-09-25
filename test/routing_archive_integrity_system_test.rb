@@ -68,6 +68,14 @@ class RoutingArchiveIntegritySystemTest < Minitest::Test
     end
   end
 
+  def test_archive_writer_self_verifies_and_release_gate_verifies_supplied_archive
+    archive_source = File.read(File.join(ROOT, "bin", "routing-archive"), encoding: "UTF-8")
+    release_source = File.read(File.join(ROOT, "bin", "routing-release-check"), encoding: "UTF-8")
+
+    assert_includes archive_source, "routing-archive-verify"
+    assert_includes release_source, "ARCHIVE_VERIFIER"
+  end
+
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
     assert_includes validator, "test/routing_archive_integrity_system_test.rb"
