@@ -20,8 +20,26 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
 
   def test_verifier_accepts_42_hashed_raw_artifacts
     Dir.mktmpdir("campaign-evidence") do |dir|
-      artifact_paths = {}
-      %w[campaign routing_report routing_contract skill_manifest campaign_manifest routing_cases result_schema campaign_intake_schema preflight].each do |key|
+      campaign_path = File.join(dir, "campaign.json")
+      report_path = File.join(dir, "routing-report.json")
+      campaign = build_complete_campaign(dir)
+      File.write(campaign_path, JSON.pretty_generate(campaign) + "\n", encoding: "UTF-8")
+
+      stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "routing-analyze"),
+        campaign_path,
+        "--output", report_path,
+        chdir: ROOT
+      )
+      assert status.success?, "#{stdout}\n#{stderr}"
+      report = JSON.parse(File.read(report_path, encoding: "UTF-8"))
+
+      artifact_paths = {
+        "campaign" => campaign_path,
+        "routing_report" => report_path
+      }
+      %w[routing_contract skill_manifest campaign_manifest routing_cases result_schema campaign_intake_schema preflight].each do |key|
         path = File.join(dir, "#{key}.txt")
         File.write(path, key)
         artifact_paths[key] = path
@@ -51,9 +69,9 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         "requested_runs" => 42,
         "completed_runs" => 42,
         "repository" => {"git_sha" => "abc", "worktree_clean" => true},
-        "agent" => {"provider" => "ollama", "model" => "test-model"},
-        "campaign_metrics" => {},
-        "analysis" => {},
+        "agent" => campaign.fetch("agent"),
+        "campaign_metrics" => campaign.fetch("metrics"),
+        "analysis" => report.fetch("summary"),
         "artifacts" => artifacts,
         "intake" => {"verified" => true},
         "replay" => {"campaign_runner" => "bin/routing-campaign"}
