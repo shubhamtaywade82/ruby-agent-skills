@@ -88,6 +88,8 @@ Provide provider/model metadata when measuring an external agent:
 
 A campaign result is evidence for a specific agent configuration and routing-contract revision. Do not compare results across materially different agent/model/tool configurations as though they were one measurement.
 
+Before remediation comparison, `bin/routing-compare` independently recomputes the recorded primary/secondary routing metrics from completed runs. Recorded summary metrics are treated as untrusted metadata; drift between summaries and run-level observations invalidates the comparison.
+
 ## Ollama adapter
 
 The repository includes `bin/routing-agent-ollama` as a concrete adapter for local Ollama-backed routing experiments. Configure `OLLAMA_URL` and `OLLAMA_MODEL`, then run:
