@@ -4,15 +4,11 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 83 — Installed Stack Minimality Tooling
+> **Current milestone:** Iteration 82 — Installed Stack Minimality Tooling
 
 ---
 
-## Iteration 83 — Installed Stack Minimality Tooling
-
-The installed pack now ships a deterministic bin/stack-minimality tool for shortcut-debt and real Git-diff evidence reports. Installer metadata records the tool SHA-256, and installed-pack verification rejects missing or tampered tooling.
-
-## Iteration 82 — Ponytail-inspired Stack Minimality
+## Iteration 82 — Installed Stack Minimality Tooling
 
 The repository now includes a stack-aware minimality layer for Ruby, Rails, React, TypeScript, and PostgreSQL. It adapts Ponytail's useful discipline—YAGNI, repository reuse, framework/native primitives first, focused over-engineering review, repository-wide audit, explicit simplification debt, and evidence-backed measurement—to this stack.
 
@@ -27,6 +23,9 @@ Skills:
 The pack is a cross-cutting modifier, not a replacement for Rails, React/TypeScript, PostgreSQL, security, accessibility, testing, performance, or API skills. It never treats smaller code as automatically safer and does not copy external benchmark numbers into repository measurements.
 
 See docs/STACK_MINIMALITY.md and the stack-minimality skill for the operational contract.
+
+The installed pack also provides `bin/stack-minimality` under `.ruby-agent-skills/bin/` for deterministic shortcut-ledger and Git-diff evidence reports.
+
 ## Iteration 69 — Routing Campaign Evidence Integrity
 
 Campaign evidence is now independently verifiable before archival. The evidence verifier checks public campaign cardinality, preflight presence, raw-run artifact count, provenance, and recorded SHA-256/byte-size metadata; the importer and archive now enforce that gate.
@@ -148,7 +147,7 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **431** |
 | Evaluation cases | **424** |
-| Dedicated system/contract tests | **74** |
+| Dedicated system/contract tests | **77** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -778,6 +777,14 @@ When adding a new skill or deepening an existing one:
 
 The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
 
+
+## Iteration 83 — Matrix Resume Integrity
+
+Matrix campaign resume no longer trusts a `completed_and_archived` checkpoint entry by status alone. On resume, the runner revalidates the recorded campaign evidence with `routing-campaign-evidence-verify --check-files` and independently validates the recorded archive with `routing-archive-verify` before reusing the result.
+
+## Iteration 82 — Routing Evidence Archive Integrity
+
+Routing evidence archives now have an independent verifier that validates archive identity, preserved evidence, artifact sets, SHA-256/byte-size metadata, relative paths, and symlink traversal. Archive creation self-verifies before succeeding, and release readiness verifies the exact archived package containing the supplied evidence.
 
 ## Iteration 81 — Routing Analysis Provenance Binding
 

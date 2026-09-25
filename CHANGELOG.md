@@ -1,17 +1,31 @@
-## Iteration 83 — Installed Stack Minimality Tooling
+## Iteration 82 — Installed Stack Minimality Tooling
 
-- Added a deterministic bin/stack-minimality tool for shortcut-debt and real Git-diff evidence reports.
+- Added a deterministic `bin/stack-minimality` tool for shortcut-debt and real Git-diff evidence reports.
 - Extended the installer to ship the tool with the installed pack and record its SHA-256 provenance.
 - Extended installed-pack verification to reject tampered or missing minimality tooling.
 - Added system coverage for tool execution and installer integrity.
 
-## Iteration 82 — Ponytail-inspired Stack Minimality
+## Iteration 81 — Ponytail-inspired Stack Minimality
 
 - Added six stack-minimality skills adapted from Ponytail for Ruby, Rails, React, TypeScript, and PostgreSQL.
 - Added 14 implementation patterns covering Rails conventions, Active Record, PostgreSQL invariants/query evidence, React state, TypeScript boundaries, dependencies, modularity, and shared-root bug fixes.
 - Added seven evaluation contracts and system-test coverage for manifest/routing completeness.
 - Integrated stack minimality into skill routing, AGENTS guidance, README, and canonical validation.
 - External Ponytail benchmark results are treated as source context, not as measurements of this repository.
+
+## Iteration 83 — Matrix Resume Integrity
+
+- Revalidate completed-and-archived model results with the campaign evidence verifier during matrix resume.
+- Revalidate the recorded archive with the independent routing archive verifier before reusing a checkpoint result.
+- Add regression coverage for the resume trust boundary.
+
+## Iteration 82 — Routing Evidence Archive Integrity
+
+- Added `bin/routing-archive-verify` for standalone archive integrity validation.
+- Made archive creation self-verify before reporting success.
+- Made release readiness verify the exact archived package containing the supplied evidence.
+- Added artifact path traversal and symlink-boundary checks.
+
 ## Iteration 81 — Routing Analysis Provenance Binding
 
 - Bound preserved `routing-report.json` to an independent recomputation from `campaign.json` during evidence packaging.
