@@ -135,6 +135,21 @@ Verify the resulting bundle independently:
 
 The bundle contains a frozen release-policy copy and a cryptographic manifest for the public evidence, archive tree, and any optional empirical components.
 
+## Release evidence bundle
+
+After the required external evidence is available, create the release bundle:
+
+    ruby bin/routing-release-bundle \
+      --public-evidence ./routing-campaign-output/campaign-evidence.json \
+      --public-archive ./routing-archives/<archive> \
+      --output ./routing-release-bundle
+
+Optionally add verified matrix evidence and the safe hidden-benchmark receipt with `--matrix-evidence` and `--hidden-receipt`.
+
+The command self-verifies the resulting bundle. An existing bundle can be gated independently with:
+
+    ruby bin/routing-release-check --bundle ./routing-release-bundle
+
 ## Installation doctor
 
 After installation and before controlled agent use:
