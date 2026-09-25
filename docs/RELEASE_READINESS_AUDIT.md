@@ -12,7 +12,9 @@ Iteration 48 verifies that the public repository surface is complete after the e
 
 ## Release checks
 
-`scripts/audit_release_readiness.rb` fails on missing public metadata, stale inventory markers, a non-final milestone, or tracked generated benchmark results.
+`scripts/audit_release_readiness.rb` fails on missing public metadata, stale inventory markers, a milestone mismatch between README and CHANGELOG, inventory/count drift in README, or tracked generated benchmark results.
+
+The documented inventory covers skills, implementation patterns, evaluation cases, and dedicated system/contract tests.
 
 `bin/validate` remains the canonical engineering verification command; the release audit is an additional publication guardrail.
 
