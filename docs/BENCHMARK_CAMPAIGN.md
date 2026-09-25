@@ -110,6 +110,11 @@ The same paired-run machinery can execute the design-pattern corpus:
 
 The design-pattern campaign includes 18 public cases and five independent verifier dimensions, including `pattern_selection` and `scope_control`.
 
+
+## Design-pattern restraint expansion
+
+The public design-pattern campaign now includes **24 cases**: the original 18 pattern/implementation cases plus six explicit negative-selection cases (`service-object-not-needed`, `strategy-not-needed`, `factory-not-needed`, `repository-not-needed`, `value-object-not-needed`, and `presenter-not-needed`). These cases measure whether the agent can decline a pattern when the responsibility, variation, ownership, or lifecycle boundary has not been earned.
+
 ## Incremental campaign coverage
 
 A benchmark family may cover a deliberate subset of its public evaluation corpus. The validator checks that campaign evaluation IDs are public and that fixture registration is exact; audit_benchmark_quality.rb reports the remaining public evaluations without campaigns. This makes benchmark coverage measurable without falsely labeling unrun evaluations as benchmarked.
