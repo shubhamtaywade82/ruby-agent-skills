@@ -4,8 +4,10 @@
 require "digest"
 require "json"
 require "optparse"
+require "open3"
 
 options = {check_files: false, allow_dirty: false}
+COMPARISON_VERIFIER = File.expand_path("routing-compare-verify", __dir__)
 
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-evidence-verify EVIDENCE_JSON [options]"
@@ -23,6 +25,25 @@ errors << "protocol_version must be 1" unless evidence["protocol_version"].to_i 
 errors << "evidence type must be skill-routing-experiment-v1" unless evidence["evidence"] == "skill-routing-experiment-v1"
 %w[campaign campaign_version routing_case_count requested_repetitions repository agent compatibility artifacts metrics gate replay].each do |key|
   errors << "missing top-level field #{key}" unless evidence.key?(key)
+end
+
+if evidence["comparison_provenance"]
+  comparison_artifact_path = evidence.dig("artifacts", "comparison", "path").to_s
+  errors << "comparison provenance must match comparison artifact" unless begin
+    comparison = JSON.parse(File.read(comparison_artifact_path, encoding: "UTF-8"))
+    comparison.fetch("provenance") == evidence["comparison_provenance"]
+  rescue Errno::ENOENT, JSON::ParserError, KeyError
+    false
+  end
+
+  if options[:check_files] && File.file?(comparison_artifact_path)
+    _stdout, stderr, status = Open3.capture3(
+      RbConfig.ruby, COMPARISON_VERIFIER, comparison_artifact_path, "--check-files",
+      chdir: File.expand_path("..", __dir__)
+    )
+    warn stderr unless stderr.empty?
+    errors << "comparison provenance replay verification failed" unless status.success?
+  end
 end
 
 compatibility = evidence.fetch("compatibility", {})
