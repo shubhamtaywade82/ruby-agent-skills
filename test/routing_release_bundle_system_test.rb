@@ -47,6 +47,11 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
     assert_includes script, "routing-release-bundle-verify"
   end
 
+  def test_release_bundle_verifier_requires_public_component
+    script = source("bin/routing-release-bundle-verify")
+    assert_includes script, "public release component is required"
+  end
+
   def test_release_bundle_verifier_rechecks_every_component
     script = source("bin/routing-release-bundle-verify")
     assert_includes script, "public campaign evidence verification failed"
