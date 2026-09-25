@@ -101,6 +101,10 @@ Resume an interrupted matrix:
       --output ./routing-matrix-output \
       --resume
 
+## End-to-end campaign finalization
+
+The external handoff runner now executes the campaign and then invokes `bin/routing-campaign-import`, which regenerates the routing analysis, packages and verifies evidence, and creates the requested archive. This removes the manual analyze/import/finalize sequence from the public handoff workflow.
+
 ## Matrix resume integrity
 
 Resume revalidates completed/archive results by running both the campaign evidence verifier and archive integrity verifier before reuse.
@@ -127,4 +131,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 83. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 84. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
