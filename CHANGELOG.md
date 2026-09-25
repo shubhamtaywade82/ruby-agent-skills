@@ -1,3 +1,9 @@
+## Iteration 84 — Stack Minimality Adversarial Evaluation Expansion
+
+- Added adversarial evaluations for security, accessibility, performance evidence, migration safety, service-boundary decisions, and React derived state.
+- Expanded the stack-minimality corpus from 7 to 13 evaluation contracts.
+- Hardened the system test to require the complete minimality evaluation set.
+
 ## Iteration 82 — Installed Stack Minimality Tooling
 
 - Added a deterministic `bin/stack-minimality` tool for shortcut-debt and real Git-diff evidence reports.
