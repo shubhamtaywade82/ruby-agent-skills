@@ -13,6 +13,7 @@ RELEASE_CHECK = File.join(ROOT, "bin", "routing-release-check")
 CAMPAIGN_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
 MATRIX_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-model-matrix-evidence-verify")
 HIDDEN_RECEIPT_VERIFIER = File.join(ROOT, "bin", "routing-hidden-benchmark-receipt-verify")
+BUNDLE_VERIFIER = File.join(ROOT, "bin", "routing-release-bundle-verify")
 RELEASE_CONFIG = File.join(ROOT, "router", "ROUTING_RELEASE.yml")
 
 options = {
@@ -128,5 +129,16 @@ manifest["components"]["hidden"] = {"receipt" => file_metadata(hidden_target)} i
 
 manifest_path = File.join(options[:output], "RELEASE_MANIFEST.json")
 File.write(manifest_path, JSON.pretty_generate(manifest) + "\n", encoding: "UTF-8")
+
+verify_stdout, verify_stderr, verify_status = Open3.capture3(
+  RbConfig.ruby,
+  BUNDLE_VERIFIER,
+  options[:output],
+  "--check-files",
+  chdir: ROOT
+)
+warn verify_stderr unless verify_stderr.empty?
+puts verify_stdout
+abort "release bundle verification failed" unless verify_status.success?
 
 puts JSON.pretty_generate(manifest)
