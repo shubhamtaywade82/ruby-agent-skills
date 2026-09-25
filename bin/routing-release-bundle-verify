@@ -1,0 +1,138 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "open3"
+require "optparse"
+
+ROOT = File.expand_path("..", __dir__)
+CAMPAIGN_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+MATRIX_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-model-matrix-evidence-verify")
+HIDDEN_RECEIPT_VERIFIER = File.join(ROOT, "bin", "routing-hidden-benchmark-receipt-verify")
+
+options = {check_files: false}
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-release-bundle-verify BUNDLE_DIR [options]"
+  opts.on("--check-files", "Recalculate bundle component hashes and replay every supplied verifier") { options[:check_files] = true }
+end.parse!
+
+root = File.expand_path(ARGV.fetch(0) { abort "release bundle directory is required" })
+manifest_path = File.join(root, "RELEASE_MANIFEST.json")
+abort "release manifest not found: #{manifest_path}" unless File.file?(manifest_path)
+
+manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+errors = []
+
+errors << "protocol_version must be 1" unless manifest["protocol_version"].to_i == 1
+errors << "release bundle type must be skill-routing-release-evidence-v1" unless manifest["release_bundle"] == "skill-routing-release-evidence-v1"
+errors << "repository git SHA is missing" if manifest.dig("repository", "git_sha").to_s.strip.empty?
+errors << "release policy provenance is missing" unless manifest.dig("release_policy", "sha256")
+
+components = manifest["components"]
+errors << "components must be a mapping" unless components.is_a?(Hash)
+
+def verify_file(metadata, errors, check_files:)
+  unless metadata.is_a?(Hash)
+    errors << "file metadata must be a mapping"
+    return
+  end
+
+  digest = metadata["sha256"].to_s
+  errors << "file SHA-256 must be 64 hex characters" unless digest.match?(/\A[0-9a-f]{64}\z/)
+
+  return unless check_files
+
+  path = metadata["path"].to_s
+  if path.empty? || !File.file?(path)
+    errors << "bundle file unavailable at #{path}"
+    return
+  end
+
+  errors << "SHA-256 mismatch at #{path}" unless Digest::SHA256.file(path).hexdigest == digest
+  errors << "byte size mismatch at #{path}" unless File.size(path) == metadata["bytes"].to_i
+end
+
+def verify_archive(metadata, errors, check_files:)
+  unless metadata.is_a?(Hash)
+    errors << "archive metadata must be a mapping"
+    return
+  end
+
+  return unless check_files
+  path = metadata["path"].to_s
+  unless Dir.exist?(path)
+    errors << "archive unavailable at #{path}"
+    return
+  end
+
+  files = {}
+  Dir.glob(File.join(path, "**", "*"), File::FNM_DOTMATCH).sort.each do |entry|
+    next if [".", ".."].include?(File.basename(entry))
+    if File.symlink?(entry)
+      errors << "archive contains a symlink: #{entry}"
+      next
+    end
+    next unless File.file?(entry)
+    relative = entry.delete_prefix(File.expand_path(path) + "/")
+    files[relative] = {"sha256" => Digest::SHA256.file(entry).hexdigest, "bytes" => File.size(entry)}
+  end
+
+  canonical = files.sort.to_h
+  actual = Digest::SHA256.hexdigest(JSON.generate(canonical))
+  errors << "archive tree SHA-256 mismatch" unless actual == metadata["tree_sha256"].to_s
+  errors << "archive file map mismatch" unless canonical == metadata["files"]
+end
+
+public_component = components.is_a?(Hash) ? components["public"] : nil
+if public_component.is_a?(Hash)
+  public_evidence = public_component["evidence"]
+  public_archive = public_component["archive"]
+  verify_file(public_evidence, errors, check_files: options[:check_files])
+  verify_archive(public_archive, errors, check_files: options[:check_files])
+
+  if options[:check_files] && public_evidence.is_a?(Hash) && File.file?(public_evidence["path"].to_s)
+    _out, stderr, status = Open3.capture3(
+      RbConfig.ruby, CAMPAIGN_EVIDENCE_VERIFIER, public_evidence["path"].to_s, "--check-files", chdir: ROOT
+    )
+    warn stderr unless stderr.empty?
+    errors << "public campaign evidence verification failed" unless status.success?
+  end
+end
+
+matrix = components.is_a?(Hash) ? components["matrix"] : nil
+if matrix
+  metadata = matrix["evidence"]
+  verify_file(metadata, errors, check_files: options[:check_files])
+  if options[:check_files] && metadata.is_a?(Hash) && File.file?(metadata["path"].to_s)
+    _out, stderr, status = Open3.capture3(
+      RbConfig.ruby, MATRIX_EVIDENCE_VERIFIER, metadata["path"].to_s, "--check-files", chdir: ROOT
+    )
+    warn stderr unless stderr.empty?
+    errors << "matrix evidence verification failed" unless status.success?
+  end
+end
+
+hidden = components.is_a?(Hash) ? components["hidden"] : nil
+if hidden
+  metadata = hidden["receipt"]
+  verify_file(metadata, errors, check_files: options[:check_files])
+  if options[:check_files] && metadata.is_a?(Hash) && File.file?(metadata["path"].to_s)
+    _out, stderr, status = Open3.capture3(
+      RbConfig.ruby, HIDDEN_RECEIPT_VERIFIER, metadata["path"].to_s, "--check-files", chdir: ROOT
+    )
+    warn stderr unless stderr.empty?
+    errors << "hidden benchmark receipt verification failed" unless status.success?
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing release bundle verification error(s)"
+end
+
+puts "Routing release bundle verification"
+puts "  bundle: #{root}"
+puts "  components: #{components.keys.sort.join(", ")}"
+puts "  integrity: #{options[:check_files] ? "checked" : "schema-only"}"
+puts "Routing release bundle verification passed."
