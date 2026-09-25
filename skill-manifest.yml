@@ -225,6 +225,30 @@ skills:
     family: meta
     path: skills/agent-workflow/SKILL.md
     triggers: [agent workflow, skill selection, repository agent process, context management, implementation workflow]
+  stack-minimality:
+    family: architecture-quality
+    path: skills/stack-minimality/SKILL.md
+    triggers: [minimal solution, simplest solution, less code, minimality, YAGNI, over-engineering, unnecessary abstraction, unnecessary dependency, simplify, reduce indirection, Ruby Rails React PostgreSQL minimality]
+  stack-minimality-review:
+    family: architecture-quality
+    path: skills/stack-minimality-review/SKILL.md
+    triggers: [minimality review, over-engineering review, simplify diff, delete list, unnecessary complexity]
+  stack-minimality-audit:
+    family: architecture-quality
+    path: skills/stack-minimality-audit/SKILL.md
+    triggers: [repo bloat audit, over-engineering audit, simplify repository, what can we delete]
+  stack-minimality-debt:
+    family: architecture-quality
+    path: skills/stack-minimality-debt/SKILL.md
+    triggers: [minimality debt, deferred simplification, stack-minimality markers, shortcuts ledger]
+  stack-minimality-evidence:
+    family: architecture-quality
+    path: skills/stack-minimality-evidence/SKILL.md
+    triggers: [minimality evidence, measure diff, actual savings, dependency delta, change size, performance evidence]
+  stack-minimality-help:
+    family: architecture-quality
+    path: skills/stack-minimality-help/SKILL.md
+    triggers: [minimality help, minimality skills, simplification commands]
   ruby-core:
     family: ruby
     path: skills/ruby-core/SKILL.md
