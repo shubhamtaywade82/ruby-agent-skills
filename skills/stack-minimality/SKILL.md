@@ -10,7 +10,7 @@ Reduce unnecessary code, dependencies, indirection, and operational surface area
 
 This is a cross-cutting modifier for a Ruby + Rails + React + TypeScript + PostgreSQL codebase. It does not replace the domain skill that owns the actual contract.
 
-The rule is: understand the system first, then stop at the first solution that completely satisfies the contract.
+The rule is: apply YAGNI, understand the system first, then stop at the first solution that completely satisfies the contract.
 
 ## Activate when
 Use for implementation, refactoring, bug fixing, architecture changes, dependency selection, performance work, database changes, frontend changes, and code review.
