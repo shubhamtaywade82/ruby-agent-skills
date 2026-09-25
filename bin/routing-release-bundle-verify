@@ -32,6 +32,7 @@ errors << "release policy provenance is missing" unless manifest.dig("release_po
 
 components = manifest["components"]
 errors << "components must be a mapping" unless components.is_a?(Hash)
+errors << "public release component is required" unless components.is_a?(Hash) && components["public"].is_a?(Hash)
 
 def verify_file(metadata, errors, check_files:)
   unless metadata.is_a?(Hash)
