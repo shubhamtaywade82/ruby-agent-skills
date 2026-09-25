@@ -1,0 +1,36 @@
+id: stack-minimality-service-boundary
+version: 1
+title: Do not split Rails services without a real boundary
+category: stack-minimality
+source: ponytail-stack-adaptation-v2
+skills:
+  - stack-minimality
+  - rails-staff-principal-architecture
+  - rails-distributed-systems
+patterns:
+  - pattern:modular-monolith-before-service-split
+prompt: |
+  A Rails domain is proposed as a microservice solely to reduce codebase size. Compare the modular-monolith option and require a concrete independent deployment, scaling, ownership, or failure-isolation driver for a service.
+constraints:
+  required_design:
+    - real extraction driver required
+    - data ownership stays explicit
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: fashion-split
+    input: Extract a single Rails domain only because its folder is large.
+    expected:
+      contract: "service-split: rejected"
+  - name: real-boundary
+    input: Independent scaling and deployment are required and data ownership is explicit.
+    expected:
+      contract: "service-split: potentially justified"
+grading:
+  functional: The proposed boundary preserves the capability contract.
+  tests: Representative boundary behavior is covered.
+  contract: Service extraction is tied to a concrete operational or ownership requirement.
+  scope_control: No service split is introduced merely for aesthetics.

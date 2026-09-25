@@ -1,0 +1,36 @@
+id: stack-minimality-accessibility-boundary
+version: 1
+title: Minimality must preserve accessible UI semantics
+category: stack-minimality
+source: ponytail-stack-adaptation-v2
+skills:
+  - stack-minimality
+  - react-accessibility-performance
+  - react-component-engineering
+patterns:
+  - pattern:react-native-before-dependency
+prompt: |
+  A React UI can be implemented with fewer lines by replacing semantic HTML and keyboard behavior with a custom div-based widget. Prefer the smaller native or semantic implementation without losing accessibility.
+constraints:
+  required_design:
+    - semantic HTML or equivalent accessible behavior is preserved
+    - keyboard and focus behavior remain correct
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: semantic-input
+    input: Replace a simple custom dropdown with a native select where browser support meets the requirement.
+    expected:
+      contract: "accessibility: preserved"
+  - name: custom-required
+    input: A custom combobox is genuinely required; retain the required ARIA and focus contract.
+    expected:
+      contract: "accessibility: preserved"
+grading:
+  functional: The UI behavior remains correct.
+  tests: User interaction and accessibility-sensitive behavior are covered.
+  contract: Keyboard, focus, and semantic accessibility behavior is preserved.
+  scope_control: No unrelated frontend migration is introduced.
