@@ -9,7 +9,7 @@ Current inventory:
 - 91 skills
 - 431 implementation patterns
 - 436 evaluation cases
-- 77 system/contract tests
+- 79 system/contract tests
 
 ## First checkout
 
@@ -116,6 +116,25 @@ A fully completed model matrix automatically produces `matrix-evidence.json`. It
 
 The aggregate remains descriptive-only: it does not rank models or synthesize missing results.
 
+## Verified release evidence bundle
+
+After externally executing the public campaign and obtaining verified immutable evidence, compose a frozen release bundle:
+
+    ruby bin/routing-release-bundle \
+      --public-evidence ./routing-campaign-output/campaign-evidence.json \
+      --public-archive ./routing-archives/<archive> \
+      --matrix-evidence ./routing-matrix-output/matrix-evidence.json \
+      --hidden-receipt ./hidden-benchmark/receipt.json \
+      --output ./routing-release-bundle
+
+The matrix and hidden receipt inputs are optional. When supplied, they are independently verified and preserved without importing hidden cases or gold labels.
+
+Verify the resulting bundle independently:
+
+    ruby bin/routing-release-bundle-verify ./routing-release-bundle --check-files
+
+The bundle contains a frozen release-policy copy and a cryptographic manifest for the public evidence, archive tree, and any optional empirical components.
+
 ## Installation doctor
 
 After installation and before controlled agent use:
@@ -142,4 +161,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 94. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 97. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
