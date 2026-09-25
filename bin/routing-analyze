@@ -63,9 +63,6 @@ cases.each do |case_id, case_data|
       next
     end
 
-    completed_runs += 1
-    case_completed += 1
-
     begin
       expected = run.fetch("expected")
       observed = run.fetch("observed")
@@ -85,6 +82,8 @@ cases.each do |case_id, case_data|
       unexpected_secondary = observed_secondary - expected_secondary
 
       primary_match = observed_primary == expected_primary
+      completed_runs += 1
+      case_completed += 1
       primary_matches += 1 if primary_match
       case_primary_matches += 1 if primary_match
       secondary_expected += expected_secondary.length
@@ -94,21 +93,24 @@ cases.each do |case_id, case_data|
       unexpected_secondary_total += unexpected_secondary.length
       case_unexpected_secondary += unexpected_secondary.length
 
-      unless existing = confusions.find { |entry| entry["expected_primary_skill"] == expected_primary && entry["observed_primary_skill"] == observed_primary }
-        confusions << {
-          "expected_primary_skill" => expected_primary,
-          "observed_primary_skill" => observed_primary,
-          "count" => 0,
-          "case_ids" => []
-        }
-        existing = confusions.last
-      end
-
       if observed_primary != expected_primary
+        existing = confusions.find do |entry|
+          entry["expected_primary_skill"] == expected_primary &&
+            entry["observed_primary_skill"] == observed_primary
+        end
+
+        unless existing
+          existing = {
+            "expected_primary_skill" => expected_primary,
+            "observed_primary_skill" => observed_primary,
+            "count" => 0,
+            "case_ids" => []
+          }
+          confusions << existing
+        end
+
         existing["count"] += 1
         existing["case_ids"] << case_id unless existing["case_ids"].include?(case_id)
-      elsif existing["count"].zero? && existing["case_ids"].empty?
-        confusions.delete(existing)
       end
     rescue KeyError => e
       errors << "case #{case_id} completed run is missing #{e.message}"
