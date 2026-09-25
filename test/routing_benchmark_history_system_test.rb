@@ -9,6 +9,36 @@ require "tmpdir"
 class RoutingBenchmarkHistorySystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
 
+  def test_history_rejects_unverifiable_campaign_archives
+    Dir.mktmpdir("routing-history") do |dir|
+      archive = File.join(dir, "skill-routing-public-v1", "model-a", "sha")
+      FileUtils.mkdir_p(archive)
+      File.write(
+        File.join(archive, "ARCHIVE_MANIFEST.json"),
+        JSON.generate(
+          "archive_id" => "skill-routing-public-v1/model-a/sha",
+          "captured_at" => "2026-09-23T00:00:00Z",
+          "evidence_type" => "skill-routing-campaign-v1",
+          "repository" => {"git_sha" => "sha", "worktree_clean" => true},
+          "agent" => {"provider" => "ollama", "model" => "model-a"},
+          "campaign_metrics" => {"primary_accuracy" => 0.5, "secondary_recall" => 0.4},
+          "requested_runs" => 42,
+          "completed_runs" => 42,
+          "analysis" => {},
+          "artifacts" => {}
+        )
+      )
+
+      stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby, File.join(ROOT, "bin", "routing-history"), dir, chdir: ROOT
+      )
+
+      refute status.success?
+      assert_includes stderr, "archive verification failed"
+      assert_equal "", stdout
+    end
+  end
+
   def test_history_indexes_campaign_archives_without_ranking
     Dir.mktmpdir("routing-history") do |dir|
       archive = File.join(dir, "skill-routing-public-v1", "model-a", "sha")
