@@ -9,7 +9,7 @@ Current inventory:
 - 85 skills
 - 417 implementation patterns
 - 410 evaluation cases
-- 72 system/contract tests
+- 73 system/contract tests
 
 ## First checkout
 
@@ -101,6 +101,10 @@ Resume an interrupted matrix:
       --output ./routing-matrix-output \
       --resume
 
+## Matrix resume integrity
+
+Resume revalidates completed/archive results by running both the campaign evidence verifier and archive integrity verifier before reuse.
+
 ## Installation doctor
 
 After installation and before controlled agent use:
@@ -123,4 +127,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 79. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 83. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
