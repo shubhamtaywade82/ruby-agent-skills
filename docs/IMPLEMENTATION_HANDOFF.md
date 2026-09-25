@@ -9,7 +9,7 @@ Current inventory:
 - 85 skills
 - 417 implementation patterns
 - 410 evaluation cases
-- 73 system/contract tests
+- 75 system/contract tests
 
 ## First checkout
 
@@ -61,17 +61,11 @@ The campaign is 14 public cases × 3 repetitions = 42 model decisions.
 
 If interrupted, rerun the generated launcher. When a checkpoint exists, it automatically resumes verified completed repetitions.
 
-After completion, import and archive the evidence:
+After completion, the generated handoff launcher invokes `bin/routing-campaign-import`, which regenerates the canonical routing analysis, packages and verifies evidence, and creates the requested immutable archive.
 
-    ruby bin/routing-campaign-import ./routing-campaign-output \
-      --archive ./routing-archives
+For a baseline/candidate remediation experiment, `bin/routing-experiment` now verifies `comparison.json`, packages `evidence.json`, and runs `bin/routing-evidence-verify --check-files` before reporting success.
 
-Analyze the completed campaign independently:
-
-    ruby bin/routing-analyze ./routing-campaign-output/campaign.json \
-      --output ./routing-campaign-output/analysis.json
-
-The analysis recomputes completion and routing metrics from the recorded runs. It reports primary accuracy, secondary recall, unexpected secondary selections, confusion pairs, modal primary selection, and repetition stability. It exits non-zero for incomplete or structurally inconsistent campaigns.
+`bin/routing-compare-verify` can independently replay a stored comparison and validate its cryptographic provenance. `bin/routing-analyze` remains the underlying analysis primitive and recomputes completion/routing metrics from recorded runs; it exits non-zero for incomplete or structurally inconsistent campaigns.
 
 ## Multi-model campaign
 
@@ -100,6 +94,12 @@ Resume an interrupted matrix:
       --archive ./routing-matrix-archives \
       --output ./routing-matrix-output \
       --resume
+
+## Comparison and experiment evidence finalization
+
+Comparison reports now bind the exact baseline/candidate inputs plus the remediation policy and comparator implementation with SHA-256 hashes. The standalone comparison verifier replays those inputs and rejects report drift.
+
+The baseline/candidate experiment command consumes this verifier and then creates independently verified experiment evidence.
 
 ## End-to-end campaign finalization
 
@@ -131,4 +131,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 84. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 87. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
