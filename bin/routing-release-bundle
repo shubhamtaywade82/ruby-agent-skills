@@ -1,0 +1,144 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "fileutils"
+require "json"
+require "open3"
+require "optparse"
+require "time"
+
+ROOT = File.expand_path("..", __dir__)
+RELEASE_CHECK = File.join(ROOT, "bin", "routing-release-check")
+CAMPAIGN_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+MATRIX_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-model-matrix-evidence-verify")
+HIDDEN_RECEIPT_VERIFIER = File.join(ROOT, "bin", "routing-hidden-benchmark-receipt-verify")
+BUNDLE_VERIFIER = File.join(ROOT, "bin", "routing-release-bundle-verify")
+RELEASE_CONFIG = File.join(ROOT, "router", "ROUTING_RELEASE.yml")
+
+options = {
+  public_evidence: nil,
+  public_archive: nil,
+  matrix_evidence: nil,
+  hidden_receipt: nil,
+  output: nil
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-release-bundle --public-evidence PATH --public-archive DIR --output DIR [options]"
+  opts.on("--public-evidence PATH", "Verified public campaign evidence JSON") { |v| options[:public_evidence] = File.expand_path(v) }
+  opts.on("--public-archive DIR", "Verified immutable public campaign archive directory") { |v| options[:public_archive] = File.expand_path(v) }
+  opts.on("--matrix-evidence PATH", "Optional verified multi-model matrix evidence JSON") { |v| options[:matrix_evidence] = File.expand_path(v) }
+  opts.on("--hidden-receipt PATH", "Optional safe hidden benchmark receipt JSON") { |v| options[:hidden_receipt] = File.expand_path(v) }
+  opts.on("--output DIR", "New release bundle directory") { |v| options[:output] = File.expand_path(v) }
+end.parse!
+
+abort "--public-evidence is required" unless options[:public_evidence]
+abort "--public-archive is required" unless options[:public_archive]
+abort "--output is required" unless options[:output]
+
+abort "public evidence not found: #{options[:public_evidence]}" unless File.file?(options[:public_evidence])
+abort "public archive not found: #{options[:public_archive]}" unless Dir.exist?(options[:public_archive])
+abort "release bundle output already exists: #{options[:output]}" if File.exist?(options[:output])
+
+git_sha, git_status = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+abort "unable to resolve repository HEAD" unless git_status.success?
+
+worktree, worktree_status = Open3.capture2("git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all")
+abort "unable to inspect repository worktree" unless worktree_status.success?
+abort "repository worktree must be clean before creating a release bundle" unless worktree.strip.empty?
+
+def run!(command, message)
+  stdout, stderr, status = Open3.capture3(*command, chdir: ROOT)
+  warn stderr unless stderr.empty?
+  abort message unless status.success?
+  stdout
+end
+
+run!([RbConfig.ruby, RELEASE_CHECK, "--evidence", options[:public_evidence], "--archive", options[:public_archive]], "public release gates failed")
+run!([RbConfig.ruby, CAMPAIGN_EVIDENCE_VERIFIER, options[:public_evidence], "--check-files"], "public campaign evidence verification failed")
+
+run!([RbConfig.ruby, MATRIX_EVIDENCE_VERIFIER, options[:matrix_evidence], "--check-files"], "matrix evidence verification failed") if options[:matrix_evidence]
+run!([RbConfig.ruby, HIDDEN_RECEIPT_VERIFIER, options[:hidden_receipt], "--check-files"], "hidden benchmark receipt verification failed") if options[:hidden_receipt]
+
+FileUtils.mkdir_p(options[:output])
+FileUtils.cp(RELEASE_CONFIG, File.join(options[:output], "release-policy.yml"))
+FileUtils.mkdir_p(File.join(options[:output], "public"))
+FileUtils.mkdir_p(File.join(options[:output], "matrix"))
+FileUtils.mkdir_p(File.join(options[:output], "hidden"))
+
+public_target = File.join(options[:output], "public", "campaign-evidence.json")
+FileUtils.cp(options[:public_evidence], public_target)
+
+archive_target = File.join(options[:output], "public", "archive")
+FileUtils.cp_r(options[:public_archive], archive_target)
+
+matrix_target = nil
+if options[:matrix_evidence]
+  matrix_target = File.join(options[:output], "matrix", "matrix-evidence.json")
+  FileUtils.cp(options[:matrix_evidence], matrix_target)
+end
+
+hidden_target = nil
+if options[:hidden_receipt]
+  hidden_target = File.join(options[:output], "hidden", "hidden-benchmark-receipt.json")
+  FileUtils.cp(options[:hidden_receipt], hidden_target)
+end
+
+def file_metadata(path)
+  {
+    "path" => File.expand_path(path),
+    "sha256" => Digest::SHA256.file(path).hexdigest,
+    "bytes" => File.size(path)
+  }
+end
+
+def archive_metadata(path)
+  files = {}
+  Dir.glob(File.join(path, "**", "*"), File::FNM_DOTMATCH).sort.each do |entry|
+    next if [".", ".."].include?(File.basename(entry))
+    abort "release bundle archive contains a symlink: #{entry}" if File.symlink?(entry)
+    next unless File.file?(entry)
+
+    relative = entry.delete_prefix(File.expand_path(path) + "/")
+    files[relative] = file_metadata(entry).slice("sha256", "bytes")
+  end
+  canonical = files.sort.to_h
+  {"path" => File.expand_path(path), "tree_sha256" => Digest::SHA256.hexdigest(JSON.generate(canonical)), "files" => canonical}
+end
+
+manifest = {
+  "protocol_version" => 1,
+  "release_bundle" => "skill-routing-release-evidence-v1",
+  "created_at" => Time.now.utc.iso8601,
+  "repository" => {
+    "git_sha" => git_sha.strip,
+    "worktree_clean" => true
+  },
+  "release_policy" => file_metadata(File.join(options[:output], "release-policy.yml")),
+  "components" => {
+    "public" => {
+      "evidence" => file_metadata(public_target),
+      "archive" => archive_metadata(archive_target)
+    }
+  }
+}
+
+manifest["components"]["matrix"] = {"evidence" => file_metadata(matrix_target)} if matrix_target
+manifest["components"]["hidden"] = {"receipt" => file_metadata(hidden_target)} if hidden_target
+
+manifest_path = File.join(options[:output], "RELEASE_MANIFEST.json")
+File.write(manifest_path, JSON.pretty_generate(manifest) + "\n", encoding: "UTF-8")
+
+verify_stdout, verify_stderr, verify_status = Open3.capture3(
+  RbConfig.ruby,
+  BUNDLE_VERIFIER,
+  options[:output],
+  "--check-files",
+  chdir: ROOT
+)
+warn verify_stderr unless verify_stderr.empty?
+puts verify_stdout
+abort "release bundle verification failed" unless verify_status.success?
+
+puts JSON.pretty_generate(manifest)
