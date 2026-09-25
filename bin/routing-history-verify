@@ -1,0 +1,82 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "open3"
+require "optparse"
+
+ROOT = File.expand_path("..", __dir__)
+ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
+
+options = {check_files: false}
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-history-verify HISTORY_JSON [options]"
+  opts.on("--check-files", "Replay the archive verifier for every history entry") { options[:check_files] = true }
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "history JSON is required" })
+abort "history JSON not found: #{path}" unless File.file?(path)
+
+history = JSON.parse(File.read(path, encoding: "UTF-8"))
+errors = []
+
+errors << "protocol_version must be 1" unless history["protocol_version"].to_i == 1
+errors << "history type must be skill-routing-history-v1" unless history["history"] == "skill-routing-history-v1"
+
+entries = history["entries"]
+errors << "entries must be an array" unless entries.is_a?(Array)
+
+if entries.is_a?(Array)
+  errors << "campaign_count does not match entries" unless history["campaign_count"].to_i == entries.length
+
+  archive_ids = entries.map { |entry| entry["archive_id"].to_s }
+  errors << "duplicate archive ids are not allowed" unless archive_ids.uniq.length == archive_ids.length
+
+  entries.each do |entry|
+    unless entry.is_a?(Hash)
+      errors << "history entries must be mappings"
+      next
+    end
+
+    %w[archive_id campaign evidence_type repository agent campaign_metrics requested_runs completed_runs analysis artifact_count archive_path].each do |key|
+      errors << "history entry missing #{key}" unless entry.key?(key)
+    end
+
+    archive_path = entry["archive_path"].to_s
+    if archive_path.empty? || !Dir.exist?(archive_path)
+      errors << "archive directory unavailable at #{archive_path}"
+      next
+    end
+
+    next unless options[:check_files]
+
+    stdout, stderr, status = Open3.capture3(
+      RbConfig.ruby, ARCHIVE_VERIFIER, archive_path, chdir: ROOT
+    )
+    warn stderr unless stderr.empty?
+    errors << "archive verification failed for #{entry["archive_id"]}: #{stdout.strip}" unless status.success?
+
+    begin
+      manifest_path = File.join(archive_path, "ARCHIVE_MANIFEST.json")
+      manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+      %w[archive_id captured_at evidence_type repository agent campaign_metrics requested_runs completed_runs analysis].each do |key|
+        next unless key == "captured_at" || entry.key?(key)
+        errors << "#{key} does not match archive manifest for #{entry["archive_id"]}" unless entry[key] == manifest[key]
+      end
+      errors << "artifact_count does not match archive manifest for #{entry["archive_id"]}" unless entry["artifact_count"].to_i == manifest.fetch("artifacts").length
+    rescue Errno::ENOENT, JSON::ParserError, KeyError => e
+      errors << "archive manifest invalid for #{entry["archive_id"]}: #{e.message}"
+    end
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing history verification error(s)"
+end
+
+puts "Routing history verification"
+puts "  history: #{path}"
+puts "  entries: #{entries.length}"
+puts "  archives: #{options[:check_files] ? "verified" : "not verified"}"
+puts "Routing history verification passed."
