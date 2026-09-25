@@ -1,3 +1,9 @@
+## Iteration 87 — Design-Pattern Corpus Revision
+
+- Versioned the design-pattern public campaign from v1 to v2 after expanding it from 18 to 24 cases.
+- Added a benchmark-quality guard for campaign corpus version/source identity.
+- Synchronized public benchmark documentation with the new campaign revision.
+
 ## Iteration 86 — Pattern Selection Restraint Integration
 
 - Expanded the design-pattern evaluation corpus with six negative-selection cases where the correct choice is to introduce no pattern.
