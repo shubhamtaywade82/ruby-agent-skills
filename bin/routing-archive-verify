@@ -81,9 +81,9 @@ required_contracts = {
 }
 
 unless errors.any?
-  contract_paths = required_contracts.transform_values do |option_name|
-    metadata = manifest_artifacts.fetch(_1)
-    resolve_archive_path.call(metadata.fetch("archive_path"))
+  contract_paths = required_contracts.each_with_object({}) do |(artifact_key, option_name), paths|
+    metadata = manifest_artifacts.fetch(artifact_key)
+    paths[option_name] = resolve_archive_path.call(metadata.fetch("archive_path"))
   end
 
   Tempfile.create(["routing-archive-evidence-", ".json"]) do |temp|
