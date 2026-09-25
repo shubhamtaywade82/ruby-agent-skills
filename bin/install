@@ -138,6 +138,8 @@ puts JSON.generate(paths.map { |path|
 })
 ' "$TMP_DIR/repo")"
 
+STACK_MINIMALITY_TOOL_SHA256="$(sha256_file "$TMP_DIR/repo/bin/stack-minimality")"
+
 PATTERN_FILE_HASHES="$(ruby -rdigest -rjson -e '
 root = ARGV.fetch(0)
 paths = Dir[File.join(root, "patterns", "**", "*.md")].reject { |path| path.end_with?("/README.md") }.sort
@@ -185,7 +187,7 @@ cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
     "routing_contract_sha256": "$ROUTING_SHA256",
     "skill_files": $SKILL_FILE_HASHES,
     "pattern_files": $PATTERN_FILE_HASHES,
-    "tools": ["stack-minimality"]
+    "tools": [{"path": "bin/stack-minimality", "sha256": "$STACK_MINIMALITY_TOOL_SHA256"}]
   },
   "inventory": {
     "skills": $SKILL_COUNT,
