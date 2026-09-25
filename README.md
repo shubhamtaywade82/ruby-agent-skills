@@ -212,6 +212,18 @@ Completed routing release inputs can now be composed into a frozen `RELEASE_MANI
 
 `bin/routing-release-bundle` composes verified public routing evidence into an auditable release-evidence directory and cryptographically records each component.
 
+## Iteration 101 — Verified Routing History
+
+Routing history can now be generated with `--verify`, which replays archive integrity checks before the historical dataset is reported. Historical model reports can also require verified history with `--verify`; the comparison remains descriptive-only.
+
+## Iteration 100 — Matrix Report Integrity Gate
+
+`bin/routing-model-matrix-report --verify` now refuses to consume history that references archives failing the independent archive verifier.
+
+## Iteration 99 — Routing History Integrity
+
+`bin/routing-history-verify` independently validates history structure, archive identity, and every referenced archive before trusted longitudinal reporting.
+
 ## Iteration 94 — Verified Multi-Model Matrix Evidence
 
 Completed multi-model routing matrices now emit a single `matrix-evidence.json` that cryptographically binds the matrix plan, every completed model evidence package, and every immutable archive tree. `bin/routing-model-matrix-evidence-verify` independently checks these bindings and replays the existing per-model evidence/archive verifiers.
