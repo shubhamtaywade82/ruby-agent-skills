@@ -1606,6 +1606,12 @@ evaluations:
       - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
       - evals/stack-minimality/stack-minimality-minimal-change-root.yml
       - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
+      - evals/stack-minimality/stack-minimality-security-boundary.yml
+      - evals/stack-minimality/stack-minimality-accessibility-boundary.yml
+      - evals/stack-minimality/stack-minimality-performance-evidence.yml
+      - evals/stack-minimality/stack-minimality-migration-safety.yml
+      - evals/stack-minimality/stack-minimality-service-boundary.yml
+      - evals/stack-minimality/stack-minimality-derived-state.yml
     checks:
       - functional
       - tests
