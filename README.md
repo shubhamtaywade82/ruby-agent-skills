@@ -4,9 +4,25 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 80 — Repository Consistency & Empirical Analysis Hardening
+> **Current milestone:** Iteration 81 — Analysis Provenance Binding
 
 ---
+
+## Iteration 81 — Ponytail-inspired Stack Minimality
+
+The repository now includes a stack-aware minimality layer for Ruby, Rails, React, TypeScript, and PostgreSQL. It adapts Ponytail's useful discipline—YAGNI, repository reuse, framework/native primitives first, focused over-engineering review, repository-wide audit, explicit simplification debt, and evidence-backed measurement—to this stack.
+
+Skills:
+- stack-minimality
+- stack-minimality-review
+- stack-minimality-audit
+- stack-minimality-debt
+- stack-minimality-evidence
+- stack-minimality-help
+
+The pack is a cross-cutting modifier, not a replacement for Rails, React/TypeScript, PostgreSQL, security, accessibility, testing, performance, or API skills. It never treats smaller code as automatically safer and does not copy external benchmark numbers into repository measurements.
+
+See docs/STACK_MINIMALITY.md and the stack-minimality skill for the operational contract.
 
 ## Iteration 69 — Routing Campaign Evidence Integrity
 
@@ -69,6 +85,10 @@ The pack includes 24 reusable implementation patterns and 9 public evaluations c
 
 After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-root>` to verify the installed metadata, skill inventory, embedded verifier, and content integrity before using the pack in a controlled agent environment.
 
+## Routing evidence integrity
+
+`bin/routing-compare` now recomputes routing metrics from the recorded run data before applying the remediation gate. A campaign whose recorded metrics have been altered or drifted from its runs is rejected rather than treated as benchmark evidence.
+
 ## Routing campaign analysis
 
 After a public routing campaign completes, independently analyze the recorded campaign with:
@@ -77,23 +97,6 @@ After a public routing campaign completes, independently analyze the recorded ca
       --output ./routing-campaign-output/analysis.json
 
 The analyzer recomputes completion and routing metrics from the recorded runs and rejects structurally inconsistent or incomplete campaigns rather than filling missing measurements.
-
-
-## Iteration 80 — Ponytail-inspired Stack Minimality
-
-The repository now includes a stack-aware minimality layer for Ruby, Rails, React, TypeScript, and PostgreSQL. It adapts Ponytail's useful discipline—YAGNI, repository reuse, framework/native primitives first, focused over-engineering review, repository-wide audit, explicit simplification debt, and evidence-backed measurement—to this stack.
-
-Skills:
-- stack-minimality
-- stack-minimality-review
-- stack-minimality-audit
-- stack-minimality-debt
-- stack-minimality-evidence
-- stack-minimality-help
-
-The pack is a cross-cutting modifier, not a replacement for Rails, React/TypeScript, PostgreSQL, security, accessibility, testing, performance, or API skills. It never treats smaller code as automatically safer and does not copy external benchmark numbers into repository measurements.
-
-See docs/STACK_MINIMALITY.md and the stack-minimality skill for the operational contract.
 
 ## What this repository contains
 
@@ -772,6 +775,10 @@ When adding a new skill or deepening an existing one:
 
 The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
 
+
+## Iteration 81 — Routing Analysis Provenance Binding
+
+Campaign evidence now proves that the preserved `routing-report.json` is the exact output of independently recomputing `campaign.json`. The packager rejects a tampered report before evidence capture, and `routing-campaign-evidence-verify --check-files` replays the analyzer while checking that evidence-level analysis and metrics match their source artifacts.
 
 ## Rails Encryption and Credentials Engineering
 
