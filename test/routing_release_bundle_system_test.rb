@@ -35,9 +35,21 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
     assert_includes script, "routing-hidden-benchmark-receipt-verify"
   end
 
+  def test_release_bundle_self_verifies_after_creation
+    script = source("bin/routing-release-bundle")
+    assert_includes script, "routing-release-bundle-verify"
+    assert_includes script, "RELEASE_MANIFEST.json"
+  end
+
+  def test_release_check_accepts_a_finished_bundle
+    script = source("bin/routing-release-check")
+    assert_includes script, "--bundle"
+    assert_includes script, "routing-release-bundle-verify"
+  end
+
   def test_release_bundle_verifier_rechecks_every_component
     script = source("bin/routing-release-bundle-verify")
-    assert_includes script, "routing-campaign-evidence-verify"
+    assert_includes script, "public campaign evidence verification failed"
     assert_includes script, "routing-model-matrix-evidence-verify"
     assert_includes script, "routing-hidden-benchmark-receipt-verify"
     assert_includes script, "SHA-256 mismatch"
