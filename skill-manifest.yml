@@ -1588,6 +1588,12 @@ evaluations:
       - evals/design-patterns/composition-over-inheritance.yml
       - evals/design-patterns/presenter.yml
       - evals/design-patterns/pattern-restraint.yml
+      - evals/design-patterns/service-object-not-needed.yml
+      - evals/design-patterns/strategy-not-needed.yml
+      - evals/design-patterns/factory-not-needed.yml
+      - evals/design-patterns/repository-not-needed.yml
+      - evals/design-patterns/value-object-not-needed.yml
+      - evals/design-patterns/presenter-not-needed.yml
     checks:
       - functional
       - tests
