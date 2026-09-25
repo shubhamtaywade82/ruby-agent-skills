@@ -57,3 +57,5 @@ Generated archives are intended to live outside the source repository unless exp
 - Campaign evidence must carry intake.verified = true.
 - `bin/routing-archive-verify <archive-dir>` independently validates the archived manifest, evidence identity, artifact set, artifact hashes/byte sizes, archive-relative paths, and optional analysis provenance.
 - The release gate uses the archive verifier for the archive containing the supplied evidence package.
+
+Archive-relative artifact paths are rejected when any parent directory is a symlink, preventing verification from following a mutable path outside the archive root.
