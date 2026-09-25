@@ -1,3 +1,8 @@
+## Iteration 80 — Routing Evidence Integrity Gate
+
+- Hardened `routing-compare` to recompute primary accuracy, secondary recall, and unexpected-secondary metrics directly from recorded runs.
+- Added regression coverage proving tampered campaign metrics are rejected.
+
 # Changelog
 
 ## Iteration 79 — Documentation consistency & empirical readiness
