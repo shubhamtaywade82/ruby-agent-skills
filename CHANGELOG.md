@@ -1,3 +1,9 @@
+## Iteration 84 — End-to-End Campaign Finalization
+
+- Make campaign import regenerate the canonical routing analysis before evidence packaging.
+- Make the external campaign handoff run import, evidence verification, and optional archive creation automatically.
+- Add regression coverage for the complete campaign finalization path.
+
 ## Iteration 83 — Matrix Resume Integrity
 
 - Revalidate completed-and-archived model results with the campaign evidence verifier during matrix resume.
