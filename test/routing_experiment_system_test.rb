@@ -37,6 +37,7 @@ class RoutingExperimentSystemTest < Minitest::Test
       baseline = JSON.parse(File.read(File.join(output, "baseline.json"), encoding: "UTF-8"))
       candidate = JSON.parse(File.read(File.join(output, "candidate.json"), encoding: "UTF-8"))
       comparison = JSON.parse(File.read(File.join(output, "comparison.json"), encoding: "UTF-8"))
+      evidence = JSON.parse(File.read(File.join(output, "evidence.json"), encoding: "UTF-8"))
 
       assert_equal false, baseline.fetch("metrics").fetch("primary_accuracy") == 1.0
       assert_in_delta 1.0.fdiv(14), candidate.fetch("metrics").fetch("primary_accuracy"), 0.0001
@@ -45,6 +46,9 @@ class RoutingExperimentSystemTest < Minitest::Test
       assert_equal "test-model", candidate.fetch("agent").fetch("model")
       assert_equal File.expand_path(baseline_router), baseline.fetch("routing_contract")
       assert_equal File.expand_path(candidate_router), candidate.fetch("routing_contract")
+      assert_equal true, evidence.fetch("gate").fetch("passed")
+      assert_equal true, evidence.fetch("compatibility").fetch("same_agent_configuration")
+      assert_equal comparison.fetch("provenance"), evidence.fetch("comparison_provenance")
     end
   end
 
