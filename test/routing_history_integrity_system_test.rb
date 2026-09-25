@@ -49,6 +49,7 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
         "entries" => [{
           "archive_id" => "skill-routing-public-v1/fixture-model/abc123",
           "captured_at" => "2026-09-23T00:00:00Z",
+          "captured_at" => "2026-09-23T00:00:00Z",
           "campaign" => "skill-routing-public-v1",
           "evidence_type" => "skill-routing-campaign-v1",
           "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
@@ -108,6 +109,7 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
       "protocol_version" => 1,
       "archive" => "skill-routing-evidence-archive-v1",
       "archive_id" => "skill-routing-public-v1/fixture-model/abc123",
+      "captured_at" => "2026-09-23T00:00:00Z",
       "source_evidence" => {
         "path" => "/source/evidence.json",
         "sha256" => Digest::SHA256.file(evidence_path).hexdigest,
