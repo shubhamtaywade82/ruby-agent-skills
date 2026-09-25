@@ -111,3 +111,4 @@ ruby -I"$ROOT/test" "$ROOT/test/rails_benchmark_campaign_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/react_typescript_skill_pack_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/stack_minimality_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/stack_minimality_tools_system_test.rb"
