@@ -133,7 +133,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
       )
 
       refute status.success?
-      assert_includes stderr, "routing analysis verification failed"
+      assert_includes stderr, "routing analysis report does not match recomputed campaign analysis"
     end
   end
 
