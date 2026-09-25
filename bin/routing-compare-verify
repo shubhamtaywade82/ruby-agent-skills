@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "open3"
+require "optparse"
+require "tempfile"
+
+ROOT = File.expand_path("..", __dir__)
+COMPARATOR = File.join(ROOT, "bin", "routing-compare")
+
+options = {check_files: false}
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-compare-verify COMPARISON_JSON [options]"
+  opts.on("--check-files", "Recalculate SHA-256 for every provenance artifact") { options[:check_files] = true }
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "comparison JSON is required" })
+abort "comparison JSON not found: #{path}" unless File.file?(path)
+
+comparison = JSON.parse(File.read(path, encoding: "UTF-8"))
+provenance = comparison.fetch("provenance")
+
+errors = []
+%w[baseline candidate remediation_policy comparator].each do |key|
+  metadata = provenance[key]
+  unless metadata.is_a?(Hash)
+    errors << "provenance #{key} must be a mapping"
+    next
+  end
+
+  digest = metadata["sha256"].to_s
+  errors << "provenance #{key} sha256 must be 64 hex characters" unless digest.match?(/\A[0-9a-f]{64}\z/)
+
+  if options[:check_files]
+    artifact_path = metadata["path"].to_s
+    if artifact_path.empty?
+      errors << "provenance #{key} path is empty"
+    elsif !File.file?(artifact_path)
+      errors << "provenance #{key} unavailable at #{artifact_path}"
+    else
+      errors << "provenance #{key} SHA-256 mismatch" unless Digest::SHA256.file(artifact_path).hexdigest == digest
+    end
+  end
+end
+
+baseline_path = provenance.dig("baseline", "path").to_s
+candidate_path = provenance.dig("candidate", "path").to_s
+policy_path = provenance.dig("remediation_policy", "path").to_s
+
+if errors.empty?
+  Tempfile.create(["routing-comparison-recomputed-", ".json"]) do |temp|
+    command = [
+      RbConfig.ruby,
+      COMPARATOR,
+      baseline_path,
+      candidate_path,
+      "--policy", policy_path,
+      "--output", temp.path
+    ]
+
+    _stdout, stderr, status = Open3.capture3(*command, chdir: ROOT)
+    warn stderr unless stderr.empty?
+
+    unless File.file?(temp.path)
+      errors << "recomputed comparison report was not generated"
+    else
+      begin
+        recomputed = JSON.parse(File.read(temp.path, encoding: "UTF-8"))
+        errors << "comparison report does not match recomputed comparison" unless recomputed == comparison
+      rescue JSON::ParserError => e
+        errors << "recomputed comparison report is invalid: #{e.message}"
+      end
+    end
+
+    if status.exitstatus.nil?
+      errors << "comparison recomputation did not terminate normally"
+    elsif ![0, 1].include?(status.exitstatus)
+      errors << "comparison recomputation failed with exit #{status.exitstatus}"
+    end
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing comparison verification error(s)"
+end
+
+puts "Routing comparison verification"
+puts "  comparison: #{path}"
+puts "  provenance: baseline/candidate/policy/comparator bound"
+puts "  recomputed: match"
+puts "Routing comparison verification passed."
