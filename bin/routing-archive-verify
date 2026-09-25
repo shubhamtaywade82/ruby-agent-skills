@@ -1,0 +1,153 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "optparse"
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-archive-verify ARCHIVE_DIR"
+end.parse!
+
+archive_dir = File.expand_path(ARGV.fetch(0) { abort "archive directory is required" })
+manifest_path = File.join(archive_dir, "ARCHIVE_MANIFEST.json")
+evidence_path = File.join(archive_dir, "evidence.json")
+
+abort "archive directory not found: #{archive_dir}" unless Dir.exist?(archive_dir)
+abort "ARCHIVE_MANIFEST.json not found: #{manifest_path}" unless File.file?(manifest_path)
+abort "evidence.json not found: #{evidence_path}" unless File.file?(evidence_path)
+
+begin
+  manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+  evidence = JSON.parse(File.read(evidence_path, encoding: "UTF-8"))
+rescue JSON::ParserError => e
+  abort "archive JSON is invalid: #{e.message}"
+end
+
+errors = []
+
+errors << "protocol_version must be 1" unless manifest["protocol_version"].to_i == 1
+errors << "archive type mismatch" unless manifest["archive"] == "skill-routing-evidence-archive-v1"
+errors << "evidence protocol_version must be 1" unless evidence["protocol_version"].to_i == 1
+
+supported_types = %w[skill-routing-experiment-v1 skill-routing-campaign-v1]
+errors << "unsupported evidence type" unless supported_types.include?(manifest["evidence_type"])
+errors << "manifest evidence type does not match evidence" unless manifest["evidence_type"] == evidence["evidence"]
+
+source_evidence = manifest["source_evidence"]
+unless source_evidence.is_a?(Hash)
+  errors << "source_evidence must be a mapping"
+else
+  source_sha = source_evidence["sha256"].to_s
+  errors << "source evidence SHA-256 must be 64 hex characters" unless source_sha.match?(/\A[0-9a-f]{64}\z/)
+  errors << "source evidence archive path must be evidence.json" unless source_evidence["archive_path"] == "evidence.json"
+  if File.file?(evidence_path)
+    actual_sha = Digest::SHA256.file(evidence_path).hexdigest
+    errors << "source evidence SHA-256 mismatch" unless source_sha == actual_sha
+  end
+end
+
+def safe_component(value)
+  value.to_s.strip.downcase
+    .gsub(/[^a-z0-9._-]+/, "-")
+    .gsub(/\A-+|-+\z/, "")
+    .yield_self { |v| v.empty? ? "unknown" : v }
+end
+
+expected_archive_id = [
+  safe_component(evidence["campaign"]),
+  safe_component(evidence.dig("agent", "model")),
+  safe_component(evidence.dig("repository", "git_sha"))
+].join("/")
+errors << "archive_id does not match evidence identity" unless manifest["archive_id"] == expected_archive_id
+
+expected_archive_dir = File.join(
+  safe_component(evidence["campaign"]),
+  safe_component(evidence.dig("agent", "model")),
+  safe_component(evidence.dig("repository", "git_sha"))
+)
+relative_archive_dir = archive_dir.split(File::SEPARATOR).last(3).join("/")
+errors << "archive directory identity does not match archive_id" unless relative_archive_dir == expected_archive_dir
+
+%w[repository agent evidence_type campaign_metrics requested_runs completed_runs analysis].each do |key|
+  errors << "#{key} does not match evidence" unless manifest[key] == evidence[key]
+end
+
+%w[compatibility gate intake].each do |key|
+  next unless evidence.key?(key)
+  errors << "#{key} does not match evidence" unless manifest[key] == evidence[key]
+end
+
+if evidence.key?("analysis_provenance")
+  errors << "analysis_provenance does not match evidence" unless manifest["analysis_provenance"] == evidence["analysis_provenance"]
+end
+
+evidence_artifacts = evidence["artifacts"]
+manifest_artifacts = manifest["artifacts"]
+unless evidence_artifacts.is_a?(Hash) && manifest_artifacts.is_a?(Hash)
+  errors << "artifact maps must be mappings"
+else
+  errors << "archive artifact set does not match evidence artifact set" unless manifest_artifacts.keys.sort == evidence_artifacts.keys.sort
+
+  manifest_artifacts.each do |key, metadata|
+    unless metadata.is_a?(Hash)
+      errors << "archive artifact #{key} must be a mapping"
+      next
+    end
+
+    evidence_metadata = evidence_artifacts[key]
+    unless evidence_metadata.is_a?(Hash)
+      errors << "evidence artifact #{key} is missing"
+      next
+    end
+
+    archive_path = metadata["archive_path"].to_s
+    if archive_path.empty? || archive_path.start_with?(File::SEPARATOR) ||
+        archive_path.split("/").include?("..") ||
+        archive_path == "." || archive_path.split("/").include?(".")
+      errors << "archive path must be relative and stay within archive: #{archive_path}"
+      next
+    end
+
+    target = File.expand_path(File.join(archive_dir, archive_path))
+    archive_root = File.expand_path(archive_dir)
+    root_prefix = "#{archive_root}#{File::SEPARATOR}"
+    unless target.start_with?(root_prefix)
+      errors << "archive path must be relative and stay within archive: #{archive_path}"
+      next
+    end
+
+    unless File.file?(target)
+      errors << "archived artifact #{key} unavailable at #{archive_path}"
+      next
+    end
+
+    errors << "archived artifact #{key} must not be a symlink" if File.symlink?(target)
+
+    actual_sha = Digest::SHA256.file(target).hexdigest
+    actual_bytes = File.size(target)
+
+    evidence_sha = evidence_metadata["sha256"].to_s
+    evidence_bytes = evidence_metadata["bytes"].to_i
+    manifest_sha = metadata["sha256"].to_s
+    manifest_bytes = metadata["bytes"].to_i
+
+    errors << "artifact #{key} SHA-256 disagrees with evidence" unless manifest_sha == evidence_sha
+    errors << "artifact #{key} byte size disagrees with evidence" unless manifest_bytes == evidence_bytes
+    errors << "artifact #{key} SHA-256 mismatch" unless actual_sha == manifest_sha
+    errors << "artifact #{key} byte size mismatch" unless actual_bytes == manifest_bytes
+    errors << "artifact #{key} source path does not match evidence" unless metadata["source_path"] == evidence_metadata["path"]
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing evidence archive verification error(s)"
+end
+
+puts "Routing evidence archive verification"
+puts "  archive: #{manifest.fetch("archive_id")}"
+puts "  evidence: #{manifest.fetch("evidence_type")}"
+puts "  artifacts: #{manifest.fetch("artifacts").length}"
+puts "Routing evidence archive verification passed."
