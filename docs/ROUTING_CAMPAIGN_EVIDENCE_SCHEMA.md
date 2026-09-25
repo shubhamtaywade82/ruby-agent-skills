@@ -28,6 +28,8 @@ The package is accepted only after `bin/routing-campaign-verify` passes.
 
 Every artifact records its absolute path, SHA-256 digest, and byte size.
 
+The `routing_report` artifact is also semantically bound to `campaign`: the packager independently re-runs `bin/routing-analyze` against the captured campaign and requires the parsed report to match exactly.
+
 Raw per-run result files are included explicitly so that aggregate campaign JSON cannot become the only preserved evidence.
 
 Dirty worktrees are rejected by default and require explicit `--allow-dirty`.
@@ -47,4 +49,4 @@ For externally executed campaigns, `bin/routing-campaign-import` validates the p
 
 ## Verification gate
 
-A campaign evidence package must pass `bin/routing-campaign-evidence-verify --check-files` before archival. This verifies raw-run cardinality and all recorded artifact hashes in addition to campaign intake.
+A campaign evidence package must pass `bin/routing-campaign-evidence-verify --check-files` before archival. This verifies raw-run cardinality, all recorded artifact hashes, and semantic analysis provenance in addition to campaign intake. Evidence-level `analysis` and `campaign_metrics` must match the preserved report and campaign artifacts.

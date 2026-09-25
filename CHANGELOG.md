@@ -1,3 +1,9 @@
+## Iteration 81 — Routing Analysis Provenance Binding
+
+- Bound preserved `routing-report.json` to an independent recomputation from `campaign.json` during evidence packaging.
+- Extended `routing-campaign-evidence-verify --check-files` to replay the analyzer and reject report/evidence/source-metric drift.
+- Added regression coverage for tampered routing analysis and upgraded archive fixtures to use semantically valid campaign/report artifacts.
+
 ## Iteration 80 — Routing Evidence Integrity Gate
 
 - Hardened `routing-compare` to recompute primary accuracy, secondary recall, and unexpected-secondary metrics directly from recorded runs.

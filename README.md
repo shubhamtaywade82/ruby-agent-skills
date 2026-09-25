@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 80 — Evidence Integrity Gate
+> **Current milestone:** Iteration 81 — Analysis Provenance Binding
 
 ---
 
@@ -759,6 +759,10 @@ When adding a new skill or deepening an existing one:
 
 The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
 
+
+## Iteration 81 — Routing Analysis Provenance Binding
+
+Campaign evidence now proves that the preserved `routing-report.json` is the exact output of independently recomputing `campaign.json`. The packager rejects a tampered report before evidence capture, and `routing-campaign-evidence-verify --check-files` replays the analyzer while checking that evidence-level analysis and metrics match their source artifacts.
 
 ## Rails Encryption and Credentials Engineering
 

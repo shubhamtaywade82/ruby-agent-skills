@@ -3,10 +3,13 @@
 
 require "digest"
 require "json"
+require "open3"
 require "optparse"
+require "tempfile"
 require "yaml"
 
 ROOT = File.expand_path("..", __dir__)
+ANALYZER = File.join(ROOT, "bin", "routing-analyze")
 CASES_PATH = File.join(ROOT, "router", "ROUTING_CASES.yml")
 CAMPAIGN_PATH = File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml")
 
@@ -82,6 +85,35 @@ artifacts.each do |key, metadata|
       errors << "artifact #{key} SHA-256 mismatch" unless Digest::SHA256.file(artifact_path).hexdigest == digest
       errors << "artifact #{key} byte size mismatch" unless File.size(artifact_path) == metadata["bytes"].to_i
     end
+  end
+end
+
+if options[:check_files] && errors.empty?
+  begin
+    campaign_path = artifacts.fetch("campaign").fetch("path")
+    report_path = artifacts.fetch("routing_report").fetch("path")
+    campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+    report = JSON.parse(File.read(report_path, encoding: "UTF-8"))
+
+    Tempfile.create(["routing-analysis-verified-", ".json"]) do |temp|
+      _stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby,
+        ANALYZER,
+        campaign_path,
+        "--output", temp.path,
+        chdir: ROOT
+      )
+      warn stderr unless stderr.empty?
+      errors << "routing analysis recomputation failed" unless status.success?
+      if status.success?
+        recomputed_report = JSON.parse(File.read(temp.path, encoding: "UTF-8"))
+        errors << "routing analysis report does not match recomputed campaign analysis" unless report == recomputed_report
+        errors << "evidence analysis does not match routing report summary" unless evidence["analysis"] == report.fetch("summary")
+        errors << "evidence campaign metrics do not match campaign artifact" unless evidence["campaign_metrics"] == campaign.fetch("metrics")
+      end
+    end
+  rescue KeyError, JSON::ParserError => e
+    errors << "routing analysis artifacts are invalid: #{e.message}"
   end
 end
 
