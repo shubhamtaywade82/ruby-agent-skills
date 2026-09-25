@@ -39,15 +39,37 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
 
   def test_archive_accepts_verified_single_campaign_evidence
     require "digest"
+    require "yaml"
+
     Dir.mktmpdir("routing-campaign-archive") do |dir|
+      campaign_path = File.join(dir, "campaign.json")
+      report_path = File.join(dir, "routing-report.json")
+      campaign = build_complete_campaign(dir)
+      File.write(campaign_path, JSON.pretty_generate(campaign) + "\n", encoding: "UTF-8")
+
+      out, err, status = Open3.capture3(
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "routing-analyze"),
+        campaign_path,
+        "--output", report_path,
+        chdir: ROOT
+      )
+      assert status.success?, "#{out}\n#{err}"
+
       artifact_names = %w[
         campaign routing_report routing_contract skill_manifest campaign_manifest
         routing_cases result_schema campaign_intake_schema preflight
       ]
       artifacts = {}
       artifact_names.each do |name|
-        path = File.join(dir, "#{name}.txt")
-        File.write(path, name)
+        path = case name
+        when "campaign" then campaign_path
+        when "routing_report" then report_path
+        else
+          path = File.join(dir, "#{name}.txt")
+          File.write(path, name)
+          path
+        end
         artifacts[name] = {
           "path" => path,
           "sha256" => Digest::SHA256.file(path).hexdigest,
@@ -65,6 +87,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         }
       end
 
+      report = JSON.parse(File.read(report_path, encoding: "UTF-8"))
       evidence = {
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
@@ -76,8 +99,8 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "completed_runs" => 42,
         "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
         "agent" => {"provider" => "ollama", "model" => "test-model"},
-        "campaign_metrics" => {"primary_accuracy" => 1.0},
-        "analysis" => {"primary_mismatch_count" => 0},
+        "campaign_metrics" => campaign.fetch("metrics"),
+        "analysis" => report.fetch("summary"),
         "artifacts" => artifacts,
         "intake" => {"verified" => true},
         "replay" => {"campaign_runner" => "bin/routing-campaign"}
@@ -99,6 +122,76 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       assert_equal true, manifest.fetch("intake").fetch("verified")
       assert_equal 42, manifest.fetch("completed_runs")
     end
+  end
+
+  private
+
+  def build_complete_campaign(dir)
+    cases = YAML.safe_load(
+      File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    ).fetch("cases")
+    campaign = YAML.safe_load(
+      File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+
+    runs = {}
+    cases.each do |entry|
+      primary = entry.fetch("primary_skills").first
+      case_runs = 3.times.map do |index|
+        run_dir = File.join(dir, entry.fetch("id"), "run-#{index + 1}")
+        FileUtils.mkdir_p(run_dir)
+        raw_path = File.join(run_dir, "result.json")
+        File.write(
+          raw_path,
+          JSON.pretty_generate(
+            "primary_skill" => primary,
+            "secondary_skills" => [],
+            "reason" => "fixture"
+          ) + "\n",
+          encoding: "UTF-8"
+        )
+        {
+          "run_number" => index + 1,
+          "status" => "completed",
+          "expected" => {"primary_skill" => primary, "secondary_skills" => [], "boundary" => entry.fetch("boundary")},
+          "observed" => {"primary_skill" => primary, "secondary_skills" => [], "reason" => "fixture"},
+          "scoring" => {"primary_accuracy" => true, "secondary_recall" => 1.0, "unexpected_secondary_count" => 0},
+          "validation_errors" => [],
+          "raw_result_file" => raw_path
+        }
+      end
+      runs[entry.fetch("id")] = {
+        "case_id" => entry.fetch("id"),
+        "requested_repetitions" => 3,
+        "completed_repetitions" => 3,
+        "complete" => true,
+        "expected_primary_skill" => primary,
+        "runs" => case_runs
+      }
+    end
+
+    {
+      "protocol_version" => 1,
+      "evaluation" => "skill-routing-v1",
+      "campaign" => campaign.fetch("id"),
+      "campaign_version" => campaign.fetch("version"),
+      "routing_contract" => File.join(ROOT, "router", "ROUTING.md"),
+      "agent" => {"provider" => "ollama", "model" => "fixture-model", "model_version" => "fixture-digest", "tool_mode" => "local-filesystem"},
+      "routing_case_count" => cases.length,
+      "requested_repetitions" => 3,
+      "requested_runs" => 42,
+      "completed_runs" => 42,
+      "complete" => true,
+      "execution" => {"checkpointed" => true, "mode" => "fixture"},
+      "routing_inputs" => {},
+      "metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0},
+      "confusion_matrix" => {},
+      "cases" => runs
+    }
   end
 
   def test_validator_executes_this_system_test
