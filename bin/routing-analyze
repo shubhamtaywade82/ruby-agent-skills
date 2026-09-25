@@ -71,11 +71,19 @@ cases.each do |case_id, case_data|
       expected_secondary = Array(expected["secondary_skills"]).map(&:to_s).uniq
       observed_secondary = Array(observed["secondary_skills"]).map(&:to_s).uniq
 
-      errors << "case #{case_id} run #{run.fetch("run_number")} expected primary disagrees with case contract" unless expected_run_primary == expected_primary
-      errors << "case #{case_id} observed primary #{observed_primary} is not registered" unless skills.include?(observed_primary)
-      errors << "case #{case_id} observed secondary skills contain primary #{observed_primary}" if observed_secondary.include?(observed_primary)
+      run_errors = []
+      run_number = run.fetch("run_number")
+      run_errors << "expected primary disagrees with case contract" unless expected_run_primary == expected_primary
+      run_errors << "observed primary #{observed_primary} is not registered" unless skills.include?(observed_primary)
+      run_errors << "observed secondary skills contain primary #{observed_primary}" if observed_secondary.include?(observed_primary)
       unknown_secondary = observed_secondary.reject { |skill| skills.include?(skill) }
-      errors << "case #{case_id} observed unknown secondary skills: #{unknown_secondary.join(", ")}" unless unknown_secondary.empty?
+      run_errors << "observed unknown secondary skills: #{unknown_secondary.join(", ")}" unless unknown_secondary.empty?
+
+      unless run_errors.empty?
+        run_errors.each { |message| errors << "case #{case_id} run #{run_number} #{message}" }
+        invalid_runs += 1
+        next
+      end
 
       observed_counts[observed_primary] += 1
       matched_secondary = expected_secondary & observed_secondary
