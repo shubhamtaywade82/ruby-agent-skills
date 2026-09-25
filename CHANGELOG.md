@@ -1,3 +1,10 @@
+## Iteration 82 — Installed Stack Minimality Tooling
+
+- Added a deterministic `bin/stack-minimality` tool for shortcut-debt and real Git-diff evidence reports.
+- Extended the installer to ship the tool with the installed pack and record its SHA-256 provenance.
+- Extended installed-pack verification to reject tampered or missing minimality tooling.
+- Added system coverage for tool execution and installer integrity.
+
 ## Iteration 81 — Ponytail-inspired Stack Minimality
 
 - Added six stack-minimality skills adapted from Ponytail for Ruby, Rails, React, TypeScript, and PostgreSQL.
