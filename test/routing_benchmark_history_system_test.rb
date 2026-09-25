@@ -67,6 +67,13 @@ class RoutingBenchmarkHistorySystemTest < Minitest::Test
     end
   end
 
+  def test_history_uses_archive_verifier
+    source = File.read(File.join(ROOT, "bin", "routing-history"), encoding: "UTF-8")
+    assert_includes source, "routing-archive-verify"
+    verifier = File.join(ROOT, "bin", "routing-archive-verify")
+    refute File.file?(verifier)
+  end
+
   def test_model_report_declares_descriptive_only
     source = File.read(File.join(ROOT, "bin", "routing-model-matrix-report"), encoding: "UTF-8")
     assert_includes source, '"comparison" => "descriptive-only"'
