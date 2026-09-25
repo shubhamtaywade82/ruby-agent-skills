@@ -20,11 +20,14 @@ required_files.each do |path|
 end
 
 readme = File.read(File.join(ROOT, "README.md"), encoding: "UTF-8")
+changelog = File.read(File.join(ROOT, "CHANGELOG.md"), encoding: "UTF-8")
 manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
 current_milestone = readme[/Current milestone:\*\* Iteration (\d+)/, 1].to_i
+latest_changelog_iteration = changelog[/^## Iteration (\d+)/, 1].to_i
 errors << "README is not at a post-release milestone" unless current_milestone >= 51
 errors << "README has no final release section" unless readme.include?("Final Release and Public-Readiness Hardening")
+errors << "README current milestone does not match latest changelog iteration" unless current_milestone == latest_changelog_iteration
 errors << "README still claims Iteration 47 is current" if readme.include?("Current milestone:** Iteration 47")
 errors << "README contains stale evaluation count 206" if readme.include?("206 evaluation cases")
 errors << "README contains stale evaluation count 193" if readme.include?("193 evaluation cases")
@@ -32,6 +35,25 @@ errors << "README contains stale pattern count 394" if readme.include?("394 impl
 errors << "README inventory is missing skills" unless readme.match?(/\| Skills \| \*\*\d+\*\* \|/)
 errors << "README inventory is missing implementation patterns" unless readme.match?(/\| Implementation patterns \| \*\*\d+\*\* \|/)
 errors << "README inventory is missing evaluation cases" unless readme.match?(/\| Evaluation cases \| \*\*\d+\*\* \|/)
+errors << "README inventory is missing dedicated system/contract tests" unless readme.match?(/\| Dedicated system\/contract tests \| \*\*\d+\*\* \|/)
+
+def evaluation_case_count(root)
+  Dir[File.join(root, "evals", "**", "*.yml")].sum do |path|
+    data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+    Array(data.fetch("cases")).length
+  end
+end
+
+actual_inventory = {
+  "Skills" => Dir[File.join(ROOT, "skills", "*", "SKILL.md")].length,
+  "Implementation patterns" => Dir[File.join(ROOT, "patterns", "**", "*.md")].reject { |p| p.end_with?("/README.md") }.length,
+  "Evaluation cases" => evaluation_case_count(ROOT),
+  "Dedicated system/contract tests" => Dir[File.join(ROOT, "test", "*_system_test.rb")].length
+}
+actual_inventory.each do |label, expected|
+  documented = readme[/\| #{Regexp.escape(label)} \| \*\*(\d+)\*\* \|/, 1]&.to_i
+  errors << "README #{label} count #{documented.inspect} != #{expected}" unless documented == expected
+end
 
 tracked_generated = `git -C #{Shellwords.escape(ROOT)} ls-files benchmark-results 2>/dev/null`.lines
 errors << "generated benchmark-results are tracked" unless tracked_generated.empty?
@@ -55,6 +77,8 @@ end
 puts "Release readiness audit"
 puts "  required release files: #{required_files.length}"
 puts "  skills: #{manifest.fetch("skills").length}"
+puts "  current milestone: #{current_milestone}"
+puts "  latest changelog iteration: #{latest_changelog_iteration}"
 puts "  generated benchmark-results tracked: #{tracked_generated.length}"
 warnings.each { |warning| puts "WARN: #{warning}" }
 
