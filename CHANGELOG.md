@@ -1,18 +1,17 @@
-## Iteration 82 — Installed Stack Minimality Tooling
+## Iteration 83 — Installed Stack Minimality Tooling
 
-- Added a deterministic `bin/stack-minimality` tool for shortcut-debt and real Git-diff evidence reports.
+- Added a deterministic bin/stack-minimality tool for shortcut-debt and real Git-diff evidence reports.
 - Extended the installer to ship the tool with the installed pack and record its SHA-256 provenance.
 - Extended installed-pack verification to reject tampered or missing minimality tooling.
 - Added system coverage for tool execution and installer integrity.
 
-## Iteration 81 — Ponytail-inspired Stack Minimality
+## Iteration 82 — Ponytail-inspired Stack Minimality
 
 - Added six stack-minimality skills adapted from Ponytail for Ruby, Rails, React, TypeScript, and PostgreSQL.
 - Added 14 implementation patterns covering Rails conventions, Active Record, PostgreSQL invariants/query evidence, React state, TypeScript boundaries, dependencies, modularity, and shared-root bug fixes.
 - Added seven evaluation contracts and system-test coverage for manifest/routing completeness.
 - Integrated stack minimality into skill routing, AGENTS guidance, README, and canonical validation.
 - External Ponytail benchmark results are treated as source context, not as measurements of this repository.
-
 ## Iteration 81 — Routing Analysis Provenance Binding
 
 - Bound preserved `routing-report.json` to an independent recomputation from `campaign.json` during evidence packaging.
