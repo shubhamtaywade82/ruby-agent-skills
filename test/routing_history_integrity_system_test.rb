@@ -18,7 +18,7 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
     script = source("bin/routing-history-verify")
     assert_includes script, "routing-archive-verify"
     assert_includes script, "archive_id"
-    assert_includes script, "SHA-256"
+    assert_includes script, "routing history verification error"
   end
 
   def test_history_generation_can_require_verified_archives
@@ -49,13 +49,14 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
         "entries" => [{
           "archive_id" => "skill-routing-public-v1/fixture-model/abc123",
           "captured_at" => "2026-09-23T00:00:00Z",
-          "captured_at" => "2026-09-23T00:00:00Z",
           "campaign" => "skill-routing-public-v1",
           "evidence_type" => "skill-routing-campaign-v1",
           "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
           "agent" => {"provider" => "ollama", "model" => "fixture-model"},
           "campaign_metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0},
           "analysis" => {"primary_accuracy" => 1.0},
+          "requested_runs" => 1,
+          "completed_runs" => 1,
           "artifact_count" => 1,
           "archive_path" => archive
         }]
