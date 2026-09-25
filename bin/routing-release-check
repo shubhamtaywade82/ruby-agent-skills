@@ -10,6 +10,7 @@ require "yaml"
 ROOT = File.expand_path("..", __dir__)
 CONFIG_PATH = File.join(ROOT, "router", "ROUTING_RELEASE.yml")
 CAMPAIGN_EVIDENCE_VERIFY = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
 HIDDEN_PATH = File.join(ROOT, "router", "ROUTING_HIDDEN_BENCHMARK.yml")
 
 options = { evidence: nil, archive: nil }
@@ -58,12 +59,21 @@ if options[:archive]
   errors << "archive contains no ARCHIVE_MANIFEST.json" if matching_manifests.empty?
   unless matching_manifests.empty?
     evidence_sha = Digest::SHA256.file(evidence).hexdigest
-    archive_match = matching_manifests.any? do |manifest_path|
+    archive_match = matching_manifests.find do |manifest_path|
       manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
       manifest.dig("source_evidence", "sha256") == evidence_sha &&
         manifest["evidence_type"] == "skill-routing-campaign-v1"
     end
     errors << "archive does not contain the supplied evidence package" unless archive_match
+
+    if archive_match
+      archive_dir = File.dirname(archive_match)
+      archive_out, archive_err, archive_status = Open3.capture3(
+        RbConfig.ruby, ARCHIVE_VERIFIER, archive_dir, chdir: ROOT
+      )
+      warn archive_err unless archive_err.empty?
+      errors << "supplied archive failed integrity verification" unless archive_status.success?
+    end
   end
 end
 

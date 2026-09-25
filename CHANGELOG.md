@@ -1,3 +1,16 @@
+## Iteration 83 — Matrix Resume Integrity
+
+- Revalidate completed-and-archived model results with the campaign evidence verifier during matrix resume.
+- Revalidate the recorded archive with the independent routing archive verifier before reusing a checkpoint result.
+- Add regression coverage for the resume trust boundary.
+
+## Iteration 82 — Routing Evidence Archive Integrity
+
+- Added `bin/routing-archive-verify` for standalone archive integrity validation.
+- Made archive creation self-verify before reporting success.
+- Made release readiness verify the exact archived package containing the supplied evidence.
+- Added artifact path traversal and symlink-boundary checks.
+
 ## Iteration 81 — Routing Analysis Provenance Binding
 
 - Bound preserved `routing-report.json` to an independent recomputation from `campaign.json` during evidence packaging.
