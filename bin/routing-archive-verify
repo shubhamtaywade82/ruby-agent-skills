@@ -118,6 +118,17 @@ else
       next
     end
 
+    path_cursor = archive_dir
+    archive_path.split("/").each_with_index do |component, index|
+      path_cursor = File.join(path_cursor, component)
+      next if index == archive_path.split("/").length - 1
+      if File.symlink?(path_cursor)
+        errors << "archive path traverses a symlink: #{archive_path}"
+        break
+      end
+    end
+    next if errors.last == "archive path traverses a symlink: #{archive_path}"
+
     unless File.file?(target)
       errors << "archived artifact #{key} unavailable at #{archive_path}"
       next
