@@ -156,7 +156,7 @@ if [[ -f "$OLD_INSTALLATION" ]]; then
 fi
 
 STAGE="$TMP_DIR/stage"
-mkdir -p "$STAGE/skills" "$STAGE/.ruby-agent-skills/patterns" "$STAGE/.ruby-agent-skills/docs"
+mkdir -p "$STAGE/skills" "$STAGE/.ruby-agent-skills/patterns" "$STAGE/.ruby-agent-skills/docs" "$STAGE/.ruby-agent-skills/bin"
 
 for skill_dir in "$TMP_DIR/repo"/skills/*; do
   [[ -d "$skill_dir" ]] || continue
@@ -170,6 +170,7 @@ cp "$TMP_DIR/repo/router/ROUTING.md" "$STAGE/.ruby-agent-skills/ROUTING.md"
 cp "$TMP_DIR/repo/AGENTS.md" "$STAGE/.ruby-agent-skills/AGENTS.md"
 cp "$TMP_DIR/repo/docs/SKILL_CONTRACT.md" "$STAGE/.ruby-agent-skills/docs/SKILL_CONTRACT.md"
 cp "$TMP_DIR/repo/bin/skill-pack-verify" "$STAGE/.ruby-agent-skills/skill-pack-verify"
+cp "$TMP_DIR/repo/bin/stack-minimality" "$STAGE/.ruby-agent-skills/bin/stack-minimality"
 
 cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
 {
@@ -183,7 +184,8 @@ cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
     "skill_manifest_sha256": "$MANIFEST_SHA256",
     "routing_contract_sha256": "$ROUTING_SHA256",
     "skill_files": $SKILL_FILE_HASHES,
-    "pattern_files": $PATTERN_FILE_HASHES
+    "pattern_files": $PATTERN_FILE_HASHES,
+    "tools": ["stack-minimality"]
   },
   "inventory": {
     "skills": $SKILL_COUNT,
