@@ -4,11 +4,11 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 81 — Analysis Provenance Binding
+> **Current milestone:** Iteration 82 — Installed Stack Minimality Tooling
 
 ---
 
-## Iteration 81 — Ponytail-inspired Stack Minimality
+## Iteration 82 — Installed Stack Minimality Tooling
 
 The repository now includes a stack-aware minimality layer for Ruby, Rails, React, TypeScript, and PostgreSQL. It adapts Ponytail's useful discipline—YAGNI, repository reuse, framework/native primitives first, focused over-engineering review, repository-wide audit, explicit simplification debt, and evidence-backed measurement—to this stack.
 
@@ -23,6 +23,8 @@ Skills:
 The pack is a cross-cutting modifier, not a replacement for Rails, React/TypeScript, PostgreSQL, security, accessibility, testing, performance, or API skills. It never treats smaller code as automatically safer and does not copy external benchmark numbers into repository measurements.
 
 See docs/STACK_MINIMALITY.md and the stack-minimality skill for the operational contract.
+
+The installed pack also provides `bin/stack-minimality` under `.ruby-agent-skills/bin/` for deterministic shortcut-ledger and Git-diff evidence reports.
 
 ## Iteration 69 — Routing Campaign Evidence Integrity
 
@@ -142,10 +144,10 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **85** |
-| Implementation patterns | **417** |
-| Evaluation cases | **410** |
-| Dedicated system/contract tests | **72** |
+| Skills | **91** |
+| Implementation patterns | **431** |
+| Evaluation cases | **424** |
+| Dedicated system/contract tests | **77** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
