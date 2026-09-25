@@ -11,7 +11,7 @@ warnings = []
 required_files = %w[
   README.md AGENTS.md LICENSE CONTRIBUTING.md SECURITY.md CHANGELOG.md
   skill-manifest.yml router/ROUTING.md bin/validate bin/eval bin/benchmark
-  docs/SOURCE_COVERAGE.md docs/SKILL_CONTRACT.md docs/PATTERN_SCHEMA.md docs/EVAL_SCHEMA.md
+  docs/SOURCE_COVERAGE.md docs/SKILL_CONTRACT.md docs/PATTERN_SCHEMA.md docs/EVAL_SCHEMA.md docs/ROUTING_CAMPAIGN_ANALYSIS.md
   docs/BENCHMARK_QUALITY_AUDIT.md docs/REPOSITORY_COMPLETENESS_AUDIT.md docs/RELEASE_READINESS_AUDIT.md
 ]
 
