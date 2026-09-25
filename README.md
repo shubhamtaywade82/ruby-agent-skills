@@ -196,6 +196,22 @@ Completed routing release inputs can now be composed into a frozen `RELEASE_MANI
 
 `bin/routing-release-bundle` composes verified public routing evidence into a portable release-evidence directory and cryptographically records each component.
 
+## Iteration 98 — Self-Verifying Release Evidence
+
+Release bundles now self-verify before reporting success, and `bin/routing-release-check --bundle` can gate an already-created bundle directly.
+
+## Iteration 97 — Verified Release Evidence Bundle
+
+Completed routing release inputs can now be composed into a frozen `RELEASE_MANIFEST.json` bundle. The bundle verifies the required public campaign evidence and immutable archive before capture, optionally includes verified multi-model matrix evidence and the external-only hidden benchmark receipt, and carries a frozen copy of the release policy.
+
+## Iteration 96 — Hidden Benchmark Receipt Verification
+
+`bin/routing-hidden-benchmark-receipt-verify` independently validates safe external hidden-benchmark receipts without importing hidden cases, prompts, or gold labels into the repository.
+
+## Iteration 95 — Routing Release Evidence Bundle
+
+`bin/routing-release-bundle` composes verified public routing evidence into an auditable release-evidence directory and cryptographically records each component.
+
 ## Iteration 94 — Verified Multi-Model Matrix Evidence
 
 Completed multi-model routing matrices now emit a single `matrix-evidence.json` that cryptographically binds the matrix plan, every completed model evidence package, and every immutable archive tree. `bin/routing-model-matrix-evidence-verify` independently checks these bindings and replays the existing per-model evidence/archive verifiers.
