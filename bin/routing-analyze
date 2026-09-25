@@ -3,6 +3,10 @@
 
 require "json"
 require "optparse"
+require "set"
+
+ROOT = File.expand_path("..", __dir__)
+MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
 
 options = { output: nil }
 
@@ -13,73 +17,170 @@ end.parse!
 
 campaign_path = ARGV.fetch(0) { abort "campaign JSON path is required" }
 campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+manifest = YAML.safe_load(
+  File.read(MANIFEST_PATH, encoding: "UTF-8"),
+  permitted_classes: [],
+  aliases: false
+)
+skills = manifest.fetch("skills").keys.to_set
+errors = []
 
 cases = campaign.fetch("cases")
+requested_repetitions = campaign.fetch("requested_repetitions").to_i
+requested_case_count = campaign.fetch("routing_case_count").to_i
+requested_runs = requested_case_count * requested_repetitions
+
+if cases.length != requested_case_count
+  errors << "campaign case count #{cases.length} does not match routing_case_count #{requested_case_count}"
+end
+errors << "requested repetitions must be >= 1" if requested_repetitions < 1
+
 confusions = []
 case_reports = []
+completed_runs = 0
+primary_matches = 0
+secondary_expected = 0
+secondary_matched = 0
+unexpected_secondary_total = 0
+invalid_runs = 0
 
 cases.each do |case_id, case_data|
   runs = Array(case_data["runs"])
-  completed = runs.select { |run| run["status"] == "completed" }
-  expected = case_data.fetch("expected_primary_skill")
+  expected_primary = case_data.fetch("expected_primary_skill").to_s
+  errors << "case #{case_id} expected primary #{expected_primary} is not registered" unless skills.include?(expected_primary)
 
   observed_counts = Hash.new(0)
-  completed.each do |run|
-    observed_counts[run.fetch("observed").fetch("primary_skill")] += 1
-  end
+  case_completed = 0
+  case_primary_matches = 0
+  case_secondary_expected = 0
+  case_secondary_matched = 0
+  case_unexpected_secondary = 0
 
-  mismatches = completed.select do |run|
-    run.fetch("observed").fetch("primary_skill") != expected
-  end
+  runs.each do |run|
+    unless run["status"] == "completed"
+      invalid_runs += 1
+      next
+    end
 
-  mismatches.each do |run|
-    observed = run.fetch("observed").fetch("primary_skill")
-    existing = confusions.find { |entry| entry["expected_primary_skill"] == expected && entry["observed_primary_skill"] == observed }
-    if existing
-      existing["count"] += 1
-      existing["case_ids"] << case_id unless existing["case_ids"].include?(case_id)
-    else
-      confusions << {
-        "expected_primary_skill" => expected,
-        "observed_primary_skill" => observed,
-        "count" => 1,
-        "case_ids" => [case_id]
-      }
+    completed_runs += 1
+    case_completed += 1
+
+    begin
+      expected = run.fetch("expected")
+      observed = run.fetch("observed")
+      expected_run_primary = expected.fetch("primary_skill").to_s
+      observed_primary = observed.fetch("primary_skill").to_s
+      expected_secondary = Array(expected["secondary_skills"]).map(&:to_s).uniq
+      observed_secondary = Array(observed["secondary_skills"]).map(&:to_s).uniq
+
+      errors << "case #{case_id} run #{run.fetch("run_number")} expected primary disagrees with case contract" unless expected_run_primary == expected_primary
+      errors << "case #{case_id} observed primary #{observed_primary} is not registered" unless skills.include?(observed_primary)
+      errors << "case #{case_id} observed secondary skills contain primary #{observed_primary}" if observed_secondary.include?(observed_primary)
+      unknown_secondary = observed_secondary.reject { |skill| skills.include?(skill) }
+      errors << "case #{case_id} observed unknown secondary skills: #{unknown_secondary.join(", ")}" unless unknown_secondary.empty?
+
+      observed_counts[observed_primary] += 1
+      matched_secondary = expected_secondary & observed_secondary
+      unexpected_secondary = observed_secondary - expected_secondary
+
+      primary_match = observed_primary == expected_primary
+      primary_matches += 1 if primary_match
+      case_primary_matches += 1 if primary_match
+      secondary_expected += expected_secondary.length
+      case_secondary_expected += expected_secondary.length
+      secondary_matched += matched_secondary.length
+      case_secondary_matched += matched_secondary.length
+      unexpected_secondary_total += unexpected_secondary.length
+      case_unexpected_secondary += unexpected_secondary.length
+
+      unless existing = confusions.find { |entry| entry["expected_primary_skill"] == expected_primary && entry["observed_primary_skill"] == observed_primary }
+        confusions << {
+          "expected_primary_skill" => expected_primary,
+          "observed_primary_skill" => observed_primary,
+          "count" => 0,
+          "case_ids" => []
+        }
+        existing = confusions.last
+      end
+
+      if observed_primary != expected_primary
+        existing["count"] += 1
+        existing["case_ids"] << case_id unless existing["case_ids"].include?(case_id)
+      elsif existing["count"].zero? && existing["case_ids"].empty?
+        confusions.delete(existing)
+      end
+    rescue KeyError => e
+      errors << "case #{case_id} completed run is missing #{e.message}"
+      invalid_runs += 1
     end
   end
 
+  modal_primary, modal_count = observed_counts.max_by { |skill, count| [count, skill] }
+  expected_secondary_values = runs.filter_map do |run|
+    next unless run["status"] == "completed"
+    Array(run.dig("expected", "secondary_skills")).map(&:to_s).uniq
+  end
+  expected_secondary_union = expected_secondary_values.flatten.uniq
+
   case_reports << {
     "case_id" => case_id,
-    "expected_primary_skill" => expected,
-    "requested_repetitions" => case_data.fetch("requested_repetitions"),
-    "completed_repetitions" => completed.length,
-    "primary_accuracy" => completed.empty? ? 0.0 : completed.count { |run| run.fetch("observed").fetch("primary_skill") == expected }.fdiv(completed.length),
+    "expected_primary_skill" => expected_primary,
+    "requested_repetitions" => requested_repetitions,
+    "completed_repetitions" => case_completed,
+    "primary_accuracy" => case_completed.zero? ? 0.0 : case_primary_matches.fdiv(case_completed),
+    "secondary_recall" => case_secondary_expected.zero? ? 1.0 : case_secondary_matched.fdiv(case_secondary_expected),
+    "average_unexpected_secondary_count" => case_completed.zero? ? 0.0 : case_unexpected_secondary.fdiv(case_completed),
     "observed_primary_distribution" => observed_counts,
+    "modal_primary_skill" => modal_primary,
+    "repetition_stability" => case_completed.zero? ? 0.0 : modal_count.fdiv(case_completed),
+    "expected_secondary_skills" => expected_secondary_union,
     "unstable" => observed_counts.length > 1,
-    "invalid_run_count" => runs.length - completed.length
+    "invalid_run_count" => runs.length - case_completed
   }
 end
 
+confusions.reject! { |entry| entry["count"].zero? }
 confusions.sort_by! { |entry| [-entry["count"], entry["expected_primary_skill"], entry["observed_primary_skill"]] }
 unstable_cases = case_reports.select { |entry| entry["unstable"] }
-completed_runs = campaign.fetch("completed_runs").to_i
-mismatch_count = confusions.sum { |entry| entry["count"] }
+
+reported_completed_runs = campaign.fetch("completed_runs").to_i
+errors << "campaign completed_runs #{reported_completed_runs} does not match observed completed runs #{completed_runs}" unless reported_completed_runs == completed_runs
+errors << "campaign completion flag is true but observed run count is incomplete" if campaign.fetch("complete") && completed_runs != requested_runs
+
+primary_accuracy = completed_runs.zero? ? 0.0 : primary_matches.fdiv(completed_runs)
+secondary_recall = secondary_expected.zero? ? 1.0 : secondary_matched.fdiv(secondary_expected)
+average_unexpected_secondary_count = completed_runs.zero? ? 0.0 : unexpected_secondary_total.fdiv(completed_runs)
+average_repetition_stability = case_reports.empty? ? 0.0 : case_reports.sum { |entry| entry["repetition_stability"] }.fdiv(case_reports.length)
 
 report = {
   "protocol_version" => campaign.fetch("protocol_version"),
-  "analysis" => "skill-routing-confusion-v1",
+  "analysis" => "skill-routing-confusion-v2",
   "source_campaign" => {
     "id" => campaign.fetch("campaign"),
     "version" => campaign.fetch("campaign_version"),
-    "complete" => campaign.fetch("complete")
+    "complete_flag" => campaign.fetch("complete"),
+    "routing_case_count" => requested_case_count,
+    "requested_repetitions" => requested_repetitions,
+    "requested_runs" => requested_runs,
+    "observed_completed_runs" => completed_runs
   },
   "agent" => campaign.fetch("agent"),
+  "validation" => {
+    "passed" => errors.empty?,
+    "errors" => errors
+  },
   "summary" => {
     "completed_runs" => completed_runs,
-    "primary_mismatch_count" => mismatch_count,
-    "primary_mismatch_rate" => completed_runs.zero? ? 0.0 : mismatch_count.fdiv(completed_runs),
+    "invalid_run_count" => invalid_runs,
+    "primary_accuracy" => primary_accuracy,
+    "primary_mismatch_count" => completed_runs - primary_matches,
+    "primary_mismatch_rate" => completed_runs.zero? ? 0.0 : (completed_runs - primary_matches).fdiv(completed_runs),
+    "secondary_recall" => secondary_recall,
+    "average_unexpected_secondary_count" => average_unexpected_secondary_count,
+    "average_repetition_stability" => average_repetition_stability,
     "confusion_pair_count" => confusions.length,
-    "unstable_case_count" => unstable_cases.length
+    "unstable_case_count" => unstable_cases.length,
+    "complete_from_observed_data" => completed_runs == requested_runs && errors.empty?
   },
   "primary_confusions" => confusions,
   "unstable_cases" => unstable_cases,
@@ -87,9 +188,7 @@ report = {
 }
 
 output = options[:output]
-if output
-  File.write(output, JSON.pretty_generate(report) + "\n", encoding: "UTF-8")
-end
-
+File.write(output, JSON.pretty_generate(report) + "\n", encoding: "UTF-8") if output
 puts JSON.pretty_generate(report)
-exit(1) unless campaign.fetch("complete")
+
+exit(1) unless campaign.fetch("complete") && errors.empty? && completed_runs == requested_runs
