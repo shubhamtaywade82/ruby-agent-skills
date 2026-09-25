@@ -262,3 +262,103 @@ fixtures:
     contract_regex:
       - "class User"
       - "def full_name"
+
+  service-object-not-needed:
+    root: benchmarks/design-patterns/fixtures/service-object-not-needed
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class PriceCalculator"
+      - "def total_cents"
+    forbidden_regex:
+      - "class .*Service"
+      - "class .*Command"
+      - "class .*Manager"
+      - "class .*ApplicationService"
+    contract_regex:
+      - "class PriceCalculator"
+      - "def initialize"
+      - "def total_cents"
+
+  strategy-not-needed:
+    root: benchmarks/design-patterns/fixtures/strategy-not-needed
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ShippingCost"
+      - "def cents"
+    forbidden_regex:
+      - "class .*Strategy"
+      - "class .*Policy"
+      - "@strategy"
+      - "def calculate_cost.*strategy"
+    contract_regex:
+      - "class ShippingCost"
+      - "def initialize"
+      - "def cents"
+
+  factory-not-needed:
+    root: benchmarks/design-patterns/fixtures/factory-not-needed
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ReportFormatter"
+      - "def format"
+    forbidden_regex:
+      - "class .*Factory"
+      - "class .*Builder"
+      - "Factory"
+      - "Registry"
+    contract_regex:
+      - "class ReportFormatter"
+      - "def format"
+
+  repository-not-needed:
+    root: benchmarks/design-patterns/fixtures/repository-not-needed
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class Inventory"
+      - "def available?"
+    forbidden_regex:
+      - "class .*Repository"
+      - "class .*Gateway"
+      - "class .*Adapter"
+      - "def find.*Repository"
+    contract_regex:
+      - "class Inventory"
+      - "def initialize"
+      - "def available?"
+
+  value-object-not-needed:
+    root: benchmarks/design-patterns/fixtures/value-object-not-needed
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class EmailValidator"
+      - "def valid?"
+    forbidden_regex:
+      - "class Email\\b"
+      - "EmailValue"
+      - "ValueObject"
+      - "class .*Email"
+    contract_regex:
+      - "class EmailValidator"
+      - "def valid?"
+
+  presenter-not-needed:
+    root: benchmarks/design-patterns/fixtures/presenter-not-needed
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class User"
+      - "def display_name"
+    forbidden_regex:
+      - "class .*Presenter"
+      - "class .*ViewModel"
+      - "Presenter"
+      - "ViewModel"
+    contract_regex:
+      - "class User"
+      - "def initialize"
+      - "def display_name"
