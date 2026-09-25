@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 81 — Analysis Provenance Binding
+> **Current milestone:** Iteration 83 — Matrix Resume Integrity
 
 ---
 
@@ -759,6 +759,14 @@ When adding a new skill or deepening an existing one:
 
 The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
 
+
+## Iteration 83 — Matrix Resume Integrity
+
+Matrix campaign resume no longer trusts a `completed_and_archived` checkpoint entry by status alone. On resume, the runner revalidates the recorded campaign evidence with `routing-campaign-evidence-verify --check-files` and independently validates the recorded archive with `routing-archive-verify` before reusing the result.
+
+## Iteration 82 — Routing Evidence Archive Integrity
+
+Routing evidence archives now have an independent verifier that validates archive identity, preserved evidence, artifact sets, SHA-256/byte-size metadata, relative paths, and symlink traversal. Archive creation self-verifies before succeeding, and release readiness verifies the exact archived package containing the supplied evidence.
 
 ## Iteration 81 — Routing Analysis Provenance Binding
 
