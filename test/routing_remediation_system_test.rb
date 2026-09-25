@@ -87,6 +87,27 @@ class RoutingRemediationSystemTest < Minitest::Test
     end
   end
 
+  def test_comparison_rejects_tampered_campaign_metrics
+    Dir.mktmpdir("routing-remediation") do |dir|
+      baseline = File.join(dir, "baseline.json")
+      candidate = File.join(dir, "candidate.json")
+
+      write_campaign(baseline, primary_skill: "rails-authorization", candidate: false, accuracy: 1.0)
+      write_campaign(candidate, primary_skill: "rails-authorization", candidate: false, accuracy: 0.0)
+
+      stdout, _stderr, status = Open3.capture3(
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "routing-compare"),
+        baseline,
+        candidate,
+        chdir: ROOT
+      )
+
+      refute status.success?
+      assert_includes stdout, "metrics do not match recomputed run data"
+    end
+  end
+
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
     assert_includes validator, "test/routing_remediation_system_test.rb"
