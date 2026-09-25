@@ -72,6 +72,17 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
     end
   end
 
+  def test_all_stack_minimality_evaluations_have_required_contract_shape
+    Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")].each do |path|
+      data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+      assert_equal 1, data.fetch("version")
+      assert_equal "stack-minimality", data.fetch("category")
+      assert_operator data.fetch("skills").length, :>=, 1
+      assert_operator data.fetch("cases").length, :>=, 2
+      assert_equal %w[functional tests contract scope_control], data.fetch("checks")
+    end
+  end
+
   def test_project_minimality_contract_is_explicit
     content = File.read(
       File.join(ROOT, "skills", "stack-minimality", "SKILL.md"),
