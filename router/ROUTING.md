@@ -43,6 +43,7 @@ This file defines how an agent should select and compose skills.
 | Whole-repository minimality audit | stack-minimality-audit | stack-minimality |
 | Deliberate simplification debt | stack-minimality-debt | stack-minimality |
 | Minimality measurement/evidence | stack-minimality-evidence | relevant performance or dependency skill |
+| Minimality help/reference | stack-minimality-help | stack-minimality |
 | Rails routes | rails-routing | rails-controllers, rails-testing |
 | Rails Routing deep engineering | rails-routing | rails-action-controller, rails-controllers, rails-authentication, rails-security, rails-i18n, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |
 | Rails controller action | rails-controllers | rails-routing, ruby-method-design, rails-testing |
