@@ -81,8 +81,10 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
     refute_nil result_index
 
     resume_block = source[completed_index, result_index - completed_index]
-    assert_includes resume_block, "routing-campaign-evidence-verify"
-    assert_includes resume_block, "routing-archive-verify"
+    assert_includes resume_block, "CAMPAIGN_EVIDENCE_VERIFY"
+    assert_includes resume_block, "ARCHIVE_VERIFIER"
+    assert_includes source, 'CAMPAIGN_EVIDENCE_VERIFY = File.join(ROOT, "bin", "routing-campaign-evidence-verify")'
+    assert_includes source, 'ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")'
   end
 
   def test_resume_flag_is_exposed
