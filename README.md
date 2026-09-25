@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 78 — Verified Agent Installation Doctor
+> **Current milestone:** Iteration 79 — Repository Consistency & Empirical Analysis Hardening
 
 ---
 
@@ -40,6 +40,10 @@ Routing campaign execution now checkpoints after every repetition and records a 
 The execution layer now supports resumable multi-model routing campaigns, and the agent installer installs both skills and reusable patterns with immutable source/ref provenance. Installed packs can be independently verified for manifest/routing integrity and exact skill/pattern inventory. Removed skills are cleaned up during upgrades, and installation behavior has system-test coverage.
 The agent-facing `SkillPack` materializer now records the source manifest digest, creates stable baseline directories, and rejects ambiguous basename-only pattern resolution rather than selecting a non-deterministic match.
 
+## Iteration 79 — Repository Consistency & Empirical Analysis Hardening
+
+The public documentation and release-readiness surfaces now share one verified inventory/current-milestone contract. Routing analysis also reports primary accuracy, secondary recall, unexpected secondary selections, per-case repetition stability, and explicit input validation without synthesizing missing runs.
+
 ## Iteration 78 — Verified Agent Installation Doctor
 
 The installed-pack workflow now has a deterministic local doctor command. It validates the installation metadata, supported agent/scope, recorded skill inventory, embedded verifier, and content integrity before a pack is used in a controlled agent environment.
@@ -64,6 +68,15 @@ The pack includes 24 reusable implementation patterns and 9 public evaluations c
 ## Agent installation verification
 
 After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-root>` to verify the installed metadata, skill inventory, embedded verifier, and content integrity before using the pack in a controlled agent environment.
+
+## Routing campaign analysis
+
+After a public routing campaign completes, independently analyze the recorded campaign with:
+
+    ruby bin/routing-analyze ./routing-campaign-output/campaign.json \
+      --output ./routing-campaign-output/analysis.json
+
+The analyzer recomputes completion and routing metrics from the recorded runs and rejects structurally inconsistent or incomplete campaigns rather than filling missing measurements.
 
 ## What this repository contains
 
@@ -587,13 +600,9 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports:
+The validation suite currently reports the same inventory shown above: **85 skills**, **417 implementation patterns**, **410 evaluation cases**, and **72 dedicated system/contract tests**.
 
-```text
-76 skills
-393 implementation patterns
-392 evaluation cases
-```
+The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
 ---
 
@@ -740,11 +749,11 @@ When adding a new skill or deepening an existing one:
 
 ---
 
-# Current milestone
+# Current implementation status
 
-**Iteration 76 — Implementation Hardening & Verified Agent Installation**
+**Iteration 79 — Repository Consistency & Empirical Analysis Hardening**
 
-The implementation layer now provides checkpointed routing campaigns, resumable multi-model execution, provenance-bound skill-pack installation, exact installed-pack verification, and upgrade cleanup. The remaining routing work is empirical execution against real models rather than additional core infrastructure.
+The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. Remaining work is empirical: run the public routing campaign against real models, analyze the observed evidence, perform evidence-based routing remediation, execute the external hidden benchmark, and package release evidence.
 
 
 ## Rails Encryption and Credentials Engineering

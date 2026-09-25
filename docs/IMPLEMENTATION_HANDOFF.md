@@ -66,6 +66,13 @@ After completion, import and archive the evidence:
     ruby bin/routing-campaign-import ./routing-campaign-output \
       --archive ./routing-archives
 
+Analyze the completed campaign independently:
+
+    ruby bin/routing-analyze ./routing-campaign-output/campaign.json \
+      --output ./routing-campaign-output/analysis.json
+
+The analysis recomputes completion and routing metrics from the recorded runs. It reports primary accuracy, secondary recall, unexpected secondary selections, confusion pairs, modal primary selection, and repetition stability. It exits non-zero for incomplete or structurally inconsistent campaigns.
+
 ## Multi-model campaign
 
 Plan without executing:
@@ -116,4 +123,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 78. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 79. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.

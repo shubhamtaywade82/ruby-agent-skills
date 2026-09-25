@@ -100,7 +100,8 @@ readme = File.read(README_PATH, encoding: "UTF-8")
 inventory = {
   "Skills" => skill_files.length,
   "Implementation patterns" => pattern_files.length,
-  "Evaluation cases" => eval_case_count
+  "Evaluation cases" => eval_case_count,
+  "Dedicated system/contract tests" => system_tests.length
 }
 
 inventory.each do |label, expected|

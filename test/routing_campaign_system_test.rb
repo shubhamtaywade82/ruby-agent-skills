@@ -22,15 +22,17 @@ class RoutingCampaignSystemTest < Minitest::Test
           "provider" => "ollama",
           "model" => "test-model"
         },
+        "routing_case_count" => 1,
+        "requested_repetitions" => 3,
         "completed_runs" => 3,
         "cases" => {
           "case-a" => {
             "expected_primary_skill" => "rails-authorization",
             "requested_repetitions" => 3,
             "runs" => [
-              {"status" => "completed", "observed" => {"primary_skill" => "rails-authorization"}},
-              {"status" => "completed", "observed" => {"primary_skill" => "rails-authorization"}},
-              {"status" => "completed", "observed" => {"primary_skill" => "rails-active-record"}}
+              {"status" => "completed", "expected" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}, "observed" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}},
+              {"status" => "completed", "expected" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}, "observed" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}},
+              {"status" => "completed", "expected" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}, "observed" => {"primary_skill" => "rails-active-record", "secondary_skills" => ["rails-test-engineering"]}}
             ]
           }
         }
@@ -52,6 +54,11 @@ class RoutingCampaignSystemTest < Minitest::Test
       assert_equal 1, report.fetch("summary").fetch("primary_mismatch_count")
       assert_equal 1, report.fetch("summary").fetch("confusion_pair_count")
       assert_equal 1, report.fetch("summary").fetch("unstable_case_count")
+      assert_in_delta 2.0 / 3.0, report.fetch("summary").fetch("primary_accuracy"), 0.0001
+      assert_in_delta 1.0, report.fetch("summary").fetch("secondary_recall"), 0.0001
+      assert_in_delta 0.0, report.fetch("summary").fetch("average_unexpected_secondary_count"), 0.0001
+      assert_in_delta 2.0 / 3.0, report.fetch("cases").first.fetch("repetition_stability"), 0.0001
+      assert_equal "rails-authorization", report.fetch("cases").first.fetch("modal_primary_skill")
       assert_equal "rails-authorization", report.fetch("primary_confusions").first.fetch("expected_primary_skill")
       assert_equal "rails-active-record", report.fetch("primary_confusions").first.fetch("observed_primary_skill")
     end
