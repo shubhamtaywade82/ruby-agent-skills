@@ -27,9 +27,22 @@ manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
 evidence = JSON.parse(File.read(evidence_path, encoding: "UTF-8"))
 errors = []
 
+safe_component = lambda do |value|
+  value.to_s.strip.downcase.gsub(/[^a-z0-9._-]+/, "-").gsub(/\A-+|-+\z/, "").then { |v| v.empty? ? "unknown" : v }
+end
+
 errors << "unsupported archive protocol" unless manifest["protocol_version"].to_i == 1
 errors << "unsupported evidence type" unless manifest["evidence_type"] == "skill-routing-campaign-v1"
 errors << "archive evidence type mismatch" unless evidence["evidence"] == manifest["evidence_type"]
+expected_archive_id = [
+  safe_component.call(evidence.fetch("campaign")),
+  safe_component.call(evidence.dig("agent", "model")),
+  safe_component.call(evidence.dig("repository", "git_sha"))
+].join("/")
+errors << "archive id mismatch" unless manifest["archive_id"] == expected_archive_id
+%w[requested_runs completed_runs].each do |key|
+  errors << "archive manifest #{key} differs from archived evidence" unless manifest[key].to_i == evidence[key].to_i
+end
 
 source_evidence = manifest.fetch("source_evidence", {})
 errors << "archived evidence SHA-256 mismatch" unless Digest::SHA256.file(evidence_path).hexdigest == source_evidence.fetch("sha256", "")
