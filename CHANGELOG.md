@@ -1,3 +1,11 @@
+## Iteration 86 — Pattern Selection Restraint Integration
+
+- Expanded the design-pattern evaluation corpus with six negative-selection cases where the correct choice is to introduce no pattern.
+- Expanded the public design-pattern campaign from 18 to 24 cases.
+- Registered all six new evaluations and fixture contracts.
+- Added campaign-quality coverage requiring the public campaign to cover every public design-pattern evaluation.
+- Documented the integration with stack-minimality and the existing pattern-selection verifier.
+
 ## Iteration 85 — Stack Minimality Evaluation Guardrails
 
 - Extended repository completeness auditing to verify the stack-minimality evaluation registry against the filesystem.
