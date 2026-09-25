@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 79 — Repository Consistency & Empirical Analysis Hardening
+> **Current milestone:** Iteration 80 — Evidence Integrity Gate
 
 ---
 
@@ -68,6 +68,10 @@ The pack includes 24 reusable implementation patterns and 9 public evaluations c
 ## Agent installation verification
 
 After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-root>` to verify the installed metadata, skill inventory, embedded verifier, and content integrity before using the pack in a controlled agent environment.
+
+## Routing evidence integrity
+
+`bin/routing-compare` now recomputes routing metrics from the recorded run data before applying the remediation gate. A campaign whose recorded metrics have been altered or drifted from its runs is rejected rather than treated as benchmark evidence.
 
 ## Routing campaign analysis
 
