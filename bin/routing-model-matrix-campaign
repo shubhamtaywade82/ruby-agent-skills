@@ -26,6 +26,8 @@ CAMPAIGN_RUNNER = File.join(ROOT, "bin", "routing-campaign")
 CAMPAIGN_IMPORT = File.join(ROOT, "bin", "routing-campaign-import")
 CAMPAIGN_EVIDENCE_VERIFY = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
 ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
+MATRIX_EVIDENCE_PACKAGER = File.join(ROOT, "bin", "routing-model-matrix-evidence")
+MATRIX_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-model-matrix-evidence-verify")
 
 options = {
   models: [],
@@ -251,5 +253,33 @@ failed = models.any? do |model|
   entry = matrix_plan["results"].find { |result| result["model"] == model }
   entry.nil? || entry["status"] != "completed_and_archived"
 end
+
+unless failed
+  matrix_evidence = File.join(options[:output], "matrix-evidence.json")
+  evidence_stdout, evidence_stderr, evidence_status = Open3.capture3(
+    RbConfig.ruby,
+    MATRIX_EVIDENCE_PACKAGER,
+    plan_path,
+    "--output", matrix_evidence,
+    chdir: ROOT
+  )
+  warn evidence_stderr unless evidence_stderr.empty?
+  puts evidence_stdout
+  failed = true unless evidence_status.success?
+
+  unless failed
+    verify_stdout, verify_stderr, verify_status = Open3.capture3(
+      RbConfig.ruby,
+      MATRIX_EVIDENCE_VERIFIER,
+      matrix_evidence,
+      "--check-files",
+      chdir: ROOT
+    )
+    warn verify_stderr unless verify_stderr.empty?
+    puts verify_stdout
+    failed = true unless verify_status.success?
+  end
+end
+
 puts JSON.pretty_generate(matrix_plan)
-exit(failed.empty? ? 0 : 1)
+exit(failed ? 1 : 0)

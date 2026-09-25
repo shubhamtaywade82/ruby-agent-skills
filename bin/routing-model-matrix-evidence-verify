@@ -1,0 +1,150 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "optparse"
+require "open3"
+
+ROOT = File.expand_path("..", __dir__)
+CAMPAIGN_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
+
+options = {check_files: false}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-model-matrix-evidence-verify MATRIX_EVIDENCE_JSON [options]"
+  opts.on("--check-files", "Recalculate the plan, evidence, and archive hashes") { options[:check_files] = true }
+end.parse!
+
+path = File.expand_path(ARGV.fetch(0) { abort "matrix evidence JSON is required" })
+abort "matrix evidence JSON not found: #{path}" unless File.file?(path)
+
+def sha256(path)
+  Digest::SHA256.file(path).hexdigest
+end
+
+def archive_tree(path)
+  abort "archive directory not found: #{path}" unless Dir.exist?(path)
+  files = {}
+  Dir.glob(File.join(path, "**", "*"), File::FNM_DOTMATCH).sort.each do |entry|
+    next if [".", ".."].include?(File.basename(entry))
+    abort "archive contains a symlink: #{entry}" if File.symlink?(entry)
+    next unless File.file?(entry)
+
+    relative = entry.delete_prefix(File.expand_path(path) + "/")
+    files[relative] = {
+      "sha256" => sha256(entry),
+      "bytes" => File.size(entry)
+    }
+  end
+  canonical = files.sort.to_h
+  [canonical, Digest::SHA256.hexdigest(JSON.generate(canonical))]
+end
+
+evidence = JSON.parse(File.read(path, encoding: "UTF-8"))
+errors = []
+errors << "protocol_version must be 1" unless evidence["protocol_version"].to_i == 1
+errors << "execution must be skill-routing-model-matrix-evidence-v1" unless evidence["execution"] == "skill-routing-model-matrix-evidence-v1"
+errors << "complete must be true" unless evidence["complete"] == true
+
+source_plan = evidence["source_plan"]
+unless source_plan.is_a?(Hash)
+  errors << "source_plan must be a mapping"
+else
+  plan_path = source_plan["path"].to_s
+  errors << "source plan path is empty" if plan_path.empty?
+  if options[:check_files] && File.file?(plan_path)
+    errors << "matrix plan SHA-256 mismatch" unless sha256(plan_path) == source_plan["sha256"].to_s
+  elsif options[:check_files]
+    errors << "matrix plan unavailable at #{plan_path}"
+  end
+
+  if File.file?(plan_path)
+    begin
+      plan = JSON.parse(File.read(plan_path, encoding: "UTF-8"))
+      errors << "matrix evidence campaign does not match plan" unless evidence["campaign"] == plan["campaign"]
+      errors << "matrix evidence runtime does not match plan" unless evidence["runtime"] == plan["runtime"]
+      errors << "matrix evidence provenance does not match plan" unless evidence["provenance"] == plan["provenance"]
+      expected_models = Array(plan["models"]).map { |entry| entry.fetch("name") }.sort
+      actual_models = Array(evidence["models"]).map { |entry| entry.fetch("model") }.sort
+      errors << "matrix evidence model set does not match plan" unless actual_models == expected_models
+    rescue JSON::ParserError, KeyError => e
+      errors << "matrix plan is invalid: #{e.message}"
+    end
+  end
+end
+
+models = Array(evidence["models"])
+errors << "matrix evidence must contain at least one model" if models.empty?
+
+models.each do |model|
+  model_name = model["model"].to_s
+  errors << "matrix evidence model name is empty" if model_name.empty?
+  errors << "model #{model_name} status is not completed_and_archived" unless model["status"] == "completed_and_archived"
+
+  evidence_meta = model["evidence"]
+  archive_meta = model["archive"]
+  unless evidence_meta.is_a?(Hash)
+    errors << "model #{model_name} evidence metadata must be a mapping"
+  end
+  unless archive_meta.is_a?(Hash)
+    errors << "model #{model_name} archive metadata must be a mapping"
+  end
+  next unless evidence_meta.is_a?(Hash) && archive_meta.is_a?(Hash)
+
+  evidence_path = evidence_meta["path"].to_s
+  if options[:check_files]
+    if evidence_path.empty? || !File.file?(evidence_path)
+      errors << "model #{model_name} evidence unavailable at #{evidence_path}"
+    else
+      errors << "model #{model_name} evidence SHA-256 mismatch" unless sha256(evidence_path) == evidence_meta["sha256"].to_s
+      errors << "model #{model_name} evidence byte size mismatch" unless File.size(evidence_path) == evidence_meta["bytes"].to_i
+    end
+  end
+
+  archive_path = archive_meta["path"].to_s
+  if options[:check_files]
+    begin
+      files, tree_sha = archive_tree(archive_path)
+      errors << "model #{model_name} archive tree SHA-256 mismatch" unless tree_sha == archive_meta["tree_sha256"].to_s
+      errors << "model #{model_name} archive artifact map mismatch" unless files == archive_meta["files"]
+    rescue SystemCallError => e
+      errors << "model #{model_name} archive unavailable: #{e.message}"
+    end
+  end
+
+  if options[:check_files] && File.file?(evidence_path)
+    _stdout, stderr, status = Open3.capture3(
+      RbConfig.ruby,
+      CAMPAIGN_EVIDENCE_VERIFIER,
+      evidence_path,
+      "--check-files",
+      chdir: ROOT
+    )
+    warn stderr unless stderr.empty?
+    errors << "model #{model_name} campaign evidence verification failed" unless status.success?
+  end
+
+  if options[:check_files] && Dir.exist?(archive_path)
+    _stdout, stderr, status = Open3.capture3(
+      RbConfig.ruby,
+      ARCHIVE_VERIFIER,
+      archive_path,
+      chdir: ROOT
+    )
+    warn stderr unless stderr.empty?
+    errors << "model #{model_name} archive verification failed" unless status.success?
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing model matrix evidence verification error(s)"
+end
+
+puts "Routing model matrix evidence verification"
+puts "  evidence: #{path}"
+puts "  models: #{models.length}"
+puts "  integrity: #{options[:check_files] ? "checked" : "schema-only"}"
+puts "Routing model matrix evidence verification passed."

@@ -108,6 +108,14 @@ The baseline/candidate experiment path now verifies `comparison.json` against it
 
 Use `bin/routing-compare-verify` to independently replay a comparison. The report records SHA-256 provenance for the baseline, candidate, remediation policy, and comparator implementation.
 
+## Multi-model matrix evidence
+
+A fully completed model matrix automatically produces `matrix-evidence.json`. It binds the exact matrix plan, completed per-model evidence, and immutable archive trees. Verify it independently with:
+
+    ruby bin/routing-model-matrix-evidence-verify ./routing-matrix-output/matrix-evidence.json --check-files
+
+The aggregate remains descriptive-only: it does not rank models or synthesize missing results.
+
 ## Installation doctor
 
 After installation and before controlled agent use:
@@ -134,4 +142,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 91. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 94. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.

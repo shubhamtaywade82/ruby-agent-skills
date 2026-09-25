@@ -1,3 +1,20 @@
+## Iteration 94 — Verified Multi-Model Matrix Evidence
+
+- Emit a single `matrix-evidence.json` binding the matrix plan, each completed model evidence package, and each immutable archive tree.
+- Add independent aggregate evidence verification with underlying per-model verifier replay.
+
+## Iteration 93 — Matrix Evidence Integrity Verification
+
+- Add `bin/routing-model-matrix-evidence-verify` for plan/model-set/hash integrity checks.
+- Detect tampered model evidence, archive trees, and matrix-plan provenance.
+- Reuse the existing campaign evidence and archive verifiers during `--check-files` validation.
+
+## Iteration 92 — Matrix Evidence Aggregation
+
+- Make a completed multi-model campaign automatically produce and verify aggregate evidence.
+- Keep failed or incomplete model results ineligible for aggregate evidence.
+- Add system coverage for aggregation, incompleteness rejection, and plan tampering.
+
 ## Iteration 91 — End-to-End Experiment Evidence Finalization
 
 - Make baseline/candidate routing experiments replay-verify comparison provenance before packaging evidence.

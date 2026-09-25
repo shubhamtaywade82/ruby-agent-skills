@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 91 — End-to-End Routing/Experiment Evidence
+> **Current milestone:** Iteration 94 — Verified Multi-Model Matrix Evidence
 
 ---
 
@@ -179,10 +179,22 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **431** |
 | Evaluation cases | **442** |
-| Dedicated system/contract tests | **77** |
+| Dedicated system/contract tests | **78** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
+
+## Iteration 94 — Verified Multi-Model Matrix Evidence
+
+Completed multi-model routing matrices now emit a single `matrix-evidence.json` that cryptographically binds the matrix plan, every completed model evidence package, and every immutable archive tree. `bin/routing-model-matrix-evidence-verify` independently checks these bindings and replays the existing per-model evidence/archive verifiers.
+
+## Iteration 93 — Matrix Evidence Integrity Verification
+
+Added an independent verifier for aggregate matrix evidence. It detects plan drift, model-set drift, evidence/archive hash changes, archive tree changes, and underlying campaign/archive verification failures when file checking is requested.
+
+## Iteration 92 — Matrix Evidence Aggregation
+
+The multi-model campaign runner now automatically finalizes a completed matrix into aggregate evidence and verifies that aggregate before reporting overall success. Failed or incomplete model runs remain ineligible for aggregate evidence.
 
 ---
 
