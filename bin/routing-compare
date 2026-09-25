@@ -15,6 +15,44 @@ OptionParser.new do |opts|
   opts.on("--output PATH", "Write comparison JSON to PATH") { |value| options[:output] = value }
 end.parse!
 
+def recomputed_metrics(campaign)
+  completed = campaign.fetch("cases").values.flat_map { |case_data| case_data.fetch("runs") }
+    .select { |run| run["status"] == "completed" }
+
+  primary_matches = completed.count do |run|
+    run.fetch("observed").fetch("primary_skill") == run.fetch("expected").fetch("primary_skill")
+  end
+
+  expected_secondary = completed.sum do |run|
+    Array(run.fetch("expected")["secondary_skills"]).map(&:to_s).uniq.length
+  end
+
+  matched_secondary = completed.sum do |run|
+    expected = Array(run.fetch("expected")["secondary_skills"]).map(&:to_s).uniq
+    observed = Array(run.fetch("observed")["secondary_skills"]).map(&:to_s).uniq
+    (expected & observed).length
+  end
+
+  unexpected_secondary = completed.sum do |run|
+    expected = Array(run.fetch("expected")["secondary_skills"]).map(&:to_s).uniq
+    observed = Array(run.fetch("observed")["secondary_skills"]).map(&:to_s).uniq
+    (observed - expected).length
+  end
+
+  {
+    "primary_accuracy" => completed.empty? ? 0.0 : primary_matches.fdiv(completed.length),
+    "secondary_recall" => expected_secondary.zero? ? 1.0 : matched_secondary.fdiv(expected_secondary),
+    "average_unexpected_secondary_count" => completed.empty? ? 0.0 : unexpected_secondary.fdiv(completed.length)
+  }
+end
+
+def metrics_match?(recorded, recomputed)
+  recomputed.all? do |key, value|
+    (recorded.fetch(key).to_f - value).abs <= 0.000001
+  end
+end
+
+
 baseline = JSON.parse(File.read(ARGV.fetch(0), encoding: "UTF-8"))
 candidate = JSON.parse(File.read(ARGV.fetch(1), encoding: "UTF-8"))
 policy = YAML.safe_load(File.read(options[:policy], encoding: "UTF-8"), permitted_classes: [], aliases: false)
@@ -32,9 +70,16 @@ errors << "baseline and candidate repetition counts differ" unless baseline.fetc
 
 baseline_metrics = baseline.fetch("metrics")
 candidate_metrics = candidate.fetch("metrics")
-primary_delta = candidate_metrics.fetch("primary_accuracy") - baseline_metrics.fetch("primary_accuracy")
-secondary_delta = candidate_metrics.fetch("secondary_recall") - baseline_metrics.fetch("secondary_recall")
-unexpected_delta = candidate_metrics.fetch("average_unexpected_secondary_count") - baseline_metrics.fetch("average_unexpected_secondary_count")
+baseline_recomputed = recomputed_metrics(baseline)
+candidate_recomputed = recomputed_metrics(candidate)
+
+unless metrics_match?(baseline_metrics, baseline_recomputed) && metrics_match?(candidate_metrics, candidate_recomputed)
+  errors << "metrics do not match recomputed run data"
+end
+
+primary_delta = candidate_recomputed.fetch("primary_accuracy") - baseline_recomputed.fetch("primary_accuracy")
+secondary_delta = candidate_recomputed.fetch("secondary_recall") - baseline_recomputed.fetch("secondary_recall")
+unexpected_delta = candidate_recomputed.fetch("average_unexpected_secondary_count") - baseline_recomputed.fetch("average_unexpected_secondary_count")
 
 errors << "primary accuracy regressed beyond allowed threshold" if primary_delta < -gate.fetch("max_primary_accuracy_drop").to_f
 errors << "secondary recall regressed beyond allowed threshold" if secondary_delta < -gate.fetch("max_secondary_recall_drop").to_f
