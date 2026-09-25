@@ -1,0 +1,116 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "open3"
+require "optparse"
+require "tempfile"
+
+ROOT = File.expand_path("..", __dir__)
+EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/routing-archive-verify ARCHIVE_DIR"
+end.parse!
+
+archive_dir = File.expand_path(ARGV.fetch(0) { abort "archive directory is required" })
+abort "archive directory not found: #{archive_dir}" unless Dir.exist?(archive_dir)
+
+manifest_path = File.join(archive_dir, "ARCHIVE_MANIFEST.json")
+evidence_path = File.join(archive_dir, "evidence.json")
+abort "archive manifest not found: #{manifest_path}" unless File.file?(manifest_path)
+abort "archived evidence not found: #{evidence_path}" unless File.file?(evidence_path)
+
+manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+evidence = JSON.parse(File.read(evidence_path, encoding: "UTF-8"))
+errors = []
+
+errors << "unsupported archive protocol" unless manifest["protocol_version"].to_i == 1
+errors << "unsupported evidence type" unless manifest["evidence_type"] == "skill-routing-campaign-v1"
+errors << "archive evidence type mismatch" unless evidence["evidence"] == manifest["evidence_type"]
+
+source_evidence = manifest.fetch("source_evidence", {})
+errors << "archived evidence SHA-256 mismatch" unless Digest::SHA256.file(evidence_path).hexdigest == source_evidence.fetch("sha256", "")
+
+manifest_artifacts = manifest.fetch("artifacts", {})
+evidence_artifacts = evidence.fetch("artifacts", {})
+errors << "archive/evidence artifact key mismatch" unless manifest_artifacts.keys.sort == evidence_artifacts.keys.sort
+
+resolve_archive_path = lambda do |relative|
+  candidate = File.expand_path(relative.to_s, archive_dir)
+  prefix = archive_dir.end_with?(File::SEPARATOR) ? archive_dir : "#{archive_dir}#{File::SEPARATOR}"
+  errors << "artifact path escapes archive: #{relative}" unless candidate.start_with?(prefix)
+  candidate
+end
+
+relocated_evidence = Marshal.load(Marshal.dump(evidence))
+relocated_evidence["artifacts"] = {}
+
+manifest_artifacts.each do |key, metadata|
+  begin
+    archive_path = resolve_archive_path.call(metadata.fetch("archive_path"))
+    unless File.file?(archive_path)
+      errors << "archived artifact #{key} unavailable at #{archive_path}"
+      next
+    end
+
+    digest = Digest::SHA256.file(archive_path).hexdigest
+    errors << "archived artifact #{key} SHA-256 mismatch" unless digest == metadata.fetch("sha256")
+    errors << "archived artifact #{key} byte size mismatch" unless File.size(archive_path) == metadata.fetch("bytes").to_i
+
+    source_metadata = evidence_artifacts.fetch(key)
+    errors << "artifact #{key} SHA-256 drifted from evidence" unless source_metadata["sha256"] == metadata["sha256"]
+    errors << "artifact #{key} byte size drifted from evidence" unless source_metadata["bytes"].to_i == metadata["bytes"].to_i
+
+    relocated_evidence["artifacts"][key] = source_metadata.merge("path" => archive_path)
+  rescue KeyError => e
+    errors << "archive artifact #{key} is malformed: #{e.message}"
+  end
+end
+
+%w[repository agent campaign_metrics analysis intake].each do |key|
+  errors << "archive manifest #{key} differs from archived evidence" unless manifest[key] == evidence[key]
+end
+
+required_contracts = {
+  "campaign_manifest" => "--campaign-config",
+  "routing_cases" => "--routing-cases",
+  "skill_manifest" => "--skill-manifest"
+}
+
+unless errors.any?
+  contract_paths = required_contracts.transform_values do |option_name|
+    metadata = manifest_artifacts.fetch(_1)
+    resolve_archive_path.call(metadata.fetch("archive_path"))
+  end
+
+  Tempfile.create(["routing-archive-evidence-", ".json"]) do |temp|
+    File.write(temp.path, JSON.pretty_generate(relocated_evidence) + "\n", encoding: "UTF-8")
+    verify_args = [
+      RbConfig.ruby,
+      EVIDENCE_VERIFIER,
+      temp.path,
+      "--check-files",
+      "--campaign-config", contract_paths.fetch("campaign_manifest"),
+      "--routing-cases", contract_paths.fetch("routing_cases"),
+      "--skill-manifest", contract_paths.fetch("skill_manifest")
+    ]
+    stdout, stderr, status = Open3.capture3(*verify_args, chdir: ROOT)
+    warn stderr unless stderr.empty?
+    errors << "archived campaign evidence verification failed" unless status.success?
+  end
+end
+
+if errors.any?
+  errors.each { |error| warn "ERROR: #{error}" }
+  abort "#{errors.length} routing archive verification error(s)"
+end
+
+puts "Routing archive verification"
+puts "  archive: #{archive_dir}"
+puts "  campaign: #{evidence.fetch("campaign")}"
+puts "  model: #{evidence.dig("agent", "model")}"
+puts "  artifacts: #{manifest_artifacts.length}"
+puts "Routing archive verification passed."
