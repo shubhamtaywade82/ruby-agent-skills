@@ -1,3 +1,21 @@
+## Iteration 97 — Verified Release Evidence Bundle
+
+- Add a deterministic release-evidence bundle composer for verified public campaign evidence.
+- Freeze a copy of the release policy inside the bundle.
+- Preserve optional verified matrix evidence and external-only hidden benchmark receipts.
+
+## Iteration 96 — Hidden Benchmark Receipt Verification
+
+- Add a standalone verifier for safe hidden-benchmark intake receipts.
+- Reassert the external-only boundary and reject hidden cases, prompts, and gold-label payloads.
+- Verify the recorded external artifact hash and byte size when requested.
+
+## Iteration 95 — Routing Release Evidence Bundle
+
+- Compose a portable release evidence directory from a verified public campaign evidence package and immutable archive.
+- Record SHA-256 and byte-size provenance for bundle components.
+- Add independent bundle verification that replays underlying evidence/archive verifiers.
+
 ## Iteration 94 — Verified Multi-Model Matrix Evidence
 
 - Emit a single `matrix-evidence.json` binding the matrix plan, each completed model evidence package, and each immutable archive tree.
