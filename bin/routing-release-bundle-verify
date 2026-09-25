@@ -29,10 +29,10 @@ errors << "protocol_version must be 1" unless manifest["protocol_version"].to_i 
 errors << "release bundle type must be skill-routing-release-evidence-v1" unless manifest["release_bundle"] == "skill-routing-release-evidence-v1"
 errors << "repository git SHA is missing" if manifest.dig("repository", "git_sha").to_s.strip.empty?
 errors << "release policy provenance is missing" unless manifest.dig("release_policy", "sha256")
-verify_file(manifest["release_policy"], errors, check_files: options[:check_files]) if manifest["release_policy"].is_a?(Hash)
 
 components = manifest["components"]
 errors << "components must be a mapping" unless components.is_a?(Hash)
+verify_file(manifest["release_policy"], errors, check_files: options[:check_files]) if manifest["release_policy"].is_a?(Hash)
 
 def verify_file(metadata, errors, check_files:)
   unless metadata.is_a?(Hash)
