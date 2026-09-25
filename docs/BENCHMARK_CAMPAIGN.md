@@ -106,9 +106,9 @@ The same paired-run machinery can execute the design-pattern corpus:
     ruby bin/benchmark campaign \\
       --manifest benchmarks/design-patterns/campaign.yml \\
       --agent-command 'YOUR_AGENT_COMMAND' \\
-      --output benchmark-results/design-patterns-public-v1
+      --output benchmark-results/design-patterns-public-v2
 
-The design-pattern campaign includes 18 public cases and five independent verifier dimensions, including `pattern_selection` and `scope_control`.
+The design-pattern campaign includes 24 public cases and five independent verifier dimensions, including `pattern_selection` and `scope_control`.
 
 
 ## Design-pattern restraint expansion
