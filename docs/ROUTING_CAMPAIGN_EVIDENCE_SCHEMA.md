@@ -51,3 +51,12 @@ For externally executed campaigns, `bin/routing-campaign-import` validates the p
 ## Verification gate
 
 A campaign evidence package must pass `bin/routing-campaign-evidence-verify --check-files` before archival. This verifies raw-run cardinality, all recorded artifact hashes, and semantic analysis provenance in addition to campaign intake. Evidence-level `analysis` and `campaign_metrics` must match the preserved report and campaign artifacts.
+
+## Replay command
+
+For an independently captured campaign, regenerate the analysis with:
+
+    ruby bin/routing-analyze ./routing-campaign-output/campaign.json \\
+      --output ./routing-campaign-output/routing-report.json
+
+The evidence packager performs this replay itself and does not trust a caller-supplied metric summary as the source of truth.
