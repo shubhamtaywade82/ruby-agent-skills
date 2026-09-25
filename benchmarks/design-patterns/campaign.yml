@@ -23,6 +23,12 @@ evaluations:
   - composition-over-inheritance
   - presenter
   - pattern-restraint
+  - service-object-not-needed
+  - strategy-not-needed
+  - factory-not-needed
+  - repository-not-needed
+  - value-object-not-needed
+  - presenter-not-needed
 execution:
   repetitions: 3
   paired: true
