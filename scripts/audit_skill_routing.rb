@@ -114,6 +114,9 @@ errors << "manifest evidence verifier path missing" unless routing_contract["evi
 evidence_verifier_path = File.join(ROOT, routing_contract.fetch("evidence_verifier", ""))
 errors << "routing evidence verifier missing" unless File.file?(evidence_verifier_path)
 errors << "manifest evidence archiver path missing" unless routing_contract["evidence_archiver"].to_s == "bin/routing-archive"
+errors << "manifest evidence archive verifier path missing" unless routing_contract["evidence_archive_verifier"].to_s == "bin/routing-archive-verify"
+evidence_archive_verifier_path = File.join(ROOT, routing_contract.fetch("evidence_archive_verifier", ""))
+errors << "routing evidence archive verifier missing" unless File.file?(evidence_archive_verifier_path)
 evidence_archiver_path = File.join(ROOT, routing_contract.fetch("evidence_archiver", ""))
 errors << "routing evidence archiver missing" unless File.file?(evidence_archiver_path)
 errors << "manifest evidence archive schema path missing" unless routing_contract["evidence_archive_schema"].to_s == "docs/ROUTING_EVIDENCE_ARCHIVE_SCHEMA.md"
