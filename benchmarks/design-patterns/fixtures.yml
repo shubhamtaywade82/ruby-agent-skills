@@ -341,7 +341,6 @@ fixtures:
       - "class Email\\b"
       - "EmailValue"
       - "ValueObject"
-      - "class .*Email"
     contract_regex:
       - "class EmailValidator"
       - "def valid?"
