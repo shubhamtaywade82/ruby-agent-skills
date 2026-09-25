@@ -10,7 +10,8 @@ This file defines how an agent should select and compose skills.
 4. Add `ruby-clean-code` for non-trivial implementation/review work.
 5. Add `ruby-tdd-refactoring` for behavior changes, bugs or refactors.
 6. Prefer repository evidence over generic assumptions.
-7. Never claim verification that was not actually run.
+7. Apply stack-minimality as a cross-cutting modifier; it never overrides explicit requirements or required guarantees.
+8. Never claim verification that was not actually run.
 
 ## Routing matrix
 
@@ -36,7 +37,12 @@ This file defines how an agent should select and compose skills.
 | Reflection/metaprogramming | ruby-metaprogramming | ruby-clean-code, ruby-tdd-refactoring |
 | File/CSV/HTTP/dependency boundary | ruby-gems-io-services | ruby-api-design, ruby-debugging, ruby-tdd-refactoring, pattern:external-api-client |
 | Runtime failure/exception | ruby-debugging | ruby-tdd-refactoring |
-| Rails application structure | rails-architecture | ruby-clean-code |
+| Rails application structure | rails-architecture | ruby-clean-code, stack-minimality |
+| Ruby/Rails + React + PostgreSQL implementation minimality | stack-minimality | relevant domain skill, ruby-clean-code, ruby-tdd-refactoring |
+| Over-engineering review | stack-minimality-review | relevant domain review skill |
+| Whole-repository minimality audit | stack-minimality-audit | stack-minimality |
+| Deliberate simplification debt | stack-minimality-debt | stack-minimality |
+| Minimality measurement/evidence | stack-minimality-evidence | relevant performance or dependency skill |
 | Rails routes | rails-routing | rails-controllers, rails-testing |
 | Rails Routing deep engineering | rails-routing | rails-action-controller, rails-controllers, rails-authentication, rails-security, rails-i18n, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |
 | Rails controller action | rails-controllers | rails-routing, ruby-method-design, rails-testing |
@@ -1473,3 +1479,24 @@ When a task materially changes dependency direction, domain ownership, modularit
 | React accessibility/keyboard/focus | react-accessibility-performance | react-component-engineering, react-testing-engineering |
 | React render performance/memoization | react-accessibility-performance | react-state-effects, react-architecture |
 | TypeScript and React feature implementation | react-component-engineering | typescript-core-engineering, typescript-type-design, react-state-effects, react-testing-engineering |
+
+## Stack minimality composition
+
+Use stack-minimality with the skill that owns the actual contract:
+
+stack-minimality
+  + relevant Ruby/Rails/React/TypeScript/PostgreSQL skill
+  + ruby-clean-code
+  + ruby-tdd-refactoring for behavior changes
+
+Preference ladder:
+
+YAGNI
+  -> existing repository boundary
+  -> framework or platform primitive
+  -> Ruby or TypeScript language primitive
+  -> existing dependency
+  -> direct implementation
+  -> new abstraction/dependency only when earned
+
+Minimality is never a reason to remove security, accessibility, validation at trust boundaries, database integrity, required observability, or verification.

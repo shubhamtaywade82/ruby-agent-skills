@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 79 — Repository Consistency & Empirical Analysis Hardening
+> **Current milestone:** Iteration 80 — Repository Consistency & Empirical Analysis Hardening
 
 ---
 
@@ -77,6 +77,23 @@ After a public routing campaign completes, independently analyze the recorded ca
       --output ./routing-campaign-output/analysis.json
 
 The analyzer recomputes completion and routing metrics from the recorded runs and rejects structurally inconsistent or incomplete campaigns rather than filling missing measurements.
+
+
+## Iteration 80 — Ponytail-inspired Stack Minimality
+
+The repository now includes a stack-aware minimality layer for Ruby, Rails, React, TypeScript, and PostgreSQL. It adapts Ponytail's useful discipline—YAGNI, repository reuse, framework/native primitives first, focused over-engineering review, repository-wide audit, explicit simplification debt, and evidence-backed measurement—to this stack.
+
+Skills:
+- stack-minimality
+- stack-minimality-review
+- stack-minimality-audit
+- stack-minimality-debt
+- stack-minimality-evidence
+- stack-minimality-help
+
+The pack is a cross-cutting modifier, not a replacement for Rails, React/TypeScript, PostgreSQL, security, accessibility, testing, performance, or API skills. It never treats smaller code as automatically safer and does not copy external benchmark numbers into repository measurements.
+
+See docs/STACK_MINIMALITY.md and the stack-minimality skill for the operational contract.
 
 ## What this repository contains
 

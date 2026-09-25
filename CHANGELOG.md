@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add a Ponytail-inspired stack-minimality pack for Ruby, Rails, React, TypeScript, and PostgreSQL.
+- Add stack-minimality patterns, evaluations, routing guidance, and repository documentation.
+
 ## Iteration 79 — Documentation consistency & empirical readiness
 
 - Synchronized README inventory and current implementation status with the verified Iteration 78 repository state.

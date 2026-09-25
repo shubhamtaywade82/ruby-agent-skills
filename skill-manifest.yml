@@ -12,6 +12,7 @@ defaults:
   always_consider:
     - ruby-clean-code
     - ruby-tdd-refactoring
+    - stack-minimality
   require_repository_inspection: true
   require_tests_for_behavior_changes: true
   prefer_existing_conventions: true
@@ -435,6 +436,23 @@ patterns:
       - patterns/react-typescript/react-focus-management.md
       - patterns/react-typescript/react-render-performance-budget.md
       - patterns/react-typescript/react-memoization-evidence-gate.md
+  stack-minimality:
+    paths:
+      - patterns/stack-minimality/rails-convention-before-abstraction.md
+      - patterns/stack-minimality/active-record-before-repository.md
+      - patterns/stack-minimality/postgres-constraint-before-application-check.md
+      - patterns/stack-minimality/postgres-index-from-query-evidence.md
+      - patterns/stack-minimality/postgres-query-before-cache.md
+      - patterns/stack-minimality/react-local-state-before-context.md
+      - patterns/stack-minimality/react-derived-state-in-render.md
+      - patterns/stack-minimality/react-native-before-dependency.md
+      - patterns/stack-minimality/typescript-type-before-wrapper.md
+      - patterns/stack-minimality/fullstack-existing-boundary-before-adapter.md
+      - patterns/stack-minimality/existing-dependency-before-new-gem-package.md
+      - patterns/stack-minimality/modular-monolith-before-service-split.md
+      - patterns/stack-minimality/minimal-change-at-shared-root.md
+      - patterns/stack-minimality/deliberate-simplification-marker.md
+
   ruby-design:
     paths:
       - patterns/ruby-design/value-object.md
@@ -1551,4 +1569,21 @@ evaluations:
       - tests
       - contract
       - pattern_selection
+      - scope_control
+
+  stack-minimality:
+    source: ponytail-stack-adaptation-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-rails-direct-boundary.yml
+      - evals/stack-minimality/stack-minimality-postgres-invariant.yml
+      - evals/stack-minimality/stack-minimality-react-state-boundary.yml
+      - evals/stack-minimality/stack-minimality-native-before-dependency.yml
+      - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
+      - evals/stack-minimality/stack-minimality-minimal-change-root.yml
+      - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
+    checks:
+      - functional
+      - tests
+      - contract
       - scope_control
