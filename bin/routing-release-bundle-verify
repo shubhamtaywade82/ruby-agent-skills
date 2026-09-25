@@ -32,7 +32,6 @@ errors << "release policy provenance is missing" unless manifest.dig("release_po
 
 components = manifest["components"]
 errors << "components must be a mapping" unless components.is_a?(Hash)
-verify_file(manifest["release_policy"], errors, check_files: options[:check_files]) if manifest["release_policy"].is_a?(Hash)
 
 def verify_file(metadata, errors, check_files:)
   unless metadata.is_a?(Hash)
@@ -85,6 +84,8 @@ def verify_archive(metadata, errors, check_files:)
   errors << "archive tree SHA-256 mismatch" unless actual == metadata["tree_sha256"].to_s
   errors << "archive file map mismatch" unless canonical == metadata["files"]
 end
+
+verify_file(manifest["release_policy"], errors, check_files: options[:check_files]) if manifest["release_policy"].is_a?(Hash)
 
 public_component = components.is_a?(Hash) ? components["public"] : nil
 if public_component.is_a?(Hash)
