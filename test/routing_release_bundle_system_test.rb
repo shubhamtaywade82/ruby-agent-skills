@@ -119,9 +119,8 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
 
   def test_release_bundle_preserves_external_hidden_boundary
     script = source("bin/routing-release-bundle-verify")
-    assert_includes script, 'verification["source"] == "external-only"'
-    assert_includes script, "gold_labels"
-    assert_includes script, "hidden_cases"
+    assert_includes script, "HIDDEN_RECEIPT_VERIFIER"
+    assert_includes script, "hidden benchmark receipt verification failed"
   end
 
   def test_validator_executes_this_system_test
