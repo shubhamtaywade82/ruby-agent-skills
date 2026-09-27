@@ -3,7 +3,7 @@
 ## Iteration 131 — Iteration History Out of the README
 
 - Move every iteration narrative out of `README.md` into the new `docs/ITERATIONS.md`, one section per iteration in ascending order. It merges the 65 README narratives (previously in six places and out of order) with the `CHANGELOG.md` entries, covering Iterations 41–131. The eleven narratives that had no number in their heading (for example "Rails Encryption and Credentials Engineering") are filed under the iteration their text named.
-- `docs/ITERATIONS.md` now carries the current-milestone line. The README keeps only the current system (quick start, coverage, architecture, validation, installation, and a rewritten status section with no iteration numbers) and drops from 1,018 to 715 lines.
+- `docs/ITERATIONS.md` now carries the current-milestone line. The README keeps only the current system (quick start, coverage, architecture, validation, installation, and a rewritten status section with no iteration numbers) and drops from 1,018 to 718 lines.
 - `scripts/audit_documentation_consistency.rb`, `scripts/audit_release_readiness.rb`, and `scripts/audit_repository_completeness.rb` read the milestone and release-history markers from `docs/ITERATIONS.md`. The documentation audit also rejects iteration mentions in the README, requires ascending order, and requires a section for the latest changelog iteration, each covered by a new regression test.
 - `AGENTS.md`, `CONTRIBUTING.md`, the README contributing steps, and the implementation handoff describe where iterations are recorded.
 
