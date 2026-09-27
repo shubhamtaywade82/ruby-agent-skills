@@ -1,4 +1,5 @@
 id: react-accessibility-performance-contract
+coverage: static-only
 version: 1
 title: React Accessibility and Performance Contract
 category: react-typescript
