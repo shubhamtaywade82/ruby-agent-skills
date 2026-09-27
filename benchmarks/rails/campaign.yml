@@ -1,5 +1,5 @@
 id: rails-framework-public-v2
-version: 3
+version: 4
 evaluation_set: rails
 source: rails-framework-v3
 fixture_root: benchmarks/rails/fixtures

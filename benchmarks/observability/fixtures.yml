@@ -15,5 +15,7 @@ fixtures:
       - app/services/order_checkout.rb
   health-semantics:
     root: benchmarks/observability/fixtures/health-semantics
+    noop_expected: pass
+    noop_rationale: Review/preserve task; the fixture already uses the built-in boot-health route, so leaving it unchanged is a correct outcome.
     implementation_files:
       - config/routes.rb

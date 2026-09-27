@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 class AssetBuild
   def initialize(strategy:,lockfile:) = (@strategy,@lockfile=strategy,lockfile)
-  def strategy_selection = @strategy
+  def strategy_selection = raise(NotImplementedError)
   def build(source_digest:)
-    raise "missing lockfile" if @lockfile.nil? || @lockfile.empty?
-    {artifact:"assets-#{source_digest}",reproducible:true}
+    raise NotImplementedError
   end
-  def precompile(source_digest:) = build(source_digest:)
-  def cache_key(source_digest:) = "#{@strategy}:#{@lockfile}:#{source_digest}"
-  def dependency_contract = {runtime:"ruby-rails",lockfile:@lockfile}
+  def precompile(source_digest:) = raise(NotImplementedError)
+  def cache_key(source_digest:) = raise(NotImplementedError)
+  def dependency_contract = raise(NotImplementedError)
 end

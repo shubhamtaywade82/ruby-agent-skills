@@ -1,16 +1,12 @@
 # frozen_string_literal: true
 class SignupForm
   attr_accessor :name,:email,:password
-  def initialize(name:,email:,password:) = (@name,@email,@password=name,email,password;@errors=[])
+  def initialize(name:,email:,password:) = raise(NotImplementedError)
   def valid?
-    @errors=[]
-    @errors << [:name,:blank] if name.to_s.strip.empty?
-    @errors << [:email,:invalid] unless email.to_s.include?("@")
-    @errors << [:password,:too_short] if password.to_s.length<8
-    @errors.empty?
+    raise NotImplementedError
   end
-  def errors = @errors.dup
-  def to_model = self
-  def model_name = "SignupForm"
-  def as_json = {name:name,email:email}
+  def errors = raise(NotImplementedError)
+  def to_model = raise(NotImplementedError)
+  def model_name = raise(NotImplementedError)
+  def as_json = raise(NotImplementedError)
 end

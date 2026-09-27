@@ -23,9 +23,16 @@ A campaign result is JSON containing individual result paths plus dimension-leve
     "runtime": {"ruby": "3.3"},
     "hidden_cases": "external-only"
   },
+  "provenance": {
+    "manifest_sha256": "…",
+    "verifier_sha256": "…",
+    "fixture_registry_sha256": "…",
+    "fixtures_sha256": "…"
+  },
   "repetitions": 3,
   "evaluations": {
     "triplet-sum": {
+      "fixture_sha256": "…",
       "baseline_results": [".../baseline-1.json"],
       "skills_results": [".../skills-1.json"],
       "dimensions": {
@@ -40,5 +47,7 @@ A campaign result is JSON containing individual result paths plus dimension-leve
 ```
 
 Counts are descriptive aggregates. The individual result files remain the source of truth for process output, patches, verifier evidence, configuration and agent metadata.
+
+`fixture_sha256` digests the starting workspace for one evaluation (every file's relative path and bytes); `fixtures_sha256` digests the selected evaluations' fixture digests. Results are comparable only when `campaign_version` and these digests match. Changing a fixture's starting state or verifier semantics also requires bumping the campaign `version`.
 
 Allowed status keys are `pass`, `fail`, and `not_evaluated`.

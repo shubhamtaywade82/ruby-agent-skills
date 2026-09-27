@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 112 — Release File-Level Provenance & Publication Gate
+> **Current milestone:** Iteration 113 — Benchmark Fixture Controls
 
 ## Quick start
 
@@ -205,7 +205,7 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **432** |
 | Evaluation cases | **442** |
-| Dedicated system/contract tests | **84** |
+| Dedicated system/contract tests | **85** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -732,7 +732,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **91 skills**, **432 implementation patterns**, **442 evaluation cases**, and **84 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **91 skills**, **432 implementation patterns**, **442 evaluation cases**, and **85 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

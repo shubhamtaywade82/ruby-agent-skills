@@ -7,6 +7,6 @@ class User
   end
 
   def display_name
-    "#{first_name} #{last_name}"
+    raise NotImplementedError
   end
 end

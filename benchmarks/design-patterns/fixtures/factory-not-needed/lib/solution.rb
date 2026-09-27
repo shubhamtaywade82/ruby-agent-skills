@@ -1,5 +1,5 @@
 class ReportFormatter
   def format(title:, total:)
-    "#{title}: #{total}"
+    raise NotImplementedError
   end
 end

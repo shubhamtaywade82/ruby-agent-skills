@@ -1,12 +1,12 @@
 class StandardShipping
   def calculate
-    10
+    raise NotImplementedError
   end
 end
 
 class ExpressShipping
   def calculate
-    25
+    raise NotImplementedError
   end
 end
 
@@ -16,6 +16,6 @@ class ShippingCost
   end
 
   def calculate
-    @strategy.calculate
+    raise NotImplementedError
   end
 end

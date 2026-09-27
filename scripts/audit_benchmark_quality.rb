@@ -3,6 +3,7 @@
 
 require "set"
 require "yaml"
+require_relative "../lib/ruby_agent_skills/fixture_registry"
 
 ROOT = File.expand_path("..", __dir__)
 BENCHMARK_ROOT = File.join(ROOT, "benchmarks")
@@ -75,10 +76,54 @@ campaign_files.each do |campaign_path|
       next
     end
 
-    root = fixture["root"].to_s
-    root = File.join(BENCHMARK_ROOT, family, "fixtures", eval_id) if root.empty?
-    fixture_root = File.expand_path(root, ROOT)
-    errors << "#{relative_campaign}: fixture #{eval_id} missing root #{root}" unless Dir.exist?(fixture_root)
+    # Resolve exactly as bin/benchmark does, so a green audit means the
+    # campaign runner can execute every fixture.
+    resolver = RubyAgentSkills::FixtureRegistry.for_campaign(root: ROOT, campaign: campaign)
+    fixture_root = resolver.declared_root(eval_id)
+    begin
+      resolver.path(eval_id)
+    rescue RubyAgentSkills::FixtureRegistry::Error => e
+      errors << "#{relative_campaign}: #{e.message}"
+    end
+
+    begin
+      resolver.noop_expected(eval_id)
+    rescue RubyAgentSkills::FixtureRegistry::Error => e
+      errors << "#{relative_campaign}: #{e.message}"
+    end
+
+    if resolver.reference?(eval_id)
+      reference_root = resolver.reference_root(eval_id)
+      if "#{File.expand_path(reference_root)}/".start_with?("#{File.expand_path(fixture_root)}/")
+        errors << "#{relative_campaign}: fixture #{eval_id} reference must live outside the agent workspace"
+      end
+      Dir.glob(File.join(reference_root, "**", "*"), File::FNM_DOTMATCH).select { |p| File.file?(p) }.each do |path|
+        relative = path.delete_prefix("#{reference_root}/")
+        next if resolver.implementation_files(eval_id).include?(relative)
+
+        errors << "#{relative_campaign}: fixture #{eval_id} reference ships non-implementation file #{relative}"
+      end
+    end
+
+    # Source-evidence regexes are verifier logic. One that does not compile
+    # makes the check fail for every submission; one containing an escaped
+    # backslash (YAML single-quote double escaping) requires a literal "\"
+    # and silently never matches Ruby source.
+    fixture.each do |key, expressions|
+      next unless key.to_s.end_with?("_regex")
+
+      Array(expressions).each do |expression|
+        begin
+          Regexp.new(expression.to_s)
+        rescue RegexpError => e
+          errors << "#{relative_campaign}: fixture #{eval_id} #{key} #{expression.inspect} does not compile: #{e.message}"
+          next
+        end
+        if expression.to_s.include?("\\\\")
+          errors << "#{relative_campaign}: fixture #{eval_id} #{key} #{expression.inspect} contains an escaped backslash; use a single backslash inside single-quoted YAML"
+        end
+      end
+    end
 
     implementation_files = Array(fixture["implementation_files"])
     implementation_files = [fixture["implementation_file"]] if implementation_files.empty? && fixture["implementation_file"]
@@ -104,6 +149,15 @@ campaign_files.each do |campaign_path|
       errors << "#{relative_campaign}: evaluation #{eval_id} source is empty" if evaluation["source"].to_s.empty?
     end
   end
+end
+
+Dir[File.join(BENCHMARK_ROOT, "*", "references", "*")].sort.each do |reference_dir|
+  family = File.basename(File.dirname(File.dirname(reference_dir)))
+  registry_path = File.join(BENCHMARK_ROOT, family, "fixtures.yml")
+  registry = File.file?(registry_path) ? YAML.safe_load(File.read(registry_path, encoding: "UTF-8"), permitted_classes: [], aliases: false) : {}
+  next if registry.fetch("fixtures", {}).key?(File.basename(reference_dir))
+
+  errors << "#{reference_dir.delete_prefix(ROOT + "/")}: reference has no registered fixture"
 end
 
 all_public_eval_paths = Dir[File.join(EVAL_ROOT, "**", "*.yml")].sort

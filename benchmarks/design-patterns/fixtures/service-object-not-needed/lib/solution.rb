@@ -5,6 +5,6 @@ class PriceCalculator
   end
 
   def total_cents
-    @subtotal_cents * (100 - @discount_percent) / 100
+    raise NotImplementedError
   end
 end

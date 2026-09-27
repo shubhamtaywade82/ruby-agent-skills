@@ -9,6 +9,9 @@ ROOT = ENV.fetch("RUBY_AGENT_EVAL_ROOT")
 EVAL_FILE = ENV.fetch("RUBY_AGENT_EVAL_FILE")
 WORKSPACE = Dir.pwd
 
+require File.join(ROOT, "lib", "ruby_agent_skills", "fixture_registry")
+require File.join(ROOT, "lib", "ruby_agent_skills", "fixture_test_run")
+
 evaluation = YAML.safe_load(File.read(EVAL_FILE, encoding: "UTF-8"), permitted_classes: [], aliases: false)
 registry = YAML.safe_load(
   File.read(File.join(ROOT, "benchmarks/rails/fixtures.yml"), encoding: "UTF-8"),
@@ -21,6 +24,11 @@ def check(status, evidence = nil)
   result = { "status" => status }
   result["evidence"] = evidence if evidence
   result
+end
+
+# Last `limit` characters; String#[-n, n] returns nil for shorter strings.
+def tail(text, limit)
+  text.length > limit ? text[-limit..] : text
 end
 
 def changed_files
@@ -36,21 +44,29 @@ test_file = File.join(WORKSPACE, fixture.fetch("test_file"))
 checks = {}
 
 begin
+  # Grade behaviour with the fixture's original test file; the workspace copy
+  # is agent-editable and only counts toward the separate "tests" check.
+  fixture_root = RubyAgentSkills::FixtureRegistry.new(
+    root: ROOT, evaluation_set: "rails", fixture_root: "benchmarks/rails/fixtures"
+  ).path(evaluation.fetch("id"))
+  graded = RubyAgentSkills::FixtureTestRun.call(
+    workspace: WORKSPACE, fixture_root: fixture_root, test_file: fixture.fetch("test_file")
+  )
+
+  checks["functional"] =
+    graded.success? ? check("pass", "fixture contract tests passed") :
+      check("fail", tail(graded.output, 4000))
+
   stdout, stderr, status = Open3.capture3(
     "ruby", "-Ilib", fixture.fetch("test_file"),
     chdir: WORKSPACE
   )
-
-  checks["functional"] =
-    status.success? ? check("pass", "fixture contract tests passed") :
-      check("fail", (stdout + stderr)[-4000, 4000])
-
   test_source = File.file?(test_file) ? File.read(test_file, encoding: "UTF-8") : ""
   checks["tests"] =
     if test_source.match?(/Minitest|assert|refute|def test_/) && status.success?
-      check("pass", "executable boundary tests are present")
+      check("pass", graded.test_modified ? "workspace tests pass (extended from fixture tests)" : "workspace tests pass")
     else
-      check("fail", "missing executable tests or failing test suite")
+      check("fail", "missing workspace tests or failing workspace test suite: #{tail(stdout + stderr, 2000)}")
     end
 
   required = Array(fixture["required_regex"])

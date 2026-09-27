@@ -61,7 +61,7 @@ class BenchmarkQualitySystemTest < Minitest::Test
       permitted_classes: [],
       aliases: false
     )
-    assert_equal 2, campaign.fetch("version")
+    assert_equal 3, campaign.fetch("version")
     assert_equal "design-pattern-system-v2", campaign.fetch("source")
     assert_equal "design-patterns-public-v2", campaign.fetch("id")
   end

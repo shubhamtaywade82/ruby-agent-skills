@@ -1,5 +1,5 @@
 class EmailValidator
   def valid?(email)
-    email.include?("@") && email.split("@").last.include?(".")
+    raise NotImplementedError
   end
 end
