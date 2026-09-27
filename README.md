@@ -8,9 +8,9 @@ The goal is not to store passive notes. The repository turns engineering materia
 
 Install the verified skill pack from a release archive (offline; no git required):
 
-    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.0.1/ruby-agent-skills-v1.0.1.tar.gz
-    tar xzf ruby-agent-skills-v1.0.1.tar.gz
-    cd ruby-agent-skills-v1.0.1
+    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.1.0/ruby-agent-skills-v1.1.0.tar.gz
+    tar xzf ruby-agent-skills-v1.1.0.tar.gz
+    cd ruby-agent-skills-v1.1.0
     bash bin/install --agent claude
 
 Or from a git checkout:
