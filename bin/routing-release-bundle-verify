@@ -148,6 +148,21 @@ if matrix
     )
     warn stderr unless stderr.empty?
     errors << "matrix evidence verification failed" unless status.success?
+
+    if public_component.is_a?(Hash)
+      begin
+        matrix_evidence = JSON.parse(File.read(metadata["path"].to_s, encoding: "UTF-8"))
+        public_evidence_path = public_component.dig("evidence", "path").to_s
+        public_evidence = JSON.parse(File.read(public_evidence_path, encoding: "UTF-8"))
+        errors << "matrix campaign does not match public campaign" unless
+          matrix_evidence.dig("campaign", "id") == public_evidence["campaign"] &&
+          matrix_evidence.dig("campaign", "version").to_i == public_evidence["campaign_version"].to_i
+        errors << "matrix repository SHA does not match public evidence" unless
+          matrix_evidence.dig("provenance", "git_sha") == public_evidence.dig("repository", "git_sha")
+      rescue Errno::ENOENT, JSON::ParserError, KeyError => e
+        errors << "matrix release identity relationship is invalid: #{e.message}"
+      end
+    end
   end
 end
 
