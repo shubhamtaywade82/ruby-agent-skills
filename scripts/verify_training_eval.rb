@@ -45,7 +45,16 @@ rescue StandardError => e
   failures << "functional"
 end
 
+# A valid triplet per the evaluation's grading definition: ascending, drawn
+# from the input multiset, summing to the target. Any valid triplet passes.
+def valid_triplet?(values, target, actual)
+  return false unless actual.is_a?(Array) && actual.length == 3 && actual == actual.sort && actual.sum == target
+
+  actual.tally.all? { |value, count| values.count(value) >= count }
+end
+
 unless checks.key?("functional")
+  begin
   case evaluation.fetch("id")
   when "selection-sort"
     sorter = SelectionSorter.new
@@ -66,9 +75,9 @@ unless checks.key?("functional")
   when "triplet-sum"
     object = TripletSum.new
     bad = evaluation.fetch("cases").reject do |c|
-      actual = object.find(c.fetch("input"), c.fetch("target"))
-      expected = c.fetch("expected")
-      expected.nil? ? actual.nil? : actual == expected
+      input = c.fetch("input")
+      actual = object.find(input.fetch("values").dup, input.fetch("target"))
+      c.fetch("expected").nil? ? actual.nil? : valid_triplet?(input.fetch("values"), input.fetch("target"), actual)
     end
     checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
   when "majority-element"
@@ -133,6 +142,11 @@ unless checks.key?("functional")
       failures.concat(%w[functional contract])
     end
   end
+  rescue StandardError => e
+    # A missing class or method is a failed submission, not a verifier crash.
+    checks["functional"] = check("fail", "#{e.class}: #{e.message}")
+    failures << "functional"
+  end
 end
 
 class_names = Array(fixture.fetch("classes"))
@@ -144,7 +158,8 @@ test_changes = changed_files.any? { |path| path.start_with?("test/", "spec/") ||
 checks["tests"] = test_changes ? check("pass", "agent changed a test/spec file") : check("fail", "no test/spec changes detected")
 
 if evaluation.fetch("checks").include?("edge_cases")
-  checks["edge_cases"] = failures.empty? ? check("pass", "public deterministic cases including boundaries passed") : check("fail", "functional/contract failures prevent complete edge-case verification")
+  edge_cases_ok = failures.empty? && checks.dig("functional", "status") == "pass"
+  checks["edge_cases"] = edge_cases_ok ? check("pass", "public deterministic cases including boundaries passed") : check("fail", "functional/contract failures prevent complete edge-case verification")
 end
 
 if evaluation.fetch("checks").include?("forbidden_constructs")
@@ -178,6 +193,17 @@ if evaluation.fetch("checks").include?("complexity")
       else
         check("not_evaluated", "static heuristic could not establish the required O(n^2), O(1) shape")
       end
+    if evaluation.fetch("checks").include?("auxiliary_space")
+      extra_collections = source.match?(/Set\.new|\bHash\b|\.tally\b|group_by|combination|\.each_with_object/)
+      checks["auxiliary_space"] =
+        if extra_collections
+          check("fail", "auxiliary collection detected; O(1) extra space requires in-place two pointers")
+        elsif source.match?(/\.sort!/) && checks["complexity"]["status"] == "pass"
+          check("pass", "in-place sort plus two pointers without auxiliary collections")
+        else
+          check("not_evaluated", "static heuristic could not establish O(1) auxiliary space")
+        end
+    end
   when "majority-element"
     obvious_violation = source.match?(/\.sort(?:\b|\s*\()/) || source.match?(/\.tally\b/) || source.match?(/group_by/) || source.match?(/Hash(?:\.new)?\b/)
     checks["complexity"] = obvious_violation ? check("fail", "obvious sort/counting structure detected") : check("pass", "no obvious sort/counting structure detected")

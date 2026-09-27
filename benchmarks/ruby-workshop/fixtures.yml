@@ -36,13 +36,20 @@ fixtures:
 
   ruby-gem-boundary:
     root: benchmarks/ruby-workshop/fixtures/ruby-gem-boundary
+    # The verifier loads implementation_file; packaging work also spans the gemspec.
     implementation_file: lib/inventory_client.rb
+    implementation_files:
+      - lib/inventory_client.rb
+      - inventory_client.gemspec
     modules:
       - InventoryClient
 
   rails-rest-contract:
     root: benchmarks/ruby-workshop/fixtures/rails-rest-contract
     implementation_file: app/controllers/posts_controller.rb
+    implementation_files:
+      - app/controllers/posts_controller.rb
+      - config/routes.rb
     classes:
       - PostsController
 

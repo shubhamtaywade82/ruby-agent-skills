@@ -3,14 +3,17 @@
 class Counter
   def initialize
     @value = 0
-    @mutex = Mutex.new
   end
 
+  # Read-modify-write on shared state; the yield stands in for any work
+  # (logging, I/O) between the read and the write.
   def increment
-    @mutex.synchronize { @value += 1 }
+    current = @value
+    Thread.pass
+    @value = current + 1
   end
 
   def value
-    @mutex.synchronize { @value }
+    @value
   end
 end

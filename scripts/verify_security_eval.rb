@@ -72,7 +72,11 @@ end
 
 case evaluation.fetch("id")
 when "parameterized-query-boundary"
-  checks["security"] = if source.match?(/where\(.*\?.*term/) && !source.match?(/where\s*\([^)]*#\{\s*term/)
+  # Injection is interpolation inside the SQL string literal. Interpolating
+  # the term into a bind value (`where("name ILIKE ?", "%#{term}%")`) is the
+  # parameterized form the functional check requires.
+  sql_interpolation = source.match?(/where\s*\(\s*"[^"]*#\{/) || source.match?(/where\s*\(\s*'[^']*'\s*\+/)
+  checks["security"] = if source.match?(/where\(.*\?.*term/) && !sql_interpolation
     { "status" => "pass", "evidence" => "parameterized query boundary detected" }
   else
     { "status" => "fail", "evidence" => "untrusted query term is not clearly parameterized" }
