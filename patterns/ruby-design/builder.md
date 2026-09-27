@@ -33,6 +33,44 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+Report = Data.define(:title, :sections, :footer)
+
+# Staged construction: each step returns self; build validates and freezes.
+class ReportBuilder
+  def initialize
+    @title = nil
+    @sections = []
+    @footer = nil
+  end
+
+  def title(text)
+    @title = text
+    self
+  end
+
+  def section(heading, body)
+    @sections << { heading: heading, body: body }
+    self
+  end
+
+  def footer(text)
+    @footer = text
+    self
+  end
+
+  def build
+    raise ArgumentError, "title is required" if @title.to_s.empty?
+
+    Report.new(title: @title, sections: @sections.dup.freeze, footer: @footer)
+  end
+end
+
+report = ReportBuilder.new.title("Q3").section("Revenue", "Up 4%").footer("Draft").build
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

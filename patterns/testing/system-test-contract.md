@@ -23,6 +23,25 @@ A model, service, request, or integration test can prove the contract without a 
 5. Capture screenshots on failure when useful.
 6. Keep business-rule assertions in lower-level tests.
 
+## Example
+
+```ruby
+# One journey that needs a real browser; calculation details stay in
+# model tests.
+class CheckoutJourneyTest < ApplicationSystemTestCase
+  test "choosing express shipping updates the total and completes checkout" do
+    sign_in users(:sam)
+    visit checkout_path
+
+    choose "Express shipping"
+    assert_text "Total $45.00"
+
+    click_on "Place order"
+    assert_text "Order confirmed"
+  end
+end
+```
+
 ## Failure modes
 - browser test for pure domain logic
 - giant end-to-end scenario covering unrelated features

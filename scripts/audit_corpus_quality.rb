@@ -53,7 +53,7 @@ pattern_testing_count = 0
 
 pattern_files.each do |path|
   text = File.read(path, encoding: "UTF-8")
-  pattern_example_count += 1 if text.match?(/^\s*```/m)
+  pattern_example_count += 1 if text.match?(/^\s*(```|~~~)/m)
   pattern_anchor_count += 1 if implementation_anchor.call(text)
   pattern_failure_count += 1 if text.match?(/## Failure modes\b/i)
   pattern_testing_count += 1 if text.match?(/## Testing\b/i)

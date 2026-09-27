@@ -21,6 +21,36 @@ Inspect mutation semantics, cache ownership, and server idempotency.
 ## Implementation procedure
 Snapshot prior state, apply the optimistic change, reconcile on success, and restore or invalidate on failure.
 
+## Example
+
+```tsx
+import { useState } from "react";
+
+type Todo = { id: string; done: boolean };
+
+// Update immediately, keep the previous value, restore it if the server rejects.
+export function useToggleTodo(initial: readonly Todo[], save: (todo: Todo) => Promise<void>) {
+  const [todos, setTodos] = useState(initial);
+  const [error, setError] = useState<string>();
+
+  async function toggle(id: string) {
+    const previous = todos;
+    const next = todos.map((todo) => (todo.id === id ? { ...todo, done: !todo.done } : todo));
+    setTodos(next);
+    setError(undefined);
+    const changed = next.find((todo) => todo.id === id);
+    try {
+      if (changed) await save(changed);
+    } catch {
+      setTodos(previous);
+      setError("Could not save; your change was undone.");
+    }
+  }
+
+  return { todos, error, toggle };
+}
+```
+
 ## Failure modes
 Optimistic updates without rollback, stale snapshots, or assuming network success.
 

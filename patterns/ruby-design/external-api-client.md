@@ -39,6 +39,42 @@ Inspect existing HTTP libraries, client classes, authentication configuration, t
 8. make the transport replaceable in tests
 9. avoid logging secrets or full sensitive payloads
 
+## Example
+
+```ruby
+require "json"
+require "net/http"
+
+# Transport, auth, timeouts, and payload shape stay inside the client; the
+# application sees a small value and one error type.
+class GeocodingClient
+  Error = Class.new(StandardError)
+  Location = Data.define(:lat, :lng)
+
+  def initialize(api_key:, base_uri: URI("https://geo.example.test"), timeout: 2)
+    @api_key = api_key
+    @base_uri = base_uri
+    @timeout = timeout
+  end
+
+  def locate(address)
+    uri = @base_uri.dup
+    uri.path = "/v1/geocode"
+    uri.query = URI.encode_www_form(q: address)
+    request = Net::HTTP::Get.new(uri, "Authorization" => "Bearer #{@api_key}")
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: @timeout, read_timeout: @timeout) do |http|
+      http.request(request)
+    end
+    raise Error, "geocoding failed: HTTP #{response.code}" unless response.is_a?(Net::HTTPSuccess)
+
+    body = JSON.parse(response.body)
+    Location.new(lat: body.fetch("lat"), lng: body.fetch("lng"))
+  rescue JSON::ParserError, KeyError, Net::OpenTimeout, Net::ReadTimeout => e
+    raise Error, "geocoding failed: #{e.class}"
+  end
+end
+```
+
 ## Failure modes
 
 - raw HTTP calls scattered through business code

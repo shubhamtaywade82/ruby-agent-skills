@@ -20,6 +20,29 @@ Enabling/tuning Rails parallel tests or fixing failures that appear only under p
 5. Verify transaction semantics for concurrent database work.
 6. Re-run in parallel and serial modes.
 
+## Example
+
+```ruby
+class ActiveSupport::TestCase
+  parallelize(workers: :number_of_processors)
+
+  # Each worker gets its own port and scratch directory instead of sharing
+  # a fixed port and a global array.
+  parallelize_setup do |worker|
+    ENV["TEST_SERVER_PORT"] = (4000 + worker).to_s
+    FileUtils.mkdir_p(Rails.root.join("tmp", "test-worker-#{worker}"))
+  end
+end
+
+class ExportTest < ActiveSupport::TestCase
+  test "writes to a worker-local path" do
+    path = Rails.root.join("tmp", "test-worker-#{ENV.fetch("TEST_ENV_NUMBER", "0")}", "export.csv")
+    Export.new(orders(:one)).write(path)
+    assert File.exist?(path)
+  end
+end
+```
+
 ## Failure modes
 - global variables/singletons leaking state
 - fixed ports/temp paths

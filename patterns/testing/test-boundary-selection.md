@@ -19,6 +19,26 @@ Adding or reviewing tests for Rails behavior.
 4. Add a higher-level test only when it proves a distinct cross-layer contract.
 5. Avoid duplicating identical assertions across layers.
 
+## Example
+
+```ruby
+# Pricing rules: model test (fast, many cases).
+class PriceTest < ActiveSupport::TestCase
+  test "applies the bulk discount at 10 units" do
+    assert_equal 900_00, Price.new(unit_cents: 100_00, quantity: 10).total_cents
+  end
+end
+
+# HTTP contract: one request test proves routing, auth, params, and response.
+class OrdersRequestTest < ActionDispatch::IntegrationTest
+  test "creates an order" do
+    sign_in users(:sam)
+    post orders_path, params: { order: { sku: "SKU-1", quantity: 10 } }
+    assert_redirected_to order_path(Order.last)
+  end
+end
+```
+
 ## Failure modes
 - system test for a pure domain rule
 - controller test for an HTTP contract when request tests are used

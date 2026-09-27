@@ -33,6 +33,26 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# Coordinates focused operations; each step stays independently testable.
+class Signup
+  def initialize(create_account: Accounts::Create, send_welcome: Notifications::Welcome, track: Analytics::Track)
+    @create_account = create_account
+    @send_welcome = send_welcome
+    @track = track
+  end
+
+  def call(params)
+    account = ActiveRecord::Base.transaction { @create_account.call(params) }
+    @send_welcome.call(account)
+    @track.call("signup", account_id: account.id)
+    account
+  end
+end
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

@@ -21,6 +21,23 @@ Inspect exports, package entrypoints, dependency direction, and compatibility ex
 ## Implementation procedure
 Define explicit exported input/output types and map internal structures to them.
 
+## Example
+
+```ts
+// index.ts of a package: the only supported import path. Internals are not
+// re-exported, and the exported types are what consumers may rely on.
+export type { Money, Currency } from "./types";
+export { formatMoney } from "./format";
+
+// types.ts
+// export type Currency = "USD" | "EUR" | "INR";
+// export type Money = { readonly cents: number; readonly currency: Currency };
+
+// format.ts
+// import { roundHalfEven } from "./internal/rounding"; // internal: not exported from index.ts
+// export function formatMoney(money: Money, locale?: string): string { ... }
+```
+
 ## Failure modes
 Exporting database or component-private structures, accidental barrel exports, and breaking changes hidden inside inferred types.
 

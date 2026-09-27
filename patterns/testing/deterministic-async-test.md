@@ -20,6 +20,31 @@ Testing Active Job, delayed side effects, polling, or asynchronous workflow boun
 5. Replace sleeps with condition-driven/test-helper synchronization.
 6. Test retry/failure behavior at the intended boundary.
 
+## Example
+
+```ruby
+class OrderConfirmationTest < ActiveJob::TestCase
+  test "placing an order enqueues exactly one confirmation" do
+    order = orders(:pending)
+
+    assert_enqueued_with(job: OrderConfirmationJob, args: [order]) do
+      order.place!
+    end
+  end
+
+  test "the job delivers the confirmation when performed" do
+    order = orders(:pending)
+
+    perform_enqueued_jobs do
+      OrderConfirmationJob.perform_later(order)
+    end
+
+    assert_equal 1, ActionMailer::Base.deliveries.size
+    assert_equal [order.customer.email], ActionMailer::Base.deliveries.last.to
+  end
+end
+```
+
 ## Failure modes
 - Thread.sleep/sleep-based assertions
 - direct perform as the only job test

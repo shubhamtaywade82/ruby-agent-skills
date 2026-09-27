@@ -20,6 +20,25 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Record a stack-minimality marker with the ceiling and a concrete trigger at the decision site.
 
+## Example
+
+```ruby
+class ExchangeRates
+  # stack-minimality: rates cached per process for 10 minutes; revisit when more
+  # than one process needs identical rates at the same instant or the provider
+  # rate-limits us.
+  def self.rate(from, to)
+    @cache ||= {}
+    entry = @cache[[from, to]]
+    return entry[:rate] if entry && entry[:at] > Time.now - 600
+
+    rate = RatesProvider.fetch(from, to)
+    @cache[[from, to]] = { rate: rate, at: Time.now }
+    rate
+  end
+end
+```
+
 ## Failure modes
 TODO-later comments without triggers and debt markers used to excuse unsafe behavior.
 

@@ -59,6 +59,23 @@ Use functional regression tests plus a stable performance contract when the repo
 
 Inspect runtime/version, repository conventions, the owning boundary, neighboring implementations, and applicable tests before applying the pattern.
 
+## Example
+
+```ruby
+require "benchmark"
+require "memory_profiler"
+
+# Reproduce the slow workload, measure it, change one thing, measure again.
+orders = Order.includes(:line_items).where(created_at: 30.days.ago..).to_a
+
+before = Benchmark.realtime { orders.map { |order| order.line_items.map(&:amount_cents).sum } }
+after = Benchmark.realtime { orders.sum { |order| order.line_items.sum(&:amount_cents) } }
+puts format("before %.3fs  after %.3fs", before, after)
+
+report = MemoryProfiler.report { orders.sum { |order| order.line_items.sum(&:amount_cents) } }
+puts "allocated objects: #{report.total_allocated}"
+```
+
 ## Failure modes
 
 - optimizing a non-bottleneck

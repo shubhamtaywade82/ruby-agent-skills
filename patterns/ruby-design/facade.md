@@ -33,6 +33,32 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# One stable operation over three subsystems; callers never coordinate them.
+class Checkout
+  def initialize(inventory:, pricing:, payments:)
+    @inventory = inventory
+    @pricing = pricing
+    @payments = payments
+  end
+
+  def purchase(sku:, customer:)
+    reservation = @inventory.reserve(sku)
+    return :out_of_stock unless reservation
+
+    amount = @pricing.price_for(sku, customer: customer)
+    if @payments.charge(customer, amount)
+      :completed
+    else
+      @inventory.release(reservation)
+      :payment_failed
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

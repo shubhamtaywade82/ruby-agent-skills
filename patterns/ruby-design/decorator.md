@@ -33,6 +33,26 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# Adds caching around any object that responds to #fetch(key), without
+# changing the wrapped object or its interface.
+class CachingDirectory
+  def initialize(directory, cache:)
+    @directory = directory
+    @cache = cache
+  end
+
+  def fetch(key)
+    @cache.fetch("directory:#{key}") { @directory.fetch(key) }
+  end
+end
+
+directory = CachingDirectory.new(LdapDirectory.new, cache: Rails.cache)
+directory.fetch("sam") # same contract as LdapDirectory#fetch
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

@@ -21,6 +21,15 @@ Inspect CI build stages, asset test helpers, package manager commands, Rails pre
 ## Implementation procedure
 Test clean installation, JS/CSS build, Rails asset precompile, and a production-like consumer path.
 
+## Example
+
+```bash
+# CI step that exercises the real release asset path, not just a dev server.
+RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bin/rails assets:precompile
+test -s public/assets/.manifest.json
+bin/rails test:system
+```
+
 ## Failure modes
 Testing only a watcher, relying on local caches, skipping precompile, and browser tests masking build failures.
 

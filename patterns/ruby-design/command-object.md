@@ -33,6 +33,29 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# One executable action with one public method and an explicit result.
+class Invoices::Void
+  Result = Data.define(:invoice, :error)
+
+  def initialize(invoice, reason:)
+    @invoice = invoice
+    @reason = reason
+  end
+
+  def call
+    return Result.new(invoice: @invoice, error: :already_paid) if @invoice.paid?
+
+    @invoice.update!(voided_at: Time.current, void_reason: @reason)
+    Result.new(invoice: @invoice, error: nil)
+  end
+end
+
+result = Invoices::Void.new(invoice, reason: "duplicate").call
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

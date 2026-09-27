@@ -20,6 +20,19 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Inspect manifests and lockfiles, transitive dependencies, runtime support, and existing utilities before adding a dependency.
 
+## Example
+
+```ruby
+# Gemfile before: gem "httparty" added for one GET.
+# Gemfile after: nothing added; Faraday is already a dependency of the app.
+response = Faraday.new(url: "https://status.example.test", request: { timeout: 2 }).get("/health")
+healthy = response.success?
+
+# Or, with no gem at all, the standard library:
+require "net/http"
+healthy = Net::HTTP.get_response(URI("https://status.example.test/health")).is_a?(Net::HTTPSuccess)
+```
+
 ## Failure modes
 Duplicate libraries, overlapping utilities, and lockfile churn for trivial features.
 

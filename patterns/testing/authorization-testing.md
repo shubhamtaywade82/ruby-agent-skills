@@ -14,6 +14,31 @@ Adding or changing a policy, scope, tenant rule, or protected endpoint.
 ## Structure
 Use focused policy tests plus request/system tests for wiring. Add regression cases for every discovered bypass.
 
+## Example
+
+```ruby
+# Policy test: the full allow/deny matrix, fast.
+class DocumentPolicyTest < ActiveSupport::TestCase
+  test "owner and same-tenant admin may update; others may not" do
+    doc = documents(:acme_plan)
+    assert DocumentPolicy.new(users(:acme_owner), doc).update?
+    assert DocumentPolicy.new(users(:acme_admin), doc).update?
+    refute DocumentPolicy.new(users(:acme_member), doc).update?
+    refute DocumentPolicy.new(users(:globex_admin), doc).update?
+  end
+end
+
+# Request test: the controller actually consults the policy (wiring), and a
+# cross-tenant id is indistinguishable from a missing one.
+class DocumentsAuthorizationTest < ActionDispatch::IntegrationTest
+  test "cross-tenant update is not found" do
+    sign_in users(:globex_admin)
+    patch document_path(documents(:acme_plan)), params: { document: { title: "x" } }
+    assert_response :not_found
+  end
+end
+```
+
 ## Required cases
 Allow/deny by action, cross-tenant isolation, collection scope, ownership, role/capability, resource state, direct service invocation, background re-authorization, API/realtime boundaries, stale membership, cache invalidation, and IDOR regression.
 

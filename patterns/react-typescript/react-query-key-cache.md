@@ -21,6 +21,24 @@ Inspect query parameters, tenant/account context, sorting, filters, and freshnes
 ## Implementation procedure
 Build stable keys from every dimension that changes the resource and centralize key construction.
 
+## Example
+
+```ts
+// Keys contain every dimension that changes the response, so two tenants or
+// two filters never share a cache entry.
+export const invoiceKeys = {
+  all: (tenantId: string) => ["tenant", tenantId, "invoices"] as const,
+  list: (tenantId: string, filters: { status: "open" | "paid"; page: number }) =>
+    [...invoiceKeys.all(tenantId), "list", filters.status, filters.page] as const,
+  detail: (tenantId: string, invoiceId: string) => [...invoiceKeys.all(tenantId), "detail", invoiceId] as const
+};
+
+// After a mutation, invalidate by prefix: every list and detail for that tenant.
+export function keysToInvalidate(tenantId: string) {
+  return invoiceKeys.all(tenantId);
+}
+```
+
 ## Failure modes
 One broad key for many resources, including mutable presentation state accidentally.
 

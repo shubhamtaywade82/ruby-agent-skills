@@ -33,6 +33,29 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# One decision, no side effects: callers decide what to do with the answer.
+class RefundPolicy
+  WINDOW = 30 * 24 * 60 * 60
+
+  def initialize(user, order, now: Time.now)
+    @user = user
+    @order = order
+    @now = now
+  end
+
+  def allowed?
+    return true if @user.admin?
+
+    @order.customer_id == @user.id && @order.paid? && (@now - @order.paid_at) <= WINDOW
+  end
+end
+
+raise Forbidden unless RefundPolicy.new(current_user, order).allowed?
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

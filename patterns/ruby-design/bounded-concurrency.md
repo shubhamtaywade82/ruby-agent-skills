@@ -33,6 +33,32 @@ Inspect runtime compatibility, existing executors/queues, database and HTTP pool
 7. Add deterministic completion/failure tests.
 8. Measure throughput/latency against a sequential baseline.
 
+## Example
+
+```ruby
+# A fixed pool of workers drains a bounded queue: concurrency is capped at
+# POOL_SIZE no matter how many inputs arrive.
+POOL_SIZE = 4
+
+def fetch_all(urls, client:)
+  queue = Queue.new
+  urls.each { |url| queue << url }
+  POOL_SIZE.times { queue << :done }
+
+  results = Queue.new
+  workers = Array.new(POOL_SIZE) do
+    Thread.new do
+      while (url = queue.pop) != :done
+        results << [url, client.get(url)]
+      end
+    end
+  end
+  workers.each(&:join)
+
+  Array.new(results.size) { results.pop }.to_h
+end
+```
+
 ## Failure modes
 
 - one thread per item

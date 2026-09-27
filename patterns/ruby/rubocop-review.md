@@ -40,6 +40,30 @@ A Ruby/Rails change needs static-analysis review, or a RuboCop finding needs int
 
 Use data/rubocop/plugins.yml as the repository catalog. Never treat its existence as a mandate to install all plugins.
 
+## Example
+
+```bash
+# 1. Confirm each extension supports the plugin API before listing it under
+#    `plugins:` (legacy extensions need `require:`).
+bundle exec ruby -e 'puts Gem.loaded_specs["rubocop-rails"].metadata["default_lint_roller_plugin"]'
+
+# 2. Load only plugins for frameworks the repository uses (.rubocop.yml):
+#      plugins:
+#        - rubocop-performance
+#        - rubocop-rails
+#        - rubocop-minitest
+
+# 3. Review findings for the changed files only, then decide each one.
+bundle exec rubocop $(git diff --name-only --diff-filter=AM origin/main -- '*.rb')
+
+# 4. Autocorrect only safe, behaviour-neutral cops, and review the diff.
+bundle exec rubocop -a --only Layout/SpaceAfterComma,Layout/EmptyLineAfterGuardClause app/models/order.rb
+git diff --stat
+
+# 5. Adopt RuboCop on an existing codebase with a baseline instead of a mass rewrite.
+bundle exec rubocop --auto-gen-config --no-exclude-limit
+```
+
 ## Failure modes
 
 - enabling every plugin

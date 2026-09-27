@@ -20,6 +20,26 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Prefer interfaces, type aliases, utility types, discriminated unions, and generics. Use runtime schemas at dynamic boundaries only.
 
+## Example
+
+```ts
+// Before: class Email { constructor(private value: string) {} toString() { return this.value; } }
+// used only so function signatures cannot mix up strings — a runtime wrapper
+// for a compile-time need.
+
+// After: a type-level distinction with zero runtime cost.
+type Email = string & { readonly __brand: "Email" };
+
+export function asEmail(value: string): Email {
+  if (!value.includes("@")) throw new Error("invalid email");
+  return value as Email;
+}
+
+export function sendReceipt(to: Email, body: string): string {
+  return `${to}: ${body}`;
+}
+```
+
 ## Failure modes
 Runtime wrappers for static concerns and type assertions used as validation.
 

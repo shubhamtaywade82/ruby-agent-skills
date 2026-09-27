@@ -20,6 +20,29 @@ The behavior is an HTTP/API contract.
 5. Cover expected client failures.
 6. Keep internal collaborator details out of the request test.
 
+## Example
+
+```ruby
+class Api::OrdersTest < ActionDispatch::IntegrationTest
+  test "POST /api/orders creates an order and returns its public shape" do
+    post api_orders_path,
+      params: { order: { sku: "SKU-1", quantity: 2, admin: true } },
+      headers: { "Authorization" => "Bearer #{tokens(:sam).secret}" },
+      as: :json
+
+    assert_response :created
+    body = response.parsed_body
+    assert_equal %w[id quantity sku status], body.keys.sort
+    assert_equal 2, Order.find(body["id"]).quantity
+  end
+
+  test "rejects unauthenticated requests" do
+    post api_orders_path, params: { order: { sku: "SKU-1" } }, as: :json
+    assert_response :unauthorized
+  end
+end
+```
+
 ## Failure modes
 - calling controller methods directly for an HTTP contract
 - asserting only status
