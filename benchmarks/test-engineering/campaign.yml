@@ -1,5 +1,5 @@
 id: rails-test-engineering-public-v1
-version: 2
+version: 3
 evaluation_set: test-engineering
 source: rails-test-engineering-v1
 fixture_root: benchmarks/test-engineering/fixtures
@@ -11,6 +11,7 @@ evaluations:
   - flaky-diagnosis
   - system-contract
   - test-performance
+  - rspec-request-contract
 execution:
   repetitions: 3
   paired: true

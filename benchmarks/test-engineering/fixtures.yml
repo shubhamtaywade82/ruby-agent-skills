@@ -25,3 +25,7 @@ fixtures:
     root: benchmarks/test-engineering/fixtures/test-performance
     implementation_files:
       - test/test_helper.rb
+  rspec-request-contract:
+    root: benchmarks/test-engineering/fixtures/rspec-request-contract
+    implementation_files:
+      - spec/requests/orders_spec.rb
