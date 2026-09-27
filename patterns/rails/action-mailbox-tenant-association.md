@@ -33,6 +33,22 @@ Inspect recipient/alias models, user identity policy, tenant membership, resourc
 5. Propagate tenant identity to downstream jobs/events.
 6. Add cross-tenant negative tests.
 
+## Example
+
+```ruby
+class TenantInboxMailbox < ApplicationMailbox
+  # "acme@in.example.com" routes the email to a tenant, but the sender must
+  # still be a member of that tenant before anything is created.
+  def process
+    tenant = Tenant.find_by!(inbox_slug: mail.to.first.split("@").first)
+    member = tenant.users.find_by(email: mail.from&.first&.downcase)
+    return bounce_with(InboxMailer.not_a_member(inbound_email)) unless member
+
+    tenant.documents.create!(author: member, subject: mail.subject.to_s.first(200), body: mail.decoded)
+  end
+end
+```
+
 ## Failure modes
 
 - tenant inferred only from email local-part;

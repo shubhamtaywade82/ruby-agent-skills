@@ -33,6 +33,25 @@ Inspect model deletion, callbacks, transactions, RichText association, Active St
 5. Separate database transaction from external storage work.
 6. Test partial/failure cases.
 
+## Example
+
+```ruby
+class Article < ApplicationRecord
+  has_rich_text :body
+
+  # The RichText row is saved with the article, but embedded blobs outlive
+  # both; purge orphans asynchronously after the article is gone.
+  after_destroy_commit :purge_embedded_blobs_later
+
+  private
+
+  def purge_embedded_blobs_later
+    blob_ids = body.body&.attachables.to_a.grep(ActiveStorage::Blob).map(&:id)
+    PurgeOrphanBlobsJob.perform_later(blob_ids) if blob_ids.any?
+  end
+end
+```
+
 ## Failure modes
 
 - rich text orphaned after owner deletion;

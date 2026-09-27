@@ -35,6 +35,34 @@ Inspect ApplicationController, inherited concerns, callback declarations, only/e
 5. Keep business workflows in services/domain objects.
 6. Add tests for affected and unaffected actions.
 
+## Example
+
+```ruby
+class InvoicesController < ApplicationController
+  # Callbacks are action-scoped and do one prerequisite each; order is explicit.
+  before_action :require_login
+  before_action :set_invoice, only: %i[show update destroy]
+  before_action :authorize_invoice!, only: %i[update destroy]
+
+  def update
+    @invoice.update!(invoice_params)
+    redirect_to @invoice
+  end
+
+  private
+
+  def set_invoice
+    @invoice = current_account.invoices.find(params[:id])
+  end
+
+  def authorize_invoice!
+    head :forbidden unless InvoicePolicy.new(current_user, @invoice).update?
+  end
+
+  def invoice_params = params.expect(invoice: [:due_on, :notes])
+end
+```
+
 ## Failure modes
 
 - global callback for a local need

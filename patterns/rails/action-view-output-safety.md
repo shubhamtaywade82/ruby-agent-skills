@@ -35,6 +35,22 @@ Inspect current escaping behavior, sanitizer configuration, trusted content sour
 6. Add malicious-markup and unsafe-URL regression tests.
 7. Review caches and translations when rendered output is shared.
 
+## Example
+
+```ruby
+module CommentsHelper
+  # Escaped by default; tags are built with helpers, joined safely, and user
+  # HTML goes through the sanitizer allowlist — never html_safe on input.
+  def comment_meta(comment)
+    safe_join([tag.strong(comment.author_name), " · ", time_tag(comment.created_at)])
+  end
+
+  def comment_body(comment)
+    sanitize(comment.body_html, tags: %w[p br strong em a ul ol li], attributes: %w[href])
+  end
+end
+```
+
 ## Failure modes
 
 - raw user input;

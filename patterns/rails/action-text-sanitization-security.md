@@ -33,6 +33,18 @@ Inspect sanitizer configuration, html_safe/raw usage, permitted tags/attributes,
 5. Add malicious HTML/link tests.
 6. Verify final rendered output.
 
+## Example
+
+```ruby
+# config/initializers/action_text.rb
+# Narrow, reviewed changes to the default allowlist; never add script,
+# style, iframe, or event-handler attributes to "fix" rendering.
+Rails.application.config.after_initialize do
+  ActionText::ContentHelper.allowed_tags = Rails::HTML5::SafeListSanitizer.allowed_tags.to_a + %w[mark]
+  ActionText::ContentHelper.allowed_attributes = Rails::HTML5::SafeListSanitizer.allowed_attributes.to_a - %w[style]
+end
+```
+
 ## Failure modes
 
 - bypassed sanitizer;

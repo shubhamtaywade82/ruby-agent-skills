@@ -37,6 +37,24 @@ Inspect the route, controller inheritance, authentication, parameter conventions
 6. Map the result back to HTTP without forwarding raw params.
 7. Add negative tests for malformed and unexpected input.
 
+## Example
+
+```ruby
+class SearchesController < ApplicationController
+  PER_PAGE_MAX = 100
+
+  # Transport input is parsed and bounded here; the query object receives
+  # typed values, never raw params.
+  def index
+    query = params[:q].to_s.strip.first(200)
+    page = [Integer(params.fetch(:page, 1), exception: false) || 1, 1].max
+    per_page = (Integer(params.fetch(:per_page, 25), exception: false) || 25).clamp(1, PER_PAGE_MAX)
+
+    @results = ProductSearch.new(account: current_account).call(query: query, page: page, per_page: per_page)
+  end
+end
+```
+
 ## Failure modes
 
 - forwarding raw params

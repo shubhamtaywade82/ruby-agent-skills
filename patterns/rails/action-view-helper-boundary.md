@@ -34,6 +34,25 @@ Inspect helper modules, presenters, decorators, domain services, query objects, 
 6. Keep the helper as a thin rendering adapter.
 7. Add focused tests.
 
+## Example
+
+```ruby
+module OrdersHelper
+  # Formatting only: data and permission decisions arrive as arguments.
+  def order_status_badge(order)
+    tag.span(order.status.humanize, class: ["badge", "badge--#{order.status.dasherize}"])
+  end
+
+  def money(cents, currency: "USD")
+    number_to_currency(cents / 100.0, unit: currency == "USD" ? "$" : currency)
+  end
+end
+
+# Not a helper responsibility:
+#   def can_refund?(order) = RefundPolicy.new(current_user, order).allowed?   # policy
+#   def recent_orders = Order.where(...).limit(5)                              # query
+```
+
 ## Failure modes
 
 - helper as service object;

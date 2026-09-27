@@ -35,6 +35,24 @@ Inspect config.action_mailbox.ingress, provider/MTA setup, credentials, reverse 
 6. Keep provider-specific request parsing at the ingress boundary.
 7. Add deterministic request/ingress tests.
 
+## Example
+
+```ruby
+# config/environments/production.rb
+Rails.application.configure do
+  # One provider-specific ingress; its credential is rotated like any secret.
+  config.action_mailbox.ingress = :postmark
+  config.action_mailbox.incinerate_after = 30.days
+end
+
+# config/credentials/production.yml.enc
+#   action_mailbox:
+#     ingress_password: <generated, not committed in plain text>
+#
+# Postmark posts to /rails/action_mailbox/postmark/inbound_emails with basic
+# auth "actionmailbox:<ingress_password>"; requests without it get 401.
+```
+
 ## Failure modes
 
 - unauthenticated ingress;

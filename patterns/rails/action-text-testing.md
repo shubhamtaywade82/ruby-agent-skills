@@ -34,6 +34,28 @@ Inspect test framework, Action Text helpers/fixtures, Active Storage test servic
 7. Test API representation.
 8. Test preload/query behavior where measurable.
 
+## Example
+
+```ruby
+class ArticleRichTextTest < ActionDispatch::IntegrationTest
+  test "script tags are stripped on render" do
+    article = articles(:draft)
+    article.update!(body: %(<p>Hi</p><script>alert(1)</script><img src=x onerror=alert(2)>))
+
+    get article_path(article)
+
+    assert_response :success
+    assert_no_match(/<script|onerror=/, response.body)
+    assert_includes response.body, "<p>Hi</p>"
+  end
+
+  test "api exposes html and plain text, not RichText internals" do
+    get api_article_path(articles(:published)), as: :json
+    assert_equal %w[body_html body_text id title], response.parsed_body.keys.sort
+  end
+end
+```
+
 ## Failure modes
 
 - default-locale/default-content-only tests;

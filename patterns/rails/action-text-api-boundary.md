@@ -32,6 +32,27 @@ Inspect serializers, API versions, client expectations, editor contract, attachm
 5. Validate/authorize input.
 6. Version breaking representation changes.
 
+## Example
+
+```ruby
+# The API exposes a documented representation of the content, not the
+# ActionText::RichText row, its id, or Trix storage details.
+class Api::ArticleSerializer
+  def initialize(article)
+    @article = article
+  end
+
+  def as_json(*)
+    {
+      id: @article.id,
+      title: @article.title,
+      body_html: @article.body.to_s,
+      body_text: @article.body.to_plain_text
+    }
+  end
+end
+```
+
 ## Failure modes
 
 - exposing internal table IDs;

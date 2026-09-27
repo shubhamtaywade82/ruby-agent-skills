@@ -32,6 +32,19 @@ Inspect query counts, with_rich_text scopes, embed usage, attachment processing,
 5. Measure memory/render size.
 6. Cache only where semantics permit.
 
+## Example
+
+```ruby
+class ArticlesController < ApplicationController
+  def index
+    # with_rich_text_body loads the RichText rows in one query;
+    # with_rich_text_body_and_embeds also preloads embedded attachments.
+    # Choose the narrower one unless the index actually renders embeds.
+    @articles = current_account.articles.with_rich_text_body.order(published_at: :desc).limit(20)
+  end
+end
+```
+
 ## Failure modes
 
 - no preload;

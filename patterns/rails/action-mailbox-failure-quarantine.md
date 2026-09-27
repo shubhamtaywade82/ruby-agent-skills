@@ -36,6 +36,28 @@ Inspect Active Job retry/discard policy, Action Mailbox statuses, error reportin
 7. Verify domain state before replaying.
 8. Alert on actionable quarantine/backlog thresholds.
 
+## Example
+
+```ruby
+class InvoiceMailbox < ApplicationMailbox
+  MAX_ATTACHMENT_BYTES = 10.megabytes
+
+  def process
+    attachment = mail.attachments.find { |part| part.content_type.start_with?("application/pdf") }
+
+    # Permanent, business-invalid: tell the sender, do not retry.
+    return bounce_with(InvoiceMailer.missing_pdf(inbound_email)) unless attachment
+    return bounce_with(InvoiceMailer.too_large(inbound_email)) if attachment.body.decoded.bytesize > MAX_ATTACHMENT_BYTES
+
+    InvoiceImport.create!(message_id: mail.message_id, pdf: attachment.body.decoded)
+  rescue ActiveRecord::RecordNotUnique
+    # Duplicate delivery of an already-imported message: done, not failed.
+  rescue Faraday::TimeoutError
+    raise # transient: let the job retry
+  end
+end
+```
+
 ## Failure modes
 
 - infinite retries;

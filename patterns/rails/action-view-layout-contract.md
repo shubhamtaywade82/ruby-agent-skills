@@ -34,6 +34,26 @@ Inspect ApplicationController, layout files, controller layout declarations, con
 5. Preserve authentication and tenant state passed into shared presentation.
 6. Test representative controller/layout combinations.
 
+## Example
+
+```erb
+<%# app/views/layouts/application.html.erb %>
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "Acme" %></title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <%= render "layouts/navigation", user: Current.user %>
+    <main id="main"><%= yield %></main>
+  </body>
+</html>
+```
+
 ## Failure modes
 
 - dynamic layout names from user input;

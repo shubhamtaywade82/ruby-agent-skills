@@ -34,6 +34,26 @@ Inspect event producers, serializers, client consumers, version/deployment overl
 6. Define authorization assumptions.
 7. Add producer/consumer contract tests.
 
+## Example
+
+```ruby
+# A versioned, minimal payload: clients depend on these keys, not on model
+# attributes, and private fields never reach the socket.
+class ProjectBroadcast
+  VERSION = 1
+
+  def self.updated(project)
+    ProjectChannel.broadcast_to(project, {
+      v: VERSION,
+      type: "project.updated",
+      id: project.id,
+      name: project.name,
+      updated_at: project.updated_at.iso8601
+    })
+  end
+end
+```
+
 ## Failure modes
 
 - serializing full Active Record objects;

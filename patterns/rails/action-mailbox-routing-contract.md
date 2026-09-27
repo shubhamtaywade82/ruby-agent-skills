@@ -35,6 +35,24 @@ Inspect ApplicationMailbox, route order, address normalization, existing mailbox
 6. Test positive, collision, and unmatched cases.
 7. Add route-level diagnostics where the repository already has tracing.
 
+## Example
+
+```ruby
+class ApplicationMailbox < ActionMailbox::Base
+  # Specific routes first, catch-all last; the first match wins.
+  routing(/\Areply\+[a-z0-9]+@/i => :replies)
+  routing(/\Ainvoices@/i => :invoices)
+  routing(/\Asupport@/i => :support)
+  routing(all: :unrouted)
+end
+
+class UnroutedMailbox < ApplicationMailbox
+  def process
+    bounce_with(SupportMailer.unroutable(inbound_email))
+  end
+end
+```
+
 ## Failure modes
 
 - broad route shadows a specific route;

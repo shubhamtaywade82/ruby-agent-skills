@@ -35,6 +35,19 @@ Inspect request timings, view instrumentation, query traces, template structure,
 6. Measure again.
 7. Record workload-specific tradeoffs.
 
+## Example
+
+```erb
+<%# app/views/orders/index.html.erb
+    Measured first (rack-mini-profiler showed 1 query per row and 380 ms in
+    _order partials). Controller now preloads: current_account.orders.includes(:customer).
+    Collection rendering renders the partial once per row without per-row
+    lookup overhead, and cached: true reads fragments in one multi-get. %>
+<ul>
+  <%= render partial: "orders/order", collection: @orders, as: :order, cached: true %>
+</ul>
+```
+
 ## Failure modes
 
 - optimizing without measurement;

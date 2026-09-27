@@ -32,6 +32,23 @@ Inspect connection identity, resource ownership, tenant policy, parameter schema
 5. Open only the authorized stream.
 6. Test cross-tenant and missing-resource cases.
 
+## Example
+
+```ruby
+class ConversationChannel < ApplicationCable::Channel
+  # Resolve through the user's own scope: an id from params is only a lookup
+  # key, never proof of access.
+  def subscribed
+    conversation = Conversation.joins(:participants)
+      .where(participants: { user_id: current_user.id })
+      .find_by(id: params[:conversation_id])
+    return reject unless conversation
+
+    stream_for conversation
+  end
+end
+```
+
 ## Failure modes
 
 - authentication treated as authorization;

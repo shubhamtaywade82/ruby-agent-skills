@@ -33,6 +33,26 @@ Inspect transaction ownership, broadcast producer, Redis adapter, client fallbac
 5. Surface degraded mode to clients where needed.
 6. Instrument failures.
 
+## Example
+
+```ruby
+class Comment < ApplicationRecord
+  belongs_to :post
+
+  # Live updates are optional: they run after commit and a Redis outage is
+  # reported, not raised into the request that saved the comment.
+  after_create_commit :broadcast_created
+
+  private
+
+  def broadcast_created
+    PostChannel.broadcast_to(post, { v: 1, type: "comment.created", id: id })
+  rescue Redis::BaseError => e
+    Rails.error.report(e, handled: true, context: { comment_id: id })
+  end
+end
+```
+
 ## Failure modes
 
 - broadcast failure rolls back unrelated business state;

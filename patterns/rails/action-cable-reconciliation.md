@@ -33,6 +33,25 @@ Inspect authoritative HTTP/API state, client connection lifecycle, version/seque
 6. Apply live updates after reconciliation.
 7. Test missed-broadcast scenarios.
 
+## Example
+
+```ruby
+# Broadcasts are best-effort; on (re)subscribe the client asks for everything
+# after the last version it saw, from authoritative state.
+class TimelineChannel < ApplicationCable::Channel
+  def subscribed
+    @timeline = current_user.timelines.find_by(id: params[:timeline_id]) or return reject
+    stream_for @timeline
+  end
+
+  def sync(data)
+    since = Integer(data.fetch("since_version"))
+    events = @timeline.events.where("version > ?", since).order(:version).limit(500)
+    transmit({ v: 1, type: "timeline.sync", events: events.map { |e| e.slice(:version, :kind, :payload) } })
+  end
+end
+```
+
 ## Failure modes
 
 - reconnect assumes broadcasts were replayed;

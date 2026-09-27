@@ -32,6 +32,28 @@ Inspect authentication/session strategy, connection identifiers, allowed origins
 5. Keep resource authorization in channels.
 6. Test accepted/rejected connection paths.
 
+## Example
+
+```ruby
+module ApplicationCable
+  class Connection < ActionCable::Connection::Base
+    identified_by :current_user
+
+    def connect
+      self.current_user = find_verified_user
+    end
+
+    private
+
+    # Reuses the web session's signed cookie; revoked sessions cannot connect.
+    def find_verified_user
+      session = Session.active.find_by(id: cookies.signed[:session_id])
+      session&.user || reject_unauthorized_connection
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - unauthenticated sockets accepted;
