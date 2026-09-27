@@ -17,7 +17,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
     script = source("scripts/audit_documentation_consistency.rb")
     assert_includes script, "CHANGELOG.md"
     assert_includes script, "IMPLEMENTATION_HANDOFF.md"
-    assert_includes script, "evaluation_case_count"
+    assert_includes script, "evaluation_count"
     assert_includes script, "Current milestone"
   end
 
@@ -54,11 +54,8 @@ class DocumentationConsistencySystemTest < Minitest::Test
       File.write(File.join(dir, "skill-manifest.yml"), manifest, encoding: "UTF-8")
       
       audit = File.join(ROOT, "scripts", "audit_documentation_consistency.rb")
-      patched = source("scripts/audit_documentation_consistency.rb").gsub('ROOT = File.expand_path("..", __dir__)', "ROOT = #{dir.inspect}")
-      audit_path = File.join(dir, "audit.rb")
-      File.write(audit_path, patched, encoding: "UTF-8")
 
-      _stdout, stderr, status = Open3.capture3(RbConfig.ruby, audit_path, chdir: ROOT)
+      _stdout, stderr, status = Open3.capture3(RbConfig.ruby, audit, "--root", dir, chdir: ROOT)
       refute status.success?
       assert_includes stderr, "IMPLEMENTATION_HANDOFF.md"
     end
