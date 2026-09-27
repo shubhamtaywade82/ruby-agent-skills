@@ -2,14 +2,29 @@
 
 ## Repository-side implementation status
 
-The skill library, pattern library, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, and stack-minimality layer are implemented in the current release line.
+The skill library, pattern library, corpus-quality audit, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, and stack-minimality layer are implemented in the current release line.
 
 Current inventory:
 
 - 91 skills
 - 432 implementation patterns
 - 442 evaluation cases
-- 83 system/contract tests
+- 84 system/contract tests
+
+## Corpus quality and evaluation coverage
+
+Run the corpus audit independently:
+
+    ruby scripts/audit_corpus_quality.rb
+
+The audit reports exact measurements rather than estimates for:
+- skill reference/executable example coverage and example-language distribution;
+- pattern code/example coverage, implementation anchors, failure modes, and testing guidance;
+- evaluation case integrity and grading-dimension depth;
+- benchmark-backed versus explicitly static-only evaluation coverage;
+- routing trigger collisions and stale manifest skill paths.
+
+The public evaluation corpus has 121 evaluation files / 442 cases. Campaigns provide empirical coverage for 99 evaluation files; the remaining 22 files / 44 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
 
 ## First checkout
 
@@ -202,4 +217,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 110. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 111. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.

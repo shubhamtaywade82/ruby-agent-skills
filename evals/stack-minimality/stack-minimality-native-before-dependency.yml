@@ -1,4 +1,5 @@
 id: stack-minimality-native-before-dependency
+coverage: static-only
 version: 1
 title: Prefer platform capability before a new dependency
 category: stack-minimality

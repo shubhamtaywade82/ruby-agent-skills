@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 111 — Corpus Quality & Benchmark Coverage
+
+- Add `scripts/audit_corpus_quality.rb` with exact corpus measurements for skill examples, executable examples, pattern implementation anchors, failure/testing guidance, evaluation case integrity, grading depth, benchmark coverage, routing trigger collisions, and stale manifest paths.
+- Register the corpus-quality audit and system test in `bin/validate`.
+- Replace the ambiguous public-evaluation benchmark warning with an explicit coverage contract: campaign-backed evaluations are empirical; the 13 stack-minimality and 9 React/TypeScript evaluation files are declared `coverage: static-only`.
+- Extend benchmark-quality tests to enforce the 22-file static-only classification.
+- Make release archive system-test inventory expectations derive from `skill-manifest.yml` rather than hard-coded counts.
+
 ## Iteration 110 — Multi-Region Data Boundary Pattern
 
 - Add the `multi-region-data-boundary` implementation pattern: region routing, authoritative write ownership, data-residency enforcement at the storage layer, replication lag budgets, fenced failover with stated RPO/RTO, and conflict handling for the failover window.
