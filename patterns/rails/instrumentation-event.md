@@ -20,6 +20,27 @@ A business/application boundary needs measurement or external observation.
 5. Define failure/duration semantics.
 6. Test event name and required payload fields.
 
+## Example
+
+```ruby
+# Producer: name, payload schema, and units are a contract (amount in paise, no card data).
+class Checkout
+  def charge(order)
+    ActiveSupport::Notifications.instrument(
+      "charge.checkout", order_id: order.id, amount_paise: order.total_paise, provider: "razorpay"
+    ) do |payload|
+      payload[:outcome] = Gateway.charge(order).status # :succeeded / :declined
+    end
+  end
+end
+
+# Subscriber: observational only; failures here must not change checkout behavior.
+ActiveSupport::Notifications.subscribe("charge.checkout") do |event|
+  Metrics.histogram("checkout.charge.duration_ms", event.duration,
+                    tags: { provider: event.payload[:provider], outcome: event.payload[:outcome] })
+end
+```
+
 ## Failure modes
 - event name changes casually
 - high-cardinality payload used as metric dimensions

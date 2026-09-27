@@ -33,6 +33,34 @@ Inspect source-of-truth ownership, propagation path, expected lag, read-after-wr
 7. Surface pending/stale status instead of returning misleading certainty.
 8. Instrument queue age and convergence lag.
 
+## Example
+
+```ruby
+# The read model says what it knows and how fresh it is.
+class SearchDocument < ApplicationRecord
+  STALE_AFTER = 5.minutes
+
+  def freshness
+    return :pending if indexed_at.nil?
+    source_updated_at > indexed_at || indexed_at < STALE_AFTER.ago ? :stale : :current
+  end
+end
+
+# app/views/products/_search_status.html.erb renders "Updating…" for :pending/:stale.
+
+# Reconciliation catches lost or delayed index updates.
+class ReconcileSearchDocumentsJob < ApplicationJob
+  def perform
+    Product.where("updated_at > ?", 1.hour.ago).find_each do |product|
+      doc = SearchDocument.find_by(product_id: product.id)
+      next if doc && doc.source_updated_at >= product.updated_at
+
+      IndexProductJob.perform_later(product.id)
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - exposing stale state as if current

@@ -21,6 +21,21 @@ Inspect importmap.rb, pins, package metadata, browser targets, JavaScript entryp
 ## Implementation procedure
 Pin exact or repository-consistent versions, define local/vendor versus remote resolution, and verify module loading in production-like output.
 
+## Example
+
+```ruby
+# config/importmap.rb — every bare specifier the browser imports is pinned here.
+pin "application"
+pin "@hotwired/turbo-rails", to: "turbo.min.js"
+pin "@hotwired/stimulus", to: "stimulus.min.js"
+pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
+pin_all_from "app/javascript/controllers", under: "controllers"
+# Vendored (bin/importmap pin chart.js --download), not a live CDN dependency:
+pin "chart.js", to: "chart.js.js" # vendor/javascript/chart.js.js
+
+# CI: bin/importmap audit (known vulnerabilities) and bin/importmap outdated.
+```
+
 ## Failure modes
 Unpinned drift, unsupported packages, wrong module format, CDN dependency failure, and cache mismatch.
 

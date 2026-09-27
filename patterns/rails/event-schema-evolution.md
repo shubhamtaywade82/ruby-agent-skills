@@ -33,6 +33,33 @@ Inspect schema/version strategy, serializer behavior, retained messages, consume
 7. Drain/migrate old messages before removing support.
 8. Test old producer/new consumer and new producer/old consumer as applicable.
 
+## Example
+
+```ruby
+# Consumers accept every schema version still retained in the queue/log.
+class OrderPlacedConsumer
+  def call(envelope)
+    payload = envelope.fetch("payload")
+    case envelope.fetch("schema_version")
+    when 1
+      # v1 had integer rupees; v2 added total_cents and currency.
+      record(order_id: payload.fetch("order_id"), total_cents: payload.fetch("total") * 100, currency: "INR")
+    when 2
+      record(order_id: payload.fetch("order_id"), total_cents: payload.fetch("total_cents"),
+             currency: payload.fetch("currency"))
+    else
+      raise UnsupportedSchema, "order.placed v#{envelope['schema_version']}" # routed to dead letter
+    end
+  end
+
+  class UnsupportedSchema < StandardError; end
+
+  private
+
+  def record(**attrs) = OrderLedgerEntry.upsert(attrs, unique_by: :order_id)
+end
+```
+
 ## Failure modes
 
 - changing field type in place

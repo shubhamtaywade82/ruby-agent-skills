@@ -34,6 +34,33 @@ Inspect available locales, default locale, current locale resolver, URL conventi
 6. Establish the scoped locale context.
 7. Test conflicting locale sources.
 
+## Example
+
+```ruby
+class ApplicationController < ActionController::Base
+  around_action :switch_locale
+
+  private
+
+  # One precedence order: explicit param > user preference > Accept-Language > default.
+  def switch_locale(&action)
+    I18n.with_locale(resolved_locale, &action)
+  end
+
+  def resolved_locale
+    [params[:locale], Current.user&.locale, accept_language].each do |candidate|
+      locale = candidate.to_s.strip.downcase
+      return locale.to_sym if I18n.available_locales.map(&:to_s).include?(locale)
+    end
+    I18n.default_locale
+  end
+
+  def accept_language
+    request.headers["Accept-Language"].to_s.split(",").first.to_s.split(/[-;]/).first
+  end
+end
+```
+
 ## Failure modes
 
 - arbitrary locale accepted;

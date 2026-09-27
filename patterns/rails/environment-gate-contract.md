@@ -20,6 +20,28 @@ Inspect Rails.env usage, deployment configuration, required environment variable
 ## Implementation procedure
 Add explicit environment/precondition checks and fail before side effects when requirements are absent.
 
+## Example
+
+```ruby
+# lib/tasks/maintenance.rake
+namespace :maintenance do
+  desc "Purge expired guest carts (requires CONFIRM=purge-guest-carts outside development)"
+  task purge_guest_carts: :environment do
+    unless Rails.env.development? || ENV["CONFIRM"] == "purge-guest-carts"
+      abort "Refusing to run in #{Rails.env}: set CONFIRM=purge-guest-carts"
+    end
+
+    scope = Cart.guest.where(updated_at: ...30.days.ago)
+    puts "#{Rails.env}: #{scope.count} carts eligible"
+    next puts("DRY_RUN set; nothing deleted") if ENV["DRY_RUN"]
+
+    deleted = 0
+    scope.in_batches(of: 1_000) { |batch| deleted += batch.delete_all }
+    puts "deleted #{deleted}"
+  end
+end
+```
+
 ## Failure modes
 Production task run against development/staging or vice versa, silent fallback behavior.
 

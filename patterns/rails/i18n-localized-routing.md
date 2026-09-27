@@ -33,6 +33,27 @@ Inspect routes, default_url_options, locale resolver, URL helpers, canonical URL
 5. Define default/omitted behavior.
 6. Test canonical and invalid locale URLs.
 
+## Example
+
+```ruby
+# config/routes.rb — only supported locales match; everything else 404s.
+Rails.application.routes.draw do
+  scope "(:locale)", locale: /en|hi|mr/ do
+    resources :products, only: %i[index show]
+    root "home#show"
+  end
+end
+
+class ApplicationController < ActionController::Base
+  around_action { |_, action| I18n.with_locale(params[:locale] || I18n.default_locale, &action) }
+
+  # Generated URLs carry the current locale.
+  def default_url_options
+    { locale: I18n.locale == I18n.default_locale ? nil : I18n.locale }
+  end
+end
+```
+
 ## Failure modes
 
 - arbitrary locale routes;

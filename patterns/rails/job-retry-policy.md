@@ -25,6 +25,26 @@ zed retry bursts are possible.
 6. Report terminal failures when operational action is required.
 7. Test each exception path.
 
+## Example
+
+```ruby
+class DeliverWebhookJob < ApplicationJob
+  # Transient: bounded, backed off, jittered.
+  retry_on Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET,
+           wait: :polynomially_longer, attempts: 8
+  retry_on Webhooks::ServerError, wait: :polynomially_longer, attempts: 8 # 5xx/429
+
+  # Permanent: retrying cannot succeed.
+  discard_on Webhooks::ClientError do |job, error| # 4xx except 429
+    Webhooks::Delivery.find(job.arguments.first).update!(status: :failed, last_error: error.message)
+  end
+
+  def perform(delivery_id)
+    Webhooks::Delivery.find(delivery_id).deliver!
+  end
+end
+```
+
 ## Failure modes
 - retrying authorization/validation failures
 - infinite rapid retries

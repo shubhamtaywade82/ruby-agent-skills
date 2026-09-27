@@ -23,6 +23,29 @@ The job is provably pure and repeatable without side effects.
 5. Keep the job retryable without corrupting state.
 6. Test the duplicate path explicitly.
 
+## Example
+
+```ruby
+class ChargeSubscriptionJob < ApplicationJob
+  retry_on PaymentGateway::Timeout, wait: :polynomially_longer, attempts: 5
+
+  def perform(invoice_id)
+    invoice = Invoice.find(invoice_id)
+    return if invoice.paid? # a duplicate run after success is a no-op
+
+    # The provider deduplicates on the key, so a retry after an ambiguous timeout
+    # cannot create a second charge.
+    charge = PaymentGateway.charge(
+      amount_cents: invoice.amount_cents,
+      idempotency_key: "invoice-#{invoice.id}"
+    )
+    invoice.with_lock do
+      invoice.update!(status: :paid, charge_id: charge.id) unless invoice.paid?
+    end
+  end
+end
+```
+
 ## Failure modes
 - process-local mutex used as distributed idempotency
 - check-then-act race without database constraint

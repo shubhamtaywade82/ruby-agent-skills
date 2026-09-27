@@ -35,6 +35,26 @@ Inspect locale input sources, HTML-safe translation paths, authorization, interp
 6. Review cache isolation.
 7. Add negative security tests.
 
+## Example
+
+```ruby
+# Locale input is validated before it is used for anything (lookup, path, cache key).
+SUPPORTED = I18n.available_locales.map(&:to_s).freeze
+
+def safe_locale(raw)
+  SUPPORTED.include?(raw.to_s) ? raw.to_sym : I18n.default_locale
+end
+
+# Interpolated user data is escaped: only keys ending in _html are html_safe,
+# and Rails escapes interpolation values even inside them.
+#   en:
+#     welcome_html: "Welcome, <strong>%{name}</strong>"
+helper.t("welcome_html", name: "<script>alert(1)</script>")
+# => "Welcome, <strong>&lt;script&gt;alert(1)&lt;/script&gt;</strong>"
+
+# Never: render template: "legal/terms.#{params[:locale]}"  (path traversal)
+```
+
 ## Failure modes
 
 - arbitrary locale selection used as access control;

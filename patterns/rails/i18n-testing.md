@@ -34,6 +34,34 @@ Inspect test framework, locale fixtures, translation linting, supported locale l
 7. Test fallback/missing translations.
 8. Test cache separation where applicable.
 
+## Example
+
+```ruby
+require "test_helper"
+
+class CartLocalizationTest < ActionDispatch::IntegrationTest
+  test "renders pluralized Hindi copy from the user's locale" do
+    sign_in users(:hindi_speaker)
+    get cart_path
+    assert_select "h1", I18n.t("cart.items", count: 2, locale: :hi)
+  end
+
+  test "rejects an unsupported locale param and falls back" do
+    get cart_path(locale: "../../etc")
+    assert_response :not_found # route constraint
+  end
+
+  test "job uses the recipient's locale, not the caller's" do
+    I18n.with_locale(:en) do
+      perform_enqueued_jobs { OrderShippedJob.perform_later(orders(:hindi_customer)) }
+    end
+    assert_match I18n.t("order_mailer.shipped.subject", locale: :hi), ActionMailer::Base.deliveries.last.subject
+  end
+end
+
+# test_helper.rb: config.i18n.raise_on_missing_translations = true in config/environments/test.rb
+```
+
 ## Failure modes
 
 - global locale leakage between tests;

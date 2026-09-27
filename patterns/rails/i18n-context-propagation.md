@@ -32,6 +32,23 @@ Inspect Active Job serializer/conventions, user/account locale preferences, enqu
 5. Restore prior context.
 6. Test retries and changed user preferences.
 
+## Example
+
+```ruby
+# Capture the recipient's locale explicitly; the request locale is not the job's locale.
+class OrderShippedJob < ApplicationJob
+  def perform(order)
+    locale = order.customer.locale.presence_in(I18n.available_locales.map(&:to_s)) || I18n.default_locale
+    I18n.with_locale(locale) do
+      OrderMailer.shipped(order).deliver_now
+    end
+  end
+end
+
+# Enqueued from an admin request in :en; the customer still gets :hi.
+OrderShippedJob.perform_later(order)
+```
+
 ## Failure modes
 
 - request locale assumed in job;

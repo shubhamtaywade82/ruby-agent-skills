@@ -24,6 +24,20 @@ Inspect existing SLOs, severity conventions, alert definitions, request/job/mess
 ## Implementation procedure
 1. Name the affected user or system contract. 2. Establish onset and baseline. 3. Determine scope. 4. Correlate recent changes and dependency/resource signals. 5. State a leading hypothesis and one falsifying observation. 6. Choose the next bounded diagnostic action.
 
+## Example
+
+```markdown
+## Triage checklist (first 10 minutes)
+
+1. **Who is affected?** Journey + scope: `checkout` for all tenants / one region / one plan.
+2. **Since when?** First bad datapoint in the user-facing SLI, not the first log error.
+3. **What changed?** Deploys, flag flips, config, provider status, traffic shape in that window.
+4. **How bad?** SLI now vs SLO (e.g. success 91 % vs 99.5 %), budget burn rate.
+5. **Is it getting worse?** Queue depth / error rate trend over the last 15 min.
+6. **Cheapest reversible mitigation?** Rollback > flag off > scale > manual data fix.
+7. **Record** each step with timestamp and source in the incident channel.
+```
+
 ## Failure modes
 - treating the loudest log as root cause;
 - declaring severity without user impact;

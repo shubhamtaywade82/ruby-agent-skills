@@ -31,6 +31,18 @@ Inspect cache layer, representation, locale selection, key construction, CDN beh
 4. Version key if representation contract changes.
 5. Test cross-locale isolation.
 
+## Example
+
+```erb
+<%# Cache key varies by locale because the rendered text does; by product version because the content does. %>
+<% cache [I18n.locale, @product] do %>
+  <h2><%= @product.name %></h2>
+  <p><%= t(".price", price: number_to_currency(@product.price)) %></p>
+  <p><%= l(@product.released_on, format: :long) %></p>
+<% end %>
+<%# Not included: current user. This fragment is identical for every viewer. %>
+```
+
 ## Failure modes
 
 - localized output shared across locales;

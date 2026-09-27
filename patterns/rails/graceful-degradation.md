@@ -32,6 +32,27 @@ Inspect dependency criticality, cache freshness, authorization, feature flags, d
 6. Define exit conditions and restoration.
 7. Test both normal and degraded paths.
 
+## Example
+
+```ruby
+class ProductsController < ApplicationController
+  def show
+    @product = Product.find(params[:id])
+    # Recommendations are optional: a failure renders the page without them.
+    @recommendations = fetch_recommendations
+  end
+
+  private
+
+  def fetch_recommendations
+    Recommendations::Client.new(timeout: 0.3).for(@product)
+  rescue Recommendations::Client::Error, Timeout::Error => e
+    Rails.error.report(e, handled: true, context: { product_id: @product.id })
+    [] # degraded: no recommendations, never stale prices or other users' data
+  end
+end
+```
+
 ## Failure modes
 
 - stale data presented as authoritative

@@ -20,6 +20,24 @@ Inspect job arguments, model lifecycle, GlobalID support, retry semantics, and c
 ## Implementation procedure
 Use Global ID for live model identity; fetch current state at execution time and define behavior when the record disappears.
 
+## Example
+
+```ruby
+# Active Job serializes the record as a GlobalID and reloads it at perform time.
+class SendReceiptJob < ApplicationJob
+  discard_on ActiveJob::DeserializationError # the order was deleted before we ran
+
+  def perform(order)
+    OrderMailer.receipt(order).deliver_now # current state, not the enqueue-time snapshot
+  end
+end
+
+SendReceiptJob.perform_later(order) # payload: {"_aj_globalid"=>"gid://shop/Order/42"}
+
+# Wrong: freezes mutable state into the queue and leaks attributes.
+# SendReceiptJob.perform_later(order.attributes)
+```
+
 ## Failure modes
 Stale snapshots, oversized jobs, object graph serialization, deleted-record failures.
 
