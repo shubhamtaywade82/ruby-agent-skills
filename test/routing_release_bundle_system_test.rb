@@ -126,6 +126,12 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
     assert_includes script, "SHA-256 mismatch"
   end
 
+  def test_release_bundle_binds_optional_matrix_evidence_to_public_release_identity
+    script = source("bin/routing-release-bundle-verify")
+    assert_includes script, "matrix campaign does not match public campaign"
+    assert_includes script, "matrix repository SHA does not match public evidence"
+  end
+
   def test_release_bundle_preserves_external_hidden_boundary
     script = source("bin/routing-release-bundle-verify")
     assert_includes script, "HIDDEN_RECEIPT_VERIFIER"
