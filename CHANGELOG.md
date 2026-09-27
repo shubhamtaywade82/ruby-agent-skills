@@ -1,10 +1,16 @@
+# Changelog
+
+## Iteration 109 — Release Documentation Polish
+
+- Deduplicate the repeated Iteration 95–97 sections in the README and restore a single ordered iteration narrative (92–104) including the previously orphaned Iteration 98 entry.
+- Refresh the README "Current implementation status" section to the current milestone, including the release infrastructure: reproducible checksummed archives, offline installation, the tag-triggered release workflow, and published GitHub releases.
+- Add a README quick start with the direct release-archive download, git checkout, and installation verification commands; link the Installation section to the releases page.
+
 ## Iteration 106 — Independent Release Archive Verification
 
 - Add a standalone release archive verifier independent of the archive builder's self-test.
 - Verify release metadata, skill/pattern inventory, required agent-facing paths, archive safety, and optional published SHA-256 checksums.
 - Add regression coverage and wire the verifier into `bin/validate`.
-
-# Changelog
 
 ## Iteration 105 — Release Infrastructure
 
