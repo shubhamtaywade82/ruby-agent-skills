@@ -33,25 +33,36 @@ checks["functional"] = syntax.empty? ?
 
 case evaluation.fetch("id")
 when "puma-capacity"
-  workers = source.match?(/workers/)
-  threads = source.match?(/threads/)
+  # Budget from the prompt: 4 CPU cores, database pool of 12 per process.
+  # Each Puma thread can hold a connection, so default threads per process
+  # must not exceed the pool, and default workers must not exceed cores.
+  workers = source.match?(/workers\b/)
+  threads = source.match?(/threads\b/)
   port = source.match?(/PORT/)
-  checks["functional"] = workers && threads && port ?
-    { "status" => "pass", "evidence" => "Puma worker/thread/port contract detected" } :
-    { "status" => "fail", "evidence" => "Puma capacity contract incomplete" }
+  worker_default = source[/ENV\.fetch\(\s*"WEB_CONCURRENCY"\s*,\s*"(\d+)"\s*\)/, 1]&.to_i
+  thread_default = source[/ENV\.fetch\(\s*"RAILS_MAX_THREADS"\s*,\s*"(\d+)"\s*\)/, 1]&.to_i
+  within_budget = worker_default && thread_default && worker_default.between?(1, 4) && thread_default.between?(1, 12)
+  checks["functional"] = workers && threads && port && within_budget ?
+    { "status" => "pass", "evidence" => "workers=#{worker_default} threads=#{thread_default} within 4 cores / pool 12" } :
+    { "status" => "fail", "evidence" => "Puma capacity contract incomplete or over budget (workers=#{worker_default.inspect}, threads=#{thread_default.inspect}; need workers <= 4, threads <= 12)" }
   checks["contract"] = source.match?(/preload_app!/) ?
     { "status" => "pass", "evidence" => "preload policy preserved" } :
     { "status" => "fail", "evidence" => "preload policy changed" }
 
 when "graceful-shutdown"
   term = source.match?(/TERM/)
-  forward = source.match?(/kills+-TERM/)
+  forward = source.match?(/kill\s+-TERM/)
   wait = source.match?(/wait/)
   checks["functional"] = term && forward && wait ?
     { "status" => "pass", "evidence" => "termination signal forwarding and wait detected" } :
     { "status" => "fail", "evidence" => "graceful shutdown contract incomplete" }
-  checks["contract"] = !source.match?(/execs+.*puma.*&/) ?
-    { "status" => "pass" } : { "status" => "fail", "evidence" => "unexpected process model detected" }
+  # Backgrounding Puma and waiting is the forwarding pattern; what breaks
+  # shutdown is ignoring TERM, or `exec ... &`, which cannot both replace the
+  # shell and run in the background.
+  swallowed = source.match?(/trap\s+(''|""|true|:)\s+[^\n]*\bTERM\b/)
+  contradictory = source.match?(/^\s*exec\s+[^\n]*&\s*$/)
+  checks["contract"] = !swallowed && !contradictory ?
+    { "status" => "pass" } : { "status" => "fail", "evidence" => "termination signal swallowed or unexpected process model detected" }
 
 when "zero-downtime-release"
   order = [
@@ -72,7 +83,7 @@ when "zero-downtime-release"
 when "config-contract"
   master = source.include?("RAILS_MASTER_KEY")
   database = source.include?("DATABASE_URL")
-  secret_output = source.match?(/putss+ENV[|ps+ENV[/)
+  secret_output = source.match?(/puts\s+ENV\[|p\s+ENV\[/)
   checks["functional"] = master && database ?
     { "status" => "pass", "evidence" => "required runtime configuration keys detected" } :
     { "status" => "fail", "evidence" => "required runtime configuration missing" }
@@ -118,7 +129,6 @@ result = {
   },
   "checks" => checks
 }
-File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.pretty_generate(result) + "
-", encoding: "UTF-8")
+File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.pretty_generate(result) + "\n", encoding: "UTF-8")
 abort "verification failed" if checks.values.any? { |value| value.fetch("status") == "fail" }
 puts JSON.pretty_generate(result)

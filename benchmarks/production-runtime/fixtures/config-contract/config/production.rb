@@ -1,3 +1,2 @@
-required = %w[RAILS_MASTER_KEY DATABASE_URL]
-missing = required.reject { |key| ENV.key?(key) }
-abort "missing required configuration: #{missing.join(', ')}" unless missing.empty?
+puts "booting with RAILS_MASTER_KEY=#{ENV["RAILS_MASTER_KEY"]}"
+puts ENV["RAILS_MASTER_KEY"]
