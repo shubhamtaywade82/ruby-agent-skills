@@ -1,5 +1,5 @@
 id: performance-public-v1
-version: 1
+version: 2
 evaluation_set: performance
 source: performance-v1
 fixture_root: benchmarks/performance/fixtures
