@@ -107,7 +107,8 @@ Evaluation fixtures and verifiers are measurement infrastructure. Do not make th
 ## Release and public-readiness changes
 
 For final release or publication changes:
-- keep README inventory, current milestone, manifest, router, validators, and CI evidence synchronized;
+- keep README inventory, the current milestone in `docs/ITERATIONS.md`, manifest, router, validators, and CI evidence synchronized;
+- record each iteration in `CHANGELOG.md` and `docs/ITERATIONS.md`, never in the README;
 - require explicit public contribution and security entry points without inventing unsupported contact channels;
 - keep changelog entries factual and scoped to repository changes actually implemented;
 - do not commit generated benchmark outputs, credentials, local paths, or provider-specific secrets;

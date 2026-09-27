@@ -26,4 +26,4 @@ Benchmark fixtures and evaluation cases must remain deterministic. Keep public e
 
 ## Documentation
 
-When repository architecture, inventory, release status, or public behavior changes, update the relevant README/docs and keep counts consistent with `bin/validate`.
+When repository architecture, inventory, release status, or public behavior changes, update the relevant README/docs and keep counts consistent with `bin/validate`. Record each iteration in `CHANGELOG.md` (newest first) and `docs/ITERATIONS.md` (oldest first, including the current milestone line); the README describes the current system only.

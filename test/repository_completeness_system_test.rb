@@ -27,12 +27,12 @@ class RepositoryCompletenessSystemTest < Minitest::Test
   end
 
   def test_iteration_46_framework_delta_is_documented
-    readme = File.read(File.join(ROOT, "README.md"), encoding: "UTF-8")
+    iterations = File.read(File.join(ROOT, "docs", "ITERATIONS.md"), encoding: "UTF-8")
     audit = File.read(File.join(ROOT, "docs", "REPOSITORY_COMPLETENESS_AUDIT.md"), encoding: "UTF-8")
 
-    assert_includes readme, "## Repository-wide Completeness and Gap Audit"
-    assert_includes readme, "## Evaluation and Benchmark Hardening"
-    assert_includes readme, "Iteration 48 — Final Release and Public-Readiness Hardening"
+    assert_includes iterations, "## Iteration 46 — Repository-wide Completeness and Gap Audit"
+    assert_includes iterations, "## Iteration 47 — Evaluation and Benchmark Hardening"
+    assert_includes iterations, "## Iteration 48 — Final Release and Public-Readiness Hardening"
     %w[
       ActiveJob::Continuable
       Rails.event

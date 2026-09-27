@@ -209,7 +209,7 @@ Use `stack-minimality` with the domain skill that owns the actual contract. The 
 
 ## Documentation consistency
 
-`scripts/audit_documentation_consistency.rb` cross-checks the README, implementation handoff, changelog, filesystem inventory, and manifest. It requires the documented milestone and current counts to match repository reality. `bin/validate` runs this audit before release-readiness checks.
+`scripts/audit_documentation_consistency.rb` cross-checks the README, implementation handoff, changelog, `docs/ITERATIONS.md`, filesystem inventory, and manifest. It requires the current milestone in `docs/ITERATIONS.md` and the documented counts to match repository reality, keeps `docs/ITERATIONS.md` in ascending order with a section for the latest iteration, and rejects iteration history in the README. `bin/validate` runs this audit before release-readiness checks.
 
 ## Remaining non-implementation work
 
@@ -225,4 +225,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 130. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 131. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
