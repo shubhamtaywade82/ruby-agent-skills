@@ -1,7 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="${RUBY_AGENT_SKILLS_REPO:-https://github.com/shubhamtaywade82/ruby-agent-skills.git}"
+# Source resolution order:
+#   1. RUBY_AGENT_SKILLS_REPO (explicit override)
+#   2. The pack directory this script lives in (extracted release archive or
+#      repository checkout: the directory containing skill-manifest.yml)
+#   3. The public GitHub repository
+SELF_ROOT=""
+if [[ -f "${BASH_SOURCE[0]}" ]]; then
+  SELF_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fi
+if [[ -n "${RUBY_AGENT_SKILLS_REPO:-}" ]]; then
+  REPO="$RUBY_AGENT_SKILLS_REPO"
+elif [[ -n "$SELF_ROOT" && -f "$SELF_ROOT/skill-manifest.yml" ]]; then
+  REPO="$SELF_ROOT"
+else
+  REPO="https://github.com/shubhamtaywade82/ruby-agent-skills.git"
+fi
 REF="${RUBY_AGENT_SKILLS_REF:-main}"
 SCOPE="user"
 AGENT="agents"
@@ -19,6 +34,12 @@ Options:
   --project DIR            Project root for --scope project
   --ref REF                Git branch, tag, or commit (default: main)
   --help                   Show this help
+
+The source repository can be overridden with RUBY_AGENT_SKILLS_REPO.
+A local plain directory (for example an extracted release archive
+containing RELEASE.json) is installed directly without git.
+When run from inside a pack directory (a repository checkout or an extracted
+release archive), that directory is the default source.
 
 Examples:
   bash bin/install --agent codex
@@ -104,6 +125,15 @@ esac
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
+# Source resolution: a git repository is cloned and checked out at REF.
+# A plain local directory (an extracted release archive) is installed
+# directly, recording the provenance embedded in its RELEASE.json.
+REPO_DIR="$TMP_DIR/repo"
+ARCHIVE_SOURCE=""
+if [[ -d "$REPO" && -f "$REPO/skill-manifest.yml" ]] && ! git -C "$REPO" rev-parse --git-dir >/dev/null 2>&1; then
+  ARCHIVE_SOURCE="$REPO"
+fi
+
 echo "Installing Ruby Agent Skills from:"
 echo "  $REPO"
 echo "  ref: $REF"
@@ -111,24 +141,41 @@ echo "  target: $TARGET_ROOT"
 echo
 echo "Review the repository/ref before installing untrusted skills."
 
-git clone --no-checkout --depth 1 "$REPO" "$TMP_DIR/repo" >/dev/null 2>&1 || {
-  echo "Unable to clone $REPO" >&2
-  exit 1
-}
-if ! git -C "$TMP_DIR/repo" fetch --depth 1 origin "$REF" >/dev/null 2>&1; then
-  echo "Unable to fetch $REPO at ref $REF" >&2
-  exit 1
-fi
-git -C "$TMP_DIR/repo" checkout --detach FETCH_HEAD >/dev/null 2>&1 || {
-  echo "Unable to checkout resolved ref $REF" >&2
-  exit 1
-}
+if [[ -n "$ARCHIVE_SOURCE" ]]; then
+  REPO_DIR="$ARCHIVE_SOURCE"
+  REF="$(ruby -rjson -e '
+    path = ARGV.fetch(0)
+    data = JSON.parse(File.read(File.join(path, "RELEASE.json"))) rescue {}
+    version = data["version"].to_s
+    puts version.empty? ? "archive" : version
+  ' "$ARCHIVE_SOURCE")"
+  RESOLVED_SHA="$(ruby -rjson -e '
+    path = ARGV.fetch(0)
+    data = JSON.parse(File.read(File.join(path, "RELEASE.json"))) rescue {}
+    sha = data["git_sha"].to_s
+    puts sha.empty? ? "unrecorded" : sha
+  ' "$ARCHIVE_SOURCE")"
+else
+  git clone --no-checkout --depth 1 "$REPO" "$REPO_DIR" >/dev/null 2>&1 || {
+    echo "Unable to clone $REPO" >&2
+    exit 1
+  }
+  if ! git -C "$REPO_DIR" fetch --depth 1 origin "$REF" >/dev/null 2>&1; then
+    echo "Unable to fetch $REPO at ref $REF" >&2
+    exit 1
+  fi
+  git -C "$REPO_DIR" checkout --detach FETCH_HEAD >/dev/null 2>&1 || {
+    echo "Unable to checkout resolved ref $REF" >&2
+    exit 1
+  }
 
-RESOLVED_SHA="$(git -C "$TMP_DIR/repo" rev-parse HEAD)"
-MANIFEST_SHA256="$(sha256_file "$TMP_DIR/repo/skill-manifest.yml")"
-ROUTING_SHA256="$(sha256_file "$TMP_DIR/repo/router/ROUTING.md")"
-SKILL_COUNT="$(find "$TMP_DIR/repo/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -type f | wc -l | tr -d ' ')"
-PATTERN_COUNT="$(find "$TMP_DIR/repo/patterns" -type f -name '*.md' ! -name README.md | wc -l | tr -d ' ')"
+  RESOLVED_SHA="$(git -C "$REPO_DIR" rev-parse HEAD)"
+fi
+
+MANIFEST_SHA256="$(sha256_file "$REPO_DIR/skill-manifest.yml")"
+ROUTING_SHA256="$(sha256_file "$REPO_DIR/router/ROUTING.md")"
+SKILL_COUNT="$(find "$REPO_DIR/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -type f | wc -l | tr -d ' ')"
+PATTERN_COUNT="$(find "$REPO_DIR/patterns" -type f -name '*.md' ! -name README.md | wc -l | tr -d ' ')"
 
 SKILL_FILE_HASHES="$(ruby -rdigest -rjson -e '
 root = ARGV.fetch(0)
@@ -136,12 +183,12 @@ paths = Dir[File.join(root, "skills", "*", "SKILL.md")].sort
 puts JSON.generate(paths.map { |path|
   {"path" => path.delete_prefix(File.join(root, "skills") + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
 })
-' "$TMP_DIR/repo")"
+' "$REPO_DIR")"
 
 STACK_MINIMALITY_TOOL_SHA256=""
 STACK_MINIMALITY_TOOL_METADATA="[]"
-if [[ -f "$TMP_DIR/repo/bin/stack-minimality" ]]; then
-  STACK_MINIMALITY_TOOL_SHA256="$(sha256_file "$TMP_DIR/repo/bin/stack-minimality")"
+if [[ -f "$REPO_DIR/bin/stack-minimality" ]]; then
+  STACK_MINIMALITY_TOOL_SHA256="$(sha256_file "$REPO_DIR/bin/stack-minimality")"
   STACK_MINIMALITY_TOOL_METADATA='[{"path":"bin/stack-minimality","sha256":"'"$STACK_MINIMALITY_TOOL_SHA256"'"}]'
 fi
 
@@ -151,13 +198,13 @@ paths = Dir[File.join(root, "patterns", "**", "*.md")].reject { |path| path.end_
 puts JSON.generate(paths.map { |path|
   {"path" => path.delete_prefix(root + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
 })
-' "$TMP_DIR/repo")"
+' "$REPO_DIR")"
 
 OLD_INSTALLATION="$TARGET_ROOT/.ruby-agent-skills/INSTALLATION.json"
 if [[ -f "$OLD_INSTALLATION" ]]; then
   while IFS= read -r old_skill; do
     [[ "$old_skill" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]] || continue
-    [[ -d "$TMP_DIR/repo/skills/$old_skill" ]] && continue
+    [[ -d "$REPO_DIR/skills/$old_skill" ]] && continue
     rm -rf "$TARGET_ROOT/$old_skill"
   done < <(ruby -rjson -e 'data=JSON.parse(File.read(ARGV.fetch(0))); Array(data.dig("inventory","skill_names")).each { |name| puts name }' "$OLD_INSTALLATION")
 fi
@@ -165,20 +212,20 @@ fi
 STAGE="$TMP_DIR/stage"
 mkdir -p "$STAGE/skills" "$STAGE/.ruby-agent-skills/patterns" "$STAGE/.ruby-agent-skills/docs" "$STAGE/.ruby-agent-skills/bin"
 
-for skill_dir in "$TMP_DIR/repo"/skills/*; do
+for skill_dir in "$REPO_DIR"/skills/*; do
   [[ -d "$skill_dir" ]] || continue
   [[ -f "$skill_dir/SKILL.md" ]] || continue
   cp -R "$skill_dir" "$STAGE/skills/$(basename "$skill_dir")"
 done
 
-cp -R "$TMP_DIR/repo/patterns/." "$STAGE/.ruby-agent-skills/patterns/"
-cp "$TMP_DIR/repo/skill-manifest.yml" "$STAGE/.ruby-agent-skills/skill-manifest.yml"
-cp "$TMP_DIR/repo/router/ROUTING.md" "$STAGE/.ruby-agent-skills/ROUTING.md"
-cp "$TMP_DIR/repo/AGENTS.md" "$STAGE/.ruby-agent-skills/AGENTS.md"
-cp "$TMP_DIR/repo/docs/SKILL_CONTRACT.md" "$STAGE/.ruby-agent-skills/docs/SKILL_CONTRACT.md"
-cp "$TMP_DIR/repo/bin/skill-pack-verify" "$STAGE/.ruby-agent-skills/skill-pack-verify"
-if [[ -f "$TMP_DIR/repo/bin/stack-minimality" ]]; then
-  cp "$TMP_DIR/repo/bin/stack-minimality" "$STAGE/.ruby-agent-skills/bin/stack-minimality"
+cp -R "$REPO_DIR/patterns/." "$STAGE/.ruby-agent-skills/patterns/"
+cp "$REPO_DIR/skill-manifest.yml" "$STAGE/.ruby-agent-skills/skill-manifest.yml"
+cp "$REPO_DIR/router/ROUTING.md" "$STAGE/.ruby-agent-skills/ROUTING.md"
+cp "$REPO_DIR/AGENTS.md" "$STAGE/.ruby-agent-skills/AGENTS.md"
+cp "$REPO_DIR/docs/SKILL_CONTRACT.md" "$STAGE/.ruby-agent-skills/docs/SKILL_CONTRACT.md"
+cp "$REPO_DIR/bin/skill-pack-verify" "$STAGE/.ruby-agent-skills/skill-pack-verify"
+if [[ -f "$REPO_DIR/bin/stack-minimality" ]]; then
+  cp "$REPO_DIR/bin/stack-minimality" "$STAGE/.ruby-agent-skills/bin/stack-minimality"
 fi
 
 cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
@@ -199,7 +246,7 @@ cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
   "inventory": {
     "skills": $SKILL_COUNT,
     "patterns": $PATTERN_COUNT,
-    "skill_names": [$(find "$TMP_DIR/repo/skills" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort | awk '{printf "%s%s", sep, "\""$0"\""; sep=","}' )]
+    "skill_names": [$(find "$REPO_DIR/skills" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort | awk '{printf "%s%s", sep, "\""$0"\""; sep=","}' )]
   },
   "target": {
     "agent": "$AGENT",

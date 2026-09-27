@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Validate skill library
+        run: bash bin/validate
+
+      - name: Smoke test evaluation runner
+        run: ruby scripts/smoke_eval_runner.rb
+
+      - name: Smoke test benchmark verifier
+        run: ruby scripts/smoke_benchmark.rb
+
+      - name: Smoke test agent adapter
+        run: ruby scripts/smoke_agent_adapter.rb
+
+      - name: Smoke test book integration campaign
+        run: ruby scripts/smoke_workshop_benchmark.rb
+
+      - name: Build release archive and verify offline install
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: ruby scripts/build_release_archive.rb --version "$VERSION" --self-test
+
+      - name: Check archive reproducibility
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          first="$(sha256sum dist/ruby-agent-skills-"$VERSION".tar.gz | awk '{print $1}')"
+          ruby scripts/build_release_archive.rb --version "$VERSION"
+          second="$(sha256sum dist/ruby-agent-skills-"$VERSION".tar.gz | awk '{print $1}')"
+          if [[ "$first" != "$second" ]]; then
+            echo "release archive is not reproducible: $first != $second" >&2
+            exit 1
+          fi
+          echo "release archive reproducible: $first"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          prerelease_args=()
+          if [[ "$VERSION" =~ -(rc|beta|alpha|test)\.?[0-9]*$ || "$VERSION" == *"-rc"* ]]; then
+            prerelease_args+=(--prerelease)
+          fi
+          gh release create "$VERSION" \
+            "dist/ruby-agent-skills-$VERSION.tar.gz" \
+            dist/SHA256SUMS \
+            --title "Ruby Agent Skills $VERSION" \
+            --notes-file dist/release-notes.md \
+            "${prerelease_args[@]}"

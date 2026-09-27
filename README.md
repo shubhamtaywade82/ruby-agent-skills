@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 104 — Verified Release Evidence Bundle
+> **Current milestone:** Iteration 105 — Release Infrastructure
 
 ---
 
@@ -179,7 +179,7 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **431** |
 | Evaluation cases | **442** |
-| Dedicated system/contract tests | **81** |
+| Dedicated system/contract tests | **82** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -847,7 +847,9 @@ Verify an installation with:
 
     ruby bin/skill-pack-verify --root ~/.claude/skills
 
-See `docs/INSTALLATION.md` for pinned-ref, project-scope, and verification workflows.
+Releases are cut as `vX.Y.Z` git tags and publish a downloadable, checksummed archive that installs offline (no git required). See `RELEASE.md` for the release definition and process.
+
+See `docs/INSTALLATION.md` for pinned-ref, offline-archive, project-scope, and verification workflows.
 See `docs/IMPLEMENTATION_HANDOFF.md` for the complete clone, validation, installation, routing-campaign, and empirical handoff sequence.
 # Contributing / extending the system
 

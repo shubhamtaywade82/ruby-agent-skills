@@ -29,6 +29,18 @@ A release can be pinned by branch, tag, or commit:
 
 For local testing, the source repository can be overridden with `RUBY_AGENT_SKILLS_REPO`.
 
+## Offline install from a release archive
+
+A GitHub Release archive can be installed without git or network access. Extract the archive and run the installer from inside it (the installer detects the pack directory it lives in and uses it as the source):
+
+    tar xzf ruby-agent-skills-vX.Y.Z.tar.gz
+    cd ruby-agent-skills-vX.Y.Z
+    bash bin/install --agent claude
+
+The installer detects a plain local directory containing `skill-manifest.yml` (and `RELEASE.json` provenance) and installs directly from it. The recorded requested ref and resolved Git SHA come from the archive's `RELEASE.json`, so the installed pack still carries release provenance. Verify the downloaded archive against the published `SHA256SUMS` before installing.
+
+Running the installer from a repository checkout likewise defaults to that checkout (its committed state); set `RUBY_AGENT_SKILLS_REPO` to install from a different source.
+
 ## Installed layout
 
 The installer keeps the agent-visible skills at the target root:
