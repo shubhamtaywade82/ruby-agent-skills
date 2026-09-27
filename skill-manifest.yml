@@ -888,7 +888,13 @@ patterns:
       - patterns/rails/initializer-testing-contract.md
       - patterns/rails/credentials-testing-contract.md
       - patterns/rails/engine-dummy-app-testing.md
-    triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage]
+      - patterns/testing/rspec-request-spec.md
+      - patterns/testing/rspec-job-and-mail-enqueue.md
+      - patterns/testing/rspec-mailer-spec.md
+      - patterns/testing/rspec-factory-traits.md
+      - patterns/testing/rspec-shared-examples-contract.md
+      - patterns/testing/rspec-verifying-doubles.md
+    triggers: [test boundary, deterministic async test, parallel-safe test, flaky test diagnosis, test performance budget, system test contract, request contract, parallel database test, regression test, bug fix, regression coverage, RSpec, rspec-rails, request spec, FactoryBot trait, shared examples, verifying double]
 
   algorithms:
     paths:
@@ -1200,6 +1206,7 @@ evaluations:
       - evals/test-engineering/flaky-diagnosis.yml
       - evals/test-engineering/system-contract.yml
       - evals/test-engineering/test-performance.yml
+      - evals/test-engineering/rspec-request-contract.yml
     checks:
       - functional
       - tests

@@ -90,8 +90,8 @@ The skill system is built from five connected layers:
 | Capability | Count |
 |---|---:|
 | Skills | **86** |
-| Implementation patterns | **437** |
-| Evaluation cases | **445** |
+| Implementation patterns | **443** |
+| Evaluation cases | **447** |
 | Dedicated system/contract tests | **85** |
 | Manifest version | **2** |
 
@@ -582,7 +582,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **86 skills**, **437 implementation patterns**, **445 evaluation cases**, and **85 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **86 skills**, **443 implementation patterns**, **447 evaluation cases**, and **85 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

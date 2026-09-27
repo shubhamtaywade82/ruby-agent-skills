@@ -16,12 +16,15 @@ implementation = {
   "parallel-safety" => "test/test_helper.rb",
   "flaky-diagnosis" => "test/models/order_test.rb",
   "system-contract" => "test/system/checkout_test.rb",
-  "test-performance" => "test/test_helper.rb"
+  "test-performance" => "test/test_helper.rb",
+  "rspec-request-contract" => "spec/requests/orders_spec.rb"
 }.fetch(evaluation.fetch("id"))
 
 source_path = File.join(workspace, implementation)
 source = File.file?(source_path) ? File.read(source_path, encoding: "UTF-8") : ""
-all_tests = Dir.glob(File.join(workspace, "test/**/*_test.rb")).sort
+rspec = evaluation.fetch("id").start_with?("rspec-")
+# RSpec shared examples and support live outside *_spec.rb files.
+all_tests = Dir.glob(File.join(workspace, rspec ? "spec/**/*.rb" : "test/**/*_test.rb")).sort
 test_bodies = all_tests.map { |file| File.read(file, encoding: "UTF-8") }
 all_bodies = test_bodies.join("\n")
 checks = {}
@@ -103,15 +106,31 @@ when "test-performance"
   checks["contract"] = helper_glob || deep_factory ?
     { "status" => "fail", "evidence" => "fixture represents expensive baseline but verifier did not observe a scoped optimization" } :
     { "status" => "pass" }
+when "rspec-request-contract"
+  request = all_bodies.match?(/type:\s*:request/) || all_tests.any? { |file| file.include?("/spec/requests/") }
+  controller_spec = all_bodies.match?(/type:\s*:controller|\bassigns\(/)
+  non_block_mail = all_bodies.match?(/expect\([^)]*\)\s*\.(?:to|not_to|to_not)\s+have_enqueued_mail/)
+  block_job = all_bodies.match?(/expect\s*\{.*?\}\s*\.to\s+have_enqueued_job\(FulfilOrderJob\)/m)
+  block_mail = all_bodies.match?(/have_enqueued_mail\(OrderMailer,\s*:confirmation\)/) && !non_block_mail
+  shared = all_bodies.match?(/shared_examples/) && all_bodies.match?(/(?:it_behaves_like|include_examples)/)
+  checks["functional"] = request && !controller_spec && block_job && block_mail && shared ?
+    { "status" => "pass", "evidence" => "request spec with block-form enqueue matchers and a shared 422 contract" } :
+    { "status" => "fail", "evidence" => { "request_spec" => request, "controller_spec" => controller_spec, "block_job" => block_job, "block_mail" => block_mail, "shared_examples" => shared } }
+  created = all_bodies.match?(/have_http_status\(\s*(?::created|201)\s*\)/)
+  rejected = all_bodies.match?(/have_http_status\(\s*(?::unprocessable_content|:unprocessable_entity|422)\s*\)/)
+  unpersisted = all_bodies.match?(/not_to\s*\(?\s*change\s*\(?\s*Order\s*,\s*:count/)
+  checks["contract"] = created && rejected && unpersisted ?
+    { "status" => "pass", "evidence" => "201, 422, and unchanged Order count asserted at the HTTP boundary" } :
+    { "status" => "fail", "evidence" => { "created" => created, "rejected" => rejected, "unpersisted" => unpersisted } }
 end
 
 # These fixtures contain test code only, with no Rails application, so the
 # tests cannot be executed here. The check is static: every Ruby file under
 # test/ must parse and at least one test file must assert something.
 # Behavioural judgement comes from the evaluation-specific checks above.
-test_ruby = Dir.glob(File.join(workspace, "test/**/*.rb")).sort
+test_ruby = Dir.glob(File.join(workspace, rspec ? "spec/**/*.rb" : "test/**/*.rb")).sort
 unparseable = test_ruby.reject { |file| Open3.capture3("ruby", "-c", file).last.success? }
-asserting = test_bodies.any? { |body| body.match?(/\bassert(_\w+)?\b/) }
+asserting = test_bodies.any? { |body| body.match?(rspec ? /\bexpect\s*[({]/ : /\bassert(_\w+)?\b/) }
 checks["tests"] =
   if unparseable.empty? && asserting
     { "status" => "pass", "evidence" => "test files parse and contain assertions (static: Rails runtime not provisioned)" }
@@ -119,8 +138,13 @@ checks["tests"] =
     { "status" => "fail", "evidence" => { "unparseable" => unparseable.map { |f| f.delete_prefix("#{workspace}/") }, "assertions_present" => asserting } }
   end
 
+forbidden = all_bodies.match?(/allow_any_instance_of|expect_any_instance_of|\bsleep\s*\(/)
+if rspec && forbidden
+  checks["scope_control"] = { "status" => "fail", "evidence" => "any_instance stubbing or sleep detected" }
+end
+
 changed_files = %x{git status --short}.lines.map { |line| (line[3..] || line).strip }.reject(&:empty?)
-checks["scope_control"] = { "status" => "pass", "evidence" => "recorded #{changed_files.length} changed paths" }
+checks["scope_control"] ||= { "status" => "pass", "evidence" => "recorded #{changed_files.length} changed paths" }
 checks["performance"] = evaluation.fetch("id") == "test-performance" ?
   { "status" => "pass", "evidence" => "verifier checks for removal of targeted setup bottlenecks; runtime measurement belongs to external campaign runs" } :
   { "status" => "skipped" }
