@@ -167,6 +167,9 @@ class BenchmarkFixtureControlsSystemTest < Minitest::Test
 
       assert_equal File.join(root, "benchmarks", "demo", "fixtures", "short-name"), registry.path("demo-long-name")
       assert_raises(RubyAgentSkills::FixtureRegistry::Error) { registry.path("missing") }
+      FileUtils.mkdir_p(File.join(root, "benchmarks", "demo", "fixtures", "unregistered"))
+      error = assert_raises(RubyAgentSkills::FixtureRegistry::Error) { registry.path("unregistered") }
+      assert_includes error.message, "not registered"
       assert_raises(RubyAgentSkills::FixtureRegistry::Error) { registry.noop_expected("preserved") }
       assert_equal "fail", registry.noop_expected("demo-long-name")
 

@@ -49,8 +49,15 @@ module RubyAgentSkills
       @fixtures.keys
     end
 
+    # Every executed evaluation must be registered so its root and
+    # implementation/test seams are declared and audited; an unregistered ID
+    # never falls back to a conventional directory.
     def entry(eval_id)
-      value = @fixtures.fetch(eval_id.to_s, {})
+      unless @fixtures.key?(eval_id.to_s)
+        raise Error, "fixture #{eval_id} is not registered in #{registry_path.delete_prefix("#{root}/")}"
+      end
+
+      value = @fixtures.fetch(eval_id.to_s)
       raise Error, "fixture #{eval_id} must be a mapping" unless value.is_a?(Hash)
 
       value
