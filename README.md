@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 110 — Corpus Quality & Benchmark Coverage
+> **Current milestone:** Iteration 111 — Corpus Quality & Benchmark Coverage
 
 ## Quick start
 
@@ -29,6 +29,10 @@ Then verify the installed pack:
 Every release publishes a `SHA256SUMS` checksum alongside the archive. See [Installation](#installation) for scopes, agent layouts, pinned refs, and verification workflows.
 
 ---
+
+## Iteration 110 — Multi-Region Data Boundary Pattern
+
+The distributed-systems skill now covers multi-region deployments. The new `multi-region-data-boundary` pattern defines region routing, authoritative write ownership, data-residency enforcement at the storage layer, replication lag budgets, fenced failover with stated RPO/RTO, and conflict handling for the failover window. The pattern is registered in the manifest, routed in the router pattern-selection matrix, and guarded by the repository and documentation consistency audits (432 implementation patterns).
 
 ## Iteration 91 — End-to-End Experiment Evidence Finalization
 
@@ -199,7 +203,7 @@ The skill system is built from five connected layers:
 | Capability | Count |
 |---|---:|
 | Skills | **91** |
-| Implementation patterns | **431** |
+| Implementation patterns | **432** |
 | Evaluation cases | **442** |
 | Dedicated system/contract tests | **83** |
 | Manifest version | **2** |
@@ -728,7 +732,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **91 skills**, **431 implementation patterns**, **442 evaluation cases**, and **81 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **91 skills**, **432 implementation patterns**, **442 evaluation cases**, and **83 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
