@@ -1,3 +1,9 @@
+## Iteration 103 — Release Bundle Component Provenance
+
+- Bind bundled public evidence to its archive manifest by source-evidence hash and shared campaign/repository/agent identity.
+- Require optional matrix evidence to match the public campaign and repository revision.
+- Add regression coverage for release component identity binding.
+
 ## Iteration 102 — Documentation Consistency Contract
 
 - Add a deterministic documentation audit covering README, implementation handoff, changelog milestone, filesystem inventory, and manifest identity.
