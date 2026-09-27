@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 133 — Release v1.1.0 Preparation
+> **Current milestone:** Iteration 134 — Rails and React Integration Seam
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -401,3 +401,7 @@ Trimmed this file's own Iteration 101+ entries from full CHANGELOG copies down t
 ## Iteration 133 — Release v1.1.0 Preparation
 
 Pinned the README quick-start to `v1.1.0`, corrected the stale `RELEASE.md` inventory, and added an audit so it cannot drift again.
+
+## Iteration 134 — Rails and React Integration Seam
+
+Added the `rails-react-integration` skill, five cross-stack patterns, cross-stack routing, and the first React routing cases (public campaign version 2: 18 cases).

@@ -18,7 +18,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
     assert_includes source, 'artifacts.key?("preflight")'
   end
 
-  def test_verifier_accepts_42_hashed_raw_artifacts
+  def test_verifier_accepts_54_hashed_raw_artifacts
     Dir.mktmpdir("campaign-evidence") do |dir|
       campaign_path = File.join(dir, "campaign.json")
       report_path = File.join(dir, "routing-report.json")
@@ -46,7 +46,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         artifact_paths[key] = path
       end
 
-      42.times do |index|
+      54.times do |index|
         path = File.join(dir, "raw-#{index + 1}.json")
         File.write(path, "{}")
         artifact_paths["raw_case_#{index + 1}"] = path
@@ -64,11 +64,11 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
         "campaign" => "skill-routing-public-v1",
-        "campaign_version" => 1,
-        "routing_case_count" => 14,
+        "campaign_version" => 2,
+        "routing_case_count" => 18,
         "requested_repetitions" => 3,
-        "requested_runs" => 42,
-        "completed_runs" => 42,
+        "requested_runs" => 54,
+        "completed_runs" => 54,
         "repository" => { "git_sha" => "abc", "worktree_clean" => true },
         "agent" => campaign.fetch("agent"),
         "campaign_metrics" => campaign.fetch("metrics"),
@@ -89,7 +89,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
       )
 
       assert status.success?, "#{stdout}\n#{stderr}"
-      assert_includes stdout, "42/42"
+      assert_includes stdout, "54/54"
     end
   end
 

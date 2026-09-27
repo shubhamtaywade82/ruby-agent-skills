@@ -16,6 +16,7 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
     react-testing-engineering
     react-accessibility-performance
     react-architecture
+    rails-react-integration
   ].freeze
 
   def manifest
@@ -50,14 +51,14 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
   def test_react_typescript_patterns_are_registered
     paths = manifest.fetch("patterns").fetch("react-typescript").fetch("paths")
 
-    assert_equal 24, paths.length
+    assert_equal 29, paths.length
     paths.each { |path| assert File.file?(File.join(ROOT, path)) }
   end
 
   def test_react_typescript_evaluations_are_registered
-    entries = manifest.fetch("evaluations").select { |name, _| name.to_s.start_with?("react-typescript-", "react-") }
+    entries = manifest.fetch("evaluations").select { |name, _| name.to_s.start_with?("react-typescript-", "react-", "rails-react-") }
 
-    assert_equal 9, entries.length
+    assert_equal 10, entries.length
     entries.each_value do |entry|
       Array(entry.fetch("paths")).each { |path| assert File.file?(File.join(ROOT, path)) }
     end

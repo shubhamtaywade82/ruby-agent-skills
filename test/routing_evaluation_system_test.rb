@@ -17,7 +17,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
       aliases: false
     )
 
-    assert_equal 14, Array(data.fetch("cases")).length
+    assert_equal 18, Array(data.fetch("cases")).length
     assert Array(data.fetch("cases")).all? do |entry|
       entry.fetch("primary_skills").length == 1 &&
         entry.fetch("secondary_skills").none? { |skill| skill == entry.fetch("primary_skills").first }
