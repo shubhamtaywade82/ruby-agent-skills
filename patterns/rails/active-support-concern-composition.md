@@ -34,6 +34,28 @@ Inspect existing concerns, host classes, callbacks, class methods, dependency ch
 6. Avoid unrelated callbacks or persistence queries.
 7. Test inclusion order and host behavior.
 
+## Example
+
+```ruby
+# One cohesive capability with a documented host contract.
+module Archivable
+  extend ActiveSupport::Concern
+
+  # Host contract: an `archived_at` datetime column.
+  included do
+    scope :archived, -> { where.not(archived_at: nil) }
+    scope :kept, -> { where(archived_at: nil) }
+  end
+
+  def archive!(at: Time.current) = update!(archived_at: at)
+  def archived? = archived_at.present?
+end
+
+class Project < ApplicationRecord
+  include Archivable
+end
+```
+
 ## Failure modes
 
 - god concern;

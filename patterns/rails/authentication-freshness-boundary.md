@@ -32,6 +32,28 @@ Inspect session age, reauthentication mechanisms, sensitive controllers, securit
 6. Audit successful and failed reauthentication.
 7. Test stale-session and fresh-session behavior.
 
+## Example
+
+```ruby
+class SecuritySettingsController < ApplicationController
+  REAUTH_WINDOW = 10.minutes
+
+  before_action :require_recent_authentication, only: %i[update_password update_email disable_mfa]
+
+  private
+
+  # A valid session is not enough for credential changes: the user must have
+  # re-entered their password recently.
+  def require_recent_authentication
+    last = session[:reauthenticated_at] && Time.zone.at(session[:reauthenticated_at])
+    return if last && last > REAUTH_WINDOW.ago
+
+    session[:return_to] = request.fullpath
+    redirect_to new_reauthentication_path
+  end
+end
+```
+
 ## Failure modes
 
 - logged in treated as recently authenticated

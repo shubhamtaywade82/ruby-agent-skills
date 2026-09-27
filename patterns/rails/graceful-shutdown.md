@@ -21,6 +21,28 @@ Changing TERM/QUIT handling, container shutdown, process-manager configuration, 
 6. Exit before the hard deadline.
 7. Test graceful termination and forced termination recovery.
 
+## Example
+
+```ruby
+# config/puma.rb
+workers Integer(ENV.fetch("WEB_CONCURRENCY", 2))
+threads 5, 5
+# Finish in-flight requests before the platform's SIGKILL (terminationGracePeriodSeconds: 30).
+worker_shutdown_timeout 25
+
+# Job side: long jobs checkpoint so an interrupted run resumes instead of restarting.
+class ExportRowsJob < ApplicationJob
+  def perform(export_id)
+    export = Export.find(export_id)
+    export.rows_after(export.cursor).find_each do |row|
+      export.append!(row)
+      export.update!(cursor: row.id) # progress survives SIGTERM + retry
+    end
+    export.complete!
+  end
+end
+```
+
 ## Failure modes
 - shutdown timeout exceeds orchestrator kill timeout
 - PID 1 swallows signals

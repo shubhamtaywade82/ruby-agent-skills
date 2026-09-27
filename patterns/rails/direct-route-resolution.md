@@ -31,6 +31,23 @@ Inspect existing direct/resolve declarations, polymorphic helpers, to_param, mod
 4. Keep mappings deterministic and side-effect free.
 5. Test representative objects and helper output.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  resources :articles
+  resource :basket, only: :show
+
+  # Stable, reviewed generation rules instead of ad-hoc URL strings.
+  direct(:homepage) { "https://www.example.test" }
+  resolve("Basket") { [:basket] } # polymorphic_url(basket) -> /basket, not /baskets/:id
+end
+
+# Tested like any other public contract:
+#   assert_equal "/basket", polymorphic_path(Basket.new)
+#   assert_equal "https://www.example.test", homepage_url
+```
+
 ## Failure modes
 
 - hidden database queries during generation;

@@ -35,6 +35,30 @@ Resolve the Rails version and inspect existing expect, require, permit, unpermit
 5. Test extra, omitted, and malformed fields.
 6. Audit callers when the permitted shape changes.
 
+## Example
+
+```ruby
+class ProjectsController < ApplicationController
+  def update
+    @project = Current.account.projects.find(params[:id])
+    authorize @project
+    if @project.update(project_params)
+      redirect_to @project
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  # Rails 8: params.expect rejects wrong shapes (e.g. a string where a hash is expected) with 400.
+  # account_id, owner_id, and role are never permitted: they come from trusted context.
+  def project_params
+    params.expect(project: [:name, :description, { tag_ids: [] }, { milestones_attributes: [[:id, :title, :due_on, :_destroy]] }])
+  end
+end
+```
+
 ## Failure modes
 
 - permit! as a shortcut

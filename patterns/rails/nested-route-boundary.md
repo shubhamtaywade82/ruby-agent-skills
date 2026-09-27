@@ -33,6 +33,26 @@ Inspect relationship ownership, authorization/tenant rules, existing URLs/helper
 4. Keep nesting at a comprehensible depth.
 5. Test routing and authorization separately.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  resources :projects do
+    # Collection and new/create need the parent; member routes do not.
+    resources :tasks, shallow: true
+  end
+end
+# => project_tasks_path(project)   GET/POST  /projects/:project_id/tasks
+#    task_path(task)               GET/PATCH /tasks/:id
+
+class TasksController < ApplicationController
+  def show
+    # The URL no longer carries project_id, so scope through the actor's projects.
+    @task = Task.where(project: Current.user.projects).find(params[:id])
+  end
+end
+```
+
 ## Failure modes
 
 - deeply nested helper signatures;

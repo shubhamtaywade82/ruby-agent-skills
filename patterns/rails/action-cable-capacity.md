@@ -35,6 +35,27 @@ Inspect active connections, subscriptions, message rate, payload size, Redis thr
 7. Model reconnect bursts.
 8. Validate against process/Redis/network capacity.
 
+## Example
+
+```ruby
+# config/cable.yml sizes the pub/sub backend separately from HTTP, and the
+# server bounds its worker pool; connection counts are measured, not guessed.
+#
+# production:
+#   adapter: redis
+#   url: <%= ENV.fetch("REDIS_CABLE_URL") %>
+#   channel_prefix: myapp_production
+
+Rails.application.configure do
+  config.action_cable.worker_pool_size = Integer(ENV.fetch("CABLE_WORKER_POOL", "4"))
+  config.action_cable.allowed_request_origins = [ENV.fetch("APP_ORIGIN")]
+end
+
+ActiveSupport::Notifications.subscribe("perform_action.action_cable") do |event|
+  StatsD.histogram("cable.action.duration", event.duration, tags: ["channel:#{event.payload[:channel_class]}"])
+end
+```
+
 ## Failure modes
 
 - sizing from HTTP QPS alone;

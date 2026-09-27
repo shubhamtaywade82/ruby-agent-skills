@@ -41,6 +41,38 @@ Inspect tsconfig files, package manager, build and test commands, supported Node
 - exported types that leak internal details;
 - repository-wide strictness changes to accommodate one feature.
 
+## Reference example
+
+Type-checked with `tsc --strict` (plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`).
+
+```ts
+type Shipment =
+  | { status: "pending" }
+  | { status: "shipped"; trackingNumber: string }
+  | { status: "returned"; reason: string };
+
+// Narrowing by the discriminant; `never` makes a new status a compile error here.
+export function describe(shipment: Shipment): string {
+  switch (shipment.status) {
+    case "pending":
+      return "Awaiting dispatch";
+    case "shipped":
+      return `Tracking ${shipment.trackingNumber}`;
+    case "returned":
+      return `Returned: ${shipment.reason}`;
+    default: {
+      const unreachable: never = shipment;
+      return unreachable;
+    }
+  }
+}
+
+// readonly inputs and no `any`: the compiler checks what callers pass.
+export function totalCents(lines: readonly { readonly cents: number }[]): number {
+  return lines.reduce((sum, line) => sum + line.cents, 0);
+}
+```
+
 ## Agent review checklist
 - Are exported contracts explicit?
 - Are unknown and any used deliberately at runtime boundaries?

@@ -20,6 +20,28 @@ Inspect existing skills/components, middleware, controllers, jobs, event consume
 ## Implementation procedure
 Define one policy owner plus explicit adapters at framework boundaries; keep domain code focused on business responsibility.
 
+## Example
+
+```ruby
+# One owner for request correlation: a concern that every controller and job
+# base class includes, instead of each team adding its own request-id code.
+module Correlation
+  extend ActiveSupport::Concern
+
+  included do
+    if self <= ActionController::Base
+      before_action { Current.request_id = request.request_id }
+    else
+      around_perform { |job, block| Current.set(request_id: job.arguments.last.try(:[], :request_id)) { block.call } }
+    end
+  end
+end
+
+class ApplicationController < ActionController::Base
+  include Correlation
+end
+```
+
 ## Failure modes
 Parallel implementations, inconsistent semantics, missing enforcement at alternate entry points.
 

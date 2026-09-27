@@ -33,6 +33,22 @@ Inspect locale tree, key naming conventions, components using translations, inte
 5. Add supported locale entries.
 6. Test key availability and interpolation.
 
+## Example
+
+```yaml
+# Semantic keys, stable across copy edits; interpolation names are part of the contract.
+en:
+  orders:
+    confirmation:
+      title: "Order confirmed"
+      body: "Order %{order_number} will arrive by %{delivery_date}."
+    errors:
+      payment_declined: "Your payment was declined. No money was taken."
+
+# Not: "Order confirmed!": "Order confirmed!"   (English text as the key)
+# Callers: t("orders.confirmation.body", order_number: order.number, delivery_date: l(order.eta))
+```
+
 ## Failure modes
 
 - generic global keys with conflicting semantics;

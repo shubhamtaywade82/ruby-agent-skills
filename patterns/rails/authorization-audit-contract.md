@@ -11,6 +11,23 @@ Security decisions are not explainable or observable, or logs expose sensitive d
 ## Structure
 Record actor, tenant, action, resource type/id, decision, bounded reason code, and correlation identifier as appropriate.
 
+## Example
+
+```ruby
+class AuthorizationEvent < ApplicationRecord
+  # Who, what, which resource, the decision, a bounded reason, and the
+  # correlation id — never tokens, passwords, or request bodies.
+  REASONS = %w[owner admin not_member wrong_tenant revoked].freeze
+  validates :reason, inclusion: { in: REASONS }
+end
+
+AuthorizationEvent.create!(
+  actor_id: current_user.id, tenant_id: current_tenant.id,
+  action: "invoice.refund", resource_type: "Invoice", resource_id: invoice.id,
+  allowed: false, reason: "not_member", request_id: request.request_id
+)
+```
+
 ## Failure modes
 Passwords/tokens in logs, arbitrary policy internals, and unbounded resource data.
 

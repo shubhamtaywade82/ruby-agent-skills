@@ -33,6 +33,35 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# Named, composable predicates reused by queries and in-memory checks.
+class Specification
+  def and(other) = AndSpecification.new(self, other)
+end
+
+class AndSpecification < Specification
+  def initialize(left, right)
+    @left = left
+    @right = right
+  end
+
+  def satisfied_by?(candidate) = @left.satisfied_by?(candidate) && @right.satisfied_by?(candidate)
+end
+
+class ActiveSubscriber < Specification
+  def satisfied_by?(user) = user.subscription&.active?
+end
+
+class EngagedLastMonth < Specification
+  def satisfied_by?(user) = user.last_seen_at && user.last_seen_at > 30.days.ago
+end
+
+eligible = ActiveSubscriber.new.and(EngagedLastMonth.new)
+users.select { |user| eligible.satisfied_by?(user) }
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

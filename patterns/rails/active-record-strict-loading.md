@@ -32,6 +32,23 @@ Inspect query consumers, association access, test helpers, and existing eager-lo
 4. Add tests that fail on prohibited lazy access where practical.
 5. Measure the resulting query count/cost.
 
+## Example
+
+```ruby
+class Order < ApplicationRecord
+  has_many :line_items, strict_loading: true
+end
+
+# config/environments/development.rb and test.rb:
+#   config.active_record.strict_loading_by_default = true
+#   config.active_record.action_on_strict_loading_violation = :raise
+
+orders = Order.includes(:line_items).where(account: account).to_a
+orders.each { |order| order.line_items.sum(&:amount_cents) } # preloaded: fine
+
+Order.first.line_items.to_a # raises ActiveRecord::StrictLoadingViolationError
+```
+
 ## Failure modes
 
 - enabling strict loading globally without migration strategy

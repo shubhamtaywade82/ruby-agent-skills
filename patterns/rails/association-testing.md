@@ -33,6 +33,28 @@ Inspect existing association specs, factories/fixtures, foreign-key constraints,
 4. Add security/tenant cases where relationships cross boundaries.
 5. Add query/loading coverage only where it is contractual.
 
+## Example
+
+```ruby
+class ProjectAssociationsTest < ActiveSupport::TestCase
+  test "destroying a project removes tasks but refuses when invoices exist" do
+    project = projects(:with_tasks)
+    assert_difference -> { Task.count }, -project.tasks.count do
+      perform_enqueued_jobs { project.destroy }
+    end
+
+    billed = projects(:with_invoices)
+    refute billed.destroy
+    assert billed.errors.of_kind?(:base, :"restrict_dependent_destroy.has_many")
+  end
+
+  test "memberships cannot join a team from another tenant" do
+    membership = Membership.new(team: teams(:acme_devs), user: users(:globex_member))
+    refute membership.valid?
+  end
+end
+```
+
 ## Failure modes
 
 - testing only that methods exist

@@ -33,6 +33,40 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# Behaviour that depends on state lives in the state objects, not in case
+# statements scattered across the entity.
+class Order
+  attr_reader :state
+
+  def initialize
+    @state = Pending.new
+  end
+
+  def pay! = @state = @state.pay
+  def ship! = @state = @state.ship
+
+  class Pending
+    def pay = Paid.new
+    def ship = raise(InvalidTransition, "cannot ship an unpaid order")
+  end
+
+  class Paid
+    def pay = raise(InvalidTransition, "already paid")
+    def ship = Shipped.new
+  end
+
+  class Shipped
+    def pay = raise(InvalidTransition, "already paid")
+    def ship = raise(InvalidTransition, "already shipped")
+  end
+
+  InvalidTransition = Class.new(StandardError)
+end
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

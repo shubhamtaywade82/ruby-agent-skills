@@ -11,6 +11,32 @@ Turbo changes browser behavior while server responses accidentally become ambigu
 ## Structure
 Authorize and validate normally; return deliberate status, redirect, frame, or stream responses.
 
+## Example
+
+```ruby
+class CommentsController < ApplicationController
+  def create
+    @post = Current.account.posts.find(params[:post_id])
+    @comment = @post.comments.build(comment_params.merge(author: Current.user))
+    authorize @comment
+
+    if @comment.save
+      respond_to do |format|
+        format.turbo_stream # create.turbo_stream.erb: append + reset form
+        format.html { redirect_to @post, status: :see_other }
+      end
+    else
+      # 422 tells Turbo to render the response (a 200 would be ignored for a form submission).
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def comment_params = params.expect(comment: [:body])
+end
+```
+
 ## Testing
 Cover success, validation failure, unauthorized access, CSRF rejection, and non-JavaScript fallback where required.
 

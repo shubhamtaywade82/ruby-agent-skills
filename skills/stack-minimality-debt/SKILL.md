@@ -39,6 +39,36 @@ Examples:
 - Keeping markers after the underlying shortcut has been removed.
 - Marking every ordinary design decision as debt.
 
+## Reference example
+
+A marker states what was simplified, its ceiling, and the trigger to revisit it. `bin/stack-minimality debt` reports every marker (repository path shown as `/path/to/app`):
+
+```ruby
+# stack-minimality: summed in Ruby over loaded line items; revisit when orders exceed ~500 line items or the total is needed in SQL reports
+def total_cents
+  line_items.sum(&:amount_cents)
+end
+```
+
+```json
+{
+  "schema_version": 1,
+  "repository": "/path/to/app",
+  "markers": [
+    {
+      "file": "app/models/order.rb",
+      "line": 4,
+      "text": "summed in Ruby over loaded line items; revisit when orders exceed ~500 line items or the total is needed in SQL reports",
+      "no_trigger": false
+    }
+  ],
+  "marker_count": 1,
+  "no_trigger_count": 0
+}
+```
+
+A marker whose text has no concrete trigger is reported with `"no_trigger": true` and counted in `no_trigger_count`.
+
 ## Agent review checklist
 - [ ] Ruby, Rails, TypeScript, React, and SQL markers searched.
 - [ ] Generated/vendor output excluded.

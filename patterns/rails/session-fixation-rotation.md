@@ -32,6 +32,27 @@ Inspect pre-login session creation, login transition, reset_session or framework
 6. Verify remember-me behavior does not reintroduce the old session.
 7. Test the transition explicitly.
 
+## Example
+
+```ruby
+class SessionsController < ApplicationController
+  def create
+    user = User.authenticate_by(params.permit(:email_address, :password)) or
+      return redirect_to(new_session_path, alert: "Invalid email address or password.")
+
+    return_to = session[:return_to_after_authenticating] # keep only what is needed
+    reset_session                                         # new session id: attacker's id is discarded
+    session[:user_id] = user.id
+    redirect_to return_to || root_path
+  end
+end
+
+# test: the session cookie value changes across login
+#   get new_session_path; before = cookies["_app_session"]
+#   post session_path, params: { email_address:, password: }
+#   assert_not_equal before, cookies["_app_session"]
+```
+
 ## Failure modes
 
 - session ID reused after login

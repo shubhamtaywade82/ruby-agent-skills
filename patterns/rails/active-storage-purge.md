@@ -35,6 +35,24 @@ Inspect domain deletion semantics, purge jobs, Active Job queues, retention requ
 6. Add reconciliation metrics.
 7. Test deletion failure and retry behavior.
 
+## Example
+
+```ruby
+# Detach: remove the association; the blob and file stay (e.g. still
+# referenced elsewhere or kept for audit).
+user.avatar.detach
+
+# Purge: delete the attachment record, the blob row, and the stored object.
+# Done asynchronously because the storage call can be slow or fail.
+user.avatar.purge_later
+
+class User < ApplicationRecord
+  # dependent: :purge_later is the default for has_one_attached; stated here
+  # because account deletion relies on it.
+  has_one_attached :avatar, dependent: :purge_later
+end
+```
+
 ## Failure modes
 
 - destructive purge before business retention is satisfied;

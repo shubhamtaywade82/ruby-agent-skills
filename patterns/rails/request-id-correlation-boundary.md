@@ -20,6 +20,28 @@ Inspect Rails request ID behavior, log tags, tracing, downstream propagation, an
 ## Implementation procedure
 Reuse the authoritative ID, sanitize external input according to repository policy, attach context consistently, and preserve it through downstream work.
 
+## Example
+
+```ruby
+# Rails' ActionDispatch::RequestId owns the id: it accepts an inbound X-Request-Id only
+# if it is alphanumeric/dash and ≤ 255 chars, otherwise generates one.
+Rails.application.config.log_tags = [:request_id]
+
+class ApplicationController < ActionController::Base
+  before_action { Current.request_id = request.request_id }
+end
+
+# Propagate it explicitly; do not mint a parallel "trace_id".
+class NotifyCustomerJob < ApplicationJob
+  def perform(order_id, request_id: nil)
+    Rails.logger.tagged(request_id) { OrderMailer.shipped(Order.find(order_id)).deliver_now }
+  end
+end
+
+NotifyCustomerJob.perform_later(order.id, request_id: Current.request_id)
+# The request id is a correlation hint, never identity or authorization.
+```
+
 ## Failure modes
 Conflicting IDs, leaked sensitive headers, broken traces, and missing IDs on early failures.
 

@@ -34,6 +34,16 @@ Inspect cache-store limits, value size distribution, TTLs, eviction policy, key 
 6. Set bounded growth expectations.
 7. Add operational signals.
 
+## Example
+
+```bash
+# Before raising TTLs or adding keys, look at what the cache is actually doing.
+redis-cli -u "$REDIS_CACHE_URL" INFO stats   | grep -E "keyspace_(hits|misses)|evicted_keys"
+redis-cli -u "$REDIS_CACHE_URL" INFO memory  | grep -E "used_memory_human|maxmemory_human|maxmemory_policy"
+redis-cli -u "$REDIS_CACHE_URL" --bigkeys    # oversized serialized values
+redis-cli -u "$REDIS_CACHE_URL" --hotkeys    # requires an LFU eviction policy
+```
+
 ## Failure modes
 
 - unbounded namespace growth;

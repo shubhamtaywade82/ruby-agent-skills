@@ -33,6 +33,31 @@ Inspect hashing library, credential model, digest columns, normalization, loggin
 7. Preserve old/new schema compatibility during migration.
 8. Add tests that prove secrets are not exposed.
 
+## Example
+
+```ruby
+class User < ApplicationRecord
+  # bcrypt digest (has_secure_password); the plaintext is never stored or logged.
+  has_secure_password
+  validates :password, length: { minimum: 12 }, allow_nil: true
+end
+
+class ApiToken < ApplicationRecord
+  # Only a SHA-256 digest of the token is stored; the raw token is shown once.
+  def self.issue!(user)
+    raw = SecureRandom.urlsafe_base64(32)
+    create!(user: user, token_digest: Digest::SHA256.hexdigest(raw))
+    raw
+  end
+
+  def self.find_by_token(raw)
+    find_by(token_digest: Digest::SHA256.hexdigest(raw.to_s))
+  end
+end
+
+Rails.application.config.filter_parameters += %i[password token]
+```
+
 ## Failure modes
 
 - plaintext password

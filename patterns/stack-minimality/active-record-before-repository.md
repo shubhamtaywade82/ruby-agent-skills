@@ -20,6 +20,22 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Inspect models, scopes, query objects, adapters, and all callers. Keep ordinary reads and writes in Active Record; extract only a real persistence boundary.
 
+## Example
+
+```ruby
+# Before: a repository that only forwards to Active Record.
+class OrderRepository
+  def find_open_for(customer) = Order.where(customer: customer, status: "open").to_a
+end
+OrderRepository.new.find_open_for(customer)
+
+# After: a named scope on the model that already owns the query.
+class Order < ApplicationRecord
+  scope :open_for, ->(customer) { where(customer: customer, status: "open") }
+end
+Order.open_for(customer)
+```
+
 ## Failure modes
 Pass-through repositories, duplicated Active Record APIs, mock-heavy persistence tests.
 

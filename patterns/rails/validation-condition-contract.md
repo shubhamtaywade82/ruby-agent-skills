@@ -29,6 +29,23 @@ Conditional Validation Contract needs an explicit contract so validation does no
 3. Define nil/blank behavior independently.
 4. Test all branches and boundary transitions.
 
+## Example
+
+```ruby
+class Shipment < ApplicationRecord
+  enum :method, { courier: "courier", pickup: "pickup" }
+
+  validates :address, presence: true, if: :courier?
+  validates :pickup_point_id, presence: true, if: :pickup?
+  validates :tracking_number, presence: true, if: -> { courier? && dispatched_at.present? }
+  validates :notes, length: { maximum: 500 }, allow_blank: true
+end
+
+# test covers each branch:
+#   Shipment.new(method: :pickup).errors_on(:address) is empty
+#   Shipment.new(method: :courier, dispatched_at: Time.current) requires tracking_number
+```
+
 ## Failure modes
 - validation silently disappears because a predicate changed;
 - blank/nil skips more rules than intended;

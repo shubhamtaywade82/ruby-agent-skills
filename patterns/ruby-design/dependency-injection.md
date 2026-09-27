@@ -33,6 +33,29 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# Collaborators are passed in, with production defaults; tests pass fakes.
+class OverdueReminder
+  def initialize(clock: Time, mailer: ReminderMailer)
+    @clock = clock
+    @mailer = mailer
+  end
+
+  def call(invoice)
+    return false unless invoice.due_on < @clock.now.to_date
+
+    @mailer.overdue(invoice).deliver_later
+    true
+  end
+end
+
+# In a test:
+FrozenClock = Struct.new(:now)
+reminder = OverdueReminder.new(clock: FrozenClock.new(Time.utc(2026, 1, 31)), mailer: FakeMailer.new)
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

@@ -11,6 +11,22 @@ An API authenticates a caller but does not consistently authorize resource actio
 ## Structure
 Authenticate, establish tenant/context, resolve authorized resource scope, authorize action, then mutate/read.
 
+## Example
+
+```ruby
+class Api::V1::ProjectsController < Api::BaseController
+  # authenticate -> establish tenant -> scope lookup -> authorize action -> act
+  before_action :authenticate_api_token!
+
+  def update
+    project = current_tenant.projects.find(params[:id]) # 404 outside the tenant
+    authorize! :update, project                          # 403 for a visible but forbidden action
+    project.update!(params.expect(project: [:name]))
+    render json: ProjectSerializer.new(project)
+  end
+end
+```
+
 ## Failure modes
 Bearer token treated as permission, IDOR through direct lookup, inconsistent status/error semantics, and frontend-only permission checks.
 

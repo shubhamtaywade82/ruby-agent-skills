@@ -32,6 +32,18 @@ Inspect authoritative count logic, association mutation paths, cache keys, times
 4. Define repair/reconciliation behavior.
 5. Measure write amplification where material.
 
+## Example
+
+```ruby
+class Comment < ApplicationRecord
+  # comments_count is denormalized; its authoritative source is the rows.
+  belongs_to :post, counter_cache: true, touch: :last_commented_at
+end
+
+# Reconcile after bulk writes or imports that bypass callbacks:
+Post.where(id: affected_post_ids).find_each { |post| Post.reset_counters(post.id, :comments) }
+```
+
 ## Failure modes
 
 - treating counter cache as immutable truth

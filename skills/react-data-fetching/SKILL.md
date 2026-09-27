@@ -41,6 +41,57 @@ Inspect the existing HTTP client, query/cache library, cache-key conventions, au
 - duplicated fetching logic in leaf components;
 - server state placed in global UI context only for reachability.
 
+## Reference example
+
+Type-checked with `tsc --strict` (plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`).
+
+```tsx
+import { useEffect, useState } from "react";
+
+type Order = { id: string; status: "pending" | "paid" };
+type OrderState =
+  | { kind: "loading" }
+  | { kind: "error"; message: string }
+  | { kind: "success"; order: Order };
+
+// Cache identity includes every resource dimension: tenant and order id.
+export const orderKey = (tenantId: string, orderId: string) => ["tenant", tenantId, "order", orderId] as const;
+
+export function useOrder(tenantId: string, orderId: string): OrderState {
+  const [state, setState] = useState<OrderState>({ kind: "loading" });
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setState({ kind: "loading" });
+    fetch(`/api/tenants/${tenantId}/orders/${orderId}`, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return (await response.json()) as Order;
+      })
+      .then((order) => setState({ kind: "success", order }))
+      .catch((error: unknown) => {
+        // A superseded request must not overwrite newer state.
+        if (controller.signal.aborted) return;
+        setState({ kind: "error", message: error instanceof Error ? error.message : "Request failed" });
+      });
+    return () => controller.abort();
+  }, [tenantId, orderId]);
+
+  return state;
+}
+
+// Optimistic update with an explicit rollback path.
+export async function markPaid(
+  current: Order,
+  apply: (order: Order) => void,
+  send: (id: string) => Promise<Response>
+): Promise<void> {
+  apply({ ...current, status: "paid" });
+  const response = await send(current.id).catch(() => undefined);
+  if (!response?.ok) apply(current);
+}
+```
+
 ## Agent review checklist
 - Is server-state ownership separate from local UI state?
 - Do cache keys include every resource-identity dimension?

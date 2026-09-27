@@ -23,6 +23,30 @@ The rule is contextual presentation logic that cannot be represented as a durabl
 5. Handle database constraint violations at the application boundary.
 6. Test duplicate/concurrent writes where relevant.
 
+## Example
+
+```ruby
+class AddExternalReferenceUniqueness < ActiveRecord::Migration[8.0]
+  disable_ddl_transaction!
+
+  def change
+    # The race-safe guarantee: two concurrent inserts cannot both succeed.
+    add_index :orders, [:tenant_id, :external_reference], unique: true, algorithm: :concurrently
+  end
+end
+
+class Order < ApplicationRecord
+  # Friendly message for the common case; the index handles the race.
+  validates :external_reference, uniqueness: { scope: :tenant_id }
+end
+
+begin
+  Order.create!(tenant_id: 1, external_reference: "PO-7")
+rescue ActiveRecord::RecordNotUnique
+  # concurrent duplicate lost the race: report it as a validation error
+end
+```
+
 ## Failure modes
 - relying on model uniqueness validation alone
 - adding a constraint before cleaning violating rows

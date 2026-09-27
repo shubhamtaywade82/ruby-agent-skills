@@ -23,6 +23,24 @@ The job is independent of the transaction or the repository deliberately accepts
 5. Avoid assuming queue and application data share one transaction unless that is an explicit architecture decision.
 6. Test commit and rollback behavior.
 
+## Example
+
+```ruby
+# config/application.rb (Rails 7.2+): enqueue is deferred until the surrounding transaction commits.
+Rails.application.config.active_job.enqueue_after_transaction_commit = true
+
+class Order < ApplicationRecord
+  # Alternative on older versions or for model-owned effects: after_commit.
+  after_create_commit -> { FulfilOrderJob.perform_later(self) }
+end
+
+Order.transaction do
+  order = Order.create!(sku: "BOOK-1")
+  order.line_items.create!(quantity: 1)
+  # If this transaction rolls back, no job is enqueued; if it commits, the job sees both rows.
+end
+```
+
 ## Failure modes
 - job observes uncommitted/missing state
 - enqueue survives a transaction rollback unexpectedly

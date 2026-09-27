@@ -20,6 +20,28 @@ Inspect security/authentication ownership, required telemetry, headers, status c
 ## Implementation procedure
 Define the status, headers, body, downstream skip semantics, and observability for the short-circuit path.
 
+## Example
+
+```ruby
+class MaintenanceModeMiddleware
+  ALLOWED = ["/up", "/ready"].freeze
+
+  def initialize(app) = @app = app
+
+  def call(env)
+    return @app.call(env) unless Flipper.enabled?(:maintenance_mode)
+    return @app.call(env) if ALLOWED.include?(env["PATH_INFO"])
+
+    # Short-circuit: downstream (auth, controllers, jobs) does not run.
+    # Inserted after ActionDispatch::RequestId so the 503 still carries X-Request-Id.
+    [503, { "content-type" => "text/plain", "retry-after" => "120", "cache-control" => "no-store" },
+     ["Down for maintenance"]]
+  end
+end
+
+Rails.application.config.middleware.insert_after ActionDispatch::RequestId, MaintenanceModeMiddleware
+```
+
 ## Failure modes
 False-success responses, bypassed controls, missing headers, and inconsistent telemetry.
 

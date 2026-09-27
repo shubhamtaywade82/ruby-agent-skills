@@ -30,6 +30,19 @@ Validation Bypass Audit needs an explicit contract so validation does not drift 
 5. Document intentional bypasses.
 6. Test bypass paths separately.
 
+## Example
+
+```bash
+# List every writer that skips validations/callbacks, then justify or fix each one.
+git grep -nE '\b(update_all|update_column|update_columns|insert_all|upsert_all|delete_all|save\(validate: false\)|increment!|toggle!)\b' -- app lib db/seeds.rb |
+  grep -v '^test/'
+
+# Each hit gets one of:
+#  - database constraint already guarantees the invariant (cite it), or
+#  - comment "# bypasses validation: <why safe>", or
+#  - replaced with a validated write.
+```
+
 ## Failure modes
 - bulk writes create invalid data;
 - only web requests are protected;

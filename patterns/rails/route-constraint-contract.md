@@ -33,6 +33,24 @@ Inspect request methods used by constraints, expected value types, route order, 
 4. Ensure constraint values match request API return types.
 5. Test matching and non-matching requests.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  # Segment constraint: cheap regex, part of dispatch.
+  get "orders/:number", to: "orders#show", constraints: { number: /ORD-\d{8}/ }
+
+  # Request constraint: deterministic, no DB lookups, no authorization.
+  constraints(subdomain: "api") do
+    namespace :api, path: "" do
+      resources :orders, only: :index
+    end
+  end
+end
+# Wrong: constraints(->(req) { User.find_by(id: req.session[:user_id])&.admin? })
+# — a DB query per routing attempt, and authorization hidden in the router.
+```
+
 ## Failure modes
 
 - constraint used as authorization;

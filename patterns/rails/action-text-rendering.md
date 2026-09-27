@@ -33,6 +33,25 @@ Inspect Action Text layouts, blob partials, attachable partials, sanitizer behav
 5. Treat to_plain_text as a separate non-HTML-safe representation.
 6. Test HTML and plain-text outputs.
 
+## Example
+
+```erb
+<%# app/views/articles/show.html.erb %>
+<article>
+  <h1><%= @article.title %></h1>
+  <%# Rendering the RichText object keeps Action Text's sanitizer and
+      attachable partials; never render body.to_s with raw/html_safe. %>
+  <%= @article.body %>
+</article>
+
+<%# app/views/mentions/_mention.html.erb (attachable partial) %>
+<% if mention.user %>
+  <span class="mention">@<%= mention.user.handle %></span>
+<% else %>
+  <span class="mention mention--missing">@unknown</span>
+<% end %>
+```
+
 ## Failure modes
 
 - raw HTML-safe bypass;

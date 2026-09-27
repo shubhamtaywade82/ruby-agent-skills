@@ -24,6 +24,17 @@ Inspect existing change classifications, deployment approvals, migration policie
 ## Implementation procedure
 1. Classify code/data/contract/security/runtime impact. 2. Determine reversibility. 3. Estimate blast radius. 4. Identify overlap with old/new processes. 5. Select proportional gates and exposure. 6. Record residual risk and required approval.
 
+## Example
+
+```markdown
+| Risk class | Examples                                                       | Required gates                                   |
+|------------|----------------------------------------------------------------|--------------------------------------------------|
+| Low        | copy change, CSS, log field, dependency patch with no API use  | CI green                                         |
+| Medium     | new endpoint behind flag, additive migration, new job          | CI + staging smoke + flag default off            |
+| High       | payments/auth code, data backfill, column removal, Rails upgrade| CI + staging soak + progressive exposure + owner sign-off + rollback plan |
+| Irreversible| data deletion, external side effects with no undo             | High gates + dry run output reviewed + backup verified |
+```
+
 ## Failure modes
 - one gate set for all changes;
 - ignoring irreversibility;

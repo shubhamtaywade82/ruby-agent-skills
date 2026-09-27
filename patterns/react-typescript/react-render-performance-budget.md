@@ -21,6 +21,26 @@ Inspect profiler traces, list sizes, state ownership, and stable identities.
 ## Implementation procedure
 Identify the hot path, set a measurable budget, and fix ownership or identity issues before adding optimization.
 
+## Example
+
+```tsx
+import { Profiler, type ProfilerOnRenderCallback, type ReactNode } from "react";
+
+// Budget: the orders table must render in under 16 ms at 500 rows. The
+// Profiler reports actual render durations so regressions are measurable.
+const BUDGET_MS = 16;
+
+const report: ProfilerOnRenderCallback = (id, phase, actualDuration) => {
+  if (actualDuration > BUDGET_MS) {
+    console.warn(`${id} ${phase} render took ${actualDuration.toFixed(1)} ms (budget ${BUDGET_MS} ms)`);
+  }
+};
+
+export function Measured({ children }: { children: ReactNode }) {
+  return <Profiler id="OrdersTable" onRender={report}>{children}</Profiler>;
+}
+```
+
 ## Failure modes
 Premature memoization, arbitrary thresholds, and performance claims from intuition.
 

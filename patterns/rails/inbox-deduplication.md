@@ -33,6 +33,25 @@ Inspect message identity, consumer database, unique constraints, transaction sco
 7. Retain enough history for the supported replay window.
 8. Use idempotent-job for any subsequent Active Job execution.
 
+## Example
+
+```ruby
+# Unique index on processed_messages.message_id makes the insert the dedup decision.
+class PaymentCapturedConsumer
+  def call(envelope)
+    ActiveRecord::Base.transaction do
+      ProcessedMessage.create!(message_id: envelope.fetch("id"), consumer: self.class.name)
+      order = Order.lock.find(envelope.dig("payload", "order_id"))
+      order.update!(status: :paid)
+    end
+    :ack
+  rescue ActiveRecord::RecordNotUnique
+    :ack # already processed in a committed transaction; acknowledge the duplicate
+  end
+end
+# add_index :processed_messages, %i[consumer message_id], unique: true
+```
+
 ## Failure modes
 
 - process-local deduplication

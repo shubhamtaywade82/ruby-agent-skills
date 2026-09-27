@@ -20,6 +20,22 @@ Inspect ingress/load balancer topology, trusted proxy configuration, header norm
 ## Implementation procedure
 Define trusted hops and authoritative headers, then consume only normalized values after the trust boundary.
 
+## Example
+
+```ruby
+# config/environments/production.rb
+Rails.application.configure do
+  # Only the load balancer's addresses may set X-Forwarded-For / -Proto.
+  config.action_dispatch.trusted_proxies = ActionDispatch::RemoteIp::TRUSTED_PROXIES + [IPAddr.new("10.20.0.0/16")]
+  config.assume_ssl = true # TLS terminates at the load balancer
+  config.force_ssl = true
+  config.hosts = ["shop.example.com"] # rejects forged Host headers (DNS rebinding, cache poisoning)
+end
+
+# request.remote_ip now ignores X-Forwarded-For entries appended by untrusted clients;
+# rate limits and audit logs use request.remote_ip, never the raw header.
+```
+
 ## Failure modes
 Host/IP spoofing, insecure redirects, incorrect audit identity, and rate-limit bypass.
 

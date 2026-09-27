@@ -33,6 +33,29 @@ Inspect failure boundaries, test framework, dependency seams, queue/job adapters
 7. Verify recovery and convergence.
 8. Record evidence and remaining assumptions.
 
+## Example
+
+```ruby
+require "test_helper"
+
+class RecommendationsOutageTest < ActionDispatch::IntegrationTest
+  test "product page renders when recommendations time out" do
+    stub_request(:get, %r{recommendations\.internal/}).to_timeout
+    get product_path(products(:book))
+    assert_response :success
+    assert_select "[data-test=recommendations]", count: 0
+  end
+
+  test "checkout fails closed when payments return 503" do
+    stub_request(:post, %r{payments\.example\.com/charges}).to_return(status: 503)
+    assert_no_difference -> { Order.paid.count } do
+      post checkout_path, params: { cart_id: carts(:full).id }
+    end
+    assert_response :service_unavailable
+  end
+end
+```
+
 ## Failure modes
 
 - fault injection without a stop condition

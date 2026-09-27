@@ -46,6 +46,25 @@ database connection budget
 
 Treat the inequality as a capacity model, not a promise that every thread always owns a connection.
 
+## Example
+
+```ruby
+# Aggregate demand across every process, not one pool at a time:
+web_processes = 2 * 4        # 2 servers x WEB_CONCURRENCY 4
+web_threads = 5              # RAILS_MAX_THREADS
+job_processes = 3
+job_threads = 10
+headroom = 10                # migrations, console, cron
+
+demand = (web_processes * web_threads) + (job_processes * job_threads) + headroom # => 80
+postgres_max_connections = 100
+puts "#{demand} of #{postgres_max_connections} connections"
+
+# database.yml: pool must be >= the threads of the process using it.
+#   production:
+#     pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+```
+
 ## Failure modes
 
 - increasing pool until the database saturates

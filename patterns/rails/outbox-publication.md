@@ -33,6 +33,34 @@ Inspect the authoritative database, transaction boundaries, event schema, publis
 7. Retain enough state for replay/reconciliation.
 8. Make consumers idempotent.
 
+## Example
+
+```ruby
+class PlaceOrder
+  def call(account:, params:)
+    Order.transaction do
+      order = account.orders.create!(params)
+      # Same transaction as the state change: both commit or neither does.
+      OutboxMessage.create!(
+        message_id: SecureRandom.uuid, topic: "order.placed",
+        payload: { order_id: order.id, total_cents: order.total_cents }
+      )
+      order
+    end
+  end
+end
+
+# Relay: publishes committed rows; at-least-once, so consumers deduplicate by message_id.
+class RelayOutboxJob < ApplicationJob
+  def perform
+    OutboxMessage.where(published_at: nil).order(:id).limit(500).lock("FOR UPDATE SKIP LOCKED").each do |message|
+      Broker.publish(message.topic, message.payload, message_id: message.message_id)
+      message.update!(published_at: Time.current)
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - enqueueing/publishing only after commit with no durable handoff

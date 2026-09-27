@@ -33,6 +33,31 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# One entry-point convention shared by application operations.
+class ApplicationService
+  def self.call(...)
+    new(...).call
+  end
+end
+
+class Accounts::Close < ApplicationService
+  def initialize(account, closed_by:)
+    @account = account
+    @closed_by = closed_by
+  end
+
+  def call
+    @account.update!(closed_at: Time.current, closed_by: @closed_by)
+    @account
+  end
+end
+
+Accounts::Close.call(account, closed_by: current_user)
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

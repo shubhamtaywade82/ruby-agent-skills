@@ -22,6 +22,23 @@ Releasing Rails applications behind rolling or restart-based process management.
 7. Contract old schema in a later release.
 8. Define rollback behavior.
 
+## Example
+
+```markdown
+## Release plan: rename `orders.state` → `orders.status`
+
+| Deploy | Schema                                | Web/worker code                               | Old version still safe? |
+|--------|---------------------------------------|-----------------------------------------------|-------------------------|
+| 1      | add `status` (nullable)               | writes both, reads `state`                    | yes — ignores `status`  |
+| 1b     | backfill `status` in batches          | —                                             | yes                     |
+| 2      | `status` NOT NULL (validated check)   | reads `status`, writes both; `ignored_columns` not yet | yes — `state` still written |
+| 3      | —                                     | stops writing `state`; `ignored_columns = ["state"]` | yes — deploy 2 reads `status` |
+| 4      | drop `state`                          | —                                             | yes — nothing references it |
+
+Queued jobs carry `order_id` only, so any worker version can process them. Puma phased restart;
+Solid Queue workers drain with a 25 s shutdown timeout.
+```
+
 ## Failure modes
 - new code requires unexpanded schema
 - old workers cannot deserialize new job payloads

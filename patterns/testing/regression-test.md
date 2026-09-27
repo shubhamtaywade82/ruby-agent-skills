@@ -33,6 +33,22 @@ Find the narrowest existing test boundary that reproduces the failure and follow
 5. Verify the regression test passes.
 6. Run affected regression checks.
 
+## Example
+
+```ruby
+# Regression for #1482: a discount code applied twice reduced the total twice.
+class DiscountRegressionTest < ActiveSupport::TestCase
+  test "applying the same code twice discounts once" do
+    order = orders(:cart_with_100_dollars)
+
+    order.apply_discount!("SAVE10")
+    order.apply_discount!("SAVE10")
+
+    assert_equal 90_00, order.reload.total_cents
+  end
+end
+```
+
 ## Failure modes
 
 - test only asserts the new implementation detail

@@ -35,6 +35,37 @@ Inspect authentication helpers, request/system test conventions, factories/fixtu
 9. Cover alternate job/realtime paths.
 10. Keep tests deterministic and secret-safe.
 
+## Example
+
+```ruby
+class SessionsTest < ActionDispatch::IntegrationTest
+  test "login rotates the session id" do
+    get new_session_path
+    pre_login_id = session.id
+
+    post session_path, params: { email: users(:sam).email, password: "secret-password" }
+
+    assert_redirected_to root_path
+    refute_equal pre_login_id, session.id
+  end
+
+  test "expired password reset token is rejected" do
+    token = users(:sam).generate_token_for(:password_reset)
+    travel 16.minutes do
+      patch password_path(token), params: { password: "new-password-123" }
+    end
+    assert_response :unprocessable_content
+  end
+
+  test "logout revokes the server-side session" do
+    sign_in users(:sam)
+    session_record = Session.last
+    delete session_path
+    assert session_record.reload.revoked_at
+  end
+end
+```
+
 ## Failure modes
 
 - only tests successful login

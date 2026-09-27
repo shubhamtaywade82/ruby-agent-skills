@@ -32,6 +32,28 @@ Inspect locale formats, supported locale differences, count contracts, timezone 
 5. Keep timezone separate from locale.
 6. Test representative grammar/format differences.
 
+## Example
+
+```ruby
+# config/locales/en.yml
+#   en:
+#     cart:
+#       items:
+#         zero: "Your cart is empty"
+#         one: "%{count} item"
+#         other: "%{count} items"
+
+I18n.t("cart.items", count: 0) # => "Your cart is empty"
+I18n.t("cart.items", count: 1) # => "1 item"
+I18n.t("cart.items", count: 3) # => "3 items"
+
+# Locale rules own separators, symbols, and date order.
+ActiveSupport::NumberHelper.number_to_currency(1_234_567.5, locale: :en) # => "$1,234,567.50"
+I18n.l(Date.new(2026, 3, 9), format: :long, locale: :en)                  # => "March 09, 2026"
+
+# Wrong: "#{count} item#{'s' unless count == 1}" hard-codes English grammar.
+```
+
 ## Failure modes
 
 - count == 1 in application code;

@@ -20,6 +20,21 @@ Inspect gemspec, Gemfile.lock, runtime requirements, engine dependencies, and su
 ## Implementation procedure
 Declare accurate runtime constraints and test the supported matrix where required.
 
+## Example
+
+```ruby
+# reports_engine.gemspec: declare what is actually tested in CI.
+Gem::Specification.new do |spec|
+  spec.name = "reports_engine"
+  spec.version = "1.4.0"
+  spec.summary = "Reporting engine"
+  spec.authors = ["Platform team"]
+  spec.files = Dir["{app,config,db,lib}/**/*", "README.md"]
+  spec.required_ruby_version = ">= 3.2"
+  spec.add_dependency "rails", ">= 7.1", "< 8.2" # CI matrix: 7.1, 7.2, 8.0, 8.1
+end
+```
+
 ## Failure modes
 Dependency resolution failures, incompatible Rails APIs, and transitive conflicts.
 

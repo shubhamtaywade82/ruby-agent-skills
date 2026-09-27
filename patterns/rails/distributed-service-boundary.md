@@ -33,6 +33,23 @@ Inspect service deployment topology, database ownership, API/message contracts, 
 7. Define old/new compatibility for rolling deployment.
 8. Test dependency failure and contract compatibility.
 
+## Example
+
+```ruby
+# Calling another service: explicit owner, timeout, idempotency key, and a
+# defined behaviour when the call's outcome is unknown.
+class Fulfillment::Client
+  def ship(order)
+    response = @http.post("/v1/shipments", { order_id: order.id, items: order.skus },
+                          "Idempotency-Key" => "ship-#{order.id}", timeout: 3)
+    order.update!(shipment_id: response.fetch("id"), status: "shipping")
+  rescue Faraday::TimeoutError
+    # Unknown outcome: do not retry blindly; reconcile via GET /v1/shipments?order_id=
+    ReconcileShipmentJob.set(wait: 1.minute).perform_later(order.id)
+  end
+end
+```
+
 ## Failure modes
 
 - shared database creating hidden ownership

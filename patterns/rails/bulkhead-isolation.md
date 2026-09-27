@@ -32,6 +32,30 @@ Inspect resource pools, worker topology, traffic classes, dependency domains, CP
 6. Test one class exhausting capacity while another remains functional.
 7. Revisit capacity fragmentation from measured utilization.
 
+## Example
+
+```ruby
+# config/queue.yml (Solid Queue): critical work gets its own workers, so a
+# backlog of slow report jobs cannot starve payments.
+#
+# production:
+#   workers:
+#     - queues: [payments]
+#       threads: 5
+#       processes: 2
+#     - queues: [reports, exports]
+#       threads: 2
+#       processes: 1
+
+class ChargeJob < ApplicationJob
+  queue_as :payments
+end
+
+class MonthlyReportJob < ApplicationJob
+  queue_as :reports
+end
+```
+
 ## Failure modes
 
 - no real isolation

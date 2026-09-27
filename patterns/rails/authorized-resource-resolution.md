@@ -20,6 +20,22 @@ Inspect lookup queries, scopes, tenant foreign keys, policy scopes, and error ma
 ## Implementation procedure
 Resolve through an authorized scope where practical before applying sensitive actions.
 
+## Example
+
+```ruby
+class DocumentsController < ApplicationController
+  def show
+    # Resolve through the authorized scope: an id from another tenant is
+    # simply not found, before any record is loaded or mutated.
+    @document = policy_scope(Document).find(params[:id])
+    authorize @document
+  end
+
+  # Not: Document.find(params[:id]) followed by an ownership check, which
+  # loads cross-tenant rows and distinguishes "exists" from "not found".
+end
+```
+
 ## Failure modes
 IDOR, cross-tenant enumeration, inconsistent 404/403 behavior.
 

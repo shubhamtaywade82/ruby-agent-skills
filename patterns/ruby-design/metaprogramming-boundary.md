@@ -38,6 +38,31 @@ Identify the dynamic entry point, generated names, caller set, visibility, test 
 7. test generated and unsupported cases
 8. provide an explicit alternative when practical
 
+## Example
+
+```ruby
+# Dynamic method generation from a closed, reviewed list: searchable by name,
+# no user input reaches define_method or public_send.
+class FeatureFlags
+  FLAGS = %i[new_checkout bulk_export beta_dashboard].freeze
+
+  def initialize(enabled)
+    @enabled = enabled.to_set
+  end
+
+  FLAGS.each do |flag|
+    define_method(:"#{flag}?") { @enabled.include?(flag) }
+  end
+
+  def enabled?(name)
+    flag = FLAGS.find { |candidate| candidate.to_s == name.to_s }
+    raise ArgumentError, "unknown flag: #{name}" unless flag
+
+    public_send(:"#{flag}?")
+  end
+end
+```
+
 ## Failure modes
 
 - unrestricted send or method_missing

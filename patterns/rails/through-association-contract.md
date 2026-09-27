@@ -32,6 +32,27 @@ Inspect source association, join model, target association, validations, uniquen
 4. Test creation/removal/assignment semantics.
 5. Verify that deleting join records does not accidentally imply deleting targets.
 
+## Example
+
+```ruby
+class Project < ApplicationRecord
+  has_many :memberships, dependent: :destroy        # the join model is the contract
+  has_many :members, through: :memberships, source: :user
+end
+
+class Membership < ApplicationRecord
+  belongs_to :project
+  belongs_to :user
+  validates :role, inclusion: { in: %w[viewer editor admin] }
+  validates :user_id, uniqueness: { scope: :project_id } # + unique index [project_id, user_id]
+end
+
+# Adding through the join model makes role explicit:
+project.memberships.create!(user:, role: "editor")
+# Removing a member deletes the Membership row, never the User:
+project.memberships.find_by!(user:).destroy!
+```
+
 ## Failure modes
 
 - HABTM for a behavior-rich join

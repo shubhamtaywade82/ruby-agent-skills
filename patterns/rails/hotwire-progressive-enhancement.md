@@ -11,6 +11,24 @@ The application only works when Turbo or Stimulus executes successfully.
 ## Structure
 Preserve meaningful HTML forms, links, statuses, errors, and server authorization independently of client enhancements.
 
+## Example
+
+```erb
+<%# A plain form and link: work without JavaScript, enhanced by Turbo when present. %>
+<%= turbo_frame_tag dom_id(@comment, :edit) do %>
+  <%= form_with model: @comment do |form| %>
+    <% if @comment.errors.any? %>
+      <div role="alert"><%= @comment.errors.full_messages.to_sentence %></div>
+    <% end %>
+    <%= form.label :body %>
+    <%= form.text_area :body, required: true %>
+    <%= form.submit "Save" %>
+  <% end %>
+  <%= link_to "Cancel", @comment.post %>
+<% end %>
+<%# Controller: invalid -> render :edit, status: :unprocessable_entity (works for both HTML and Turbo). %>
+```
+
 ## Testing
 Verify direct HTTP/HTML behavior for critical workflows in addition to enhanced behavior.
 ## Do not use when

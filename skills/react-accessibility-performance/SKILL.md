@@ -40,6 +40,41 @@ Inspect semantic HTML, focus utilities, design-system primitives, profiler evide
 - virtualization that breaks interaction semantics;
 - performance claims without evidence.
 
+## Reference example
+
+Type-checked with `tsc --strict` (plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`).
+
+```tsx
+import { useDeferredValue, useId, useState } from "react";
+
+// Labeled input, announced result count, and keyboard-reachable controls.
+// useDeferredValue keeps typing responsive for a list measured to be slow;
+// add it after profiling, not by default.
+export function ProductFilter({ products }: { products: readonly string[] }) {
+  const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
+  const inputId = useId();
+  const matches = products.filter((name) => name.toLowerCase().includes(deferredQuery.toLowerCase()));
+
+  return (
+    <div>
+      <label htmlFor={inputId}>Filter products</label>
+      <input id={inputId} value={query} onChange={(event) => setQuery(event.target.value)} />
+      <p role="status" aria-live="polite">
+        {matches.length} {matches.length === 1 ? "result" : "results"}
+      </p>
+      <ul>
+        {matches.map((name) => (
+          <li key={name}>
+            <button type="button">{name}</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
 ## Agent review checklist
 - Are native semantics preferred?
 - Are keyboard and focus transitions explicit?

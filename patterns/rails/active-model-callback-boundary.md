@@ -32,6 +32,33 @@ Inspect callback declarations, lifecycle events, side effects, callers, error ha
 5. Prefer explicit services for external side effects.
 6. Test callback order and failure semantics.
 
+## Example
+
+```ruby
+class Signup
+  include ActiveModel::API
+  extend ActiveModel::Callbacks
+
+  attr_accessor :email
+
+  define_model_callbacks :normalize
+
+  # Intrinsic, local normalization is a fine callback...
+  before_normalize { self.email = email.to_s.strip.downcase }
+
+  def normalize!
+    run_callbacks(:normalize) { self }
+  end
+
+  # ...but creating accounts and sending mail is an explicit workflow step,
+  # not an after_* callback.
+  def complete!
+    normalize!
+    Accounts::Create.call(email: email).tap { |account| WelcomeMailer.welcome(account).deliver_later }
+  end
+end
+```
+
 ## Failure modes
 
 - callback chain as hidden workflow;

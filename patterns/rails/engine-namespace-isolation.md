@@ -20,6 +20,32 @@ Inspect isolate_namespace, constant paths, route helpers, model naming, and help
 ## Implementation procedure
 Use namespace isolation where ownership requires it and verify file, constant, route, and table contracts.
 
+## Example
+
+```ruby
+# lib/billing/engine.rb
+module Billing
+  class Engine < ::Rails::Engine
+    # Namespaces models/controllers/helpers/routes and prefixes tables
+    # (Billing::Invoice -> billing_invoices). Isolation is not authorization.
+    isolate_namespace Billing
+  end
+end
+
+# app/models/billing/invoice.rb
+module Billing
+  class Invoice < ApplicationRecord # Billing::ApplicationRecord
+  end
+end
+
+# config/routes.rb (engine)
+Billing::Engine.routes.draw do
+  resources :invoices, only: %i[index show]
+end
+
+# Host: main_app.root_path vs billing.invoices_path stay unambiguous.
+```
+
 ## Failure modes
 Constant collisions, helper leakage, route collisions, and misleading model/table names.
 

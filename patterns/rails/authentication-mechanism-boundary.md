@@ -35,6 +35,38 @@ Inspect Rails/Ruby versions, authentication gems, models, concerns, controllers,
 9. Reuse existing framework boundaries instead of duplicating them.
 10. Add regression coverage for the mechanism actually used.
 
+## Example
+
+```ruby
+# One place decides who the caller is, for every surface; controllers only
+# call require_authentication.
+module Authentication
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :require_authentication
+    helper_method :authenticated?
+  end
+
+  private
+
+  def authenticated? = resume_session.present?
+
+  def require_authentication
+    resume_session || request_authentication
+  end
+
+  def resume_session
+    Current.session ||= Session.active.find_by(id: cookies.signed[:session_id])
+  end
+
+  def request_authentication
+    session[:return_to_after_authenticating] = request.url
+    redirect_to new_session_path
+  end
+end
+```
+
 ## Failure modes
 
 - parallel authentication systems

@@ -34,6 +34,30 @@ Inspect the model, callbacks, associations, validations, services, policies, and
 5. Move external I/O to an explicit adapter/integration boundary.
 6. Add regression tests around the public consumer.
 
+## Example
+
+```ruby
+class Subscription < ApplicationRecord
+  belongs_to :account
+
+  # Behaviour that belongs to the record: its own state and rules.
+  def active? = canceled_at.nil? && current_period_end.future?
+
+  def cancel!(at: Time.current)
+    update!(canceled_at: at)
+  end
+end
+
+# Cross-aggregate workflow with an external API lives outside the model:
+class Subscriptions::Cancel
+  def self.call(subscription)
+    BillingProvider.cancel(subscription.provider_id)
+    subscription.cancel!
+    AccountMailer.subscription_canceled(subscription.account).deliver_later
+  end
+end
+```
+
 ## Failure modes
 
 - model as service container

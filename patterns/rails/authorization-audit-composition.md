@@ -20,6 +20,23 @@ Inspect audit events, actor identity, resource/action context, redaction policy,
 ## Implementation procedure
 Emit audit evidence at the authoritative decision boundary with sufficient context and without secrets.
 
+## Example
+
+```ruby
+# Every surface emits the same decision event from the authoritative policy
+# call, so web, API, job, and console decisions can be correlated.
+module AuthorizationAudit
+  def self.decide(actor:, action:, record:, surface:)
+    allowed = Policy.for(record).new(actor, record).public_send(:"#{action}?")
+    Rails.event.notify("authorization.decision", actor_id: actor&.id, action:, resource: "#{record.class.name}##{record.id}",
+                                                 allowed:, surface:, request_id: Current.request_id)
+    allowed
+  end
+end
+
+AuthorizationAudit.decide(actor: current_user, action: :destroy, record: project, surface: :web)
+```
+
 ## Failure modes
 Missing audit trails, duplicated events, sensitive payload leakage, ambiguous actor identity.
 

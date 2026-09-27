@@ -11,6 +11,25 @@ Morphing unexpectedly resets inputs, dialogs, or Stimulus state.
 ## Structure
 Define stable IDs and explicit boundaries for state that must survive refresh.
 
+## Example
+
+```erb
+<%# layouts/application.html.erb %>
+<%= turbo_refreshes_with method: :morph, scroll: :preserve %>
+
+<%# Stable ids let morphing match elements instead of replacing them. %>
+<ul id="tasks">
+  <% @tasks.each do |task| %>
+    <li id="<%= dom_id(task) %>"><%= task.title %></li>
+  <% end %>
+</ul>
+
+<%# Client state that must survive a refresh is excluded from morphing. %>
+<div id="draft-comment" data-turbo-permanent>
+  <textarea name="draft"></textarea>
+</div>
+```
+
 ## Testing
 Assert preservation of focused/input/client state that the feature contract requires.
 

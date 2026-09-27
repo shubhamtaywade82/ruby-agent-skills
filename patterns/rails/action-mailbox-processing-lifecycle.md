@@ -36,6 +36,29 @@ Inspect mailbox callbacks, domain services, transaction boundaries, rescue handl
 7. Use bounce/reject for business-invalid mail and failed/retryable handling for transient defects.
 8. Emit lifecycle telemetry.
 
+## Example
+
+```ruby
+class OrdersMailbox < ApplicationMailbox
+  # Cheap, deterministic prerequisites only.
+  before_processing :ensure_sender_is_customer
+
+  # The mailbox orchestrates; domain rules live in the importer, and slow
+  # follow-up work goes to a job after the record is committed.
+  def process
+    order = Orders::FromEmail.new(customer: @customer, mail: mail).call
+    OrderConfirmationJob.perform_later(order)
+  end
+
+  private
+
+  def ensure_sender_is_customer
+    @customer = Customer.find_by(email: mail.from&.first)
+    bounce_with(OrdersMailer.unknown_customer(inbound_email)) unless @customer
+  end
+end
+```
+
 ## Failure modes
 
 - broad rescue marks programmer errors as success;

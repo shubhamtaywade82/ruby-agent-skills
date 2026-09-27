@@ -36,6 +36,24 @@ Inspect models/domain services, all write paths, transactions, callbacks, jobs, 
 6. Test each mutation path.
 7. Observe invalidation lag/failure where operationally relevant.
 
+## Example
+
+```ruby
+class Price < ApplicationRecord
+  belongs_to :product, touch: true # the authoritative change bumps product.updated_at
+end
+
+class Product < ApplicationRecord
+  has_many :prices
+
+  # Keyed on the record version, so every write path that changes prices
+  # (admin, import, API) invalidates it without remembering to delete keys.
+  def price_table
+    Rails.cache.fetch([self, "price_table"]) { prices.order(:currency).pluck(:currency, :amount_cents) }
+  end
+end
+```
+
 ## Failure modes
 
 - controller-only invalidation;

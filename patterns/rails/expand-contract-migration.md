@@ -24,6 +24,42 @@ The database change is provably atomic and compatible with every application ver
 6. Remove old compatibility code.
 7. Contract the schema in a later migration.
 
+## Example
+
+```ruby
+# Release 1 (expand): add nullable column; code writes both columns.
+class AddEmailAddressToUsers < ActiveRecord::Migration[8.0]
+  def change
+    add_column :users, :email_address, :string
+  end
+end
+
+# Release 1 (backfill, bounded and rerunnable):
+class BackfillUserEmailAddress < ActiveRecord::Migration[8.0]
+  disable_ddl_transaction!
+
+  def up
+    User.unscoped.where(email_address: nil).in_batches(of: 5_000) do |batch|
+      batch.update_all("email_address = email")
+    end
+  end
+
+  def down = nil
+end
+
+# Release 2 (cutover): code reads email_address only; ignore the old column.
+class User < ApplicationRecord
+  self.ignored_columns += ["email"]
+end
+
+# Release 3 (contract): remove it once no running version references it.
+class RemoveEmailFromUsers < ActiveRecord::Migration[8.0]
+  def change
+    remove_column :users, :email, :string
+  end
+end
+```
+
 ## Failure modes
 - removing a column before all old processes stop reading it
 - making a new column non-null before backfill

@@ -20,6 +20,21 @@ Changing environment variables, Rails credentials, container build/runtime confi
 5. Verify non-secret defaults and allowed ranges.
 6. Test boot with missing required configuration.
 
+## Example
+
+```ruby
+# config/initializers/00_required_config.rb — fail fast at boot, never print values.
+REQUIRED_ENV = %w[DATABASE_URL REDIS_URL APP_HOST].freeze
+REQUIRED_CREDENTIALS = [%i[payment_gateway api_key], %i[smtp password]].freeze
+
+if Rails.env.production?
+  missing = REQUIRED_ENV.reject { ENV[_1].present? }
+  missing += REQUIRED_CREDENTIALS.reject { Rails.application.credentials.dig(*_1).present? }.map { _1.join(".") }
+  raise "Missing required configuration: #{missing.join(', ')}" if missing.any?
+end
+# Values come from the runtime environment (Kamal secrets / k8s Secret), never the image.
+```
+
 ## Failure modes
 - secret values printed in CI/logs
 - runtime secrets baked into container layers

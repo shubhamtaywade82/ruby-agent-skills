@@ -39,6 +39,43 @@ Inspect routes, controller conventions, serializers/views, authentication/author
 8. add request-level coverage
 9. inspect generated helpers and route ordering
 
+## Example
+
+```ruby
+# config/routes.rb
+Rails.application.routes.draw do
+  resources :articles, only: %i[index show new create edit update destroy]
+end
+
+class ArticlesController < ApplicationController
+  before_action :set_article, only: %i[show edit update destroy]
+
+  def index = @articles = Current.account.articles.order(published_at: :desc)
+  def show; end
+  def new = @article = Current.account.articles.build
+  def edit; end
+
+  def create
+    @article = Current.account.articles.build(article_params)
+    @article.save ? redirect_to(@article) : render(:new, status: :unprocessable_entity)
+  end
+
+  def update
+    @article.update(article_params) ? redirect_to(@article) : render(:edit, status: :unprocessable_entity)
+  end
+
+  def destroy
+    @article.destroy!
+    redirect_to articles_path, status: :see_other
+  end
+
+  private
+
+  def set_article = @article = Current.account.articles.find(params[:id])
+  def article_params = params.expect(article: %i[title body])
+end
+```
+
 ## Failure modes
 
 - custom routes that duplicate REST resources

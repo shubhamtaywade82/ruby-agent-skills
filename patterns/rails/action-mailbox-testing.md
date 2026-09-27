@@ -36,6 +36,30 @@ Inspect ActionMailbox::TestCase conventions, ActionMailbox::TestHelper, fixtures
 7. Keep provider authentication tests at the ingress request boundary.
 8. Keep ordinary tests independent of external email infrastructure.
 
+## Example
+
+```ruby
+class RepliesMailboxTest < ActionMailbox::TestCase
+  test "creates one reply per message id" do
+    2.times do
+      receive_inbound_email_from_mail(
+        from: customers(:sam).email,
+        to: "reply+#{tickets(:open).reply_token}@example.test",
+        message_id: "abc-123@example.test",
+        body: "Thanks!"
+      )
+    end
+
+    assert_equal 1, tickets(:open).replies.where(message_id: "abc-123@example.test").count
+  end
+
+  test "unknown sender is bounced" do
+    inbound = receive_inbound_email_from_mail(from: "stranger@example.test", to: "support@example.test", body: "hi")
+    assert inbound.bounced?
+  end
+end
+```
+
 ## Failure modes
 
 - live provider in unit/system tests;

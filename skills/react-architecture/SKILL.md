@@ -39,6 +39,57 @@ Inspect source layout, feature boundaries, import graph, routing, state/query in
 - shared utility modules that become dumping grounds;
 - architecture-only refactors with no measurable reduction in coupling.
 
+## Reference example
+
+Type-checked with `tsc --strict` (plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`).
+
+```tsx
+// features/orders/api.ts, hooks.ts, and OrderTable.tsx shown together.
+// Dependency direction: page -> hook -> api client; the table only renders props.
+import { useEffect, useState } from "react";
+
+export type OrderRow = { id: string; total: string };
+
+// api.ts: the single place that knows the endpoint and payload shape.
+export async function fetchOrders(signal: AbortSignal): Promise<OrderRow[]> {
+  const response = await fetch("/api/orders", { signal });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return (await response.json()) as OrderRow[];
+}
+
+// hooks.ts: feature-local server state; no global store for one screen.
+export function useOrders(): OrderRow[] | undefined {
+  const [orders, setOrders] = useState<OrderRow[]>();
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchOrders(controller.signal).then(setOrders).catch(() => undefined);
+    return () => controller.abort();
+  }, []);
+  return orders;
+}
+
+// OrderTable.tsx: presentational, testable without network.
+export function OrderTable({ orders }: { orders: readonly OrderRow[] }) {
+  return (
+    <table>
+      <tbody>
+        {orders.map((order) => (
+          <tr key={order.id}>
+            <td>{order.id}</td>
+            <td>{order.total}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+export function OrdersPage() {
+  const orders = useOrders();
+  return orders ? <OrderTable orders={orders} /> : <p role="status">Loading orders…</p>;
+}
+```
+
 ## Agent review checklist
 - Are dependency directions explicit?
 - Does shared infrastructure have demonstrated reuse?

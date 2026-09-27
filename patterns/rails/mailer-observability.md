@@ -32,6 +32,33 @@ Inspect Rails.error, ActiveSupport::Notifications, job telemetry, provider logs,
 4. Classify failures without logging sensitive payloads.
 5. Add metrics for outcome, retry, latency, and fallback where useful.
 
+## Example
+
+```ruby
+# config/initializers/mail_observability.rb
+class DeliveryLogObserver
+  def self.delivered_email(message)
+    Rails.logger.info(
+      event: "mail.delivered",
+      mailer: message.header["X-Mailer-Action"]&.value, # set in ApplicationMailer
+      message_id: message.message_id,
+      recipient_domains: Array(message.to).map { _1.split("@").last }.uniq # no full addresses
+    )
+  end
+end
+ActionMailer::Base.register_observer(DeliveryLogObserver)
+
+class ApplicationMailer < ActionMailer::Base
+  after_action { headers["X-Mailer-Action"] = "#{self.class.name}##{action_name}" }
+end
+
+# Enqueue and job failures come from Active Job instrumentation:
+ActiveSupport::Notifications.subscribe("enqueue.active_job") do |event|
+  job = event.payload[:job]
+  Rails.logger.info(event: "mail.enqueued", job_id: job.job_id) if job.is_a?(ActionMailer::MailDeliveryJob)
+end
+```
+
 ## Failure modes
 
 - full recipient lists/body logging;

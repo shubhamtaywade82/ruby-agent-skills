@@ -33,6 +33,30 @@ Inspect request/correlation conventions, broker metrics, tracing, message IDs, l
 7. Correlate retries and replay with the original message identity.
 8. Define alert thresholds tied to user/system impact.
 
+## Example
+
+```ruby
+class InstrumentedConsumer
+  def initialize(handler) = @handler = handler
+
+  def call(envelope)
+    tags = { type: envelope.fetch("type"), consumer: @handler.class.name }
+    lag = Time.current - Time.iso8601(envelope.fetch("occurred_at"))
+    Metrics.histogram("messages.lag_seconds", lag, tags:)
+
+    Rails.logger.tagged(envelope.fetch("correlation_id")) do
+      ActiveSupport::Notifications.instrument("process.messages", tags.merge(message_id: envelope.fetch("id"))) do
+        @handler.call(envelope)
+      end
+    end
+  rescue StandardError => e
+    Metrics.increment("messages.failed", tags: tags.merge(error: e.class.name))
+    raise
+  end
+end
+# Payloads are never logged; ids, types, lag, and outcome are.
+```
+
 ## Failure modes
 
 - new correlation ID at every hop

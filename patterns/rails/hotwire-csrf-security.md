@@ -11,6 +11,35 @@ Client-side requests or custom JavaScript accidentally bypass Rails CSRF expecta
 ## Structure
 Classify browser authentication first and preserve the repository CSRF contract. Never weaken protection to make a Turbo interaction work.
 
+## Example
+
+```ruby
+# app/views/layouts/application.html.erb includes <%= csrf_meta_tags %>;
+# Turbo form submissions send the token automatically.
+
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception # unchanged: never disabled to make fetch work
+end
+
+# app/javascript/controllers/archive_controller.js (Stimulus) sends the token explicitly:
+#   const token = document.querySelector("meta[name='csrf-token']").content
+#   fetch(this.urlValue, { method: "PATCH", headers: { "X-CSRF-Token": token } })
+
+# test/integration/archive_csrf_test.rb
+require "test_helper"
+
+class ArchiveCsrfTest < ActionDispatch::IntegrationTest
+  setup { ActionController::Base.allow_forgery_protection = true }
+  teardown { ActionController::Base.allow_forgery_protection = false }
+
+  test "rejects a patch without a CSRF token" do
+    sign_in users(:owner)
+    patch archive_project_path(projects(:alpha))
+    assert_response :unprocessable_entity
+  end
+end
+```
+
 ## Testing
 Cover non-GET requests, redirects, and rejection behavior.
 ## Do not use when

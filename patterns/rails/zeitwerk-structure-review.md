@@ -21,6 +21,19 @@ Inspect runtime/version, loader roots, file path, expected constant, namespace o
 ## Implementation procedure
 1. Identify the loader/root. 2. Derive expected constant from the file path. 3. Check actual definition. 4. Check namespace ownership. 5. Check inflections. 6. Check nested/duplicate roots and ignored paths. 7. Check reloadable versus once-loaded lifecycle. 8. Run bin/rails zeitwerk:check when available. 9. Run affected tests and eager-load verification when relevant.
 
+## Example
+
+```bash
+# File path must map to the constant it defines:
+#   app/services/billing/invoice_generator.rb  -> Billing::InvoiceGenerator
+#   app/models/api_key.rb                       -> ApiKey (or APIKey with an inflection)
+# config/initializers/inflections.rb:
+#   Rails.autoloaders.main.inflector.inflect("api_key" => "APIKey")
+
+bin/rails zeitwerk:check                          # eager-loads everything and reports mismatches
+RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bin/rails runner 'Rails.application.eager_load!; puts "ok"'
+```
+
 ## Failure modes
 - manual require hides mismatch
 - nested root changes namespace semantics

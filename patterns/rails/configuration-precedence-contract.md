@@ -20,6 +20,20 @@ Inspect every assignment/read and deployment-provided value.
 ## Implementation procedure
 Document actual precedence and normalize values at the boundary.
 
+## Example
+
+```ruby
+# Precedence is explicit and in one place: ENV overrides credentials, which
+# override the checked-in default. Nothing else reads ENV for this setting.
+module Settings
+  def self.smtp_host
+    ENV["SMTP_HOST"].presence ||
+      Rails.application.credentials.dig(:smtp, :host) ||
+      "localhost"
+  end
+end
+```
+
 ## Failure modes
 Unexpected overrides and environment drift.
 

@@ -34,6 +34,28 @@ Inspect global error handling, ApplicationController, observability/error report
 4. Preserve correlation/error context for observability.
 5. Test expected exceptions and unexpected exceptions separately.
 
+## Example
+
+```ruby
+class ApplicationController < ActionController::Base
+  # Expected domain failures map to stable responses; everything else
+  # propagates to the error reporter and the 500 page.
+  rescue_from Orders::InvalidState, with: :conflict
+  rescue_from ActionController::ParameterMissing, with: :bad_request
+
+  private
+
+  def conflict(error)
+    render json: { error: "invalid_state", detail: error.message }, status: :conflict
+  end
+
+  def bad_request(error)
+    render json: { error: "bad_request", param: error.param }, status: :bad_request
+  end
+end
+# Not: rescue_from StandardError, which hides defects behind a 200/422.
+```
+
 ## Failure modes
 
 - rescuing StandardError broadly

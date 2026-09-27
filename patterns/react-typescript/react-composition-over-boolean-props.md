@@ -21,6 +21,33 @@ Inspect all prop combinations and conditional branches.
 ## Implementation procedure
 Replace structurally distinct variants with children, slots, or small composed components.
 
+## Example
+
+```tsx
+import type { ReactNode } from "react";
+
+// Before: <Alert isError hasIcon isDismissible showRetry ... />
+// After: the caller composes the parts it needs.
+export function Alert({ tone, children }: { tone: "info" | "error"; children: ReactNode }) {
+  return <div role={tone === "error" ? "alert" : "status"}>{children}</div>;
+}
+
+export function AlertActions({ children }: { children: ReactNode }) {
+  return <div>{children}</div>;
+}
+
+export function SaveFailed({ onRetry }: { onRetry: () => void }) {
+  return (
+    <Alert tone="error">
+      Could not save.
+      <AlertActions>
+        <button type="button" onClick={onRetry}>Retry</button>
+      </AlertActions>
+    </Alert>
+  );
+}
+```
+
 ## Failure modes
 Impossible flag combinations and deeply nested ternaries.
 

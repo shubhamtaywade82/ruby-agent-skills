@@ -25,6 +25,32 @@ Inspect request/system tests, JavaScript test setup, browser drivers, Turbo help
 ## Implementation procedure
 Test the smallest protocol boundary first, then add browser/system verification when DOM lifecycle is essential.
 
+## Example
+
+```ruby
+class CommentsTest < ActionDispatch::IntegrationTest
+  test "create responds with a turbo stream that appends to the list" do
+    sign_in users(:sam)
+
+    post post_comments_path(posts(:one)), params: { comment: { body: "Nice" } }, as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_includes response.body, %(<turbo-stream action="append" target="comments">)
+  end
+end
+
+class CommentsSystemTest < ApplicationSystemTestCase
+  test "new comment appears without a full page load" do
+    sign_in users(:sam)
+    visit post_path(posts(:one))
+    fill_in "Comment", with: "Nice"
+    click_on "Post comment"
+    within("#comments") { assert_text "Nice" }
+  end
+end
+```
+
 ## Failure modes
 Only testing snapshots, only testing JavaScript, timing flakes, and missing authorization coverage.
 

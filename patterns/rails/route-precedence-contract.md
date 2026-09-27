@@ -33,6 +33,24 @@ Inspect config/routes.rb, route-loader files, neighboring dynamic segments, HTTP
 4. Place specific routes before broader routes when both intentionally coexist.
 5. Add a regression test for positive and negative matching.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  # Literal routes before dynamic ones: the first match wins.
+  get "users/search", to: "users#search"
+  resources :users, only: %i[index show]
+  # If `resources :users` came first, /users/search would dispatch to users#show with id="search".
+end
+
+class UserRoutesTest < ActionDispatch::IntegrationTest
+  test "search is not captured by show" do
+    assert_recognizes({ controller: "users", action: "search" }, "/users/search")
+    assert_recognizes({ controller: "users", action: "show", id: "42" }, "/users/42")
+  end
+end
+```
+
 ## Failure modes
 
 - literal path shadowed by :id;

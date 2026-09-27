@@ -20,6 +20,18 @@ Inspect boot timings, eager loading, dependency calls, and restart frequency.
 ## Implementation procedure
 Measure the slow boundary, remove unnecessary work, and defer optional work when valid.
 
+## Example
+
+```bash
+# Measure boot before changing it: where do the seconds go?
+time bin/rails runner 'nil'
+RUBYOPT="-r./config/boot" ruby -e 'require "benchmark"; puts Benchmark.realtime { require_relative "config/environment" }'
+
+# Bootsnap caches load paths and compiled Ruby; eager loading happens once in
+# production, not in each command.
+grep -q "bootsnap/setup" config/boot.rb || echo "bootsnap not enabled"
+```
+
 ## Failure modes
 Premature optimization and semantic shortcuts.
 

@@ -20,6 +20,29 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Remove redundant state and derive the value during render. Use memoization only when computation cost is measured.
 
+## Example
+
+```tsx
+import { useState } from "react";
+
+type Line = { id: string; cents: number };
+
+// Before: const [total, setTotal] = useState(0); useEffect(() => setTotal(sum(lines)), [lines]);
+// After: compute during render; there is nothing to keep in sync.
+export function Cart({ lines }: { lines: readonly Line[] }) {
+  const [couponCents, setCouponCents] = useState(0);
+  const totalCents = lines.reduce((sum, line) => sum + line.cents, 0) - couponCents;
+  return (
+    <div>
+      <p>Total: {(totalCents / 100).toFixed(2)}</p>
+      <button type="button" onClick={() => setCouponCents(500)}>
+        Apply coupon
+      </button>
+    </div>
+  );
+}
+```
+
 ## Failure modes
 Effect-driven synchronization, stale derived values, and memoization without evidence.
 

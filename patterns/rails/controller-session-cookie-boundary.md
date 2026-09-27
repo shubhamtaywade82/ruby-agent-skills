@@ -35,6 +35,24 @@ Inspect session store, serializer, cookie configuration, authentication integrat
 5. Use flash only for transient user-facing messaging.
 6. Never treat session/cookie presence as sufficient authorization.
 
+## Example
+
+```ruby
+class SessionsController < ApplicationController
+  def create
+    user = User.authenticate_by(email_address: params[:email], password: params[:password])
+    return redirect_to(new_session_path, alert: "Try again") unless user
+
+    reset_session                        # new session id after login
+    record = user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip)
+    # Only an opaque id goes into the cookie; roles, emails, and permissions
+    # are looked up server-side on each request.
+    cookies.signed.permanent[:session_id] = { value: record.id, httponly: true, same_site: :lax, secure: Rails.env.production? }
+    redirect_to root_path
+  end
+end
+```
+
 ## Failure modes
 
 - storing models or large collections

@@ -20,6 +20,19 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Inspect query count, query plan, cardinality, indexes, request/job frequency, and current cache policy before adding cache state.
 
+## Example
+
+```ruby
+# Before: caching a slow N+1 dashboard (and inheriting invalidation problems).
+# Rails.cache.fetch(["dashboard", tenant.id]) { tenant.projects.map { |p| [p.name, p.tasks.count] } }
+
+# After: one grouped query; nothing to invalidate.
+tenant.projects
+  .left_joins(:tasks)
+  .group("projects.id", "projects.name")
+  .pluck("projects.name", Arel.sql("COUNT(tasks.id)"))
+```
+
 ## Failure modes
 Cache-first optimization, stale data without a contract, stampedes, and authorization-cache leakage.
 

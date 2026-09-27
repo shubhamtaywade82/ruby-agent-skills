@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 129 — Code Examples for Every Skill and Pattern
+
+- Add a fenced `## Example` to the 421 patterns that had none (324 Ruby, 20 TSX, 9 TypeScript, 4 JavaScript, 11 ERB, 24 Bash, 6 YAML, 1 SQL, and 22 Markdown runbook/decision tables); the other 11 patterns already carried code. Examples use real Rails, Ruby, React, and TypeScript APIs and were syntax-checked before insertion (`ruby -c`, ERB compiled inside a method, `bash -n`, `node --check`, and `tsc --strict` or vitest with jsdom for TypeScript and React).
+- Add a `## Reference example` to the 15 skills without one (React, TypeScript, and stack-minimality families), and replace the `...` placeholder in `ruby-method-design`.
+- `scripts/audit_corpus_quality.rb` recognizes `~~~` fences and now fails when any skill or pattern lacks a code example, so coverage cannot regress.
+
 ## Iteration 128 — Merge Duplicate Rails Skills
 
 - Merge six overlapping skills into the deeper skill that owns the same framework boundary: `rails-activerecord` → `rails-active-record`, `rails-controllers` → `rails-action-controller`, `rails-views` → `rails-action-view`, `rails-testing` → `rails-test-engineering`, `rails-best-practices` → `rails-architecture`, `rails-deployment` → `rails-release-engineering`. Each survivor gains the retired skill's guidance under one scoped section, its triggers, and a description clause; every manifest, router, pattern, evaluation, and documentation reference is rewritten and de-duplicated. 91 → 85 skills.

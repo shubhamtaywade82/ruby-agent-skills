@@ -33,6 +33,20 @@ Inspect associations, dependent options, callbacks, database cascades, audit/eve
 4. Choose destroy/delete/bulk operation deliberately.
 5. Add regression tests for dependents and side effects.
 
+## Example
+
+```ruby
+class Account < ApplicationRecord
+  # destroy runs callbacks and dependents; the database foreign keys agree:
+  #   add_foreign_key :projects, :accounts, on_delete: :restrict
+  has_many :projects, dependent: :destroy
+  has_many :audit_events, dependent: :restrict_with_exception
+end
+
+account.destroy!                          # per-record lifecycle, dependents, callbacks
+Session.where(expires_at: ...1.day.ago).delete_all # deliberate: no callbacks, one SQL DELETE
+```
+
 ## Failure modes
 
 - deleting without authorization

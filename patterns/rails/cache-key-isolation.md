@@ -34,6 +34,20 @@ Inspect authentication/authorization, tenant resolution, locale handling, resour
 5. Test two callers with different required identities.
 6. Test version/representation changes.
 
+## Example
+
+```ruby
+# The rendered dashboard varies by account, role, and locale; all three are
+# in the key, plus a version for the template.
+def dashboard_cache_key(user)
+  ["dashboard", "v3", user.account_id, user.role, I18n.locale, user.account.updated_at.to_i]
+end
+
+Rails.cache.fetch(dashboard_cache_key(current_user), expires_in: 10.minutes) do
+  render_to_string(partial: "dashboards/summary", locals: { account: current_user.account })
+end
+```
+
 ## Failure modes
 
 - missing tenant/account identity;

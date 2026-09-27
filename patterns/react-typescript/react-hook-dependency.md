@@ -21,6 +21,27 @@ Inspect referenced values, stable identities, cleanup, and lint configuration.
 ## Implementation procedure
 List captured values, stabilize only necessary identities, and keep dependencies truthful.
 
+## Example
+
+```tsx
+import { useCallback, useEffect, useState } from "react";
+
+// Every value the effect reads is a dependency; the callback is memoized on
+// exactly what it captures, so the effect re-runs only when those change.
+export function useSearch(query: string, tenantId: string, search: (q: string, tenant: string) => Promise<string[]>) {
+  const [results, setResults] = useState<string[]>([]);
+  const run = useCallback(() => search(query, tenantId), [search, query, tenantId]);
+
+  useEffect(() => {
+    let current = true;
+    run().then((found) => { if (current) setResults(found); }).catch(() => undefined);
+    return () => { current = false; };
+  }, [run]);
+
+  return results;
+}
+```
+
 ## Failure modes
 Suppressing dependency lint, accidental infinite loops, and stale closures.
 

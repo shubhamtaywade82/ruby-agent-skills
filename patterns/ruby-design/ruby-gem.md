@@ -39,6 +39,30 @@ Inspect Gemfile/Gemspec, Ruby version, test framework, require paths, existing g
 8. document configuration and error contracts
 9. verify the gemspec builds cleanly
 
+## Example
+
+```ruby
+# lib/money_format.rb — one public entry point, version in its own constant.
+module MoneyFormat
+  VERSION = "0.2.0"
+
+  def self.cents(amount_cents, currency: "USD")
+    format("%s %.2f", currency, amount_cents / 100.0)
+  end
+end
+
+# money_format.gemspec
+Gem::Specification.new do |spec|
+  spec.name = "money_format"
+  spec.version = MoneyFormat::VERSION
+  spec.summary = "Format integer cents for display"
+  spec.authors = ["Team"]
+  spec.license = "MIT"
+  spec.required_ruby_version = ">= 3.2"
+  spec.files = Dir["lib/**/*.rb"]
+end
+```
+
 ## Failure modes
 
 - leaking application models/controllers into a library

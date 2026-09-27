@@ -32,6 +32,32 @@ Inspect dependency purpose, user journey, timeout, retry, concurrency, fallback,
 6. Instrument dependency success, latency, and saturation.
 7. Test dependency outage and recovery.
 
+## Example
+
+```ruby
+# Classified per dependency: critical fails the request, degradable returns a
+# fallback, optional is skipped.
+class ProductPage
+  def initialize(product) = @product = product
+
+  def data
+    {
+      product: @product,                                   # critical: database
+      recommendations: recommendations_or_empty,           # degradable
+      reviews_badge: (ReviewsService.badge(@product) rescue nil) # optional
+    }
+  end
+
+  private
+
+  def recommendations_or_empty
+    Recommendations.for(@product, timeout: 0.3)
+  rescue Recommendations::Unavailable
+    []
+  end
+end
+```
+
 ## Failure modes
 
 - optional dependency accidentally made critical

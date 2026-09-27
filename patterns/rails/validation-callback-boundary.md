@@ -28,6 +28,26 @@ Validation Callback Boundary needs an explicit contract so validation does not d
 4. Keep external work outside callbacks.
 5. Test final values observed by validators.
 
+## Example
+
+```ruby
+class User < ApplicationRecord
+  # Local, deterministic normalization before validation.
+  normalizes :email_address, with: ->(email) { email.strip.downcase }
+  before_validation :default_display_name, on: :create
+
+  validates :email_address, presence: true, uniqueness: true
+  validates :display_name, presence: true
+
+  private
+
+  def default_display_name
+    self.display_name = email_address.to_s.split("@").first if display_name.blank?
+  end
+end
+# Not here: sending emails, calling APIs, or checking permissions.
+```
+
 ## Failure modes
 - callback changes validation input unexpectedly;
 - after-validation performs external work;

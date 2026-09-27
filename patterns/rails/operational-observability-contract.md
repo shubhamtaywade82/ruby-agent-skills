@@ -20,6 +20,34 @@ Inspect logging conventions, metrics/instrumentation, runbooks, and sensitive-fi
 ## Implementation procedure
 Report bounded counts, progress, failures, duration, and final state without secret or high-cardinality payloads.
 
+## Example
+
+```ruby
+namespace :search do
+  desc "Reindex products"
+  task reindex: :environment do
+    run_id = SecureRandom.uuid
+    total = Product.count
+    processed = failed = 0
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+    Product.find_in_batches(batch_size: 500) do |batch|
+      batch.each do |product|
+        SearchIndex.upsert(product)
+        processed += 1
+      rescue SearchIndex::Error => e
+        failed += 1
+        Rails.logger.warn(event: "reindex.failed", run_id:, product_id: product.id, error: e.class.name)
+      end
+      Rails.logger.info(event: "reindex.progress", run_id:, processed:, failed:, total:)
+    end
+    elapsed = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).round(1)
+    Rails.logger.info(event: "reindex.finished", run_id:, processed:, failed:, total:, seconds: elapsed)
+    exit 1 if failed.positive?
+  end
+end
+```
+
 ## Failure modes
 No evidence of progress, misleading success, secret leakage, or unusably noisy logs.
 

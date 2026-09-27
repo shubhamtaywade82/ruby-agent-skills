@@ -20,6 +20,28 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Search all callers and tests. Fix at the narrowest common owner when contracts are shared.
 
+## Example
+
+```ruby
+# Symptom reported: the invoice PDF shows "$1,000.5" instead of "$1,000.50".
+# Patching only InvoicePdf would leave the email, CSV, and dashboard wrong,
+# because they all share Money#to_s.
+
+# Before
+class Money
+  def to_s = "$#{format_amount}"
+
+  private
+
+  def format_amount = (cents / 100.0).to_s
+end
+
+# After: fix the shared owner once; every caller is corrected.
+class Money
+  def to_s = "$#{format("%.2f", cents / 100.0)}"
+end
+```
+
 ## Failure modes
 Patch-per-caller and inconsistent duplicated guards.
 

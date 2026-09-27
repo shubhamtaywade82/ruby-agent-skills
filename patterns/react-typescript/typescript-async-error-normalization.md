@@ -21,6 +21,30 @@ Inspect promise rejection, network client errors, cancellation, and caller expec
 ## Implementation procedure
 Map transport/provider failures to deliberate domain categories while preserving cancellation semantics.
 
+## Example
+
+```ts
+// Different providers fail differently; callers see one error shape.
+export type AppError = { kind: "network" | "timeout" | "http" | "unknown"; message: string; status?: number };
+
+export function normalizeError(error: unknown): AppError {
+  if (error instanceof DOMException && error.name === "AbortError") return { kind: "timeout", message: "Request timed out" };
+  if (error instanceof TypeError) return { kind: "network", message: "Network unavailable" };
+  if (typeof error === "object" && error !== null && "status" in error && typeof error.status === "number") {
+    return { kind: "http", message: `HTTP ${error.status}`, status: error.status };
+  }
+  return { kind: "unknown", message: error instanceof Error ? error.message : "Unexpected error" };
+}
+
+export async function safely<T>(run: () => Promise<T>): Promise<{ ok: true; value: T } | { ok: false; error: AppError }> {
+  try {
+    return { ok: true, value: await run() };
+  } catch (error: unknown) {
+    return { ok: false, error: normalizeError(error) };
+  }
+}
+```
+
 ## Failure modes
 Catching everything as one generic error, retrying non-retryable errors, or losing cancellation identity.
 

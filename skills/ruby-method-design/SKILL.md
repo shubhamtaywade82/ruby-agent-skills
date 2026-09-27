@@ -80,7 +80,7 @@ When a condition tells a meaningful domain story, name it:
 
 ```ruby
 if can_send_promo?(user)
-  ...
+  PromoMailer.offer(user).deliver_later
 end
 ```
 

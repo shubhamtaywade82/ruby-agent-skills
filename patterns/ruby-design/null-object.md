@@ -33,6 +33,26 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# Absence as an object with the same interface, so call sites need no nil checks.
+class GuestUser
+  def name = "Guest"
+  def admin? = false
+  def can?(_action, _record) = false
+  def preferences = {}
+end
+
+class ApplicationController < ActionController::Base
+  private
+
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id]) || GuestUser.new
+  end
+end
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

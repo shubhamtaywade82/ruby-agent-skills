@@ -21,6 +21,26 @@ Inspect render frequency, prop identity, calculation cost, and profiler evidence
 ## Implementation procedure
 Fix state ownership first, then memoize the narrowest proven boundary and verify memory and complexity trade-offs.
 
+## Example
+
+```tsx
+import { memo, useMemo } from "react";
+
+type Row = { id: string; values: readonly number[] };
+
+// Added after the React Profiler showed SummaryTable re-rendering on every
+// keystroke of an unrelated input and computeStats taking ~40 ms per render.
+// Without that evidence, neither memo nor useMemo would be here.
+function computeStats(rows: readonly Row[]) {
+  return rows.map((row) => ({ id: row.id, max: Math.max(...row.values) }));
+}
+
+export const SummaryTable = memo(function SummaryTable({ rows }: { rows: readonly Row[] }) {
+  const stats = useMemo(() => computeStats(rows), [rows]);
+  return <ul>{stats.map((stat) => <li key={stat.id}>{stat.max}</li>)}</ul>;
+});
+```
+
 ## Failure modes
 Blanket memoization, memoizing cheap primitive work, and cargo-cult optimization.
 

@@ -36,6 +36,33 @@ Inspect ApplicationMailer, existing mailer actions/views/layouts, recipient rule
 7. Keep business state transitions outside the template.
 8. Test the rendered message contract.
 
+## Example
+
+```ruby
+class OrderMailer < ApplicationMailer
+  # Contract: one recipient (the order's customer), one subject key, one template pair.
+  def shipped(order)
+    @order = order
+    @tracking_url = order.shipment.tracking_url
+    mail(
+      to: email_address_with_name(order.customer.email, order.customer.name),
+      subject: t(".subject", number: order.number)
+    )
+  end
+end
+
+# test/mailers/order_mailer_test.rb
+class OrderMailerTest < ActionMailer::TestCase
+  test "shipped" do
+    order = orders(:shipped)
+    mail = OrderMailer.shipped(order)
+    assert_equal [order.customer.email], mail.to
+    assert_equal I18n.t("order_mailer.shipped.subject", number: order.number), mail.subject
+    assert_match order.shipment.tracking_url, mail.text_part.body.to_s
+  end
+end
+```
+
 ## Failure modes
 
 - hidden recipient logic;

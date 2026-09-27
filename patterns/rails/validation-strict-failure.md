@@ -29,6 +29,20 @@ Strict Validation Failure Contract needs an explicit contract so validation does
 4. Add exception-path tests.
 5. Verify normal validation remains ordinary elsewhere.
 
+## Example
+
+```ruby
+class LedgerEntry < ApplicationRecord
+  # Programmer error, not user input: fail loudly instead of returning false.
+  validates :currency, inclusion: { in: %w[INR USD] }, strict: true
+  validates :amount_cents, numericality: { only_integer: true, other_than: 0 }
+end
+
+LedgerEntry.new(currency: "XYZ", amount_cents: 100).valid?
+# => raises ActiveModel::StrictValidationFailed: Currency is not included in the list
+# Callers of strict validations expect exceptions; user forms never hit this path.
+```
+
 ## Failure modes
 - forms unexpectedly raise;
 - broad rescue hides the exception;

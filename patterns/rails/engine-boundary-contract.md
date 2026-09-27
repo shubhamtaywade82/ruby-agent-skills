@@ -20,6 +20,26 @@ Inspect engine class, gemspec, namespace, host integration, and lifecycle hooks.
 ## Implementation procedure
 Define engine-owned behavior, host-owned behavior, integration points, and compatibility boundaries.
 
+## Example
+
+```ruby
+# The engine's supported surface: its mount point, its config API, and one
+# public service. Everything else is private to the engine.
+module Blog
+  class Engine < ::Rails::Engine
+    isolate_namespace Blog
+  end
+
+  mattr_accessor :author_class, default: "User"
+
+  def self.publish(post_id) = Posts::Publish.call(Post.find(post_id))
+end
+
+# host
+#   mount Blog::Engine, at: "/blog"
+#   Blog.author_class = "Staff"
+```
+
 ## Failure modes
 Hidden host coupling, lifecycle leakage, and unreviewable extension behavior.
 

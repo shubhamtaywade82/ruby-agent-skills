@@ -33,6 +33,35 @@ Inspect authentication, policy objects, resource ownership, tenant scope, contro
 7. Apply the policy to every execution path.
 8. Add allow/deny tests for normal and alternate paths.
 
+## Example
+
+```ruby
+# One table drives the policy and the tests, so every role/action pair is
+# decided on purpose.
+class ProjectPolicy
+  MATRIX = {
+    viewer: %i[read],
+    editor: %i[read update],
+    owner: %i[read update destroy transfer]
+  }.freeze
+
+  def initialize(membership) = @role = membership&.role&.to_sym
+
+  def allowed?(action) = MATRIX.fetch(@role, []).include?(action)
+end
+
+class ProjectPolicyTest < ActiveSupport::TestCase
+  ProjectPolicy::MATRIX.each_key do |role|
+    %i[read update destroy transfer].each do |action|
+      test "#{role} #{action}" do
+        expected = ProjectPolicy::MATRIX.fetch(role).include?(action)
+        assert_equal expected, ProjectPolicy.new(Membership.new(role: role)).allowed?(action)
+      end
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - authenticated means authorized

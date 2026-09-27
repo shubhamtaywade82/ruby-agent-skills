@@ -20,6 +20,21 @@ Inspect query shapes, uniqueness validations/indexes, case normalization, and th
 ## Implementation procedure
 Use deterministic encryption only when required; normalize inputs intentionally and document the privacy/security tradeoff.
 
+## Example
+
+```ruby
+class Customer < ApplicationRecord
+  # Deterministic because we must look customers up by email and keep it
+  # unique; the tradeoff: equal emails produce equal ciphertext.
+  encrypts :email, deterministic: true, downcase: true
+
+  validates :email, uniqueness: true
+end
+
+# add_index :customers, :email, unique: true  (indexes the ciphertext)
+Customer.find_by(email: "Sam@Example.test") # works: normalized, then encrypted deterministically
+```
+
 ## Failure modes
 Unqueryable data, duplicate records, ciphertext correlation, or unnecessary deterministic exposure.
 

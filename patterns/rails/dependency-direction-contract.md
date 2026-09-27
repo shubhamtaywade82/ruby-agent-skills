@@ -20,6 +20,33 @@ Inspect require/import edges, constant references, service calls, events, and ge
 ## Implementation procedure
 Define allowed direction, reverse dependencies through explicit interfaces where required, and remove cycles incrementally.
 
+## Example
+
+```ruby
+# Domain code depends on an interface it owns; infrastructure depends on the
+# domain, never the other way round.
+module Orders
+  # Port owned by the domain.
+  class PaymentPort
+    def charge(order) = raise(NotImplementedError)
+  end
+
+  class Place
+    def initialize(payments:) = @payments = payments
+
+    def call(order)
+      @payments.charge(order)
+      order.update!(status: "placed")
+    end
+  end
+end
+
+# Infrastructure adapts to the domain's port.
+class StripePayments < Orders::PaymentPort
+  def charge(order) = Stripe::PaymentIntent.create(amount: order.total_cents, currency: "usd", confirm: true)
+end
+```
+
 ## Failure modes
 Cycles, infrastructure leakage, bidirectional service calls, shared global state.
 

@@ -35,6 +35,19 @@ Inspect authorization, locale, tenant/request context, response headers, CDN/pro
 5. Verify 200 and 304 behavior.
 6. Re-check release/cache identity implications.
 
+## Example
+
+```ruby
+class ReportsController < ApplicationController
+  def show
+    report = current_account.reports.find(params[:id])
+    # The validator covers everything the response varies on: the record,
+    # the viewer's permissions, and the locale.
+    fresh_when etag: [report, current_user.permissions_version, I18n.locale], public: false
+  end
+end
+```
+
 ## Failure modes
 
 - shared validator for private representations

@@ -33,6 +33,31 @@ Inspect consumer adapter, serializer, validation, idempotency/inbox storage, dom
 7. Map outcome to ack/retry/dead-letter.
 8. Keep broker types outside the domain boundary.
 
+## Example
+
+```ruby
+# Broker adapter: parses, dispatches, and acks. Knows nothing about orders.
+class BrokerConsumer
+  HANDLERS = { "order.placed" => OrderPlacedHandler, "payment.captured" => PaymentCapturedHandler }.freeze
+
+  def on_message(delivery)
+    envelope = JSON.parse(delivery.body)
+    handler = HANDLERS.fetch(envelope.fetch("type")) { return delivery.reject(requeue: false) }
+    handler.new.call(envelope.fetch("payload"), message_id: envelope.fetch("id"))
+    delivery.ack
+  rescue JSON::ParserError, KeyError
+    delivery.reject(requeue: false) # poison: straight to dead letter
+  end
+end
+
+# Domain handler: plain Ruby, testable without a broker.
+class OrderPlacedHandler
+  def call(payload, message_id:)
+    Fulfilment.reserve_stock!(order_id: payload.fetch("order_id"), source_message_id: message_id)
+  end
+end
+```
+
 ## Failure modes
 
 - domain service depends on broker SDK types

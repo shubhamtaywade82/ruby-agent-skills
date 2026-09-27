@@ -34,6 +34,29 @@ Inspect Active Job adapter, queue policy, retry/discard rules, transaction bound
 6. Define duplicate handling.
 7. Verify queue capacity and observability.
 
+## Example
+
+```ruby
+class OrdersController < ApplicationController
+  def create
+    @order = Current.account.orders.create!(order_params)
+    # deliver_later enqueues after this transaction; with enqueue_after_transaction_commit
+    # (Rails 7.2+ default) the job cannot run before the order row is visible.
+    OrderMailer.confirmation(@order).deliver_later
+    redirect_to @order
+  end
+end
+
+class PasswordsController < ApplicationController
+  def create
+    user = User.find_by(email_address: params[:email_address])
+    # deliver_now only where the request must know the handoff to the provider happened.
+    PasswordsMailer.reset(user).deliver_later if user
+    redirect_to new_session_path, notice: "If that address exists, instructions are on the way."
+  end
+end
+```
+
 ## Failure modes
 
 - synchronous provider latency in request path;

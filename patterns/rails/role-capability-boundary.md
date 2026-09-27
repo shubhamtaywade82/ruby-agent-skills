@@ -14,6 +14,27 @@ Roles map to multiple operations or capabilities.
 ## Structure
 Represent capabilities explicitly; roles compose capabilities rather than becoming the only authorization primitive.
 
+## Example
+
+```ruby
+class Role
+  CAPABILITIES = {
+    "viewer" => %i[read_reports],
+    "editor" => %i[read_reports edit_reports],
+    "admin" => %i[read_reports edit_reports manage_members export_data]
+  }.freeze
+
+  def self.capabilities_for(role) = CAPABILITIES.fetch(role, []).to_set
+end
+
+class Membership < ApplicationRecord
+  def can?(capability) = Role.capabilities_for(role).include?(capability)
+end
+
+# Callers ask about the capability, not the role name:
+#   membership.can?(:export_data)     not   membership.role == "admin"
+```
+
 ## Failure modes
 Admin checks everywhere, role explosion, and hidden superuser bypass.
 

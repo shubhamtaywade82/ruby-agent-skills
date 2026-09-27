@@ -32,6 +32,24 @@ Validation Context Contract needs an explicit contract so validation does not dr
 5. Test shared versus context-only rules.
 6. Verify ordinary persistence remains safe.
 
+## Example
+
+```ruby
+class Article < ApplicationRecord
+  validates :title, presence: true
+  # Extra requirements only when explicitly publishing.
+  validates :body, :summary, presence: true, on: :publish
+
+  def publish!
+    self.published_at = Time.current
+    save!(context: :publish) # also runs context-less validations
+  end
+end
+
+article = Article.create!(title: "Draft") # valid: drafts may be incomplete
+article.publish!                           # raises ActiveRecord::RecordInvalid until body/summary exist
+```
+
 ## Failure modes
 - custom contexts proliferate;
 - save behavior differs from the context used by the UI;

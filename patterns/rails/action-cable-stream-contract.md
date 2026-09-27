@@ -32,6 +32,23 @@ Inspect resource identity, tenant boundaries, stream helpers, broadcast producer
 5. Keep client input out of the namespace where possible.
 6. Test same-resource and cross-scope separation.
 
+## Example
+
+```ruby
+class OrderChannel < ApplicationCable::Channel
+  def subscribed
+    order = current_user.orders.find_by(id: params[:order_id]) or return reject
+
+    # stream_for derives a namespaced, globally unique name from the record
+    # ("order:Z2lkOi8v..."), instead of a hand-built "orders_#{id}" string
+    # that could collide across tenants or models.
+    stream_for order
+  end
+end
+
+OrderChannel.broadcast_to(order, { v: 1, type: "order.shipped", id: order.id })
+```
+
 ## Failure modes
 
 - global stream for private data;

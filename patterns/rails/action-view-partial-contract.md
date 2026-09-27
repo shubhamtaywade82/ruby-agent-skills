@@ -34,6 +34,22 @@ Inspect neighboring partials, local naming, object rendering, strict-local conve
 6. Update all callers together.
 7. Add focused rendering tests.
 
+## Example
+
+```erb
+<%# app/views/orders/_order.html.erb %>
+<%# locals: (order:, compact: false) -%>
+<%# Strict locals (Rails 7.1+): order is required, compact is optional, and
+    unknown locals raise instead of being silently ignored. No @instance
+    variables are read here. %>
+<li id="<%= dom_id(order) %>">
+  <%= link_to order.number, order %>
+  <% unless compact %>
+    <span><%= order.status.humanize %></span>
+  <% end %>
+</li>
+```
+
 ## Failure modes
 
 - hidden instance-variable dependency;

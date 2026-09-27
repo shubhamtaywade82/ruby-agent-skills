@@ -11,6 +11,19 @@ Stream responses mutate unintended DOM or produce inconsistent UI state.
 ## Structure
 Document action, target, ordering, rendered partial, and fallback response semantics.
 
+## Example
+
+```erb
+<%# comments/create.turbo_stream.erb — ordered, targeted, documented. %>
+<%# 1. Append the new comment to the list (target must exist on posts/show). %>
+<%= turbo_stream.append "comments", partial: "comments/comment", locals: { comment: @comment } %>
+<%# 2. Replace the form with a fresh one (same id as the original form). %>
+<%= turbo_stream.replace dom_id(@post, :new_comment), partial: "comments/form", locals: { post: @post, comment: Comment.new } %>
+<%# 3. Update the counter. %>
+<%= turbo_stream.update dom_id(@post, :comments_count), @post.comments.size %>
+<%# Non-Turbo clients get the HTML redirect from the controller instead. %>
+```
+
 ## Testing
 Verify create/update/delete paths and invalid-form behavior.
 

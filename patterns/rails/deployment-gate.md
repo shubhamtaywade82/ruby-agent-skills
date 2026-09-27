@@ -23,6 +23,18 @@ Inspect CI checks, deployment stages, required statuses, health checks, approval
 ## Implementation procedure
 1. Define the protected contract. 2. Select evidence. 3. Define pass/fail threshold/window. 4. Define timeout and abort behavior. 5. Assign owner/override authority. 6. Record the outcome.
 
+## Example
+
+```bash
+# Promotion is blocked by checks that fail the pipeline, not by a checklist.
+set -euo pipefail
+bin/rails db:migrate:status | grep -q "^  down" && { echo "pending migrations"; exit 1; }
+bundle exec bundler-audit check --update
+curl --fail --max-time 5 "https://staging.example.test/up"
+bin/rails runner 'exit(ReleaseGate.error_rate_last(minutes: 15) < 0.01 ? 0 : 1)'
+kamal deploy --version "$GIT_SHA" --skip-push
+```
+
 ## Failure modes
 - gate with no observable signal;
 - timeout with implicit success;

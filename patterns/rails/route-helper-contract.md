@@ -34,6 +34,26 @@ Search helper callers, to_param, model naming, route names, mailer/job/serialize
 5. Test persisted/new-record object routing where applicable.
 6. Migrate callers in the same coherent change when compatibility is intentionally broken.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  resources :products, param: :slug # product_path(product) uses product.to_param
+end
+
+class Product < ApplicationRecord
+  def to_param = slug # changing this changes every generated URL
+end
+
+# test/routing/product_routes_test.rb pins the helper contract.
+class ProductRoutesTest < ActionDispatch::IntegrationTest
+  test "product helper uses the slug" do
+    assert_equal "/products/red-mug", product_path(Product.new(slug: "red-mug"))
+    assert_recognizes({ controller: "products", action: "show", slug: "red-mug" }, "/products/red-mug")
+  end
+end
+```
+
 ## Failure modes
 
 - renamed helper with stale callers;

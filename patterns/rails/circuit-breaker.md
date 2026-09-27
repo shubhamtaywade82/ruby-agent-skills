@@ -33,6 +33,45 @@ Inspect dependency failure classes, latency/error metrics, client concurrency, t
 7. Instrument state changes and rejected calls.
 8. Test open, half-open, recovery, and repeated-failure paths.
 
+## Example
+
+```ruby
+# A minimal breaker for one dependency: after 5 failures in a row it opens
+# for 30 s and fails fast, then lets one trial call through.
+class CircuitBreaker
+  OpenError = Class.new(StandardError)
+
+  def initialize(threshold: 5, cool_off: 30, clock: -> { Process.clock_gettime(Process::CLOCK_MONOTONIC) })
+    @threshold = threshold
+    @cool_off = cool_off
+    @clock = clock
+    @failures = 0
+    @opened_at = nil
+    @mutex = Mutex.new
+  end
+
+  def call
+    @mutex.synchronize do
+      raise OpenError, "circuit open" if @opened_at && @clock.call - @opened_at < @cool_off
+    end
+    result = yield
+    @mutex.synchronize { @failures = 0; @opened_at = nil }
+    result
+  rescue OpenError
+    raise
+  rescue StandardError
+    @mutex.synchronize do
+      @failures += 1
+      @opened_at = @clock.call if @failures >= @threshold
+    end
+    raise
+  end
+end
+
+TAX_BREAKER = CircuitBreaker.new
+TAX_BREAKER.call { TaxService.quote(order) }
+```
+
 ## Failure modes
 
 - breaker counts validation errors

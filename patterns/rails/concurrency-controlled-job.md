@@ -24,6 +24,19 @@ The real requirement is general worker throughput throttling; prefer queue worke
 6. Test overlapping inputs and blocked/released behavior.
 7. Verify queue/database capacity.
 
+## Example
+
+```ruby
+class SyncAccountJob < ApplicationJob
+  # Solid Queue: at most one execution per account at a time; others wait.
+  limits_concurrency to: 1, key: ->(account) { account }, duration: 15.minutes
+
+  def perform(account)
+    CrmClient.sync(account)
+  end
+end
+```
+
 ## Failure modes
 - key is too broad and serializes unrelated work
 - key is too narrow and permits unsafe overlap

@@ -33,6 +33,28 @@ Inspect existing POROs, form objects, Active Record models, consumers, routes, v
 4. Keep domain behavior independent where practical.
 5. Add lint tests for reusable Rails-facing model contracts.
 
+## Example
+
+```ruby
+# Only the Active Model modules the consumer (form_with + validations) needs,
+# instead of a table-less Active Record model.
+class ContactRequest
+  include ActiveModel::API
+
+  attr_accessor :name, :email, :message
+
+  validates :name, :email, :message, presence: true
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+
+  def deliver
+    return false unless valid?
+
+    ContactMailer.request(name:, email:, message:).deliver_later
+    true
+  end
+end
+```
+
 ## Failure modes
 
 - Active Model used as a generic model base;

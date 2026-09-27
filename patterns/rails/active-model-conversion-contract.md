@@ -32,6 +32,26 @@ Inspect routes, form builders, object rendering, persisted? semantics, model nam
 5. Verify form/routing consumers.
 6. Add conversion tests.
 
+## Example
+
+```ruby
+class SearchQuery
+  include ActiveModel::API
+  include ActiveModel::Conversion
+
+  attr_accessor :term
+
+  # Never persisted: forms build a POST to the collection, and to_param is
+  # nil so no URL pretends to identify a saved record.
+  def persisted? = false
+end
+
+query = SearchQuery.new(term: "ruby")
+query.to_key   # => nil
+query.to_param # => nil
+query.model_name.param_key # => "search_query"
+```
+
 ## Failure modes
 
 - transient object returns a durable-looking key;

@@ -33,6 +33,24 @@ Inspect current-user implementation, job arguments, tenant context, authorizatio
 7. Add tests for missing/stale context.
 8. Preserve correlation IDs separately from authorization.
 
+## Example
+
+```ruby
+# The job receives ids, never the session cookie or a Current.user object,
+# and re-checks that the actor may still perform the action.
+class ExportJob < ApplicationJob
+  def perform(user_id:, account_id:, export_id:)
+    user = User.find(user_id)
+    account = user.accounts.find_by(id: account_id)
+    return unless account && ExportPolicy.new(user, account).create?
+
+    account.exports.find(export_id).generate!
+  end
+end
+
+ExportJob.perform_later(user_id: Current.user.id, account_id: Current.account.id, export_id: export.id)
+```
+
 ## Failure modes
 
 - serializing current_user

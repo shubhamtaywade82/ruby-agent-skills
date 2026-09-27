@@ -21,6 +21,17 @@ Inspect lockfiles, runtime declarations, package manager version, CI cache keys,
 ## Implementation procedure
 Pin inputs, use deterministic installs, invalidate caches on relevant changes, and compare clean builds.
 
+## Example
+
+```bash
+# Pinned runtimes and lockfiles, no reliance on a warm local cache.
+node --version | grep -qx "v$(cat .node-version)" || { echo "wrong node"; exit 1; }
+rm -rf node_modules app/assets/builds/*
+yarn install --immutable             # fails if yarn.lock would change
+bin/rails assets:precompile
+sha256sum public/assets/application-*.js > asset-digests.txt   # compare across two clean builds
+```
+
 ## Failure modes
 Environment-dependent output, cache poisoning, lockfile drift, and hidden network dependencies.
 

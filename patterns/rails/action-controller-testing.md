@@ -35,6 +35,37 @@ Inspect request/integration/system test conventions, helper setup, authenticatio
 5. Assert status/format/headers/body or redirect explicitly where contractual.
 6. Add regression coverage for security-sensitive boundary changes.
 
+## Example
+
+```ruby
+class ReportsControllerTest < ActionDispatch::IntegrationTest
+  setup { sign_in users(:owner) }
+
+  test "json response contract" do
+    get report_path(reports(:q3)), as: :json
+    assert_response :ok
+    assert_equal "application/json", response.media_type
+    assert_equal %w[id name], response.parsed_body.keys.sort
+  end
+
+  test "unsupported format is rejected" do
+    get report_path(reports(:q3), format: :xml)
+    assert_response :not_acceptable
+  end
+
+  test "conditional GET returns 304" do
+    get report_path(reports(:q3)), as: :json
+    get report_path(reports(:q3)), as: :json, headers: { "If-None-Match" => response.headers["ETag"] }
+    assert_response :not_modified
+  end
+
+  test "missing root key is a 400" do
+    patch report_path(reports(:q3)), params: { name: "x" }, as: :json
+    assert_response :bad_request
+  end
+end
+```
+
 ## Failure modes
 
 - asserting only internal method calls

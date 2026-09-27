@@ -20,6 +20,27 @@ Inspect schema, writers, callbacks, jobs, events, reports, direct SQL, and migra
 ## Implementation procedure
 Name authoritative writer/storage owner; expose reads through stable contracts or projections and route mutations through the owner.
 
+## Example
+
+```ruby
+# Billing owns invoices.status. Support reads it and asks Billing to change it;
+# it never writes the column.
+module Billing
+  def self.void_invoice!(invoice_id, reason:)
+    Invoice.find(invoice_id).update!(status: "void", void_reason: reason)
+  end
+end
+
+module Support
+  class RefundRequest < ApplicationRecord
+    def approve!
+      Billing.void_invoice!(invoice_id, reason: "support refund ##{id}")
+      update!(approved_at: Time.current)
+    end
+  end
+end
+```
+
 ## Failure modes
 Dual writers, conflicting validations, stale replicas treated as authoritative.
 

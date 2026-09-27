@@ -33,6 +33,28 @@ Inspect attachable model modules, SGID configuration, partial paths, allowed typ
 6. Review sensitive fields and tenant isolation.
 7. Test authorized and missing references.
 
+## Example
+
+```ruby
+# Only explicitly allowed models can be embedded, and each renders a known
+# partial with a missing-record fallback.
+class Mention < ApplicationRecord
+  include ActionText::Attachable
+
+  belongs_to :user
+
+  def to_attachable_partial_path = "mentions/mention"
+end
+
+class ArticleContent
+  ALLOWED_ATTACHABLES = %w[Mention ActiveStorage::Blob].freeze
+
+  def self.valid?(rich_text)
+    rich_text.body.attachables.all? { |attachable| ALLOWED_ATTACHABLES.include?(attachable.class.name) }
+  end
+end
+```
+
 ## Failure modes
 
 - any model becomes attachable;

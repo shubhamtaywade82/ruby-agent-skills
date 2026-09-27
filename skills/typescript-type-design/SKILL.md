@@ -40,6 +40,36 @@ Inspect existing exported types, naming, strict null checks, generated API types
 - generic abstractions that hide the real API;
 - assuming a type declaration validates runtime data.
 
+## Reference example
+
+Type-checked with `tsc --strict` (plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`).
+
+```ts
+// Branded identifiers: an OrderId cannot be passed where a CustomerId is expected.
+declare const brand: unique symbol;
+type Brand<T, B extends string> = T & { readonly [brand]: B };
+export type OrderId = Brand<string, "OrderId">;
+export type CustomerId = Brand<string, "CustomerId">;
+
+export const orderId = (value: string): OrderId => value as OrderId;
+export const customerId = (value: string): CustomerId => value as CustomerId;
+
+// Model states so invalid combinations cannot be constructed.
+export type Payment =
+  | { state: "unpaid"; orderId: OrderId }
+  | { state: "paid"; orderId: OrderId; paidAt: Date }
+  | { state: "refunded"; orderId: OrderId; paidAt: Date; refundedAt: Date };
+
+export function refund(payment: Extract<Payment, { state: "paid" }>, at: Date): Payment {
+  return { state: "refunded", orderId: payment.orderId, paidAt: payment.paidAt, refundedAt: at };
+}
+
+export function loadOrder(id: OrderId, owner: CustomerId): string {
+  return `${owner}/${id}`;
+}
+// loadOrder(customerId("c1"), orderId("o1")); // compile error: arguments swapped
+```
+
 ## Agent review checklist
 - Are invalid states unrepresentable where practical?
 - Do generics express real relationships?

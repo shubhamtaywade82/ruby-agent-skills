@@ -33,6 +33,27 @@ Inspect routes, request formats, session middleware, CSRF configuration, API cli
 7. Keep machine credentials out of browser session assumptions.
 8. Test each boundary separately.
 
+## Example
+
+```ruby
+# Browser: cookie session + CSRF. API: bearer token, no cookies, no CSRF.
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+  include Authentication # signed session cookie
+end
+
+class Api::BaseController < ActionController::API
+  before_action :authenticate_token!
+
+  private
+
+  def authenticate_token!
+    token = request.authorization.to_s.delete_prefix("Bearer ")
+    @current_token = ApiToken.active.find_by_token_digest(Digest::SHA256.hexdigest(token)) || head(:unauthorized)
+  end
+end
+```
+
 ## Failure modes
 
 - disabling CSRF for all JSON endpoints

@@ -11,6 +11,23 @@ Broadcasts leak private data or publish state before it is durable.
 ## Structure
 Broadcast only after committed state, use explicit stream naming, and preserve tenant/resource authorization.
 
+## Example
+
+```ruby
+class Message < ApplicationRecord
+  belongs_to :room
+
+  # after_*_commit: subscribers never see a message that later rolls back.
+  # Stream name is the signed [room] identity; the channel verifies the signature,
+  # and access to the page that subscribed was authorized by the controller.
+  after_create_commit -> { broadcast_append_later_to room, target: "messages", partial: "messages/message" }
+  after_destroy_commit -> { broadcast_remove_to room }
+end
+
+# View: <%= turbo_stream_from @room %> — only rendered after authorize @room.
+# The partial renders only fields every room member may see.
+```
+
 ## Failure modes
 Pre-commit broadcasts, cross-tenant stream names, duplicate updates, and oversized payloads.
 

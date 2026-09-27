@@ -35,6 +35,25 @@ Inspect message identity extraction, domain schema/constraints, existing inbox/i
 6. Make duplicate results deterministic.
 7. Test repeated and concurrent delivery.
 
+## Example
+
+```ruby
+class Reply < ApplicationRecord
+  # add_index :replies, :message_id, unique: true
+end
+
+class RepliesMailbox < ApplicationMailbox
+  def process
+    # The Message-ID is the idempotency key: a provider retry or an operator
+    # replay of the same email cannot create a second reply.
+    Reply.create_or_find_by!(message_id: mail.message_id) do |reply|
+      reply.ticket = Ticket.find_by!(reply_token: mail.to.first.split("@").first.delete_prefix("reply+"))
+      reply.body = mail.text_part&.decoded || mail.decoded
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - timestamp/subject used as identity;

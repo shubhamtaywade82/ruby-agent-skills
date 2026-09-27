@@ -35,6 +35,22 @@ Inspect region routing (DNS, global load balancer, request steering), the author
 9. Rehearse promotion and failback before claiming regional availability.
 10. Document the blast radius: what is lost, queued, or reconciled when a region is unreachable.
 
+## Example
+
+```markdown
+## Data placement by region
+
+| Data                  | Home region        | Writes                  | Reads elsewhere            | Conflict rule                 |
+|-----------------------|--------------------|-------------------------|----------------------------|-------------------------------|
+| Accounts, users       | per-tenant (in/eu) | home region only        | proxied to home region     | none (single writer)          |
+| Orders, payments      | per-tenant         | home region only        | never replicated out (DPDP)| none                          |
+| Product catalog       | global primary (in)| primary only            | async read replicas        | replicas may lag ≤ 60 s       |
+| Sessions              | region of login    | local                   | re-authenticate on move    | —                             |
+
+Routing: `tenants.home_region` decides the database; a request landing in the wrong
+region is forwarded, never served from a stale replica for writes.
+```
+
 ## Failure modes
 
 - multi-region topology adopted without a requirement

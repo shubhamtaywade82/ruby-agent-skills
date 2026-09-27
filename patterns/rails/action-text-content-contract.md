@@ -34,6 +34,26 @@ Inspect owner model, tenant rules, forms/APIs, content consumers, attachment pol
 6. Define rendering/API representations.
 7. Test lifecycle.
 
+## Example
+
+```ruby
+class Announcement < ApplicationRecord
+  has_rich_text :body
+
+  MAX_PLAIN_TEXT = 10_000
+  MAX_ATTACHMENTS = 5
+
+  # What this content is allowed to be: bounded text and a bounded number of
+  # embeds, checked on the server whatever the editor allowed.
+  validate do
+    text = body.to_plain_text
+    errors.add(:body, :blank) if text.strip.empty?
+    errors.add(:body, :too_long, count: MAX_PLAIN_TEXT) if text.length > MAX_PLAIN_TEXT
+    errors.add(:body, :too_many_attachments) if body.body&.attachments.to_a.size > MAX_ATTACHMENTS
+  end
+end
+```
+
 ## Failure modes
 
 - generic rich-text field with no ownership;

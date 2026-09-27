@@ -20,6 +20,29 @@ Inspect selection predicate, completion marker, unique constraints, and rerun be
 ## Implementation procedure
 Make completion detectable and repeated execution converge on the intended state.
 
+## Example
+
+```ruby
+# Rerunnable: selects only unprocessed rows, so a crash midway resumes cleanly.
+namespace :data do
+  desc "Normalize legacy phone numbers (safe to rerun)"
+  task normalize_phones: :environment do
+    scope = Customer.where(phone_normalized_at: nil).where.not(phone: nil)
+    total = scope.count
+    done = 0
+    scope.in_batches(of: 1_000) do |batch|
+      batch.each do |customer|
+        customer.update_columns(phone: PhoneNumber.normalize(customer.phone), phone_normalized_at: Time.current)
+      end
+      done += batch.size
+      puts "normalized #{done}/#{total}"
+    end
+    remaining = Customer.where(phone_normalized_at: nil).where.not(phone: nil).count
+    abort "postcondition failed: #{remaining} remaining" unless remaining.zero?
+  end
+end
+```
+
 ## Failure modes
 Double processing, duplicated records, repeated side effects, or impossible resume state.
 

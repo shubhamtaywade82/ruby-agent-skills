@@ -20,6 +20,24 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Check package manifests, browser support, and native browser, CSS, React, and TypeScript capabilities before adding a package.
 
+## Example
+
+```tsx
+// Before: a date-formatting package and a clipboard package for two call sites.
+// After: the platform already covers both.
+export function Receipt({ paidAt, reference }: { paidAt: Date; reference: string }) {
+  const paid = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(paidAt);
+  return (
+    <p>
+      Paid {paid}{" "}
+      <button type="button" onClick={() => void navigator.clipboard.writeText(reference)}>
+        Copy reference
+      </button>
+    </p>
+  );
+}
+```
+
 ## Failure modes
 Package-per-primitive and duplicate utility libraries.
 

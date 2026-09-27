@@ -33,6 +33,36 @@ Inspect test helpers, global cleanup/reset conventions, notification subscribers
 6. Test callbacks explicitly.
 7. Test time semantics with deterministic clocks/helpers.
 
+## Example
+
+```ruby
+class CheckoutInstrumentationTest < ActiveSupport::TestCase
+  # Global state touched by the test is restored after it.
+  teardown do
+    Current.reset
+    ActiveSupport::Notifications.unsubscribe(@subscriber) if @subscriber
+  end
+
+  test "checkout emits one event with the documented payload" do
+    events = []
+    @subscriber = ActiveSupport::Notifications.subscribe("checkout.shop") { |event| events << event }
+
+    Checkout.new.call(orders(:one))
+
+    assert_equal 1, events.size
+    assert_equal %i[line_item_count order_id], events.first.payload.keys.sort
+  end
+
+  test "reports use the account time zone" do
+    Time.use_zone("Asia/Kolkata") do
+      travel_to Time.zone.local(2026, 1, 1, 0, 30) do
+        assert_equal Date.new(2026, 1, 1), DailyReport.new.report_date
+      end
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - notification subscribers leak across tests;

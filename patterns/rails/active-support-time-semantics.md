@@ -34,6 +34,23 @@ Inspect application timezone configuration, persistence conventions, locale/time
 5. Test DST and boundary transitions when relevant.
 6. Keep timezone separate from identity/authorization.
 
+## Example
+
+```ruby
+# Persist UTC, present in the user's zone, measure durations monotonically.
+Time.use_zone(current_user.time_zone) do
+  due_on = Time.zone.today + 3                  # a calendar date in the user's zone
+  starts_at = Time.zone.parse("2026-03-01 09:00") # zone-aware wall-clock time
+  Appointment.create!(starts_at: starts_at, due_on: due_on) # stored as UTC
+end
+
+started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+SyncJob.perform_now
+elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started # immune to clock changes
+
+# Avoid: Time.now / Date.today (system zone), and Time.current - started for timing.
+```
+
 ## Failure modes
 
 - system timezone leaking into application logic;

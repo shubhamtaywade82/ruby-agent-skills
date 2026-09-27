@@ -33,6 +33,19 @@ Inspect rails-i18n conventions, supported locales, template naming, fallback beh
 5. Test supported and fallback locales.
 6. Include locale in cache identity when output varies by locale.
 
+## Example
+
+```erb
+<%# app/views/orders/_summary.html.erb — one template; wording comes from
+    translations, so every locale renders the same structure and rules. %>
+<section>
+  <h2><%= t(".heading") %></h2>
+  <p><%= t(".items", count: order.line_items.size) %></p>
+  <p><%= t(".total", amount: number_to_currency(order.total_cents / 100.0)) %></p>
+  <p><%= l(order.placed_at, format: :long) %></p>
+</section>
+```
+
 ## Failure modes
 
 - business rules duplicated per locale;

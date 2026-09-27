@@ -20,6 +20,29 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Search neighboring Rails code and callers. Start at the existing boundary that owns the behavior; add a new abstraction only when it creates real responsibility or change isolation.
 
+## Example
+
+```ruby
+# Before: a service object and a presenter for a plain resource update.
+# Projects::UpdateService.new(project, params).call; ProjectPresenter.new(project).as_json
+
+# After: the conventional controller action and the model's own validations.
+class ProjectsController < ApplicationController
+  def update
+    @project = current_account.projects.find(params[:id])
+    if @project.update(project_params)
+      redirect_to @project
+    else
+      render :edit, status: :unprocessable_content
+    end
+  end
+
+  private
+
+  def project_params = params.require(:project).permit(:name, :due_on)
+end
+```
+
 ## Failure modes
 Service-per-action proliferation, wrapper controllers, generic BaseService, and for-later extension points.
 

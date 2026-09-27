@@ -32,6 +32,29 @@ Inspect type/id columns, indexes, migrations, allowed target classes, APIs, seri
 4. Define deletion and authorization semantics per target class.
 5. Plan class-renaming or migration compatibility.
 
+## Example
+
+```ruby
+class Comment < ApplicationRecord
+  COMMENTABLE_TYPES = %w[Post Photo].freeze
+
+  belongs_to :commentable, polymorphic: true
+  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }
+end
+
+class CommentsController < ApplicationController
+  def create
+    type = params.require(:commentable_type)
+    # Never constantize client input directly.
+    klass = { "Post" => Post, "Photo" => Photo }.fetch(type) { return head(:unprocessable_entity) }
+    commentable = klass.where(account: Current.account).find(params.require(:commentable_id))
+    commentable.comments.create!(body: params.require(:body), author: Current.user)
+    head :created
+  end
+end
+# DB: index on [commentable_type, commentable_id]; a CHECK constraint mirrors COMMENTABLE_TYPES.
+```
+
 ## Failure modes
 
 - arbitrary type constantization

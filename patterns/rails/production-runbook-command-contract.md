@@ -20,6 +20,23 @@ Inspect runbooks, deployment access, command arguments, environment prerequisite
 ## Implementation procedure
 Document invocation, prechecks, dry-run, expected output, stop conditions, recovery, and verification.
 
+## Example
+
+```markdown
+## `bin/rails billing:regenerate_invoice`
+
+| Field          | Value                                                                        |
+|----------------|------------------------------------------------------------------------------|
+| Purpose        | Rebuild one invoice's PDF after a template fix                               |
+| Invocation     | `INVOICE_ID=123 DRY_RUN=0 kamal app exec -r job 'bin/rails billing:regenerate_invoice'` |
+| Prerequisites  | Invoice is `issued`; template release deployed; ACTOR set to your email       |
+| Default        | `DRY_RUN=1` prints the diff and changes nothing                              |
+| Idempotent     | Yes — rerun overwrites the same attachment                                   |
+| Verification   | `Invoice.find(123).pdf.blob.created_at` is after the run; customer link works|
+| Rollback       | Previous blob retained 7 days: `Invoice.find(123).restore_previous_pdf!`      |
+| Stop if        | Invoice is `paid` and the amount would change — escalate to billing          |
+```
+
 ## Failure modes
 Wrong arguments, missing approvals, incomplete recovery, ambiguous success.
 

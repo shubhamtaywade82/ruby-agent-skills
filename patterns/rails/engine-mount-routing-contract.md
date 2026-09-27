@@ -20,6 +20,21 @@ Inspect engine routes, host routes, mount points, helper usage, constraints, and
 ## Implementation procedure
 Define mount path, helper semantics, constraints, and host security expectations.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  # Mount point, constraint, and precedence are the host's decision.
+  authenticate :user, ->(user) { user.admin? } do
+    mount Sidekiq::Web => "/admin/sidekiq"
+  end
+  mount Blog::Engine, at: "/blog", as: "blog"
+end
+
+# Host views link with the engine's route proxy:
+#   link_to "Blog", blog.root_path
+```
+
 ## Failure modes
 Route collisions, unexpected exposure, broken URL generation, missing authorization.
 

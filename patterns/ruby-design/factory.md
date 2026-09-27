@@ -33,6 +33,25 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# Construction selected by explicit input; unknown input fails loudly.
+module Exporters
+  REGISTRY = {
+    "csv" => CsvExporter,
+    "json" => JsonExporter,
+    "xlsx" => XlsxExporter
+  }.freeze
+
+  def self.for(format, **options)
+    REGISTRY.fetch(format.to_s) { raise ArgumentError, "unsupported export format: #{format}" }.new(**options)
+  end
+end
+
+exporter = Exporters.for(params[:format], timezone: current_user.time_zone)
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

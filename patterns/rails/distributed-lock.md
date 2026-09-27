@@ -35,6 +35,25 @@ Inspect lock backend semantics, lease TTL, renewal, failure behavior, clock assu
 9. Keep the protected work bounded and preferably idempotent.
 10. Monitor contention and expired leases.
 
+## Example
+
+```ruby
+# PostgreSQL advisory lock: one process at a time runs the nightly
+# settlement, across every host, and the lock is released if the process dies.
+class Settlement
+  LOCK_KEY = 42_001
+
+  def self.run_exclusive
+    ApplicationRecord.connection.transaction do
+      acquired = ApplicationRecord.connection.select_value("SELECT pg_try_advisory_xact_lock(#{LOCK_KEY})")
+      return :already_running unless acquired
+
+      new.call # lock held for this transaction only
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - local mutex used across hosts

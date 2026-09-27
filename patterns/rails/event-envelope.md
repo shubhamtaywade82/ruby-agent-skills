@@ -33,6 +33,34 @@ Inspect existing event serializers, broker metadata, message IDs, correlation/tr
 7. Define tenant/partition key semantics where required.
 8. Validate the envelope before domain processing.
 
+## Example
+
+```ruby
+# One envelope for every published message; payload stays domain-specific.
+class EventEnvelope
+  SCHEMA_VERSION = 1
+
+  def self.build(type:, payload:, correlation_id:, causation_id: nil)
+    {
+      "id" => SecureRandom.uuid,              # stable across retries/replay
+      "type" => type,                         # e.g. "order.placed"
+      "schema_version" => SCHEMA_VERSION,
+      "occurred_at" => Time.current.utc.iso8601(6),
+      "producer" => "shop-web",
+      "correlation_id" => correlation_id,     # the originating request/job
+      "causation_id" => causation_id,         # the message that caused this one
+      "payload" => payload
+    }
+  end
+end
+
+EventEnvelope.build(
+  type: "order.placed",
+  payload: { "order_id" => 42, "total_cents" => 1_999 },
+  correlation_id: Current.request_id
+)
+```
+
 ## Failure modes
 
 - new ID generated for every retry

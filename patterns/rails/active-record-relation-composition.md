@@ -33,6 +33,24 @@ Inspect existing scopes/query objects and their callers.
 4. Document required joins/order/group preconditions.
 5. Materialize only at the outer consumer boundary.
 
+## Example
+
+```ruby
+class Invoice < ApplicationRecord
+  scope :unpaid, -> { where(paid_at: nil) }
+  scope :overdue, -> { unpaid.where(due_on: ...Date.current) }
+  scope :for_account, ->(account) { where(account: account) }
+
+  # Returns a Relation, not an Array, so callers can keep composing and
+  # nothing hits the database until they enumerate.
+  def self.reminder_candidates(account)
+    for_account(account).overdue.where(reminded_at: nil)
+  end
+end
+
+Invoice.reminder_candidates(account).order(:due_on).limit(100).find_each { |invoice| RemindJob.perform_later(invoice.id) }
+```
+
 ## Failure modes
 
 - hidden database calls during composition

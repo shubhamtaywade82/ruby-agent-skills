@@ -34,6 +34,32 @@ Inspect Rails version, API namespaces/versioning, serializers/presenters, routes
 8. Define deprecation/removal criteria.
 9. Verify rollout compatibility.
 
+## Example
+
+```ruby
+# config/routes.rb
+Rails.application.routes.draw do
+  namespace :api do
+    namespace :v1 do
+      resources :orders, only: %i[index show]
+    end
+    namespace :v2 do
+      resources :orders, only: %i[index show]
+    end
+  end
+end
+
+# v1 keeps its shape for existing clients; v2 changes `total` from a float
+# to integer cents. The v1 serializer is only retired after usage reaches zero.
+class Api::V1::OrderSerializer
+  def self.render(order) = { id: order.id, total: order.total_cents / 100.0 }
+end
+
+class Api::V2::OrderSerializer
+  def self.render(order) = { id: order.id, total_cents: order.total_cents, currency: order.currency }
+end
+```
+
 ## Failure modes
 
 - removing or renaming fields silently

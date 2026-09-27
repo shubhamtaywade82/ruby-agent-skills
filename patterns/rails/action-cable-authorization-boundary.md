@@ -11,6 +11,35 @@ A valid connection is incorrectly treated as permission for every stream or acti
 ## Structure
 Authorize identity at connection, resource access at subscription/stream, and sensitive mutations at action.
 
+## Example
+
+```ruby
+# Identity at the connection, resource access at subscription, sensitive
+# mutations re-checked in the action.
+module ApplicationCable
+  class Connection < ActionCable::Connection::Base
+    identified_by :current_user
+
+    def connect
+      self.current_user = User.find_by(id: cookies.encrypted[:user_id]) || reject_unauthorized_connection
+    end
+  end
+end
+
+class ProjectChannel < ApplicationCable::Channel
+  def subscribed
+    @project = current_user.projects.find_by(id: params[:project_id])
+    @project ? stream_for(@project) : reject
+  end
+
+  def rename(data)
+    return unless ProjectPolicy.new(current_user, @project.reload).update?
+
+    @project.update!(name: data.fetch("name"))
+  end
+end
+```
+
 ## Failure modes
 Stream leakage, stale membership, and mutation without resource authorization.
 

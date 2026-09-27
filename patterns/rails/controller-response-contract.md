@@ -36,6 +36,27 @@ Inspect routes, request tests, serializers/views, response helpers, API conventi
 6. Ensure only one response path executes.
 7. Test the observable contract.
 
+## Example
+
+```ruby
+class OrdersController < ApplicationController
+  # The response contract per outcome is explicit: status, format, location.
+  def create
+    order = current_account.orders.build(order_params)
+    if order.save
+      render json: OrderSerializer.new(order), status: :created, location: order
+    else
+      render json: { errors: order.errors.details }, status: :unprocessable_content
+    end
+  end
+
+  def destroy
+    current_account.orders.find(params[:id]).destroy!
+    head :no_content
+  end
+end
+```
+
 ## Failure modes
 
 - relying on implicit behavior after changing the response shape

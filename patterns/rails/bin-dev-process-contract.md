@@ -21,6 +21,19 @@ Inspect bin/dev, Procfile.dev, process runner, ports, environment, signals, logs
 ## Implementation procedure
 Define process ownership, startup command, environment, dependencies, shutdown, restart, and failure propagation.
 
+## Example
+
+```bash
+# Procfile.dev
+#   web: bin/rails server -p 3000
+#   js: yarn build --watch
+#   css: yarn build:css --watch
+#
+# bin/dev runs all of them under one process manager: if any watcher exits,
+# foreman stops the group instead of leaving a server with stale assets.
+exec foreman start -f Procfile.dev --env /dev/null "$@"
+```
+
 ## Failure modes
 Orphan watchers, hidden build failures, port collisions, incorrect environment propagation, and false healthy state.
 

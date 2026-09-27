@@ -34,6 +34,28 @@ Inspect delivery method, provider gems/clients, credentials, timeout settings, p
 5. Preserve a stable mailer-facing contract.
 6. Test provider failures through a fake transport/adapter.
 
+## Example
+
+```ruby
+# config/environments/production.rb — provider details live in delivery config only.
+Rails.application.configure do
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: "smtp.postmarkapp.com",
+    port: 587,
+    user_name: Rails.application.credentials.dig(:postmark, :token),
+    password: Rails.application.credentials.dig(:postmark, :token),
+    authentication: :plain,
+    enable_starttls_auto: true,
+    open_timeout: 5,
+    read_timeout: 10
+  }
+end
+
+# Mailers and domain code call OrderMailer.shipped(order).deliver_later and never
+# reference Postmark classes, error codes, or tokens.
+```
+
 ## Failure modes
 
 - provider SDK types leaking across the application;

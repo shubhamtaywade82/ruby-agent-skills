@@ -21,6 +21,34 @@ Inspect accessibility roles, user events, and external boundaries.
 ## Implementation procedure
 Render at the smallest useful boundary, perform realistic interaction, and assert visible outcomes.
 
+## Example
+
+```tsx
+import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, expect, test } from "vitest";
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button type="button" onClick={() => setCount((value) => value + 1)}>Increment</button>
+    </>
+  );
+}
+
+afterEach(cleanup);
+
+// Query by role and visible text, act through user-event, assert what the user sees.
+test("increments when the user clicks the button", async () => {
+  render(<Counter />);
+  await userEvent.click(screen.getByRole("button", { name: "Increment" }));
+  expect(screen.getByText("Count: 1")).toBeTruthy();
+});
+```
+
 ## Failure modes
 Private-state assertions, CSS-selector coupling, and arbitrary sleeps.
 

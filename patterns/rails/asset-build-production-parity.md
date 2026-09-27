@@ -21,6 +21,16 @@ Inspect development watchers, production build commands, Docker/CI, environment 
 ## Implementation procedure
 Document intentional differences and run the production build in a production-like environment.
 
+## Example
+
+```bash
+# CI runs the same asset command and environment as the production image.
+export RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 NODE_ENV=production
+corepack enable && yarn install --immutable
+bin/rails assets:precompile
+test -f public/assets/.manifest.json || { echo "no asset manifest"; exit 1; }
+```
+
 ## Failure modes
 Dev-only dependencies, missing production binaries, environment-specific module resolution, and stale artifacts.
 

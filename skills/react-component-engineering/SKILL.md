@@ -40,6 +40,41 @@ Inspect component conventions, styling, routing/layout ownership, data-fetching 
 - reusable components tightly coupled to one endpoint;
 - tests that assert internal implementation.
 
+## Reference example
+
+Type-checked with `tsc --strict` (plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`).
+
+```tsx
+import type { ReactNode } from "react";
+
+// Composition instead of a growing set of boolean props (isDanger, hasIcon, ...).
+type CardProps = { title: string; actions?: ReactNode; children: ReactNode };
+
+export function Card({ title, actions, children }: CardProps) {
+  return (
+    <section aria-labelledby={`${title}-heading`}>
+      <header>
+        <h2 id={`${title}-heading`}>{title}</h2>
+        {actions}
+      </header>
+      {children}
+    </section>
+  );
+}
+
+// Controlled input: the parent owns the value; the component owns no copy.
+type SearchFieldProps = { value: string; onChange: (value: string) => void };
+
+export function SearchField({ value, onChange }: SearchFieldProps) {
+  return (
+    <label>
+      Search
+      <input type="search" value={value} onChange={(event) => onChange(event.target.value)} />
+    </label>
+  );
+}
+```
+
 ## Agent review checklist
 - Does the component have one coherent responsibility?
 - Is state/data ownership explicit?

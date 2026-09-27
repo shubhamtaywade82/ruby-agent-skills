@@ -35,6 +35,43 @@ Inspect session model/store, cookies, controller concern, login/logout actions, 
 9. Define multi-device behavior.
 10. Test each transition.
 
+## Example
+
+```ruby
+# One concern owns creation, lookup, expiry, and termination for every endpoint.
+module Authentication
+  extend ActiveSupport::Concern
+  IDLE_TIMEOUT = 2.hours
+
+  included { before_action :require_authentication }
+
+  private
+
+  def require_authentication
+    resume_session || redirect_to(new_session_path)
+  end
+
+  def resume_session
+    record = Session.find_by(id: cookies.signed[:session_id])
+    return terminate_session(record) && nil if record && record.last_active_at < IDLE_TIMEOUT.ago
+
+    record&.touch(:last_active_at)
+    Current.session = record
+  end
+
+  def start_new_session_for(user)
+    user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip, last_active_at: Time.current).tap do |record|
+      cookies.signed.permanent[:session_id] = { value: record.id, httponly: true, same_site: :lax }
+    end
+  end
+
+  def terminate_session(record = Current.session)
+    record&.destroy
+    cookies.delete(:session_id)
+  end
+end
+```
+
 ## Failure modes
 
 - logout only clears UI state

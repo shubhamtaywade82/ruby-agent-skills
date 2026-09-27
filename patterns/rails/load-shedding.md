@@ -32,6 +32,38 @@ Inspect capacity limits, traffic classes, priorities, rate limits, queue depth, 
 6. Ensure durable business work is not silently lost.
 7. Test overload and recovery.
 
+## Example
+
+```ruby
+# Shed low-priority work before the system saturates; never drop durable business writes.
+class LoadShedder
+  def initialize(app, max_inflight: Integer(ENV.fetch("MAX_INFLIGHT", 40)))
+    @app = app
+    @max_inflight = max_inflight
+    @inflight = Concurrent::AtomicFixnum.new(0)
+  end
+
+  def call(env)
+    request = Rack::Request.new(env)
+    if @inflight.value >= @max_inflight && sheddable?(request)
+      return [503, { "retry-after" => "5", "content-type" => "text/plain" }, ["overloaded"]]
+    end
+
+    @inflight.increment
+    begin
+      @app.call(env)
+    ensure
+      @inflight.decrement
+    end
+  end
+
+  private
+
+  # Per-process limit; checkout and payment webhooks are never shed.
+  def sheddable?(request) = request.get? && request.path.start_with?("/search", "/recommendations")
+end
+```
+
 ## Failure modes
 
 - shedding critical work

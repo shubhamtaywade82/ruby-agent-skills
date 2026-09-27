@@ -37,6 +37,25 @@ Inspect authorization, tenant resolution, consent/preferences, data classificati
 7. Add negative security tests.
 8. Verify staging cannot accidentally deliver externally.
 
+## Example
+
+```ruby
+class InvoiceMailer < ApplicationMailer
+  def issued(invoice)
+    @invoice = invoice
+    recipient = invoice.account.billing_contact
+    # Recipient comes from authoritative account state, never from request params.
+    raise ArgumentError, "billing contact outside account" unless recipient.account_id == invoice.account_id
+
+    # Link to the authenticated app instead of attaching the full PDF.
+    @invoice_url = invoice_url(invoice)
+    mail(to: recipient.email, subject: t(".subject", number: invoice.number))
+  end
+end
+# Password reset tokens: signed, expiring (generates_token_for), never logged;
+# config.filter_parameters covers :token.
+```
+
 ## Failure modes
 
 - cross-tenant recipients;

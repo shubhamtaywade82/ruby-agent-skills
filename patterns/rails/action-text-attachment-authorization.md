@@ -33,6 +33,39 @@ Inspect owner authorization, tenant scope, attachable classes, SGID verification
 5. Authorize rendering/access to embedded resources.
 6. Test cross-tenant/private cases.
 
+## Example
+
+```ruby
+# Direct uploads are tagged with the uploader's account...
+class DirectUploadsController < ActiveStorage::DirectUploadsController
+  before_action :require_login
+
+  private
+
+  def blob_args
+    args = super
+    args.merge(metadata: (args[:metadata] || {}).merge("account_id" => Current.account.id))
+  end
+end
+
+# ...so an embedded blob from another account (e.g. a pasted Signed Global
+# ID) is rejected before the article saves.
+class Article < ApplicationRecord
+  has_rich_text :body
+  belongs_to :account
+
+  validate :embedded_blobs_belong_to_account
+
+  private
+
+  def embedded_blobs_belong_to_account
+    blobs = body.body&.attachables.to_a.grep(ActiveStorage::Blob)
+    foreign = blobs.reject { |blob| blob.metadata["account_id"] == account_id }
+    errors.add(:body, :invalid_attachment) if foreign.any?
+  end
+end
+```
+
 ## Failure modes
 
 - SGID treated as authorization;

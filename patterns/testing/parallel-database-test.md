@@ -20,6 +20,29 @@ Testing parallel transactions, locks, race conditions, or thread-based database 
 5. Use deterministic coordination primitives instead of sleeps.
 6. Run the test under both the intended concurrency configuration and normal serial mode.
 
+## Example
+
+```ruby
+class ActiveSupport::TestCase
+  parallelize(workers: :number_of_processors)
+end
+
+# Only this case needs committed rows visible to another connection, so only
+# it opts out of the transactional wrapper and cleans up after itself.
+class InventoryLockingTest < ActiveSupport::TestCase
+  self.use_transactional_tests = false
+
+  teardown { InventoryItem.delete_all }
+
+  test "concurrent reservations never oversell" do
+    item = InventoryItem.create!(sku: "A1", quantity: 1)
+    threads = 2.times.map { Thread.new { InventoryReservation.call(item.id) rescue nil } }
+    threads.each(&:join)
+    assert_equal 0, item.reload.quantity
+  end
+end
+```
+
 ## Failure modes
 - disabling transactional tests globally
 - deadlocking on the outer test transaction

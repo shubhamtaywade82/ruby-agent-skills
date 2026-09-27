@@ -33,6 +33,27 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+# Earns its boundary: persistence spans two stores and the domain should not
+# know which record lives where.
+class CustomerRepository
+  def initialize(records: Customer, archive: ArchiveClient.new)
+    @records = records
+    @archive = archive
+  end
+
+  def find(id)
+    @records.find_by(id: id) || @archive.fetch_customer(id)
+  end
+
+  def save(customer)
+    customer.archived? ? @archive.store_customer(customer) : customer.save!
+  end
+end
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

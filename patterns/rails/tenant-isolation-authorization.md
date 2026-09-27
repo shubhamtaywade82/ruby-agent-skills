@@ -14,6 +14,31 @@ Resources belong to an account, organization, workspace, or tenant.
 ## Structure
 Resolve tenant from trusted actor/session context, scope resources to that tenant, then authorize additional action/resource rules.
 
+## Example
+
+```ruby
+class ApplicationController < ActionController::Base
+  before_action :set_current_account
+
+  private
+
+  # Tenant comes from the authenticated membership, never from a param or header.
+  def set_current_account
+    Current.account = Current.user.accounts.find_by!(subdomain: request.subdomain)
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
+  end
+end
+
+class InvoicesController < ApplicationController
+  def show
+    @invoice = Current.account.invoices.find(params[:id]) # another tenant's id -> 404
+    authorize @invoice                                    # then per-resource permission
+  end
+end
+# Composite FK: invoices(account_id, customer_id) -> customers(account_id, id) keeps rows in one tenant.
+```
+
 ## Implementation procedure
 Never trust a tenant identifier supplied only by the client. Apply tenant scope consistently to nested queries, jobs, exports, caches, and APIs.
 

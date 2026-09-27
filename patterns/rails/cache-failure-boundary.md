@@ -34,6 +34,23 @@ Inspect cache store topology, timeout behavior, client configuration, source-of-
 5. Observe fallback/error rates.
 6. Test cache timeout, connection failure, invalid value, and recovery.
 
+## Example
+
+```ruby
+# config/environments/production.rb
+Rails.application.configure do
+  config.cache_store = :redis_cache_store, {
+    url: ENV.fetch("REDIS_CACHE_URL"),
+    connect_timeout: 0.2, read_timeout: 0.2, write_timeout: 0.2,
+    reconnect_attempts: 0,
+    # A cache outage becomes a miss, reported once, not a failed request.
+    error_handler: ->(method:, returning:, exception:) {
+      Rails.error.report(exception, handled: true, context: { cache_method: method })
+    }
+  }
+end
+```
+
 ## Failure modes
 
 - fail-open behavior exposes wrong data;

@@ -20,6 +20,19 @@ A test suite or specific test group has a measured runtime problem.
 5. Re-run the same workload.
 6. Confirm assertions and isolation remain intact.
 
+## Example
+
+```bash
+# Measure before optimizing: find where the suite spends its time.
+bin/rails test --verbose 2>&1 | grep -E "^[A-Z].*= [0-9.]+ s" | sort -t= -k2 -nr | head -20
+
+# Budget check in CI: fail when the unit suite exceeds its agreed ceiling.
+start=$(date +%s)
+bin/rails test test/models test/lib
+elapsed=$(( $(date +%s) - start ))
+if [ "$elapsed" -gt 120 ]; then echo "unit suite took ${elapsed}s (budget 120s)"; exit 1; fi
+```
+
 ## Failure modes
 - removing assertions to gain speed
 - global parallelization without measuring overhead

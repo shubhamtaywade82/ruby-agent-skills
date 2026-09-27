@@ -33,6 +33,22 @@ Inspect broker/queue guarantees, acknowledgement semantics, visibility timeout, 
 7. Define schema compatibility during rolling deployment.
 8. Test crash/retry/replay paths.
 
+## Example
+
+```markdown
+## `order.placed` delivery contract
+
+| Property           | Contract                                                                  |
+|--------------------|---------------------------------------------------------------------------|
+| Guarantee          | At-least-once (outbox relay → broker). Duplicates are expected.           |
+| Identity           | `envelope.id` (UUID), stable across relay retries and replay               |
+| Ordering           | Per `order_id` (partition key); none across orders                        |
+| Acknowledgement    | Consumer acks after its DB transaction commits                            |
+| Retries            | 8 attempts, exponential backoff, then dead-letter `order.placed.dlq`      |
+| Retention / replay | 7 days; replay by `id` range, owned by the fulfilment team               |
+| Schema             | `schema_version` 2; consumers accept 1 and 2 until 2026-12-31             |
+```
+
 ## Failure modes
 
 - assuming exactly-once execution

@@ -21,6 +21,20 @@ Inspect Rails version, Propshaft/Sprockets, manifests, precompile tasks, public 
 ## Implementation procedure
 Define source-to-artifact ownership, fingerprinting, precompile behavior, and delivery/cache semantics before changing configuration.
 
+## Example
+
+```bash
+# Propshaft: every asset referenced with a helper gets a digest; the manifest maps logical -> digested.
+RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bin/rails assets:precompile
+test -f public/assets/.manifest.json || { echo "manifest missing" >&2; exit 1; }
+grep -q '"application.css"' public/assets/.manifest.json
+
+# Views use helpers so paths resolve through the manifest:
+#   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+#   <%= image_tag "logo.svg" %>        (not <img src="/assets/logo.svg">)
+# Production: config.public_file_server.headers = { "cache-control" => "public, max-age=31536000, immutable" }
+```
+
 ## Failure modes
 Missing manifests, stale assets, digest mismatch, deployment artifact drift, and unsafe cache reuse.
 

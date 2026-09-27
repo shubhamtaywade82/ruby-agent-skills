@@ -23,6 +23,38 @@ Inspect deployment topology, traffic routing, feature flags, health/SLI dashboar
 ## Implementation procedure
 1. Choose the smallest useful exposure. 2. Define observation window. 3. Select user-impact/resource gates. 4. Expand only after evidence passes. 5. Abort or roll back on defined regression. 6. Record each stage.
 
+## Example
+
+```ruby
+# Exposure widens only after each stage's gate holds.
+class NewCheckoutRollout
+  STAGES = [
+    { percent: 1,   hold: 30.minutes },
+    { percent: 10,  hold: 2.hours },
+    { percent: 50,  hold: 24.hours },
+    { percent: 100, hold: nil }
+  ].freeze
+
+  def advance!(to_percent)
+    abort_rollout!("gate failed") unless gate_healthy?
+    Flipper.enable_percentage_of_actors(:new_checkout, to_percent)
+  end
+
+  def abort_rollout!(reason)
+    Flipper.disable(:new_checkout) # instant, no deploy
+    Rails.logger.warn(event: "rollout.aborted", flag: "new_checkout", reason:)
+  end
+
+  private
+
+  # Compare the exposed cohort to control, not to yesterday.
+  def gate_healthy?
+    Metrics.ratio("checkout.success", flag: "new_checkout", variant: "on") >=
+      Metrics.ratio("checkout.success", flag: "new_checkout", variant: "off") - 0.005
+  end
+end
+```
+
 ## Failure modes
 - false canary with no reduced exposure;
 - process-health-only gate;

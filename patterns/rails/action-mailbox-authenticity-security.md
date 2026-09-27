@@ -36,6 +36,34 @@ Inspect ingress credentials/signature validation, sender normalization, recipien
 7. Add negative tests for spoofed or cross-tenant messages.
 8. Document residual risk where email authentication is advisory rather than authoritative.
 
+## Example
+
+```ruby
+class SupportMailbox < ApplicationMailbox
+  # Ingress authentication (Rails' ingress password) proves the provider
+  # delivered the mail; it does not prove who sent it. Sender identity and
+  # ticket ownership are checked separately.
+  before_processing :require_known_sender
+
+  def process
+    ticket = sender.tickets.find_by(reply_token: reply_token)
+    return bounce_with(SupportMailer.unknown_ticket(inbound_email)) unless ticket
+
+    ticket.replies.create!(body: mail.decoded, message_id: mail.message_id)
+  end
+
+  private
+
+  def sender = @sender ||= Customer.find_by(email: mail.from&.first&.downcase)
+
+  def require_known_sender
+    bounce_with(SupportMailer.unrecognized_sender(inbound_email)) unless sender
+  end
+
+  def reply_token = mail.to.to_a.find { |to| to.start_with?("reply+") }&.split(/[+@]/)&.second
+end
+```
+
 ## Failure modes
 
 - From header treated as authentication;

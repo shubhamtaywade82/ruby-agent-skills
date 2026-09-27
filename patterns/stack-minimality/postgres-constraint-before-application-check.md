@@ -20,6 +20,22 @@ Inspect the relevant application boundary, existing implementations, callers, de
 ## Implementation procedure
 Inspect schema, migrations, constraints, write paths, and deployment order. Keep useful user-facing validation while making PostgreSQL enforce the durable invariant.
 
+## Example
+
+```ruby
+class AddUniqueEmailPerTenant < ActiveRecord::Migration[8.0]
+  def change
+    add_index :users, [:tenant_id, :email], unique: true
+    add_check_constraint :orders, "quantity > 0", name: "orders_quantity_positive"
+  end
+end
+
+class User < ApplicationRecord
+  # Friendly error message; the index above is what actually holds under races.
+  validates :email, uniqueness: { scope: :tenant_id }
+end
+```
+
 ## Failure modes
 Validation-only uniqueness and foreign-key conventions without actual constraints.
 

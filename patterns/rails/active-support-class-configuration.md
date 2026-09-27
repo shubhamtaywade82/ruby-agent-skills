@@ -33,6 +33,23 @@ Inspect class hierarchy, defaults, inheritance expectations, mutation patterns, 
 5. Restrict instance access unless required.
 6. Test parent/subclass isolation.
 
+## Example
+
+```ruby
+class BaseExporter
+  # Inherited, overridable configuration. Frozen defaults and non-mutating
+  # overrides keep subclasses from changing the parent's value.
+  class_attribute :columns, instance_writer: false, default: %w[id created_at].freeze
+end
+
+class OrderExporter < BaseExporter
+  self.columns = columns + %w[total status] # new array, parent untouched
+end
+
+BaseExporter.columns  # => ["id", "created_at"]
+OrderExporter.columns # => ["id", "created_at", "total", "status"]
+```
+
 ## Failure modes
 
 - shared mutable hash/array;

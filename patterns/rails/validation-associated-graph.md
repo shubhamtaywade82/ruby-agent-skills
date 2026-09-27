@@ -30,6 +30,27 @@ Associated Validation Graph Contract needs an explicit contract so validation do
 5. Avoid duplicate validation passes.
 6. Test success and failure.
 
+## Example
+
+```ruby
+class Order < ApplicationRecord
+  has_many :line_items, inverse_of: :order, dependent: :destroy
+  accepts_nested_attributes_for :line_items, allow_destroy: true, limit: 100
+
+  # has_many validates new/changed children on save by default (autosave for new records);
+  # the limit bounds the graph.
+  validates :line_items, length: { minimum: 1, message: :blank }
+end
+
+class LineItem < ApplicationRecord
+  belongs_to :order, inverse_of: :line_items # presence check uses the in-memory parent
+  validates :quantity, numericality: { only_integer: true, greater_than: 0 }
+end
+
+order = Order.new(line_items_attributes: [{ quantity: 0 }])
+order.valid? # => false; order.errors[:"line_items.quantity"] => ["must be greater than 0"]
+```
+
 ## Failure modes
 - recursive validation loops;
 - unrelated children block saves;

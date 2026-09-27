@@ -34,6 +34,33 @@ Inspect test framework, Action Cable test helpers, channel/connection tests, ada
 7. Use deterministic local/test adapters.
 8. Keep cloud/Redis integration tests separate.
 
+## Example
+
+```ruby
+class ProjectChannelTest < ActionCable::Channel::TestCase
+  test "member subscribes to the project stream" do
+    stub_connection current_user: users(:member)
+    subscribe project_id: projects(:alpha).id
+
+    assert subscription.confirmed?
+    assert_has_stream_for projects(:alpha)
+  end
+
+  test "non-member is rejected" do
+    stub_connection current_user: users(:outsider)
+    subscribe project_id: projects(:alpha).id
+
+    assert subscription.rejected?
+  end
+
+  test "an update broadcasts once on the project stream" do
+    assert_broadcasts(ProjectChannel.broadcasting_for(projects(:alpha)), 1) do
+      ProjectBroadcast.updated(projects(:alpha))
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - testing only that a channel class exists;

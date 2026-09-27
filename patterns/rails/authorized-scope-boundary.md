@@ -14,6 +14,23 @@ Index, search, export, report, association, or dashboard results are actor-depen
 ## Structure
 Build the authorized relation first, then apply request filters and pagination.
 
+## Example
+
+```ruby
+class ProjectsController < ApplicationController
+  def index
+    # Authorized relation first, then request filters, then pagination.
+    scope = policy_scope(Project)
+    scope = scope.where(status: params[:status]) if Project.statuses.key?(params[:status])
+    @projects = scope.order(updated_at: :desc).page(params[:page]).per(25)
+  end
+end
+
+class ProjectPolicy::Scope < ApplicationPolicy::Scope
+  def resolve = scope.where(account_id: user.account_id)
+end
+```
+
 ## Implementation procedure
 Establish actor/tenant context, build the authorized relation, apply filters and ordering, then paginate.
 

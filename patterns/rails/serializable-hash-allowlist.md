@@ -20,6 +20,22 @@ Inspect attributes, model columns, serialization options, and consumer expectati
 ## Implementation procedure
 Prefer explicit fields or only-style allowlists; use exclusions only when stable and audited.
 
+## Example
+
+```ruby
+class Product < ApplicationRecord
+  PUBLIC_FIELDS = %i[id name price_cents currency].freeze
+
+  def as_json(options = nil)
+    super({ only: PUBLIC_FIELDS, methods: [] }.merge(options || {}))
+  end
+end
+
+Product.first.as_json
+# => { "id" => 1, "name" => "Mug", "price_cents" => 49900, "currency" => "INR" }
+# A new column (e.g. cost_price_cents) stays private until added to PUBLIC_FIELDS.
+```
+
 ## Failure modes
 Sensitive or newly added database columns silently become serialized fields.
 

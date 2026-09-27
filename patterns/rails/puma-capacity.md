@@ -21,6 +21,23 @@ Changing workers, threads, WEB_CONCURRENCY, RAILS_MAX_THREADS, or production req
 6. Measure request latency, queueing, memory, CPU, and DB pool pressure.
 7. Retune using evidence.
 
+## Example
+
+```ruby
+# config/puma.rb
+# Sizing (per 2 vCPU / 4 GB container, measured RSS ≈ 450 MB/worker):
+#   workers 2 × threads 5 = 10 concurrent requests per container
+#   DB connections: 2 workers × 5 threads = 10 per container (pool: 5 per process)
+#   8 containers × 10 = 80 connections  ≤  PostgreSQL max_connections 200 − jobs 40 − admin 10
+workers Integer(ENV.fetch("WEB_CONCURRENCY", 2))
+max_threads = Integer(ENV.fetch("RAILS_MAX_THREADS", 5))
+threads max_threads, max_threads
+preload_app!
+port Integer(ENV.fetch("PORT", 3000))
+
+# config/database.yml: pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+```
+
 ## Failure modes
 - threads exceed database capacity
 - workers exceed memory budget

@@ -32,6 +32,22 @@ Inspect both declarations, foreign keys, scopes, class names, through relationsh
 4. Test object identity, validation, and autosave behavior.
 5. Recheck query behavior for representative traversals.
 
+## Example
+
+```ruby
+class Author < ApplicationRecord
+  # Custom foreign key: Rails cannot infer the inverse, so state it.
+  has_many :books, foreign_key: :writer_id, inverse_of: :writer
+end
+
+class Book < ApplicationRecord
+  belongs_to :writer, class_name: "Author", inverse_of: :books
+end
+
+author = Author.includes(:books).first
+author.books.first.writer.equal?(author) # => true: same object, no extra query
+```
+
 ## Failure modes
 
 - assuming every association is automatically inverse

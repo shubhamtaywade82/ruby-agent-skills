@@ -21,6 +21,26 @@ Inspect dependencies, cleanup, external resource ownership, and async races.
 ## Implementation procedure
 Define setup, dependency identity, cleanup, and stale-work handling explicitly.
 
+## Example
+
+```tsx
+import { useEffect, useState } from "react";
+
+// Subscribe on mount / id change, unsubscribe in cleanup: no leaked listeners
+// and no updates from a stale subscription.
+type Channel = { subscribe(id: string, onMessage: (count: number) => void): () => void };
+
+export function useUnreadCount(channel: Channel, conversationId: string): number {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    setCount(0);
+    const unsubscribe = channel.subscribe(conversationId, setCount);
+    return unsubscribe;
+  }, [channel, conversationId]);
+  return count;
+}
+```
+
 ## Failure modes
 Effects that derive state, missing cleanup, disabled dependency lint, and effect chains.
 

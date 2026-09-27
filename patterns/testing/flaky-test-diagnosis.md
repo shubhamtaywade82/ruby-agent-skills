@@ -21,6 +21,20 @@ A test fails intermittently or only under CI/parallel execution.
 6. Run repeated verification.
 7. Keep a regression test for the discovered defect.
 
+## Example
+
+```bash
+# 1. Reproduce with the failing seed and the same worker count as CI.
+PARALLEL_WORKERS=4 bin/rails test test/models/order_test.rb --seed 48213
+
+# 2. Bisect the order dependency: run the failing test after each candidate file.
+bin/rails test test/models/shipping_test.rb test/models/order_test.rb --seed 48213
+
+# 3. Fix the leak (e.g. reset class-level state in teardown) and prove it
+#    with the original seed plus several fresh seeds.
+for seed in 48213 1 2 3; do bin/rails test test/models --seed "$seed" || exit 1; done
+```
+
 ## Failure modes
 - adding retries as the fix
 - increasing sleeps

@@ -50,6 +50,36 @@ Inspect the actual repository at each boundary before changing code.
 8. Add request-level regression coverage.
 9. Run focused and broader checks.
 
+## Example
+
+```ruby
+# Route -> controller (HTTP) -> model (domain) -> view/JSON (presentation).
+# config/routes.rb:  resources :orders, only: :create
+
+class OrdersController < ApplicationController
+  def create
+    @order = Current.account.orders.build(order_params) # tenant scope, strong params
+    authorize @order
+    if @order.place # domain behavior lives on the model
+      redirect_to @order, notice: t(".placed")
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def order_params = params.expect(order: [:sku, :quantity])
+end
+
+class Order < ApplicationRecord
+  def place
+    self.status = "placed"
+    save
+  end
+end
+```
+
 ## Failure modes
 
 - business logic in controller

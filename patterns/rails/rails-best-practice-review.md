@@ -41,6 +41,21 @@ Inspect Rails/Ruby versions, relevant files, tests, schema/migrations, routes, e
 5. Run focused tests and the applicable analyzer.
 6. Review the final diff.
 
+## Example
+
+```markdown
+## Review: `OrdersController#create` (PR #412)
+
+| # | Finding                                                   | Evidence                          | Severity | Action                         |
+|---|-----------------------------------------------------------|-----------------------------------|----------|--------------------------------|
+| 1 | Loads order by id without account scope (IDOR)            | `Order.find(params[:id])` L18     | high     | `Current.account.orders.find`  |
+| 2 | `after_save :charge_card` makes an HTTP call in a callback| `app/models/order.rb:22`          | high     | explicit call after commit     |
+| 3 | Missing index for `orders.account_id` lookup              | `db/schema.rb` has none           | medium   | concurrent index migration     |
+| 4 | Non-RESTful `post :do_cancel`                              | `config/routes.rb:31`             | low      | `resource :cancellation`       |
+
+Not reported: style-only offenses already covered by RuboCop.
+```
+
 ## Failure modes
 - blindly fixing every warning
 - introducing deprecated Rails APIs

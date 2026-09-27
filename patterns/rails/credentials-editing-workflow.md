@@ -20,6 +20,18 @@ Inspect developer commands, editor workflow, environment selection, and CI expec
 ## Implementation procedure
 Use bin/rails credentials:edit/show with the repository's environment convention; review diffs and never paste decrypted files into source control.
 
+## Example
+
+```bash
+# Edit production credentials with the production key, through Rails, so the
+# file stays encrypted and the right environment is selected explicitly.
+EDITOR="code --wait" bin/rails credentials:edit --environment production
+
+# Review only which keys changed (values stay encrypted in the diff).
+bin/rails credentials:diff --enroll   # one-time: readable git diffs of key names
+git diff config/credentials/production.yml.enc
+```
+
 ## Failure modes
 Wrong environment edited, plaintext temporary files committed, or malformed encrypted file.
 

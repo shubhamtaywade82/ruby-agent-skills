@@ -20,6 +20,27 @@ Inspect GlobalID app name, model names, locator configuration, class restriction
 ## Implementation procedure
 Restrict locatable classes and applications where possible and make custom locator behavior explicit.
 
+## Example
+
+```ruby
+# Untrusted SGIDs may only resolve to the classes this boundary expects.
+class MentionsController < ApplicationController
+  MENTIONABLE = [User, Team].freeze
+
+  def create
+    target = GlobalID::Locator.locate_signed(
+      params.require(:sgid), for: "mention", only: MENTIONABLE
+    )
+    return head :unprocessable_entity unless target
+    # Identity is not permission.
+    return head :forbidden unless MentionPolicy.new(Current.user, target).create?
+
+    Mention.create!(author: Current.user, target:)
+    head :created
+  end
+end
+```
+
 ## Failure modes
 Unexpected model resolution, class confusion, unsafe cross-application references.
 

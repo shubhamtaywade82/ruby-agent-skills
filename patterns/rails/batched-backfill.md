@@ -25,6 +25,23 @@ The dataset is demonstrably small and a single bounded transaction is explicitly
 7. Retry only safe failures.
 8. Define a completion/verification query.
 
+## Example
+
+```ruby
+class BackfillNormalizedEmail < ActiveRecord::Migration[8.0]
+  disable_ddl_transaction! # no single long transaction holding locks
+
+  def up
+    User.unscoped.where(normalized_email: nil).in_batches(of: 5_000) do |batch|
+      batch.update_all("normalized_email = LOWER(TRIM(email))")
+      sleep(0.05) # leave room for production traffic between batches
+    end
+  end
+
+  def down; end
+end
+```
+
 ## Failure modes
 - loading millions of rows into Ruby
 - one transaction around the entire backfill

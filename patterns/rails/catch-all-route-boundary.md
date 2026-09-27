@@ -33,6 +33,23 @@ Inspect route order, wildcard segments, existing 404 behavior, redirect conventi
 4. Define redirect status/target semantics explicitly.
 5. Test intended misses and protected paths.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  resources :orders
+  namespace :api do
+    resources :orders, only: %i[index show]
+  end
+
+  # Last, and constrained: only HTML GETs that are not API, assets, or
+  # Rails-internal paths reach the SPA shell.
+  get "*path", to: "spa#show", constraints: ->(request) {
+    request.format.html? && !request.path.start_with?("/api", "/rails", "/assets")
+  }
+end
+```
+
 ## Failure modes
 
 - fallback captures health/admin/API routes;

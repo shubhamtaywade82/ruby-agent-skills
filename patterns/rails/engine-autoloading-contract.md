@@ -20,6 +20,21 @@ Inspect engine autoload roots, namespace mapping, eager loading, and current Zei
 ## Implementation procedure
 Align paths and constants with the loader contract before adding explicit requires.
 
+## Example
+
+```ruby
+# engines/billing/app/models/billing/invoice.rb      -> Billing::Invoice
+# engines/billing/app/services/billing/charge.rb     -> Billing::Charge
+# engines/billing/lib/billing/engine.rb              -> Billing::Engine (loaded once)
+module Billing
+  class Engine < ::Rails::Engine
+    isolate_namespace Billing
+  end
+end
+# No require_dependency / require for app/ files; verify with:
+#   bin/rails zeitwerk:check
+```
+
 ## Failure modes
 Zeitwerk errors, stale constants, production eager-load failures.
 

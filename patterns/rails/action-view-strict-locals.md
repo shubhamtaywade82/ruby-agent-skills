@@ -33,6 +33,17 @@ Resolve Rails/Action View version and inspect existing locals signature usage.
 4. Test missing, unknown, default, and valid local cases.
 5. Measure compilation impact only when material.
 
+## Example
+
+```erb
+<%# app/views/shared/_avatar.html.erb %>
+<%# locals: (user:, size: 32, link: true) -%>
+<%# Required and optional locals are declared; `render "shared/avatar", usr: u`
+    raises ActionView::Template::Error instead of rendering a broken avatar. %>
+<% image = image_tag(user.avatar_url(size: size), alt: user.name, width: size, height: size) %>
+<%= link ? link_to(image, user) : image %>
+```
+
 ## Failure modes
 
 - adopting syntax unsupported by the repository Rails version;

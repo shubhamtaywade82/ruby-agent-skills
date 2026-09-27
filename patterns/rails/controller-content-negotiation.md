@@ -34,6 +34,24 @@ Inspect route constraints, requested formats, serializers/views, respond_to conv
 5. Keep representation code separate from domain behavior.
 6. Add request tests per supported and unsupported format.
 
+## Example
+
+```ruby
+class ReportsController < ApplicationController
+  def show
+    @report = current_account.reports.find(params[:id])
+
+    # Only the formats we support; anything else is 406, not an accidental
+    # XML or JSON contract.
+    respond_to do |format|
+      format.html
+      format.json { render json: ReportSerializer.new(@report) }
+      format.csv { send_data @report.to_csv, filename: "report-#{@report.id}.csv" }
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - accepting every format by accident
