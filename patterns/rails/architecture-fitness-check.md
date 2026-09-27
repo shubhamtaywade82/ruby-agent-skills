@@ -20,6 +20,24 @@ Inspect static structure, namespaces, dependencies, routes, public APIs, schemas
 ## Implementation procedure
 Encode stable structural rules as tests/checks while keeping higher-order review human/agent-driven.
 
+## Example
+
+```ruby
+# An executable architecture rule: code outside Billing may call only the
+# public Billing entry point, never its internals.
+class BillingBoundaryTest < ActiveSupport::TestCase
+  INTERNAL = /\bBilling::(Charge|Ledger|InvoiceNumbering)\b/
+
+  test "no code outside app/billing references Billing internals" do
+    offenders = Dir[Rails.root.join("app/**/*.rb")].reject { |path| path.include?("/app/billing/") }.select do |path|
+      File.read(path).match?(INTERNAL)
+    end
+
+    assert_empty offenders.map { |path| path.delete_prefix(Rails.root.to_s + "/") }
+  end
+end
+```
+
 ## Failure modes
 Brittle checker, false positives, gaming, architecture reduced to folder names.
 

@@ -32,6 +32,20 @@ Inspect both association declarations, database foreign keys/cascades, callbacks
 4. Verify foreign-key compatibility.
 5. Test success, restriction, rollback, and cleanup cases.
 
+## Example
+
+```ruby
+class Project < ApplicationRecord
+  has_many :tasks, dependent: :destroy_async      # many rows, callbacks needed, done in a job
+  has_many :activity_events, dependent: :delete_all # no callbacks, one DELETE
+  has_one :settings, dependent: :destroy
+  has_many :invoices, dependent: :restrict_with_error # never delete billing history
+end
+
+# Schema agrees: tasks.project_id has a foreign key without ON DELETE CASCADE,
+# because destroy_async must run task callbacks (attachment purges) first.
+```
+
 ## Failure modes
 
 - double cleanup

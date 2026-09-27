@@ -32,6 +32,24 @@ Inspect collection mutation methods, callback order, abort behavior, transaction
 4. Avoid network or durable workflow side effects.
 5. Test add/remove through the actual association API.
 
+## Example
+
+```ruby
+class Team < ApplicationRecord
+  has_many :memberships
+  # Narrow and deterministic: guard the collection's own invariant only.
+  has_many :members, through: :memberships, source: :user, before_add: :enforce_seat_limit
+
+  private
+
+  def enforce_seat_limit(_user)
+    raise ActiveRecord::RecordInvalid, self if members.size >= seat_limit
+  end
+end
+# Invitations, billing seat changes, and emails belong to Teams::AddMember,
+# not to after_add.
+```
+
 ## Failure modes
 
 - external I/O in association callbacks

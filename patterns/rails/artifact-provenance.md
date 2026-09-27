@@ -23,6 +23,20 @@ Inspect CI build jobs, image/package identifiers, lockfiles, registries, tags/di
 ## Implementation procedure
 1. Capture source revision. 2. Capture dependency lock/build inputs. 3. Produce an immutable artifact identity. 4. Promote the same artifact. 5. Record target environment and deployment result. 6. Make provenance queryable.
 
+## Example
+
+```bash
+# Build once, record identity, promote the same image to every environment.
+sha=$(git rev-parse HEAD)
+docker buildx build --push --tag "registry.example.test/shop:$sha" --metadata-file build.json .
+digest=$(jq -r '."containerimage.digest"' build.json)
+printf '{"git_sha":"%s","image_digest":"%s"}\n' "$sha" "$digest" > provenance.json
+
+# Staging and production deploy that exact tag; nothing is rebuilt per environment.
+kamal deploy --version "$sha" --skip-push --destination staging
+kamal deploy --version "$sha" --skip-push --destination production
+```
+
 ## Failure modes
 - per-environment rebuilds;
 - mutable image tags without digest tracking;

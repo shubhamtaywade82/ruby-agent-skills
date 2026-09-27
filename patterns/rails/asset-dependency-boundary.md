@@ -21,6 +21,16 @@ Inspect package manager, lockfile, runtime version, install scripts, registry co
 ## Implementation procedure
 Change the smallest dependency set, preserve lockfile integrity, audit install/build scripts, and verify clean installation.
 
+## Example
+
+```bash
+# Review a frontend dependency change like any other runtime change.
+git diff origin/main -- package.json yarn.lock | head -50   # what exactly changed
+yarn npm audit --severity high                                 # known vulnerabilities
+yarn why left-pad                                              # who pulls a new transitive dep
+grep -n '"postinstall"\|"preinstall"' node_modules/new-package/package.json && echo "review install scripts"
+```
+
 ## Failure modes
 Transitive drift, malicious install scripts, incompatible runtime versions, and undocumented private registry assumptions.
 

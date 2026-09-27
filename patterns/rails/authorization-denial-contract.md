@@ -20,6 +20,22 @@ Inspect existing 403/404, policy failures, job discard, channel rejection, and t
 ## Implementation procedure
 Define denial mapping by threat model and preserve it across execution surfaces.
 
+## Example
+
+```ruby
+class ApplicationController < ActionController::Base
+  # Not in your tenant: 404 (don't confirm it exists).
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  # Visible to you but not allowed: 403, with the same body shape everywhere.
+  rescue_from Authorization::Forbidden, with: :forbidden
+
+  private
+
+  def not_found = render(json: { error: "not_found" }, status: :not_found)
+  def forbidden = render(json: { error: "forbidden" }, status: :forbidden)
+end
+```
+
 ## Failure modes
 Existence leaks, inconsistent client behavior, retries on permanent denial, or silent task success.
 

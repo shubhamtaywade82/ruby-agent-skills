@@ -20,6 +20,19 @@ Inspect existing architecture docs/ADRs and repository conventions.
 ## Implementation procedure
 Record context, problem, constraints, alternatives, decision, consequences, migration, and review trigger without duplicating source code.
 
+## Example
+
+```markdown
+# ADR 0012: Keep background jobs on Solid Queue instead of adding Sidekiq
+
+- Status: accepted (2026-09-10)
+- Context: 40 jobs/s peak, PostgreSQL already provisioned; no Redis today.
+- Decision: use Solid Queue on the primary database with a separate queue DB pool of 10.
+- Alternatives rejected: Sidekiq (adds Redis to operate and secure); GoodJob (no advantage over the framework default here).
+- Consequences: job throughput is bounded by database capacity; queue tables need vacuum monitoring.
+- Review trigger: sustained > 300 jobs/s, or queue latency p95 > 30 s for a week.
+```
+
 ## Failure modes
 Decision reversals lose context, rejected alternatives forgotten, documentation drifts.
 

@@ -32,6 +32,20 @@ Inspect the actual consumer path, association cardinality, inverse_of, existing 
 4. Use strict loading when accidental lazy loading should be prohibited.
 5. Measure query count and result cardinality.
 
+## Example
+
+```ruby
+# The view traverses order -> customer and order -> line_items -> product;
+# load exactly that graph for exactly this page.
+@orders = current_account.orders
+  .includes(:customer, line_items: :product)
+  .order(created_at: :desc)
+  .limit(25)
+
+# Filtering on an association needs a JOIN; preloading it is separate.
+Order.joins(:customer).where(customers: { country: "IN" }).preload(:line_items)
+```
+
 ## Failure modes
 
 - global eager loading

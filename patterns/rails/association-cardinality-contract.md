@@ -32,6 +32,26 @@ Inspect both models, foreign key columns, nullability, indexes, uniqueness, and 
 4. Add database enforcement where cardinality is an integrity requirement.
 5. Add relationship behavior tests.
 
+## Example
+
+```ruby
+class Account < ApplicationRecord
+  has_one :billing_profile, dependent: :destroy # "exactly one" is enforced below
+end
+
+class BillingProfile < ApplicationRecord
+  belongs_to :account # required by default: account_id NOT NULL in the schema
+end
+
+class AddUniqueAccountToBillingProfiles < ActiveRecord::Migration[8.0]
+  def change
+    add_index :billing_profiles, :account_id, unique: true
+    change_column_null :billing_profiles, :account_id, false
+    add_foreign_key :billing_profiles, :accounts
+  end
+end
+```
+
 ## Failure modes
 
 - has_one without uniqueness enforcement

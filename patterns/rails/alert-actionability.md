@@ -24,6 +24,25 @@ Inspect SLOs, existing alerts, alert routing, dashboards, severity definitions, 
 ## Implementation procedure
 1. Identify the contract protected. 2. Define the signal/window. 3. Define severity. 4. Attach diagnostic links/context. 5. Define immediate operator action. 6. Define recovery/resolution. 7. Test firing, deduplication, and resolution.
 
+## Example
+
+```yaml
+# Each alert names an owner, a runbook action, and the user-facing signal it
+# protects; it pages only when an operator can act.
+- alert: CheckoutErrorBudgetBurn
+  expr: |
+    sum(rate(http_requests_total{route="checkout", status=~"5.."}[5m]))
+      / sum(rate(http_requests_total{route="checkout"}[5m])) > 0.02
+  for: 10m
+  labels:
+    severity: page
+    owner: payments-team
+  annotations:
+    summary: "Checkout 5xx above 2% for 10 minutes"
+    runbook: "https://runbooks.example.test/checkout-errors"
+    first_action: "Check the payment provider status page and the checkout deploy log; roll back the last deploy if it correlates."
+```
+
 ## Failure modes
 - paging on every exception;
 - alerting on non-actionable metrics;

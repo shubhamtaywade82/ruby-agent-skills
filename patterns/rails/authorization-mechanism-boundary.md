@@ -20,6 +20,27 @@ Find policy/ability classes, base policies, authorization helpers, controller ho
 ## Structure
 Keep one authoritative decision path and explicit adapters only at framework boundaries.
 
+## Example
+
+```ruby
+# The repository already uses Pundit: every surface goes through it, instead
+# of ad-hoc `if current_user.admin?` checks in controllers and models.
+class ApplicationController < ActionController::Base
+  include Pundit::Authorization
+  after_action :verify_authorized, except: :index
+  after_action :verify_policy_scoped, only: :index
+end
+
+class ReportsController < ApplicationController
+  def index = @reports = policy_scope(Report)
+
+  def show
+    @report = Report.find(params[:id])
+    authorize @report
+  end
+end
+```
+
 ## Implementation procedure
 Identify the mechanism, map entry points to it, avoid parallel checks, preserve denial semantics, and add regression tests.
 

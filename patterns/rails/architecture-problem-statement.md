@@ -20,6 +20,21 @@ Inspect incidents, change coupling, dependency graph, performance/reliability/se
 ## Implementation procedure
 State the problem, affected invariants, measurable cost, and why existing boundaries are insufficient.
 
+## Example
+
+```markdown
+**Problem:** Checkout p95 latency is 2.8 s (SLO 800 ms) during sales; 70% of
+the time is spent in synchronous tax and fraud API calls inside the request.
+
+**Invariants to keep:** an order is charged at most once; tax is final at charge time.
+
+**Constraints:** PostgreSQL primary only; same deploy pipeline; payments team owns checkout.
+
+**Evidence:** APM traces from 2026-09-15 sale (attached); provider latency p95 900 ms each.
+
+**Not the problem:** controller size, the service-object folder layout.
+```
+
 ## Failure modes
 Architecture theatre, overbuilding, solving hypothetical scale, unclear success criteria.
 

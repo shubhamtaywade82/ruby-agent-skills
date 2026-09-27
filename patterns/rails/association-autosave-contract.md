@@ -33,6 +33,24 @@ Inspect parent/child associations, validation, autosave settings, transactions, 
 4. Define transaction ownership.
 5. Test parent success/failure and child failure.
 
+## Example
+
+```ruby
+class Order < ApplicationRecord
+  # Line items built through the order are validated and saved with it, in
+  # the same transaction; one invalid item makes order.save return false.
+  has_many :line_items, inverse_of: :order, autosave: true
+  accepts_nested_attributes_for :line_items, allow_destroy: true, limit: 50
+
+  validates_associated :line_items
+end
+
+order = Order.new(customer: customer)
+order.line_items.build(sku: "A1", quantity: 2)
+order.line_items.build(sku: "", quantity: 1) # invalid
+order.save # => false; nothing persisted
+```
+
 ## Failure modes
 
 - assuming parent save persists every child

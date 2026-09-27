@@ -14,6 +14,27 @@ A workflow is reusable from controllers, jobs, CLI tasks, events, or other servi
 ## Structure
 Require an actor/capability context or authorize the application operation at the service boundary.
 
+## Example
+
+```ruby
+# The service authorizes its own operation, because jobs, the console, and
+# the API call it without going through the controller.
+class Projects::Transfer
+  def initialize(project, to_account:, actor:)
+    @project = project
+    @to_account = to_account
+    @actor = actor
+  end
+
+  def call
+    raise Authorization::Forbidden unless ProjectPolicy.new(@actor.membership_in(@project.account)).allowed?(:transfer)
+    raise Authorization::Forbidden unless @actor.member_of?(@to_account)
+
+    @project.update!(account: @to_account)
+  end
+end
+```
+
 ## Failure modes
 Direct service invocation bypass, ambient current-user dependency, and conflicting duplicate checks.
 

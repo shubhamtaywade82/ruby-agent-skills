@@ -20,6 +20,25 @@ Inspect cache key, actor/tenant/resource identity, policy inputs, permission ver
 ## Implementation procedure
 Include all decision inputs in identity and define invalidation or bounded freshness semantics.
 
+## Example
+
+```ruby
+class PermissionCache
+  # Membership and role changes bump permissions_version, so every cached
+  # decision that depended on them misses on the next read.
+  def self.allowed?(user, action, record)
+    key = ["authz", user.id, user.permissions_version, record.class.name, record.id, record.updated_at.to_i, action]
+    Rails.cache.fetch(key, expires_in: 5.minutes) do
+      Policy.for(record).new(user, record).public_send(:"#{action}?")
+    end
+  end
+end
+
+class Membership < ApplicationRecord
+  after_commit { user.increment!(:permissions_version) } # invalidates by changing identity
+end
+```
+
 ## Failure modes
 Revoked access remains cached, cross-tenant cache collision, stale capability grants.
 
