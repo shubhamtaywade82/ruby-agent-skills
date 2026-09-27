@@ -538,7 +538,8 @@ Use the repository's existing test framework and helpers. Do not introduce a sec
 
 ```text
 cross-process/service boundary / queue / broker / event / outbox / inbox /
-eventual consistency / saga / distributed lock / replay / reconciliation
+eventual consistency / saga / distributed lock / replay / reconciliation /
+multi-region / data residency / region failover
   -> rails-distributed-systems
   -> rails-api-integration for synchronous APIs/webhooks and contract compatibility
   -> rails-active-job for asynchronous execution/retry/concurrency
@@ -562,6 +563,7 @@ Classify the failure model before selecting a mechanism. Prefer local atomicity 
 | Delivery/ack/replay semantics need explicit contract | pattern:message-delivery-contract |
 | Workflow spans independent transactions | pattern:saga-orchestration |
 | Cross-process exclusion is unavoidable | pattern:distributed-lock |
+| Writes or residency span regions | pattern:multi-region-data-boundary |
 | Consumers observe asynchronous propagation | pattern:eventual-consistency |
 
 

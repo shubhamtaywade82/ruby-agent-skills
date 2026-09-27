@@ -276,6 +276,24 @@ Never treat a lock as proof that a side effect happened exactly once.
 
 Use `patterns/rails/distributed-lock.md`.
 
+## Multi-region deployments
+
+Do not adopt multi-region topology without a concrete residency, latency, or regional-availability requirement. A single region with edge caching satisfies most latency goals.
+
+Before designing for multiple regions, define:
+
+- the requirement single-region cannot satisfy;
+- the authoritative write region and replication direction/lag budget;
+- the ownership model: single write region, region-partitioned data, or independent stacks with reconciliation;
+- data residency boundaries enforced at the storage layer, not by convention;
+- region routing and user pinning, and their behavior during failover;
+- failover: promotion, fencing against the old primary, RPO/RTO, and conflict handling;
+- region-local dependencies (jobs, cache, blob storage) and their failover targets.
+
+Keep synchronous cross-region calls out of user request paths.
+
+Use `patterns/rails/multi-region-data-boundary.md`.
+
 ## Ordering and replay
 
 Do not assume message order unless the transport guarantees it for the relevant key/partition.
@@ -411,6 +429,7 @@ end
 - [ ] compensation/recovery semantics are explicit
 - [ ] distributed lock is justified over simpler primitives
 - [ ] lock lease/fencing behavior is explicit when applicable
+- [ ] multi-region ownership/residency/failover contracts are explicit when data spans regions
 - [ ] ordering/replay semantics are explicit
 - [ ] failure matrix is reviewed
 - [ ] correlation/causation identifiers propagate
@@ -423,6 +442,7 @@ end
 - assuming exactly-once delivery or execution;
 - using local Mutex for cross-process correctness;
 - using a distributed lock where a database constraint is sufficient;
+- adopting multi-region topology without a residency, latency, or availability requirement single-region cannot meet;
 - publishing an event after commit with no durable handoff;
 - performing the same side effect from duplicate messages without deduplication;
 - putting an entire distributed workflow inside one HTTP request;
