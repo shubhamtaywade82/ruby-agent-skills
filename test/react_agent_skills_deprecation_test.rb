@@ -13,7 +13,8 @@ class ReactAgentSkillsDeprecationTest < Minitest::Test
     "react-state-effects" => "react-agent-skills / react-hooks-effects + react-state-management",
     "react-data-fetching" => "react-agent-skills / react-data-fetching",
     "react-testing-engineering" => "react-agent-skills / react-testing-engineering + frontend-e2e",
-    "react-accessibility-performance" => "react-agent-skills / react-accessibility + react-performance",
+    "react-accessibility-performance" =>
+      "react-agent-skills / react-accessibility + react-performance",
     "react-architecture" => "react-agent-skills / react-architecture"
   }.freeze
 
@@ -31,6 +32,7 @@ class ReactAgentSkillsDeprecationTest < Minitest::Test
     assert File.file?(path), "migration document must exist"
 
     document = File.read(path)
+
     MAPPINGS.each do |skill, replacement|
       assert_includes document, "| #{skill} | #{replacement} |"
     end
