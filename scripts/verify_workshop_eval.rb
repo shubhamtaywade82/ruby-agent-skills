@@ -136,7 +136,7 @@ begin
     package_ok = File.file?(gemspec) && File.read(gemspec, encoding: "UTF-8").include?("lib/**/*")
     build_ok = false
     if package_ok
-      stdout, stderr, status = Open3.capture3("gem", "build", gemspec, chdir: WORKSPACE)
+      stdout, stderr, status = Open3.capture3({ "RUBYOPT" => "-W0" }, "gem", "build", gemspec, chdir: WORKSPACE)
       build_ok = status.success? && stdout.include?("Successfully built") && stderr.empty?
       Dir.glob(File.join(WORKSPACE, "*.gem")).each { |path| FileUtils.rm_f(path) }
     end

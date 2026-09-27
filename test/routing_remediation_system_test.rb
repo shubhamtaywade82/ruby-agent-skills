@@ -11,33 +11,25 @@ class RoutingRemediationSystemTest < Minitest::Test
 
   def write_campaign(path, primary_skill:, candidate: false, accuracy: 1.0)
     observed = candidate ? "rails-active-record" : primary_skill
-    campaign = {
-      "protocol_version" => 1,
-      "campaign" => "skill-routing-public-v1",
-      "campaign_version" => 1,
-      "routing_case_count" => 1,
-      "requested_repetitions" => 3,
-      "complete" => true,
-      "agent" => { "provider" => "test", "model" => "test-model" },
-      "metrics" => {
-        "primary_accuracy" => accuracy,
-        "secondary_recall" => 1.0,
-        "average_unexpected_secondary_count" => 0.0
-      },
-      "cases" => {
-        "case-a" => {
-          "expected_primary_skill" => primary_skill,
-          "runs" => 3.times.map {
-            {
-              "status" => "completed",
-              "expected" => { "primary_skill" => primary_skill },
-              "observed" => { "primary_skill" => observed }
-            }
-          }
-        }
+    runs = Array.new(3) do
+      {
+        "status" => "completed",
+        "expected" => { "primary_skill" => primary_skill },
+        "observed" => { "primary_skill" => observed }
       }
+    end
+    campaign = {
+      "protocol_version" => 1, "campaign" => "skill-routing-public-v1", "campaign_version" => 1,
+      "routing_case_count" => 1, "requested_repetitions" => 3, "complete" => true,
+      "agent" => { "provider" => "test", "model" => "test-model" },
+      "metrics" => { "primary_accuracy" => accuracy, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0 },
+      "cases" => { "case-a" => { "expected_primary_skill" => primary_skill, "runs" => runs } }
     }
     File.write(path, JSON.pretty_generate(campaign))
+  end
+
+  def run_compare(*)
+    Open3.capture3(RbConfig.ruby, File.join(ROOT, "bin", "routing-compare"), *, chdir: ROOT)
   end
 
   def test_comparison_detects_resolved_confusion
@@ -49,14 +41,7 @@ class RoutingRemediationSystemTest < Minitest::Test
       write_campaign(baseline, primary_skill: "rails-authorization", candidate: true, accuracy: 0.0)
       write_campaign(candidate, primary_skill: "rails-authorization", candidate: false, accuracy: 1.0)
 
-      stdout, stderr, status = Open3.capture3(
-        RbConfig.ruby,
-        File.join(ROOT, "bin", "routing-compare"),
-        baseline,
-        candidate,
-        "--output", report,
-        chdir: ROOT
-      )
+      stdout, stderr, status = run_compare(baseline, candidate, "--output", report)
 
       assert status.success?, "#{stdout}\n#{stderr}"
       result = JSON.parse(File.read(report, encoding: "UTF-8"))
@@ -76,13 +61,7 @@ class RoutingRemediationSystemTest < Minitest::Test
       write_campaign(baseline, primary_skill: "rails-authorization", candidate: false, accuracy: 1.0)
       write_campaign(candidate, primary_skill: "rails-authorization", candidate: true, accuracy: 0.0)
 
-      _stdout, _stderr, status = Open3.capture3(
-        RbConfig.ruby,
-        File.join(ROOT, "bin", "routing-compare"),
-        baseline,
-        candidate,
-        chdir: ROOT
-      )
+      _stdout, _stderr, status = run_compare(baseline, candidate)
 
       refute status.success?
     end
@@ -96,17 +75,30 @@ class RoutingRemediationSystemTest < Minitest::Test
       write_campaign(baseline, primary_skill: "rails-authorization", candidate: false, accuracy: 1.0)
       write_campaign(candidate, primary_skill: "rails-authorization", candidate: false, accuracy: 0.0)
 
-      stdout, _stderr, status = Open3.capture3(
-        RbConfig.ruby,
-        File.join(ROOT, "bin", "routing-compare"),
-        baseline,
-        candidate,
-        chdir: ROOT
-      )
+      stdout, _stderr, status = run_compare(baseline, candidate)
 
       refute status.success?
       assert_includes stdout, "metrics do not match recomputed run data"
     end
+  end
+
+  def test_comparison_requires_baseline_and_candidate_arguments
+    _stdout, stderr, status = run_compare
+
+    refute status.success?
+    assert_includes stderr, "baseline campaign JSON is required"
+
+    _stdout, stderr, status = run_compare("baseline.json")
+
+    refute status.success?
+    assert_includes stderr, "candidate campaign JSON is required"
+  end
+
+  def test_comparison_requires_existing_files
+    _stdout, stderr, status = run_compare("nonexistent-baseline.json", "nonexistent-candidate.json")
+
+    refute status.success?
+    assert_includes stderr, "baseline campaign JSON not found: nonexistent-baseline.json"
   end
 
   def test_validator_executes_this_system_test

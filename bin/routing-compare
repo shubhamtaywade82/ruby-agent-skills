@@ -58,9 +58,33 @@ def metrics_match?(recorded, recomputed)
   end
 end
 
-baseline = JSON.parse(File.read(ARGV.fetch(0), encoding: "UTF-8"))
-candidate = JSON.parse(File.read(ARGV.fetch(1), encoding: "UTF-8"))
-policy = YAML.safe_load(File.read(options[:policy], encoding: "UTF-8"), permitted_classes: [], aliases: false)
+baseline_path = ARGV.fetch(0) { abort "baseline campaign JSON is required" }
+candidate_path = ARGV.fetch(1) { abort "candidate campaign JSON is required" }
+
+abort "baseline campaign JSON not found: #{baseline_path}" unless File.file?(baseline_path)
+abort "candidate campaign JSON not found: #{candidate_path}" unless File.file?(candidate_path)
+abort "remediation policy not found: #{options[:policy]}" unless File.file?(options[:policy])
+
+begin
+  baseline = JSON.parse(File.read(baseline_path, encoding: "UTF-8"))
+rescue JSON::ParserError => e
+  abort "baseline campaign JSON is invalid: #{e.message}"
+end
+
+begin
+  candidate = JSON.parse(File.read(candidate_path, encoding: "UTF-8"))
+rescue JSON::ParserError => e
+  abort "candidate campaign JSON is invalid: #{e.message}"
+end
+
+begin
+  policy = YAML.safe_load(File.read(options[:policy], encoding: "UTF-8"), permitted_classes: [], aliases: false)
+rescue Psych::SyntaxError => e
+  abort "remediation policy YAML is invalid: #{e.message}"
+end
+
+abort "remediation policy must be a mapping" unless policy.is_a?(Hash)
+abort "remediation policy gate is required" unless policy["gate"].is_a?(Hash)
 gate = policy.fetch("gate")
 errors = []
 
@@ -140,8 +164,8 @@ report = {
   "baseline" => { "campaign" => baseline.fetch("campaign"), "agent" => baseline.fetch("agent") },
   "candidate" => { "campaign" => candidate.fetch("campaign"), "agent" => candidate.fetch("agent") },
   "provenance" => {
-    "baseline" => { "path" => File.expand_path(ARGV.fetch(0)), "sha256" => sha256(ARGV.fetch(0)) },
-    "candidate" => { "path" => File.expand_path(ARGV.fetch(1)), "sha256" => sha256(ARGV.fetch(1)) },
+    "baseline" => { "path" => File.expand_path(baseline_path), "sha256" => sha256(baseline_path) },
+    "candidate" => { "path" => File.expand_path(candidate_path), "sha256" => sha256(candidate_path) },
     "remediation_policy" => { "path" => File.expand_path(options[:policy]), "sha256" => sha256(options[:policy]) },
     "comparator" => { "path" => File.expand_path(__FILE__), "sha256" => sha256(__FILE__) }
   },
