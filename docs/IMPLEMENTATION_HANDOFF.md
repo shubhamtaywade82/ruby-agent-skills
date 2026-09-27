@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus currently has 121 evaluation files / 442 cases. Campaigns provide empirical coverage for 99 evaluation files / 198 cases. The remaining 22 files / 44 cases are explicitly classified as `coverage: static-only`; they are not represented as real-model benchmark results.
+The public evaluation corpus currently has 121 evaluation files / 442 cases. Campaigns provide empirical coverage for 99 evaluation files / 398 cases. The remaining 22 files / 44 cases are explicitly classified as `coverage: static-only`; they are not represented as real-model benchmark results.
 
 ## First checkout
 
