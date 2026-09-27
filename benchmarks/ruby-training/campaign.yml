@@ -1,4 +1,4 @@
-version: 1
+version: 2
 id: ruby-training-public-v1
 evaluation_set: ruby-training
 source: allerin-ruby-set-2

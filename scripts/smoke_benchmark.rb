@@ -97,7 +97,7 @@ Dir.mktmpdir("ruby-agent-campaign-smoke-") do |dir|
   campaign_path = File.join(dir, "campaign.json")
   abort "campaign result missing" unless File.file?(campaign_path)
   campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
-  abort "campaign version missing" unless campaign.fetch("campaign_version") == 1
+  abort "campaign version missing" unless campaign.fetch("campaign_version") == 2
   abort "evaluation set provenance missing" unless campaign.fetch("evaluation_set") == "ruby-training"
   abort "source provenance missing" unless campaign.fetch("source") == "allerin-ruby-set-2"
   abort "fixture root provenance missing" unless campaign.fetch("fixture_root").include?("benchmarks/ruby-training/fixtures")

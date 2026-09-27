@@ -50,10 +50,10 @@ cases:
     expected: 5
   - name: exact-threshold
     input:
-      money: 2
+      money: 4
       cost: 2
-      wrappers: 1
-    expected: 2
+      wrappers: 2
+    expected: 3
 grading:
   functional: matches the wrapper-exchange process and sample outputs.
   oop: wrapper exchange behavior is represented with appropriate object-oriented structure.
