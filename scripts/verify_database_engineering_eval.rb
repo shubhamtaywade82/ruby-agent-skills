@@ -33,7 +33,7 @@ checks["functional"] = syntax.empty? ?
 
 case evaluation.fetch("id")
 when "expand-contract"
-  expand = source.match?(/add_columns+:customers,s*:display_name/)
+  expand = source.match?(/add_column\s+:customers,\s*:display_name/)
   destructive = source.match?(/remove_column|remove_index|drop_table|change_column.*name/)
   checks["functional"] = expand && !destructive ?
     { "status" => "pass", "evidence" => "expand-only schema change detected" } :
@@ -44,7 +44,7 @@ when "expand-contract"
 
 when "concurrent-index"
   disable_tx = source.match?(/disable_ddl_transaction!/)
-  concurrent = source.match?(/algorithm:s*:concurrently/)
+  concurrent = source.match?(/algorithm:\s*:concurrently/)
   checks["functional"] = disable_tx && concurrent ?
     { "status" => "pass", "evidence" => "concurrent PostgreSQL index strategy detected" } :
     { "status" => "fail", "evidence" => "missing concurrent index/transaction configuration" }
@@ -53,7 +53,7 @@ when "concurrent-index"
     { "status" => "fail", "evidence" => "unrelated schema changes mixed into index migration" }
 
 when "database-constraint"
-  unique = source.match?(/unique:s*true/)
+  unique = source.match?(/unique:\s*true/)
   pair = source.match?(/tenant_id.*external_reference|external_reference.*tenant_id/m)
   checks["functional"] = unique && pair ?
     { "status" => "pass", "evidence" => "composite unique constraint detected" } :
@@ -64,8 +64,8 @@ when "database-constraint"
 
 when "batched-backfill"
   batch = source.match?(/in_batches|find_each|find_in_batches/)
-  bounded = source.match?(/BATCH_SIZEs*=s*d+|of:s*d+/)
-  unbounded = source.match?(/User.all.each|User.all.to_a/)
+  bounded = source.match?(/BATCH_SIZE\s*=\s*\d+|of:\s*\d+/)
+  unbounded = source.match?(/User\.all\.each|User\.all\.to_a/)
   checks["functional"] = batch && bounded && !unbounded ?
     { "status" => "pass", "evidence" => "bounded batch traversal detected" } :
     { "status" => "fail", "evidence" => "backfill is not demonstrably bounded" }
@@ -75,8 +75,8 @@ when "batched-backfill"
 
 when "transaction-lock"
   with_lock = source.match?(/with_lock/)
-  guard = source.match?(/quantitys*<=s*0/)
-  decrement = source.match?(/quantitys*-s*1/)
+  guard = source.match?(/quantity\s*<=\s*0/)
+  decrement = source.match?(/quantity\s*-\s*1/)
   checks["functional"] = with_lock && guard && decrement ?
     { "status" => "pass", "evidence" => "minimal row-lock state transition detected" } :
     { "status" => "fail", "evidence" => "required lock and inventory invariant not detected" }
@@ -111,7 +111,6 @@ result = {
   },
   "checks" => checks
 }
-File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.pretty_generate(result) + "
-", encoding: "UTF-8")
+File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.pretty_generate(result) + "\n", encoding: "UTF-8")
 abort "verification failed" if checks.values.any? { |value| value.fetch("status") == "fail" }
 puts JSON.pretty_generate(result)

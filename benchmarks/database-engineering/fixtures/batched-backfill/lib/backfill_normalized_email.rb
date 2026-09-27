@@ -1,9 +1,7 @@
 class BackfillNormalizedEmail
-  BATCH_SIZE = 500
-
   def self.run
-    User.where(normalized_email: nil).in_batches(of: BATCH_SIZE) do |batch|
-      batch.update_all("normalized_email = LOWER(email)")
+    User.all.each do |user|
+      user.update!(normalized_email: user.email.downcase)
     end
   end
 end
