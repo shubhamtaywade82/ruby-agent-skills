@@ -1,4 +1,5 @@
 id: stack-minimality-postgres-invariant
+coverage: static-only
 version: 1
 title: Preserve durable invariants in PostgreSQL
 category: stack-minimality
