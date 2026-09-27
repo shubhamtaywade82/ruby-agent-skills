@@ -4,7 +4,29 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 108 — Release Artifact Verification
+> **Current milestone:** Iteration 109 — Release Documentation Polish
+
+## Quick start
+
+Install the verified skill pack from a release archive (offline; no git required):
+
+    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.0.1/ruby-agent-skills-v1.0.1.tar.gz
+    tar xzf ruby-agent-skills-v1.0.1.tar.gz
+    cd ruby-agent-skills-v1.0.1
+    bash bin/install --agent claude
+
+Or from a git checkout:
+
+    git clone https://github.com/shubhamtaywade82/ruby-agent-skills
+    cd ruby-agent-skills
+    bash bin/install --agent claude
+
+Then verify the installed pack:
+
+    ruby bin/skill-pack-verify --root ~/.claude/skills
+    ruby bin/skill-pack-doctor --root ~/.claude/skills
+
+Every release publishes a `SHA256SUMS` checksum alongside the archive. See [Installation](#installation) for scopes, agent layouts, pinned refs, and verification workflows.
 
 ---
 
@@ -184,34 +206,6 @@ The skill system is built from five connected layers:
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
 
-## Iteration 97 — Verified Release Evidence Bundle
-
-Completed routing release inputs can now be composed into a frozen `RELEASE_MANIFEST.json` bundle. The bundle verifies the required public campaign evidence and immutable archive before capture, optionally includes verified multi-model matrix evidence and the external-only hidden benchmark receipt, and carries a frozen copy of the release policy.
-
-## Iteration 96 — Hidden Benchmark Receipt Verification
-
-`bin/routing-hidden-benchmark-receipt-verify` independently validates safe external hidden-benchmark receipts without importing hidden cases, prompts, or gold labels into the repository.
-
-## Iteration 95 — Routing Release Evidence Bundle
-
-`bin/routing-release-bundle` composes verified public routing evidence into a portable release-evidence directory and cryptographically records each component.
-
-## Iteration 98 — Self-Verifying Release Evidence
-
-Release bundles now self-verify before reporting success, and `bin/routing-release-check --bundle` can gate an already-created bundle directly.
-
-## Iteration 97 — Verified Release Evidence Bundle
-
-Completed routing release inputs can now be composed into a frozen `RELEASE_MANIFEST.json` bundle. The bundle verifies the required public campaign evidence and immutable archive before capture, optionally includes verified multi-model matrix evidence and the external-only hidden benchmark receipt, and carries a frozen copy of the release policy.
-
-## Iteration 96 — Hidden Benchmark Receipt Verification
-
-`bin/routing-hidden-benchmark-receipt-verify` independently validates safe external hidden-benchmark receipts without importing hidden cases, prompts, or gold labels into the repository.
-
-## Iteration 95 — Routing Release Evidence Bundle
-
-`bin/routing-release-bundle` composes verified public routing evidence into an auditable release-evidence directory and cryptographically records each component.
-
 ## Iteration 104 — Verified Routing History Boundary
 
 Routing history now enforces that referenced archives resolve inside the declared archive root and records a deterministic SHA-256 digest of the indexed archive set. Verification checks that digest and each archive manifest before history is trusted.
@@ -235,6 +229,22 @@ Routing history can now be generated with `--verify`, which replays archive inte
 ## Iteration 99 — Routing History Integrity
 
 `bin/routing-history-verify` independently validates history structure, archive identity, and every referenced archive before trusted longitudinal reporting.
+
+## Iteration 98 — Self-Verifying Release Evidence
+
+Release bundles now self-verify before reporting success, and `bin/routing-release-check --bundle` can gate an already-created bundle directly.
+
+## Iteration 97 — Verified Release Evidence Bundle
+
+Completed routing release inputs can now be composed into a frozen `RELEASE_MANIFEST.json` bundle. The bundle verifies the required public campaign evidence and immutable archive before capture, optionally includes verified multi-model matrix evidence and the external-only hidden benchmark receipt, and carries a frozen copy of the release policy.
+
+## Iteration 96 — Hidden Benchmark Receipt Verification
+
+`bin/routing-hidden-benchmark-receipt-verify` independently validates safe external hidden-benchmark receipts without importing hidden cases, prompts, or gold labels into the repository.
+
+## Iteration 95 — Routing Release Evidence Bundle
+
+`bin/routing-release-bundle` composes verified public routing evidence into an auditable release-evidence directory and cryptographically records each component.
 
 ## Iteration 94 — Verified Multi-Model Matrix Evidence
 
@@ -847,7 +857,7 @@ Verify an installation with:
 
     ruby bin/skill-pack-verify --root ~/.claude/skills
 
-Releases are cut as `vX.Y.Z` git tags and publish a downloadable, checksummed archive that installs offline (no git required). See `RELEASE.md` for the release definition and process.
+Releases are cut as `vX.Y.Z` git tags and publish a downloadable, checksummed archive that installs offline (no git required). The latest archive is always available from the [releases page](https://github.com/shubhamtaywade82/ruby-agent-skills/releases). See `RELEASE.md` for the release definition and process.
 
 See `docs/INSTALLATION.md` for pinned-ref, offline-archive, project-scope, and verification workflows.
 See `docs/IMPLEMENTATION_HANDOFF.md` for the complete clone, validation, installation, routing-campaign, and empirical handoff sequence.
@@ -871,9 +881,9 @@ When adding a new skill or deepening an existing one:
 
 # Current implementation status
 
-**Iteration 101 — Verified Routing History**
+**Iteration 109 — Release Documentation Polish**
 
-The repository-side implementation line is complete through Iteration 104. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. The repository-side integration line is complete through Iteration 101. Remaining work is empirical execution with a reachable external model runtime: capture real campaign evidence, analyze observed routing behavior, run evidence-based remediation experiments, execute the external hidden benchmark, and publish verified release evidence.
+The repository-side implementation line is complete through Iteration 109. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, richer routing-campaign analysis, and the complete release line: reproducible, checksummed release archives with offline installation, a tag-triggered release workflow, and published GitHub releases. The repository-side integration line is complete through Iteration 101. Remaining work is empirical execution with a reachable external model runtime: capture real campaign evidence, analyze observed routing behavior, run evidence-based remediation experiments, execute the external hidden benchmark, and publish verified release evidence.
 
 
 ## Iteration 83 — Matrix Resume Integrity

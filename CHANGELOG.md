@@ -1,3 +1,11 @@
+# Changelog
+
+## Iteration 109 — Release Documentation Polish
+
+- Deduplicate the repeated Iteration 95–97 sections in the README and restore a single ordered iteration narrative (92–104) including the previously orphaned Iteration 98 entry.
+- Refresh the README "Current implementation status" section to the current milestone, including the release infrastructure: reproducible checksummed archives, offline installation, the tag-triggered release workflow, and published GitHub releases.
+- Add a README quick start with the direct release-archive download, git checkout, and installation verification commands; link the Installation section to the releases page.
+
 ## Iteration 108 — Release Artifact Verification
 
 - Add standalone `scripts/verify_release_archive.rb` with archive-safety and content-integrity checks.
@@ -10,8 +18,6 @@
 ## Iteration 106 — Release Verification Gate
 
 - Gate tag-triggered release publication on independent release archive verification after the offline installation self-test.
-
-# Changelog
 
 ## Iteration 105 — Release Infrastructure
 
