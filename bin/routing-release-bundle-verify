@@ -103,6 +103,32 @@ if public_component.is_a?(Hash)
     errors << "public campaign evidence verification failed" unless status.success?
   end
 
+  if options[:check_files] && public_evidence.is_a?(Hash) && public_archive.is_a?(Hash) &&
+      File.file?(public_evidence["path"].to_s) && Dir.exist?(public_archive["path"].to_s)
+    manifest_file = File.join(public_archive["path"].to_s, "ARCHIVE_MANIFEST.json")
+    if File.file?(manifest_file)
+      begin
+        archive_manifest = JSON.parse(File.read(manifest_file, encoding: "UTF-8"))
+        bundled_evidence = JSON.parse(File.read(public_evidence["path"].to_s, encoding: "UTF-8"))
+
+        errors << "archive evidence hash does not match bundled public evidence" unless
+          archive_manifest.dig("source_evidence", "sha256").to_s == public_evidence["sha256"].to_s
+        errors << "archive campaign does not match bundled public evidence" unless
+          archive_manifest["campaign"] == bundled_evidence["campaign"]
+        errors << "archive repository SHA does not match bundled public evidence" unless
+          archive_manifest.dig("repository", "git_sha") == bundled_evidence.dig("repository", "git_sha")
+        errors << "archive agent identity does not match bundled public evidence" unless
+          archive_manifest["agent"] == bundled_evidence["agent"]
+        errors << "archive evidence type does not match bundled public evidence" unless
+          archive_manifest["evidence_type"] == bundled_evidence["evidence"]
+      rescue JSON::ParserError, KeyError => e
+        errors << "archive manifest relationship is invalid: #{e.message}"
+      end
+    else
+      errors << "archive manifest is required for public evidence binding"
+    end
+  end
+
   if options[:check_files] && public_archive.is_a?(Hash) && Dir.exist?(public_archive["path"].to_s)
     _out, stderr, status = Open3.capture3(
       RbConfig.ruby, ARCHIVE_VERIFIER, public_archive["path"].to_s, chdir: ROOT
@@ -122,6 +148,21 @@ if matrix
     )
     warn stderr unless stderr.empty?
     errors << "matrix evidence verification failed" unless status.success?
+
+    if public_component.is_a?(Hash)
+      begin
+        matrix_evidence = JSON.parse(File.read(metadata["path"].to_s, encoding: "UTF-8"))
+        public_evidence_path = public_component.dig("evidence", "path").to_s
+        public_evidence = JSON.parse(File.read(public_evidence_path, encoding: "UTF-8"))
+        errors << "matrix campaign does not match public campaign" unless
+          matrix_evidence.dig("campaign", "id") == public_evidence["campaign"] &&
+          matrix_evidence.dig("campaign", "version").to_i == public_evidence["campaign_version"].to_i
+        errors << "matrix repository SHA does not match public evidence" unless
+          matrix_evidence.dig("provenance", "git_sha") == public_evidence.dig("repository", "git_sha")
+      rescue Errno::ENOENT, JSON::ParserError, KeyError => e
+        errors << "matrix release identity relationship is invalid: #{e.message}"
+      end
+    end
   end
 end
 

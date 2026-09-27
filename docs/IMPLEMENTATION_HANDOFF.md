@@ -8,8 +8,8 @@ Current inventory:
 
 - 91 skills
 - 431 implementation patterns
-- 436 evaluation cases
-- 80 system/contract tests
+- 442 evaluation cases
+- 81 system/contract tests
 
 ## First checkout
 
@@ -180,6 +180,10 @@ The doctor is intentionally narrower than an agent runtime test: it verifies the
 
 Use `stack-minimality` with the domain skill that owns the actual contract. The pack includes six skills, 14 implementation patterns, and 13 evaluation contracts. The installed pack also ships `.ruby-agent-skills/bin/stack-minimality` with integrity metadata and verification.
 
+## Documentation consistency
+
+`scripts/audit_documentation_consistency.rb` cross-checks the README, implementation handoff, changelog, filesystem inventory, and manifest. It requires the documented milestone and current counts to match repository reality. `bin/validate` runs this audit before release-readiness checks.
+
 ## Remaining non-implementation work
 
 1. Execute the real 42-run public routing campaign.
@@ -194,4 +198,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 97. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 103. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
