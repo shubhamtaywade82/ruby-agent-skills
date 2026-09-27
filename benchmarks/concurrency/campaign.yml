@@ -1,5 +1,5 @@
 id: concurrency-public-v1
-version: 1
+version: 2
 evaluation_set: concurrency
 source: concurrency-v1
 fixture_root: benchmarks/concurrency/fixtures
