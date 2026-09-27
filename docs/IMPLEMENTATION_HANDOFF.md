@@ -7,7 +7,7 @@ The skill library, pattern library, routing infrastructure, evidence pipeline, p
 Current inventory:
 
 - 91 skills
-- 431 implementation patterns
+- 432 implementation patterns
 - 442 evaluation cases
 - 83 system/contract tests
 
@@ -210,4 +210,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 109. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 110. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
