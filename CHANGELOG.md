@@ -1,5 +1,10 @@
 # Changelog
 
+## Iteration 122 — Concurrency Benchmark Reference
+
+- The `concurrency-counter` fixture shipped a mutex-synchronized counter and passed everything except the "test changed" check under a no-op agent. The workspace now starts from an unsynchronized read-modify-write that loses updates; the synchronized counter and its tests move to `benchmarks/concurrency/references/`.
+- Bump the concurrency campaign version.
+
 ## Iteration 121 — Observability Benchmark References
 
 - Add reference implementations for the 3 observability fixtures with unsolved starting states: a narrow `InvalidOrderState` → 409 mapping that leaves other errors on the 5xx path, request-id log tags with authorization filtering, and a minimal `checkout.completed` notification. `health-semantics` remains a declared review/preserve task.
