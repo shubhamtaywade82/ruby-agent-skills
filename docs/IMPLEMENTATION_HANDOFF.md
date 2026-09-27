@@ -26,6 +26,14 @@ The audit reports exact measurements rather than estimates for:
 
 The public evaluation corpus has 121 evaluation files / 442 cases. Campaigns provide empirical coverage for 99 evaluation files; the remaining 22 files / 44 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
 
+## Release archive verification
+
+The release archive builder records file-level SHA-256/byte-size provenance in `RELEASE.json`. Independently verify a built archive with:
+
+    ruby scripts/verify_release_archive.rb ./dist/ruby-agent-skills-vX.Y.Z.tar.gz --checksums ./dist/SHA256SUMS --check-files
+
+The verifier rejects unsafe tar entries before extraction, validates release metadata and inventory, checks the published archive checksum, verifies every recorded file's size and digest, and rejects files shipped without a provenance record. The tag-triggered release workflow runs this verifier before creating the GitHub Release.
+
 ## First checkout
 
     git clone https://github.com/shubhamtaywade82/ruby-agent-skills.git
@@ -217,4 +225,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 111. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 112. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.

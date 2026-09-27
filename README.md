@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 111 — Corpus Quality & Benchmark Coverage
+> **Current milestone:** Iteration 112 — Release File-Level Provenance & Publication Gate
 
 ## Quick start
 
