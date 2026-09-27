@@ -1,3 +1,9 @@
+## Iteration 106 — Independent Release Archive Verification
+
+- Add a standalone release archive verifier independent of the archive builder's self-test.
+- Verify release metadata, skill/pattern inventory, required agent-facing paths, archive safety, and optional published SHA-256 checksums.
+- Add regression coverage and wire the verifier into `bin/validate`.
+
 # Changelog
 
 ## Iteration 105 — Release Infrastructure
