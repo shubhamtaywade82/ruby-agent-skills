@@ -21,6 +21,23 @@ Inspect runtime/version, routes, auth, authorization, input contracts, persisten
 ## Implementation procedure
 1. Identify protected asset. 2. Identify trust boundary. 3. Mark attacker-controlled inputs. 4. Trace data to dangerous sinks. 5. Identify the control. 6. Verify authorization separately from authentication. 7. Add an abuse-case test. 8. Run security tooling when available. 9. Review residual risk and final diff.
 
+## Example
+
+```markdown
+## Security review: file import endpoint (PR #530)
+
+| Boundary        | Question                                        | Finding                                  |
+|-----------------|-------------------------------------------------|------------------------------------------|
+| HTTP input      | Are params permitted and size-bounded?          | ✅ `params.expect(import: [:file])`, 10 MB limit |
+| Authorization   | Is the target account the actor's?              | ❌ uses `params[:account_id]` → fix: `Current.account` |
+| File            | Content type verified server-side?              | ❌ trusts `content_type` → use Marcel on bytes |
+| Persistence     | Raw SQL or dynamic columns?                     | ✅ none                                    |
+| Command/network | Shell-out or URL fetch from file contents?      | ✅ none                                    |
+| Logging         | File contents or PII logged?                    | ✅ filename hash only                      |
+
+Regression tests added for both ❌ findings.
+```
+
 ## Failure modes
 - authorization only in UI
 - trusting resource IDs without authorization

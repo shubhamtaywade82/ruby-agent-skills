@@ -33,6 +33,24 @@ Inspect all concern callers, route expansions, helper names, nesting, and tests.
 4. Inspect bin/rails routes after expansion.
 5. Add representative recognition/generation tests.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  concern :commentable do
+    resources :comments, only: %i[index create]
+  end
+
+  # Applied only where comments are a real capability.
+  resources :posts, concerns: :commentable
+  resources :photos, concerns: :commentable
+  resources :invoices # not commentable: no /invoices/:id/comments route
+end
+# Expanded surface (bin/rails routes -g comments):
+#   post_comments  GET/POST /posts/:post_id/comments
+#   photo_comments GET/POST /photos/:photo_id/comments
+```
+
 ## Failure modes
 
 - broad concern applied to incompatible resources;

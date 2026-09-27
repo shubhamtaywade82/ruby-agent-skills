@@ -37,6 +37,21 @@ Inspect Rails version, generator output, existing resource conventions, test fra
 7. align tests with actual contracts
 8. verify the complete diff
 
+## Example
+
+```bash
+# Generate, then immediately bring it to the application's conventions.
+bin/rails generate scaffold Article title:string body:text account:references --no-jbuilder
+
+# After generation (same PR):
+#  - scope find/new/create through Current.account and add authorization
+#  - replace params.require.permit with the app's params.expect convention
+#  - add null: false / foreign key / index constraints to the migration
+#  - delete unused actions and views (e.g. edit/update if articles are immutable)
+#  - replace the generated fixture/tests with behavior tests for the real contract
+bin/rails db:migrate && bin/rails test test/controllers/articles_controller_test.rb
+```
+
 ## Failure modes
 
 - keeping every generated action forever

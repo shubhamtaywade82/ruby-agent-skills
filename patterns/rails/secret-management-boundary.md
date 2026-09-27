@@ -33,6 +33,27 @@ Inspect Rails credentials, environment/container/CI secret stores, deployment ma
 7. Add secret-scanning or regression checks where supported.
 8. Remove stale credentials after rotation.
 
+## Example
+
+```ruby
+# Access secrets at the point of use; do not copy them into long-lived globals, logs, or payloads.
+class PaymentGatewayClient
+  def initialize(api_key: Rails.application.credentials.dig(:payment_gateway, :api_key))
+    @api_key = api_key
+  end
+
+  def inspect = "#<#{self.class.name}>" # keeps the key out of logs and error pages
+
+  def charge(amount_cents:, idempotency_key:)
+    Net::HTTP.post(URI("https://api.gateway.example/charges"),
+                   { amount: amount_cents }.to_json,
+                   "Authorization" => "Bearer #{@api_key}", "Idempotency-Key" => idempotency_key)
+  end
+end
+
+Rails.application.config.filter_parameters += %i[api_key token secret authorization]
+```
+
 ## Failure modes
 
 - secret committed to source

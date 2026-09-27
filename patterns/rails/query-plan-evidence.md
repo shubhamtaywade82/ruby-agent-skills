@@ -34,6 +34,19 @@ Inspect the Rails/adapter/database versions, exact generated SQL, existing index
 8. Re-measure the workload.
 9. Check write/storage trade-offs when indexes changed.
 
+## Example
+
+```bash
+# Capture the plan for the exact query Rails sends, with real parameters, on production-like data.
+bin/rails runner 'puts Order.where(account_id: 42, status: "pending").order(created_at: :desc).limit(20).explain(:analyze, :buffers)'
+
+# Before (excerpt):
+#   Seq Scan on orders  (actual time=0.03..812.4 rows=20 loops=1)
+#     Filter: ((account_id = 42) AND (status = 'pending'))  Rows Removed by Filter: 2,413,870
+# After add_index :orders, [:account_id, :status, :created_at], algorithm: :concurrently
+#   Index Scan using index_orders_on_account_id_and_status_and_created_at  (actual time=0.04..0.21 rows=20)
+```
+
 ## Failure modes
 
 - adding an index without plan evidence

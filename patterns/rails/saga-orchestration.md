@@ -34,6 +34,51 @@ Inspect transaction owners, command/event contracts, workflow persistence, timeo
 8. Expose failure/replay state to operators.
 9. Test partial completion and recovery.
 
+## Example
+
+```ruby
+# Orchestrated saga: each step is a local transaction with a compensation; state is durable.
+class TripBookingSaga < ApplicationRecord # columns: status, flight_ref, hotel_ref, step
+  STEPS = [
+    [:reserve_flight, :cancel_flight],
+    [:reserve_hotel, :cancel_hotel],
+    [:charge_card, :refund_card]
+  ].freeze
+
+  def run!
+    STEPS.each_with_index do |(action, _), index|
+      next if step > index # resume after a crash
+      send(action)
+      update!(step: index + 1)
+    end
+    update!(status: "completed")
+  rescue Booking::PermanentError
+    compensate!
+  end
+
+  private
+
+  def compensate!
+    STEPS.first(step).reverse_each { |(_, undo)| send(undo) } # each undo is idempotent
+    update!(status: "compensated")
+  end
+
+  def reserve_flight = update!(flight_ref: Flights.reserve(trip_id: id, key: "trip-#{id}-flight"))
+  def reserve_hotel = update!(hotel_ref: Hotels.reserve(trip_id: id, key: "trip-#{id}-hotel"))
+
+  def cancel_flight
+    Flights.cancel(flight_ref) if flight_ref
+  end
+
+  def cancel_hotel
+    Hotels.cancel(hotel_ref) if hotel_ref
+  end
+
+  def charge_card = Payments.charge(trip_id: id, key: "trip-#{id}-charge")
+  def refund_card = Payments.refund(key: "trip-#{id}-charge")
+end
+```
+
 ## Failure modes
 
 - saga used where one local transaction suffices

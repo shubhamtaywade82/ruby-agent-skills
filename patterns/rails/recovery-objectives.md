@@ -33,6 +33,21 @@ Inspect databases, backups, replicas, object storage, deployment artifacts, secr
 7. Test recovery with representative data and dependencies.
 8. Record actual recovery time and data-loss window.
 
+## Example
+
+```markdown
+## Recovery objectives
+
+| Capability        | RTO    | RPO      | Mechanism                              | Verified by                          |
+|-------------------|--------|----------|----------------------------------------|--------------------------------------|
+| Checkout          | 30 min | 0        | Multi-AZ PostgreSQL, synchronous standby | quarterly failover drill (last: 2026-08-14, 11 min) |
+| Order history     | 4 h    | 5 min    | WAL archiving + PITR                   | monthly restore to staging + row counts |
+| Search            | 24 h   | rebuild  | reindex from PostgreSQL                | reindex job timing (3 h 10 m)        |
+| Uploaded files    | 24 h   | 0        | S3 versioning + cross-region replication | restore sample of 100 objects        |
+
+"Recovered" = SLI back within SLO **and** reconciliation reports zero missing orders/payments.
+```
+
 ## Failure modes
 
 - backup exists but restore is untested

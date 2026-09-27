@@ -20,6 +20,27 @@ Inspect Railtie hooks, host initialization order, reload behavior, and required 
 ## Implementation procedure
 Keep Railtie hooks narrow, idempotent when needed, and limited to extension setup.
 
+## Example
+
+```ruby
+module AuditTrail
+  class Railtie < ::Rails::Railtie
+    config.audit_trail = ActiveSupport::OrderedOptions.new
+    config.audit_trail.enabled = true
+
+    # Runs after the host's config/initializers, so host overrides are visible.
+    initializer "audit_trail.configure", after: :load_config_initializers do |app|
+      AuditTrail.enabled = app.config.audit_trail.enabled
+    end
+
+    # Touch Active Record only when it loads; do not force it during boot.
+    ActiveSupport.on_load(:active_record) do
+      include AuditTrail::Model
+    end
+  end
+end
+```
+
 ## Failure modes
 Duplicate initialization, partial boot, hidden ordering, business workflow execution during boot.
 

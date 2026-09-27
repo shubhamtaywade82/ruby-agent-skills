@@ -20,6 +20,25 @@ Inspect Rack/Rails versions, existing middleware, env keys, response wrappers, a
 ## Implementation procedure
 Keep env mutation explicit, delegate exactly once when required, return a valid status/headers/body tuple, and preserve body ownership.
 
+## Example
+
+```ruby
+class ContentSecurityHeaders
+  def initialize(app) = @app = app
+
+  def call(env)
+    status, headers, body = @app.call(env)
+    # Rack 3: headers are a mutable Hash with lowercase keys; body is passed through
+    # untouched so streaming and body.close still reach the server.
+    headers["x-content-type-options"] ||= "nosniff"
+    [status, headers, body]
+  end
+end
+
+# Wrong: body.each { ... } then returning body — consumes a streaming body
+# and skips close. Wrong: env["PATH_INFO"] = "/rewritten" — mutates downstream routing.
+```
+
 ## Failure modes
 Invalid response shape, accidental double delegation, body leaks, and incompatible env mutations.
 

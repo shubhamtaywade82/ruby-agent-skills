@@ -20,6 +20,26 @@ A Rails API/controller needs explicit mapping for validation, authorization, not
 5. Avoid duplicating formatting across controllers.
 6. Test success, known failure, and unexpected failure paths.
 
+## Example
+
+```ruby
+class Api::BaseController < ActionController::API
+  # Only expected, classified errors get a mapping; everything else stays a 500
+  # handled (and reported) by Rails.
+  rescue_from ActiveRecord::RecordNotFound do
+    render json: { error: { code: "not_found" } }, status: :not_found
+  end
+
+  rescue_from ActionController::ParameterMissing do |e|
+    render json: { error: { code: "invalid_request", param: e.param } }, status: :bad_request
+  end
+
+  rescue_from Pundit::NotAuthorizedError do
+    render json: { error: { code: "not_found" } }, status: :not_found # no existence disclosure
+  end
+end
+```
+
 ## Failure modes
 - rescue StandardError and return 200
 - expose exception messages/backtraces

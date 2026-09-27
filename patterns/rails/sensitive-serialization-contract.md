@@ -20,6 +20,25 @@ Inspect model attributes, encryption, authentication data, logs, API schemas, an
 ## Implementation procedure
 Create an explicit allowlist and prove sensitive fields are absent unless justified by contract.
 
+## Example
+
+```ruby
+class User < ApplicationRecord
+  has_secure_password
+  encrypts :phone_number
+
+  # Excluded from inspect, logs, and error pages.
+  self.filter_attributes += %i[password_digest phone_number otp_secret]
+
+  # Default JSON excludes secrets even if a caller forgets an allowlist.
+  def serializable_hash(options = nil)
+    super({ except: %i[password_digest otp_secret phone_number] }.merge(options || {}))
+  end
+end
+
+# test: assert_not_includes User.new.to_json, "password_digest"
+```
+
 ## Failure modes
 Credential leakage, authorization-only fields exposed, unintended enumeration surfaces.
 

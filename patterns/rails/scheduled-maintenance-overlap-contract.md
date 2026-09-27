@@ -20,6 +20,28 @@ Inspect scheduler semantics, retries, deployment lifecycle, locks, and task idem
 ## Implementation procedure
 Design for at-least-once execution, overlap control, delayed execution, and restart behavior.
 
+## Example
+
+```yaml
+# config/recurring.yml (Solid Queue)
+production:
+  expire_unpaid_orders:
+    class: ExpireUnpaidOrdersJob
+    schedule: every 15 minutes
+    queue: maintenance
+
+# app/jobs/expire_unpaid_orders_job.rb
+#   class ExpireUnpaidOrdersJob < ApplicationJob
+#     # A delayed run must not overlap the next one.
+#     limits_concurrency to: 1, key: "expire_unpaid_orders", duration: 30.minutes
+#
+#     def perform
+#       # Idempotent: selects by state, so a duplicate or late run finds nothing to do.
+#       Order.pending_payment.where(created_at: ...24.hours.ago).find_each(&:expire!)
+#     end
+#   end
+```
+
 ## Failure modes
 Concurrent runs, missed cleanup, duplicate side effects, and retry storms.
 

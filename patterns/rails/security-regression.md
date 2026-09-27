@@ -32,6 +32,29 @@ Inspect the vulnerable entry point, attacker-controlled input, asset/resource, s
 6. Run focused and repository-wide security verification.
 7. Keep the regression deterministic.
 
+## Example
+
+```ruby
+require "test_helper"
+
+# Pins the attacker capability that was blocked, not the implementation of the fix.
+class InvoiceIdorRegressionTest < ActionDispatch::IntegrationTest
+  test "a user cannot read another account's invoice by id" do
+    sign_in users(:acme_member)
+    get invoice_path(invoices(:globex_invoice))
+    assert_response :not_found
+    assert_no_match invoices(:globex_invoice).number, response.body
+  end
+
+  test "a user cannot update another account's invoice" do
+    sign_in users(:acme_member)
+    patch invoice_path(invoices(:globex_invoice)), params: { invoice: { amount_cents: 1 } }
+    assert_response :not_found
+    assert_not_equal 1, invoices(:globex_invoice).reload.amount_cents
+  end
+end
+```
+
 ## Failure modes
 
 - test only covers a helper method

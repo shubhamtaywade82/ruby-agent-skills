@@ -20,6 +20,34 @@ Inspect connection identity, subscription parameters, streams, channel actions, 
 ## Implementation procedure
 Authorize connection, resource/subscription, and sensitive action at appropriate boundaries; stop revoked streams.
 
+## Example
+
+```ruby
+module ApplicationCable
+  class Connection < ActionCable::Connection::Base
+    identified_by :current_user
+
+    def connect
+      # Authentication: who is connected.
+      self.current_user = Session.find_by(id: cookies.signed[:session_id])&.user || reject_unauthorized_connection
+    end
+  end
+end
+
+class ProjectChannel < ApplicationCable::Channel
+  def subscribed
+    # Authorization: may this user see this project's stream?
+    project = Project.find_by(id: params[:id])
+    return reject unless project && ProjectPolicy.new(current_user, project).show?
+
+    stream_for project
+  end
+end
+
+# On membership removal, cut existing subscriptions:
+#   ActionCable.server.remote_connections.where(current_user: user).disconnect
+```
+
 ## Failure modes
 Stream leakage, stale membership, mutation without resource authorization.
 

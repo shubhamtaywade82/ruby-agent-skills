@@ -21,6 +21,23 @@ A request path needs explicit correlation, structured logs, duration/status metr
 6. Filter sensitive parameters before logging.
 7. Test correlation/event emission.
 
+## Example
+
+```ruby
+# One structured line per request, correlated by request id, from Rails instrumentation.
+ActiveSupport::Notifications.subscribe("process_action.action_controller") do |event|
+  payload = event.payload
+  Rails.logger.info(
+    event: "request.completed",
+    request_id: payload[:request].request_id,
+    controller: payload[:controller], action: payload[:action],
+    status: payload[:status], duration_ms: event.duration.round(1),
+    db_ms: payload[:db_runtime]&.round(1), view_ms: payload[:view_runtime]&.round(1)
+  )
+end
+# Parameters are omitted (filter_parameters already scrubs, but they are not needed here).
+```
+
 ## Failure modes
 - duplicate correlation identifiers
 - raw IDs/user strings as metric labels

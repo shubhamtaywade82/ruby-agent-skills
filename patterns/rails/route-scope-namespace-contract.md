@@ -32,6 +32,27 @@ Inspect controllers/modules, route helpers, existing URLs, API/version conventio
 4. Choose namespace, scope module, scope path, scope as, or explicit options accordingly.
 5. Verify generated routes and helpers before changing callers.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  # namespace: path /admin, controllers Admin::, helpers admin_*
+  namespace :admin do
+    resources :users # admin_users_path -> Admin::UsersController
+  end
+
+  # scope module: controllers Api::V1:: only; path and helpers unchanged by module
+  scope "api/v1", module: "api/v1", as: "api_v1" do
+    resources :orders # /api/v1/orders, api_v1_orders_path -> Api::V1::OrdersController
+  end
+
+  # scope path only: URL prefix, same controllers and helper names
+  scope "(:locale)", locale: /en|hi/ do
+    resources :products # products_path -> ProductsController
+  end
+end
+```
+
 ## Failure modes
 
 - namespace changes multiple dimensions unexpectedly;
