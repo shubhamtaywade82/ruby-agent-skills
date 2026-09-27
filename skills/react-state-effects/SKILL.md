@@ -41,6 +41,43 @@ Inspect state ownership, provider scope, reducer conventions, effect patterns, a
 - context used as a global event bus;
 - dependency suppression used to silence lint.
 
+## Reference example
+
+Type-checked with `tsc --strict` (plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`).
+
+```tsx
+import { useEffect, useState } from "react";
+
+type Item = { id: string; name: string; archived: boolean };
+
+export function ItemList({ items, query }: { items: readonly Item[]; query: string }) {
+  // Derived during render: no second state variable to keep in sync.
+  const visible = items.filter((item) => !item.archived && item.name.toLowerCase().includes(query.toLowerCase()));
+  return (
+    <ul>
+      {visible.map((item) => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+// An effect only for synchronizing with an external system, with cleanup.
+export function useOnlineStatus(): boolean {
+  const [online, setOnline] = useState(() => navigator.onLine);
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
+  return online;
+}
+```
+
 ## Agent review checklist
 - What owns each piece of state?
 - Does every effect synchronize an external system?

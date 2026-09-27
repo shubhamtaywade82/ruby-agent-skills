@@ -41,6 +41,17 @@ Do not label security controls, accessibility behavior, required validation, int
 - Removing a database constraint because application validation also exists.
 - Removing React state without proving the value is derived and has no independent semantics.
 
+## Reference example
+
+One line per finding, each verified against call sites before it is written. Reviewing the diff that introduced `OrderTotalCalculator`:
+
+```text
+app/services/order_total_calculator.rb:1 yagni — single caller (Order#total_cents), no variation; delete the class and inline `line_items.sum(&:amount_cents)` into Order#total_cents.
+app/models/order.rb:5 shrink — `OrderTotalCalculator.new(self).call` becomes `line_items.sum(&:amount_cents)`.
+```
+
+Not reported: the `has_many :line_items` association, the existing model test, and any database constraint on `line_items.order_id`, because those carry required behaviour rather than bloat.
+
 ## Agent review checklist
 - [ ] Diff and call sites inspected.
 - [ ] Repository conventions checked.

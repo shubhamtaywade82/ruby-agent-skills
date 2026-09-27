@@ -39,6 +39,39 @@ Never convert external benchmark numbers into this project's measurements. Never
 - Treating fewer files as proof of lower operational risk.
 - Re-running unchanged checks only to make a report look stronger.
 
+## Reference example
+
+Structural evidence is recomputed from the actual working-tree diff, never from an imagined baseline. After removing `OrderTotalCalculator` (repository path shown as `/path/to/app`):
+
+```bash
+ruby bin/stack-minimality evidence /path/to/app
+```
+
+```json
+{
+  "schema_version": 1,
+  "repository": "/path/to/app",
+  "changed_files": 2,
+  "added_lines": 2,
+  "deleted_lines": 10,
+  "file_delta": 2,
+  "files": [
+    {
+      "path": "app/models/order.rb",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "app/services/order_total_calculator.rb",
+      "added": 0,
+      "deleted": 9
+    }
+  ]
+}
+```
+
+This proves the diff size only. It says nothing about runtime cost; a performance claim needs its own measured baseline and workload.
+
 ## Agent review checklist
 - [ ] Metrics come from the actual repository.
 - [ ] Comparable baseline and workload exist for performance claims.

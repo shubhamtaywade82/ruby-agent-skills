@@ -43,6 +43,19 @@ Do not rank findings by aesthetic preference or theoretical elegance.
 - Splitting or joining Rails domains only to reduce folder count.
 - Calling code "dead" without checking runtime and indirect references.
 
+## Reference example
+
+Example report for a hypothetical Rails application. Repository-scope findings are confirmed by searching callers before they are listed, and ranked by evidence rather than taste:
+
+```text
+1. dead-code      app/services/legacy_invoice_mailer.rb — no references in app/, lib/, config/, or jobs (git grep LegacyInvoiceMailer); delete.
+2. wrapper        app/services/order_total_calculator.rb — forwards one Enumerable#sum for Order#total_cents; inline into the model.
+3. dependency     Gemfile: `addressable` — only used for one URI.parse call already covered by Ruby's URI; remove after replacing the call.
+4. one-impl       app/lib/payment_gateway_interface.rb — one implementation (StripeGateway) and no test double; keep StripeGateway, delete the interface.
+```
+
+Each line names the evidence and the smallest safe replacement; no fixes are applied during the audit.
+
 ## Agent review checklist
 - [ ] Whole repository inspected.
 - [ ] Usage confirmed before deleting abstractions or dependencies.

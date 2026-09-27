@@ -81,6 +81,43 @@ When deliberately choosing a simple solution with a known ceiling, record:
 - Fixing one caller when multiple callers share the same broken owner.
 - Treating a smaller textual diff as automatically safer.
 
+## Reference example
+
+A single-use calculator object forwarding one expression is removed in favour of the model method it served (ladder rung 2: existing code). The deliberate ceiling is recorded where the shortcut lives.
+
+```ruby
+# Before: an abstraction with one caller and no variation.
+class OrderTotalCalculator
+  def initialize(order)
+    @order = order
+  end
+
+  def call
+    @order.line_items.sum(&:amount_cents)
+  end
+end
+
+class Order < ApplicationRecord
+  has_many :line_items
+
+  def total_cents
+    OrderTotalCalculator.new(self).call
+  end
+end
+
+# After: the behaviour stays on the record that owns it.
+class Order < ApplicationRecord
+  has_many :line_items
+
+  # stack-minimality: summed in Ruby over loaded line items; revisit when orders exceed ~500 line items or the total is needed in SQL reports
+  def total_cents
+    line_items.sum(&:amount_cents)
+  end
+end
+```
+
+The model test that already covered `total_cents` still proves the behaviour; no new abstraction or test double is needed.
+
 ## Agent review checklist
 - [ ] Full execution path inspected.
 - [ ] Existing helpers, components, services, queries, and dependencies searched.

@@ -34,6 +34,20 @@ Pair stack-minimality with the skill that owns the actual problem, such as Rails
 - Publishing unmeasured benchmark results.
 - Using review or audit skills to modify the repository.
 
+## Reference example
+
+```text
+$ bin/stack-minimality help
+Usage: bin/stack-minimality <command> [repository]
+
+Commands:
+  help       Show this reference.
+  debt       List stack-minimality: shortcut markers.
+  evidence   Report observable Git diff size for a repository.
+```
+
+Typical selection: implementing a change → `stack-minimality` with the owning domain skill; reviewing a diff for over-engineering → `stack-minimality-review`; listing deliberate shortcuts → `stack-minimality-debt` (`bin/stack-minimality debt`); measuring a simplification → `stack-minimality-evidence` (`bin/stack-minimality evidence`).
+
 ## Agent review checklist
 - [ ] Correct minimality skill selected.
 - [ ] Domain skill remains responsible for the contract.

@@ -39,6 +39,68 @@ Inspect the test runner, DOM environment, Testing Library usage, network mocking
 - snapshot-only verification;
 - disabling accessibility warnings globally.
 
+## Reference example
+
+Type-checked with `tsc --strict` (plus `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`) and run with Vitest + jsdom.
+
+```tsx
+import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, expect, test, vi } from "vitest";
+import { useState } from "react";
+
+function Subscribe({ submit }: { submit: (email: string) => Promise<void> }) {
+  const [status, setStatus] = useState<"idle" | "done" | "error">("idle");
+  return (
+    <form
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const email = new FormData(event.currentTarget).get("email");
+        try {
+          await submit(String(email));
+          setStatus("done");
+        } catch {
+          setStatus("error");
+        }
+      }}
+    >
+      <label>
+        Email
+        <input name="email" type="email" />
+      </label>
+      <button type="submit">Subscribe</button>
+      {status === "done" && <p role="status">Subscribed</p>}
+      {status === "error" && <p role="alert">Could not subscribe</p>}
+    </form>
+  );
+}
+
+// Without Vitest globals, Testing Library cannot register its own cleanup.
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
+
+// Drive the UI the way a user does and assert on what they can perceive;
+// the network boundary is a fake passed in, not a mocked module internal.
+test("shows confirmation after a successful subscription", async () => {
+  const submit = vi.fn().mockResolvedValue(undefined);
+  render(<Subscribe submit={submit} />);
+
+  await userEvent.type(screen.getByLabelText("Email"), "sam@example.test");
+  await userEvent.click(screen.getByRole("button", { name: "Subscribe" }));
+
+  expect(await screen.findByRole("status")).toHaveProperty("textContent", "Subscribed");
+  expect(submit).toHaveBeenCalledWith("sam@example.test");
+});
+
+test("reports a failed subscription", async () => {
+  render(<Subscribe submit={vi.fn().mockRejectedValue(new Error("503"))} />);
+  await userEvent.click(screen.getByRole("button", { name: "Subscribe" }));
+  expect(await screen.findByRole("alert")).toBeTruthy();
+});
+```
+
 ## Agent review checklist
 - Do assertions describe user-observable behavior?
 - Are network/module mocks placed at a stable boundary?
