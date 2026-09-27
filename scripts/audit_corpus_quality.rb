@@ -152,7 +152,8 @@ puts "  routing trigger collisions: #{trigger_collisions}"
 puts "  stale manifest skill paths: #{stale_manifest_paths}"
 
 warnings << "public evaluations without a benchmark campaign: #{unbenchmarked.length} files (#{unbenchmarked_cases} cases)" unless unbenchmarked.empty?
-warnings << "skills with no code/reference example: #{skill_files.length - skill_example_count}" if skill_example_count < skill_files.length
+errors << "skills with no code/reference example: #{skill_files.length - skill_example_count}" if skill_example_count < skill_files.length
+errors << "patterns with no code example: #{pattern_files.length - pattern_example_count}" if pattern_example_count < pattern_files.length
 warnings << "patterns with no implementation anchor: #{pattern_files.length - pattern_anchor_count}" if pattern_anchor_count < pattern_files.length
 
 if errors.any?
