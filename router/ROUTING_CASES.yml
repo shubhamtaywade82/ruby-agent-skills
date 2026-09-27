@@ -170,3 +170,46 @@ cases:
       - rails-production-runtime
       - rails-test-engineering
     boundary: encryption-vs-operations
+
+  - id: react-form-rails-validation-errors
+    prompt: >
+      The React order form posts to the Rails API; when Rails rejects the
+      order, show each validation error next to the matching field and keep
+      errors that belong to no field visible.
+    primary_skills:
+      - rails-react-integration
+    secondary_skills:
+      - rails-validations
+      - react-component-engineering
+    boundary: client-form-vs-server-validation
+
+  - id: react-fetch-csrf-failure
+    prompt: >
+      Submitting a React form inside the Rails app fails with
+      InvalidAuthenticityToken; fix it without weakening forgery protection.
+    primary_skills:
+      - rails-react-integration
+    secondary_skills:
+      - rails-security
+      - rails-authentication
+    boundary: csrf-vs-authentication
+
+  - id: rails-json-contract-change-with-react-client
+    prompt: >
+      Rename total_cents to amount_cents in the orders JSON API that the
+      React dashboard consumes, without breaking the dashboard.
+    primary_skills:
+      - rails-api-integration
+    secondary_skills:
+      - rails-react-integration
+    boundary: server-contract-vs-client-consumer
+
+  - id: react-filter-render-performance
+    prompt: >
+      A React filter panel re-renders the entire results list on every
+      keystroke and typing lags; make it responsive.
+    primary_skills:
+      - react-accessibility-performance
+    secondary_skills:
+      - react-state-effects
+    boundary: render-performance-vs-state-ownership

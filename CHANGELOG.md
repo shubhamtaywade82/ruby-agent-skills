@@ -1,5 +1,14 @@
 # Changelog
 
+## Iteration 134 — Rails and React Integration Seam
+
+- Add the `rails-react-integration` skill. It owns the client side of the Rails ↔ React boundary and composes with `rails-api-integration`, `rails-authentication`, `rails-validations`, `typescript-runtime-contracts`, and `react-data-fetching` for the server side. It covers choosing the integration mode (Inertia, JSON API with a separate client, or React islands), runtime validation of Rails JSON, CSRF and session handling from `fetch`, Rails 422 errors in forms, and pagination. 85 → 86 skills.
+- Add five `react-typescript` patterns: `rails-react-integration-mode`, `rails-react-typed-api-contract`, `rails-react-validation-error-mapping`, `rails-react-csrf-session-fetch`, and `rails-react-pagination-contract` (432 → 437). Their TypeScript examples pass `tsc --strict` with `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes`, and nine Vitest behaviour checks. Removing the CSRF header from the fetch example fails two of them. The Ruby example passes `ruby -c`.
+- Add a "Rails and React cross-stack routing" section to `router/ROUTING.md` with six task rows, and the `rails-react-integration-contract` evaluation (3 cases, static-only; 23 static-only evaluation files).
+- Add four public routing cases, the first React and cross-stack cases in the corpus. The public campaign becomes 18 cases × 3 repetitions = 54 runs, and `router/ROUTING_CAMPAIGN.yml` moves to version 2. `router/ROUTING_RELEASE.yml`, the routing docs, and the tests that pin the protocol are updated. No empirical campaign evidence existed under version 1.
+- Fix `bin/routing-eval` resume validation. It compared a checkpoint's `campaign_version` with a literal `1` while checkpoints record the version from `ROUTING_CAMPAIGN.yml`, so any version bump would have made every resume fail. It now compares against the configured version.
+- The README lists the React and TypeScript skills and names the frontend areas not yet covered.
+
 ## Iteration 133 — Release v1.1.0 Preparation
 
 - Point the README quick-start at the `v1.1.0` release archive; it still downloaded `v1.0.1`, which predates the skill merge, benchmark references, code examples, and RuboCop CI.

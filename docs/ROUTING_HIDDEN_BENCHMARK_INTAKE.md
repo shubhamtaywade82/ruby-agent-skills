@@ -19,7 +19,7 @@ ruby bin/routing-hidden-benchmark-intake \
   --output ./hidden-benchmark-receipt.json
 ```
 
-`--expected-runs` is supplied by the private benchmark operator. The verifier never derives hidden cardinality from the public 14-case corpus.
+`--expected-runs` is supplied by the private benchmark operator. The verifier never derives hidden cardinality from the public routing corpus.
 
 The external evidence JSON must contain benchmark identity, case/repetition/run counts, provider/model metadata, and a SHA-256-valid external evidence artifact reference. It must not contain repository copies of `cases`, `gold_labels`, or hidden prompts.
 

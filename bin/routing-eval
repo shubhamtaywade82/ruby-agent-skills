@@ -135,10 +135,10 @@ def run_checkpoint(path, results:, selected_count:, campaign:, campaign_version:
   payload
 end
 
-def validate_existing_campaign!(campaign, selected_count:, repetitions:, routing_contract:, provider:, model:, model_version:, tool_mode:, routing_inputs:)
+def validate_existing_campaign!(campaign, campaign_version:, selected_count:, repetitions:, routing_contract:, provider:, model:, model_version:, tool_mode:, routing_inputs:)
   errors = []
   errors << "campaign identity mismatch" unless campaign["campaign"] == "skill-routing-public-v1"
-  errors << "campaign version mismatch" unless campaign["campaign_version"].to_i == 1
+  errors << "campaign version mismatch" unless campaign["campaign_version"].to_i == campaign_version.to_i
   errors << "routing case count mismatch" unless campaign["routing_case_count"].to_i == selected_count
   errors << "repetition count mismatch" unless campaign["requested_repetitions"].to_i == repetitions
   errors << "routing contract mismatch" unless File.expand_path(campaign["routing_contract"].to_s) == File.expand_path(routing_contract)
@@ -269,6 +269,7 @@ if options[:resume]
   existing_campaign = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
   validate_existing_campaign!(
     existing_campaign,
+    campaign_version: campaign_config.fetch("version"),
     selected_count: selected.length,
     repetitions: repetitions,
     routing_contract: options[:router],

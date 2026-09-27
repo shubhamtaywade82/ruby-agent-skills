@@ -53,7 +53,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
   end
 
   def test_documentation_audit_detects_stale_handoff_inventory
-    stderr, status = audit_with("docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub("442 evaluation cases", "436 evaluation cases") })
+    stderr, status = audit_with("docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub(/\d+ evaluation cases/, "1 evaluation cases") })
 
     refute status.success?
     assert_includes stderr, "IMPLEMENTATION_HANDOFF.md"
