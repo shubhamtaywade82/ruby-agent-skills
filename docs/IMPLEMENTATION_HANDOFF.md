@@ -9,7 +9,15 @@ Current inventory:
 - 91 skills
 - 431 implementation patterns
 - 442 evaluation cases
-- 82 system/contract tests
+- 83 system/contract tests
+
+## Release archive verification
+
+The release archive builder records file-level SHA-256/byte-size provenance in `RELEASE.json`. Independently verify a built archive with:
+
+    ruby scripts/verify_release_archive.rb ./dist/ruby-agent-skills-vX.Y.Z.tar.gz --check-files
+
+The verifier rejects unsafe tar entries, validates release metadata, and checks every recorded file's size and digest. The tag-triggered release workflow runs this verifier before creating the GitHub Release.
 
 ## First checkout
 
@@ -202,4 +210,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 105. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 108. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
