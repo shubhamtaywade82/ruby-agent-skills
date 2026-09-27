@@ -34,6 +34,54 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
     assert_includes script, "descriptive-only"
   end
 
+  def test_history_verifier_rejects_archive_path_outside_declared_root
+    Dir.mktmpdir("routing-history-boundary") do |dir|
+      root = File.join(dir, "history-root")
+      outside = File.join(dir, "outside")
+      FileUtils.mkdir_p(root)
+      FileUtils.mkdir_p(outside)
+      archive = build_archive(outside)
+
+      history = {
+        "protocol_version" => 1,
+        "history" => "skill-routing-history-v1",
+        "archive_root" => root,
+        "campaign_count" => 1,
+        "entries" => [{
+          "archive_id" => "skill-routing-public-v1/fixture-model/abc123",
+          "captured_at" => "2026-09-23T00:00:00Z",
+          "campaign" => "skill-routing-public-v1",
+          "evidence_type" => "skill-routing-campaign-v1",
+          "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
+          "agent" => {"provider" => "ollama", "model" => "fixture-model"},
+          "campaign_metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0},
+          "analysis" => {"primary_accuracy" => 1.0},
+          "requested_runs" => 1,
+          "completed_runs" => 1,
+          "artifact_count" => 1,
+          "archive_path" => archive
+        }]
+      }
+
+      history_path = File.join(dir, "history.json")
+      File.write(history_path, JSON.pretty_generate(history), encoding: "UTF-8")
+      verifier = File.join(ROOT, "bin", "routing-history-verify")
+
+      _stdout, stderr, status = Open3.capture3(
+        RbConfig.ruby, verifier, history_path, "--check-files", chdir: ROOT
+      )
+      refute status.success?
+      assert_includes stderr, "archive path escapes archive root"
+    end
+  end
+
+  def test_history_records_deterministic_archive_set_provenance
+    script = source("bin/routing-history")
+    verifier = source("bin/routing-history-verify")
+    assert_includes script, "archive_set_sha256"
+    assert_includes verifier, "archive_set_sha256"
+  end
+
   def test_validator_executes_this_system_test
     assert_includes source("bin/validate"), "test/routing_history_integrity_system_test.rb"
   end

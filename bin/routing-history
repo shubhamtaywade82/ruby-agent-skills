@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "digest"
 require "json"
 require "optparse"
 require "open3"
@@ -31,17 +32,28 @@ entries = Dir[File.join(root, "**", "ARCHIVE_MANIFEST.json")].sort.map do |path|
     "campaign_metrics" => manifest["campaign_metrics"],
     "analysis" => manifest["analysis"],
     "artifact_count" => manifest.fetch("artifacts").length,
-    "archive_path" => File.dirname(path)
+    "archive_path" => File.dirname(path),
+    "archive_path_relative" => File.dirname(path).delete_prefix(root + "/"),
+    "archive_manifest_sha256" => Digest::SHA256.file(path).hexdigest
   }
 end.compact
 
 entries.sort_by! { |entry| [entry["campaign"].to_s, entry["captured_at"].to_s, entry["archive_id"].to_s] }
+
+archive_set = entries.map do |entry|
+  {
+    "archive_id" => entry["archive_id"],
+    "archive_path_relative" => entry["archive_path_relative"],
+    "archive_manifest_sha256" => entry["archive_manifest_sha256"]
+  }
+end.sort_by { |entry| [entry["archive_id"].to_s, entry["archive_path_relative"].to_s] }
 
 history = {
   "protocol_version" => 1,
   "history" => "skill-routing-history-v1",
   "archive_root" => root,
   "campaign_count" => entries.length,
+  "archive_set_sha256" => Digest::SHA256.hexdigest(JSON.generate(archive_set)),
   "entries" => entries
 }
 
