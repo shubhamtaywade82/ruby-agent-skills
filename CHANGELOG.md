@@ -12,6 +12,12 @@
 - Refresh the README "Current implementation status" section to the current milestone, including the release infrastructure: reproducible checksummed archives, offline installation, the tag-triggered release workflow, and published GitHub releases.
 - Add a README quick start with the direct release-archive download, git checkout, and installation verification commands; link the Installation section to the releases page.
 
+## Iteration 106 — Independent Release Archive Verification
+
+- Add a standalone release archive verifier independent of the archive builder's self-test.
+- Verify release metadata, skill/pattern inventory, required agent-facing paths, archive safety, and optional published SHA-256 checksums.
+- Add regression coverage and wire the verifier into `bin/validate`.
+
 ## Iteration 105 — Release Infrastructure
 
 - Add `scripts/build_release_archive.rb`: deterministic, reproducible release archive with embedded `RELEASE.json` provenance, SHA-256 checksums, and generated release notes.
