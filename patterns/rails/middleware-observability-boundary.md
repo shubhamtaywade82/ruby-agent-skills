@@ -20,6 +20,27 @@ Inspect Rails.error, ActiveSupport::Notifications, tracing, log tags, and curren
 ## Implementation procedure
 Reuse existing instrumentation primitives, add only missing dimensions, bound cardinality, and exclude sensitive values.
 
+## Example
+
+```ruby
+# Reuse Rails' request id and tagged logging instead of a parallel log line per request.
+Rails.application.configure do
+  config.log_tags = [:request_id]
+  config.filter_parameters += %i[password token secret otp]
+end
+
+# A middleware adds only what Rails does not already record.
+class TenantTagMiddleware
+  def initialize(app) = @app = app
+
+  def call(env)
+    tenant = env["HTTP_HOST"].to_s.split(".").first
+    Rails.logger.tagged("tenant=#{tenant}") { @app.call(env) }
+  end
+end
+# No headers, cookies, or bodies are logged here.
+```
+
 ## Failure modes
 Duplicate events, high-cardinality metrics, missing exception telemetry, and secret leakage.
 

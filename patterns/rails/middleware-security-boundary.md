@@ -20,6 +20,25 @@ Inspect trust boundaries, proxy configuration, authentication/authorization owne
 ## Implementation procedure
 Define the untrusted input, authoritative infrastructure boundary, failure response, and interaction with controller authorization.
 
+## Example
+
+```ruby
+# Middleware: coarse, request-generic checks only.
+Rails.application.config.middleware.insert_before 0, Rack::Attack
+Rails.application.config.hosts = ["shop.example.com", /.*\.shop\.example\.com/]
+
+# Business permission stays at the resource boundary, where the record is known.
+class InvoicesController < ApplicationController
+  def show
+    @invoice = Current.account.invoices.find(params[:id]) # tenant scope
+    authorize @invoice                                    # policy decision
+  end
+end
+
+# Wrong: a middleware that parses /invoices/:id and queries ownership itself —
+# it duplicates the policy and misses every non-HTTP entry point.
+```
+
 ## Failure modes
 Header spoofing, CORS drift, proxy trust abuse, authorization bypass, and inconsistent security policy.
 

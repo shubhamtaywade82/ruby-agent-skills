@@ -32,6 +32,33 @@ Inspect the Rails version, Active Record associations, generated SQL/logs, repre
 6. Add a focused regression test for the query contract.
 7. Re-measure.
 
+## Example
+
+```ruby
+# Before: 1 query for posts + 1 per post for author + 1 per post for comments count.
+#   @posts = Post.order(created_at: :desc).limit(20)
+#   <%= post.author.name %> <%= post.comments.count %>
+
+class PostsController < ApplicationController
+  def index
+    @posts = Post.order(created_at: :desc).limit(20)
+                 .includes(:author)                 # 1 extra query total
+    # comments_count is a counter cache column: no query per row.
+  end
+end
+
+# Guard in tests: strict loading raises on lazy loads in this action.
+class PostsIndexTest < ActionDispatch::IntegrationTest
+  test "index renders without lazy loading" do
+    Post.strict_loading_by_default = true
+    get posts_path
+    assert_response :success
+  ensure
+    Post.strict_loading_by_default = false
+  end
+end
+```
+
 ## Failure modes
 
 - eager-loading unused associations

@@ -33,6 +33,28 @@ Inspect existing objects that solve the same responsibility, naming and namespac
 7. Remove duplication only after behavior is covered.
 8. Inspect the final diff for unnecessary indirection.
 
+## Example
+
+```ruby
+class InvoicePresenter
+  include ActionView::Helpers::NumberHelper
+
+  def initialize(invoice) = @invoice = invoice
+
+  def total = number_to_currency(@invoice.total_cents / 100.0, unit: "₹")
+  def status_label = I18n.t("invoices.status.#{@invoice.status}")
+  def overdue? = @invoice.unpaid? && @invoice.due_on < Date.current
+
+  def css_class
+    return "invoice--overdue" if overdue?
+    @invoice.paid? ? "invoice--paid" : "invoice--open"
+  end
+end
+
+# View: <% presenter = InvoicePresenter.new(invoice) %>
+#       <tr class="<%= presenter.css_class %>"><td><%= presenter.total %></td></tr>
+```
+
 ## Failure modes
 
 - applying the pattern because its name sounds sophisticated

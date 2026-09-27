@@ -24,6 +24,21 @@ The table is disposable or small enough that normal locking is explicitly accept
 6. Deploy and verify index validity/use.
 7. Define failure cleanup for invalid indexes.
 
+## Example
+
+```ruby
+class AddIndexOnOrdersCustomerId < ActiveRecord::Migration[8.0]
+  # CREATE INDEX CONCURRENTLY cannot run inside a transaction.
+  disable_ddl_transaction!
+
+  def change
+    add_index :orders, :customer_id, algorithm: :concurrently, if_not_exists: true
+  end
+end
+# If it fails midway, PostgreSQL leaves an INVALID index: drop it
+# (remove_index ..., algorithm: :concurrently) and rerun.
+```
+
 ## Failure modes
 - adding redundant indexes
 - concurrent creation inside an implicit migration transaction

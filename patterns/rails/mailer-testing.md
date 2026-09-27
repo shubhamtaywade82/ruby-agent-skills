@@ -34,6 +34,34 @@ Inspect test framework, mailer test helpers, Active Job test helpers, previews, 
 6. Test security/tenant-negative cases.
 7. Avoid live SMTP/API calls.
 
+## Example
+
+```ruby
+require "test_helper"
+
+class OrderMailerDeliveryTest < ActionDispatch::IntegrationTest
+  include ActionMailer::TestHelper
+
+  test "placing an order enqueues exactly one confirmation" do
+    assert_enqueued_emails 1 do
+      post orders_path, params: { order: { sku: "BOOK-1", quantity: 1 } }
+    end
+    assert_enqueued_email_with OrderMailer, :confirmation, args: [Order.last]
+  end
+
+  test "failed order does not email" do
+    assert_no_enqueued_emails do
+      post orders_path, params: { order: { sku: "", quantity: 1 } }
+    end
+  end
+
+  test "rendered email has both parts" do
+    mail = OrderMailer.confirmation(orders(:placed))
+    assert_equal %w[text/plain text/html], mail.parts.map(&:mime_type)
+  end
+end
+```
+
 ## Failure modes
 
 - asserting only that a mail was "sent";

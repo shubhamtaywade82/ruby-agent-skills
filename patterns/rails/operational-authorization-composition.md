@@ -20,6 +20,23 @@ Inspect operator identity, execution environment, deployment access controls, au
 ## Implementation procedure
 Require explicit operator/capability context where needed and enforce environment gates before side effects.
 
+## Example
+
+```ruby
+# Operational commands name an actor and go through the same policy as the web.
+namespace :accounts do
+  desc "Suspend an account: ACTOR=ops@example.com ACCOUNT_ID=123 REASON=..."
+  task suspend: :environment do
+    actor = User.find_by!(email_address: ENV.fetch("ACTOR"))
+    account = Account.find(ENV.fetch("ACCOUNT_ID"))
+    abort "#{actor.email_address} may not suspend accounts" unless AccountPolicy.new(actor, account).suspend?
+
+    Accounts::Suspend.call(account:, actor:, reason: ENV.fetch("REASON"))
+    puts "suspended account #{account.id} (audited as #{actor.email_address})"
+  end
+end
+```
+
 ## Failure modes
 Anyone with shell access can execute a sensitive mutation, unclear audit trail, unsafe production execution.
 

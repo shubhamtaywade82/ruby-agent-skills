@@ -35,6 +35,40 @@ Inspect reset token model/storage, expiration, mailer/job, routes, controller, p
 9. Rate-limit abuse.
 10. Test valid, expired, replayed, and invalid tokens.
 
+## Example
+
+```ruby
+class User < ApplicationRecord
+  has_secure_password
+  # Token embeds the password salt: it stops working once the password changes (single use).
+  generates_token_for :password_reset, expires_in: 15.minutes do
+    password_salt.last(10)
+  end
+end
+
+class PasswordsController < ApplicationController
+  rate_limit to: 5, within: 10.minutes, only: :create
+
+  def create
+    if (user = User.find_by(email_address: params[:email_address]))
+      PasswordsMailer.reset(user, user.generate_token_for(:password_reset)).deliver_later
+    end
+    redirect_to new_session_path, notice: "If the address exists, we've sent instructions." # no enumeration
+  end
+
+  def update
+    user = User.find_by_token_for(:password_reset, params[:token]) or
+      return redirect_to(new_password_path, alert: "Link is invalid or expired.")
+    if user.update(params.permit(:password, :password_confirmation))
+      user.sessions.destroy_all # revoke every existing session
+      redirect_to new_session_path, notice: "Password has been reset."
+    else
+      redirect_to edit_password_path(params[:token]), alert: "Passwords did not match."
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - token never expires

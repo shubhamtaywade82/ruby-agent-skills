@@ -33,6 +33,29 @@ Inspect mount path, component ownership, helper/proxy behavior, authentication/a
 5. Inspect route precedence around the mount.
 6. Add dispatch and failure tests where appropriate.
 
+## Example
+
+```ruby
+Rails.application.routes.draw do
+  # The mount is an exposure decision: authentication happens before dispatch.
+  authenticate :user, ->(user) { user.admin? } do
+    mount MissionControl::Jobs::Engine, at: "/admin/jobs"
+  end
+
+  # A Rack app has no Rails controller callbacks; it owns its own errors.
+  mount WebhooksApp.new, at: "/webhooks/provider", via: :post
+end
+
+# test/integration/admin_mount_test.rb
+class AdminMountTest < ActionDispatch::IntegrationTest
+  test "non-admins cannot reach the jobs dashboard" do
+    sign_in users(:member)
+    get "/admin/jobs"
+    assert_response :not_found
+  end
+end
+```
+
 ## Failure modes
 
 - mounted route shadows application routes;
