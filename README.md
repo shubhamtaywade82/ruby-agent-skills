@@ -4,9 +4,17 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 105 — Release Infrastructure
+> **Current milestone:** Iteration 106 — Corpus Quality & Benchmark Coverage
 
 ---
+
+## Iteration 106 — Corpus Quality & Benchmark Coverage
+
+The repository now has a deterministic corpus-quality audit covering the full 91-skill / 431-pattern / 442-evaluation corpus. It reports code/reference-example coverage, executable-example coverage, implementation anchors, failure/testing guidance, evaluation case integrity, grading-dimension depth, benchmark coverage, routing trigger collisions, and stale manifest paths.
+
+The benchmark-quality contract now distinguishes **empirical campaign coverage** from explicitly declared **static-only** evaluations. The 13 stack-minimality and 9 React/TypeScript public evaluation files are currently classified as static-only rather than being represented as empirically benchmarked. This removes the ambiguous “unbenchmarked” state without fabricating campaign evidence.
+
+Release archive tests now derive skill inventory expectations from `skill-manifest.yml` instead of hard-coding the current count.
 
 ## Iteration 91 — End-to-End Experiment Evidence Finalization
 
@@ -179,7 +187,7 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **431** |
 | Evaluation cases | **442** |
-| Dedicated system/contract tests | **82** |
+| Dedicated system/contract tests | **83** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
