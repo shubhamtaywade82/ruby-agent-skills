@@ -165,3 +165,21 @@ State problem -> inspect current graph -> identify invariant/data owners -> comp
 - https://guides.rubyonrails.org/autoloading_and_reloading_constants.html
 - https://guides.rubyonrails.org/active_job_basics.html
 - https://guides.rubyonrails.org/security.html
+
+## Rails staff/principal architecture changes
+
+For material architecture changes:
+- state the concrete problem, affected invariants, constraints, and evidence before selecting a boundary;
+- inspect the current dependency graph, call graph, data ownership, deployment topology, and change coupling rather than designing from folder names;
+- identify the authoritative owner of each important invariant and mutable source of truth;
+- make dependency direction explicit and break cycles by clarifying ownership or stable interfaces, not arbitrary abstraction;
+- consider the smallest effective in-process/module boundary before introducing Engines or independent processes;
+- use bounded contexts when terminology, invariants, ownership, or change cadence materially differ;
+- keep shared kernels small and stable; duplicate volatile concepts when sharing would create tighter coupling;
+- do not allow multiple subsystems to independently mutate the same authoritative data without an explicit consistency/reconciliation contract;
+- assess performance, reliability, security, migration, deployment, and operational ownership as first-class tradeoffs;
+- require a stable contract, data owner, failure model, rollout, and recovery plan before process/service extraction;
+- prefer incremental architectural migration with compatibility stages and explicit cleanup conditions;
+- record consequential decisions, rejected alternatives, consequences, and review triggers;
+- encode stable architecture rules as executable checks where practical;
+- distinguish measured evidence from architectural hypotheses and do not claim structural improvements without verification.

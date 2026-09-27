@@ -59,12 +59,12 @@ class RailsValidationsSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_validations
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-validations/SKILL.md"), encoding: "UTF-8")
     assert_includes routing, "Rails Validation deep engineering"
     assert_includes routing, "validation-uniqueness-database-contract"
-    assert_includes agents, "Rails Validations changes"
-    assert_includes agents, "validation contexts"
-    assert_includes agents, "validation bypass"
+    assert_includes change_contract, "Rails Validations changes"
+    assert_includes change_contract, "validation contexts"
+    assert_includes change_contract, "validation bypass"
   end
 
   def test_skill_covers_validation_contract

@@ -63,17 +63,17 @@ class RailsActionControllerSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_action_controller
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-action-controller/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Action Controller"
     assert_includes routing, "rails-action-controller"
     assert_includes routing, "strong-parameters-contract"
-    assert_includes agents, "Rails Action Controller changes"
-    assert_includes agents, "params.expect"
-    assert_includes agents, "controller callback"
-    assert_includes agents, "conditional response"
-    assert_includes agents, "streaming"
-    assert_includes agents, "rescue_from"
+    assert_includes change_contract, "Rails Action Controller changes"
+    assert_includes change_contract, "params.expect"
+    assert_includes change_contract, "controller callback"
+    assert_includes change_contract, "conditional response"
+    assert_includes change_contract, "streaming"
+    assert_includes change_contract, "rescue_from"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

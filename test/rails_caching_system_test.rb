@@ -42,14 +42,14 @@ class RailsCachingSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_caching
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-caching/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails caching engineering"
     assert_includes routing, "rails-caching"
     assert_includes routing, "cache-key-isolation"
-    assert_includes agents, "Rails caching changes"
-    assert_includes agents, "cache"
-    assert_includes agents, "authoritative state transition"
+    assert_includes change_contract, "Rails caching changes"
+    assert_includes change_contract, "cache"
+    assert_includes change_contract, "authoritative state transition"
   end
 
   def test_cache_evaluation_activates_caching_skill

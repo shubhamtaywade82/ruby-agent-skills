@@ -48,14 +48,14 @@ class RailsActiveStorageSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_active_storage
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-active-storage/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Active Storage"
     assert_includes routing, "rails-active-storage"
     assert_includes routing, "active-storage-serving"
-    assert_includes agents, "Rails Active Storage changes"
-    assert_includes agents, "blob identifier as an object reference, not as authorization"
-    assert_includes agents, "direct uploads as a staged lifecycle"
+    assert_includes change_contract, "Rails Active Storage changes"
+    assert_includes change_contract, "blob identifier as an object reference, not as authorization"
+    assert_includes change_contract, "direct uploads as a staged lifecycle"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

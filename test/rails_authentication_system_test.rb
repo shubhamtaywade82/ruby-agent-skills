@@ -73,16 +73,16 @@ class RailsAuthenticationSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_authentication
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-authentication/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Authentication engineering"
     assert_includes routing, "rails-authentication"
     assert_includes routing, "session-fixation-rotation"
 
-    assert_includes agents, "Rails authentication changes"
-    assert_includes agents, "authentication and authorization remain separate"
-    assert_includes agents, "session fixation"
-    assert_includes agents, "credential material"
+    assert_includes change_contract, "Rails authentication changes"
+    assert_includes change_contract, "authentication and authorization remain separate"
+    assert_includes change_contract, "session fixation"
+    assert_includes change_contract, "credential material"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

@@ -71,14 +71,14 @@ class RailsAssetBuildSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_asset_building
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-asset-build-engineering/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Asset and Build Infrastructure engineering"
     assert_includes routing, "rails-asset-build-engineering"
 
-    assert_includes agents, "Rails asset/build changes"
-    assert_includes agents, "production-like"
-    assert_includes agents, "lockfile"
+    assert_includes change_contract, "Rails asset/build changes"
+    assert_includes change_contract, "production-like"
+    assert_includes change_contract, "lockfile"
   end
 
   def test_evaluation_contract_is_registered

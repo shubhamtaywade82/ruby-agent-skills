@@ -70,16 +70,16 @@ class RailsHotwireSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_hotwire
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-hotwire/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Hotwire engineering"
     assert_includes routing, "rails-hotwire"
     assert_includes routing, "turbo-frame-contract"
 
-    assert_includes agents, "Rails Hotwire changes"
-    assert_includes agents, "Turbo Frames"
-    assert_includes agents, "Stimulus"
-    assert_includes agents, "CSRF"
+    assert_includes change_contract, "Rails Hotwire changes"
+    assert_includes change_contract, "Turbo Frames"
+    assert_includes change_contract, "Stimulus"
+    assert_includes change_contract, "CSRF"
   end
 
   def test_evaluation_activates_expected_contracts

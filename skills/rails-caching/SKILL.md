@@ -333,3 +333,19 @@ Repository composition:
 - skills/rails-active-job/SKILL.md
 - patterns/rails/cache-boundary.md
 - patterns/rails/cache-stampede-control.md
+
+## Rails caching changes
+
+For caching changes:
+- establish the workload and bottleneck before introducing a cache;
+- inspect the existing cache store, key/version conventions, invalidation mechanisms, authorization/tenant boundaries, deployment topology, and cache tests;
+- define the cache layer and sharing scope explicitly;
+- treat the key as a correctness/security contract and include every required identity/version dimension;
+- define freshness and invalidation from the authoritative state transition instead of relying on scattered callers;
+- reason about old/new application overlap and cached serialization across deployments;
+- bound stampede, warming, eviction, and source fallback behavior;
+- classify cache-store failure separately from source-of-truth failure;
+- never cache secrets, authorization failures, or exceptions as successful values;
+- keep cache metrics low-cardinality and payload-free;
+- test hit/miss, isolation, invalidation, versioning, concurrency, failure, and deployment compatibility as applicable;
+- require measured or structurally demonstrated evidence before claiming caching improved performance.

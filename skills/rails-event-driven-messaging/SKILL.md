@@ -503,3 +503,19 @@ Report schema compatibility, duplicate safety, delivery/ack semantics, replay be
 - Rails Testing Applications: https://guides.rubyonrails.org/testing.html
 - Ruby documentation: https://ruby-doc.org/
 - Repository skills: rails-distributed-systems, rails-api-integration, rails-active-job, rails-observability, rails-production-runtime, ruby-concurrency, rails-security
+
+## Event-driven messaging changes
+
+For queue, broker, stream, event, and message changes:
+- classify the message as command, event, notification, or retry/control message;
+- resolve actual transport guarantees for delivery, ordering, retention, acknowledgement, and partitioning;
+- define stable message identity, envelope metadata, schema version, correlation, and causation;
+- preserve old/new message compatibility during rolling deployments and replay;
+- choose routing/partition keys from ordering requirements and hot-key evidence;
+- bound consumer concurrency against partitions, database pools, downstream API limits, CPU, and memory;
+- make acknowledgement timing explicit and never acknowledge before required durable work;
+- classify retryable versus permanent failures and terminate poison-message loops;
+- define dead-letter ownership, retention, remediation, authorization, and controlled replay;
+- preserve original message identity during retry/replay;
+- instrument publish, queue age/lag, processing, retries, dead-letter, and replay state without logging sensitive payloads;
+- test duplicate delivery, failures before/after side effects, schema compatibility, dead-letter routing, replay, ordering, and restart/rebalance behavior.

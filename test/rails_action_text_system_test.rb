@@ -50,14 +50,14 @@ class RailsActionTextSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_action_text
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-action-text/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Action Text"
     assert_includes routing, "rails-action-text"
     assert_includes routing, "action-text-attachment-authorization"
-    assert_includes agents, "Rails Action Text changes"
-    assert_includes agents, "Signed Global IDs as authorization"
-    assert_includes agents, "server-side sanitization"
+    assert_includes change_contract, "Rails Action Text changes"
+    assert_includes change_contract, "Signed Global IDs as authorization"
+    assert_includes change_contract, "server-side sanitization"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

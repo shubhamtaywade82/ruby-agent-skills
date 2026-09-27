@@ -196,3 +196,16 @@ Primary Rails guidance:
 - Debugging Rails Applications: https://guides.rubyonrails.org/debugging_rails_applications.html
 
 Use the target Rails version as the compatibility authority when request lifecycle, controller, middleware, error-reporting, or health behavior differs across releases.
+
+## Rails request lifecycle/observability changes
+
+For request and production-diagnostics changes:
+- resolve Rails version first;
+- inspect existing HTTP error, logging, request-ID, and health conventions;
+- keep exception-to-response mappings narrow;
+- preserve correlation identifiers across request/job/dependency boundaries;
+- filter sensitive data before logs/error context;
+- use Rails.error for error reporting and ActiveSupport::Notifications for meaningful instrumentation;
+- keep instrumentation subscribers observational;
+- distinguish liveness from readiness and dependency health;
+- verify request/error/health contracts with focused tests.

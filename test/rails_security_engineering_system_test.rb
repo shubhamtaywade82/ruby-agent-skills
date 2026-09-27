@@ -44,13 +44,13 @@ class RailsSecurityEngineeringSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_security_engineering_guidance
     routing = File.read(File.join(ROOT, "router", "ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-security-engineering/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Security engineering and threat modeling"
     assert_includes routing, "rails-security-engineering"
-    assert_includes agents, "Security engineering and threat-model changes"
-    assert_includes agents, "trust boundaries"
-    assert_includes agents, "residual risk"
+    assert_includes change_contract, "Security engineering and threat-model changes"
+    assert_includes change_contract, "trust boundaries"
+    assert_includes change_contract, "residual risk"
   end
 
   def test_security_evaluations_activate_engineering_skill

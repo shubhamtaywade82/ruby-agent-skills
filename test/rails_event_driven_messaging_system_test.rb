@@ -41,13 +41,13 @@ class RailsEventDrivenMessagingSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_messaging_guidance
     routing = File.read(File.join(ROOT, "router", "ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-event-driven-messaging/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Event-driven messaging architecture"
     assert_includes routing, "rails-event-driven-messaging"
-    assert_includes agents, "Event-driven messaging changes"
-    assert_includes agents, "message identity"
-    assert_includes agents, "dead-letter"
+    assert_includes change_contract, "Event-driven messaging changes"
+    assert_includes change_contract, "message identity"
+    assert_includes change_contract, "dead-letter"
   end
 
   def test_skill_covers_operational_message_contract

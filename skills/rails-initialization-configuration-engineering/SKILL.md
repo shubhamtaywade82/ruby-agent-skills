@@ -95,3 +95,19 @@ Resolve versions -> inspect configuration/lifecycle -> identify ownership/preced
 - Rails Autoloading and Reloading guide: https://guides.rubyonrails.org/autoloading_and_reloading_constants.html
 - Rails Security guide: https://guides.rubyonrails.org/security.html
 - Rails Getting Started guide: https://guides.rubyonrails.org/getting_started.html
+
+## Rails initialization/configuration changes
+
+For Rails boot and configuration changes:
+- resolve Ruby/Rails versions and inspect actual boot/configuration files before implementation;
+- identify configuration ownership and actual precedence across defaults, application config, environment, credentials, and deployment settings;
+- treat initializer dependencies as lifecycle contracts rather than incidental filename ordering;
+- choose boot, preparation, or runtime execution deliberately;
+- coordinate reload-sensitive setup with Zeitwerk and make repeated registration safe;
+- minimize network/database/filesystem work during boot and bound any required external dependency;
+- make required boot invariants fail fast with actionable, secret-free diagnostics;
+- keep credentials and server-only configuration out of logs and client-visible bundles;
+- inspect development/test/production configuration independently;
+- test configuration precedence, initializer registration, boot failure, reload behavior, and production-like startup where applicable;
+- measure boot-time performance before optimizing;
+- report observed validation evidence and do not claim boot correctness from static inspection.

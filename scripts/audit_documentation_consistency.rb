@@ -43,6 +43,25 @@ errors = []
 errors << "README current milestone #{readme_milestone} != latest changelog #{latest_changelog}" unless readme_milestone == latest_changelog
 errors << "IMPLEMENTATION_HANDOFF.md status #{handoff_milestones.inspect} != latest changelog #{latest_changelog}" unless handoff_milestones == [latest_changelog]
 
+# AGENTS.md is loaded on every task, so it holds only the repository-wide
+# operating contract. Domain rules live in the owning skill's
+# "## <Domain> changes" section and load only when that skill is routed.
+AGENTS_LINE_BUDGET = 150
+REPOSITORY_CHANGE_SECTIONS = [
+  "Release and public-readiness changes",
+  "Evaluation and benchmark changes",
+  "Repository completeness and framework drift changes"
+].freeze
+agents_path = File.join(root, "AGENTS.md")
+if File.file?(agents_path)
+  agents = File.read(agents_path, encoding: "UTF-8")
+  if agents.lines.length > AGENTS_LINE_BUDGET
+    errors << "AGENTS.md has #{agents.lines.length} lines (budget #{AGENTS_LINE_BUDGET}); move domain rules into the owning skill"
+  end
+  domain_sections = agents.scan(/^## (.+ changes)\s*$/).flatten - REPOSITORY_CHANGE_SECTIONS
+  errors << "AGENTS.md contains domain change sections that belong in skills: #{domain_sections.join(", ")}" unless domain_sections.empty?
+end
+
 expected_inventory = {
   "Skills" => skill_count,
   "Implementation patterns" => pattern_count,

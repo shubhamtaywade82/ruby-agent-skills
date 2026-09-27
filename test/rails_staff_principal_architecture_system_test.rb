@@ -40,12 +40,12 @@ class RailsStaffPrincipalArchitectureSystemTest < Minitest::Test
 
   def test_router_agents_validator
     routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    agents=File.read(File.join(ROOT,"AGENTS.md"),encoding:"UTF-8")
+    change_contract=File.read(File.join(ROOT,"skills/rails-staff-principal-architecture/SKILL.md"),encoding:"UTF-8")
     validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
     assert_includes routing,"Rails Staff and Principal Architecture"
     assert_includes routing,"rails-staff-principal-architecture"
-    assert_includes agents,"Rails staff/principal architecture changes"
-    assert_includes agents,"dependency direction"
+    assert_includes change_contract,"Rails staff/principal architecture changes"
+    assert_includes change_contract,"dependency direction"
     assert_includes validator,"rails_staff_principal_architecture_system_test.rb"
   end
 

@@ -58,15 +58,15 @@ class RailsActionMailboxSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_action_mailbox
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-action-mailbox/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Action Mailbox"
     assert_includes routing, "rails-action-mailbox"
     assert_includes routing, "action-mailbox-idempotency"
-    assert_includes agents, "Rails Action Mailbox changes"
-    assert_includes agents, "ingress authentication"
-    assert_includes agents, "From header"
-    assert_includes agents, "domain idempotency"
+    assert_includes change_contract, "Rails Action Mailbox changes"
+    assert_includes change_contract, "ingress authentication"
+    assert_includes change_contract, "From header"
+    assert_includes change_contract, "domain idempotency"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

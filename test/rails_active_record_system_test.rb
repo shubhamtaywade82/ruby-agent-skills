@@ -62,16 +62,16 @@ class RailsActiveRecordSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_active_record
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-active-record/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Active Record"
     assert_includes routing, "rails-active-record"
     assert_includes routing, "active-record-query-contract"
-    assert_includes agents, "Rails Active Record changes"
-    assert_includes agents, "ActiveRecord::Relation"
-    assert_includes agents, "default_scope"
-    assert_includes agents, "after_commit"
-    assert_includes agents, "bulk operations"
+    assert_includes change_contract, "Rails Active Record changes"
+    assert_includes change_contract, "ActiveRecord::Relation"
+    assert_includes change_contract, "default_scope"
+    assert_includes change_contract, "after_commit"
+    assert_includes change_contract, "bulk operations"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

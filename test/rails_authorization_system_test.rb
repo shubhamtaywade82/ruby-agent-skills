@@ -73,16 +73,16 @@ class RailsAuthorizationSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_authorization
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-authorization/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Authorization engineering"
     assert_includes routing, "rails-authorization"
     assert_includes routing, "authorized-scope-boundary"
 
-    assert_includes agents, "Rails authorization changes"
-    assert_includes agents, "authentication and authorization remain separate"
-    assert_includes agents, "tenant isolation"
-    assert_includes agents, "cross-tenant"
+    assert_includes change_contract, "Rails authorization changes"
+    assert_includes change_contract, "authentication and authorization remain separate"
+    assert_includes change_contract, "tenant isolation"
+    assert_includes change_contract, "cross-tenant"
   end
 
   def test_evaluation_activates_expected_contracts

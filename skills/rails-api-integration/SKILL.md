@@ -385,3 +385,22 @@ Never claim provider interoperability merely because a fake transport test passe
 - Rails Testing Applications: https://guides.rubyonrails.org/testing.html
 - Ruby documentation: https://ruby-doc.org/
 - Repository foundations: rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection
+
+## Rails API and integration changes
+
+For API and integration changes:
+- classify the boundary as inbound API, outbound provider, webhook, internal API, or asynchronous integration;
+- resolve Rails/Ruby versions and existing routing, versioning, serializer, authentication, security, and error conventions;
+- treat inbound and third-party payloads as untrusted;
+- define request/response/error contracts explicitly;
+- classify changes as additive or breaking before implementation;
+- isolate provider-specific schemas behind adapters rather than leaking them into the domain;
+- require bounded network timeouts for outbound HTTP;
+- classify retryable versus permanent failures and never use unbounded retries;
+- never retry ambiguous non-idempotent mutations without an idempotency mechanism;
+- verify webhook authenticity before domain processing and make duplicate/replay behavior explicit;
+- make idempotency key scope, persistence, fingerprinting, and duplicate-result semantics explicit;
+- preserve correlation identifiers across request/dependency/job/webhook boundaries where applicable;
+- exclude credentials, signatures, authorization headers, and sensitive payloads from logs/errors;
+- test wire contracts and failure paths with fake transports/request tests;
+- consider old/new client, worker, and webhook compatibility during rollout.

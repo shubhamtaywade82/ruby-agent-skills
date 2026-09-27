@@ -439,3 +439,17 @@ Run focused tests first, then the affected suite, then broader CI-equivalent che
 Primary source: Rails Testing Applications guide: https://guides.rubyonrails.org/testing.html
 Supporting source: Rails Active Job Basics: https://guides.rubyonrails.org/active_job_basics.html
 Framework version notes must be resolved from the target repository and installed Rails version.
+
+## Rails test engineering changes
+
+For testing changes:
+- resolve the repository's test framework and conventions first;
+- select the smallest boundary that proves the contract;
+- keep fixtures/factories explicit and bounded;
+- preserve deterministic time, randomness, network, and filesystem behavior;
+- diagnose flaky tests from seed/order/parallel/runtime evidence instead of adding blind retries;
+- treat parallel tests as an isolation and capacity problem;
+- disable transactional tests only at the narrow case that requires independent transactions;
+- test Active Job enqueue and execution at the relevant boundaries;
+- measure test runtime before optimizing;
+- keep CI coverage for system tests and eager-loading where the repository requires them.

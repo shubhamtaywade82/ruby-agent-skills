@@ -40,13 +40,13 @@ class RailsIncidentEngineeringSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_incident_guidance
     routing = File.read(File.join(ROOT, "router", "ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-incident-engineering/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails incident engineering"
     assert_includes routing, "rails-incident-engineering"
-    assert_includes agents, "Rails incident engineering changes"
-    assert_includes agents, "reversible"
-    assert_includes agents, "recovery"
+    assert_includes change_contract, "Rails incident engineering changes"
+    assert_includes change_contract, "reversible"
+    assert_includes change_contract, "recovery"
   end
 
   def test_existing_observability_evaluations_activate_incident_skill

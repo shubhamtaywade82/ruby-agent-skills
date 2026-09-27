@@ -315,3 +315,19 @@ Repository composition:
 - skills/rails-distributed-systems/SKILL.md
 
 Use the repository's actual runtime, telemetry, access, deployment, and incident-management conventions as the operational authority.
+
+## Rails incident engineering changes
+
+For production incident and operational-diagnostics changes:
+- resolve the affected user/system contract before investigating individual exceptions;
+- inspect existing observability, reliability, runtime, deployment, alerting, runbook, and access conventions before adding new operational mechanisms;
+- distinguish symptom, trigger, contributing factor, hypothesis, and evidence-backed root cause;
+- preserve existing request/job/message/dependency correlation identifiers instead of creating parallel IDs;
+- make alerts actionable with an owner, diagnostic context, response, and recovery condition;
+- prefer existing telemetry and bounded read-only diagnostics before production mutation;
+- evaluate blast radius, privilege, reversibility, auditability, and user impact before every state-changing mitigation;
+- verify recovery through user-impact SLIs and relevant dependency/backlog/data-integrity signals, not only process health;
+- build incident timelines from durable timestamps and label hypotheses separately from observed facts;
+- make runbooks executable, bounded, reversible, and explicit about stop conditions;
+- convert material incidents into owned, testable changes to code, telemetry, alerts, runbooks, resilience controls, or architecture;
+- do not disclose secrets or disable security boundaries as a generic incident response technique.

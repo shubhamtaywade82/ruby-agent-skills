@@ -46,14 +46,14 @@ class RailsActionMailerSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_mailer_guidance
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-action-mailer/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Action Mailer"
     assert_includes routing, "rails-action-mailer"
     assert_includes routing, "mailer-delivery-semantics"
-    assert_includes agents, "Rails Action Mailer changes"
-    assert_includes agents, "deliver_now versus deliver_later"
-    assert_includes agents, "provider"
+    assert_includes change_contract, "Rails Action Mailer changes"
+    assert_includes change_contract, "deliver_now versus deliver_later"
+    assert_includes change_contract, "provider"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns
