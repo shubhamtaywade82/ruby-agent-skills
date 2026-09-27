@@ -1,9 +1,15 @@
-## Iterations 106–108 — Release Artifact Verification
+## Iteration 108 — Release Artifact Verification
 
-- Add file-level SHA-256 and byte-size provenance to `RELEASE.json`.
 - Add standalone `scripts/verify_release_archive.rb` with archive-safety and content-integrity checks.
-- Gate tag-triggered release publication on independent archive verification.
 - Add regression coverage for tampered archives, metadata, and unsafe entries.
+
+## Iteration 107 — Release File-Level Provenance
+
+- Add deterministic file-level SHA-256 and byte-size provenance to `RELEASE.json`.
+
+## Iteration 106 — Release Verification Gate
+
+- Gate tag-triggered release publication on independent release archive verification after the offline installation self-test.
 
 # Changelog
 
