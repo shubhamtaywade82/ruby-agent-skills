@@ -1,0 +1,42 @@
+id: react-e2e-testing-contract
+coverage: static-only
+version: 1
+title: React E2E Testing Contract
+category: react-typescript
+source: react-e2e-testing-v1
+skills:
+  - react-e2e-testing
+patterns:
+  - e2e-rails-server-environment
+  - e2e-authenticated-storage-state
+  - e2e-parallel-data-isolation
+  - e2e-failure-injection-route
+prompt: |
+  Add Playwright end-to-end tests for signing in and adding a note in a Rails app with a React notes island. Cover a successful save, a Rails validation error shown on the field, and a server failure.
+  Inspect the repository before choosing the implementation shape. Tests run in CI with parallel workers against one database.
+constraints:
+  required_boundary: react-e2e-testing
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: environment
+    input: Boot Rails for the suite and prove the React client sends its CSRF token.
+    expected:
+      e2e-rails-server-environment: dedicated e2e environment with forgery protection on and a guard test
+  - name: session-and-data
+    input: Reuse one signed-in session across parallel tests that write to one database.
+    expected:
+      e2e-authenticated-storage-state: sign in once through the form, storageState ignored by Git
+      e2e-parallel-data-isolation: unique data per test and no count assertions
+  - name: failure-path
+    input: Show a server failure without stubbing the success path.
+    expected:
+      e2e-failure-injection-route: page.route injects a 503 only for the failing request
+grading:
+  functional: The journeys pass against a running Rails server with role-based locators.
+  tests: Success, validation, and injected-failure paths are covered with web-first assertions and no sleeps.
+  contract: CSRF, session, and 422 contracts are exercised for real, not stubbed.
+  scope_control: No second browser framework, test-only production route, or disabled forgery protection is introduced.

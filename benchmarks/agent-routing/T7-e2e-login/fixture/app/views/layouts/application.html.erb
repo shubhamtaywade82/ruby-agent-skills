@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Notes</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <% if flash[:alert] %><p role="alert"><%= flash[:alert] %></p><% end %>
+    <%= yield %>
+  </body>
+</html>

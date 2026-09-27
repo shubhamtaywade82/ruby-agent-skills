@@ -1479,6 +1479,7 @@ When a task materially changes dependency direction, domain ownership, modularit
 | React API data fetching/cache/mutation | react-data-fetching | typescript-runtime-contracts, react-state-effects, react-testing-engineering |
 | React application structure/feature boundaries | react-architecture | react-component-engineering, react-state-effects, react-data-fetching |
 | React component/hook/UI tests | react-testing-engineering | react-component-engineering, typescript-runtime-contracts |
+| Playwright end-to-end test of a journey through a running Rails server (sign-in, forms, failure paths, flaky E2E) | react-e2e-testing | rails-react-integration, rails-authentication, react-accessibility-performance |
 | React accessibility/keyboard/focus | react-accessibility-performance | react-component-engineering, react-testing-engineering |
 | React render performance/memoization | react-accessibility-performance | react-state-effects, react-architecture |
 | React frontend security (XSS, CSP, tokens, postMessage, source maps, third-party scripts) | react-frontend-security | rails-security-engineering, react-component-engineering |
@@ -1493,6 +1494,7 @@ When a task spans a Rails server and a React/TypeScript client, route the client
 |---|---|---|
 | React code calling a Rails endpoint (fetch, response types, error handling) | rails-react-integration | rails-api-integration, typescript-runtime-contracts, react-data-fetching |
 | React form showing Rails 422 validation errors | rails-react-integration | rails-validations, react-component-engineering, react-testing-engineering |
+| Browser test proving a React client against Rails (CSRF, session, 422) end to end | react-e2e-testing | rails-react-integration, rails-test-engineering |
 | React fetch fails with InvalidAuthenticityToken or loses the session | rails-react-integration | rails-authentication, rails-security |
 | Choosing Inertia, a JSON API with a separate client, or React islands | rails-react-integration | react-architecture, rails-api-integration, rails-hotwire |
 | Paginating, filtering, or sorting a Rails collection in React | rails-react-integration | react-data-fetching, rails-active-record |

@@ -19,6 +19,7 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
     rails-react-integration
     react-frontend-security
     react-frameworks
+    react-e2e-testing
   ].freeze
 
   def manifest
@@ -53,14 +54,14 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
   def test_react_typescript_patterns_are_registered
     paths = manifest.fetch("patterns").fetch("react-typescript").fetch("paths")
 
-    assert_equal 29, paths.length
+    assert_equal 33, paths.length
     paths.each { |path| assert File.file?(File.join(ROOT, path)) }
   end
 
   def test_react_typescript_evaluations_are_registered
     entries = manifest.fetch("evaluations").select { |name, _| name.to_s.start_with?("react-typescript-", "react-", "rails-react-") }
 
-    assert_equal 12, entries.length
+    assert_equal 13, entries.length
     entries.each_value do |entry|
       Array(entry.fetch("paths")).each { |path| assert File.file?(File.join(ROOT, path)) }
     end

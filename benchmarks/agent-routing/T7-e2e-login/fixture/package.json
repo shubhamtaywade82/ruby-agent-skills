@@ -1,0 +1,22 @@
+{
+  "name": "t7-e2e-login-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild frontend/notes.tsx --bundle --format=esm --outfile=public/notes.js --define:process.env.NODE_ENV='\"production\"'",
+    "typecheck": "tsc --noEmit",
+    "e2e": "playwright test"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.6.0"
+  }
+}

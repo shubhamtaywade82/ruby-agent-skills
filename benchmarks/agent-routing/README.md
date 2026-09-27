@@ -30,7 +30,7 @@ ID (`T6-v2-...`) so historical scores remain comparable.
 | T4-react-form | pending | React form with async validation + a11y |
 | T5-tanstack-query | pending | Paginated data fetching with TanStack Query |
 | T6-cms-rich-text | **shipped** | CMS rich-text XSS gap; first fixture |
-| T7-e2e-login | pending | Playwright E2E for login (blocks on `react-e2e-testing`) |
+| T7-e2e-login | **shipped** | Playwright E2E for sign-in against Rails; CSRF masked by `RAILS_ENV=test`, password-less test route |
 | T8-vite-splitting | pending | Vite code-splitting + bundle budget (blocks on `react-build-tooling`) |
 | T9-nextjs-server-action | pending | Next.js server action + revalidation (blocks on `react-frameworks`) |
 | T10-full-stack-mutation | pending | Rails + React optimistic mutation (skill: `rails-react-integration`) |

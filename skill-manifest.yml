@@ -103,6 +103,10 @@ skills:
     family: react-typescript
     path: skills/react-testing-engineering/SKILL.md
     triggers: [React component testing, hooks testing, user interactions, async UI, Testing Library]
+  react-e2e-testing:
+    family: react-typescript
+    path: skills/react-e2e-testing/SKILL.md
+    triggers: [Playwright, end-to-end test, E2E test, browser test against Rails, storageState, webServer, page.route, flaky E2E test, login flow test]
   react-accessibility-performance:
     family: react-typescript
     path: skills/react-accessibility-performance/SKILL.md
@@ -463,6 +467,10 @@ patterns:
       - patterns/react-typescript/rails-react-validation-error-mapping.md
       - patterns/react-typescript/rails-react-csrf-session-fetch.md
       - patterns/react-typescript/rails-react-pagination-contract.md
+      - patterns/react-typescript/e2e-rails-server-environment.md
+      - patterns/react-typescript/e2e-authenticated-storage-state.md
+      - patterns/react-typescript/e2e-parallel-data-isolation.md
+      - patterns/react-typescript/e2e-failure-injection-route.md
   stack-minimality:
     paths:
       - patterns/stack-minimality/rails-convention-before-abstraction.md
@@ -1113,6 +1121,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/react-typescript/react-testing-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-e2e-testing:
+    source: react-e2e-testing-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-e2e-testing-contract.yml
     checks:
       - functional
       - tests

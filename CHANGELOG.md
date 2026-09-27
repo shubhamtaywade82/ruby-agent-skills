@@ -1,5 +1,34 @@
 # Changelog
 
+## Iteration 137 — React end-to-end testing against Rails
+
+- Add the `react-e2e-testing` skill (88 → 89). It owns Playwright journeys against a running Rails server and composes with `rails-react-integration` and `rails-authentication`. It covers:
+  - choosing Playwright versus Capybara system tests;
+  - a dedicated `e2e` Rails environment with forgery protection on;
+  - `webServer` lifecycle;
+  - seeding through Rails and per-test unique data under parallel workers;
+  - sign-in once with `storageState`;
+  - role-based locators and web-first assertions;
+  - `page.route` for failure injection only;
+  - CI retries with `failOnFlakyTests`.
+- Add four `react-typescript` patterns (443 → 447): `e2e-rails-server-environment`, `e2e-authenticated-storage-state`, `e2e-parallel-data-isolation`, and `e2e-failure-injection-route`.
+- Evidence from a Rails 8.0.5.1 app (Puma, SQLite, `has_secure_password`) with a React 19 island bundled by esbuild, driven by `@playwright/test` 1.63:
+  - The skill and pattern examples, extracted verbatim, pass: 10 tests, and 28 with `--repeat-each=3` across 3 workers.
+  - Dropping `X-CSRF-Token` from the client fails two tests in the `e2e` environment. Under `RAILS_ENV=test` the same broken client passes every UI test, and only the CSRF guard fails.
+  - Not mapping the Rails 422 to the field fails the validation test.
+- Three behaviours found while running the examples are written into the guidance:
+  - Rails' test environment disables forgery protection.
+  - A custom Rails environment has no generated `secret_key_base`, because Rails 8.0 generates one only when `Rails.env.local?`. `e2e.rb` opts in with `SECRET_KEY_BASE_DUMMY`, and a negative control fails at boot without it.
+  - `getByLabel("Note")` also matched `aria-label="Notes"` and failed strict mode.
+- Add the `react-e2e-testing-contract` evaluation (static-only, 3 cases; 453 → 456; 26 static-only evaluation files) and two routing rows in `router/ROUTING.md`.
+- Ship the EARP T7 fixture `benchmarks/agent-routing/T7-e2e-login/`: a Rails 8 + React 19 notes app with four planted defects:
+  - a client that omits the CSRF header;
+  - a Playwright config on `RAILS_ENV=test` that reuses servers in CI and retries without `failOnFlakyTests`;
+  - a smoke test using `waitForTimeout` and CSS selectors;
+  - a password-less `POST /__test__/login` route mounted in every environment.
+
+  Observed: the planted smoke test passes. A correct suite fails on the planted client and passes once the client sends the token. Under `RAILS_ENV=test`, only a CSRF guard catches the defect.
+
 ## Iteration 136 — RSpec coverage in rails-test-engineering
 
 - Add an "RSpec" section to `rails-test-engineering`: detect the suite before writing tests, request specs over controller specs, block-form enqueue matchers on the default `:test` adapter, `errors.of_kind?` instead of `errors.added?`, verifying doubles, trait-based factories, and shared examples only for repeated contracts. No new skill; RSpec stays owned by the test-engineering skill.

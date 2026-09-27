@@ -53,7 +53,7 @@ fixture. Tasks span the four routing dimensions the pack claims to cover:
 | T4 | Add a React form with async server validation and a11y error messaging | `react-component-engineering`, `react-state-effects`, `react-accessibility-performance` | React |
 | T5 | Fetch paginated data from a Rails API with TanStack Query; handle loading/error/empty | `react-data-fetching`, `react-state-effects`, `typescript-runtime-contracts` | React |
 | T6 | Render server-provided HTML safely (no XSS) from a CMS field | `react-frontend-security` | React security |
-| T7 | Add a Playwright E2E test for a login flow | `react-e2e-testing` *(does not exist yet)* | React testing gap |
+| T7 | Add a Playwright E2E test for a login flow | `react-e2e-testing` | React testing gap |
 | T8 | Add a Vite code-splitting config with bundle budget enforcement | `react-build-tooling` *(does not exist yet)* | React build gap |
 | T9 | Add a Next.js server action that mutates data and revalidates a query | `react-frameworks` | Framework |
 | T10 | Full-stack: Rails endpoint + React mutation with optimistic update, auth propagation, idempotency | `rails-react-integration`, `react-state-effects`, `rails-security` | Full-stack seam |
@@ -201,8 +201,9 @@ realistic tasks?" Both are needed.
 ## Status
 
 - v1 protocol: defined (this document).
-- T6 fixture: shipped (this PR).
-- T1-T5, T7-T10 fixtures: pending. Each Tier 1 skill PR ships its own
+- T6 fixture: shipped (Iteration 135).
+- T7 fixture: shipped (Iteration 137).
+- T1-T5, T8-T10 fixtures: pending. Each Tier 1 skill PR ships its own
   corresponding fixture.
 - Harness scripts: pending. The first baseline run blocks on the harness.
 - v1 baseline report: pending. Blocks on the harness and the release cut.
