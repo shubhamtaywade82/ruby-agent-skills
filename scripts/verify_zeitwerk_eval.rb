@@ -22,8 +22,7 @@ checks = {}
 
 case evaluation.fetch("id")
 when "path-constant-contract"
-  expected = source.match?(/modules+Paymentss*
-s*classs+Processor/)
+  expected = source.match?(/module\s+Payments\s*\n\s*class\s+Processor\b/)
   functional = begin
     require implementation
     defined?(Payments::Processor) && Payments::Processor.new.call == :ok
@@ -40,13 +39,12 @@ s*classs+Processor/)
 
 when "initializer-reload-boundary"
   checks["functional"] =
-    source.match?(/config.to_prepare|reloader.to_prepare/) && !source.match?(/ApiGateway.endpoints*=.*
-?s*z/) ?
+    source.match?(/config\.to_prepare|reloader\.to_prepare/) && !source.match?(/ApiGateway\.endpoint\s*=.*\n?\s*\z/) ?
       { "status" => "pass" } :
       { "status" => "fail", "evidence" => "reload-aware initializer boundary not detected" }
 
   checks["contract"] =
-    source.match?(/to_prepare/) && !source.match?(/requires+["'].*api_gateway/) ?
+    source.match?(/to_prepare/) && !source.match?(/require\s+["'].*api_gateway/) ?
       { "status" => "pass" } :
       { "status" => "fail", "evidence" => "initializer appears to eagerly require reloadable code or lacks to_prepare" }
 end
@@ -68,7 +66,6 @@ result = {
   "checks" => checks.select { |name, _| Array(evaluation.fetch("checks")).include?(name) }
 }
 
-File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.pretty_generate(result) + "
-", encoding: "UTF-8")
+File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.pretty_generate(result) + "\n", encoding: "UTF-8")
 abort "verification failed" if result["checks"].values.any? { |value| value.fetch("status") == "fail" }
 puts JSON.pretty_generate(result)
