@@ -41,7 +41,7 @@ jobs:
       - name: Independently verify release archive
         env:
           VERSION: ${{ github.ref_name }}
-        run: ruby scripts/verify_release_archive.rb "dist/ruby-agent-skills-$VERSION.tar.gz" --check-files
+        run: ruby scripts/verify_release_archive.rb "dist/ruby-agent-skills-$VERSION.tar.gz" --checksums dist/SHA256SUMS --check-files
 
       - name: Check archive reproducibility
         env:

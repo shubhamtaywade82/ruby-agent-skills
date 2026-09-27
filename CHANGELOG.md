@@ -1,5 +1,12 @@
 # Changelog
 
+## Iteration 112 — Release File-Level Provenance & Publication Gate
+
+- Record `protocol_version` and file-level SHA-256/byte-size provenance for every shipped file in `RELEASE.json`, computed from the staged archive tree.
+- Extend `scripts/verify_release_archive.rb` with pre-extraction tar listing safety (regular files/directories only, no absolute or parent-traversal names), protocol-version enforcement, file-record containment, and `--check-files` verification of every file's size/digest plus rejection of unrecorded shipped files.
+- Gate the tag-triggered release workflow on `verify_release_archive.rb --checksums dist/SHA256SUMS --check-files` before `gh release create`.
+- Extend release verification regression coverage to tampered file content, injected unrecorded files, unknown protocol versions, escaping file records, symlink entries, and the workflow publication gate.
+
 ## Iteration 110 — Multi-Region Data Boundary Pattern
 
 - Add the `multi-region-data-boundary` implementation pattern: region routing, authoritative write ownership, data-residency enforcement at the storage layer, replication lag budgets, fenced failover with stated RPO/RTO, and conflict handling for the failover window.
@@ -12,18 +19,11 @@
 - Refresh the README "Current implementation status" section to the current milestone, including the release infrastructure: reproducible checksummed archives, offline installation, the tag-triggered release workflow, and published GitHub releases.
 - Add a README quick start with the direct release-archive download, git checkout, and installation verification commands; link the Installation section to the releases page.
 
-## Iteration 108 — Release Artifact Verification
+## Iteration 106 — Independent Release Archive Verification
 
-- Add standalone `scripts/verify_release_archive.rb` with archive-safety and content-integrity checks.
-- Add regression coverage for tampered archives, metadata, and unsafe entries.
-
-## Iteration 107 — Release File-Level Provenance
-
-- Add deterministic file-level SHA-256 and byte-size provenance to `RELEASE.json`.
-
-## Iteration 106 — Release Verification Gate
-
-- Gate tag-triggered release publication on independent release archive verification after the offline installation self-test.
+- Add a standalone release archive verifier independent of the archive builder's self-test.
+- Verify release metadata, skill/pattern inventory, required agent-facing paths, archive safety, and optional published SHA-256 checksums.
+- Add regression coverage and wire the verifier into `bin/validate`.
 
 ## Iteration 105 — Release Infrastructure
 

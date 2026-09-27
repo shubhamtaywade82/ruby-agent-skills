@@ -15,9 +15,9 @@ Current inventory:
 
 The release archive builder records file-level SHA-256/byte-size provenance in `RELEASE.json`. Independently verify a built archive with:
 
-    ruby scripts/verify_release_archive.rb ./dist/ruby-agent-skills-vX.Y.Z.tar.gz --check-files
+    ruby scripts/verify_release_archive.rb ./dist/ruby-agent-skills-vX.Y.Z.tar.gz --checksums ./dist/SHA256SUMS --check-files
 
-The verifier rejects unsafe tar entries, validates release metadata, and checks every recorded file's size and digest. The tag-triggered release workflow runs this verifier before creating the GitHub Release.
+The verifier rejects unsafe tar entries before extraction, validates release metadata and inventory, checks the published archive checksum, verifies every recorded file's size and digest, and rejects files shipped without a provenance record. The tag-triggered release workflow runs this verifier before creating the GitHub Release.
 
 ## First checkout
 
