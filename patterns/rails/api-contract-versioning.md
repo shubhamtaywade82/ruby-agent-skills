@@ -60,6 +60,6 @@ Test both versions at the HTTP boundary when coexistence is required. Verify res
 
 - rails-api-integration
 - rails-routing
-- rails-controllers
+- rails-action-controller
 - ruby-api-design
-- rails-testing
+- rails-test-engineering

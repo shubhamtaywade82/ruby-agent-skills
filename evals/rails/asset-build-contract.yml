@@ -6,7 +6,6 @@ source: rails-asset-build-v1
 skills:
   - rails-asset-build-engineering
   - rails-production-runtime
-  - rails-deployment
   - rails-release-engineering
   - rails-security-engineering
   - rails-hotwire

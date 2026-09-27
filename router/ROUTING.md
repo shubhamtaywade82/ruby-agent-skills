@@ -44,48 +44,48 @@ This file defines how an agent should select and compose skills.
 | Deliberate simplification debt | stack-minimality-debt | stack-minimality |
 | Minimality measurement/evidence | stack-minimality-evidence | relevant performance or dependency skill |
 | Minimality help/reference | stack-minimality-help | stack-minimality |
-| Rails routes | rails-routing | rails-controllers, rails-testing |
-| Rails Routing deep engineering | rails-routing | rails-action-controller, rails-controllers, rails-authentication, rails-security, rails-i18n, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |
-| Rails controller action | rails-controllers | rails-routing, ruby-method-design, rails-testing |
-| Rails Action Controller HTTP boundary | rails-action-controller | rails-routing, rails-controllers, rails-authentication, rails-security, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-test-engineering, rails-testing |
-| Rails view/form | rails-views | rails-controllers, rails-testing |
-| Model/migration/query | rails-activerecord | rails-architecture, rails-testing |
-| Rails Active Record deep engineering | rails-active-record | rails-activerecord, rails-associations, rails-validations, rails-database-engineering, rails-performance, rails-security, rails-test-engineering, rails-testing |
-| Active Record association | rails-associations | rails-activerecord, rails-testing |
-| Rails Association deep engineering | rails-associations | rails-active-record, rails-activerecord, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering, rails-testing |
-| Validation/invariant | rails-validations | rails-activerecord, rails-testing |
-| Rails Validation deep engineering | rails-validations | rails-active-record, rails-active-model, rails-associations, rails-database-engineering, rails-action-controller, rails-action-view, rails-api-integration, rails-i18n, rails-security, rails-performance, rails-test-engineering, rails-testing |
-| Authentication/session | rails-authentication | rails-controllers, rails-testing, session-fixation-rotation |
-| Rails test design | rails-testing | relevant implementation skill, ruby-tdd-refactoring |
-| Rails generator/scaffold | rails-generators | relevant Rails skill, rails-testing, pattern:scaffold-lifecycle |
-| Rails REST resource | rails-routing | rails-controllers, rails-authentication, rails-testing, pattern:rest-resource |
-| Route precedence/shadowing | rails-routing | rails-action-controller, rails-testing, pattern:route-precedence-contract |
-| Nested/shallow route design | rails-routing | rails-associations, rails-authentication, rails-testing, pattern:nested-route-boundary |
-| Route scopes/namespaces/constraints | rails-routing | rails-action-controller, rails-security, rails-testing, pattern:route-scope-namespace-contract, pattern:route-constraint-contract |
-| URL helper/polymorphic routing | rails-routing | rails-action-view, rails-action-mailer, rails-i18n, rails-testing, pattern:route-helper-contract |
-| Routing concerns/direct/resolve | rails-routing | rails-testing, pattern:route-concern-contract, pattern:direct-route-resolution |
-| Mounted Rack/engine endpoint | rails-routing | rails-security, rails-testing, pattern:mounted-endpoint-boundary |
-| Catch-all/redirect fallback routing | rails-routing | rails-action-controller, rails-security, rails-testing, pattern:catch-all-route-boundary |
-| Rails Authentication engineering | rails-authentication | rails-action-controller, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-test-engineering, rails-testing |
-| Rails Authorization engineering | rails-authorization | rails-authentication, rails-security, rails-security-engineering, rails-active-record, rails-active-job, rails-action-cable, rails-api-integration, rails-database-engineering, rails-test-engineering, rails-testing, pattern:authorized-scope-boundary, pattern:tenant-isolation-authorization |
-| Rails Hotwire engineering | rails-hotwire | rails-action-controller, rails-action-view, rails-authentication, rails-authorization, rails-security, rails-i18n, rails-action-cable, rails-caching, rails-test-engineering, rails-testing, pattern:turbo-frame-contract, pattern:stimulus-controller-boundary |
-| Rails Asset and Build Infrastructure engineering | rails-asset-build-engineering | rails-hotwire, rails-production-runtime, rails-deployment, rails-release-engineering, rails-security-engineering, ruby-runtime-compatibility, rails-test-engineering |
-| Rails deployment/hosting | rails-deployment | rails-architecture, ruby-debugging |
-| Rails performance/scalability | rails-performance | ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-testing |
-| Rails caching engineering | rails-caching | rails-performance, ruby-performance, rails-activerecord, rails-database-engineering, rails-active-job, rails-observability, rails-security, rails-security-engineering, rails-testing |
-| Rails email / Action Mailer | rails-action-mailer | rails-active-job, rails-api-integration, rails-security, rails-security-engineering, rails-observability, rails-test-engineering, rails-testing, rails-distributed-systems |
-| Rails Active Storage / file attachments | rails-active-storage | rails-security, rails-security-engineering, rails-active-job, rails-api-integration, rails-performance, rails-caching, rails-observability, rails-production-runtime, rails-test-engineering, rails-testing |
-| Rails Action Cable / realtime WebSockets | rails-action-cable | rails-security, rails-security-engineering, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-reliability-engineering, rails-performance, ruby-performance, ruby-concurrency, rails-production-runtime, rails-release-engineering, rails-observability, rails-test-engineering, rails-testing |
-| Rails I18n / localization | rails-i18n | rails-routing, rails-views, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, rails-testing, ruby-concurrency |
-| Rails Action Text / rich text | rails-action-text | rails-views, rails-activerecord, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering, rails-testing |
-| Rails API and integration architecture | rails-api-integration | rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-testing |
-| Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-testing |
-| Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-testing |
-| Reliability engineering and resilience | rails-reliability-engineering | rails-observability, rails-performance, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-production-runtime, rails-active-job, ruby-concurrency, rails-database-engineering, rails-security, rails-testing |
-| Incident response and operational debugging | rails-incident-engineering | rails-observability, rails-reliability-engineering, rails-production-runtime, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-security, rails-security-engineering, rails-performance, rails-testing |
-| Release engineering and release readiness | rails-release-engineering | rails-deployment, rails-production-runtime, rails-database-engineering, rails-reliability-engineering, rails-incident-engineering, rails-security-engineering, rails-api-integration, rails-active-job, rails-event-driven-messaging, rails-testing |
-| Security engineering and threat modeling | rails-security-engineering | rails-security, rails-authentication, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-reliability-engineering, rails-database-engineering, rails-testing |
-| Rails code-quality review | rails-best-practices | relevant Rails skill, ruby-clean-code, rails-testing, pattern:rails-best-practice-review |
+| Rails routes | rails-routing | rails-action-controller, rails-test-engineering |
+| Rails Routing deep engineering | rails-routing | rails-action-controller, rails-authentication, rails-security, rails-i18n, rails-api-integration, rails-observability, rails-test-engineering |
+| Rails controller action | rails-action-controller | rails-routing, ruby-method-design, rails-test-engineering |
+| Rails Action Controller HTTP boundary | rails-action-controller | rails-routing, rails-authentication, rails-security, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-test-engineering |
+| Rails view/form | rails-action-view | rails-action-controller, rails-test-engineering |
+| Model/migration/query | rails-active-record | rails-architecture, rails-test-engineering |
+| Rails Active Record deep engineering | rails-active-record | rails-associations, rails-validations, rails-database-engineering, rails-performance, rails-security, rails-test-engineering |
+| Active Record association | rails-associations | rails-active-record, rails-test-engineering |
+| Rails Association deep engineering | rails-associations | rails-active-record, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering |
+| Validation/invariant | rails-validations | rails-active-record, rails-test-engineering |
+| Rails Validation deep engineering | rails-validations | rails-active-record, rails-active-model, rails-associations, rails-database-engineering, rails-action-controller, rails-action-view, rails-api-integration, rails-i18n, rails-security, rails-performance, rails-test-engineering |
+| Authentication/session | rails-authentication | rails-action-controller, rails-test-engineering, session-fixation-rotation |
+| Rails test design | rails-test-engineering | relevant implementation skill, ruby-tdd-refactoring |
+| Rails generator/scaffold | rails-generators | relevant Rails skill, rails-test-engineering, pattern:scaffold-lifecycle |
+| Rails REST resource | rails-routing | rails-action-controller, rails-authentication, rails-test-engineering, pattern:rest-resource |
+| Route precedence/shadowing | rails-routing | rails-action-controller, rails-test-engineering, pattern:route-precedence-contract |
+| Nested/shallow route design | rails-routing | rails-associations, rails-authentication, rails-test-engineering, pattern:nested-route-boundary |
+| Route scopes/namespaces/constraints | rails-routing | rails-action-controller, rails-security, rails-test-engineering, pattern:route-scope-namespace-contract, pattern:route-constraint-contract |
+| URL helper/polymorphic routing | rails-routing | rails-action-view, rails-action-mailer, rails-i18n, rails-test-engineering, pattern:route-helper-contract |
+| Routing concerns/direct/resolve | rails-routing | rails-test-engineering, pattern:route-concern-contract, pattern:direct-route-resolution |
+| Mounted Rack/engine endpoint | rails-routing | rails-security, rails-test-engineering, pattern:mounted-endpoint-boundary |
+| Catch-all/redirect fallback routing | rails-routing | rails-action-controller, rails-security, rails-test-engineering, pattern:catch-all-route-boundary |
+| Rails Authentication engineering | rails-authentication | rails-action-controller, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-test-engineering |
+| Rails Authorization engineering | rails-authorization | rails-authentication, rails-security, rails-security-engineering, rails-active-record, rails-active-job, rails-action-cable, rails-api-integration, rails-database-engineering, rails-test-engineering, pattern:authorized-scope-boundary, pattern:tenant-isolation-authorization |
+| Rails Hotwire engineering | rails-hotwire | rails-action-controller, rails-action-view, rails-authentication, rails-authorization, rails-security, rails-i18n, rails-action-cable, rails-caching, rails-test-engineering, pattern:turbo-frame-contract, pattern:stimulus-controller-boundary |
+| Rails Asset and Build Infrastructure engineering | rails-asset-build-engineering | rails-hotwire, rails-production-runtime, rails-release-engineering, rails-security-engineering, ruby-runtime-compatibility, rails-test-engineering |
+| Rails deployment/hosting | rails-release-engineering | rails-architecture, ruby-debugging |
+| Rails performance/scalability | rails-performance | ruby-performance, rails-active-record, rails-database-engineering, rails-active-job, rails-observability, ruby-concurrency, rails-test-engineering |
+| Rails caching engineering | rails-caching | rails-performance, ruby-performance, rails-active-record, rails-database-engineering, rails-active-job, rails-observability, rails-security, rails-security-engineering, rails-test-engineering |
+| Rails email / Action Mailer | rails-action-mailer | rails-active-job, rails-api-integration, rails-security, rails-security-engineering, rails-observability, rails-test-engineering, rails-distributed-systems |
+| Rails Active Storage / file attachments | rails-active-storage | rails-security, rails-security-engineering, rails-active-job, rails-api-integration, rails-performance, rails-caching, rails-observability, rails-production-runtime, rails-test-engineering |
+| Rails Action Cable / realtime WebSockets | rails-action-cable | rails-security, rails-security-engineering, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-reliability-engineering, rails-performance, ruby-performance, ruby-concurrency, rails-production-runtime, rails-release-engineering, rails-observability, rails-test-engineering |
+| Rails I18n / localization | rails-i18n | rails-routing, rails-action-view, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, ruby-concurrency |
+| Rails Action Text / rich text | rails-action-text | rails-action-view, rails-active-record, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering |
+| Rails API and integration architecture | rails-api-integration | rails-routing, rails-action-controller, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-test-engineering |
+| Distributed systems and service architecture | rails-distributed-systems | rails-api-integration, rails-active-job, rails-database-engineering, ruby-concurrency, rails-observability, rails-production-runtime, rails-security, rails-test-engineering |
+| Event-driven messaging architecture | rails-event-driven-messaging | rails-distributed-systems, rails-active-job, rails-api-integration, rails-observability, rails-production-runtime, ruby-concurrency, rails-security, rails-test-engineering |
+| Reliability engineering and resilience | rails-reliability-engineering | rails-observability, rails-performance, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-production-runtime, rails-active-job, ruby-concurrency, rails-database-engineering, rails-security, rails-test-engineering |
+| Incident response and operational debugging | rails-incident-engineering | rails-observability, rails-reliability-engineering, rails-production-runtime, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-security, rails-security-engineering, rails-performance, rails-test-engineering |
+| Release engineering and release readiness | rails-release-engineering | rails-production-runtime, rails-database-engineering, rails-reliability-engineering, rails-incident-engineering, rails-security-engineering, rails-api-integration, rails-active-job, rails-event-driven-messaging, rails-test-engineering |
+| Security engineering and threat modeling | rails-security-engineering | rails-security, rails-authentication, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-reliability-engineering, rails-database-engineering, rails-test-engineering |
+| Rails code-quality review | rails-architecture | relevant Rails skill, ruby-clean-code, rails-test-engineering, pattern:rails-best-practice-review |
 | Code review/refactor | ruby-clean-code | ruby-method-design, ruby-tdd-refactoring |
 | RuboCop/linting review | rubocop | ruby-clean-code, relevant implementation skill, pattern:rubocop-review |
 | Test-driven change | ruby-tdd-refactoring | relevant implementation skill |
@@ -99,18 +99,18 @@ This file defines how an agent should select and compose skills.
 | Optional collaborator with safe no-op | ruby-object-composition | pattern:null-object, ruby-tdd-refactoring |
 | Layer behavior around stable interface | ruby-object-composition | pattern:decorator, ruby-tdd-refactoring |
 | Complex subsystem interface | ruby-object-composition | pattern:facade, ruby-tdd-refactoring |
-| Complex persistence abstraction | ruby-domain-modeling | pattern:repository, rails-activerecord, rails-testing |
+| Complex persistence abstraction | ruby-domain-modeling | pattern:repository, rails-active-record, rails-test-engineering |
 | Repeated state-specific behavior | ruby-domain-modeling | pattern:state-object, ruby-tdd-refactoring |
-| Rails presentation transformation | rails-views | pattern:presenter, rails-testing |
+| Rails presentation transformation | rails-action-view | pattern:presenter, rails-test-engineering |
 | Interchangeable algorithm/policy | ruby-oop | pattern:strategy-object |
 | Replace inheritance with collaborators | ruby-oop | pattern:composition-over-inheritance |
 | External/legacy API boundary | ruby-gems-io-services | ruby-api-design, pattern:external-api-client, pattern:adapter, ruby-debugging |
 | Reusable Ruby gem/library | ruby-gems-io-services | ruby-api-design, pattern:ruby-gem |
-| Complex/read-oriented Rails query | rails-activerecord | pattern:query-object, rails-testing |
-| Multi-model/input validation boundary | rails-controllers | pattern:form-object, rails-validations |
-| Authorization boundary | rails-authentication | pattern:policy-boundary, rails-testing |
-| Atomic multi-write workflow | rails-activerecord | pattern:transaction-boundary, rails-testing |
-| End-to-end Rails endpoint | rails-architecture | pattern:request-flow, rails-testing |
+| Complex/read-oriented Rails query | rails-active-record | pattern:query-object, rails-test-engineering |
+| Multi-model/input validation boundary | rails-action-controller | pattern:form-object, rails-validations |
+| Authorization boundary | rails-authentication | pattern:policy-boundary, rails-test-engineering |
+| Atomic multi-write workflow | rails-active-record | pattern:transaction-boundary, rails-test-engineering |
+| End-to-end Rails endpoint | rails-architecture | pattern:request-flow, rails-test-engineering |
 | Bug regression coverage | ruby-debugging | pattern:regression-test, ruby-tdd-refactoring |
 | Pair-search on sorted data | ruby-collections | pattern:two-pointers, ruby-tdd-refactoring |
 | Repeated membership/counting | ruby-collections | pattern:frequency-map, ruby-tdd-refactoring |
@@ -132,10 +132,10 @@ Resolve runtime evidence before using version-sensitive APIs. Do not choose betw
 
 ```text
 rails-routing
-  + rails-controllers
-  + rails-activerecord
+  + rails-action-controller
+  + rails-active-record
   + rails-validations (when invariants change)
-  + rails-testing
+  + rails-test-engineering
   + ruby-clean-code
 ```
 
@@ -162,10 +162,10 @@ Select plugins from `data/rubocop/plugins.yml` only when repository dependencies
 ### Rails quality review
 
 ```text
-rails-best-practices
+rails-architecture
   + relevant Rails implementation skill
   + ruby-clean-code
-  + rails-testing
+  + rails-test-engineering
   + pattern:rails-best-practice-review
 ```
 
@@ -276,20 +276,20 @@ ruby-oop
 
 ```text
 rails-routing
-  + rails-controllers
+  + rails-action-controller
   + rails-authentication (when protected)
-  + rails-activerecord
+  + rails-active-record
   + pattern:request-flow
-  + rails-testing
+  + rails-test-engineering
 ```
 
 #### Complex query
 
 ```text
-rails-activerecord
+rails-active-record
   + rails-associations
   + pattern:query-object
-  + rails-testing
+  + rails-test-engineering
 ```
 
 #### Bug fix
@@ -317,18 +317,18 @@ Do not use a pattern simply because it exists. If a direct implementation is cle
 ### Rails REST resource
 
     rails-routing
-      + rails-controllers
+      + rails-action-controller
       + rails-authentication (when protected)
       + pattern:rest-resource
       + pattern:request-flow
-      + rails-testing
+      + rails-test-engineering
 
 ### Rails scaffold cleanup
 
     rails-generators
       + pattern:scaffold-lifecycle
       + relevant resource skills
-      + rails-testing
+      + rails-test-engineering
 
 ### Ruby gem extraction
 
@@ -366,7 +366,7 @@ Security findings are reviewed as trust-boundary/data-flow evidence. Do not redu
 ```text
 slow endpoint / job / query / memory / allocations / benchmark / profiler / cache
   -> ruby-performance
-  -> rails-activerecord when DB/query work is involved
+  -> rails-active-record when DB/query work is involved
   -> ruby-concurrency when concurrency/capacity is involved
   -> rails-security when cache/auth/tenant boundaries are security-sensitive
   -> performance-investigation when a measured bottleneck needs a concrete optimization
@@ -382,12 +382,12 @@ slow Rails endpoint / Active Record N+1 / query plan / cache stampede /
 connection pool / Puma capacity / job throughput / Rails memory
   -> rails-performance
   -> ruby-performance for profiling, allocations, GC, or benchmark methodology
-  -> rails-activerecord for query implementation
+  -> rails-active-record for query implementation
   -> rails-database-engineering for index, lock, pool, and database capacity changes
   -> rails-active-job for background-job execution semantics
   -> rails-observability for telemetry and production evidence
   -> ruby-concurrency for thread/worker contention and capacity reasoning
-  -> rails-testing for regression and deterministic performance tests
+  -> rails-test-engineering for regression and deterministic performance tests
 ```
 
 Require a workload or measurable symptom. Inspect actual Rails/database/runtime configuration before changing concurrency, caching, query shape, or indexes.
@@ -399,7 +399,7 @@ API contract / versioning / serialization / external HTTP / webhook /
 idempotency / retry / rate limit / provider adapter / integration test
   -> rails-api-integration
   -> rails-routing for dispatch
-  -> rails-controllers for HTTP orchestration
+  -> rails-action-controller for HTTP orchestration
   -> rails-authentication for identity/session
   -> rails-security for trust boundaries/secrets
   -> rails-observability for correlation/diagnostics
@@ -407,7 +407,7 @@ idempotency / retry / rate limit / provider adapter / integration test
   -> ruby-api-design for public Ruby contracts
   -> ruby-gems-io-services for transport/dependency boundaries
   -> ruby-dependency-injection for replaceable clients/transports
-  -> rails-testing for contract/integration tests
+  -> rails-test-engineering for contract/integration tests
 ```
 
 Classify the boundary first. Preserve existing API/auth/versioning conventions and make retry, idempotency, replay, and error semantics explicit.
@@ -442,7 +442,7 @@ background job / Active Job / ApplicationJob / perform_later / retry / discard /
   -> rails-active-job
   -> ruby-runtime-compatibility
   -> ruby-tdd-refactoring
-  -> rails-activerecord when persistence or transaction boundaries are involved
+  -> rails-active-record when persistence or transaction boundaries are involved
   -> ruby-concurrency when overlap/capacity/concurrency is involved
   -> rails-security when authorization, secrets, or tenant isolation is involved
   -> idempotent-job when repeated side effects must be safe
@@ -460,7 +460,7 @@ Do not treat "runs in the background" as sufficient design. Resolve serializatio
 API error handling / Rails.error / error reporting / request ID / logging /
 ActiveSupport::Notifications / instrumentation / health / liveness / readiness
   -> rails-observability
-  -> rails-controllers
+  -> rails-action-controller
   -> ruby-debugging
   -> rails-security when sensitive-data or trust-boundary concerns exist
   -> ruby-performance when logging/instrumentation has measurable overhead
@@ -480,8 +480,8 @@ migration / schema / index / constraint / backfill / transaction /
 locking / isolation / deadlock / connection pool / query plan /
 zero-downtime database change
   -> rails-database-engineering
-  -> rails-activerecord
-  -> rails-testing
+  -> rails-active-record
+  -> rails-test-engineering
   -> ruby-concurrency when contention/capacity is involved
   -> ruby-performance when query/index/pool performance is the measured problem
   -> ruby-runtime-compatibility for version-sensitive database APIs
@@ -503,7 +503,7 @@ Puma / production process model / workers / threads / graceful shutdown /
 zero-downtime release / Solid Queue topology / container lifecycle /
 runtime configuration / release ordering / rollback
   -> rails-production-runtime
-  -> rails-deployment
+  -> rails-release-engineering
   -> rails-database-engineering when schema/migration is involved
   -> rails-active-job when queued work or Solid Queue is involved
   -> rails-observability for readiness/health/diagnostics
@@ -522,7 +522,7 @@ test boundary / request test / integration / system test / job test /
 test isolation / flaky test / parallel tests / transactional tests /
 test performance / CI test execution / fixtures / factories
   -> rails-test-engineering
-  -> rails-testing
+  -> rails-test-engineering
   -> ruby-tdd-refactoring
   -> ruby-concurrency when thread/process concurrency is involved
   -> ruby-performance for measured test-runtime problems
@@ -548,7 +548,7 @@ multi-region / data residency / region failover
   -> rails-observability for correlation/causation and state transitions
   -> rails-production-runtime for process topology and rollout/shutdown
   -> rails-security for cross-service trust and credentials
-  -> rails-testing for deterministic failure/replay coverage
+  -> rails-test-engineering for deterministic failure/replay coverage
 ```
 
 Classify the failure model before selecting a mechanism. Prefer local atomicity over distributed coordination when one owner can enforce the invariant.
@@ -580,7 +580,7 @@ schema evolution / dead letter / replay / lag / message tracing / capacity
   -> rails-production-runtime for consumer process/shutdown topology
   -> ruby-concurrency for bounded consumer concurrency
   -> rails-security for trust, permissions, and secrets
-  -> rails-testing for deterministic message/failure tests
+  -> rails-test-engineering for deterministic message/failure tests
 ```
 
 Classify the message before designing transport mechanics. Keep broker-specific types at the handler boundary and treat replay as a production capability.
@@ -615,7 +615,7 @@ RTO/RPO / failover / restore / reconciliation / resilience testing
   -> ruby-concurrency for bounded execution and resource isolation
   -> rails-database-engineering for DB capacity, replicas, locking, and recovery state
   -> rails-security for fail-safe authorization/tenant boundaries
-  -> rails-testing for deterministic resilience verification
+  -> rails-test-engineering for deterministic resilience verification
 ```
 
 Start with the user-visible reliability objective and failure model. Choose the smallest containment or recovery mechanism that is justified by evidence.
@@ -648,7 +648,7 @@ dependency supply chain / defense in depth / abuse case / residual risk
   -> rails-event-driven-messaging for message trust/replay boundaries
   -> rails-reliability-engineering for failure-safe degradation and recovery
   -> rails-database-engineering for database-enforced invariants
-  -> rails-testing for executable security contracts
+  -> rails-test-engineering for executable security contracts
 ```
 
 Start from assets and trust boundaries. Use the narrowest existing security control that owns the decision, then add defense in depth only for a distinct failure mode.
@@ -707,14 +707,14 @@ release readiness / CI-CD release / artifact promotion / release gate /
 progressive delivery / canary / staged rollout / environment parity /
 rollback / roll-forward / release health / release evidence
   -> rails-release-engineering
-  -> rails-deployment for basic hosting/deployment mechanics
+  -> rails-release-engineering for basic hosting/deployment mechanics
   -> rails-production-runtime for process lifecycle, readiness, shutdown, and runtime compatibility
   -> rails-database-engineering for migration/schema compatibility
   -> rails-reliability-engineering for SLI/SLO and recovery objectives
   -> rails-incident-engineering for failed-release operational response
   -> rails-security-engineering for supply-chain/provenance and security-sensitive release controls
   -> rails-api-integration / rails-event-driven-messaging / rails-active-job for cross-boundary compatibility
-  -> rails-testing for executable release-contract tests
+  -> rails-test-engineering for executable release-contract tests
 ```
 
 Release engineering owns change propagation and evidence. Reuse existing runtime and deployment primitives instead of creating duplicate release mechanisms.
@@ -743,12 +743,12 @@ cache failure / eviction / cache capacity / tenant cache isolation
   -> rails-caching
   -> rails-performance for workload, baseline, bottleneck, and re-measurement
   -> ruby-performance for Ruby runtime/cache serialization cost
-  -> rails-activerecord for source query and persistence semantics
+  -> rails-active-record for source query and persistence semantics
   -> rails-database-engineering for authoritative state and transaction boundaries
   -> rails-active-job for warming/invalidation work
   -> rails-observability for cache telemetry and diagnostics
   -> rails-security / rails-security-engineering for authorization and tenant isolation
-  -> rails-testing for deterministic cache contract tests
+  -> rails-test-engineering for deterministic cache contract tests
 ```
 
 Caching is a correctness boundary. Define identity, freshness, invalidation, failure, and capacity before optimizing hit rate.
@@ -776,10 +776,10 @@ Active Support inflection / reusable Rails concern
   -> rails-observability for production telemetry, logging, metrics, health, and diagnostics
   -> ruby-concurrency for thread/fiber safety and context isolation
   -> rails-zeitwerk for autoloading and constant-loading ownership
-  -> rails-active-model / rails-activerecord for model-specific callbacks, attributes, and persistence lifecycle
+  -> rails-active-model / rails-active-record for model-specific callbacks, attributes, and persistence lifecycle
   -> rails-i18n for locale/timezone presentation contracts
   -> rails-security / rails-security-engineering for dynamic constantization, context isolation, and sensitive instrumentation payloads
-  -> rails-test-engineering / rails-testing for state-isolated framework tests
+  -> rails-test-engineering for state-isolated framework tests
 ~~~
 
 Active Support primitives are framework infrastructure. Keep inherited configuration, request context, callbacks, and instrumentation explicit; do not turn them into hidden global state or domain-event mechanisms.
@@ -808,14 +808,14 @@ Active Model lint / model-like object / non-persisted model / form model
   -> rails-active-model
   -> ruby-poro / ruby-domain-modeling for domain-object ownership
   -> rails-validations for validation and error semantics
-  -> rails-controllers for input boundaries
-  -> rails-action-view / rails-views for forms, partials, and rendering
+  -> rails-action-controller for input boundaries
+  -> rails-action-view for forms, partials, and rendering
   -> rails-routing for to_param/model_name/form routing when applicable
   -> rails-i18n for translation and locale context
   -> rails-api-integration for serialized external representations
   -> rails-security for authorization/input/output safety
-  -> rails-activerecord when persistence/database lifecycle is intrinsic
-  -> rails-test-engineering / rails-testing for model protocol and consumer tests
+  -> rails-active-record when persistence/database lifecycle is intrinsic
+  -> rails-test-engineering for model protocol and consumer tests
 ~~~
 
 Active Model is a Rails-facing model protocol, not a substitute for Active Record or a generic service abstraction.
@@ -850,7 +850,7 @@ before_remove / after_remove / association extension
   -> rails-active-job for supported asynchronous association cleanup
   -> rails-active-storage for attachment cleanup and storage lifecycle
   -> rails-performance for measured association loading and N+1 work
-  -> rails-test-engineering / rails-testing for deterministic relationship/lifecycle tests
+  -> rails-test-engineering for deterministic relationship/lifecycle tests
   -> rails-zeitwerk when namespaced association constants or polymorphic type compatibility cross loader boundaries
 ~~~
 
@@ -879,7 +879,7 @@ query composition / scopes / default_scope / preload / eager_load / includes /
 strict_loading / pluck / pick / save / update / destroy / delete /
 update_all / delete_all / destroy_all / upsert / after_commit / callbacks
   -> rails-active-record
-  -> rails-activerecord for foundational model and persistence guidance
+  -> rails-active-record for foundational model and persistence guidance
   -> rails-associations for relationship/cardinality/dependent behavior
   -> rails-validations for validation and error semantics
   -> rails-database-engineering for schema, constraints, transactions, locking, isolation, and query-plan mechanics
@@ -887,7 +887,7 @@ update_all / delete_all / destroy_all / upsert / after_commit / callbacks
   -> rails-security for tenant/authorization and dynamic-query safety
   -> rails-active-storage for attachment cleanup and storage lifecycle
   -> rails-active-job / rails-event-driven-messaging for durable asynchronous effects
-  -> rails-test-engineering / rails-testing for deterministic lifecycle and query tests
+  -> rails-test-engineering for deterministic lifecycle and query tests
 ~~~
 
 Active Record owns persisted model and Relation semantics. Do not use default_scope, model existence, or callback presence as substitutes for authorization, workflow ownership, or database guarantees.
@@ -916,7 +916,7 @@ content negotiation / respond_to / request / response / ETag / Last-Modified /
 conditional GET / 304 / streaming / send_data / send_file / rescue_from
   -> rails-action-controller
   -> rails-routing for route declaration and dispatch
-  -> rails-controllers for simple action-level design and basic response ownership
+  -> rails-action-controller for simple action-level design and basic response ownership
   -> rails-authentication for identity/session authentication
   -> rails-security / rails-security-engineering for CSRF, authorization, redirects, tenant isolation, and abuse cases
   -> rails-api-integration for external API and stable wire-contract concerns
@@ -925,7 +925,7 @@ conditional GET / 304 / streaming / send_data / send_file / rescue_from
   -> rails-active-storage for attachment/download/storage lifecycle
   -> rails-active-job for asynchronous work delegated from controllers
   -> rails-i18n for locale context
-  -> rails-test-engineering / rails-testing for deterministic request and lifecycle tests
+  -> rails-test-engineering for deterministic request and lifecycle tests
 ~~~
 
 Action Controller owns HTTP request/response mechanics. It should translate transport input, construct the response, and enforce controller lifecycle contracts without becoming the owner of business workflows.
@@ -952,14 +952,14 @@ Action View / ActionView / view rendering / templates / partials / layouts /
 strict locals / locals signature / helper boundary / output safety / html_safe /
 raw HTML / sanitize / localized views / collection rendering / view performance
   -> rails-action-view
-  -> rails-views for basic presentation responsibilities, template organization, and forms
-  -> rails-controllers for render/redirect/content negotiation and response ownership
+  -> rails-action-view for basic presentation responsibilities, template organization, and forms
+  -> rails-action-controller for render/redirect/content negotiation and response ownership
   -> rails-i18n for locale context, fallback, and localization policy
   -> rails-caching for fragment/collection cache identity and invalidation
   -> rails-performance / ruby-performance for measured rendering/query/allocation work
   -> rails-security / rails-security-engineering for escaping, sanitization, XSS, authorization, and cache privacy
   -> rails-action-text for persisted rich content and attachment rendering
-  -> rails-test-engineering / rails-testing for deterministic rendering and security tests
+  -> rails-test-engineering for deterministic rendering and security tests
 ~~~
 
 Action View owns response rendering, not business authorization or persistence. Treat templates, partials, layouts, helpers, and rendered HTML as explicit contracts.
@@ -988,7 +988,7 @@ email security / email observability
   -> rails-api-integration for HTTP email providers and provider adapters
   -> rails-security / rails-security-engineering for recipient, tenant, token, secret, and privacy boundaries
   -> rails-observability for delivery telemetry and correlation
-  -> rails-test-engineering / rails-testing for deterministic mailer and async tests
+  -> rails-test-engineering for deterministic mailer and async tests
   -> rails-distributed-systems for ambiguous provider outcomes and durable delivery state
 ```
 
@@ -1019,7 +1019,7 @@ storage mirror / storage migration
   -> rails-caching for CDN/proxy/cache isolation decisions
   -> rails-observability for storage/processing telemetry
   -> rails-production-runtime for worker/process capacity
-  -> rails-test-engineering / rails-testing for deterministic attachment and access tests
+  -> rails-test-engineering for deterministic attachment and access tests
 ```
 
 Active Storage is an external-data boundary. The domain resource owns authorization; the blob is not itself the authorization boundary.
@@ -1050,7 +1050,7 @@ Redis pubsub / reconnect / resubscribe / realtime capacity
   -> rails-performance / ruby-performance / ruby-concurrency for fan-out, serialization, memory, and connection capacity
   -> rails-production-runtime / rails-release-engineering for process lifecycle, deploy/reconnect behavior, and topology
   -> rails-observability for connection/broadcast telemetry
-  -> rails-test-engineering / rails-testing for deterministic connection/channel/broadcast tests
+  -> rails-test-engineering for deterministic connection/channel/broadcast tests
 ```
 
 Action Cable is an online realtime boundary, not a durable message queue. Authorization belongs at both the connection and channel/resource boundaries.
@@ -1074,13 +1074,13 @@ I18n / internationalization / localization / locale / translations /
 I18n.t / I18n.l / available_locales / default_locale / pluralization /
 interpolation / localized routes / locale negotiation / missing translation
   -> rails-i18n
-  -> rails-routing / rails-views / rails-validations for URL, rendering, and validation presentation
+  -> rails-routing / rails-action-view / rails-validations for URL, rendering, and validation presentation
   -> rails-api-integration for localized wire/error contracts
   -> rails-action-mailer for localized subjects/content
   -> rails-active-job for background locale propagation
   -> rails-caching for locale-sensitive cache identity
   -> rails-security for locale input, translated HTML, interpolation, and translation administration
-  -> rails-test-engineering / rails-testing for deterministic locale isolation and translation tests
+  -> rails-test-engineering for deterministic locale isolation and translation tests
   -> ruby-concurrency when locale crosses custom execution-context boundaries
 ```
 
@@ -1114,7 +1114,7 @@ relay ingress / bounce_with / receive email / inbound email replay
   -> rails-event-driven-messaging / rails-distributed-systems for outbox, inbox, replay, or cross-service workflows
   -> rails-observability for correlation, lifecycle telemetry, error reporting, and sensitive-data filtering
   -> rails-reliability-engineering / rails-incident-engineering for backlog, poison-message containment, recovery, and operator replay
-  -> rails-test-engineering / rails-testing for deterministic mailbox/ingress tests
+  -> rails-test-engineering for deterministic mailbox/ingress tests
 ~~~
 
 Action Mailbox is an inbound trust and side-effect boundary. Keep ingress authentication, sender identity, recipient routing, tenant authorization, and business idempotency as separate decisions.
@@ -1139,7 +1139,7 @@ Action Text / ActionText / has_rich_text / RichText / Trix /
 rich_textarea / rich text / action-text-attachment / Signed Global ID /
 attachable / rich text rendering / rich text API / Action Text N+1
   -> rails-action-text
-  -> rails-views / rails-activerecord / rails-validations for rendering, ownership, persistence, and input contracts
+  -> rails-action-view / rails-active-record / rails-validations for rendering, ownership, persistence, and input contracts
   -> rails-active-storage for embedded file upload/storage/access lifecycle
   -> rails-security / rails-security-engineering for sanitization, attachable authorization, tenant isolation, and XSS
   -> rails-i18n for locale-aware rich content and surrounding presentation
@@ -1147,7 +1147,7 @@ attachable / rich text rendering / rich text API / Action Text N+1
   -> rails-performance / ruby-performance for RichText preloading and rendering capacity
   -> rails-api-integration for stable rich-text API representations
   -> rails-active-job for asynchronous processing/indexing/cleanup
-  -> rails-test-engineering / rails-testing for deterministic rich-text, attachment, and security tests
+  -> rails-test-engineering for deterministic rich-text, attachment, and security tests
 ```
 
 Action Text is a persisted rich-content boundary. Sanitization does not replace authorization of embedded resources or attachables.
@@ -1176,7 +1176,7 @@ validation rule / context / error / custom validator / bypass path
   -> rails-action-controller / rails-action-view / rails-api-integration for boundary contracts
   -> rails-i18n for translated errors
   -> rails-security for tenant and disclosure boundaries
-  -> rails-test-engineering / rails-testing for deterministic contract tests
+  -> rails-test-engineering for deterministic contract tests
 
 ### Validation pattern selection
 
@@ -1223,7 +1223,7 @@ When a task changes Rack middleware, request/response wrapping, stack ordering, 
   -> rails-performance / ruby-performance for hot-path capacity evidence
   -> ruby-concurrency for shared middleware state
   -> rails-action-controller / rails-authorization for application/resource ownership
-  -> rails-test-engineering / rails-testing for Rack boundary and stack regression tests
+  -> rails-test-engineering for Rack boundary and stack regression tests
 
 ### Rack/Middleware pattern selection
 
@@ -1252,7 +1252,7 @@ When a task changes Rails boot, configuration, initializers, environment setting
   -> rails-security-engineering for credentials and configuration trust boundaries
   -> rails-observability for boot diagnostics and error context
   -> rails-reliability-engineering for external dependency/failure semantics
-  -> rails-test-engineering / rails-testing for configuration and boot contracts
+  -> rails-test-engineering for configuration and boot contracts
 
 ### Initialization/configuration pattern selection
 

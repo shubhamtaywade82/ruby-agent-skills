@@ -45,6 +45,6 @@ Inspect the repository's runtime/version, existing conventions, neighboring test
 
 ## Related skills
 
-- rails-testing
+- rails-test-engineering
 - ruby-tdd-refactoring
 - rails-architecture

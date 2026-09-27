@@ -58,4 +58,4 @@ Prefer semantic key/behavior assertions and representative locale variants. Alwa
 
 ## Related skills
 
-rails-i18n, rails-test-engineering, rails-testing, rails-active-job, rails-caching
+rails-i18n, rails-test-engineering, rails-active-job, rails-caching

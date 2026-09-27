@@ -61,5 +61,5 @@ Test first request, exact replay, same-key/different-payload, concurrent duplica
 - rails-api-integration
 - rails-database-engineering
 - rails-security
-- rails-testing
+- rails-test-engineering
 - rails-active-job

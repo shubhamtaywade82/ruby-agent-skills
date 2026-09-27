@@ -58,7 +58,7 @@ Verify propagation, filtering, retry correlation, and metric/instrumentation eve
 - rails-event-driven-messaging
 - rails-observability
 - rails-security
-- rails-testing
+- rails-test-engineering
 
 ## Related patterns
 

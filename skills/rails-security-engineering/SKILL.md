@@ -9,7 +9,7 @@ description: Use when security work requires architecture-level threat modeling,
 
 Treat security as a system property with explicit assets, trust boundaries, attacker capabilities, abuse cases, controls, verification, and residual risk.
 
-Compose this skill with `rails-security`, `rails-authentication`, `rails-api-integration`, `rails-distributed-systems`, `rails-event-driven-messaging`, `rails-reliability-engineering`, `rails-database-engineering`, and `rails-testing`.
+Compose this skill with `rails-security`, `rails-authentication`, `rails-api-integration`, `rails-distributed-systems`, `rails-event-driven-messaging`, `rails-reliability-engineering`, `rails-database-engineering`, and `rails-test-engineering`.
 
 Core flow:
 
@@ -373,7 +373,7 @@ end
 - Rails Guides: https://guides.rubyonrails.org/
 - Brakeman: https://brakemanscanner.org/
 - Bundler Audit: https://github.com/rubysec/bundler-audit
-- Repository skills: rails-security, rails-authentication, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-database-engineering, rails-testing
+- Repository skills: rails-security, rails-authentication, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-database-engineering, rails-test-engineering
 
 ## Security engineering and threat-model changes
 

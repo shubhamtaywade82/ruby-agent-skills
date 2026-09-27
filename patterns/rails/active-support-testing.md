@@ -57,5 +57,5 @@ Cover isolation, reset, inheritance, event payloads, callback order, timezone bo
 
 - skills/rails-active-support/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md
 - skills/ruby-concurrency/SKILL.md

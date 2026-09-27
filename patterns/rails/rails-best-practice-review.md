@@ -62,10 +62,9 @@ Test observable behavior affected by the finding. For route/controller/model cha
 - [ ] analyzer re-run or exception documented
 
 ## Related skills
-- rails-best-practices
 - rails-architecture
 - rails-routing
-- rails-controllers
-- rails-activerecord
-- rails-views
-- rails-testing
+- rails-action-controller
+- rails-active-record
+- rails-action-view
+- rails-test-engineering

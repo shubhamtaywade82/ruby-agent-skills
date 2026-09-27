@@ -74,6 +74,6 @@ Test permissions by role/ownership/state and exercise important HTTP boundaries.
 ## Related skills
 
 - rails-authentication
-- rails-controllers
-- rails-testing
-- rails-activerecord
+- rails-action-controller
+- rails-test-engineering
+- rails-active-record

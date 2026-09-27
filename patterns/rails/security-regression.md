@@ -56,5 +56,5 @@ Prefer request/policy/job/message boundary tests that prove unauthorized access,
 
 - rails-security-engineering
 - rails-security
-- rails-testing
+- rails-test-engineering
 - ruby-tdd-refactoring

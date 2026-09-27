@@ -57,4 +57,4 @@ Test callback execution order only when order is contractual; otherwise test obs
 
 ## Related skills
 
-rails-action-controller, rails-controllers, rails-authentication, rails-active-support
+rails-action-controller, rails-authentication, rails-active-support

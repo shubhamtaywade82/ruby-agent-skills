@@ -62,6 +62,6 @@ Run the generated/affected tests after cleanup. Add request/system coverage for 
 
 - rails-generators
 - rails-routing
-- rails-controllers
-- rails-testing
+- rails-action-controller
+- rails-test-engineering
 - rails-architecture

@@ -36,4 +36,4 @@ Verify that a promoted artifact retains its source identity and that release rec
 - [ ] source revision; - [ ] dependency identity; - [ ] immutable artifact; - [ ] promotion identity; - [ ] no secrets.
 
 ## Related skills
-rails-release-engineering, rails-deployment, rails-production-runtime, rails-security-engineering
+rails-release-engineering, rails-production-runtime, rails-security-engineering

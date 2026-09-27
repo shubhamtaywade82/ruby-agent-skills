@@ -33,7 +33,7 @@ It composes existing repository capabilities:
 - rails-observability for correlation, error reporting, metrics, and lifecycle telemetry;
 - rails-reliability-engineering and rails-incident-engineering for overload, provider failure, backlog, quarantine, and operational recovery;
 - rails-distributed-systems / rails-event-driven-messaging when inbound email becomes a cross-process workflow;
-- rails-test-engineering / rails-testing for deterministic ingress/mailbox tests.
+- rails-test-engineering for deterministic ingress/mailbox tests.
 
 Official Rails documentation describes Action Mailbox as the inbound counterpart to Action Mailer. Incoming messages are accepted through a configured ingress, persisted as ActionMailbox::InboundEmail records with raw email in Active Storage, routed to controller-like mailboxes, and processed asynchronously through Active Job.
 
@@ -595,7 +595,7 @@ Composed repository skills:
 - skills/rails-reliability-engineering/SKILL.md
 - skills/rails-incident-engineering/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md
 
 ## Rails Action Mailbox changes
 

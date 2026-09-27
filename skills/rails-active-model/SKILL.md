@@ -26,20 +26,20 @@ This skill owns:
 
 Compose with:
 
-- rails-activerecord for persistence and database lifecycle;
+- rails-active-record for persistence and database lifecycle;
 - rails-validations for validation/invariant decisions;
-- rails-controllers for request/input boundaries;
-- rails-action-view / rails-views for forms and rendering;
+- rails-action-controller for request/input boundaries;
+- rails-action-view for forms and rendering;
 - rails-i18n for translation/locale context;
 - ruby-domain-modeling / ruby-poro for domain ownership;
 - ruby-service-objects when behavior is an application workflow;
-- rails-test-engineering / rails-testing for deterministic tests.
+- rails-test-engineering for deterministic tests.
 
 Core decision:
 
     Rails model protocol required?
       -> no: PORO/value object/service
-      -> yes, persistence required: rails-activerecord
+      -> yes, persistence required: rails-active-record
       -> yes, no persistence: rails-active-model
 
 ## Activate when
@@ -135,7 +135,7 @@ Do not use validations as:
 - external API success checks;
 - application workflow orchestration.
 
-For persisted invariants compose with rails-activerecord and rails-database-engineering.
+For persisted invariants compose with rails-active-record and rails-database-engineering.
 
 Preserve error keys/messages and translation contracts.
 
@@ -355,14 +355,14 @@ Composed repository skills:
 - skills/ruby-poro/SKILL.md
 - skills/ruby-domain-modeling/SKILL.md
 - skills/ruby-service-objects/SKILL.md
-- skills/rails-activerecord/SKILL.md
+- skills/rails-active-record/SKILL.md
 - skills/rails-validations/SKILL.md
-- skills/rails-controllers/SKILL.md
+- skills/rails-action-controller/SKILL.md
 - skills/rails-action-view/SKILL.md
 - skills/rails-i18n/SKILL.md
 - skills/rails-api-integration/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md
 
 ## Rails Active Model changes
 

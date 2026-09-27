@@ -293,7 +293,7 @@ Do not duplicate an entire view tree solely because a few strings differ.
 
 For locale-specific assets/content, inspect caching and deployment implications.
 
-Compose with rails-views for rendering boundaries.
+Compose with rails-action-view for rendering boundaries.
 
 ## Localized routes and URLs
 
@@ -671,7 +671,7 @@ Current guide evidence used by this skill includes locale configuration/availabi
 
 Composed repository skills:
 
-- skills/rails-views/SKILL.md
+- skills/rails-action-view/SKILL.md
 - skills/rails-routing/SKILL.md
 - skills/rails-validations/SKILL.md
 - skills/rails-api-integration/SKILL.md
@@ -680,7 +680,7 @@ Composed repository skills:
 - skills/rails-caching/SKILL.md
 - skills/rails-security/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md
 - skills/ruby-concurrency/SKILL.md
 
 ## Rails I18n changes

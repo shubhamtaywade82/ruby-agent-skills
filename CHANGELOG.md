@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 128 — Merge Duplicate Rails Skills
+
+- Merge six overlapping skills into the deeper skill that owns the same framework boundary: `rails-activerecord` → `rails-active-record`, `rails-controllers` → `rails-action-controller`, `rails-views` → `rails-action-view`, `rails-testing` → `rails-test-engineering`, `rails-best-practices` → `rails-architecture`, `rails-deployment` → `rails-release-engineering`. Each survivor gains the retired skill's guidance under one scoped section, its triggers, and a description clause; every manifest, router, pattern, evaluation, and documentation reference is rewritten and de-duplicated. 91 → 85 skills.
+- Keep `rails-security` and `rails-security-engineering` separate: they own different layers (code-level controls versus architecture-level threat modeling) and are each routed independently.
+- Record retirements under `retired_skills` in `skill-manifest.yml`; the installer reports the replacement when an upgrade removes a retired skill, covered by a new installer system test. `docs/INSTALLATION.md` lists the mapping.
+
 ## Iteration 127 — Slim Always-Loaded Agent Contract
 
 - Cut `AGENTS.md` from 858 lines (74 KB) to 137 lines (9.5 KB). It now holds only the repository-wide operating contract (sequence, context, routing, design, precedence, verification, skill-pack and benchmark integrity, and repository-maintenance rules).

@@ -35,4 +35,4 @@ Cover frame and stream contracts, status/redirect behavior, security failures, a
 Tests prove both server protocol and client lifecycle behavior where applicable.
 
 ## Related skills
-rails-hotwire, rails-test-engineering, rails-testing
+rails-hotwire, rails-test-engineering

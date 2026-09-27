@@ -46,7 +46,7 @@ Test unauthorized access, malicious input, and the relevant exploit boundary. Pr
 ## Related skills
 - rails-security
 - rails-authentication
-- rails-controllers
-- rails-activerecord
-- rails-testing
+- rails-action-controller
+- rails-active-record
+- rails-test-engineering
 - ruby-debugging

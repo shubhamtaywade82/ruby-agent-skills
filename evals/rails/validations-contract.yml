@@ -16,7 +16,6 @@ skills:
   - rails-security
   - rails-performance
   - rails-test-engineering
-  - rails-testing
 patterns:
   - validation-boundary
   - validation-context-contract

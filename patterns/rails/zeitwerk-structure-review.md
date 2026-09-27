@@ -43,6 +43,6 @@ Test boot/eager loading and affected behavior. Exercise reload-sensitive behavio
 ## Related skills
 - rails-zeitwerk
 - rails-architecture
-- rails-deployment
+- rails-release-engineering
 - ruby-debugging
 - ruby-runtime-compatibility

@@ -30,4 +30,4 @@ Cover behavior at the owning Rails boundary.
 [ ] repository evidence checked [ ] smallest valid boundary chosen [ ] required guarantees preserved
 
 ## Related skills
-rails-architecture, rails-controllers, ruby-service-objects, stack-minimality
+rails-architecture, rails-action-controller, ruby-service-objects, stack-minimality

@@ -56,4 +56,4 @@ Test callback order, around nesting, abort behavior, exception propagation, and 
 
 - skills/rails-active-support/SKILL.md
 - skills/rails-active-model/SKILL.md
-- skills/rails-activerecord/SKILL.md
+- skills/rails-active-record/SKILL.md

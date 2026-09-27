@@ -79,7 +79,7 @@ When a version is unknown:
 Skills are composable.
 
 Examples:
-- Rails endpoint + persistence change: `rails-architecture` + `rails-activerecord` + `ruby-tdd-refactoring`
+- Rails endpoint + persistence change: `rails-architecture` + `rails-active-record` + `ruby-tdd-refactoring`
 - Bug in a service object: implementation skill + `ruby-debugging` + `ruby-tdd-refactoring`
 - Refactoring a metaprogrammed API: `ruby-metaprogramming` + `ruby-clean-code` + `ruby-tdd-refactoring`
 

@@ -1,6 +1,6 @@
 ---
 name: rails-action-view
-description: "Use when designing, implementing, reviewing, testing, or optimizing Rails Action View rendering, templates, partials, layouts, helpers, strict locals, output safety, localized views, and rendering performance."
+description: Use when designing, implementing, reviewing, testing, or optimizing Rails Action View rendering, templates, partials, layouts, helpers, strict locals, output safety, localized views, and rendering performance. Also covers routine ERB templates, partials, helpers, and forms.
 ---
 
 # Rails Action View Engineering
@@ -9,18 +9,18 @@ description: "Use when designing, implementing, reviewing, testing, or optimizin
 
 Treat Action View as a response-rendering subsystem with explicit contracts for data boundaries, HTML safety, template composition, localization, caching interaction, and rendering performance.
 
-This skill deepens the foundational rails-views skill. It owns Action View-specific runtime behavior rather than replacing basic Rails view guidance.
+This skill deepens the foundational rails-action-view skill. It owns Action View-specific runtime behavior rather than replacing basic Rails view guidance.
 
 Compose with:
 
-- rails-views for presentation responsibility and basic template/form conventions;
-- rails-controllers for controller/render/redirect response semantics;
+- rails-action-view for presentation responsibility and basic template/form conventions;
+- rails-action-controller for controller/render/redirect response semantics;
 - rails-i18n for locale resolution and localization context;
 - rails-action-text for persisted rich text;
 - rails-caching for fragment/cache correctness;
 - rails-performance and ruby-performance for evidence-driven rendering optimization;
 - rails-security and rails-security-engineering for XSS, content safety, authorization, and privacy;
-- rails-test-engineering and rails-testing for deterministic rendered-output verification.
+- rails-test-engineering and rails-test-engineering for deterministic rendered-output verification.
 
 Current Rails documents Action View as the response-rendering layer used with Action Controller, covering templates, partials, layouts, helpers, and localized views. Modern Rails also supports strict local signatures for partials and template-specific rendering contracts. Sources are listed below.
 
@@ -47,9 +47,9 @@ Core flow:
 - changing fragment/collection caching from a view;
 - reviewing presentation code for hidden queries or side effects.
 
-Do not replace rails-views with this skill for simple view edits that do not involve an Action View runtime concern.
+Do not replace rails-action-view with this skill for simple view edits that do not involve an Action View runtime concern.
 
-For ordinary template, form, or partial edits, `rails-views` is the lighter entry point; activate this skill only when the deeper boundaries above are actually in play.
+For ordinary template, form, or partial edits, `rails-action-view` is the lighter entry point; activate this skill only when the deeper boundaries above are actually in play.
 
 ## Repository inspection
 
@@ -172,7 +172,7 @@ Use sanitize or escaping at the owning rendering boundary when untrusted HTML is
 
 Action View form and tag helpers produce HTML and commonly encode security behavior such as CSRF tokens for non-GET forms.
 
-Compose with rails-controllers for parameter/response contracts, rails-validations for validation errors, and rails-authentication or rails-security for authorization and CSRF boundaries.
+Compose with rails-action-controller for parameter/response contracts, rails-validations for validation errors, and rails-authentication or rails-security for authorization and CSRF boundaries.
 
 Do not treat hidden inputs, disabled fields, DOM attributes, or generated HTML as authorization.
 
@@ -284,7 +284,7 @@ end
 ## Agent review checklist
 
 - [ ] Rails/Action View version resolved
-- [ ] existing rails-views conventions inspected
+- [ ] existing rails-action-view conventions inspected
 - [ ] template lookup/format/variant contract explicit
 - [ ] partial inputs explicit
 - [ ] strict locals used where justified
@@ -365,8 +365,8 @@ These sources document Action View rendering, partials, strict locals, layouts, 
 
 Composed repository skills:
 
-- skills/rails-views/SKILL.md
-- skills/rails-controllers/SKILL.md
+- skills/rails-action-view/SKILL.md
+- skills/rails-action-controller/SKILL.md
 - skills/rails-i18n/SKILL.md
 - skills/rails-caching/SKILL.md
 - skills/rails-performance/SKILL.md
@@ -375,7 +375,124 @@ Composed repository skills:
 - skills/rails-security-engineering/SKILL.md
 - skills/rails-action-text/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md
+
+## Routine view, partial, helper, and form changes
+
+_Merged from the retired `rails-action-view` skill._
+
+### Repository inspection
+
+Inspect:
+
+- neighboring views
+- partial conventions
+- layout
+- helpers/presenters if present
+- form builder conventions
+- request/system tests
+- response formats
+
+### Decision rules
+
+### Views
+
+A view should answer:
+
+> How is the already-prepared information presented?
+
+Avoid:
+
+- database queries
+- substantial business rules
+- destructive side effects
+- complicated data transformations
+
+### Partials
+
+Extract a partial when a repeated, coherent presentation fragment exists or the template's intent becomes obscured.
+
+Do not fragment tiny one-use pieces solely to reduce line count.
+
+### Helpers/presenters
+
+Use existing helper/presenter conventions when presentation logic becomes complex.
+
+Keep helpers presentation-specific.
+
+### Forms
+
+Verify:
+
+- parameter names/nesting
+- field defaults
+- validation errors
+- CSRF conventions
+- submit behavior
+- failed/successful render paths
+
+Do not assume a form field is an authorization mechanism.
+
+### ERB readability
+
+Prefer:
+
+- clear locals
+- meaningful partial names
+- modest conditional logic
+- explicit iteration
+
+over deeply nested or compressed Ruby expressions.
+
+### Accessibility/user behavior
+
+When the repository tests user-facing behavior, preserve important labels, form semantics, links/buttons, and validation messaging.
+
+### Anti-patterns
+
+- SQL/database access in templates
+- hidden business rules
+- massive helpers that become service objects
+- conditionals repeated across many views
+- relying on client-side state for server authorization
+
+### Reference example
+
+Presentation logic in a helper with arguments, template calls kept to named locals, and no queries hidden in views.
+
+```ruby
+module ProjectsHelper
+  # Presentation only: no queries, no writes, no instance variables from the controller.
+  def status_dot(project)
+    tag.span(class: "dot dot--#{project.status}")
+  end
+
+  def formatted_deadline(project)
+    project.deadline ? l(project.deadline, format: :short) : t("projects.no_deadline")
+  end
+end
+
+# app/views/projects/_card.html.erb (locals in, markup out):
+#   <article class="card">
+#     <%= link_to project.name, project, class: "card__title" %>
+#     <%= status_dot(project) %>
+#     <p><%= truncate project.description, length: 120 %></p>
+#     <time><%= formatted_deadline(project) %></time>
+#   </article>
+```
+
+### Agent review checklist
+
+- [ ] template is presentation-focused
+- [ ] partial boundaries are coherent
+- [ ] helpers remain presentation-specific
+- [ ] form contract matches controller
+- [ ] errors render correctly
+- [ ] response behavior is covered by appropriate tests
+
+### Verification
+
+Use request/system/view tests according to the repository. Verify rendered content and important interactions, especially form submission and error states.
 
 ## Rails Action View changes
 

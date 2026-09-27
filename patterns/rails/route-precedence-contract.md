@@ -53,4 +53,4 @@ Test the shadowing request and the generic route's ordinary case. Verify actual 
 
 ## Related skills
 
-rails-routing, rails-action-controller, rails-testing
+rails-routing, rails-action-controller, rails-test-engineering

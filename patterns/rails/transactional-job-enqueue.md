@@ -40,7 +40,7 @@ Cover commit, rollback, and enqueue timing at the application boundary.
 
 ## Related skills
 - rails-active-job
-- rails-activerecord
+- rails-active-record
 - ruby-runtime-compatibility
 
 ## Repository inspection

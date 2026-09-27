@@ -60,7 +60,7 @@ Preserve functional query tests and add/retain a performance check at the approp
 ## Related skills
 
 - rails-performance
-- rails-activerecord
+- rails-active-record
 - rails-database-engineering
 - ruby-performance
 - rails-test-engineering

@@ -1,6 +1,6 @@
 ---
 name: rails-release-engineering
-description: "Use when designing, reviewing, validating, or operating Rails releases across CI/CD, artifact promotion, deployment gates, progressive delivery, environment compatibility, rollback or roll-forward, and release verification."
+description: Use when designing, reviewing, validating, or operating Rails releases across CI/CD, artifact promotion, deployment gates, progressive delivery, environment compatibility, rollback or roll-forward, and release verification. Also covers deployment preparation, hosting, production configuration, builds, and Kamal-style release readiness.
 ---
 
 # Rails Release Engineering
@@ -9,7 +9,7 @@ description: "Use when designing, reviewing, validating, or operating Rails rele
 Treat a production release as a controlled change-propagation system rather than a single deploy command.
 
 This skill sits above the existing deployment and runtime mechanics:
-- rails-deployment owns basic hosting/deployment readiness;
+- rails-release-engineering owns basic hosting/deployment readiness;
 - rails-production-runtime owns process topology, Puma/Solid Queue lifecycle, shutdown, readiness, and schema/runtime compatibility;
 - rails-database-engineering owns migration safety;
 - rails-reliability-engineering owns reliability objectives and recovery controls;
@@ -32,7 +32,7 @@ change scope -> risk classification -> reproducible artifact -> pre-release veri
 - coordinating application, migration, worker, and infrastructure compatibility during release;
 - diagnosing failures introduced by a recent deployment.
 
-Do not activate merely because a Rails application must be deployed once. Use rails-deployment for straightforward deployment mechanics unless the change has a release-management concern.
+Do not activate merely because a Rails application must be deployed once. Use rails-release-engineering for straightforward deployment mechanics unless the change has a release-management concern.
 
 ## Repository inspection
 Inspect:
@@ -289,7 +289,144 @@ Never claim a release is safe merely because CI passed. CI proves only the check
 - Rails Guides: https://guides.rubyonrails.org/active_job_basics.html
 - Rails Guides: https://guides.rubyonrails.org/active_record_migrations.html
 - Puma deployment/restart documentation: https://puma.io/
-- Repository skills: rails-deployment, rails-production-runtime, rails-database-engineering, rails-reliability-engineering, rails-incident-engineering.
+- Repository skills: rails-release-engineering, rails-production-runtime, rails-database-engineering, rails-reliability-engineering, rails-incident-engineering.
+
+## Deployment preparation and production configuration
+
+_Merged from the retired `rails-release-engineering` skill._
+
+### Repository inspection
+
+Identify the actual deployment model:
+
+- hosting/platform
+- Ruby/Rails versions
+- Gemfile/Gemfile.lock
+- buildpack/container/Dockerfile
+- CI/CD workflows
+- database
+- asset pipeline
+- environment variables
+- storage
+- background jobs
+- external services
+- health checks
+- logging/error reporting
+
+Do not assume a platform from the Rails version.
+
+### Configuration
+
+Separate code/configuration from secrets.
+
+Verify required environment variables without printing their values.
+
+Do not commit secrets.
+
+### Database changes
+
+For production migrations, inspect:
+
+- lock duration
+- table size
+- index creation behavior
+- default/backfill strategy
+- nullable transition
+- compatibility between old/new application versions
+- rollback expectations
+
+A migration that works locally may still be unsafe on a large production table.
+
+### Release procedure
+
+A robust release should make explicit:
+
+1. build artifact
+2. dependency installation
+3. database migration strategy
+4. asset/static preparation
+5. process startup
+6. health/readiness checks
+7. logs/metrics
+8. rollback/recovery
+
+Follow repository-specific deploy tooling rather than inventing generic commands.
+
+### Runtime verification
+
+Check:
+
+- application boots
+- database connects
+- routes respond
+- critical background processes run
+- external services authenticate
+- assets/rendering function where applicable
+- errors are visible in logs
+
+### Failure discipline
+
+Do not report "deployed successfully" without observing deployment/build/runtime evidence.
+
+When deployment fails, capture:
+
+- exact command
+- exact error
+- stage
+- environment
+- recent changes
+
+then debug from evidence.
+
+### Reference example
+
+A Kamal deployment definition with the Rails 8 healthcheck wired to the standard /up endpoint.
+
+```yaml
+# config/deploy.yml (Kamal 2)
+service: billing-app
+image: registry.example.com/billing-app
+
+servers:
+  - web:
+      hosts:
+        - 203.0.113.10
+
+registry:
+  username: deploy
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  clear:
+    RAILS_LOG_TO_STDOUT: "1"
+  secret:
+    - RAILS_MASTER_KEY
+
+healthcheck:
+  path: /up
+```
+
+### Agent review checklist
+
+- [ ] platform/process model identified
+- [ ] secrets protected
+- [ ] migrations reviewed for production safety
+- [ ] build verified
+- [ ] boot verified
+- [ ] database verified
+- [ ] health checks verified
+- [ ] rollback path understood
+- [ ] actual deployment evidence observed
+
+### Verification
+
+Use the repository's real CI/CD and staging/deployment checks. Never substitute a local test for a production deployment claim.
+
+### Rails 8 current framework considerations
+
+- Rails 8 applications are commonly provisioned with Kamal 2 and Thruster; Rails 8.1 also documents registry-free Kamal deployments for suitable setups.
+- Treat Kamal configuration, proxy behavior, image provenance, secret injection, health checks, and rollback/roll-forward behavior as deployment contracts rather than copying defaults blindly.
 
 ## Rails release engineering changes
 

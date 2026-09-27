@@ -54,4 +54,4 @@ Use query-count/performance tests where the repository has a stable performance 
 
 ## Related skills
 
-rails-action-text, rails-activerecord, rails-performance, ruby-performance, rails-caching
+rails-action-text, rails-active-record, rails-performance, ruby-performance, rails-caching

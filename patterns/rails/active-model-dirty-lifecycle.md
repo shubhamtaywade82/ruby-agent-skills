@@ -54,4 +54,4 @@ Test assignment, repeated assignment, apply, reset, rollback, and previous/curre
 ## Related skills
 
 - skills/rails-active-model/SKILL.md
-- skills/rails-activerecord/SKILL.md
+- skills/rails-active-record/SKILL.md

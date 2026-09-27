@@ -34,4 +34,4 @@ Run clean asset precompile and verify expected fingerprinted outputs.
 [ ] deployment path tested
 
 ## Related skills
-rails-asset-build-engineering, rails-deployment, rails-production-runtime, rails-caching
+rails-asset-build-engineering, rails-release-engineering, rails-production-runtime, rails-caching

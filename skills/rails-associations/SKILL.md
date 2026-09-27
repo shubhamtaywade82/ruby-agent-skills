@@ -438,7 +438,7 @@ Version-sensitive behavior must be resolved against the repository's actual Rail
 
 ## Composition
 
-This skill composes with rails-active-record, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering, rails-testing, rails-zeitwerk, ruby-clean-code, and ruby-tdd-refactoring.
+This skill composes with rails-active-record, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering, rails-test-engineering, rails-zeitwerk, ruby-clean-code, and ruby-tdd-refactoring.
 
 ## Rails Associations changes
 

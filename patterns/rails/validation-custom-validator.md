@@ -51,4 +51,4 @@ Custom Validator Contract needs an explicit contract so validation does not drif
 - rails-validations
 - rails-active-record
 - rails-database-engineering
-- rails-testing
+- rails-test-engineering

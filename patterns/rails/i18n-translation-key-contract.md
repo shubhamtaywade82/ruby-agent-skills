@@ -54,4 +54,4 @@ Test key presence, expected interpolation variables, and representative locale v
 
 ## Related skills
 
-rails-i18n, rails-views, rails-validations, rails-action-mailer
+rails-i18n, rails-action-view, rails-validations, rails-action-mailer

@@ -5,14 +5,12 @@ category: rails
 source: rails-active-record-v1
 skills:
   - rails-active-record
-  - rails-activerecord
   - rails-associations
   - rails-validations
   - rails-database-engineering
   - rails-performance
   - rails-security
   - rails-test-engineering
-  - rails-testing
 patterns:
   - active-record-model-boundary
   - active-record-query-contract

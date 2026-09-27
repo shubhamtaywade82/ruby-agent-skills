@@ -56,4 +56,4 @@ Use deterministic unit tests plus focused form/view/request tests.
 
 - skills/rails-active-model/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md

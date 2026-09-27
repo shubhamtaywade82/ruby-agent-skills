@@ -5,7 +5,6 @@ category: rails
 source: rails-action-controller-v1
 skills:
   - rails-action-controller
-  - rails-controllers
   - rails-routing
   - rails-authentication
   - rails-security
@@ -13,7 +12,6 @@ skills:
   - rails-caching
   - rails-active-storage
   - rails-test-engineering
-  - rails-testing
 patterns:
   - action-controller-request-boundary
   - strong-parameters-contract

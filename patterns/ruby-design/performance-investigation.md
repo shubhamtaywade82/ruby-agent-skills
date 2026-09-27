@@ -50,8 +50,8 @@ Use functional regression tests plus a stable performance contract when the repo
 
 - ruby-performance
 - ruby-concurrency
-- rails-activerecord
-- rails-testing
+- rails-active-record
+- rails-test-engineering
 - ruby-tdd-refactoring
 
 

@@ -54,4 +54,4 @@ Test the actual Rails consumer contract and plain-object behavior separately.
 
 - skills/rails-active-model/SKILL.md
 - skills/ruby-poro/SKILL.md
-- skills/rails-activerecord/SKILL.md
+- skills/rails-active-record/SKILL.md

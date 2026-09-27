@@ -57,4 +57,4 @@ Use request tests asserting status, content type, body/representation, headers, 
 
 ## Related skills
 
-rails-action-controller, rails-api-integration, rails-observability, rails-testing
+rails-action-controller, rails-api-integration, rails-observability, rails-test-engineering

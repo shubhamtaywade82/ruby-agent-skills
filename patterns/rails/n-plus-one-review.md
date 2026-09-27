@@ -58,7 +58,7 @@ Test the observable result and, where query count is part of the performance con
 ## Related skills
 
 - rails-performance
-- rails-activerecord
+- rails-active-record
 - rails-test-engineering
 - ruby-performance
 - rails-database-engineering

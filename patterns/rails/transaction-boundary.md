@@ -67,7 +67,7 @@ Test successful completion and failure after an intermediate write. Verify the d
 
 ## Related skills
 
-- rails-activerecord
+- rails-active-record
 - rails-validations
-- rails-testing
+- rails-test-engineering
 - ruby-tdd-refactoring

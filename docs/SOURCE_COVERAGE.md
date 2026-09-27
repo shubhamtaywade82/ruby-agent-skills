@@ -21,17 +21,17 @@ The repository intentionally synthesizes concepts rather than reproducing source
 | Enumerable and collection design | ruby-enumerables, ruby-collections |
 | HTTP/client integration | ruby-gems-io-services, external-api-client, ruby-dependency-injection |
 | Rails MVC/application anatomy | rails-architecture |
-| Rails routes/controllers/views/forms | rails-routing, rails-controllers, rails-views |
-| Deep Active Record Relation and lifecycle boundary | rails-active-record, rails-activerecord, rails-associations, rails-validations, rails-database-engineering, rails-performance |
+| Rails routes/controllers/views/forms | rails-routing, rails-action-controller, rails-action-view |
+| Deep Active Record Relation and lifecycle boundary | rails-active-record, rails-associations, rails-validations, rails-database-engineering, rails-performance |
 | Deep Active Record association lifecycle boundary | rails-associations, rails-active-record, rails-database-engineering, rails-validations, rails-security, rails-performance |
 | Deep Action Controller request/response boundary | rails-action-controller, rails-security, rails-observability, rails-caching, rails-test-engineering |
-| Models, migrations, Active Record and console | rails-activerecord |
+| Models, migrations, Active Record and console | rails-active-record |  
 | Authentication | rails-authentication |
 | Associations | rails-associations |
 | Validations | rails-validations |
 | Deep Rails validation lifecycle, contexts, errors, custom validators, uniqueness/database enforcement, bypass paths, and testing | rails-validations, rails-active-record, rails-active-model, rails-database-engineering, rails-associations, rails-api-integration, rails-i18n, rails-security, rails-test-engineering |
 | Scaffolding | rails-generators, scaffold-lifecycle |
-| Hosting/deployment activity | rails-deployment |
+| Hosting/deployment activity | rails-release-engineering |  
 
 ## Clean Ruby
 
@@ -52,11 +52,11 @@ The uploaded Learn Rails 6 book adds practical Rails workflow and Ruby language 
 | Source area | Agent coverage |
 |---|---|
 | Rails application anatomy and MVC lifecycle | rails-architecture, request-flow |
-| RESTful resources and CRUD | rails-routing, rails-controllers, rest-resource |
-| Strong parameters and controller boundary | rails-controllers, request-flow |
-| before_action filters | rails-controllers, rails-authentication |
+| RESTful resources and CRUD | rails-routing, rails-action-controller, rest-resource |
+| Strong parameters and controller boundary | rails-action-controller, request-flow |
+| before_action filters | rails-action-controller, rails-authentication |
 | Service objects | ruby-service-objects, ruby-api-design, application-service, service-object |
-| Request-level testing | rails-testing, ruby-tdd-refactoring |
+| Request-level testing | rails-test-engineering, ruby-tdd-refactoring |
 | Blocks, Proc and lambda semantics | ruby-blocks-procs-lambdas |
 | Enumerable and collection choices | ruby-enumerables, ruby-collections |
 | Public method/API contracts | ruby-api-design, ruby-method-design |
@@ -129,14 +129,14 @@ The repository incorporates the documented review taxonomy from [flyerhzm/rails_
 
 | Source area | Agent coverage |
 |---|---|
-| Model/persistence checks | rails-best-practices, rails-activerecord, rails-associations, rails-validations |
-| RESTful route checks | rails-best-practices, rails-routing |
-| Controller boundary checks | rails-best-practices, rails-controllers, rails-architecture |
-| View/helper checks | rails-best-practices, rails-views |
-| Migration/index checks | rails-best-practices, rails-activerecord |
-| Exception handling | rails-best-practices, ruby-debugging |
-| Unused/dead-code review | rails-best-practices, ruby-clean-code |
-| Analyzer finding interpretation | rails-best-practices, rails-best-practice-review |
+| Model/persistence checks | rails-architecture, rails-active-record, rails-associations, rails-validations |
+| RESTful route checks | rails-architecture, rails-routing |
+| Controller boundary checks | rails-architecture, rails-action-controller |
+| View/helper checks | rails-architecture, rails-action-view |
+| Migration/index checks | rails-architecture, rails-active-record |
+| Exception handling | rails-architecture, ruby-debugging |
+| Unused/dead-code review | rails-architecture, ruby-clean-code |
+| Analyzer finding interpretation | rails-architecture, rails-best-practice-review |
 
 Historical checks are treated as review signals. The agent must translate them to the actual Rails version and repository contract instead of introducing deprecated APIs merely to satisfy an old rule.
 ## RuboCop and plugin ecosystem
@@ -280,7 +280,7 @@ Primary references:
 
 ## Rails Action Controller
 
-Action Controller is covered as a dedicated HTTP boundary layer because request input, response semantics, session/cookie state, callbacks, format negotiation, HTTP cache validators, streaming/downloads, and controller exception mapping require deeper contracts than the basic rails-controllers skill.
+Action Controller is covered as a dedicated HTTP boundary layer because request input, response semantics, session/cookie state, callbacks, format negotiation, HTTP cache validators, streaming/downloads, and controller exception mapping require deeper contracts than the basic rails-action-controller skill.
 
 Operational coverage:
 - skills/rails-action-controller/SKILL.md
@@ -625,7 +625,7 @@ Primary sources:
 - https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html
 - https://api.rubyonrails.org/classes/Class.html
 
-The boundary is intentionally compositional: rails-observability owns production telemetry/diagnostics, rails-zeitwerk owns autoloading, rails-active-model/rails-activerecord own model lifecycles, and rails-security/rails-security-engineering own trust decisions around dynamic names and context.
+The boundary is intentionally compositional: rails-observability owns production telemetry/diagnostics, rails-zeitwerk owns autoloading, rails-active-model/rails-active-record own model lifecycles, and rails-security/rails-security-engineering own trust decisions around dynamic names and context.
 
 
 ## Rails Validations engineering

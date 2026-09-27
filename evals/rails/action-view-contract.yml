@@ -5,7 +5,6 @@ category: rails
 source: rails-action-view-v1
 skills:
   - rails-action-view
-  - rails-views
   - rails-security
   - rails-i18n
   - rails-caching

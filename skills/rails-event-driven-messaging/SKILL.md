@@ -35,7 +35,7 @@ Compose this skill with:
 - rails-production-runtime for worker/process topology;
 - ruby-concurrency for bounded consumer concurrency;
 - rails-security for trust and secret boundaries;
-- rails-testing for deterministic message tests.
+- rails-test-engineering for deterministic message tests.
 
 ## Activate when
 

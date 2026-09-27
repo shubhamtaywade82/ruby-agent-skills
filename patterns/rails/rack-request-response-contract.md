@@ -33,4 +33,4 @@ Exercise normal delegation, short-circuit responses, headers, status, and body c
 [ ] delegation semantics tested
 
 ## Related skills
-rails-rack-middleware-engineering, rails-testing
+rails-rack-middleware-engineering, rails-test-engineering

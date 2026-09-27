@@ -54,4 +54,4 @@ Cover pluralization and at least one materially different formatting locale.
 
 ## Related skills
 
-rails-i18n, rails-views, rails-activerecord
+rails-i18n, rails-action-view, rails-active-record

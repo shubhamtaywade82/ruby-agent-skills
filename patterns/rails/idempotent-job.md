@@ -40,7 +40,7 @@ Execute the job twice with the same logical input and assert the externally visi
 
 ## Related skills
 - rails-active-job
-- rails-activerecord
+- rails-active-record
 - rails-security
 - ruby-concurrency
 

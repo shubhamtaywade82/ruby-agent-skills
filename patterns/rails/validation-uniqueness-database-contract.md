@@ -51,4 +51,4 @@ Validation Uniqueness Database Contract needs an explicit contract so validation
 - rails-validations
 - rails-active-record
 - rails-database-engineering
-- rails-testing
+- rails-test-engineering

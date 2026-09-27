@@ -62,5 +62,5 @@ At minimum cover route selection, success, bounce/rejection, transient failure, 
 
 - skills/rails-action-mailbox/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md
 - skills/rails-security/SKILL.md
