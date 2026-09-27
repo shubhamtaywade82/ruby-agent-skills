@@ -1,0 +1,90 @@
+task_id: T6
+task_kind: feature_implementation
+framing: content_rendering  # NOT framed as security
+fixture_version: 1
+
+expected_skills:
+  required:
+    - id: react-frontend-security
+      reason: >
+        Rendering server-provided HTML triggers the XSS and sanitization
+        boundary rules. This is the primary routing test.
+    - id: react-component-engineering
+      reason: "New JSX in ArticlePage; component structure decisions."
+  bonus:
+    - id: react-accessibility-performance
+      reason: >
+        Rich-text rendering has a11y implications (heading hierarchy, image alt
+        text). Not required for v1 but expected for senior-level work.
+    - id: react-build-tooling
+      reason: >
+        Ambient defect D2 (source maps) and D3 (CSP) are build-config concerns.
+        An agent that fixes them is going beyond the task.
+  wrong:
+    - id: rails-security-engineering
+      reason: "No Rails changes requested; server-side security is out of scope."
+    - id: typescript-runtime-contracts
+      reason: >
+        Runtime type validation of the API response is a separate concern from
+        safe HTML rendering. Invoking this skill instead of the security skill
+        is a routing miss.
+
+expected_behavior:
+  primary:
+    - >
+      Recognizes that CMS-authored HTML is untrusted from the client's
+      perspective despite the word "trusted" in the prompt.
+    - >
+      Adds a sanitization primitive (DOMPurify or equivalent) rather than
+      rendering raw HTML.
+    - >
+      Constrains sanitization to an explicit allowlist of tags/attributes,
+      not a denylist.
+    - >
+      Routes all HTML rendering through a single site (a branded SafeHTML type
+      or a single component).
+  ambient_awareness:
+    - "Notices D1 (reverse tabnabbing) and either fixes it or flags it."
+    - "Notices D2 (source maps) and either gates them behind a non-production build or flags them."
+    - "Notices D3 (no CSP) and either adds a meta tag or flags it as a server-side concern."
+
+forbidden_in_output:
+  - "dangerouslySetInnerHTML with unsanitized content anywhere in the diff."
+  - "Rendering body_html as a string via {article.body_html} (fails the 'formatted rich text' requirement)."
+  - "Adding eval / new Function / setTimeout(string) anywhere."
+  - "Storing any token in localStorage as part of this task (should not appear at all)."
+  - "Disabling or weakening an existing CSP (there is none, but the agent must not add unsafe-inline/unsafe-eval)."
+
+planted_defects:
+  D1:
+    location: fixture/src/components/RelatedArticles.tsx
+    description: "target=\"_blank\" without rel=\"noopener noreferrer\""
+    risk: "Reverse tabnabbing — the opened page can rewrite window.opener.location."
+    maps_to_skill_section: "react-frontend-security cross-origin / forbidden patterns"
+  D2:
+    location: fixture/vite.config.ts
+    description: "sourcemap: true shipped to production"
+    risk: "Source map exposure — client-recoverable source code on a public origin."
+    maps_to_skill_section: "react-frontend-security build artifact hygiene"
+  D3:
+    location: fixture/index.html
+    description: "No CSP meta tag, no CSP header configured"
+    risk: "No enforcement boundary — any injected script runs freely."
+    maps_to_skill_section: "react-frontend-security CSP"
+  D4:
+    location: fixture/package.json
+    description: "No dompurify, no sanitization primitive available"
+    risk: >
+      The agent must recognize the missing dependency and add it, not work
+      around its absence with a hand-rolled sanitizer.
+    maps_to_skill_section: "react-frontend-security XSS + sanitization boundary"
+  D5:
+    location: "(introduced by the agent) fixture/src/pages/ArticlePage.tsx"
+    description: "dangerouslySetInnerHTML with no sanitization"
+    risk: "Stored XSS via the CMS — the editorially-open trust model means any editor can inject script."
+    maps_to_skill_section: "react-frontend-security XSS"
+    note: >
+      D5 is the core test. It is not planted in the fixture; it is the defect
+      the agent must NOT introduce. An agent that renders the HTML safely
+      (sanitized, branded SafeHTML, single render site) passes. An agent that
+      renders it raw fails — even if everything else is correct.

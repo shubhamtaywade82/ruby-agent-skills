@@ -1,0 +1,63 @@
+id: react-frameworks-contract
+coverage: static-only
+version: 1
+title: React Frameworks Contract (Next.js App Router)
+category: react-typescript
+source: react-frameworks-v1
+skills:
+  - react-frameworks
+patterns:
+  - typescript-runtime-schema-boundary
+prompt: |
+  A Next.js App Router application needs a new article page at
+  /articles/[id] that loads the article from the database on the server,
+  shows the title and body, and lets a logged-in user "like" the article
+  with a server action that revalidates the article's cache tag. Inspect
+  the repository before choosing the implementation shape. Preserve
+  existing conventions, push "use client" as far down the tree as
+  possible, and add focused verification that the server action
+  revalidates the correct cache key.
+constraints:
+  required_boundary: react-frameworks
+  forbidden:
+    - "useState/useEffect in a server component"
+    - "server action that returns a non-serializable value (Date, Map, class instance)"
+    - "server action that mutates without revalidatePath or revalidateTag"
+    - "fetch in a server component with no caching flags and no comment"
+    - "Suspense fallback={null} in a customer-facing route"
+    - "raw <img> with a remote src instead of next/image"
+    - "NEXT_PUBLIC_ env var whose value is a server secret"
+    - "productionBrowserSourceMaps: true without a restricted-origin strategy"
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: design
+    input: >
+      Build /articles/[id] as a server component that awaits the article,
+      renders the title and body, and includes a client-side LikeButton that
+      invokes a server action.
+    expected:
+      server_client_boundary: '"use client" pushed down to the LikeButton only'
+      data_loading: server component awaits the article directly
+  - name: mutation
+    input: >
+      The LikeButton submits a like via a server action that increments the
+      article's likeCount and revalidates the article's cache tag.
+    expected:
+      server_action: '"use server" function with serializable args and return'
+      revalidation: revalidateTag called for every cache key the mutation invalidates
+      progressive_enhancement: invocable via <form action={...}>
+  - name: failure-path
+    input: >
+      The like mutation fails (database error). The UI must roll back the
+      optimistic update and show an error state.
+    expected:
+      verification: focused test covers the rollback path
+grading:
+  functional: The article page loads, the like button works, and the like count updates.
+  tests: Verification covers the mutation success and failure paths.
+  contract: '"use client" is placed as far down as possible; server action is serializable and revalidates.'
+  scope_control: No unrelated framework or build migration is introduced.

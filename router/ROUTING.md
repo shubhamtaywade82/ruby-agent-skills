@@ -1481,6 +1481,8 @@ When a task materially changes dependency direction, domain ownership, modularit
 | React component/hook/UI tests | react-testing-engineering | react-component-engineering, typescript-runtime-contracts |
 | React accessibility/keyboard/focus | react-accessibility-performance | react-component-engineering, react-testing-engineering |
 | React render performance/memoization | react-accessibility-performance | react-state-effects, react-architecture |
+| React frontend security (XSS, CSP, tokens, postMessage, source maps, third-party scripts) | react-frontend-security | rails-security-engineering, react-component-engineering |
+| Next.js App Router / RSC / server actions / SSR streaming / route segment config | react-frameworks | react-component-engineering, react-data-fetching, react-state-effects, react-frontend-security |
 | TypeScript and React feature implementation | react-component-engineering | typescript-core-engineering, typescript-type-design, react-state-effects, react-testing-engineering |
 
 ## Rails and React cross-stack routing

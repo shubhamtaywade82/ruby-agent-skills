@@ -1,0 +1,62 @@
+id: react-frontend-security-contract
+coverage: static-only
+version: 1
+title: React Frontend Security Contract
+category: react-typescript
+source: react-frontend-security-v1
+skills:
+  - react-frontend-security
+patterns:
+  - typescript-branded-identifier
+prompt: |
+  A React + TypeScript content site renders article body HTML authored in an
+  editorially-open CMS (multiple editors, staged publishing). The article API
+  returns a `body_html` string field. Render it as formatted rich text on the
+  article show page without exposing the application to stored XSS. The site
+  is built with Vite + React 18 + TypeScript. Inspect the repository before
+  choosing the implementation shape. Preserve existing conventions, keep
+  sanitization at a single trust boundary, and add focused verification that
+  script tags in the input are stripped from the rendered output.
+constraints:
+  required_boundary: react-frontend-security
+  forbidden:
+    - "dangerouslySetInnerHTML outside a single sanitization module"
+    - "localStorage/sessionStorage for auth tokens"
+    - "postMessage with wildcard target origin"
+    - "eval / new Function / setTimeout(string)"
+    - "unsafe-inline or unsafe-eval in production CSP"
+    - "production source maps on a public origin"
+    - "third-party script without SRI integrity attribute"
+checks:
+  - functional
+  - tests
+  - contract
+  - security
+  - scope_control
+cases:
+  - name: design
+    input: >
+      Render article.body_html (CMS-authored rich text) as formatted content
+      on the article page, with a single sanitization boundary and a branded
+      SafeHTML type.
+    expected:
+      sanitization_boundary: single site, branded type, allowlist-based
+      dangerouslySetInnerHTML: only inside the sanitization module
+  - name: failure-path
+    input: >
+      Render article.body_html where the input contains a <script> tag and an
+      <img onerror=...> payload. The output must strip both.
+    expected:
+      verification: focused tests assert script tags and on* attributes are stripped
+  - name: ambient-awareness
+    input: >
+      The same task, but the fixture also contains target="_blank" without
+      rel="noopener noreferrer", a vite.config with sourcemap:true, and no CSP.
+    expected:
+      ambient_review: agent flags or fixes the ambient security defects
+grading:
+  functional: The article body renders as formatted rich text; null case renders nothing.
+  tests: Verification covers the XSS-stripping case and the null case.
+  contract: Sanitization is single-site, branded-type, allowlist-based.
+  security: No dangerouslySetInnerHTML outside the sanitization module; no unsafe-inline in CSP.
+  scope_control: No unrelated framework or build migration is introduced.
