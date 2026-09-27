@@ -43,10 +43,11 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       assert status.success?, err
 
       archive = File.join(dir, "dist", "ruby-agent-skills-v0.0.1.tar.gz")
+      sums = File.join(dir, "dist", "SHA256SUMS")
       File.open(archive, "ab") { |file| file.write("tampered") }
 
       _stdout, stderr, verify_status = Open3.capture3(
-        RbConfig.ruby, VERIFIER, archive, chdir: ROOT
+        RbConfig.ruby, VERIFIER, archive, "--checksums", sums, chdir: ROOT
       )
 
       refute verify_status.success?
