@@ -77,8 +77,12 @@ Dir.mktmpdir("ruby-agent-skills-release-verify") do |root|
   required.each { |path| errors << "missing release path: #{path}" unless File.file?(File.join(archive_root, path)) }
   %w[skills patterns].each { |dir| errors << "missing release directory: #{dir}" unless File.directory?(File.join(archive_root, dir)) }
 
+  archive_root_prefix = "#{File.expand_path(archive_root)}/"
   escaped = Dir.glob(File.join(archive_root, "**", "*"), File::FNM_DOTMATCH).any? do |path|
-    File.symlink?(path) || !File.expand_path(path).start_with?("#{File.expand_path(archive_root)}/")
+    # Dir.glob with FNM_DOTMATCH yields the literal "."/".." entries, whose
+    # expand_path collapses to the archive root itself; they are safe.
+    next false if [".", ".."].include?(File.basename(path))
+    File.symlink?(path) || !File.expand_path(path).start_with?(archive_root_prefix)
   end
   errors << "archive contains unsafe path or symlink" if escaped
 end
