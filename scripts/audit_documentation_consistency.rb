@@ -55,16 +55,11 @@ expected_inventory.each do |label, count|
   errors << "README #{label} documentation is missing" if matches.empty?
   errors << "README #{label} count drift: #{matches.inspect} != #{count}" unless matches.all? { |value| value == count }
 
-  handoff_pattern = /- #{Regexp.escape(label.downcase)}: (\d+)/
-  handoff_matches = handoff.scan(handoff_pattern).flatten.map(&:to_i)
-  if label == "Skills"
-    handoff_pattern = /- skills: (\d+)/
-  elsif label == "Implementation patterns"
-    handoff_pattern = /- implementation patterns: (\d+)/
-  elsif label == "Evaluation cases"
-    handoff_pattern = /- (?:evaluation cases|evaluation case count): (\d+)/
-  elsif label == "Dedicated system/contract tests"
-    handoff_pattern = /- (?:system tests|system\/contract tests): (\d+)/
+  handoff_pattern = case label
+  when "Skills" then /- (\d+) skills/
+  when "Implementation patterns" then /- (\d+) implementation patterns/
+  when "Evaluation cases" then /- (\d+) evaluation cases/
+  when "Dedicated system/contract tests" then /- (\d+) system\/contract tests/
   end
   handoff_matches = handoff.scan(handoff_pattern).flatten.map(&:to_i)
   errors << "IMPLEMENTATION_HANDOFF.md #{label} count drift: #{handoff_matches.inspect} != #{count}" unless handoff_matches.all? { |value| value == count } && !handoff_matches.empty?
