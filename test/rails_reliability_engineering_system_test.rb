@@ -44,13 +44,13 @@ class RailsReliabilityEngineeringSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_reliability_guidance
     routing = File.read(File.join(ROOT, "router", "ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-reliability-engineering/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Reliability engineering and resilience"
     assert_includes routing, "rails-reliability-engineering"
-    assert_includes agents, "Reliability engineering changes"
-    assert_includes agents, "critical user journey"
-    assert_includes agents, "RTO/RPO"
+    assert_includes change_contract, "Reliability engineering changes"
+    assert_includes change_contract, "critical user journey"
+    assert_includes change_contract, "RTO/RPO"
   end
 
   def test_skill_covers_reliability_control_plane

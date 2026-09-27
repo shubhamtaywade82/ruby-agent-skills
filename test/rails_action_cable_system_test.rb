@@ -49,14 +49,14 @@ class RailsActionCableSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_action_cable
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-action-cable/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Action Cable"
     assert_includes routing, "rails-action-cable"
     assert_includes routing, "action-cable-reconciliation"
-    assert_includes agents, "Rails Action Cable changes"
-    assert_includes agents, "authentication separate from per-channel/resource authorization"
-    assert_includes agents, "Action Cable as durable messaging"
+    assert_includes change_contract, "Rails Action Cable changes"
+    assert_includes change_contract, "authentication separate from per-channel/resource authorization"
+    assert_includes change_contract, "Action Cable as durable messaging"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

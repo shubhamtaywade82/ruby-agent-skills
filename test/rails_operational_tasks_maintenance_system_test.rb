@@ -38,12 +38,12 @@ class RailsOperationalTasksMaintenanceSystemTest < Minitest::Test
 
   def test_router_agents_validator
     routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    agents=File.read(File.join(ROOT,"AGENTS.md"),encoding:"UTF-8")
+    change_contract=File.read(File.join(ROOT,"skills/rails-operational-tasks-maintenance/SKILL.md"),encoding:"UTF-8")
     validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
     assert_includes routing,"Rails Operational Tasks and Maintenance engineering"
     assert_includes routing,"rails-operational-tasks-maintenance"
-    assert_includes agents,"Rails operational task/maintenance changes"
-    assert_includes agents,"environment gates"
+    assert_includes change_contract,"Rails operational task/maintenance changes"
+    assert_includes change_contract,"environment gates"
     assert_includes validator,"rails_operational_tasks_maintenance_system_test.rb"
   end
 

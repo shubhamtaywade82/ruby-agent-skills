@@ -49,14 +49,14 @@ class RailsI18nSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_i18n
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-i18n/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails I18n"
     assert_includes routing, "rails-i18n"
     assert_includes routing, "i18n-cache-identity"
-    assert_includes agents, "Rails I18n changes"
-    assert_includes agents, "I18n.with_locale"
-    assert_includes agents, "locale is presentation context, not authorization"
+    assert_includes change_contract, "Rails I18n changes"
+    assert_includes change_contract, "I18n.with_locale"
+    assert_includes change_contract, "locale is presentation context, not authorization"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

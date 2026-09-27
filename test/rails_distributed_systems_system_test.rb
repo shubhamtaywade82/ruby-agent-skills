@@ -41,13 +41,13 @@ class RailsDistributedSystemsSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_distributed_guidance
     routing = File.read(File.join(ROOT, "router", "ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-distributed-systems/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "rails-distributed-systems"
     assert_includes routing, "Distributed systems and service architecture"
-    assert_includes agents, "Distributed systems and service architecture changes"
-    assert_includes agents, "never assume exactly-once execution"
-    assert_includes agents, "distributed locks"
+    assert_includes change_contract, "Distributed systems and service architecture changes"
+    assert_includes change_contract, "never assume exactly-once execution"
+    assert_includes change_contract, "distributed locks"
   end
 
   def test_skill_covers_failure_and_recovery_contracts

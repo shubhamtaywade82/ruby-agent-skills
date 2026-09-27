@@ -50,15 +50,15 @@ class RailsReleaseEngineeringSystemTest < Minitest::Test
 
   def test_routing_and_agent_contract_include_release_engineering
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-release-engineering/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Release engineering and release readiness"
     assert_includes routing, "rails-release-engineering"
     assert_includes routing, "progressive-delivery"
-    assert_includes agents, "Rails release engineering changes"
-    assert_includes agents, "immutable source/artifact identity"
-    assert_includes agents, "rollback or roll-forward"
-    assert_includes agents, "user-impact"
+    assert_includes change_contract, "Rails release engineering changes"
+    assert_includes change_contract, "immutable source/artifact identity"
+    assert_includes change_contract, "rollback or roll-forward"
+    assert_includes change_contract, "user-impact"
   end
 
   def test_runtime_evaluations_activate_release_engineering

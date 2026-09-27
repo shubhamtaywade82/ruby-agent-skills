@@ -38,12 +38,12 @@ class RailsEnginesRailtiesSystemTest < Minitest::Test
 
   def test_router_agents_validator
     routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    agents=File.read(File.join(ROOT,"AGENTS.md"),encoding:"UTF-8")
+    change_contract=File.read(File.join(ROOT,"skills/rails-engines-railties-engineering/SKILL.md"),encoding:"UTF-8")
     validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
     assert_includes routing,"Rails Engines and Railties engineering"
     assert_includes routing,"rails-engines-railties-engineering"
-    assert_includes agents,"Rails Engine/Railtie changes"
-    assert_includes agents,"isolate_namespace"
+    assert_includes change_contract,"Rails Engine/Railtie changes"
+    assert_includes change_contract,"isolate_namespace"
     assert_includes validator,"rails_engines_railties_system_test.rb"
   end
 

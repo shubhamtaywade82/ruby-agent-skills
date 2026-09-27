@@ -57,15 +57,15 @@ class RailsActionViewSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_action_view
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-action-view/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Action View"
     assert_includes routing, "rails-action-view"
     assert_includes routing, "action-view-output-safety"
-    assert_includes agents, "Rails Action View changes"
-    assert_includes agents, "strict locals"
-    assert_includes agents, "output safety"
-    assert_includes agents, "localized template"
+    assert_includes change_contract, "Rails Action View changes"
+    assert_includes change_contract, "strict locals"
+    assert_includes change_contract, "output safety"
+    assert_includes change_contract, "localized template"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

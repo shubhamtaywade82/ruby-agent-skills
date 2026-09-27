@@ -66,16 +66,16 @@ class RailsAssociationsSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_associations
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-associations/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Associations"
     assert_includes routing, "rails-associations"
     assert_includes routing, "association-cardinality-contract"
-    assert_includes agents, "Rails Associations changes"
-    assert_includes agents, "inverse_of"
-    assert_includes agents, "through associations"
-    assert_includes agents, "polymorphic"
-    assert_includes agents, "dependent lifecycle"
+    assert_includes change_contract, "Rails Associations changes"
+    assert_includes change_contract, "inverse_of"
+    assert_includes change_contract, "through associations"
+    assert_includes change_contract, "polymorphic"
+    assert_includes change_contract, "dependent lifecycle"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

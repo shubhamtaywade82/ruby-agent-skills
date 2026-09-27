@@ -409,3 +409,17 @@ Use the installed Rails, adapter, and database versions as the compatibility aut
 
 ## Verification
 Migration/database changes require both code-level and database-level verification appropriate to the contract: migration syntax/status, schema diff, constraint/index presence, targeted model/query tests, transaction/locking tests where relevant, and production rollout/recovery evidence for operational migrations.
+
+## Rails database/schema changes
+
+For database changes:
+- resolve Rails, adapter, and database versions first;
+- inspect schema, existing indexes/constraints, data volume, and deployment order;
+- treat migrations as rolling-deployment contracts;
+- separate expand/backfill/cutover/contract when compatibility requires it;
+- preserve database invariants with constraints where the database is the authoritative writer boundary;
+- use bounded/idempotent backfills;
+- make transaction, locking, isolation, and deadlock semantics explicit;
+- size connection pools against aggregate application concurrency and database limits;
+- require query-plan evidence for query/index performance claims;
+- test migration and database behavior at the owning boundary.

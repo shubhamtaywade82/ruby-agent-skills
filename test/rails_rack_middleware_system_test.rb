@@ -44,12 +44,12 @@ class RailsRackMiddlewareSystemTest < Minitest::Test
 
   def test_router_and_agents_contract
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-rack-middleware-engineering/SKILL.md"), encoding: "UTF-8")
     assert_includes routing, "Rails Rack/Middleware engineering"
     assert_includes routing, "rails-rack-middleware-engineering"
-    assert_includes agents, "Rails Rack/middleware changes"
-    assert_includes agents, "middleware ordering"
-    assert_includes agents, "thread"
+    assert_includes change_contract, "Rails Rack/middleware changes"
+    assert_includes change_contract, "middleware ordering"
+    assert_includes change_contract, "thread"
   end
 
   def test_evaluation_contract

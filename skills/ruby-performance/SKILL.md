@@ -288,3 +288,14 @@ Never claim "faster", "more efficient", "lower memory", or "scales better" witho
 - Rails performance testing: https://guides.rubyonrails.org/performance_testing.html
 - StackProf: https://github.com/tmm1/stackprof
 - ruby-prof: https://github.com/ruby-prof/ruby-prof
+
+## Performance-sensitive changes
+
+For performance work:
+- establish a workload and baseline before optimizing when practical;
+- distinguish latency, throughput, CPU, allocations, GC, database, network, and contention costs;
+- use profiling/benchmarking only to answer a concrete question;
+- never claim a performance improvement without measurement or a demonstrated structural property;
+- do not introduce caching without explicit freshness and invalidation semantics;
+- do not increase concurrency without downstream capacity analysis;
+- keep performance thresholds stable enough for CI.

@@ -244,3 +244,24 @@ https://guides.rubyonrails.org/security.html
 The repository may use Pundit, CanCanCan, Rails-native mechanisms, or custom policy code. Framework/library APIs must be verified against resolved dependency versions.
 
 Related skills: rails-authentication, rails-security, rails-security-engineering, rails-action-controller, rails-active-record, rails-active-job, rails-action-cable, rails-database-engineering, rails-test-engineering.
+
+## Rails authorization changes
+
+For authorization changes:
+- resolve the Ruby/Rails and authorization-library versions and identify the repository's authoritative mechanism before implementation;
+- keep authentication and authorization separate; authentication establishes identity while authorization establishes permission;
+- inspect resource lookup and collection scopes for IDOR and cross-tenant enumeration before adding policy checks;
+- treat tenant/account membership as a security boundary and never trust a client-supplied tenant identifier as proof;
+- reuse the existing Pundit, CanCanCan, custom policy, or capability mechanism instead of creating a parallel policy engine;
+- authorize services, jobs, APIs, and Action Cable independently when they can be invoked outside the original controller request;
+- re-resolve mutable membership/resource state in background jobs and fail closed when authorization is stale;
+- keep strong parameters, validation, and authorization as distinct controls;
+- review TOCTOU windows when authorization depends on mutable state and coordinate with transactions, locks, and database constraints;
+- include tenant, actor, action, resource, and relevant permission version in authorization cache identity and define invalidation;
+- never log credentials or sensitive policy inputs merely to explain an authorization decision;
+- add deterministic allow/deny, cross-tenant, collection-scope, direct-service, job, API/realtime, and IDOR regression tests;
+- verify the actual repository contract and report only observed validation evidence.
+
+## Authentication and authorization boundary
+
+authentication and authorization remain separate concerns: authentication establishes identity and session state; authorization decides permitted actions within that context.

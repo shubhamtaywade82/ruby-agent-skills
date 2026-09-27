@@ -57,18 +57,18 @@ class RailsRoutingSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_routing
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-routing/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Routing deep engineering"
     assert_includes routing, "rails-routing"
     assert_includes routing, "route-precedence-contract"
     assert_includes routing, "nested-route-boundary"
 
-    assert_includes agents, "Rails Routing changes"
-    assert_includes agents, "route precedence"
-    assert_includes agents, "routing constraints"
-    assert_includes agents, "URL helper contracts"
-    assert_includes agents, "mounted boundaries"
+    assert_includes change_contract, "Rails Routing changes"
+    assert_includes change_contract, "route precedence"
+    assert_includes change_contract, "routing constraints"
+    assert_includes change_contract, "URL helper contracts"
+    assert_includes change_contract, "mounted boundaries"
   end
 
   def test_skill_covers_deep_routing_contract

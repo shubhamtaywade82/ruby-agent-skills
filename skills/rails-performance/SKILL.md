@@ -501,3 +501,14 @@ Repository-specific foundations:
 - patterns/rails/connection-pool-capacity.md
 - patterns/rails/n-plus-one-review.md
 - patterns/rails/query-plan-evidence.md
+
+## Performance-sensitive changes
+
+For performance work:
+- establish a workload and baseline before optimizing when practical;
+- distinguish latency, throughput, CPU, allocations, GC, database, network, and contention costs;
+- use profiling/benchmarking only to answer a concrete question;
+- never claim a performance improvement without measurement or a demonstrated structural property;
+- do not introduce caching without explicit freshness and invalidation semantics;
+- do not increase concurrency without downstream capacity analysis;
+- keep performance thresholds stable enough for CI.

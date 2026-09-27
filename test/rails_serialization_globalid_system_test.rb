@@ -37,12 +37,12 @@ class RailsSerializationGlobalidSystemTest < Minitest::Test
 
   def test_router_agents_validator
     routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    agents=File.read(File.join(ROOT,"AGENTS.md"),encoding:"UTF-8")
+    change_contract=File.read(File.join(ROOT,"skills/rails-serialization-globalid-engineering/SKILL.md"),encoding:"UTF-8")
     validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
     assert_includes routing,"Rails Serialization and Global IDs engineering"
     assert_includes routing,"rails-serialization-globalid-engineering"
-    assert_includes agents,"Rails serialization/Global ID changes"
-    assert_includes agents,"Signed Global ID"
+    assert_includes change_contract,"Rails serialization/Global ID changes"
+    assert_includes change_contract,"Signed Global ID"
     assert_includes validator,"rails_serialization_globalid_system_test.rb"
   end
 

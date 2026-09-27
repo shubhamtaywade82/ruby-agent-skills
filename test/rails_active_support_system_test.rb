@@ -60,15 +60,15 @@ class RailsActiveSupportSystemTest < Minitest::Test
 
   def test_router_and_agent_contract_include_active_support
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
-    agents = File.read(File.join(ROOT, "AGENTS.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-active-support/SKILL.md"), encoding: "UTF-8")
 
     assert_includes routing, "Rails Active Support"
     assert_includes routing, "rails-active-support"
     assert_includes routing, "active-support-notifications-contract"
-    assert_includes agents, "Rails Active Support changes"
-    assert_includes agents, "ActiveSupport::Concern"
-    assert_includes agents, "CurrentAttributes"
-    assert_includes agents, "notification payload"
+    assert_includes change_contract, "Rails Active Support changes"
+    assert_includes change_contract, "ActiveSupport::Concern"
+    assert_includes change_contract, "CurrentAttributes"
+    assert_includes change_contract, "notification payload"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns

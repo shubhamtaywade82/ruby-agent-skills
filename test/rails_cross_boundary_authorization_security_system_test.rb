@@ -39,12 +39,12 @@ class RailsCrossBoundaryAuthorizationSecuritySystemTest < Minitest::Test
 
   def test_router_agents_validator
     routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    agents=File.read(File.join(ROOT,"AGENTS.md"),encoding:"UTF-8")
+    change_contract=File.read(File.join(ROOT,"skills/rails-cross-boundary-authorization-security/SKILL.md"),encoding:"UTF-8")
     validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
     assert_includes routing,"Rails Cross-Boundary Authorization and Security Composition"
     assert_includes routing,"rails-cross-boundary-authorization-security"
-    assert_includes agents,"Rails cross-boundary authorization/security changes"
-    assert_includes agents,"re-authorize"
+    assert_includes change_contract,"Rails cross-boundary authorization/security changes"
+    assert_includes change_contract,"re-authorize"
     assert_includes validator,"rails_cross_boundary_authorization_security_system_test.rb"
   end
 

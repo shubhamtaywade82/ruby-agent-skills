@@ -374,3 +374,18 @@ end
 - Brakeman: https://brakemanscanner.org/
 - Bundler Audit: https://github.com/rubysec/bundler-audit
 - Repository skills: rails-security, rails-authentication, rails-api-integration, rails-distributed-systems, rails-event-driven-messaging, rails-database-engineering, rails-testing
+
+## Security engineering and threat-model changes
+
+For architecture-level security changes:
+- identify protected assets, actors, attacker capabilities, and trust boundaries before selecting controls;
+- distinguish authentication, authorization, tenant isolation, input validation, and output encoding responsibilities;
+- map alternate execution paths including controllers, jobs, events, webhooks, admin actions, exports, and direct service entry points;
+- treat client, provider, broker, file, URL, build, and dependency inputs as untrusted until the owning boundary verifies them;
+- place authorization at the resource/action boundary and verify cross-tenant access cannot bypass it;
+- govern secrets by owner, storage, scope, rotation, revocation, and exposure surface;
+- constrain arbitrary outbound network access against SSRF, redirect, DNS, private-network, credential-forwarding, and resource-exhaustion risks;
+- review dependency, CI, build, and release surfaces as security boundaries;
+- turn concrete vulnerabilities into deterministic abuse-case regression tests;
+- use repository-configured security scanners as evidence, not as the complete security assessment;
+- record accepted residual risk with ownership and review criteria rather than permanent broad scanner suppressions.

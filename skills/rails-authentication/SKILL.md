@@ -761,3 +761,25 @@ The repository's reusable authentication patterns operationalize the source mate
 - authentication-freshness-boundary
 
 Use patterns only when their problem shape exists; they are decision aids rather than mandatory abstractions.
+
+## Rails authentication changes
+
+For authentication changes:
+- resolve the Ruby/Rails version and identify the actual mechanism in use before implementation;
+- inspect generated Rails authentication, Devise, custom concerns, middleware, session stores, token stores, and alternate authentication paths;
+- keep authentication and authorization separate and preserve the repository's authoritative policy boundary;
+- authentication and authorization remain separate contracts even when they share request/session plumbing;
+- treat credential material, password reset tokens, session cookies, and bearer tokens as secrets that must not enter logs, jobs, events, or telemetry;
+- model authentication as explicit state transitions: credential verification, session/token establishment, request context, logout, expiry, and revocation;
+- verify session fixation resistance and fresh session state after successful login;
+- define current-session, per-device, global revocation, password-change, and compromise semantics where applicable;
+- treat password recovery as a bounded one-time/expiring authentication protocol with enumeration-safe responses;
+- separate browser session authentication from API/service credentials and verify CSRF semantics rather than disabling protection broadly;
+- propagate actor/tenant attribution without serializing live authentication credentials and re-evaluate authorization at asynchronous boundaries;
+- require fresh authentication for security-sensitive credential/privilege changes when the product/security contract requires it;
+- add deterministic tests for success and rejection paths, expiry, revocation, fixation, recovery replay, and abuse controls;
+- run bin/validate and security tooling, and report only observed verification evidence.
+
+## Authentication and authorization boundary
+
+authentication and authorization remain separate concerns: authentication establishes identity and session state; authorization decides permitted actions within that context.

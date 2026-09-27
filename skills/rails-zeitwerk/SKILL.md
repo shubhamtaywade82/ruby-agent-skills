@@ -179,3 +179,14 @@ Never claim Zeitwerk correctness from a unit test alone. For Rails, run the repo
 ## Source foundation
 Rails Autoloading and Reloading Constants Guide: https://guides.rubyonrails.org/autoloading_and_reloading_constants.html
 Zeitwerk documentation: https://github.com/fxn/zeitwerk
+
+## Zeitwerk/autoloading changes
+
+For Ruby/Rails constants and file-layout changes:
+- resolve the loader/runtime version first;
+- verify path-to-constant and namespace ownership;
+- inspect inflections and autoload roots;
+- distinguish reloadable and once-loaded code;
+- check initializer lifecycle;
+- run Zeitwerk/eager-load verification when available;
+- do not hide structural loading errors with arbitrary require/require_dependency calls.

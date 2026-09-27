@@ -1,5 +1,12 @@
 # Changelog
 
+## Iteration 127 — Slim Always-Loaded Agent Contract
+
+- Cut `AGENTS.md` from 858 lines (74 KB) to 137 lines (9.5 KB). It now holds only the repository-wide operating contract (sequence, context, routing, design, precedence, verification, skill-pack and benchmark integrity, and repository-maintenance rules).
+- Move the 42 domain "changes" sections verbatim into their owning skills (for example `skills/rails-action-cable/SKILL.md` → `## Rails Action Cable changes`), so they load only when the skill is routed. Every non-blank line of the previous file appears verbatim in the new file or a skill.
+- Point the 33 system tests that pinned those rules at the owning skill instead of `AGENTS.md`.
+- The documentation consistency audit enforces a 150-line budget for `AGENTS.md` and rejects domain change sections there.
+
 ## Iteration 117 — Production-Runtime Verifier Repair and References
 
 - Repair `scripts/verify_production_runtime_eval.rb`, which did not parse: stripped escapes (`/putss+ENV[|ps+ENV[/`) and `\b` turned into backspace bytes. The whole campaign failed every run regardless of the submission.

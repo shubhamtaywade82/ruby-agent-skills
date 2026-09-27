@@ -38,12 +38,12 @@ class RailsEncryptionCredentialsSystemTest < Minitest::Test
 
   def test_router_agents_validator
     routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    agents=File.read(File.join(ROOT,"AGENTS.md"),encoding:"UTF-8")
+    change_contract=File.read(File.join(ROOT,"skills/rails-encryption-credentials-engineering/SKILL.md"),encoding:"UTF-8")
     validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
     assert_includes routing,"Rails Encryption and Credentials engineering"
     assert_includes routing,"rails-encryption-credentials-engineering"
-    assert_includes agents,"Rails encryption/credentials changes"
-    assert_includes agents,"RAILS_MASTER_KEY"
+    assert_includes change_contract,"Rails encryption/credentials changes"
+    assert_includes change_contract,"RAILS_MASTER_KEY"
     assert_includes validator,"rails_encryption_credentials_system_test.rb"
   end
 

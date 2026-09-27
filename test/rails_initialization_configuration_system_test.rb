@@ -37,12 +37,12 @@ class RailsInitializationConfigurationSystemTest < Minitest::Test
 
   def test_router_agents_validator
     routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    agents=File.read(File.join(ROOT,"AGENTS.md"),encoding:"UTF-8")
+    change_contract=File.read(File.join(ROOT,"skills/rails-initialization-configuration-engineering/SKILL.md"),encoding:"UTF-8")
     validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
     assert_includes routing,"Rails Initialization and Configuration engineering"
     assert_includes routing,"rails-initialization-configuration-engineering"
-    assert_includes agents,"Rails initialization/configuration changes"
-    assert_includes agents,"initializer"
+    assert_includes change_contract,"Rails initialization/configuration changes"
+    assert_includes change_contract,"initializer"
     assert_includes validator,"rails_initialization_configuration_system_test.rb"
   end
 

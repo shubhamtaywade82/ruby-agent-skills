@@ -482,3 +482,15 @@ Primary Rails guidance:
 - Solid Queue: https://github.com/rails/solid_queue
 
 Use the target Rails/Active Job/adapter version as the compatibility authority when APIs or semantics differ.
+
+## Active Job/background-job changes
+
+For background-job changes:
+- resolve the Rails/Active Job/queue-adapter versions first;
+- inspect ApplicationJob and existing job conventions;
+- make serialization and idempotency explicit;
+- classify retryable versus permanent failures;
+- inspect transaction/commit semantics when enqueueing from database transactions;
+- analyze concurrency and downstream capacity;
+- verify queue/worker configuration and shutdown behavior when operational behavior changes;
+- test enqueue, perform, failure, retry/discard, and duplicate-execution behavior as applicable.
