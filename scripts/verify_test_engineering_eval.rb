@@ -139,7 +139,9 @@ checks["tests"] =
   end
 
 forbidden = all_bodies.match?(/allow_any_instance_of|expect_any_instance_of|\bsleep\s*\(/)
-checks["scope_control"] = { "status" => "fail", "evidence" => "any_instance stubbing or sleep detected" } if rspec && forbidden
+if rspec && forbidden
+  checks["scope_control"] = { "status" => "fail", "evidence" => "any_instance stubbing or sleep detected" }
+end
 
 changed_files = %x{git status --short}.lines.map { |line| (line[3..] || line).strip }.reject(&:empty?)
 checks["scope_control"] ||= { "status" => "pass", "evidence" => "recorded #{changed_files.length} changed paths" }
