@@ -1,5 +1,5 @@
 id: rails-production-runtime-public-v1
-version: 1
+version: 2
 evaluation_set: production-runtime
 source: rails-production-runtime-v1
 fixture_root: benchmarks/production-runtime/fixtures

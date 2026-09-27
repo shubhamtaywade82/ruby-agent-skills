@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-trap 'kill -TERM "$child" 2>/dev/null || true; wait "$child"' TERM INT
+trap '' TERM INT
 bundle exec puma -C config/puma.rb &
-child=$!
-wait "$child"
+wait $!
