@@ -5,7 +5,7 @@
 - Add an "RSpec" section to `rails-test-engineering`: detect the suite before writing tests, request specs over controller specs, block-form enqueue matchers on the default `:test` adapter, `errors.of_kind?` instead of `errors.added?`, verifying doubles, trait-based factories, and shared examples only for repeated contracts. No new skill; RSpec stays owned by the test-engineering skill.
 - Add six `testing` patterns (437 → 443): `rspec-request-spec`, `rspec-job-and-mail-enqueue`, `rspec-mailer-spec`, `rspec-factory-traits`, `rspec-shared-examples-contract`, and `rspec-verifying-doubles`. Their examples come from a Rails 8.0 app with rspec-rails 8.0, where they run as 15 examples with 0 failures. Three mutations (dropping the job enqueue, making the job ignore order status, renaming the gateway keyword) each fail the suite.
 - Record two behaviours found while running the examples: `have_enqueued_mail` raises `ArgumentError` outside block form, and `errors.added?` fails unless every error option is passed.
-- Add RSpec triggers to the `testing` pattern family and the `rspec-request-contract` evaluation (451 → 452 evaluation cases).
+- Add RSpec triggers to the `testing` pattern family and the `rspec-request-contract` evaluation (two cases; 451 → 453 evaluation cases).
 
 ## Iteration 135 — Frontend Tier 1: react-frontend-security, react-frameworks, EARP protocol, T6 fixture
 
