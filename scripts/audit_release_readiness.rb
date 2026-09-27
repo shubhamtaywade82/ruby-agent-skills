@@ -9,7 +9,7 @@ errors = []
 warnings = []
 
 required_files = %w[
-  README.md AGENTS.md LICENSE CONTRIBUTING.md SECURITY.md CHANGELOG.md
+  README.md AGENTS.md LICENSE CONTRIBUTING.md SECURITY.md CHANGELOG.md docs/ITERATIONS.md
   skill-manifest.yml router/ROUTING.md bin/validate bin/eval bin/benchmark
   docs/SOURCE_COVERAGE.md docs/SKILL_CONTRACT.md docs/PATTERN_SCHEMA.md docs/EVAL_SCHEMA.md docs/ROUTING_CAMPAIGN_ANALYSIS.md
   docs/BENCHMARK_QUALITY_AUDIT.md docs/REPOSITORY_COMPLETENESS_AUDIT.md docs/RELEASE_READINESS_AUDIT.md
@@ -23,12 +23,14 @@ readme = File.read(File.join(ROOT, "README.md"), encoding: "UTF-8")
 changelog = File.read(File.join(ROOT, "CHANGELOG.md"), encoding: "UTF-8")
 manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
-current_milestone = readme[/Current milestone:\*\* Iteration (\d+)/, 1].to_i
+iterations_path = File.join(ROOT, "docs", "ITERATIONS.md")
+iterations = File.file?(iterations_path) ? File.read(iterations_path, encoding: "UTF-8") : ""
+current_milestone = iterations[/Current milestone:\*\* Iteration (\d+)/, 1].to_i
 latest_changelog_iteration = changelog[/^## Iteration (\d+)/, 1].to_i
-errors << "README is not at a post-release milestone" unless current_milestone >= 51
-errors << "README has no final release section" unless readme.include?("Final Release and Public-Readiness Hardening")
-errors << "README current milestone does not match latest changelog iteration" unless current_milestone == latest_changelog_iteration
-errors << "README still claims Iteration 47 is current" if readme.include?("Current milestone:** Iteration 47")
+errors << "docs/ITERATIONS.md is not at a post-release milestone" unless current_milestone >= 51
+errors << "docs/ITERATIONS.md has no final release section" unless iterations.include?("Final Release and Public-Readiness Hardening")
+errors << "docs/ITERATIONS.md current milestone does not match latest changelog iteration" unless current_milestone == latest_changelog_iteration
+errors << "docs/ITERATIONS.md still claims Iteration 47 is current" if iterations.include?("Current milestone:** Iteration 47")
 errors << "README contains stale evaluation count 206" if readme.include?("206 evaluation cases")
 errors << "README contains stale evaluation count 193" if readme.include?("193 evaluation cases")
 errors << "README contains stale pattern count 394" if readme.include?("394 implementation patterns")

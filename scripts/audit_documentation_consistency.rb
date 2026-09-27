@@ -16,15 +16,17 @@ root = options[:root]
 readme_path = File.join(root, "README.md")
 changelog_path = File.join(root, "CHANGELOG.md")
 handoff_path = File.join(root, "docs", "IMPLEMENTATION_HANDOFF.md")
+iterations_path = File.join(root, "docs", "ITERATIONS.md")
 manifest_path = File.join(root, "skill-manifest.yml")
 
-[readme_path, changelog_path, handoff_path, manifest_path].each do |path|
+[readme_path, changelog_path, handoff_path, iterations_path, manifest_path].each do |path|
   abort "missing documentation audit input: #{path}" unless File.file?(path)
 end
 
 readme = File.read(readme_path, encoding: "UTF-8")
 changelog = File.read(changelog_path, encoding: "UTF-8")
 handoff = File.read(handoff_path, encoding: "UTF-8")
+iterations = File.read(iterations_path, encoding: "UTF-8")
 manifest = YAML.safe_load(File.read(manifest_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
 skill_count = Dir[File.join(root, "skills", "*", "SKILL.md")].length
@@ -36,11 +38,17 @@ end
 system_test_count = Dir[File.join(root, "test", "*_system_test.rb")].length
 
 latest_changelog = changelog[/^## Iteration (\d+)/, 1].to_i
-readme_milestone = readme[/Current milestone:\*\* Iteration (\d+)/, 1].to_i
+milestone = iterations[/Current milestone:\*\* Iteration (\d+)/, 1].to_i
+iteration_numbers = iterations.scan(/^## Iteration (\d+) /).flatten.map(&:to_i)
 handoff_milestones = handoff.scan(/complete through Iteration (\d+)/).flatten.map(&:to_i).uniq
 
 errors = []
-errors << "README current milestone #{readme_milestone} != latest changelog #{latest_changelog}" unless readme_milestone == latest_changelog
+errors << "docs/ITERATIONS.md current milestone #{milestone} != latest changelog #{latest_changelog}" unless milestone == latest_changelog
+errors << "docs/ITERATIONS.md has no section for Iteration #{latest_changelog}" unless iteration_numbers.include?(latest_changelog)
+errors << "docs/ITERATIONS.md sections are not in ascending order" unless iteration_numbers == iteration_numbers.sort
+# The README describes the current system; iteration history lives in docs/ITERATIONS.md.
+readme_iteration_lines = readme.lines.each_with_index.select { |line, _| line.match?(/\bIteration \d+/) }.map { |_, index| index + 1 }
+errors << "README.md mentions iterations on lines #{readme_iteration_lines.join(", ")}; move history to docs/ITERATIONS.md" unless readme_iteration_lines.empty?
 errors << "IMPLEMENTATION_HANDOFF.md status #{handoff_milestones.inspect} != latest changelog #{latest_changelog}" unless handoff_milestones == [latest_changelog]
 
 # AGENTS.md is loaded on every task, so it holds only the repository-wide
@@ -89,7 +97,7 @@ errors << "manifest skill count #{manifest_skill_count} != filesystem #{skill_co
 
 puts "Documentation consistency audit"
 puts "  latest changelog iteration: #{latest_changelog}"
-puts "  README milestone: #{readme_milestone}"
+puts "  current milestone (docs/ITERATIONS.md): #{milestone}"
 puts "  handoff milestone: #{handoff_milestones.join(", ")}"
 puts "  skills: #{skill_count}"
 puts "  implementation patterns: #{pattern_count}"

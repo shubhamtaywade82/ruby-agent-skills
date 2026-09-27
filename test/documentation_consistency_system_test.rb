@@ -20,6 +20,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
     assert_includes script, "IMPLEMENTATION_HANDOFF.md"
     assert_includes script, "evaluation_count"
     assert_includes script, "Current milestone"
+    assert_includes script, "ITERATIONS.md"
   end
 
   def test_documentation_audit_passes_current_repository_state
@@ -33,34 +34,48 @@ class DocumentationConsistencySystemTest < Minitest::Test
     assert_includes stdout, "Documentation consistency audit passed."
   end
 
-  def test_documentation_audit_detects_stale_handoff_inventory
+  # Builds a temporary repository root from the real documents, applying
+  # per-file edits, and returns the audit's [stderr, status].
+  def audit_with(edits = {})
     Dir.mktmpdir("documentation-consistency") do |dir|
-      readme = source("README.md")
-      handoff = source("docs/IMPLEMENTATION_HANDOFF.md")
-      changelog = source("CHANGELOG.md")
-      manifest = source("skill-manifest.yml")
-
-      File.write(File.join(dir, "README.md"), readme, encoding: "UTF-8")
+      %w[skills patterns evals test].each { |path| FileUtils.cp_r(File.join(ROOT, path), dir) }
       FileUtils.mkdir_p(File.join(dir, "docs"))
-      FileUtils.mkdir_p(File.join(dir, "skills"))
-      FileUtils.mkdir_p(File.join(dir, "patterns"))
-      FileUtils.mkdir_p(File.join(dir, "evals"))
-      FileUtils.mkdir_p(File.join(dir, "test"))
-      File.write(File.join(dir, "docs", "IMPLEMENTATION_HANDOFF.md"), handoff.sub("442 evaluation cases", "436 evaluation cases"), encoding: "UTF-8")
-      Dir[File.join(ROOT, "skills", "*", "SKILL.md")].first && FileUtils.cp_r(File.join(ROOT, "skills"), dir)
-      FileUtils.cp_r(File.join(ROOT, "patterns"), dir)
-      FileUtils.cp_r(File.join(ROOT, "evals"), dir)
-      FileUtils.cp_r(File.join(ROOT, "test"), dir)
-      File.write(File.join(dir, "CHANGELOG.md"), changelog, encoding: "UTF-8")
-      File.write(File.join(dir, "skill-manifest.yml"), manifest, encoding: "UTF-8")
-      
+      %w[README.md CHANGELOG.md skill-manifest.yml docs/IMPLEMENTATION_HANDOFF.md docs/ITERATIONS.md].each do |path|
+        text = source(path)
+        text = edits[path].call(text) if edits.key?(path)
+        File.write(File.join(dir, path), text, encoding: "UTF-8")
+      end
+
       audit = File.join(ROOT, "scripts", "audit_documentation_consistency.rb")
-
       _stdout, stderr, status = Open3.capture3(RbConfig.ruby, audit, "--root", dir, chdir: ROOT)
-
-      refute status.success?
-      assert_includes stderr, "IMPLEMENTATION_HANDOFF.md"
+      [stderr, status]
     end
+  end
+
+  def test_documentation_audit_detects_stale_handoff_inventory
+    stderr, status = audit_with("docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub("442 evaluation cases", "436 evaluation cases") })
+
+    refute status.success?
+    assert_includes stderr, "IMPLEMENTATION_HANDOFF.md"
+  end
+
+  def test_documentation_audit_rejects_iteration_history_in_readme
+    stderr, status = audit_with("README.md" => ->(text) { "#{text}\n## Iteration 131 — Something\n" })
+
+    refute status.success?
+    assert_includes stderr, "README.md mentions iterations"
+  end
+
+  def test_documentation_audit_requires_ordered_iterations_with_latest_section
+    stderr, status = audit_with(
+      "docs/ITERATIONS.md" => lambda do |text|
+        text.sub(/^## Iteration 41 — /, "## Iteration 999 — ").sub(/^## Iteration (\d+) — (?!.*^## Iteration)/m, "## Iteration 0 — ")
+      end
+    )
+
+    refute status.success?
+    assert_includes stderr, "not in ascending order"
+    assert_includes stderr, "has no section for Iteration"
   end
 
   def test_validator_invokes_this_system_test
