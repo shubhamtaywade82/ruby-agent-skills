@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 101 — Verified Release Evidence Bundle
+> **Current milestone:** Iteration 103 — Verified Release Evidence Bundle
 
 ---
 
@@ -211,6 +211,14 @@ Completed routing release inputs can now be composed into a frozen `RELEASE_MANI
 ## Iteration 95 — Routing Release Evidence Bundle
 
 `bin/routing-release-bundle` composes verified public routing evidence into an auditable release-evidence directory and cryptographically records each component.
+
+## Iteration 103 — Release Bundle Component Provenance
+
+The release bundle verifier now proves that bundled public evidence belongs to the bundled archive and that optional matrix evidence matches the same campaign and repository revision.
+
+## Iteration 102 — Documentation Consistency Contract
+
+The repository now has an executable documentation consistency audit covering README, implementation handoff, changelog milestone, filesystem inventory, and manifest identity.
 
 ## Iteration 101 — Verified Routing History
 
@@ -859,7 +867,7 @@ When adding a new skill or deepening an existing one:
 
 **Iteration 101 — Verified Routing History**
 
-The repository-side implementation line is complete through Iteration 101. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. The repository-side integration line is complete through Iteration 101. Remaining work is empirical execution with a reachable external model runtime: capture real campaign evidence, analyze observed routing behavior, run evidence-based remediation experiments, execute the external hidden benchmark, and publish verified release evidence.
+The repository-side implementation line is complete through Iteration 103. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. The repository-side integration line is complete through Iteration 101. Remaining work is empirical execution with a reachable external model runtime: capture real campaign evidence, analyze observed routing behavior, run evidence-based remediation experiments, execute the external hidden benchmark, and publish verified release evidence.
 
 
 ## Iteration 83 — Matrix Resume Integrity
