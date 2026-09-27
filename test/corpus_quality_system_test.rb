@@ -25,8 +25,8 @@ class CorpusQualitySystemTest < Minitest::Test
       Benchmark coverage:
       Routing:
     ].each { |marker| assert_includes stdout, marker }
-    assert_match(/skills: d+\/\d+ with reference examples/, stdout)
-    assert_match(/patterns: d+\/\d+ with implementation anchors/, stdout)
+    assert_match(/skills: \d+\/\d+ with reference examples/, stdout)
+    assert_match(/patterns: \d+\/\d+ with implementation anchors/, stdout)
     assert_match(/evaluations: \d+\/\d+ with non-empty cases/, stdout)
     assert_match(/unbenchmarked: 0 files \(0 cases\)/, stdout)
   end
