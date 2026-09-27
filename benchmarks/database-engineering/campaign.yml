@@ -1,5 +1,5 @@
 id: rails-database-engineering-public-v1
-version: 1
+version: 2
 evaluation_set: database-engineering
 source: rails-database-engineering-v1
 fixture_root: benchmarks/database-engineering/fixtures
