@@ -790,7 +790,7 @@ Composed repository skills:
 - `skills/rails-observability/SKILL.md`
 - `skills/rails-production-runtime/SKILL.md`
 - `skills/rails-test-engineering/SKILL.md`
-- `skills/rails-testing/SKILL.md`
+- `skills/rails-test-engineering/SKILL.md`
 
 ## Rails Active Storage changes
 

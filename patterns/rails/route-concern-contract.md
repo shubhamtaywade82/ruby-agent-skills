@@ -53,4 +53,4 @@ Test representative route expansions and helper uniqueness.
 
 ## Related skills
 
-rails-routing, rails-testing
+rails-routing, rails-test-engineering

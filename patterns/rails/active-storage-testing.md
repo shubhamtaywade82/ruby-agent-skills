@@ -58,4 +58,4 @@ Prefer focused assertions on attachment names, blob metadata, access behavior, j
 
 ## Related skills
 
-rails-active-storage, rails-test-engineering, rails-testing, rails-security
+rails-active-storage, rails-test-engineering, rails-security

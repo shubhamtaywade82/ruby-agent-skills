@@ -11,7 +11,7 @@ Make validation behavior explicit, deterministic, and owned by the correct bound
 
 This skill governs Rails Active Record and Active Model validation semantics. It covers validation lifecycle and bypass paths, built-in validator selection, validation contexts and conditions, associated validation, uniqueness versus database enforcement, custom validators, strict failures, structured ActiveModel::Errors contracts, validation callbacks, API/form error representation, security boundaries, performance, and deterministic tests.
 
-Compose with rails-active-record for model/persistence semantics; rails-associations for relationship/autosave ownership; rails-active-model for non-persisted model-like objects; rails-database-engineering for constraints/indexes/transactions/locking; rails-action-controller for request input; rails-action-view and rails-i18n for form/translation behavior; rails-api-integration for API error contracts; rails-security for trust and authorization; rails-performance for validation-query cost; and rails-test-engineering/rails-testing for verification.
+Compose with rails-active-record for model/persistence semantics; rails-associations for relationship/autosave ownership; rails-active-model for non-persisted model-like objects; rails-database-engineering for constraints/indexes/transactions/locking; rails-action-controller for request input; rails-action-view and rails-i18n for form/translation behavior; rails-api-integration for API error contracts; rails-security for trust and authorization; rails-performance for validation-query cost; and rails-test-engineering/rails-test-engineering for verification.
 
 Core boundary:
 
@@ -404,7 +404,6 @@ Run bin/validate and focused validation/system tests. For persistence invariants
 - rails-security
 - rails-performance
 - rails-test-engineering
-- rails-testing
 
 ## Source foundation
 

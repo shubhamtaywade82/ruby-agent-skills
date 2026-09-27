@@ -61,4 +61,4 @@ then the previously broken contract now holds
 
 - ruby-debugging
 - ruby-tdd-refactoring
-- rails-testing
+- rails-test-engineering

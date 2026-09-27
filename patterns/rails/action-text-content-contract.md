@@ -57,4 +57,4 @@ Test association, visibility, permitted features, size limits, and lifecycle beh
 
 ## Related skills
 
-rails-action-text, rails-activerecord, rails-views, rails-active-storage
+rails-action-text, rails-active-record, rails-action-view, rails-active-storage

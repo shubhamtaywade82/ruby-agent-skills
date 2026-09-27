@@ -10,7 +10,6 @@ skills:
   - rails-security
   - rails-i18n
   - rails-test-engineering
-  - rails-testing
 patterns:
   - route-precedence-contract
   - nested-route-boundary

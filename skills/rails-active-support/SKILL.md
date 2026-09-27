@@ -28,10 +28,10 @@ It composes with:
 
 - rails-observability for operational telemetry and production diagnostics;
 - ruby-concurrency for thread/fiber safety;
-- rails-active-model and rails-activerecord for model lifecycle behavior;
+- rails-active-model and rails-active-record for model lifecycle behavior;
 - rails-zeitwerk for autoloading and constant loading;
 - rails-i18n for localized rendering and translation;
-- rails-testing / rails-test-engineering for test boundaries;
+- rails-test-engineering for test boundaries;
 - rails-security / rails-security-engineering for dynamic constantization, context isolation, and untrusted input.
 
 ## Activate when
@@ -409,12 +409,12 @@ Composed repository skills:
 - skills/rails-zeitwerk/SKILL.md
 - skills/ruby-concurrency/SKILL.md
 - skills/rails-active-model/SKILL.md
-- skills/rails-activerecord/SKILL.md
+- skills/rails-active-record/SKILL.md
 - skills/rails-i18n/SKILL.md
 - skills/rails-security/SKILL.md
 - skills/rails-security-engineering/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md
 
 ## Rails Active Support changes
 

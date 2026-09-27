@@ -55,4 +55,4 @@ Test script/event payloads, unsafe URLs, malformed markup, and expected safe for
 
 ## Related skills
 
-rails-action-text, rails-security, rails-security-engineering, rails-views
+rails-action-text, rails-security, rails-security-engineering, rails-action-view

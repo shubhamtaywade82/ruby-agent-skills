@@ -393,7 +393,7 @@ reproduce
 Use these combinations deliberately:
 
 - `ruby-performance`: Ruby CPU, allocations, GC, profiling, benchmark methodology;
-- `rails-activerecord`: query/persistence implementation;
+- `rails-active-record`: query/persistence implementation;
 - `rails-database-engineering`: schema, index, locking, pool/database capacity;
 - `rails-active-job`: queue/retry/concurrency semantics;
 - `rails-observability`: measurements and request/job telemetry;
@@ -492,7 +492,7 @@ Primary Rails guidance:
 
 Repository-specific foundations:
 - skills/ruby-performance/SKILL.md
-- skills/rails-activerecord/SKILL.md
+- skills/rails-active-record/SKILL.md
 - skills/rails-database-engineering/SKILL.md
 - skills/rails-active-job/SKILL.md
 - patterns/rails/cache-boundary.md

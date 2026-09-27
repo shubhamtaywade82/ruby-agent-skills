@@ -78,8 +78,8 @@ Test the form contract independently and integration-test the resulting request 
 
 ## Related skills
 
-- rails-controllers
+- rails-action-controller
 - rails-validations
-- rails-activerecord
-- rails-testing
+- rails-active-record
+- rails-test-engineering
 - ruby-method-design

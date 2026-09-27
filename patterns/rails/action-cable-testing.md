@@ -57,4 +57,4 @@ Prefer focused channel/connection tests and dedicated client contract tests.
 
 ## Related skills
 
-rails-action-cable, rails-test-engineering, rails-testing, rails-security
+rails-action-cable, rails-test-engineering, rails-security

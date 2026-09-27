@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 127 — Slim Always-Loaded Agent Contract
+> **Current milestone:** Iteration 128 — Merge Duplicate Rails Skills
 
 ## Quick start
 
@@ -202,7 +202,7 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **91** |
+| Skills | **85** |
 | Implementation patterns | **432** |
 | Evaluation cases | **442** |
 | Dedicated system/contract tests | **85** |
@@ -308,18 +308,12 @@ The Rails layer has both foundational skills and deep framework-boundary skills.
 
 - `rails-architecture`
 - `rails-routing`
-- `rails-controllers`
 - `rails-action-controller`
-- `rails-views`
-- `rails-activerecord`
 - `rails-active-record`
 - `rails-associations`
 - `rails-validations`
 - `rails-authentication`
-- `rails-testing`
 - `rails-generators`
-- `rails-deployment`
-- `rails-best-practices`
 - `rails-security`
 
 ## Deep framework engineering
@@ -732,7 +726,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **91 skills**, **432 implementation patterns**, **442 evaluation cases**, and **85 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **85 skills**, **432 implementation patterns**, **442 evaluation cases**, and **85 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

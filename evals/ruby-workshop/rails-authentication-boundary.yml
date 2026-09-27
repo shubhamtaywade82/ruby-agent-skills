@@ -6,9 +6,9 @@ source: learn-rails-6
 skills:
   - rails-api-integration
   - rails-authentication
-  - rails-controllers
+  - rails-action-controller
   - rails-routing
-  - rails-testing
+  - rails-test-engineering
 patterns:
   - policy-boundary
   - request-flow

@@ -59,4 +59,4 @@ Test UTC/local conversion, date boundaries, DST-sensitive operations, and durati
 - skills/rails-active-support/SKILL.md
 - skills/rails-i18n/SKILL.md
 - skills/ruby-concurrency/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md

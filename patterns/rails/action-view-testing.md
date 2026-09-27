@@ -58,5 +58,5 @@ Cover the changed rendering contract, negative security cases, and cross-layer b
 
 - skills/rails-action-view/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-- skills/rails-testing/SKILL.md
+- skills/rails-test-engineering/SKILL.md
 - skills/rails-security/SKILL.md

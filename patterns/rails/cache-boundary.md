@@ -47,9 +47,9 @@ Test hit, miss, invalidation, key isolation, and stale-data behavior.
 ## Related skills
 
 - ruby-performance
-- rails-activerecord
+- rails-active-record
 - rails-authentication
-- rails-testing
+- rails-test-engineering
 - rails-security
 
 

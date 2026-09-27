@@ -1,6 +1,6 @@
 ---
 name: rails-action-controller
-description: Use when implementing or reviewing Rails Action Controller HTTP boundaries including parameters, request and response semantics, sessions, cookies, callbacks, negotiation, conditional responses, streaming, and controller-level exception handling.
+description: Use when implementing or reviewing Rails Action Controller HTTP boundaries including parameters, request and response semantics, sessions, cookies, callbacks, negotiation, conditional responses, streaming, and controller-level exception handling. Also covers routine controller actions, parameters, rendering, and redirects.
 ---
 
 # Rails Action Controller
@@ -25,7 +25,7 @@ The controller owns request interpretation, boundary input filtering, request-sc
 - adding controller-level exception mapping with rescue_from
 - debugging unexpected dispatch, double renders, missing responses, or request/response behavior
 
-For a simple CRUD action, params handling, or a status/render/redirect change, `rails-controllers` is the lighter entry point; activate this skill only when the deeper boundaries above are actually in play.
+For a simple CRUD action, params handling, or a status/render/redirect change, `rails-action-controller` is the lighter entry point; activate this skill only when the deeper boundaries above are actually in play.
 
 ## Boundary ownership
 
@@ -35,7 +35,7 @@ For a simple CRUD action, params handling, or a status/render/redirect change, `
 | request metadata | yes | business identity derivation |
 | authentication orchestration | boundary hook/collaborator | rails-authentication |
 | authorization decision | invocation of existing policy | rails-security / policy boundary |
-| persistence | orchestration | rails-activerecord / database skill |
+| persistence | orchestration | rails-active-record / database skill |
 | business workflow | invocation | service/domain object |
 | response mapping | yes | serializer/view for representation |
 | sessions/cookies/flash | yes | auth/session subsystem for identity semantics |
@@ -350,7 +350,120 @@ Framework behavior is interpreted against the repository's resolved Rails versio
 
 ## Composition
 
-This skill composes with rails-routing, rails-controllers, rails-authentication, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-active-job, rails-i18n, rails-test-engineering, rails-testing, ruby-clean-code, and ruby-tdd-refactoring.
+This skill composes with rails-routing, rails-action-controller, rails-authentication, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-active-job, rails-i18n, rails-test-engineering, rails-test-engineering, ruby-clean-code, and ruby-tdd-refactoring.
+
+## Routine controller action changes
+
+_Merged from the retired `rails-action-controller` skill._
+
+### Repository inspection
+
+Read:
+
+- route declaration
+- action and neighboring actions
+- authentication/authorization patterns
+- service/domain/model collaborators
+- serializer/view
+- request tests
+- error response conventions
+
+### Responsibilities
+
+A controller generally:
+
+1. receives request
+2. establishes requester context
+3. authorizes according to project convention
+4. filters/normalizes boundary input
+5. invokes application/domain behavior
+6. maps result to HTTP response
+
+Keep substantial business logic outside the action when it does not naturally belong at the HTTP boundary.
+
+### Parameters
+
+Treat incoming values as untrusted.
+
+Use the repository's established strong-parameter or request validation approach.
+
+Do not duplicate every model rule in the controller.
+
+### Response contract
+
+Verify:
+
+- status
+- headers where relevant
+- render/template/serializer
+- redirect destination
+- response format
+- error shape
+
+A controller refactor must not silently change an API response.
+
+### Error handling
+
+Follow repository conventions for expected domain failures versus unexpected exceptions.
+
+Do not use broad rescue clauses to hide programming errors.
+
+### Action complexity
+
+When an action becomes a workflow involving several concepts, consider a service/application object, but do not extract trivial code merely to shorten the controller.
+
+### Security boundary
+
+Do not assume hidden fields or UI state are trusted. Authorization must be enforced at the server boundary.
+
+### Reference example
+
+A plain CRUD controller: strong parameters, one lookup, explicit status, nothing else.
+
+```ruby
+class ProjectsController < ApplicationController
+  def index
+    @projects = current_user.projects.order(created_at: :desc)
+  end
+
+  def create
+    @project = current_user.projects.build(project_params)
+
+    if @project.save
+      redirect_to @project, notice: t(".created")
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def project_params
+    params.require(:project).permit(:name, :description)
+  end
+end
+```
+
+### Agent review checklist
+
+- [ ] route/action relationship checked
+- [ ] authentication/authorization behavior preserved
+- [ ] params boundary explicit
+- [ ] business logic owned elsewhere when appropriate
+- [ ] response contract preserved
+- [ ] expected and unexpected failures distinguished
+
+### Verification
+
+Use request/controller tests that exercise the actual HTTP contract: successful request, invalid input, unauthorized/forbidden behavior, not-found behavior where relevant, and expected response format.
+
+### Book integration: controller filters
+
+Controller callbacks such as before_action are useful for repeatable request prerequisites such as authentication and loading a resource. Keep the callback small and explicit.
+
+Do not move arbitrary business workflows into callbacks. If the operation coordinates several domain steps, keep the callback as a boundary check and delegate the workflow elsewhere.
+
+Always verify which actions are affected by a callback; an authentication filter intended for private actions must not accidentally protect public endpoints.
 
 ## Rails Action Controller changes
 

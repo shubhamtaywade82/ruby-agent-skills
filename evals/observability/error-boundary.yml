@@ -6,7 +6,7 @@ source: rails-observability-v1
 skills:
   - rails-observability
   - rails-incident-engineering
-  - rails-controllers
+  - rails-action-controller
 patterns:
   - request-error-boundary
 prompt: |

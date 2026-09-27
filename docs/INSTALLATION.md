@@ -87,3 +87,20 @@ A successful installation prints the source repository, requested ref, resolved 
 ## Operational rule
 
 Treat installed skills as code. Review the source/ref before installation, pin a trusted ref for reproducibility, and verify the resulting installation before enabling it in a controlled agent benchmark.
+
+## Retired skills
+
+When skills are merged, the old name is recorded under `retired_skills` in `skill-manifest.yml` with the skill that absorbed it. Re-running the installer over an existing installation removes the retired directory and prints the replacement, for example:
+
+    Removed retired skill rails-testing (merged into rails-test-engineering).
+
+Update any project instructions that name a retired skill to use its replacement.
+
+| Retired | Use instead |
+|---|---|
+| `rails-activerecord` | `rails-active-record` |
+| `rails-controllers` | `rails-action-controller` |
+| `rails-views` | `rails-action-view` |
+| `rails-testing` | `rails-test-engineering` |
+| `rails-best-practices` | `rails-architecture` |
+| `rails-deployment` | `rails-release-engineering` |

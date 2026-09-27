@@ -56,4 +56,4 @@ Assert accepted keys, rejected keys, nested structure behavior, and the failure 
 
 ## Related skills
 
-rails-action-controller, rails-security, rails-validations, rails-activerecord
+rails-action-controller, rails-security, rails-validations, rails-active-record

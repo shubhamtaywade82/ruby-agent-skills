@@ -74,10 +74,10 @@ At minimum, cover the meaningful success path plus invalid/unauthorized/error pa
 ## Related skills
 
 - rails-routing
-- rails-controllers
+- rails-action-controller
 - rails-authentication
-- rails-activerecord
-- rails-testing
+- rails-active-record
+- rails-test-engineering
 - rails-architecture
 
 ## Book integration: request-test boundary

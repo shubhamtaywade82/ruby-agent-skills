@@ -48,4 +48,4 @@ Strict Validation Failure Contract needs an explicit contract so validation does
 - rails-validations
 - rails-active-record
 - rails-database-engineering
-- rails-testing
+- rails-test-engineering

@@ -113,7 +113,7 @@ A minimal task-routing decision that mirrors the workflow contract: classify, in
 ```ruby
 # Sketch of the routing decision an agent makes before editing files.
 CANDIDATES = {
-  "add password reset to a Rails controller" => %w[rails-authentication rails-security rails-testing],
+  "add password reset to a Rails controller" => %w[rails-authentication rails-security rails-test-engineering],
   "extract a service object from a controller" => %w[ruby-service-objects ruby-poro ruby-clean-code],
   "fix a flaky system test" => %w[rails-test-engineering ruby-tdd-refactoring]
 }

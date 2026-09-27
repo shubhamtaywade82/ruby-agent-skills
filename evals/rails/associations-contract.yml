@@ -13,7 +13,6 @@ skills:
   - rails-active-storage
   - rails-performance
   - rails-test-engineering
-  - rails-testing
 patterns:
   - association-cardinality-contract
   - association-inverse-contract

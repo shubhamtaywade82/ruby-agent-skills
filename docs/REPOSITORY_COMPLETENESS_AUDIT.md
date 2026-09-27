@@ -36,7 +36,7 @@ Iteration 46 routes these version-sensitive concerns to existing owners rather t
 | config/ci.rb / bin/ci Local CI | rails-test-engineering |
 | Solid Cache | rails-caching |
 | Solid Cable | rails-action-cable |
-| Kamal 2 / registry-free deployment / Thruster | rails-deployment |
+| Kamal 2 / registry-free deployment / Thruster | rails-release-engineering |  
 | rails credentials:fetch | rails-encryption-credentials-engineering |
 | Rails authentication system generator | rails-authentication |
 

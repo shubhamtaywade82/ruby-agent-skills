@@ -34,4 +34,4 @@ Run deterministic build/precompile checks and targeted system tests.
 [ ] failure output is actionable
 
 ## Related skills
-rails-asset-build-engineering, rails-test-engineering, rails-deployment
+rails-asset-build-engineering, rails-test-engineering, rails-release-engineering

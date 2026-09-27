@@ -59,7 +59,7 @@ Test representative old/new payloads in both deployment directions that can coex
 - rails-event-driven-messaging
 - rails-distributed-systems
 - rails-api-integration
-- rails-testing
+- rails-test-engineering
 
 ## Related patterns
 

@@ -12,7 +12,7 @@ skills:
   - rails-test-engineering
   - rails-caching
   - rails-action-cable
-  - rails-deployment
+  - rails-release-engineering
   - rails-encryption-credentials-engineering
 patterns: []
 prompt: |

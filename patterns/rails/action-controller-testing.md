@@ -66,4 +66,4 @@ Cover as applicable:
 
 ## Related skills
 
-rails-action-controller, rails-test-engineering, rails-testing, ruby-tdd-refactoring
+rails-action-controller, rails-test-engineering, ruby-tdd-refactoring

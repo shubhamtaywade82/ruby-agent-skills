@@ -36,4 +36,4 @@ Use a parity report or targeted integration checks to assert material configurat
 - [ ] runtime parity; - [ ] dependency parity; - [ ] data/DB behavior; - [ ] provider parity; - [ ] resource parity; - [ ] deliberate exceptions.
 
 ## Related skills
-rails-release-engineering, rails-deployment, rails-production-runtime, rails-api-integration
+rails-release-engineering, rails-production-runtime, rails-api-integration

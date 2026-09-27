@@ -54,4 +54,4 @@ Verify mounted requests, helper/proxy behavior, route precedence, and failure be
 
 ## Related skills
 
-rails-routing, rails-security, rails-testing
+rails-routing, rails-security, rails-test-engineering

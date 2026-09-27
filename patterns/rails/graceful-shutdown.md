@@ -42,7 +42,7 @@ Inspect runtime/version, repository conventions, the owning boundary, neighborin
 
 ## Related skills
 
-- rails-testing
+- rails-test-engineering
 - ruby-tdd-refactoring
 - rails-architecture
 ## Do not use when

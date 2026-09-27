@@ -34,4 +34,4 @@ Run a clean production-like CSS build and verify the resulting asset is consumed
 [ ] clean build passes
 
 ## Related skills
-rails-asset-build-engineering, rails-action-view, rails-deployment
+rails-asset-build-engineering, rails-action-view, rails-release-engineering

@@ -5,7 +5,6 @@ category: rails
 source: rails-test-engineering-v1
 skills:
   - rails-test-engineering
-  - rails-testing
 patterns:
   - test-boundary-selection
 prompt: |

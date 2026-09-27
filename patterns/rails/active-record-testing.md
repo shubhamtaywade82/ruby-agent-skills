@@ -63,4 +63,4 @@ Cover as applicable:
 
 ## Related skills
 
-rails-active-record, rails-test-engineering, rails-testing, ruby-tdd-refactoring
+rails-active-record, rails-test-engineering, ruby-tdd-refactoring

@@ -56,5 +56,5 @@ Test required locals, defaults, rendering output, and important caller variants.
 ## Related skills
 
 - skills/rails-action-view/SKILL.md
-- skills/rails-views/SKILL.md
+- skills/rails-action-view/SKILL.md
 - skills/ruby-clean-code/SKILL.md

@@ -57,6 +57,6 @@ Test output independently and verify expensive or domain behavior is executed at
 ## Related skills
 
 - skills/rails-action-view/SKILL.md
-- skills/rails-views/SKILL.md
+- skills/rails-action-view/SKILL.md
 - skills/ruby-service-objects/SKILL.md
 - skills/ruby-domain-modeling/SKILL.md

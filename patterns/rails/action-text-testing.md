@@ -59,4 +59,4 @@ Prefer semantic assertions, security negatives, attachment references, rendering
 
 ## Related skills
 
-rails-action-text, rails-test-engineering, rails-testing, rails-active-storage, rails-security
+rails-action-text, rails-test-engineering, rails-active-storage, rails-security

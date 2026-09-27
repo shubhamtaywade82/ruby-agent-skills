@@ -55,4 +55,4 @@ Test persisted behavior at the model boundary and orchestrated workflows at thei
 
 ## Related skills
 
-rails-active-record, ruby-domain-modeling, ruby-service-objects, rails-security, rails-testing
+rails-active-record, ruby-domain-modeling, ruby-service-objects, rails-security, rails-test-engineering

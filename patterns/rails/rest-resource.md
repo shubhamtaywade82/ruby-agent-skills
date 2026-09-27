@@ -63,7 +63,7 @@ Cover each supported verb/action, invalid input, authorization, not-found behavi
 ## Related skills
 
 - rails-routing
-- rails-controllers
+- rails-action-controller
 - rails-authentication
 - rails-architecture
-- rails-testing
+- rails-test-engineering

@@ -63,4 +63,4 @@ Test normal completion, worker failure, shutdown, queue draining, and resource b
 - ruby-dependency-injection
 - ruby-debugging
 - ruby-tdd-refactoring
-- rails-deployment
+- rails-release-engineering

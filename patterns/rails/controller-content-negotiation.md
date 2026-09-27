@@ -54,4 +54,4 @@ Test format selection, content type, status, body schema, and unsupported format
 
 ## Related skills
 
-rails-action-controller, rails-api-integration, rails-i18n, rails-testing
+rails-action-controller, rails-api-integration, rails-i18n, rails-test-engineering

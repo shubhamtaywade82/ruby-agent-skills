@@ -384,7 +384,7 @@ Never claim provider interoperability merely because a fake transport test passe
 - Rails API-only applications: https://guides.rubyonrails.org/api_app.html
 - Rails Testing Applications: https://guides.rubyonrails.org/testing.html
 - Ruby documentation: https://ruby-doc.org/
-- Repository foundations: rails-routing, rails-controllers, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection
+- Repository foundations: rails-routing, rails-action-controller, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection
 
 ## Rails API and integration changes
 

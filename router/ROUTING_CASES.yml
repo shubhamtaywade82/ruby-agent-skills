@@ -117,7 +117,7 @@ cases:
     primary_skills:
       - rails-routing
     secondary_skills:
-      - rails-controllers
+      - rails-action-controller
       - rails-test-engineering
     boundary: routing-vs-controller
 

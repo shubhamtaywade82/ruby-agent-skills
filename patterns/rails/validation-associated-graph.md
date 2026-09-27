@@ -50,4 +50,4 @@ Associated Validation Graph Contract needs an explicit contract so validation do
 - rails-validations
 - rails-active-record
 - rails-database-engineering
-- rails-testing
+- rails-test-engineering

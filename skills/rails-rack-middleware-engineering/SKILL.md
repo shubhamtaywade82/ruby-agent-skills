@@ -285,7 +285,7 @@ Before reporting completion:
 - rails-performance
 - rails-routing
 - rails-action-controller
-- rails-testing
+- rails-test-engineering
 - ruby-concurrency
 - ruby-runtime-compatibility
 

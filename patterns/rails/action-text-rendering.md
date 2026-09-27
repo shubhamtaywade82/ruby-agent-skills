@@ -54,4 +54,4 @@ Assert safe HTML structure, attachment rendering, missing fallback, and plain-te
 
 ## Related skills
 
-rails-action-text, rails-views, rails-security
+rails-action-text, rails-action-view, rails-security

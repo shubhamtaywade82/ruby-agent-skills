@@ -58,4 +58,4 @@ Test accepted shape, rejected shape, nested input, and security-sensitive reques
 
 ## Related skills
 
-rails-action-controller, rails-controllers, rails-authentication, rails-security, rails-testing
+rails-action-controller, rails-authentication, rails-security, rails-test-engineering

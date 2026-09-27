@@ -43,7 +43,7 @@ define rich-text ownership
 - testing rich-text content, attachments, or sanitization;
 - upgrading Trix/Action Text behavior.
 
-Do not activate merely because a model contains a plain text column. Use `rails-views`, `rails-activerecord`, or `rails-i18n` unless the Action Text boundary exists.
+Do not activate merely because a model contains a plain text column. Use `rails-action-view`, `rails-active-record`, or `rails-i18n` unless the Action Text boundary exists.
 
 ## Repository inspection
 
@@ -355,7 +355,7 @@ Inspect:
 
 Do not permit arbitrary RichText IDs or attachment IDs merely to simplify form submission.
 
-Use `rails-controllers` and `rails-validations` for request/input contracts.
+Use `rails-action-controller` and `rails-validations` for request/input contracts.
 
 ## Persistence and lifecycle
 
@@ -398,7 +398,7 @@ Do not preload every rich-text and every embed on every query merely because one
 
 For large content or high-fanout pages inspect rendering size, attachment transformations, cache behavior, and memory.
 
-Compose with `rails-performance`, `rails-activerecord`, and `ruby-performance`.
+Compose with `rails-performance`, `rails-active-record`, and `ruby-performance`.
 
 ## Caching rendered rich text
 
@@ -632,8 +632,8 @@ The Rails guide documents Trix, RichText persistence, sanitized HTML rendering, 
 
 Composed repository skills:
 
-- `skills/rails-activerecord/SKILL.md`
-- `skills/rails-views/SKILL.md`
+- `skills/rails-active-record/SKILL.md`
+- `skills/rails-action-view/SKILL.md`
 - `skills/rails-validations/SKILL.md`
 - `skills/rails-active-storage/SKILL.md`
 - `skills/rails-security/SKILL.md`
@@ -645,7 +645,7 @@ Composed repository skills:
 - `skills/rails-api-integration/SKILL.md`
 - `skills/rails-active-job/SKILL.md`
 - `skills/rails-test-engineering/SKILL.md`
-- `skills/rails-testing/SKILL.md`
+- `skills/rails-test-engineering/SKILL.md`
 
 ## Rails Action Text changes
 

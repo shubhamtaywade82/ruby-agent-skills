@@ -60,7 +60,7 @@ Test sequential duplicates, concurrent duplicates, crash/retry around the side e
 - rails-distributed-systems
 - rails-database-engineering
 - rails-active-job
-- rails-testing
+- rails-test-engineering
 
 ## Related patterns
 

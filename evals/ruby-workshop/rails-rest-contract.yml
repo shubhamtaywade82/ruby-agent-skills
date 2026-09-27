@@ -7,9 +7,9 @@ skills:
   - rails-api-integration
   - rails-architecture
   - rails-routing
-  - rails-controllers
+  - rails-action-controller
   - rails-authentication
-  - rails-testing
+  - rails-test-engineering
 patterns:
   - rest-resource
   - request-flow

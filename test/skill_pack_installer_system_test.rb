@@ -16,7 +16,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     abort "git failed: #{err}" unless status.success?
   end
 
-  def build_source(skill_name: "demo-skill")
+  def build_source(skill_name: "demo-skill", retired: {})
     dir = Dir.mktmpdir("ruby-agent-skills-source")
     FileUtils.mkdir_p(File.join(dir, "skills", skill_name))
     FileUtils.mkdir_p(File.join(dir, "patterns", "ruby"))
@@ -36,6 +36,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
       <<~YAML,
         version: 2
         name: test-pack
+        #{retired.empty? ? "" : "retired_skills:\n" + retired.map { |old, new_name| "  #{old}: #{new_name}" }.join("\n")}
         patterns:
           testing:
             paths: []
@@ -176,6 +177,20 @@ class SkillPackInstallerSystemTest < Minitest::Test
     target = File.join(project, ".agents", "skills")
     refute Dir.exist?(File.join(target, "old-skill"))
     assert Dir.exist?(File.join(target, "new-skill"))
+  end
+
+  def test_installer_reports_retired_skill_replacement
+    old_source = build_source(skill_name: "old-skill")
+    new_source = build_source(skill_name: "new-skill", retired: { "old-skill" => "new-skill" })
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+
+    out, err, status = install(old_source, project)
+    assert status.success?, "#{out}\n#{err}"
+    out, err, status = install(new_source, project)
+    assert status.success?, "#{out}\n#{err}"
+
+    refute Dir.exist?(File.join(project, ".agents", "skills", "old-skill"))
+    assert_includes out, "Removed retired skill old-skill (merged into new-skill)."
   end
 
   def test_validator_executes_this_system_test

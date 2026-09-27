@@ -57,5 +57,5 @@ Test layout selection and important content-slot behavior for representative req
 ## Related skills
 
 - skills/rails-action-view/SKILL.md
-- skills/rails-controllers/SKILL.md
+- skills/rails-action-controller/SKILL.md
 - skills/rails-security-engineering/SKILL.md

@@ -659,7 +659,7 @@ Composed repository skills:
 - `skills/rails-release-engineering/SKILL.md`
 - `skills/rails-observability/SKILL.md`
 - `skills/rails-test-engineering/SKILL.md`
-- `skills/rails-testing/SKILL.md`
+- `skills/rails-test-engineering/SKILL.md`
 
 ## Rails Action Cable changes
 

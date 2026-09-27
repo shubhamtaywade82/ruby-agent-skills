@@ -54,4 +54,4 @@ Use assert_generates, assert_recognizes, or assert_routing as appropriate, then 
 
 ## Related skills
 
-rails-routing, rails-action-controller, rails-test-engineering, rails-testing
+rails-routing, rails-action-controller, rails-test-engineering

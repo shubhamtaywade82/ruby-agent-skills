@@ -75,7 +75,7 @@ Test representative data, empty results, boundary conditions, joins, ordering, a
 
 ## Related skills
 
-- rails-activerecord
+- rails-active-record
 - rails-associations
-- rails-testing
+- rails-test-engineering
 - ruby-clean-code

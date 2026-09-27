@@ -1,6 +1,6 @@
 ---
 name: rails-architecture
-description: Use when implementing or reviewing Rails application structure, MVC boundaries, resource flows, REST behavior, or cross-layer feature changes.
+description: Use when implementing or reviewing Rails application structure, MVC boundaries, resource flows, REST behavior, or cross-layer feature changes. Also covers maintainability review of REST design, MVC responsibilities, indexing, callbacks, and migrations.
 ---
 
 # Rails Architecture
@@ -19,7 +19,7 @@ Map a Rails feature to the repository's existing request, domain, persistence, p
 
 ## Boundary with focused Rails skills
 
-Use this skill for cross-layer ownership and request-flow decisions. Delegate detailed route decisions to `rails-routing`, controller boundary decisions to `rails-controllers`, persistence decisions to `rails-activerecord`, and HTTP contract testing to `rails-testing`. Do not duplicate detailed guidance from those skills.
+Use this skill for cross-layer ownership and request-flow decisions. Delegate detailed route decisions to `rails-routing`, controller boundary decisions to `rails-action-controller`, persistence decisions to `rails-active-record`, and HTTP contract testing to `rails-test-engineering`. Do not duplicate detailed guidance from those skills.
 
 ## Repository inspection
 
@@ -141,3 +141,113 @@ route -> authentication -> authorization -> params -> application/domain operati
 REST resources should use conventional resource routes when the semantics fit. Custom actions are justified by actual domain operations, not by controller convenience.
 
 The traditional thin-controller/richer-domain guidance is useful, but do not turn Active Record models into universal workflow containers. Existing repository boundaries still decide where behavior belongs.
+
+## Rails code-quality review
+
+_Merged from the retired `rails-architecture` skill._
+
+### Repository inspection
+
+Inspect:
+- Rails/Ruby versions
+- config/routes.rb
+- controllers, models, views/helpers
+- migrations/schema
+- associations/scopes
+- tests
+- services/jobs where relevant
+- config/rails_best_practices.yml if used
+- repository conventions
+
+Do not apply a check mechanically without understanding the application's contract.
+
+### Review domains
+
+### Model and persistence
+Review missing database indexes, risky default_scope, misplaced finder/query logic, duplicated relationship traversal, query attributes, duplicated model logic, unnecessary model methods, and input-protection concerns appropriate to the Rails version.
+
+### RESTful routes
+Review excessive custom actions, needless deep nesting, default/catch-all routes, and unrestricted auto-generated routes. Prefer conventional resources when they accurately represent the operation.
+
+### Controllers
+Review business logic leakage, repetitive setup, render complexity, and unused actions. Do not move business logic merely to satisfy a metric.
+
+### Views and helpers
+Review business/data-access logic in templates, presentation logic that belongs in helpers/presenters, unnecessary instance-variable exposure, complex rendering, and empty/unused helpers.
+
+### Migrations and seed data
+Review indexes, seed/application data separation, migration safety, and production impact. Historical rules must be adapted to the current Rails/database environment.
+
+### Error handling
+Do not rescue Exception broadly. Catch the narrowest recoverable exception at the appropriate boundary.
+
+### Mailers
+Review multipart representation when the application's mail contract requires multiple content alternatives.
+
+### Dead code
+Treat unused methods as review signals. Search callers, reflection, routes, callbacks, jobs, and external consumers before removal.
+
+### Pattern-selection guidance
+
+Treat analyzer findings as signals:
+detect -> inspect context -> identify risk -> choose smallest justified fix -> test -> verify
+
+Do not turn historical rules into absolute laws. In particular, do not interpret 'move to model' as permission for fat models, 'use before filter' as permission for business workflows in callbacks, or 'use association/scope/factory' as a mandate to introduce those abstractions everywhere.
+
+### Modern Rails compatibility
+
+Some original checks reflect older Rails conventions such as before_filter, legacy mass-assignment APIs, and Turbo Sprockets-era asset behavior. Translate the underlying intent to the application's actual Rails version. Never introduce deprecated APIs to satisfy a historical rule.
+
+### Reference example
+
+The controller/contributor split the linter generation expects: assignment and response in the controller, the workflow in a callable object.
+
+```ruby
+class OrdersController < ApplicationController
+  def create
+    result = PlaceOrder.call(user: current_user, cart: current_cart)
+
+    if result.success?
+      redirect_to result.value, notice: t(".created")
+    else
+      flash.now[:alert] = result.error
+      render :checkout, status: :unprocessable_entity
+    end
+  end
+end
+
+class PlaceOrder
+  def self.call(user:, cart:) = new(user: user, cart: cart).call
+
+  def initialize(user:, cart:)
+    @user = user
+    @cart = cart
+  end
+
+  def call
+    order = @user.orders.create!(line_items_attributes: @cart.line_item_attributes)
+    Result.success(order)
+  rescue ActiveRecord::RecordInvalid => e
+    Result.failure(e.record.errors.full_messages.to_sentence)
+  end
+end
+```
+
+### Agent review checklist
+
+- [ ] Rails/Ruby version resolved
+- [ ] relevant checks considered
+- [ ] findings interpreted in repository context
+- [ ] indexes/constraints considered
+- [ ] REST route surface reviewed
+- [ ] controller/model/view/helper ownership checked
+- [ ] callbacks justified
+- [ ] migrations reviewed for production safety
+- [ ] exception handling is narrow
+- [ ] unused-code claims verified
+- [ ] historical rules translated to modern Rails
+- [ ] no pattern introduced solely to satisfy a metric
+
+### Verification
+
+Run the repository's configured RailsBestPractices command when installed and compatible. Also run focused tests and relevant CI checks. Treat analyzer output as review input: resolve, suppress with documented justification, or intentionally accept findings according to repository policy. Never claim a clean run unless it was actually executed.

@@ -51,4 +51,4 @@ Validation Testing Contract needs an explicit contract so validation does not dr
 - rails-validations
 - rails-active-record
 - rails-database-engineering
-- rails-testing
+- rails-test-engineering

@@ -33,4 +33,4 @@ Test direct clients, trusted proxy requests, malformed headers, and multi-hop be
 [ ] security consumer verified
 
 ## Related skills
-rails-rack-middleware-engineering, rails-security-engineering, rails-deployment
+rails-rack-middleware-engineering, rails-security-engineering, rails-release-engineering

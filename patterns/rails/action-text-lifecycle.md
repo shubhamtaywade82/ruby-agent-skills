@@ -55,4 +55,4 @@ Test owner creation/update/delete and embedded-attachment lifecycle/failure path
 
 ## Related skills
 
-rails-action-text, rails-activerecord, rails-active-storage, rails-active-job
+rails-action-text, rails-active-record, rails-active-storage, rails-active-job

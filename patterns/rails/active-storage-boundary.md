@@ -58,4 +58,4 @@ Test attach, replace/add, access, remove, purge, and authorization behavior.
 
 ## Related skills
 
-rails-active-storage, rails-security, rails-database-engineering, rails-testing
+rails-active-storage, rails-security, rails-database-engineering, rails-test-engineering
