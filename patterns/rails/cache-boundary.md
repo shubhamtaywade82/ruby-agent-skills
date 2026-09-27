@@ -30,6 +30,21 @@ Do not use when a measured query, index, algorithm, or representation fix addres
 8. Add cache hit/miss/invalidation tests.
 9. Measure after introducing the cache.
 
+## Example
+
+```ruby
+class Product < ApplicationRecord
+  # Cached value: the public price list for one product; freshness comes from
+  # the record version in the key, so an update is visible immediately.
+  def public_price_breakdown
+    Rails.cache.fetch([self, "price_breakdown", "v2"], expires_in: 12.hours) do
+      PriceCalculator.new(self).breakdown # ~200 ms, same for every viewer
+    end
+  end
+end
+# Not cached: anything that depends on the viewer (discounts, permissions).
+```
+
 ## Failure modes
 
 - stale authorization-sensitive data

@@ -20,6 +20,27 @@ Inspect startup dependencies, timeouts, readiness, restart behavior, and failure
 ## Implementation procedure
 Prefer lazy access; otherwise bound timeouts and define required/optional failure semantics.
 
+## Example
+
+```ruby
+# config/initializers/feature_flags.rb
+# Do not call the flag service while booting; build the client lazily with
+# timeouts, so a slow or failing service cannot block deploys or restarts.
+Rails.application.config.to_prepare do
+  FeatureFlags.client = -> { FeatureFlags::Client.new(url: ENV.fetch("FLAGS_URL"), timeout: 1) }
+end
+
+module FeatureFlags
+  mattr_accessor :client
+
+  def self.enabled?(flag)
+    Rails.cache.fetch(["flag", flag], expires_in: 30.seconds) { client.call.enabled?(flag) }
+  rescue FeatureFlags::Client::Error
+    false # documented fallback when the service is unavailable
+  end
+end
+```
+
 ## Failure modes
 Restart storms, indefinite waits, false readiness.
 

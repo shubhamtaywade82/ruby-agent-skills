@@ -36,6 +36,23 @@ Inspect hot-key evidence, cache cardinality, source query/API cost, job queues, 
 6. Align warming with expiration/invalidation.
 7. Measure hit-rate and source-load impact.
 
+## Example
+
+```ruby
+# Warm only the known-hot keys, in the background, at a bounded rate — not
+# every key during deploy.
+class WarmTopProductsJob < ApplicationJob
+  queue_as :low
+
+  def perform(limit: 200)
+    Product.order(views_last_day: :desc).limit(limit).find_each do |product|
+      product.public_price_breakdown
+      sleep(0.02)
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - warming unbounded keys;

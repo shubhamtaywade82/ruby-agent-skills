@@ -14,6 +14,30 @@ State, ownership, tenant membership, time, delegation, or other explicit context
 ## Structure
 Make relevant context explicit and deterministic.
 
+## Example
+
+```ruby
+# The decision depends on explicit context: time of day, the request's
+# network zone, and the record's state — all passed in, nothing ambient.
+class PayrollPolicy
+  def initialize(user, run, now:, network:)
+    @user = user
+    @run = run
+    @now = now
+    @network = network
+  end
+
+  def approve?
+    @user.payroll_approver? &&
+      @run.status == "pending_approval" &&
+      @network == :corporate &&
+      @now.on_weekday?
+  end
+end
+
+PayrollPolicy.new(current_user, run, now: Time.current, network: request_network_zone).approve?
+```
+
 ## Implementation procedure
 Identify authoritative context, pass it to the decision boundary, and test combinations that change the outcome.
 

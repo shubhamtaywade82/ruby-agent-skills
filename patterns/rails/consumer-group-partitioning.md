@@ -33,6 +33,19 @@ Inspect transport partition/shard semantics, ordering guarantees, key distributi
 7. Test conflicting same-key messages and independent-key concurrency.
 8. Monitor lag and skew.
 
+## Example
+
+```ruby
+# Messages for one account share a partition key, so they are processed in
+# order by one consumer; different accounts proceed in parallel.
+class AccountEventPublisher
+  def publish(event)
+    Kafka.producer.produce(event.to_json, topic: "account-events", partition_key: event.fetch(:account_id).to_s)
+  end
+end
+# Consumers in the group <= partitions; more consumers than partitions sit idle.
+```
+
 ## Failure modes
 
 - global ordering bottleneck

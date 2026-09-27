@@ -20,6 +20,26 @@ Inspect caller/callee relationships, capability shape, expiry, audience, and ser
 ## Implementation procedure
 Pass a narrow, non-forgeable or explicitly scoped capability object/context with clear lifetime and audience.
 
+## Example
+
+```ruby
+# Instead of ambient Current.user in a job, pass a narrow, signed capability
+# that states exactly what may be done, by whom, until when.
+capability = Rails.application.message_verifier(:export).generate(
+  { "actor_id" => current_user.id, "report_id" => report.id, "action" => "export" },
+  purpose: :report_export, expires_in: 15.minutes
+)
+ExportReportJob.perform_later(capability)
+
+class ExportReportJob < ApplicationJob
+  def perform(capability)
+    grant = Rails.application.message_verifier(:export).verify(capability, purpose: :report_export)
+    actor = User.find(grant.fetch("actor_id"))
+    Reports::Export.call(actor: actor, report: actor.account.reports.find(grant.fetch("report_id")))
+  end
+end
+```
+
 ## Failure modes
 Overbroad bearer capability, serialized credentials, confused audience, indefinite lifetime.
 

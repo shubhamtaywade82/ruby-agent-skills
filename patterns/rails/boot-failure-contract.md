@@ -20,6 +20,19 @@ Inspect required/optional settings, health checks, and error reporting.
 ## Implementation procedure
 Fail fast for required invariants with actionable, secret-free diagnostics.
 
+## Example
+
+```ruby
+# config/initializers/required_configuration.rb
+# Fail fast with the names that are missing, never their values.
+REQUIRED_ENV = %w[DATABASE_URL REDIS_URL RAILS_MASTER_KEY APP_HOST].freeze
+
+if Rails.env.production?
+  missing = REQUIRED_ENV.reject { |name| ENV[name].present? }
+  raise "Missing required configuration: #{missing.join(", ")}" if missing.any?
+end
+```
+
 ## Failure modes
 Swallowed errors, false health, secret leakage, retry loops.
 

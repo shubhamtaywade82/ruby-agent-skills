@@ -33,6 +33,16 @@ Inspect cache store, cache key/versioning, expiration policy, request/job concur
 7. Add hit/miss/concurrency tests.
 8. Re-measure contention and latency.
 
+## Example
+
+```ruby
+# race_condition_ttl lets one process recompute an expired entry while others
+# briefly keep serving the old value instead of all recomputing at once.
+Rails.cache.fetch("homepage/trending", expires_in: 5.minutes, race_condition_ttl: 10.seconds) do
+  Trending.compute # ~2 s database aggregation
+end
+```
+
 ## Failure modes
 
 - distributed lock added without measured contention

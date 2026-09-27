@@ -33,6 +33,21 @@ Inspect arrival rate, burst rate, message size, retention, partitions/shards, co
 7. Monitor oldest-message age, not only depth.
 8. Define scaling and degradation triggers.
 
+## Example
+
+```ruby
+# Capacity check from measured numbers: sustained arrival rate must stay
+# below what the consumers can process, or lag grows without bound.
+arrival_per_second = 1_200.0   # p95 publish rate from the broker metrics
+handler_seconds = 0.020        # p95 handler time per message
+consumers = 16                 # partitions actually assigned
+
+capacity_per_second = consumers / handler_seconds # => 800.0
+headroom = capacity_per_second / arrival_per_second
+puts format("capacity %.0f/s for %.0f/s arriving (%.2fx)", capacity_per_second, arrival_per_second, headroom)
+# 0.67x: add partitions and consumers, or make the handler cheaper, before the next peak.
+```
+
 ## Failure modes
 
 - scaling consumers past database/API capacity
