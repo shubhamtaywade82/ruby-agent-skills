@@ -706,7 +706,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **91 skills**, **431 implementation patterns**, **442 evaluation cases**, and **80 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **91 skills**, **431 implementation patterns**, **442 evaluation cases**, and **81 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
@@ -859,7 +859,7 @@ When adding a new skill or deepening an existing one:
 
 **Iteration 101 — Verified Routing History**
 
-The repository-side implementation line is complete through Iteration 79. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. The repository-side integration line is complete through Iteration 101. Remaining work is empirical execution with a reachable external model runtime: capture real campaign evidence, analyze observed routing behavior, run evidence-based remediation experiments, execute the external hidden benchmark, and publish verified release evidence.
+The repository-side implementation line is complete through Iteration 101. The current implementation includes checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, synchronized release documentation, and richer routing-campaign analysis. The repository-side integration line is complete through Iteration 101. Remaining work is empirical execution with a reachable external model runtime: capture real campaign evidence, analyze observed routing behavior, run evidence-based remediation experiments, execute the external hidden benchmark, and publish verified release evidence.
 
 
 ## Iteration 83 — Matrix Resume Integrity
