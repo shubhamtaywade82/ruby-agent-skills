@@ -29,6 +29,7 @@ class ReactAgentSkillsDeprecationTest < Minitest::Test
 
   def test_migration_document_exists_and_matches_the_mapping
     path = File.join(ROOT, "docs", "REACT_AGENT_SKILLS_MIGRATION.md")
+
     assert File.file?(path), "migration document must exist"
 
     document = File.read(path)
