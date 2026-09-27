@@ -74,7 +74,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       FileUtils.mkdir_p(File.join(malicious_root, "nested"))
       File.symlink("/tmp", File.join(malicious_root, "nested", "escape"))
       archive = File.join(dir, "malicious.tar.gz")
-      system("tar", "-czhf", archive, "-C", dir, "ruby-agent-skills-#{VERSION}")
+      system("tar", "-czf", archive, "-C", dir, "ruby-agent-skills-#{VERSION}")
       _out, err, status = verify(archive)
       refute status.success?
       assert_includes err, "unsafe archive entry"
