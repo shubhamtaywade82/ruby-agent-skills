@@ -7,6 +7,62 @@
 - Point the 33 system tests that pinned those rules at the owning skill instead of `AGENTS.md`.
 - The documentation consistency audit enforces a 150-line budget for `AGENTS.md` and rejects domain change sections there.
 
+## Iteration 126 — Ruby-Workshop Verifier Fixes, References, and Full Positive-Control Coverage
+
+- `verify_workshop_eval.rb` crashed instead of failing on unimplemented skeletons (`NotImplementedError` is a `ScriptError`, outside its `rescue StandardError`), and `rails-rest-contract` reported a missing strong-parameter boundary as the status string `strong_parameter_contract_missing`, which never counted as a failure. Both fixed.
+- The `service-object` scaffold's `ApplicationService.call(*args)` could not forward keyword arguments under Ruby 3, so `Post::Creator.call(user, status_text:)` raised for every implementation; it now uses `call(...)`.
+- Add references with tests for all 8 workshop fixtures, including a warning-free gemspec build for `ruby-gem-boundary`; the registry lists the gemspec and routes as part of those implementation seams.
+- Every non-exempt fixture across all 13 campaigns now has a reference. `test/benchmark_fixture_controls_system_test.rb` enforces that coverage and runs each reference's own tests against it.
+- Bump the ruby-workshop campaign version.
+
+## Iteration 125 — Ruby-Training Verifier Fixes and References
+
+- `triplet-sum` could never pass: the verifier read `target` from the case instead of `input.target` (`KeyError` on every run), demanded one specific triplet although the evaluation grades "a valid target-sum triplet", and had no `auxiliary_space` heuristic, so the check was always `not_evaluated`. It now accepts any ascending sub-multiset that sums to the target and recognizes an in-place sort with two pointers and no auxiliary collections.
+- A missing class or method is now a recorded `functional` failure with evidence instead of an uncaught verifier crash, and `edge_cases` no longer passes when `functional` failed.
+- The `chocolate-feast` `exact-threshold` case (`wrappers: 1`, expected 2) was undefined under the evaluation's own rule: at one wrapper per chocolate the exchange never terminates. It is replaced by a well-defined exact-threshold case (4, 2, 2 → 3); the reference rejects thresholds below 2.
+- Add reference implementations with tests generated from each evaluation's public cases for all 9 fixtures.
+- Bump the ruby-training campaign version.
+
+## Iteration 124 — Security Verifier Fix and References
+
+- The `parameterized-query-boundary` security check flagged any `#{term` inside `where(...)`, including the parameterized form the functional check requires (`where("name ILIKE ?", "%#{term}%")`), so the correct solution failed. It now flags interpolation inside the SQL string literal, which is the injection.
+- Both security fixtures shipped their solution. Workspaces now start from SQL-string interpolation and an any-signed-in-user policy; references with owner/admin/unrelated/missing-user and hostile-term tests move to `benchmarks/security/references/`.
+- Bump the security campaign version.
+
+## Iteration 123 — Performance Benchmark References
+
+- Both performance fixtures shipped their solution and failed a no-op agent only on the "test changed" check. Workspaces now start from a chained `map … map` intermediate collection and a tenant-less cache key; references (one-pass labels with an allocation test; a versioned, integer-validated tenant/dashboard key whose components cannot be forged) move to `benchmarks/performance/references/`.
+- Bump the performance campaign version.
+
+## Iteration 122 — Concurrency Benchmark Reference
+
+- The `concurrency-counter` fixture shipped a mutex-synchronized counter and passed everything except the "test changed" check under a no-op agent. The workspace now starts from an unsynchronized read-modify-write that loses updates; the synchronized counter and its tests move to `benchmarks/concurrency/references/`.
+- Bump the concurrency campaign version.
+
+## Iteration 121 — Observability Benchmark References
+
+- Add reference implementations for the 3 observability fixtures with unsolved starting states: a narrow `InvalidOrderState` → 409 mapping that leaves other errors on the 5xx path, request-id log tags with authorization filtering, and a minimal `checkout.completed` notification. `health-semantics` remains a declared review/preserve task.
+
+## Iteration 120 — Active Job Benchmark References
+
+- Add reference implementations for all 4 Active Job fixtures: a claim-before-side-effect idempotent delivery, bounded `retry_on` for transient timeouts with `discard_on` for invalid state, `enqueue_after_transaction_commit`, and per-account `limits_concurrency`. The fixtures already started from genuine unsolved states.
+
+## Iteration 119 — Zeitwerk Verifier Repair and References
+
+- Repair `scripts/verify_zeitwerk_eval.rb`: backspace bytes in place of `\b` and stripped escapes (`/modules+Paymentss*…/`, `/ApiGateway.endpoints*=…/`) meant the namespace, reload, and eager-require checks never matched real code.
+- Both fixtures shipped the finished change. Workspaces now start from a path/constant mismatch (`PaymentProcessor` in `payments/processor.rb`) and a one-time initializer that requires and configures the reloadable class at boot; finished versions, including the tests the prompts require, move to `benchmarks/zeitwerk/references/`.
+- References may include `test/` or `spec/` files when the evaluation requires the agent to write tests; the benchmark-quality audit and fixture schema document this.
+- Bump the zeitwerk campaign version.
+
+## Iteration 118 — Test-Engineering Verifier Repair and References
+
+- Repair `scripts/verify_test_engineering_eval.rb`, which did not parse (stripped escapes, backspace bytes); every run of the campaign failed regardless of the submission.
+- Make the campaign winnable and honest. The `tests` check ran every `*_test.rb` with plain `ruby`, but these are Rails tests and the fixtures contain no Rails application, so it could never pass. It is now explicitly static: every Ruby file under `test/` must parse and at least one test must assert something; behavioural judgement stays in the evaluation-specific checks.
+- Remove the fixtures' meta-tests. They duplicated verifier logic, were agent-editable, two read files from the wrong directory, and their own source text (`"OrdersController"`/`"get :"`, `rescue.*retry`) made the verifier report a direct-controller test or a retry workaround in every submission.
+- `parallel-safety` and `test-performance` inspected `*_test.rb` bodies for problems that live in `test/test_helper.rb`, so they could never detect them; both now inspect the helper. `boundary-selection` matches per file instead of across concatenated files.
+- Workspaces now start from the problem each prompt describes (direct controller test, sleep plus direct `perform`, fixed port and shared global array, global state with a retry loop, calculation-coupled system test, eager helper glob with a deep factory); finished versions move to `benchmarks/test-engineering/references/`. Every fixture has an assertion-bearing test file.
+- Bump the test-engineering campaign version.
+
 ## Iteration 117 — Production-Runtime Verifier Repair and References
 
 - Repair `scripts/verify_production_runtime_eval.rb`, which did not parse: stripped escapes (`/putss+ENV[|ps+ENV[/`) and `\b` turned into backspace bytes. The whole campaign failed every run regardless of the submission.

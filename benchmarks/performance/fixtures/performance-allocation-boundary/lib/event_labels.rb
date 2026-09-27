@@ -2,6 +2,6 @@
 
 class EventLabels
   def self.labels(events)
-    events.map { |event| event.fetch(:label) }
+    events.map { |event| event }.map { |event| event.fetch(:label) }
   end
 end
