@@ -21,6 +21,7 @@ class RepositoryCompletenessSystemTest < Minitest::Test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
     Dir[File.join(ROOT, "test", "*_system_test.rb")].each do |path|
       relative = path.delete_prefix(ROOT + "/")
+
       assert_includes validator, relative, "bin/validate must invoke #{relative}"
     end
   end

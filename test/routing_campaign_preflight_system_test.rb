@@ -17,6 +17,7 @@ class RoutingCampaignPreflightSystemTest < Minitest::Test
         "--output", File.join(dir, "preflight.json"),
         chdir: ROOT
       )
+
       refute status.success?
       assert_includes stderr, "Ollama unavailable"
     end
@@ -26,6 +27,7 @@ class RoutingCampaignPreflightSystemTest < Minitest::Test
     runner = File.read(File.join(ROOT, "bin", "routing-campaign"), encoding: "UTF-8")
     preflight_index = runner.index("preflight_args = [")
     evaluator_index = runner.index("evaluator_args = [")
+
     refute_nil preflight_index
     refute_nil evaluator_index
     assert_operator preflight_index, :<, evaluator_index
@@ -33,6 +35,7 @@ class RoutingCampaignPreflightSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_campaign_preflight_system_test.rb"
   end
 end

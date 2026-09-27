@@ -27,6 +27,7 @@ class RailsDistributedSystemsSystemTest < Minitest::Test
     manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
 
     skill = manifest.fetch("skills").fetch("rails-distributed-systems")
+
     assert_equal "skills/rails-distributed-systems/SKILL.md", skill.fetch("path")
     assert_includes skill.fetch("triggers"), "outbox"
     assert_includes skill.fetch("triggers"), "inbox"
@@ -34,6 +35,7 @@ class RailsDistributedSystemsSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "distributed lock"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     REQUIRED_PATHS.drop(1).each do |relative|
       assert_includes rails_patterns, relative
     end

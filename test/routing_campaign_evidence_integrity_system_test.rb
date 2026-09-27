@@ -13,10 +13,10 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
 
   def test_verifier_enforces_raw_run_cardinality_and_preflight
     source = File.read(File.join(ROOT, "bin", "routing-campaign-evidence-verify"), encoding: "UTF-8")
+
     assert_includes source, 'raw_artifact_keys.length'
     assert_includes source, 'artifacts.key?("preflight")'
   end
-
 
   def test_verifier_accepts_42_hashed_raw_artifacts
     Dir.mktmpdir("campaign-evidence") do |dir|
@@ -32,6 +32,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         "--output", report_path,
         chdir: ROOT
       )
+
       assert status.success?, "#{stdout}\n#{stderr}"
       report = JSON.parse(File.read(report_path, encoding: "UTF-8"))
 
@@ -68,13 +69,13 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         "requested_repetitions" => 3,
         "requested_runs" => 42,
         "completed_runs" => 42,
-        "repository" => {"git_sha" => "abc", "worktree_clean" => true},
+        "repository" => { "git_sha" => "abc", "worktree_clean" => true },
         "agent" => campaign.fetch("agent"),
         "campaign_metrics" => campaign.fetch("metrics"),
         "analysis" => report.fetch("summary"),
         "artifacts" => artifacts,
-        "intake" => {"verified" => true},
-        "replay" => {"campaign_runner" => "bin/routing-campaign"}
+        "intake" => { "verified" => true },
+        "replay" => { "campaign_runner" => "bin/routing-campaign" }
       }
 
       evidence_path = File.join(dir, "evidence.json")
@@ -86,6 +87,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         "--check-files",
         chdir: ROOT
       )
+
       assert status.success?, "#{stdout}\n#{stderr}"
       assert_includes stdout, "42/42"
     end
@@ -93,14 +95,15 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
 
   def test_archive_invokes_campaign_evidence_verifier
     source = File.read(File.join(ROOT, "bin", "routing-archive"), encoding: "UTF-8")
+
     assert_includes source, "routing-campaign-evidence-verify"
   end
 
   def test_import_invokes_campaign_evidence_verifier
     source = File.read(File.join(ROOT, "bin", "routing-campaign-import"), encoding: "UTF-8")
+
     assert_includes source, "routing-campaign-evidence-verify"
   end
-
 
   def test_packager_rejects_tampered_analysis_report
     Dir.mktmpdir("routing-analysis-integrity") do |dir|
@@ -119,6 +122,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         "--output", report_path,
         chdir: ROOT
       )
+
       assert status.success?, "#{stdout}\n#{stderr}"
 
       report = JSON.parse(File.read(report_path, encoding: "UTF-8"))
@@ -211,7 +215,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         "expected_primary_skill" => primary,
         "runs" => runs
       }
-      confusion_matrix[primary] = {primary => repetitions}
+      confusion_matrix[primary] = { primary => repetitions }
     end
 
     {
@@ -231,7 +235,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
       "requested_runs" => cases.length * repetitions,
       "completed_runs" => cases.length * repetitions,
       "complete" => true,
-      "execution" => {"checkpointed" => true, "mode" => "fixture"},
+      "execution" => { "checkpointed" => true, "mode" => "fixture" },
       "routing_inputs" => routing_inputs,
       "metrics" => {
         "primary_accuracy" => 1.0,
@@ -271,7 +275,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
       "runtime" => {
         "provider" => "ollama",
         "url" => "http://fixture",
-        "version" => {"version" => "fixture"},
+        "version" => { "version" => "fixture" },
         "model" => {
           "name" => campaign.dig("agent", "model"),
           "digest" => campaign.dig("agent", "model_version"),
@@ -296,6 +300,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     source = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes source, "test/routing_campaign_evidence_integrity_system_test.rb"
   end
 end

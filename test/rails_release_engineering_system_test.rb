@@ -45,6 +45,7 @@ class RailsReleaseEngineeringSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "release health"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     REQUIRED_PATHS.drop(1).each { |relative| assert_includes rails_patterns, relative }
   end
 
@@ -66,6 +67,7 @@ class RailsReleaseEngineeringSystemTest < Minitest::Test
       evaluation = YAML.safe_load(
         File.read(File.join(ROOT, "evals/runtime", filename), encoding: "UTF-8")
       )
+
       assert_includes evaluation.fetch("skills"), "rails-release-engineering"
     end
   end

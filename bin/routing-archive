@@ -12,7 +12,7 @@ ROOT = File.expand_path("..", __dir__)
 VERIFYER = File.join(ROOT, "bin", "routing-evidence-verify")
 ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
 
-options = {destination: nil, label: nil}
+options = { destination: nil, label: nil }
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-archive EVIDENCE_JSON --destination DIR"
   opts.on("--destination DIR", "Archive root directory") { |value| options[:destination] = File.expand_path(value) }

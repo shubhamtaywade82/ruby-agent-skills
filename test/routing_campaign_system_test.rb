@@ -30,9 +30,9 @@ class RoutingCampaignSystemTest < Minitest::Test
             "expected_primary_skill" => "rails-authorization",
             "requested_repetitions" => 3,
             "runs" => [
-              {"status" => "completed", "expected" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}, "observed" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}},
-              {"status" => "completed", "expected" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}, "observed" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}},
-              {"status" => "completed", "expected" => {"primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"]}, "observed" => {"primary_skill" => "rails-active-record", "secondary_skills" => ["rails-test-engineering"]}}
+              { "status" => "completed", "expected" => { "primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"] }, "observed" => { "primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"] } },
+              { "status" => "completed", "expected" => { "primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"] }, "observed" => { "primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"] } },
+              { "status" => "completed", "expected" => { "primary_skill" => "rails-authorization", "secondary_skills" => ["rails-test-engineering"] }, "observed" => { "primary_skill" => "rails-active-record", "secondary_skills" => ["rails-test-engineering"] } }
             ]
           }
         }
@@ -51,6 +51,7 @@ class RoutingCampaignSystemTest < Minitest::Test
       assert status.success?, "#{stdout}\n#{stderr}"
 
       report = JSON.parse(File.read(report_path, encoding: "UTF-8"))
+
       assert_equal 1, report.fetch("summary").fetch("primary_mismatch_count")
       assert_equal 1, report.fetch("summary").fetch("confusion_pair_count")
       assert_equal 1, report.fetch("summary").fetch("unstable_case_count")
@@ -82,12 +83,14 @@ class RoutingCampaignSystemTest < Minitest::Test
 
   def test_campaign_command_enforces_intake_verification
     runner = File.read(File.join(ROOT, "bin", "routing-campaign"), encoding: "UTF-8")
+
     assert_includes runner, "routing-campaign-verify"
     assert_includes runner, "routing campaign intake verification failed"
   end
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_campaign_system_test.rb"
   end
 end

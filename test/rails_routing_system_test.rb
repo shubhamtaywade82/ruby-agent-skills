@@ -37,6 +37,7 @@ class RailsRoutingSystemTest < Minitest::Test
     end
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       route-precedence-contract
       nested-route-boundary
@@ -97,6 +98,7 @@ class RailsRoutingSystemTest < Minitest::Test
 
   def test_evaluation_activates_expected_skills_and_patterns
     evaluation = YAML.safe_load(File.read(File.join(ROOT, "evals/rails/routing-contract.yml"), encoding: "UTF-8"))
+
     assert_includes evaluation.fetch("skills"), "rails-routing"
     assert_includes evaluation.fetch("skills"), "rails-action-controller"
     assert_includes evaluation.fetch("skills"), "rails-security"

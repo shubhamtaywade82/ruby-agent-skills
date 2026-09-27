@@ -55,97 +55,98 @@ end
 
 unless checks.key?("functional")
   begin
-  case evaluation.fetch("id")
-  when "selection-sort"
-    sorter = SelectionSorter.new
-    bad = evaluation.fetch("cases").reject do |test_case|
-      values = test_case.fetch("input")
-      expected = test_case.fetch("expected")
-      sorter.sort(values.dup) == expected && sorter.recursive_sort(values.dup) == expected
-    end
-    checks["functional"] = bad.empty? ? check("pass", "both implementations matched all deterministic cases") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
-  when "recursive-selection-sort"
-    object = RecursiveSelectionSorter.new
-    bad = evaluation.fetch("cases").reject { |c| object.sort(c.fetch("input").dup) == c.fetch("expected") }
-    checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
-  when "smallest-missing"
-    object = SmallestMissing.new
-    bad = evaluation.fetch("cases").reject { |c| object.find(c.fetch("input")) == c.fetch("expected") }
-    checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
-  when "triplet-sum"
-    object = TripletSum.new
-    bad = evaluation.fetch("cases").reject do |c|
-      input = c.fetch("input")
-      actual = object.find(input.fetch("values").dup, input.fetch("target"))
-      c.fetch("expected").nil? ? actual.nil? : valid_triplet?(input.fetch("values"), input.fetch("target"), actual)
-    end
-    checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
-  when "majority-element"
-    object = MajorityElement.new
-    bad = evaluation.fetch("cases").reject { |c| object.find(c.fetch("input")) == c.fetch("expected") }
-    checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
-  when "distinct-elements"
-    object = DistinctElements.new
-    bad = evaluation.fetch("cases").reject { |c| object.find(c.fetch("input")) == c.fetch("expected") }
-    checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
-  when "power-of-two"
-    object = PowerOfTwo.new
-    bad = evaluation.fetch("cases").reject { |c| object.check?(c.fetch("input")) == c.fetch("expected") }
-    checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
-  when "chocolate-feast"
-    object = ChocolateFeast.new
-    bad = evaluation.fetch("cases").reject do |c|
-      input = c.fetch("input")
-      object.call(input.fetch("money"), input.fetch("cost"), input.fetch("wrappers")) == c.fetch("expected")
-    end
-    checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
-  when "shopping-cart"
-    begin
-      mall = Mall.new
-      cart = ShoppingCart.new(mall)
-      mall.add_product("Fruity", 12, 2)
-      cart.add_product("Fruity", 2)
-      expected = [{ "name" => "Fruity", "quantity" => 2, "price" => 12, "line_total" => 24 }]
-      raise "details mismatch" unless normalize_details(cart.details) == expected
-      raise "total mismatch" unless cart.total.to_i == 24
-      cart.remove_product("Fruity", 1)
-      expected_after_remove = [{ "name" => "Fruity", "quantity" => 1, "price" => 12, "line_total" => 12 }]
-      raise "remove mismatch" unless normalize_details(cart.details) == expected_after_remove
-      raise "remove total mismatch" unless cart.total.to_i == 12
-
-      begin
-        cart.add_product("Slice", 1)
-        raise "unavailable product was accepted"
-      rescue StandardError => e
-        raise unless e.message.downcase.include?("product_not_available") || e.message.downcase.include?("not available")
+    case evaluation.fetch("id")
+    when "selection-sort"
+      sorter = SelectionSorter.new
+      bad = evaluation.fetch("cases").reject do |test_case|
+        values = test_case.fetch("input")
+        expected = test_case.fetch("expected")
+        sorter.sort(values.dup) == expected && sorter.recursive_sort(values.dup) == expected
       end
-
+      checks["functional"] = bad.empty? ? check("pass", "both implementations matched all deterministic cases") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "recursive-selection-sort"
+      object = RecursiveSelectionSorter.new
+      bad = evaluation.fetch("cases").reject { |c| object.sort(c.fetch("input").dup) == c.fetch("expected") }
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "smallest-missing"
+      object = SmallestMissing.new
+      bad = evaluation.fetch("cases").reject { |c| object.find(c.fetch("input")) == c.fetch("expected") }
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "triplet-sum"
+      object = TripletSum.new
+      bad = evaluation.fetch("cases").reject do |c|
+        input = c.fetch("input")
+        actual = object.find(input.fetch("values").dup, input.fetch("target"))
+        c.fetch("expected").nil? ? actual.nil? : valid_triplet?(input.fetch("values"), input.fetch("target"), actual)
+      end
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "majority-element"
+      object = MajorityElement.new
+      bad = evaluation.fetch("cases").reject { |c| object.find(c.fetch("input")) == c.fetch("expected") }
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "distinct-elements"
+      object = DistinctElements.new
+      bad = evaluation.fetch("cases").reject { |c| object.find(c.fetch("input")) == c.fetch("expected") }
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "power-of-two"
+      object = PowerOfTwo.new
+      bad = evaluation.fetch("cases").reject { |c| object.check?(c.fetch("input")) == c.fetch("expected") }
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "chocolate-feast"
+      object = ChocolateFeast.new
+      bad = evaluation.fetch("cases").reject do |c|
+        input = c.fetch("input")
+        object.call(input.fetch("money"), input.fetch("cost"), input.fetch("wrappers")) == c.fetch("expected")
+      end
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "shopping-cart"
       begin
+        mall = Mall.new
+        cart = ShoppingCart.new(mall)
+        mall.add_product("Fruity", 12, 2)
         cart.add_product("Fruity", 2)
-        raise "inventory limit was accepted"
-      rescue StandardError => e
-        raise unless e.message.downcase.include?("insufficient_inventory") || e.message.downcase.include?("available")
-      end
+        expected = [{ "name" => "Fruity", "quantity" => 2, "price" => 12, "line_total" => 24 }]
+        raise "details mismatch" unless normalize_details(cart.details) == expected
+        raise "total mismatch" unless cart.total.to_i == 24
 
-      begin
-        cart.remove_product("Fruity", 2)
-        raise "cart quantity limit was accepted"
-      rescue StandardError => e
-        raise unless e.message.downcase.include?("insufficient_cart_quantity") || e.message.downcase.include?("cart")
-      end
+        cart.remove_product("Fruity", 1)
+        expected_after_remove = [{ "name" => "Fruity", "quantity" => 1, "price" => 12, "line_total" => 12 }]
+        raise "remove mismatch" unless normalize_details(cart.details) == expected_after_remove
+        raise "remove total mismatch" unless cart.total.to_i == 12
 
-      checks["functional"] = check("pass")
-      checks["contract"] = check("pass", "shopping-cart fixture API and domain failures are executable")
-    rescue StandardError => e
-      checks["functional"] = check("fail", "#{e.class}: #{e.message}")
-      checks["contract"] = check("fail", "#{e.class}: #{e.message}")
-      failures.concat(%w[functional contract])
+        begin
+          cart.add_product("Slice", 1)
+          raise "unavailable product was accepted"
+        rescue StandardError => e
+          raise unless e.message.downcase.include?("product_not_available") || e.message.downcase.include?("not available")
+        end
+
+        begin
+          cart.add_product("Fruity", 2)
+          raise "inventory limit was accepted"
+        rescue StandardError => e
+          raise unless e.message.downcase.include?("insufficient_inventory") || e.message.downcase.include?("available")
+        end
+
+        begin
+          cart.remove_product("Fruity", 2)
+          raise "cart quantity limit was accepted"
+        rescue StandardError => e
+          raise unless e.message.downcase.include?("insufficient_cart_quantity") || e.message.downcase.include?("cart")
+        end
+
+        checks["functional"] = check("pass")
+        checks["contract"] = check("pass", "shopping-cart fixture API and domain failures are executable")
+      rescue StandardError => e
+        checks["functional"] = check("fail", "#{e.class}: #{e.message}")
+        checks["contract"] = check("fail", "#{e.class}: #{e.message}")
+        failures.concat(%w[functional contract])
+      end
     end
-  end
-  rescue StandardError => e
-    # A missing class or method is a failed submission, not a verifier crash.
-    checks["functional"] = check("fail", "#{e.class}: #{e.message}")
-    failures << "functional"
+    rescue StandardError => e
+      # A missing class or method is a failed submission, not a verifier crash.
+      checks["functional"] = check("fail", "#{e.class}: #{e.message}")
+      failures << "functional"
   end
 end
 

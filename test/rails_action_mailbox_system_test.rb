@@ -37,6 +37,7 @@ class RailsActionMailboxSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "mailbox routing"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       action-mailbox-ingress-boundary
       action-mailbox-routing-contract
@@ -50,9 +51,11 @@ class RailsActionMailboxSystemTest < Minitest::Test
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/action-mailbox-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-action-mailbox").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/action-mailbox-contract.yml"
   end
 

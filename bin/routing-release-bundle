@@ -97,6 +97,7 @@ def archive_metadata(path)
   files = {}
   Dir.glob(File.join(path, "**", "*"), File::FNM_DOTMATCH).sort.each do |entry|
     next if [".", ".."].include?(File.basename(entry))
+
     abort "release bundle archive contains a symlink: #{entry}" if File.symlink?(entry)
     next unless File.file?(entry)
 
@@ -104,7 +105,7 @@ def archive_metadata(path)
     files[relative] = file_metadata(entry).slice("sha256", "bytes")
   end
   canonical = files.sort.to_h
-  {"path" => File.expand_path(path), "tree_sha256" => Digest::SHA256.hexdigest(JSON.generate(canonical)), "files" => canonical}
+  { "path" => File.expand_path(path), "tree_sha256" => Digest::SHA256.hexdigest(JSON.generate(canonical)), "files" => canonical }
 end
 
 manifest = {
@@ -124,8 +125,8 @@ manifest = {
   }
 }
 
-manifest["components"]["matrix"] = {"evidence" => file_metadata(matrix_target)} if matrix_target
-manifest["components"]["hidden"] = {"receipt" => file_metadata(hidden_target)} if hidden_target
+manifest["components"]["matrix"] = { "evidence" => file_metadata(matrix_target) } if matrix_target
+manifest["components"]["hidden"] = { "receipt" => file_metadata(hidden_target) } if hidden_target
 
 manifest_path = File.join(options[:output], "RELEASE_MANIFEST.json")
 File.write(manifest_path, JSON.pretty_generate(manifest) + "\n", encoding: "UTF-8")

@@ -29,9 +29,11 @@ class StackMinimalityToolSystemTest < Minitest::Test
 
       assert status.success?, "#{stdout}\n#{stderr}"
       data = JSON.parse(stdout)
+
       assert_equal 1, data.fetch("marker_count")
       assert_equal 0, data.fetch("no_trigger_count")
       marker = data.fetch("markers").first
+
       assert_equal "app.rb", marker.fetch("file")
       assert_equal 1, marker.fetch("line")
       refute_includes stdout, "ignored.js"
@@ -50,6 +52,7 @@ class StackMinimalityToolSystemTest < Minitest::Test
 
       assert status.success?, "#{stdout}\n#{stderr}"
       data = JSON.parse(stdout)
+
       assert_equal 1, data.fetch("changed_files")
       assert_equal 1, data.fetch("added_lines")
       assert_equal 0, data.fetch("deleted_lines")

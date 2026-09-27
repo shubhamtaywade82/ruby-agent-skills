@@ -38,6 +38,7 @@ class RailsActiveSupportSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "class_attribute"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       active-support-loading-boundary
       active-support-concern-composition
@@ -52,9 +53,11 @@ class RailsActiveSupportSystemTest < Minitest::Test
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/active-support-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-active-support").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/active-support-contract.yml"
   end
 

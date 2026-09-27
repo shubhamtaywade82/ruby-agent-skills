@@ -26,6 +26,7 @@ class ReleaseArchiveSystemTest < Minitest::Test
   def git_sha
     out, _err, status = Open3.capture3("git", "-C", ROOT, "rev-parse", "HEAD")
     raise "git rev-parse failed" unless status.success?
+
     out.strip
   end
 
@@ -36,6 +37,7 @@ class ReleaseArchiveSystemTest < Minitest::Test
       "--output", output_dir,
       chdir: ROOT
     )
+
     assert status.success?, "#{out}\n#{err}"
     File.join(output_dir, "ruby-agent-skills-#{VERSION}.tar.gz")
   end
@@ -62,16 +64,20 @@ class ReleaseArchiveSystemTest < Minitest::Test
       sums = File.read(File.join(dir, "SHA256SUMS"), encoding: "UTF-8")
       recorded = sums[/\A([0-9a-f]{64})  /, 1]
       require "digest"
+
       assert_equal Digest::SHA256.file(archive).hexdigest, recorded
 
       Dir.mktmpdir("release-extract") do |extracted|
         _out, err, status = Open3.capture3("tar", "-xzf", archive, "-C", extracted)
+
         assert status.success?, err
 
         archive_root = File.join(extracted, ARCHIVE_DIR)
+
         assert File.directory?(archive_root), "archive must extract into #{ARCHIVE_DIR}/"
 
         release = JSON.parse(File.read(File.join(archive_root, "RELEASE.json"), encoding: "UTF-8"))
+
         assert_equal VERSION, release.fetch("version")
         assert_equal git_sha, release.fetch("git_sha")
         assert_equal expected_skill_count, release.fetch("skills")
@@ -95,22 +101,26 @@ class ReleaseArchiveSystemTest < Minitest::Test
 
       Dir.mktmpdir("release-extract") do |extracted|
         _out, err, status = Open3.capture3("tar", "-xzf", archive, "-C", extracted)
+
         assert status.success?, err
 
         project = File.join(dir, "project")
         FileUtils.mkdir_p(project)
         archive_root = File.join(extracted, ARCHIVE_DIR)
         out, err, status = install_from(archive_root, project)
+
         assert status.success?, "#{out}\n#{err}"
 
         target = File.join(project, ".agents", "skills")
         metadata = JSON.parse(File.read(File.join(target, ".ruby-agent-skills", "INSTALLATION.json"), encoding: "UTF-8"))
+
         assert_equal VERSION, metadata.dig("source", "requested_ref")
         assert_equal git_sha, metadata.dig("source", "resolved_git_sha")
         assert_equal expected_skill_count, metadata.fetch("inventory").fetch("skills")
 
         verify = File.join(target, ".ruby-agent-skills", "skill-pack-verify")
         vout, verr, vstatus = Open3.capture3(RbConfig.ruby, verify, "--root", target)
+
         assert vstatus.success?, "#{vout}\n#{verr}"
       end
     end
@@ -123,12 +133,14 @@ class ReleaseArchiveSystemTest < Minitest::Test
       first = Digest::SHA256.file(File.join(dir, "ruby-agent-skills-#{VERSION}.tar.gz")).hexdigest
       build_archive(dir)
       second = Digest::SHA256.file(File.join(dir, "ruby-agent-skills-#{VERSION}.tar.gz")).hexdigest
+
       assert_equal first, second
     end
   end
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/release_archive_system_test.rb"
   end
 end

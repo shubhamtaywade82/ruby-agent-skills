@@ -16,6 +16,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Lint Ruby (RuboCop)
+        run: bundle exec rubocop
 
       - name: Validate skill library
         run: bash bin/validate

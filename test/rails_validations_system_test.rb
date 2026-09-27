@@ -31,6 +31,7 @@ class RailsValidationsSystemTest < Minitest::Test
   def test_manifest_registers_skill_patterns_and_evaluation
     manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
     skill = manifest.fetch("skills").fetch("rails-validations")
+
     assert_equal "skills/rails-validations/SKILL.md", skill.fetch("path")
 
     %w[validation errors validation context uniqueness validates_associated validates_with strict validation custom validator validation bypass].each do |trigger|
@@ -38,6 +39,7 @@ class RailsValidationsSystemTest < Minitest::Test
     end
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       validation-boundary
       validation-context-contract
@@ -60,6 +62,7 @@ class RailsValidationsSystemTest < Minitest::Test
   def test_router_and_agent_contract_include_validations
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
     change_contract = File.read(File.join(ROOT, "skills/rails-validations/SKILL.md"), encoding: "UTF-8")
+
     assert_includes routing, "Rails Validation deep engineering"
     assert_includes routing, "validation-uniqueness-database-contract"
     assert_includes change_contract, "Rails Validations changes"
@@ -69,6 +72,7 @@ class RailsValidationsSystemTest < Minitest::Test
 
   def test_skill_covers_validation_contract
     skill = File.read(File.join(ROOT, "skills/rails-validations/SKILL.md"), encoding: "UTF-8")
+
     %w[
       Validation lifecycle
       Built-in validator selection
@@ -92,6 +96,7 @@ class RailsValidationsSystemTest < Minitest::Test
 
   def test_evaluation_activates_expected_skills_and_patterns
     evaluation = YAML.safe_load(File.read(File.join(ROOT, "evals/rails/validations-contract.yml"), encoding: "UTF-8"))
+
     assert_includes evaluation.fetch("skills"), "rails-validations"
     assert_includes evaluation.fetch("skills"), "rails-active-record"
     assert_includes evaluation.fetch("skills"), "rails-database-engineering"

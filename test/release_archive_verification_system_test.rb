@@ -17,6 +17,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
     out, err, status = Open3.capture3(
       RbConfig.ruby, BUILDER, "--version", VERSION, "--output", File.join(dir, "dist"), chdir: ROOT
     )
+
     assert status.success?, "#{out}\n#{err}"
     File.join(dir, "dist", "#{ARCHIVE_DIR}.tar.gz")
   end
@@ -67,6 +68,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
 
       assert_equal 1, release.fetch("protocol_version")
       files = release.fetch("files")
+
       assert_includes files.keys, "skill-manifest.yml"
       assert_match(/\A[0-9a-f]{64}\z/, files.fetch("AGENTS.md").fetch("sha256"))
       refute_includes files.keys, "RELEASE.json"
@@ -79,6 +81,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       File.open(archive, "ab") { |file| file.write("tampered") }
 
       _out, err, status = verify(archive, "--checksums", File.join(dir, "dist", "SHA256SUMS"))
+
       refute status.success?
       assert_includes err, "archive SHA-256 mismatch"
     end
@@ -91,6 +94,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       end
 
       _out, err, status = verify(tampered, "--check-files")
+
       refute status.success?
       assert_includes err, "release file SHA-256 mismatch: README.md"
     end
@@ -103,6 +107,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       end
 
       _out, err, status = verify(tampered, "--check-files")
+
       refute status.success?
       assert_includes err, "unrecorded file shipped in archive: skills/injected.md"
     end
@@ -115,6 +120,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       end
 
       _out, err, status = verify(tampered)
+
       refute status.success?
       assert_includes err, "skill inventory mismatch"
     end
@@ -127,6 +133,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       end
 
       _out, err, status = verify(tampered)
+
       refute status.success?
       assert_includes err, "protocol_version must be 1"
     end
@@ -139,6 +146,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       end
 
       _out, err, status = verify(tampered)
+
       refute status.success?
       assert_includes err, "release file record escapes archive root: ../outside"
     end
@@ -154,6 +162,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
       system("tar", "-czf", archive, "-C", File.join(dir, "src"), ARCHIVE_DIR, exception: true)
 
       _out, err, status = verify(archive)
+
       refute status.success?
       assert_includes err, "unsafe archive entry type"
     end
@@ -171,6 +180,7 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
 
   def test_validator_registers_release_archive_verification
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/release_archive_verification_system_test.rb"
   end
 end

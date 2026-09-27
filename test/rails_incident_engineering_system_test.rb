@@ -35,6 +35,7 @@ class RailsIncidentEngineeringSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "post-incident review"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     REQUIRED_PATHS.drop(1).each { |relative| assert_includes rails_patterns, relative }
   end
 
@@ -52,6 +53,7 @@ class RailsIncidentEngineeringSystemTest < Minitest::Test
   def test_existing_observability_evaluations_activate_incident_skill
     %w[error-boundary.yml request-correlation.yml instrumentation-event.yml health-semantics.yml].each do |filename|
       evaluation = YAML.safe_load(File.read(File.join(ROOT, "evals/observability", filename), encoding: "UTF-8"))
+
       assert_includes evaluation.fetch("skills"), "rails-incident-engineering"
     end
   end

@@ -31,6 +31,7 @@ def debt_report(root)
 
   Dir.glob(File.join(root, "**", "*"), File::FNM_DOTMATCH).sort.each do |path|
     next unless File.file?(path)
+
     relative_parts = path.delete_prefix(root + "/").split("/")
     next if relative_parts.any? { |part| skip.include?(part) }
 

@@ -5,43 +5,35 @@
 # Rails extension/style guidance:
 #   https://rails.rubystyle.guide/
 #
-# RuboCop is the executable enforcement layer for the Ruby style guide, and
-# rubocop-rails provides the Rails-specific cop set based on the Rails style
-# guide. This configuration intentionally loads the complete plugin catalog
-# maintained/documented in data/rubocop/plugins.yml.
+# RuboCop is the executable enforcement layer for the Ruby style guide. This
+# file lints *this repository* and runs in CI (`bundle exec rubocop`).
 #
-# IMPORTANT:
-# - The target application must have the corresponding gems installed.
-# - Not every plugin will produce findings for every repository.
-# - For a Rails application, rubocop-rails resolves TargetRailsVersion from
-#   Gemfile.lock when possible; override AllCops/TargetRailsVersion when the
-#   repository needs an explicit value.
-# - RuboCop 1.72+ uses the plugin API; older extensions may require legacy
-#   require configuration.
+# Plugin selection follows applicability, not the full catalog. The complete
+# plugin catalog for target applications is documented in
+# data/rubocop/plugins.yml and docs/RUBOCOP_PLUGINS.md. Loading all of it here
+# did not work: three extensions are not lint_roller plugins and failed to
+# load, cookstyle replaces RuboCop's default configuration with Chef's, and
+# rubocop-changed narrows linting to changed files. Plugins for frameworks
+# this repository does not use (Rails, Sequel, Capybara, FactoryBot, I18n,
+# Sorbet, GraphQL, SketchUp) only produced false positives. rubocop-rspec
+# stays loaded so the RSpec style policy below remains executable.
+#
+# For a target application, select plugins from the catalog by the
+# frameworks it actually uses, confirm each installed extension supports the
+# plugin API (gem metadata `default_lint_roller_plugin`) before listing it
+# under `plugins:` rather than `require:`, and let rubocop-rails resolve
+# TargetRailsVersion from Gemfile.lock.
+#
+# Existing offenses are recorded in .rubocop_todo.yml; CI fails on new ones.
+# Remove entries from the todo as the corresponding code is cleaned up.
+
+inherit_from: .rubocop_todo.yml
 
 plugins:
-  # Official plugins
   - rubocop-performance
-  - rubocop-rails
-  - rubocop-rspec
   - rubocop-minitest
-  - rubocop-rake
-  - rubocop-sequel
+  - rubocop-rspec
   - rubocop-thread_safety
-  - rubocop-capybara
-  - rubocop-factory_bot
-  - rubocop-rspec_rails
-  - rubocop-i18n
-
-  # Third-party plugins
-  - rubocop-require_tools
-  - cookstyle
-  - rubocop-packaging
-  - rubocop-sorbet
-  - rubocop-graphql
-  - rubocop-changed
-  - rubocop-sketchup
-
 
 # The Ruby Style Guide recommends 80 columns and explicitly allows teams to
 # increase this to 100 or 120. This repository standardizes on 100.
@@ -51,8 +43,10 @@ Layout/LineLength:
 Layout/IndentationWidth:
   Width: 2
 
+# The Ruby Style Guide requires a consistent quoting style and allows either.
+# Every Ruby file in this repository uses double quotes.
 Style/StringLiterals:
-  EnforcedStyle: single_quotes
+  EnforcedStyle: double_quotes
 
 Style/Documentation:
   Enabled: false
@@ -69,6 +63,7 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - '.ruby-agent-eval/**/*'
+    - 'benchmarks/**/*'
 
 # RSpec style guide policy. These cops are linked to
 # https://rspec.rubystyle.guide/ by rubocop-rspec.
@@ -97,11 +92,3 @@ RSpec/NamedSubject:
   EnforcedStyle: always
 RSpec/PredicateMatcher:
   EnforcedStyle: inflected
-
-# Rails-specific configuration is intentionally version-neutral here.
-# Consuming Rails applications should override, when necessary:
-#
-# AllCops:
-#   TargetRailsVersion: 8.0
-#
-# and should use the version actually present in their Gemfile.lock.

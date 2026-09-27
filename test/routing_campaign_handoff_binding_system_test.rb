@@ -45,6 +45,7 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
       input = File.join(dir, "HANDOFF.json")
       File.write(input, JSON.pretty_generate(valid_handoff(ROOT)))
       out, err, status = Open3.capture3(RbConfig.ruby, RUNNER, input, chdir: ROOT)
+
       assert status.success?, "#{out}
 #{err}"
       assert_includes out, "repository content hashes: matched"
@@ -58,6 +59,7 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
       input = File.join(dir, "HANDOFF.json")
       File.write(input, JSON.pretty_generate(handoff))
       _out, err, status = Open3.capture3(RbConfig.ruby, RUNNER, input, chdir: ROOT)
+
       refute status.success?
       assert_includes err, "routing_cases_sha256 mismatch"
     end
@@ -65,6 +67,7 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
 
   def test_generated_handoff_script_runs_verifier_before_campaign
     source = File.read(File.join(ROOT, "bin", "routing-campaign-handoff"), encoding: "UTF-8")
+
     assert_includes source, "routing-campaign-handoff-verify"
     assert_includes source, "HANDOFF.json"
     assert_includes source, "RESUME_ARGS"
@@ -73,6 +76,7 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_campaign_handoff_binding_system_test.rb"
   end
 end

@@ -40,6 +40,7 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
   def test_skill_contracts_have_required_sections
     SKILLS.each do |skill|
       content = File.read(File.join(ROOT, "skills", skill, "SKILL.md"), encoding: "UTF-8")
+
       [
         "Purpose",
         "Activate when",
@@ -58,6 +59,7 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
 
   def test_stack_minimality_patterns_are_registered
     paths = manifest.fetch("patterns").fetch(PATTERN_FAMILY).fetch("paths")
+
     assert_operator paths.length, :>=, 12
     paths.each { |path| assert File.file?(File.join(ROOT, path)) }
   end
@@ -65,6 +67,7 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
   def test_stack_minimality_evaluations_are_registered
     entry = manifest.fetch("evaluations").fetch("stack-minimality")
     paths = Array(entry.fetch("paths"))
+
     assert_equal 13, paths.length
     paths.each { |path| assert File.file?(File.join(ROOT, path)) }
   end
@@ -72,6 +75,7 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
   def test_all_stack_minimality_evaluations_have_required_contract_shape
     Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")].each do |path|
       data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+
       assert_equal 1, data.fetch("version")
       assert_equal "stack-minimality", data.fetch("category")
       assert_operator data.fetch("skills").length, :>=, 1
@@ -103,6 +107,7 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/stack_minimality_system_test.rb"
   end
 end

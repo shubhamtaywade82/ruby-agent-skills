@@ -33,6 +33,14 @@ LITERAL_NEWLINE = /\\n/
 errors = []
 checked = 0
 
+SKIPPED_DIRECTORIES = %w[.git node_modules .bundle].freeze
+
+# Bundler's install path (CI uses bundler-cache) holds third-party gem
+# sources that are gitignored and not authored here.
+def skipped_directory?(parent, child)
+  SKIPPED_DIRECTORIES.include?(child) || (child == "bundle" && File.basename(parent) == "vendor")
+end
+
 def each_text_file(targets, &block)
   targets.each do |root|
     stack = [root]
@@ -42,7 +50,7 @@ def each_text_file(targets, &block)
 
       if File.directory?(current)
         Dir.children(current).sort.reverse_each do |child|
-          next if child == ".git" || child == "node_modules"
+          next if skipped_directory?(current, child)
 
           stack.push(File.join(current, child))
         end

@@ -14,6 +14,7 @@ class ZeitwerkCheckCliTest < Minitest::Test
 
       assert status.success?
       result = JSON.parse(stdout)
+
       assert_equal "generic", result.fetch("mode")
       assert_equal "skipped", result.fetch("checks").fetch("rails_zeitwerk_check").fetch("status")
     end

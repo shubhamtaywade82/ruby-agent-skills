@@ -39,6 +39,7 @@ class RailsActiveRecordSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "strict_loading"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       active-record-model-boundary
       active-record-query-contract
@@ -54,9 +55,11 @@ class RailsActiveRecordSystemTest < Minitest::Test
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/active-record-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-active-record").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/active-record-contract.yml"
   end
 

@@ -30,13 +30,16 @@ class RailsRackMiddlewareSystemTest < Minitest::Test
   def test_manifest_registers_rack_skill_and_patterns
     manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
     skill = manifest.fetch("skills").fetch("rails-rack-middleware-engineering")
+
     assert_equal "skills/rails-rack-middleware-engineering/SKILL.md", skill.fetch("path")
     %w[Rack rack middleware config.middleware config.ru bin/rails middleware call(env) short-circuit request ID trusted proxy].each do |trigger|
       assert_includes skill.fetch("triggers"), trigger
     end
     rails = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     REQUIRED_PATHS.grep(%r{^patterns/rails/}).each { |p| assert_includes rails, p }
     testing = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing, "patterns/rails/middleware-testing.md"
     assert_includes manifest.fetch("evaluations").fetch("rails-rack-middleware-engineering").fetch("paths"),
                     "evals/rails/rack-middleware-contract.yml"
@@ -45,6 +48,7 @@ class RailsRackMiddlewareSystemTest < Minitest::Test
   def test_router_and_agents_contract
     routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
     change_contract = File.read(File.join(ROOT, "skills/rails-rack-middleware-engineering/SKILL.md"), encoding: "UTF-8")
+
     assert_includes routing, "Rails Rack/Middleware engineering"
     assert_includes routing, "rails-rack-middleware-engineering"
     assert_includes change_contract, "Rails Rack/middleware changes"
@@ -54,6 +58,7 @@ class RailsRackMiddlewareSystemTest < Minitest::Test
 
   def test_evaluation_contract
     evaluation = YAML.safe_load(File.read(File.join(ROOT, "evals/rails/rack-middleware-contract.yml"), encoding: "UTF-8"))
+
     assert_includes evaluation.fetch("skills"), "rails-rack-middleware-engineering"
     assert_includes evaluation.fetch("patterns"), "middleware-stack-ordering"
     assert_includes evaluation.fetch("patterns"), "middleware-testing"
@@ -62,6 +67,7 @@ class RailsRackMiddlewareSystemTest < Minitest::Test
 
   def test_skill_covers_boundary
     skill = File.read(File.join(ROOT, "skills/rails-rack-middleware-engineering/SKILL.md"), encoding: "UTF-8")
+
     [
       "Core contract", "Stack ordering", "Custom middleware design", "Short-circuiting",
       "Exceptions and failure propagation", "Request context and observability",

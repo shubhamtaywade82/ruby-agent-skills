@@ -21,7 +21,7 @@ class RoutingHiddenBenchmarkIntakeSystemTest < Minitest::Test
         "case_count" => 17,
         "repetitions" => 6,
         "completed_runs" => 102,
-        "agent" => {"provider" => "ollama", "model" => "private-model"},
+        "agent" => { "provider" => "ollama", "model" => "private-model" },
         "artifact" => {
           "path" => artifact,
           "sha256" => Digest::SHA256.file(artifact).hexdigest,
@@ -44,6 +44,7 @@ class RoutingHiddenBenchmarkIntakeSystemTest < Minitest::Test
       assert status.success?, "#{stdout}
 #{stderr}"
       receipt = JSON.parse(File.read(output, encoding: "UTF-8"))
+
       assert_equal true, receipt.fetch("verification").fetch("passed")
       assert_equal false, receipt.fetch("verification").fetch("gold_labels_in_repository")
       assert_equal 102, receipt.fetch("external_execution").fetch("completed_runs")
@@ -64,7 +65,7 @@ class RoutingHiddenBenchmarkIntakeSystemTest < Minitest::Test
         "case_count" => 1,
         "repetitions" => 1,
         "completed_runs" => 1,
-        "agent" => {"provider" => "ollama", "model" => "private-model"},
+        "agent" => { "provider" => "ollama", "model" => "private-model" },
         "cases" => ["secret prompt"],
         "artifact" => {
           "path" => artifact,
@@ -90,12 +91,14 @@ class RoutingHiddenBenchmarkIntakeSystemTest < Minitest::Test
 
   def test_private_expected_run_count_is_not_derived_from_public_corpus
     source = File.read(RUNNER, encoding: "UTF-8")
+
     assert_includes source, "--expected-runs"
     refute_includes source, "ROUTING_CASES.yml"
   end
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_hidden_benchmark_intake_system_test.rb"
   end
 end

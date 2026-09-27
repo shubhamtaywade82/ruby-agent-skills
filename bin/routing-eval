@@ -243,10 +243,10 @@ cases = Array(cases_data.fetch("cases"))
 skills = manifest.fetch("skills").keys.to_set
 
 selected = if options[:case_id]
-  cases.select { |entry| entry.fetch("id") == options[:case_id] }
-else
-  cases
-end
+             cases.select { |entry| entry.fetch("id") == options[:case_id] }
+           else
+             cases
+           end
 abort "unknown routing case: #{options[:case_id]}" if options[:case_id] && selected.empty?
 
 repetitions = (options[:runs] || campaign_config.fetch("execution").fetch("repetitions", 1)).to_i

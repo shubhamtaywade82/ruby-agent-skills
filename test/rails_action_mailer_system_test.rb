@@ -33,14 +33,17 @@ class RailsActionMailerSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "email security"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[mailer-contract mailer-delivery-semantics mailer-provider-boundary mailer-security-boundary mailer-observability].each do |name|
       assert_includes rails_patterns, "patterns/rails/#{name}.md"
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/mailer-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-action-mailer").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/action-mailer-contract.yml"
   end
 

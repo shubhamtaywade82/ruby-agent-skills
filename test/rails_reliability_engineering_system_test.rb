@@ -28,6 +28,7 @@ class RailsReliabilityEngineeringSystemTest < Minitest::Test
     manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
 
     skill = manifest.fetch("skills").fetch("rails-reliability-engineering")
+
     assert_equal "skills/rails-reliability-engineering/SKILL.md", skill.fetch("path")
     assert_includes skill.fetch("triggers"), "SLO"
     assert_includes skill.fetch("triggers"), "error budget"
@@ -37,6 +38,7 @@ class RailsReliabilityEngineeringSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "resilience testing"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     REQUIRED_PATHS.drop(1).each do |relative|
       assert_includes rails_patterns, relative
     end

@@ -14,6 +14,7 @@ class CorpusQualitySystemTest < Minitest::Test
 
   def test_corpus_quality_audit_passes_and_reports_exact_measurements
     stdout, stderr, status = run_audit
+
     assert status.success?, "#{stdout}
 #{stderr}"
 
@@ -33,23 +34,27 @@ class CorpusQualitySystemTest < Minitest::Test
 
   def test_audit_classifies_non_empirical_public_evaluations_explicitly
     paths = Dir[File.join(ROOT, "evals", "react-typescript", "*.yml")] +
-      Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")]
+            Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")]
+
     refute_empty paths
 
     paths.each do |path|
       text = File.read(path, encoding: "UTF-8")
+
       assert_match(/^coverage: static-only$/, text, "#{path} must declare its non-campaign coverage")
     end
   end
 
   def test_release_archive_system_test_uses_manifest_derived_skill_count
     test = File.read(File.join(ROOT, "test", "release_archive_system_test.rb"), encoding: "UTF-8")
+
     refute_match(/assert_equal 91, release\.fetch\("skills"\)/, test)
     assert_includes test, "skill-manifest.yml"
   end
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/corpus_quality_system_test.rb"
   end
 end

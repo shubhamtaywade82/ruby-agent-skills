@@ -41,11 +41,12 @@ class SkillPackSystemTest < Minitest::Test
     workspace = Dir.mktmpdir("workspace")
     pack = RubyAgentSkills::SkillPack.new(root: root)
     result = pack.materialize(
-      evaluation: {"prompt" => "Demo", "skills" => ["demo"], "patterns" => ["pattern:patterns/one/shared"]},
+      evaluation: { "prompt" => "Demo", "skills" => ["demo"], "patterns" => ["pattern:patterns/one/shared"] },
       workspace: workspace
     )
 
     manifest = JSON.parse(File.read(result.fetch("manifest"), encoding: "UTF-8"))
+
     assert_equal Digest::SHA256.file(File.join(root, "skill-manifest.yml")).hexdigest, manifest.fetch("skill_manifest_sha256")
     assert File.directory?(result.fetch("skills_dir"))
     assert File.directory?(result.fetch("patterns_dir"))
@@ -70,6 +71,7 @@ class SkillPackSystemTest < Minitest::Test
 
     one = File.join(result.fetch("patterns_dir"), "one", "shared.md")
     two = File.join(result.fetch("patterns_dir"), "two", "shared.md")
+
     assert_equal "# One\n", File.read(one, encoding: "UTF-8")
     assert_equal "# Two\n", File.read(two, encoding: "UTF-8")
   end
@@ -79,13 +81,14 @@ class SkillPackSystemTest < Minitest::Test
     workspace = Dir.mktmpdir("workspace")
     pack = RubyAgentSkills::SkillPack.new(root: root)
     result = pack.write_baseline_context(
-      evaluation: {"prompt" => "Demo"},
+      evaluation: { "prompt" => "Demo" },
       workspace: workspace
     )
 
     assert File.directory?(result.fetch("skills_dir"))
     assert File.directory?(result.fetch("patterns_dir"))
     manifest = JSON.parse(File.read(result.fetch("manifest"), encoding: "UTF-8"))
+
     assert_equal false, manifest.fetch("skills_enabled")
     assert_equal Digest::SHA256.file(File.join(root, "skill-manifest.yml")).hexdigest, manifest.fetch("skill_manifest_sha256")
   end

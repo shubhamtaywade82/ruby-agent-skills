@@ -5,7 +5,7 @@ require "yaml"
 
 ROOT = File.expand_path("..", __dir__)
 pattern_files = Dir[File.join(ROOT, "patterns", "**", "*.md")]
-  .reject { |path| path.end_with?("/README.md") }
+                .reject { |path| path.end_with?("/README.md") }
 
 abort "no pattern files found" if pattern_files.empty?
 

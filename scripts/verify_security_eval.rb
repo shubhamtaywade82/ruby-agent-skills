@@ -77,16 +77,16 @@ when "parameterized-query-boundary"
   # parameterized form the functional check requires.
   sql_interpolation = source.match?(/where\s*\(\s*"[^"]*#\{/) || source.match?(/where\s*\(\s*'[^']*'\s*\+/)
   checks["security"] = if source.match?(/where\(.*\?.*term/) && !sql_interpolation
-    { "status" => "pass", "evidence" => "parameterized query boundary detected" }
-  else
-    { "status" => "fail", "evidence" => "untrusted query term is not clearly parameterized" }
-  end
+                         { "status" => "pass", "evidence" => "parameterized query boundary detected" }
+                       else
+                         { "status" => "fail", "evidence" => "untrusted query term is not clearly parameterized" }
+                       end
 when "authorization-boundary"
   checks["security"] = if source.match?(/admin\?/) && source.match?(/owner_id/) && source.match?(/def\s+update\?/)
-    { "status" => "pass", "evidence" => "authorization policy boundary is explicit" }
-  else
-    { "status" => "fail", "evidence" => "explicit authorization boundary not detected" }
-  end
+                         { "status" => "pass", "evidence" => "authorization policy boundary is explicit" }
+                       else
+                         { "status" => "fail", "evidence" => "explicit authorization boundary not detected" }
+                       end
 end
 
 changed_files = %x{git status --short}.lines.map { |line| line[3..] || line }.map(&:strip).reject(&:empty?)

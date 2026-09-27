@@ -47,6 +47,7 @@ class RailsHotwireSystemTest < Minitest::Test
     ].each { |trigger| assert_includes skill.fetch("triggers"), trigger }
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       turbo-drive-navigation-contract
       turbo-frame-contract
@@ -62,9 +63,11 @@ class RailsHotwireSystemTest < Minitest::Test
     ].each { |name| assert_includes rails_patterns, "patterns/rails/#{name}.md" }
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/testing/hotwire-testing.md"
 
     eval_paths = manifest.fetch("evaluations").fetch("rails-hotwire").fetch("paths")
+
     assert_includes eval_paths, "evals/rails/hotwire-contract.yml"
   end
 

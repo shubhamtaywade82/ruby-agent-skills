@@ -18,7 +18,7 @@ class RoutingRemediationSystemTest < Minitest::Test
       "routing_case_count" => 1,
       "requested_repetitions" => 3,
       "complete" => true,
-      "agent" => {"provider" => "test", "model" => "test-model"},
+      "agent" => { "provider" => "test", "model" => "test-model" },
       "metrics" => {
         "primary_accuracy" => accuracy,
         "secondary_recall" => 1.0,
@@ -30,8 +30,8 @@ class RoutingRemediationSystemTest < Minitest::Test
           "runs" => 3.times.map {
             {
               "status" => "completed",
-              "expected" => {"primary_skill" => primary_skill},
-              "observed" => {"primary_skill" => observed}
+              "expected" => { "primary_skill" => primary_skill },
+              "observed" => { "primary_skill" => observed }
             }
           }
         }
@@ -60,6 +60,7 @@ class RoutingRemediationSystemTest < Minitest::Test
 
       assert status.success?, "#{stdout}\n#{stderr}"
       result = JSON.parse(File.read(report, encoding: "UTF-8"))
+
       assert_equal true, result.fetch("gate").fetch("passed")
       assert_includes result.fetch("confusions").fetch("resolved"), ["rails-authorization", "rails-active-record"]
       assert_empty result.fetch("confusions").fetch("new")
@@ -110,6 +111,7 @@ class RoutingRemediationSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_remediation_system_test.rb"
   end
 end

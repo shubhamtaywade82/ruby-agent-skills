@@ -36,6 +36,7 @@ class ProductionRuntimeSystemTest < Minitest::Test
 
     Dir[File.join(ROOT, "evals/runtime/*.yml")].each do |file|
       evaluation = YAML.safe_load(File.read(file))
+
       evaluation.fetch("skills").each { |skill| assert_includes registered_skills, skill }
     end
   end

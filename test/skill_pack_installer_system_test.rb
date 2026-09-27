@@ -82,6 +82,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
 
     assert status.success?, "#{out}\n#{err}"
     target = File.join(project, ".agents", "skills")
+
     assert File.file?(File.join(target, "demo-skill", "SKILL.md"))
     assert File.file?(File.join(target, ".ruby-agent-skills", "patterns", "ruby", "demo.md"))
     assert File.file?(File.join(target, ".ruby-agent-skills", "skill-manifest.yml"))
@@ -91,9 +92,11 @@ class SkillPackInstallerSystemTest < Minitest::Test
     verify_out, verify_err, verify_status = Open3.capture3(
       RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
     )
+
     assert verify_status.success?, "#{verify_out}\n#{verify_err}"
 
     metadata = JSON.parse(File.read(File.join(target, ".ruby-agent-skills", "INSTALLATION.json"), encoding: "UTF-8"))
+
     assert_equal 1, metadata.fetch("protocol_version")
     assert_equal 1, metadata.fetch("inventory").fetch("skills")
     assert_equal 1, metadata.fetch("inventory").fetch("patterns")
@@ -110,6 +113,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     assert status.success?, "#{out}\n#{err}"
     target = File.join(project, ".agents", "skills")
     metadata = JSON.parse(File.read(File.join(target, ".ruby-agent-skills", "INSTALLATION.json"), encoding: "UTF-8"))
+
     assert_equal source_sha, metadata.fetch("source").fetch("resolved_git_sha")
   end
 
@@ -117,6 +121,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     source = build_source
     project = Dir.mktmpdir("ruby-agent-skills-project")
     out, err, status = install(source, project)
+
     assert status.success?, "#{out}\n#{err}"
 
     target = File.join(project, ".agents", "skills")
@@ -126,6 +131,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     _verify_out, verify_err, verify_status = Open3.capture3(
       RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
     )
+
     refute verify_status.success?
     assert_includes verify_err, "skill"
   end
@@ -134,6 +140,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     source = build_source
     project = Dir.mktmpdir("ruby-agent-skills-project")
     out, err, status = install(source, project)
+
     assert status.success?, "#{out}\n#{err}"
 
     target = File.join(project, ".agents", "skills")
@@ -143,6 +150,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     _verify_out, verify_err, verify_status = Open3.capture3(
       RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
     )
+
     refute verify_status.success?
     assert_includes verify_err, "tool SHA-256 mismatch"
   end
@@ -151,6 +159,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     source = build_source
     project = Dir.mktmpdir("ruby-agent-skills-project")
     out, err, status = install(source, project)
+
     assert status.success?, "#{out}\n#{err}"
 
     target = File.join(project, ".agents", "skills")
@@ -160,6 +169,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
     _verify_out, verify_err, verify_status = Open3.capture3(
       RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
     )
+
     refute verify_status.success?
     assert_includes verify_err, "pattern file SHA-256 mismatch"
   end
@@ -170,11 +180,14 @@ class SkillPackInstallerSystemTest < Minitest::Test
     project = Dir.mktmpdir("ruby-agent-skills-project")
 
     out, err, status = install(old_source, project)
+
     assert status.success?, "#{out}\n#{err}"
     out, err, status = install(new_source, project)
+
     assert status.success?, "#{out}\n#{err}"
 
     target = File.join(project, ".agents", "skills")
+
     refute Dir.exist?(File.join(target, "old-skill"))
     assert Dir.exist?(File.join(target, "new-skill"))
   end
@@ -185,8 +198,10 @@ class SkillPackInstallerSystemTest < Minitest::Test
     project = Dir.mktmpdir("ruby-agent-skills-project")
 
     out, err, status = install(old_source, project)
+
     assert status.success?, "#{out}\n#{err}"
     out, err, status = install(new_source, project)
+
     assert status.success?, "#{out}\n#{err}"
 
     refute Dir.exist?(File.join(project, ".agents", "skills", "old-skill"))
@@ -195,6 +210,7 @@ class SkillPackInstallerSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/skill_pack_installer_system_test.rb"
     assert_includes validator, "test/skill_pack_verification_system_test.rb"
   end

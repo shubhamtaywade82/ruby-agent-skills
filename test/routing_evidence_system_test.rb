@@ -21,11 +21,11 @@ class RoutingEvidenceSystemTest < Minitest::Test
         "requested_repetitions" => 1,
         "complete" => true,
         "routing_contract" => router,
-        "agent" => {"provider" => "test", "model" => "test-model", "model_version" => nil, "tool_mode" => "test"},
-        "metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0}
+        "agent" => { "provider" => "test", "model" => "test-model", "model_version" => nil, "tool_mode" => "test" },
+        "metrics" => { "primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0 }
       }
       candidate = baseline.dup
-      comparison = {"deltas" => {"primary_accuracy" => 0.0, "secondary_recall" => 0.0, "average_unexpected_secondary_count" => 0.0}, "gate" => {"passed" => true, "errors" => []}}
+      comparison = { "deltas" => { "primary_accuracy" => 0.0, "secondary_recall" => 0.0, "average_unexpected_secondary_count" => 0.0 }, "gate" => { "passed" => true, "errors" => [] } }
 
       File.write(File.join(dir, "baseline.json"), JSON.pretty_generate(baseline))
       File.write(File.join(dir, "candidate.json"), JSON.pretty_generate(candidate))
@@ -67,11 +67,11 @@ class RoutingEvidenceSystemTest < Minitest::Test
         "requested_repetitions" => 1,
         "complete" => true,
         "routing_contract" => router,
-        "agent" => {"provider" => "test", "model" => "test-model", "model_version" => nil, "tool_mode" => "test"},
-        "metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0}
+        "agent" => { "provider" => "test", "model" => "test-model", "model_version" => nil, "tool_mode" => "test" },
+        "metrics" => { "primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0 }
       }
       candidate = baseline.dup
-      comparison = {"deltas" => {"primary_accuracy" => 0.0, "secondary_recall" => 0.0, "average_unexpected_secondary_count" => 0.0}, "gate" => {"passed" => true, "errors" => []}}
+      comparison = { "deltas" => { "primary_accuracy" => 0.0, "secondary_recall" => 0.0, "average_unexpected_secondary_count" => 0.0 }, "gate" => { "passed" => true, "errors" => [] } }
 
       File.write(File.join(dir, "baseline.json"), JSON.pretty_generate(baseline))
       File.write(File.join(dir, "candidate.json"), JSON.pretty_generate(candidate))
@@ -85,6 +85,7 @@ class RoutingEvidenceSystemTest < Minitest::Test
         "--output", evidence_path,
         chdir: ROOT
       )
+
       assert status.success?, stderr
 
       stdout, verifier_stderr, verifier_status = Open3.capture3(
@@ -94,6 +95,7 @@ class RoutingEvidenceSystemTest < Minitest::Test
         "--check-files",
         chdir: ROOT
       )
+
       assert verifier_status.success?, "#{stdout}\\n#{verifier_stderr}"
 
       File.write(router, "# Tampered routing contract\\n")
@@ -104,6 +106,7 @@ class RoutingEvidenceSystemTest < Minitest::Test
         "--check-files",
         chdir: ROOT
       )
+
       refute mismatch_status.success?
       assert_includes mismatch_stderr, "SHA-256 mismatch"
     end
@@ -111,6 +114,7 @@ class RoutingEvidenceSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_evidence_system_test.rb"
   end
 end

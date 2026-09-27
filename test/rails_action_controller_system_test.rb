@@ -40,6 +40,7 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "streaming"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       action-controller-request-boundary
       strong-parameters-contract
@@ -55,9 +56,11 @@ class RailsActionControllerSystemTest < Minitest::Test
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/action-controller-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-action-controller").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/action-controller-contract.yml"
   end
 

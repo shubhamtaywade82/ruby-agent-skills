@@ -34,6 +34,7 @@ class ObservabilitySystemTest < Minitest::Test
 
     Dir[File.join(ROOT, "evals/observability/*.yml")].each do |file|
       evaluation = YAML.safe_load(File.read(file))
+
       assert_includes registered, "rails-observability"
       evaluation.fetch("skills").each { |skill| assert_includes registered, skill }
     end

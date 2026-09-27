@@ -27,6 +27,7 @@ class RailsEventDrivenMessagingSystemTest < Minitest::Test
     manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
 
     skill = manifest.fetch("skills").fetch("rails-event-driven-messaging")
+
     assert_equal "skills/rails-event-driven-messaging/SKILL.md", skill.fetch("path")
     assert_includes skill.fetch("triggers"), "event-driven architecture"
     assert_includes skill.fetch("triggers"), "consumer group"
@@ -34,6 +35,7 @@ class RailsEventDrivenMessagingSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "replay"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     REQUIRED_PATHS.drop(1).each do |relative|
       assert_includes rails_patterns, relative
     end
