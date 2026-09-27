@@ -33,7 +33,7 @@ The fixture directory is copied verbatim into every agent workspace, so it must 
 - refactor tasks ship the pre-refactor code the prompt describes;
 - review/preserve tasks may ship code that is already correct and declare `noop_expected: pass`.
 
-Known-good implementations live outside the workspace, at `benchmarks/<evaluation_set>/references/<evaluation_id>/`, and contain only implementation-seam files.
+Known-good implementations live outside the workspace, at `benchmarks/<evaluation_set>/references/<evaluation_id>/`, and contain only implementation-seam files plus any `test/` or `spec/` files the evaluation requires the agent to write.
 
 `test/benchmark_fixture_controls_system_test.rb` enforces both controls through `EvalRunner` and the campaign verifier:
 

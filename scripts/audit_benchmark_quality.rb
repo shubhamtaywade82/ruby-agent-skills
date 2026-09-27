@@ -100,6 +100,8 @@ campaign_files.each do |campaign_path|
       Dir.glob(File.join(reference_root, "**", "*"), File::FNM_DOTMATCH).select { |p| File.file?(p) }.each do |path|
         relative = path.delete_prefix("#{reference_root}/")
         next if resolver.implementation_files(eval_id).include?(relative)
+        # Tests are part of the deliverable for evaluations that require them.
+        next if relative.start_with?("test/", "spec/")
 
         errors << "#{relative_campaign}: fixture #{eval_id} reference ships non-implementation file #{relative}"
       end
