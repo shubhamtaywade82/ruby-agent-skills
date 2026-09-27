@@ -37,8 +37,13 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
   def test_verifier_rejects_tampered_archive
     Dir.mktmpdir("release-verify") do |dir|
       archive = build(dir)
-      tampered = File.join(dir, "tampered.tar.gz")
-      File.binwrite(tampered, File.binread(archive) + "tampered")
+      extract = File.join(dir, "extract")
+      FileUtils.mkdir_p(extract)
+      system("tar", "-xzf", archive, "-C", extract)
+      root = File.join(extract, "ruby-agent-skills-#{VERSION}")
+      File.write(File.join(root, "README.md"), File.read(File.join(root, "README.md"), encoding: "UTF-8") + "tampered\n", encoding: "UTF-8")
+      tampered = File.join(dir, "ruby-agent-skills-#{VERSION}.tar.gz")
+      system("tar", "-czf", tampered, "-C", extract, "ruby-agent-skills-#{VERSION}")
       _out, err, status = verify(tampered, "--check-files")
       refute status.success?
       assert_includes err, "SHA-256 mismatch"
