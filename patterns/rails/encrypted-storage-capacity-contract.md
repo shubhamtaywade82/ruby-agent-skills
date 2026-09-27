@@ -20,6 +20,21 @@ Inspect DB type, limits, encoding, indexes, generated ciphertext behavior, and l
 ## Implementation procedure
 Calculate practical headroom using representative data and choose a column size/type compatible with the encrypted representation.
 
+## Example
+
+```ruby
+class WidenEncryptedColumns < ActiveRecord::Migration[8.0]
+  def change
+    # Ciphertext (base64 + JSON envelope with iv/auth tag) is larger than the
+    # plaintext; size columns for the encrypted form.
+    change_column :customers, :phone, :string, limit: 510   # was 20
+    change_column :patients, :notes, :text                  # was string(255)
+  end
+end
+# Rule of thumb from the Rails guide: string columns need at least ~255 bytes
+# of overhead; verify with a real encrypted value in the test suite.
+```
+
 ## Failure modes
 Truncation, validation errors, index limitations, failed migrations, or production-only oversized values.
 

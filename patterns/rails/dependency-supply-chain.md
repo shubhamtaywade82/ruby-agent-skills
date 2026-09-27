@@ -33,6 +33,16 @@ Inspect lockfiles, dependency sources, native extensions, gem/plugin capabilitie
 7. Add regression/allowlist documentation for accepted risks.
 8. Verify rollback/removal path.
 
+## Example
+
+```bash
+# Dependency changes are reviewed like code.
+bundle exec bundler-audit check --update        # known vulnerable gems
+git diff origin/main -- Gemfile.lock | grep -E '^\+    [a-z]' # which gems/versions changed
+bundle exec rails runner 'puts Gem.loaded_specs.values.select { |s| s.extensions.any? }.map(&:full_name)' # native extensions to review
+yarn npm audit --severity high
+```
+
 ## Failure modes
 
 - dependency added only for convenience with large transitive surface

@@ -24,6 +24,25 @@ Inspect request IDs, log tags, Rails.error context, job/message metadata, tracin
 ## Implementation procedure
 1. Reuse the existing correlation identifier. 2. Propagate it through the owning boundary. 3. Add bounded context fields. 4. Filter secrets. 5. Keep metric labels low-cardinality. 6. Test request-to-async and dependency propagation where applicable.
 
+## Example
+
+```ruby
+# One request id flows through logs, jobs, and outbound calls.
+Rails.application.configure do
+  config.log_tags = [:request_id]
+end
+
+class ApplicationJob < ActiveJob::Base
+  around_perform do |job, block|
+    Rails.logger.tagged("job:#{job.job_id}", "req:#{job.arguments.last.try(:[], :request_id)}") { block.call }
+  end
+end
+
+class PaymentsClient
+  def charge(payload) = @http.post("/charges", payload, "X-Request-Id" => Current.request_id)
+end
+```
+
 ## Failure modes
 - duplicate correlation IDs;
 - request IDs used as metric labels;

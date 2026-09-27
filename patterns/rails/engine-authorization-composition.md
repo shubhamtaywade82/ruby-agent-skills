@@ -20,6 +20,28 @@ Inspect engine routes, controllers, policies, mount boundaries, host authenticat
 ## Implementation procedure
 Define engine-side authorization explicitly and integrate host authentication/context deliberately.
 
+## Example
+
+```ruby
+# The engine does not assume the host protected its routes: it requires an
+# authorization hook and calls it on every request.
+module Reports
+  class ApplicationController < ActionController::Base
+    before_action :authorize_reports_access!
+
+    private
+
+    def authorize_reports_access!
+      allowed = Reports.config.authorize.call(self)
+      head :forbidden unless allowed
+    end
+  end
+end
+
+# host: config/initializers/reports.rb
+#   Reports.config.authorize = ->(controller) { controller.current_user&.admin? }
+```
+
 ## Failure modes
 Engine route bypass, namespace confusion, host/engine policy divergence.
 

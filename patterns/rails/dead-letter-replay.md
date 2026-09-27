@@ -34,6 +34,28 @@ Inspect broker dead-letter behavior, retention, message identity, failure metada
 8. Audit replay outcomes.
 9. Remove dead-letter data according to retention policy.
 
+## Example
+
+```ruby
+class ProcessPaymentEventJob < ApplicationJob
+  retry_on Faraday::TimeoutError, wait: :polynomially_longer, attempts: 5
+
+  # Permanent failures are parked with their original payload and id for a
+  # human decision, not retried forever or silently dropped.
+  rescue_from PaymentEvent::Malformed do |error|
+    DeadLetter.create!(queue: queue_name, job_class: self.class.name, job_id: job_id,
+                       arguments: serialize["arguments"], error: error.message)
+  end
+
+  def perform(event_payload)
+    PaymentEvent.parse!(event_payload).apply!
+  end
+end
+
+# Controlled replay keeps the original identity for idempotency.
+DeadLetter.find(42).then { |letter| letter.job_class.constantize.perform_later(*ActiveJob::Arguments.deserialize(letter.arguments)) }
+```
+
 ## Failure modes
 
 - infinite poison-message retries

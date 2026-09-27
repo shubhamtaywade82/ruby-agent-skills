@@ -20,6 +20,27 @@ Inspect dependency graph, namespaces, initializers, routes, configuration, and s
 ## Implementation procedure
 Expose stable interfaces, avoid private constant coupling, and make required initialization order explicit.
 
+## Example
+
+```ruby
+# Engines talk through public APIs and events, not each other's models or
+# load order.
+module Shipping
+  def self.quote(order_id:, items:) = Quote.for(items) # public API
+end
+
+module Checkout
+  class Totals
+    def call(order)
+      shipping = Shipping.quote(order_id: order.id, items: order.items.map(&:sku))
+      ActiveSupport::Notifications.instrument("checkout.totals_computed", order_id: order.id)
+      order.subtotal_cents + shipping.cents
+    end
+  end
+end
+# Not: Shipping::Rate.where(...) from inside Checkout.
+```
+
 ## Failure modes
 Circular dependencies, load-order bugs, namespace collisions, cascading upgrades.
 

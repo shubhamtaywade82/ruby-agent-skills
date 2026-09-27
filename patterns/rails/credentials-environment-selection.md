@@ -20,6 +20,20 @@ Inspect config.credentials.content_path, config.credentials.key_path, environmen
 ## Implementation procedure
 Make environment selection explicit and test the expected credential/key pair in each supported environment.
 
+## Example
+
+```ruby
+# config/credentials/production.yml.enc is decrypted with
+# config/credentials/production.key (or RAILS_MASTER_KEY) only when
+# RAILS_ENV=production; staging has its own file and key.
+Rails.application.configure do
+  config.credentials.content_path = Rails.root.join("config/credentials/#{Rails.env}.yml.enc")
+  config.credentials.key_path = Rails.root.join("config/credentials/#{Rails.env}.key")
+end
+
+Rails.application.credentials.dig(:stripe, :secret_key) # nil outside production, never the wrong env's key
+```
+
 ## Failure modes
 Production reads development credentials, missing keys, or accidental fallback to shared credentials.
 

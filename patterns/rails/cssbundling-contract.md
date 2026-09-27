@@ -21,6 +21,16 @@ Inspect CSS entrypoints, build scripts, package manager, lockfile, browser targe
 ## Implementation procedure
 Define source/output ownership, build command, dependency versions, and integration with Rails precompile/deploy.
 
+## Example
+
+```bash
+# The release path, not the watcher, is what CI proves:
+yarn install --immutable
+yarn build:css                      # package.json: "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+test -s app/assets/builds/application.css
+RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bin/rails assets:precompile   # cssbundling-rails runs build:css as part of this
+```
+
 ## Failure modes
 Watcher-only success, stale compiled CSS, incompatible browser targets, missing imports, and artifact mismatch.
 

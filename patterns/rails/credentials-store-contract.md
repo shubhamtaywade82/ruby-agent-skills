@@ -20,6 +20,19 @@ Inspect credential paths, key files, deployment secret injection, environment co
 ## Implementation procedure
 Choose a supported encrypted credential store or approved runtime secret source; document owner and access path.
 
+## Example
+
+```ruby
+# Where each kind of secret lives, and who can read it:
+#   application secrets     -> Rails credentials (encrypted, key held by deploy system)
+#   master key              -> RAILS_MASTER_KEY in the deploy secret store, never in git
+#   per-customer API tokens -> database, as SHA-256 digests only
+#   Active Record Encryption keys -> credentials under active_record_encryption
+module Secrets
+  def self.stripe_key = Rails.application.credentials.fetch(:stripe).fetch(:secret_key)
+end
+```
+
 ## Failure modes
 Plaintext Git secrets, leaked key files, undocumented alternate stores.
 

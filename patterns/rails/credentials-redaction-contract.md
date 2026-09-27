@@ -20,6 +20,22 @@ Inspect filter_parameters, SQL logging, structured logging, tracing, exception r
 ## Implementation procedure
 Configure redaction at each applicable observability boundary and test that representative values are filtered.
 
+## Example
+
+```ruby
+# config/initializers/filter_parameter_logging.rb
+Rails.application.config.filter_parameters += %i[passw secret token _key crypt salt certificate otp ssn cvv cvc]
+
+class PaymentMethod < ApplicationRecord
+  encrypts :card_token
+  # inspect, logs, and error reports show "[FILTERED]" for these attributes.
+  self.filter_attributes += %i[card_token billing_email]
+end
+
+# Job arguments are logged by Active Job; pass ids, never secrets.
+ChargeJob.perform_later(payment_method.id) # not the token
+```
+
 ## Failure modes
 Secret leakage through a secondary channel such as logs or traces.
 

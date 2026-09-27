@@ -20,6 +20,24 @@ Inspect engine manifests, host asset strategy, build tools, precompile configura
 ## Implementation procedure
 Integrate through the host's established asset/build contract and keep engine assets namespaced.
 
+## Example
+
+```ruby
+# lib/reports_engine/engine.rb
+module ReportsEngine
+  class Engine < ::Rails::Engine
+    isolate_namespace ReportsEngine
+
+    # Assets are namespaced under reports_engine/ and handed to the host's
+    # pipeline; the engine never writes into the host's builds directory.
+    initializer "reports_engine.assets" do |app|
+      app.config.assets.paths << root.join("app/assets/stylesheets") if app.config.respond_to?(:assets)
+      app.config.assets.precompile += %w[reports_engine/application.css] if app.config.respond_to?(:assets)
+    end
+  end
+end
+```
+
 ## Failure modes
 Missing assets, fingerprint collisions, duplicate bundles, broken release builds.
 

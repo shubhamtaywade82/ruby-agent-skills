@@ -20,6 +20,29 @@ Inspect existing middleware, Rails hooks, dependencies, and the desired request/
 ## Implementation procedure
 Use initialize(app,...), keep one responsibility, make configuration explicit, avoid domain state, and return/delegate according to Rack semantics.
 
+## Example
+
+```ruby
+# Narrow and stateless: adds one header, never touches domain objects, and
+# preserves the [status, headers, body] contract.
+class ServerTimingMiddleware
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    status, headers, body = @app.call(env)
+    elapsed_ms = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - started) * 1000).round(1)
+    headers["server-timing"] = "app;dur=#{elapsed_ms}"
+    [status, headers, body]
+  end
+end
+
+# config/application.rb
+#   config.middleware.insert_after ActionDispatch::RequestId, ServerTimingMiddleware
+```
+
 ## Failure modes
 God middleware, duplicated framework behavior, hidden global state, and business logic leakage.
 

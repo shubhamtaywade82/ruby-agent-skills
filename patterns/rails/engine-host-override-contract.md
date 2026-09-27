@@ -20,6 +20,27 @@ Inspect documented extension points, decorators, inheritance, callbacks, and hos
 ## Implementation procedure
 Prefer explicit extension points and narrow composition/decorators; document load order when unavoidable.
 
+## Example
+
+```ruby
+# The engine publishes an explicit extension point instead of expecting the
+# host to reopen its classes.
+module Blog
+  mattr_accessor :post_decorators, default: []
+
+  class PostPresenter
+    def initialize(post) = @post = post
+
+    def title
+      Blog.post_decorators.reduce(@post.title) { |title, decorator| decorator.call(title, @post) }
+    end
+  end
+end
+
+# host: config/initializers/blog.rb
+#   Blog.post_decorators << ->(title, post) { post.sponsored? ? "#{title} (sponsored)" : title }
+```
+
 ## Failure modes
 Boot-order bugs, duplicate methods, upgrade breakage, hidden host coupling.
 

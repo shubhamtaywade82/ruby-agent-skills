@@ -36,6 +36,30 @@ Inspect authorization, file ownership, storage layer, response headers, worker/t
 6. Account for connection duration in capacity.
 7. Prefer asynchronous export generation for long-running work when appropriate.
 
+## Example
+
+```ruby
+class ExportsController < ApplicationController
+  include ActionController::Live
+
+  # Authorize first, then stream bounded batches; the client disconnecting
+  # stops the work and the stream is always closed.
+  def show
+    export = current_account.exports.find(params[:id])
+    response.headers["Content-Type"] = "text/csv"
+    response.headers["Content-Disposition"] = %(attachment; filename="export-#{export.id}.csv")
+
+    export.rows_scope.find_in_batches(batch_size: 1_000) do |batch|
+      batch.each { |row| response.stream.write(row.to_csv_line) }
+    end
+  rescue ActionController::Live::ClientDisconnected
+    Rails.logger.info("export #{params[:id]} client disconnected")
+  ensure
+    response.stream.close
+  end
+end
+```
+
 ## Failure modes
 
 - streaming an unbounded query
