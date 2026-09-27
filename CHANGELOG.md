@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 106 — Corpus Quality & Benchmark Coverage
+
+- Add `scripts/audit_corpus_quality.rb` with exact corpus measurements for skill examples, executable examples, pattern implementation anchors, failure/testing guidance, evaluation case integrity, grading depth, benchmark coverage, routing trigger collisions, and stale manifest paths.
+- Register the corpus-quality audit and system test in `bin/validate`.
+- Replace the ambiguous public-evaluation benchmark warning with an explicit coverage contract: campaign-backed evaluations are empirical; the 13 stack-minimality and 9 React/TypeScript evaluation files are declared `coverage: static-only`.
+- Extend benchmark-quality tests to enforce the 22-file static-only classification.
+- Make release archive system-test inventory expectations derive from `skill-manifest.yml` rather than hard-coded counts.
+
 ## Iteration 105 — Release Infrastructure
 
 - Add `scripts/build_release_archive.rb`: deterministic, reproducible release archive with embedded `RELEASE.json` provenance, SHA-256 checksums, and generated release notes.
