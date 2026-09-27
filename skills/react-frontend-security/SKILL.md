@@ -92,8 +92,13 @@ the repository actually applies it.
 ### Trusted Types
 
 - Required for any app that accepts user content or runs third-party scripts.
-- Define a single `TrustedHTML` policy named `react-frontend#html`. No other
-  policies.
+- Allowlist exactly one HTML policy in the CSP: DOMPurify's own policy
+  (`trusted-types dompurify`), or one module-private policy passed to DOMPurify
+  through its `TRUSTED_TYPES_POLICY` option. No other code creates HTML policies.
+- The sanitization module returns `TrustedHTML` (DOMPurify
+  `RETURN_TRUSTED_TYPE: true`). Under enforcement, assigning a plain string to
+  `innerHTML` — including through `dangerouslySetInnerHTML` — throws a
+  `TypeError`.
 - `require-trusted-types-for 'script'` is the production default.
 
 ### Token storage and credential boundaries
@@ -183,8 +188,11 @@ produces `SafeHTML` and the single site that calls `dangerouslySetInnerHTML`.
 // src/lib/safe-html.ts
 import DOMPurify from "dompurify";
 
-// Branded type: only this module can produce SafeHTML.
-export type SafeHTML = string & { readonly __safeHTML: unique symbol };
+// Branded type: only this module can produce SafeHTML. Where the browser
+// supports Trusted Types it is a TrustedHTML from DOMPurify's "dompurify"
+// policy (allowlist it with `trusted-types dompurify`); elsewhere it is a
+// sanitized string.
+export type SafeHTML = (string | TrustedHTML) & { readonly __safeHTML: unique symbol };
 
 const ALLOWED_TAGS = ["p", "h1", "h2", "h3", "ul", "ol", "li", "a", "img", "strong", "em", "br"];
 const ALLOWED_ATTR = ["href", "src", "alt", "title"];
@@ -196,8 +204,9 @@ export function sanitizeHTML(input: string): SafeHTML {
     ALLOW_DATA_ATTR: false,
     FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
     FORBID_ATTR: ["onerror", "onload", "onclick"],
+    RETURN_TRUSTED_TYPE: true,
   });
-  return clean as SafeHTML;
+  return clean as unknown as SafeHTML;
 }
 ```
 

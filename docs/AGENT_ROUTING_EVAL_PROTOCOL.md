@@ -52,11 +52,11 @@ fixture. Tasks span the four routing dimensions the pack claims to cover:
 | T3 | Refactor a fat controller into a service object with a unit spec | `rails-architecture`, `ruby-core`, `rails-test-engineering` | Rails |
 | T4 | Add a React form with async server validation and a11y error messaging | `react-component-engineering`, `react-state-effects`, `react-accessibility-performance` | React |
 | T5 | Fetch paginated data from a Rails API with TanStack Query; handle loading/error/empty | `react-data-fetching`, `react-state-effects`, `typescript-runtime-contracts` | React |
-| T6 | Render server-provided HTML safely (no XSS) from a CMS field | `react-frontend-security` *(does not exist yet)* | React security gap |
+| T6 | Render server-provided HTML safely (no XSS) from a CMS field | `react-frontend-security` | React security |
 | T7 | Add a Playwright E2E test for a login flow | `react-e2e-testing` *(does not exist yet)* | React testing gap |
 | T8 | Add a Vite code-splitting config with bundle budget enforcement | `react-build-tooling` *(does not exist yet)* | React build gap |
-| T9 | Add a Next.js server action that mutates data and revalidates a query | `react-frameworks` *(does not exist yet)* | Framework gap |
-| T10 | Full-stack: Rails endpoint + React mutation with optimistic update, auth propagation, idempotency | `rails-react-contract` *(does not exist yet)*, `react-state-effects`, `rails-security` | Full-stack seam |
+| T9 | Add a Next.js server action that mutates data and revalidates a query | `react-frameworks` | Framework |
+| T10 | Full-stack: Rails endpoint + React mutation with optimistic update, auth propagation, idempotency | `rails-react-integration`, `react-state-effects`, `rails-security` | Full-stack seam |
 
 T1-T5 exercise existing skills and should produce high routing accuracy today.
 T6-T10 are designed to expose gaps: an agent will either synthesize rules ad

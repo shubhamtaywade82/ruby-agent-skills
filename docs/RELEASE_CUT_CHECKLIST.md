@@ -2,17 +2,17 @@
 
 ## Why this exists
 
-The published `v1.0.1` release advertises 91 skills / 431 patterns, but current
-`main` (after Iteration 133) is at 87 skills. The README quick-start still
-points users at `v1.0.1`, so a user following the documented install path lands
-on a stale artifact that does not match the current implementation line.
+The published `v1.0.1` release advertises 91 skills / 431 patterns and predates
+the skill merge (Iteration 128). `v1.1.0` is cut from commit `3ce8a2b`
+(Iteration 133, 85 skills / 432 patterns) and the README quick-start points at
+it. Skills added after that commit — `rails-react-integration` (Iteration 134)
+and `react-frontend-security` and `react-frameworks` (Iteration 135) — ship in
+the next minor release.
 
 This checklist is the Tier 0 gate from the frontend/full-stack completion
-program. With Iteration 133, `react-frontend-security` and `react-frameworks`
-have already landed; the remaining Tier 1 skills (`react-build-tooling`,
-`react-e2e-testing`) and the EARP baseline run should land **after** this release
-cut, so empirical routing evaluation runs against a synchronized release rather
-than a moving target.
+program. Run it for every release cut so the published artifact, the README
+quick-start, and the release notes match the implementation line, and so the
+EARP baseline runs against a synchronized release rather than a moving target.
 
 ## Pre-cut verification
 

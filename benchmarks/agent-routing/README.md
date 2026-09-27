@@ -33,7 +33,7 @@ ID (`T6-v2-...`) so historical scores remain comparable.
 | T7-e2e-login | pending | Playwright E2E for login (blocks on `react-e2e-testing`) |
 | T8-vite-splitting | pending | Vite code-splitting + bundle budget (blocks on `react-build-tooling`) |
 | T9-nextjs-server-action | pending | Next.js server action + revalidation (blocks on `react-frameworks`) |
-| T10-full-stack-mutation | pending | Rails + React optimistic mutation (blocks on `rails-react-contract`) |
+| T10-full-stack-mutation | pending | Rails + React optimistic mutation (skill: `rails-react-integration`) |
 
 ## Harness
 
