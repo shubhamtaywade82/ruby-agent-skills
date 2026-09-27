@@ -109,6 +109,15 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
     assert_includes script, "public release component is required"
   end
 
+  def test_release_bundle_verifier_binds_public_evidence_to_archive_identity
+    script = source("bin/routing-release-bundle-verify")
+    assert_includes script, "source_evidence"
+    assert_includes script, "archive evidence hash does not match bundled public evidence"
+    assert_includes script, "archive campaign does not match bundled public evidence"
+    assert_includes script, "archive repository SHA does not match bundled public evidence"
+    assert_includes script, "archive agent identity does not match bundled public evidence"
+  end
+
   def test_release_bundle_verifier_rechecks_every_component
     script = source("bin/routing-release-bundle-verify")
     assert_includes script, "public campaign evidence verification failed"
