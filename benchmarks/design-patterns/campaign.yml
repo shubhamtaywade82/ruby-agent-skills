@@ -1,5 +1,5 @@
 id: design-patterns-public-v2
-version: 2
+version: 3
 evaluation_set: design-patterns
 source: design-pattern-system-v2
 fixture_root: benchmarks/design-patterns/fixtures

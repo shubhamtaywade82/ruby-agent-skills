@@ -87,8 +87,10 @@ module RubyAgentSkills
         end
 
         env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
-        run_command(agent_command, temp_dir, env, timeout, result["agent"])
+        run_command(agent_command, temp_dir, agent_env(env), timeout, result["agent"])
         run_git_snapshot(temp_dir, result["patch"])
+        # Only the verifier may report check results.
+        FileUtils.rm_f(result_path)
 
         if verify_command.to_s.strip != ""
           run_command(verify_command, temp_dir, env, timeout, result["verification"])
@@ -158,6 +160,13 @@ module RubyAgentSkills
         "RUBY_AGENT_CONTEXT_FILE" => skill_pack.fetch("context"),
         "RUBY_AGENT_METADATA_FILE" => File.join(File.dirname(result_path), "agent-metadata.json")
       }
+    end
+
+    # The agent does not receive the benchmark repository root: it holds the
+    # verifier registries and reference implementations. nil unsets a value
+    # inherited from the runner's own environment.
+    def agent_env(env)
+      env.merge("RUBY_AGENT_EVAL_ROOT" => nil)
     end
 
     def run_command(command, chdir, env, timeout, target)

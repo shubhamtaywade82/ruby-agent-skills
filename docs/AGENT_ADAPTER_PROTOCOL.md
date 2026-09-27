@@ -11,7 +11,6 @@ The runner provides:
 - `RUBY_AGENT_EVAL_ID`: evaluation identifier
 - `RUBY_AGENT_EVAL_PROMPT`: task prompt file
 - `RUBY_AGENT_EVAL_FILE`: complete evaluation YAML
-- `RUBY_AGENT_EVAL_ROOT`: benchmark repository root
 - `RUBY_AGENT_WORKSPACE`: disposable implementation workspace
 - `RUBY_AGENT_SKILLS_ENABLED`: `true` or `false`
 - `RUBY_AGENT_SKILLS_DIR`: selected skill files when enabled
@@ -21,6 +20,10 @@ The runner provides:
 - `RUBY_AGENT_METADATA_FILE`: optional agent metadata destination
 
 The adapter executes in the workspace and must make the requested code changes there.
+
+The agent process does **not** receive `RUBY_AGENT_EVAL_ROOT`; the runner unsets it even when inherited from its own environment. That root holds fixture registries, verifiers, and reference implementations, so it is passed only to the verifier. Adapters that need repository files must receive them through the materialized context, not by reading the benchmark repository.
+
+The verifier result file (`RUBY_AGENT_EVAL_RESULT_FILE`) is deleted after the agent exits and before verification, so only the verifier can report check results.
 
 ## Skill isolation
 

@@ -90,6 +90,67 @@ class BenchmarkFixtureControlsSystemTest < Minitest::Test
     assert_empty failures
   end
 
+  # Verifiers that grade with a registry test file must use the fixture's
+  # original copy: an agent that rewrites the test to pass trivially and
+  # leaves the implementation untouched must still fail.
+  def test_rewritten_workspace_tests_do_not_change_the_grade
+    tampered = []
+    graded = 0
+    each_fixture do |campaign, registry, eval_id|
+      test_file = registry.entry(eval_id)["test_file"]
+      next unless test_file && %w[rails design-patterns].include?(campaign.fetch("evaluation_set"))
+
+      graded += 1
+      agent = "ruby -e #{Shellwords.escape(<<~RUBY)}"
+        File.write(#{test_file.inspect}, <<~TEST)
+          require "minitest/autorun"
+          class TamperedTest < Minitest::Test
+            def test_passes = assert(true)
+          end
+        TEST
+      RUBY
+      result = run_control(campaign, eval_id, registry.path(eval_id), agent)
+      functional = result.fetch("checks").fetch("functional")
+      next if result.fetch("overall") == "failed" && functional.fetch("status") == "fail" && functional["evidence"].is_a?(String)
+
+      tampered << "#{campaign.fetch("id")}/#{eval_id}: #{result.fetch("overall")} functional=#{functional.inspect[0, 200]}"
+    end
+
+    assert_equal 51, graded
+    assert_empty tampered
+  end
+
+  def test_agent_does_not_receive_the_benchmark_repository_root
+    previous = ENV["RUBY_AGENT_EVAL_ROOT"]
+    ENV["RUBY_AGENT_EVAL_ROOT"] = ROOT
+    campaign = campaigns.find { |c| c.fetch("evaluation_set") == "rails" }
+    registry = RubyAgentSkills::FixtureRegistry.for_campaign(root: ROOT, campaign: campaign)
+    eval_id = campaign.fetch("evaluations").first
+
+    result = run_control(campaign, eval_id, registry.path(eval_id), %(ruby -e 'exit(ENV.key?("RUBY_AGENT_EVAL_ROOT") ? 3 : 0)'))
+
+    assert_equal 0, result.fetch("agent").fetch("exit_code"), "agent environment exposed RUBY_AGENT_EVAL_ROOT"
+    refute_equal "incomplete", result.fetch("overall"), "verifier must still receive RUBY_AGENT_EVAL_ROOT"
+  ensure
+    previous ? ENV["RUBY_AGENT_EVAL_ROOT"] = previous : ENV.delete("RUBY_AGENT_EVAL_ROOT")
+  end
+
+  def test_agent_cannot_forge_the_verifier_result
+    campaign = campaigns.find { |c| c.fetch("evaluation_set") == "rails" }
+    registry = RubyAgentSkills::FixtureRegistry.for_campaign(root: ROOT, campaign: campaign)
+    eval_id = campaign.fetch("evaluations").first
+    forge = "ruby -rjson -e #{Shellwords.escape(
+      'checks = %w[functional tests contract scope_control].to_h { |n| [n, { "status" => "pass" }] }; ' \
+      'File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.generate("checks" => checks))'
+    )}"
+
+    # A verifier that exits 0 without reporting must not inherit forged checks.
+    result = runner.run(id: eval_id, workspace: registry.path(eval_id), agent_command: forge, verify_command: "true", timeout: TIMEOUT)
+
+    refute_equal "passed", result.fetch("overall")
+    assert(result.fetch("checks").values.none? { |check| check["status"] == "pass" })
+  end
+
   def test_registry_root_overrides_conventional_directory
     Dir.mktmpdir("fixture-registry") do |root|
       FileUtils.mkdir_p(File.join(root, "benchmarks", "demo", "fixtures", "short-name"))
@@ -108,6 +169,10 @@ class BenchmarkFixtureControlsSystemTest < Minitest::Test
       assert_raises(RubyAgentSkills::FixtureRegistry::Error) { registry.path("missing") }
       assert_raises(RubyAgentSkills::FixtureRegistry::Error) { registry.noop_expected("preserved") }
       assert_equal "fail", registry.noop_expected("demo-long-name")
+
+      before = registry.digest("demo-long-name")
+      File.write(File.join(root, "benchmarks", "demo", "fixtures", "short-name", "solution.rb"), "# start\n")
+      refute_equal before, registry.digest("demo-long-name"), "starting-state changes must change the fixture digest"
     end
   end
 

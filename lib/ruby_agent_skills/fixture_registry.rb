@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "digest"
 require "yaml"
 
 module RubyAgentSkills
@@ -65,6 +66,17 @@ module RubyAgentSkills
       raise Error, "fixture not found: #{eval_id} (#{resolved.delete_prefix("#{root}/")})" unless Dir.exist?(resolved)
 
       resolved
+    end
+
+    # Content digest of the workspace an agent starts from: every file's
+    # relative path and bytes, in sorted order. Results carry it so runs
+    # against different starting states are not silently compared.
+    def digest(eval_id)
+      base = path(eval_id)
+      files = Dir.glob(File.join(base, "**", "*"), File::FNM_DOTMATCH).select { |p| File.file?(p) }.sort
+      files.each_with_object(Digest::SHA256.new) do |file, sha|
+        sha << file.delete_prefix("#{base}/") << "\0" << File.binread(file) << "\0"
+      end.hexdigest
     end
 
     def reference_root(eval_id)

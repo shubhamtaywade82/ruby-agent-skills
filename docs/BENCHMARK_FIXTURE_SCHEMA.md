@@ -38,7 +38,14 @@ Known-good implementations live outside the workspace, at `benchmarks/<evaluatio
 `test/benchmark_fixture_controls_system_test.rb` enforces both controls through `EvalRunner` and the campaign verifier:
 
 - **negative control:** a no-op agent must produce `overall: failed` on every fixture unless `noop_expected: pass` is declared;
-- **positive control:** copying a reference into the workspace must produce `overall: passed`.
+- **positive control:** copying a reference into the workspace must produce `overall: passed`;
+- **tamper control:** for verifiers that grade with the registry `test_file` (Rails and design-patterns), rewriting the workspace test file to pass trivially must not change the grade. `functional` runs the fixture's original test file against the agent's code (`RubyAgentSkills::FixtureTestRun`); the agent's edited tests only count toward the separate `tests` check.
+
+Every `*_regex` entry must compile and must not contain an escaped backslash. In single-quoted YAML write `'all_records\.map'`, not `'all_records\\.map'`: the doubled form requires a literal backslash and never matches Ruby source.
+
+## Accepted residual risk
+
+Public fixtures, tests, and references are readable by anyone with the repository, including an agent that locates it by other means. The runner withholds the repository root from the agent process, but that is exposure reduction, not isolation. Public campaign results measure harness behaviour on public tasks; claims about model capability require the external hidden cases (`controls.hidden_cases: external-only`). Review this if public campaigns are ever used as the sole evidence for a capability claim.
 
 The fixture contract is benchmark infrastructure. It exists because the source assessment examples use free-function-style names while also requiring OOP; the benchmark needs a concrete seam to execute the behavior repeatedly.
 

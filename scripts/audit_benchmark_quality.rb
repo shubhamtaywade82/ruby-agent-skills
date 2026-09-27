@@ -105,6 +105,26 @@ campaign_files.each do |campaign_path|
       end
     end
 
+    # Source-evidence regexes are verifier logic. One that does not compile
+    # makes the check fail for every submission; one containing an escaped
+    # backslash (YAML single-quote double escaping) requires a literal "\"
+    # and silently never matches Ruby source.
+    fixture.each do |key, expressions|
+      next unless key.to_s.end_with?("_regex")
+
+      Array(expressions).each do |expression|
+        begin
+          Regexp.new(expression.to_s)
+        rescue RegexpError => e
+          errors << "#{relative_campaign}: fixture #{eval_id} #{key} #{expression.inspect} does not compile: #{e.message}"
+          next
+        end
+        if expression.to_s.include?("\\\\")
+          errors << "#{relative_campaign}: fixture #{eval_id} #{key} #{expression.inspect} contains an escaped backslash; use a single backslash inside single-quoted YAML"
+        end
+      end
+    end
+
     implementation_files = Array(fixture["implementation_files"])
     implementation_files = [fixture["implementation_file"]] if implementation_files.empty? && fixture["implementation_file"]
     errors << "#{relative_campaign}: fixture #{eval_id} has no implementation seam" if implementation_files.empty?

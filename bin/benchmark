@@ -190,7 +190,8 @@ when "campaign"
     "provenance" => {
       "manifest_sha256" => Digest::SHA256.file(File.expand_path(manifest_path)).hexdigest,
       "verifier_sha256" => Digest::SHA256.file(campaign_verifier).hexdigest,
-      "fixture_registry_sha256" => File.file?(registry_path) ? Digest::SHA256.file(registry_path).hexdigest : nil
+      "fixture_registry_sha256" => File.file?(registry_path) ? Digest::SHA256.file(registry_path).hexdigest : nil,
+      "fixtures_sha256" => Digest::SHA256.hexdigest(selected_ids.map { |id| "#{id}:#{fixtures.digest(id)}" }.join("\n"))
     },
     "measurement" => {
       "requested_repetitions" => repetitions,
@@ -255,6 +256,7 @@ when "campaign"
       "baseline_completed_repetitions" => baseline_runs.length,
       "skills_completed_repetitions" => skills_runs.length,
       "complete" => complete,
+      "fixture_sha256" => fixtures.digest(eval_id),
       "baseline_results" => baseline_runs,
       "skills_results" => skills_runs,
       "dimensions" => aggregate
