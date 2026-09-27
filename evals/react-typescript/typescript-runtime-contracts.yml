@@ -1,4 +1,5 @@
 id: typescript-runtime-contracts
+coverage: static-only
 version: 1
 title: TypeScript Runtime Contract
 category: react-typescript

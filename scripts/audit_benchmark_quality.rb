@@ -117,6 +117,20 @@ unbenchmarked_paths = all_public_eval_paths.reject do |path|
   benchmarked_eval_ids.include?(id)
 end
 
+static_only_paths = unbenchmarked_paths.select do |path|
+  YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)["coverage"].to_s == "static-only"
+end
+unclassified_paths = unbenchmarked_paths - static_only_paths
+
+unclassified_cases = unclassified_paths.sum do |path|
+  data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  Array(data["cases"]).length
+end
+
+if unclassified_paths.any?
+  warnings << "public evaluations without a benchmark campaign or explicit static-only classification: #{unclassified_paths.length} files (#{unclassified_cases} cases)"
+end
+
 rails_eval_paths = Dir[File.join(EVAL_ROOT, "rails", "*.yml")].sort
 rails_eval_ids = rails_eval_paths.map do |path|
   YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("id").to_s
@@ -130,17 +144,12 @@ if rails_campaign_data.dig("controls", "require_all_public_evaluations") == true
   errors << "rails campaign does not cover all public Rails evaluations: #{rails_unbenchmarked_ids.to_a.sort.join(", ")}"
 end
 
-unless unbenchmarked_paths.empty?
-  unbenchmarked_cases = unbenchmarked_paths.sum do |path|
-    data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
-    Array(data["cases"]).length
-  end
-  warnings << "public evaluations without a benchmark campaign: #{unbenchmarked_paths.length} files (#{unbenchmarked_cases} cases)"
-end
 puts "Benchmark quality audit"
 puts "  campaigns: #{campaign_files.length}"
 puts "  campaign evaluations: #{campaign_files.sum { |path| YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("evaluations").length }}"
-puts "  unbenchmarked evaluations: #{unbenchmarked_paths.length}"
+puts "  campaign-covered evaluations: #{benchmarked_eval_ids.length}"
+puts "  static-only evaluations: #{static_only_paths.length}"
+puts "  unclassified evaluations: #{unclassified_paths.length}"
 warnings.each { |warning| puts "WARN: #{warning}" }
 
 if errors.any?

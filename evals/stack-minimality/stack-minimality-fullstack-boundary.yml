@@ -1,4 +1,5 @@
 id: stack-minimality-fullstack-boundary
+coverage: static-only
 version: 1
 title: Reuse the existing Rails/React boundary
 category: stack-minimality

@@ -5,6 +5,7 @@ require "json"
 require "minitest/autorun"
 require "open3"
 require "tmpdir"
+require "yaml"
 
 class ReleaseArchiveSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
@@ -13,6 +14,14 @@ class ReleaseArchiveSystemTest < Minitest::Test
 
   VERSION = "v9.9.9-test"
   ARCHIVE_DIR = "ruby-agent-skills-#{VERSION}".freeze
+
+  def manifest
+    YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  end
+
+  def expected_skill_count
+    manifest.fetch("skills").length
+  end
 
   def git_sha
     out, _err, status = Open3.capture3("git", "-C", ROOT, "rev-parse", "HEAD")
@@ -65,7 +74,7 @@ class ReleaseArchiveSystemTest < Minitest::Test
         release = JSON.parse(File.read(File.join(archive_root, "RELEASE.json"), encoding: "UTF-8"))
         assert_equal VERSION, release.fetch("version")
         assert_equal git_sha, release.fetch("git_sha")
-        assert_equal 91, release.fetch("skills")
+        assert_equal expected_skill_count, release.fetch("skills")
 
         %w[
           AGENTS.md LICENSE README.md CHANGELOG.md SECURITY.md CONTRIBUTING.md
@@ -98,7 +107,7 @@ class ReleaseArchiveSystemTest < Minitest::Test
         metadata = JSON.parse(File.read(File.join(target, ".ruby-agent-skills", "INSTALLATION.json"), encoding: "UTF-8"))
         assert_equal VERSION, metadata.dig("source", "requested_ref")
         assert_equal git_sha, metadata.dig("source", "resolved_git_sha")
-        assert_equal 91, metadata.fetch("inventory").fetch("skills")
+        assert_equal expected_skill_count, metadata.fetch("inventory").fetch("skills")
 
         verify = File.join(target, ".ruby-agent-skills", "skill-pack-verify")
         vout, verr, vstatus = Open3.capture3(RbConfig.ruby, verify, "--root", target)
