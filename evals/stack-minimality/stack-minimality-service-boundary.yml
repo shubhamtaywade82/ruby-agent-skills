@@ -1,4 +1,5 @@
 id: stack-minimality-service-boundary
+coverage: static-only
 version: 1
 title: Do not split Rails services without a real boundary
 category: stack-minimality
