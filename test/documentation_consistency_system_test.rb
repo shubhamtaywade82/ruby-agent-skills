@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "fileutils"
 require "json"
 require "minitest/autorun"
 require "open3"
@@ -45,6 +46,10 @@ class DocumentationConsistencySystemTest < Minitest::Test
       FileUtils.mkdir_p(File.join(dir, "evals"))
       FileUtils.mkdir_p(File.join(dir, "test"))
       File.write(File.join(dir, "docs", "IMPLEMENTATION_HANDOFF.md"), handoff.sub("442 evaluation cases", "436 evaluation cases"), encoding: "UTF-8")
+      Dir[File.join(ROOT, "skills", "*", "SKILL.md")].first && FileUtils.cp_r(File.join(ROOT, "skills"), dir)
+      FileUtils.cp_r(File.join(ROOT, "patterns"), dir)
+      FileUtils.cp_r(File.join(ROOT, "evals"), dir)
+      FileUtils.cp_r(File.join(ROOT, "test"), dir)
       File.write(File.join(dir, "CHANGELOG.md"), changelog, encoding: "UTF-8")
       File.write(File.join(dir, "skill-manifest.yml"), manifest, encoding: "UTF-8")
       
