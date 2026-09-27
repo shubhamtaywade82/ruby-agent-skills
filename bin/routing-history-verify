@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "digest"
 require "json"
 require "open3"
 require "optparse"
@@ -26,6 +27,13 @@ errors << "history type must be skill-routing-history-v1" unless history["histor
 entries = history["entries"]
 errors << "entries must be an array" unless entries.is_a?(Array)
 
+archive_root = history["archive_root"].to_s
+if options[:check_files]
+  if archive_root.empty? || !Dir.exist?(archive_root)
+    errors << "archive root unavailable at #{archive_root}"
+  end
+end
+
 if entries.is_a?(Array)
   errors << "campaign_count does not match entries" unless history["campaign_count"].to_i == entries.length
 
@@ -48,6 +56,22 @@ if entries.is_a?(Array)
       next
     end
 
+    if options[:check_files]
+      begin
+        root_real = File.realpath(archive_root)
+        archive_real = File.realpath(archive_path)
+        within_root = archive_real == root_real || archive_real.start_with?(root_real + File::SEPARATOR)
+        errors << "archive path escapes archive root" unless within_root
+
+        if entry["archive_path_relative"]
+          expected_relative = archive_real.delete_prefix(root_real + File::SEPARATOR)
+          errors << "archive relative path mismatch" unless entry["archive_path_relative"] == expected_relative
+        end
+      rescue SystemCallError => e
+        errors << "archive path cannot be resolved for #{entry["archive_id"]}: #{e.message}"
+      end
+    end
+
     next unless options[:check_files]
 
     stdout, stderr, status = Open3.capture3(
@@ -59,6 +83,11 @@ if entries.is_a?(Array)
     begin
       manifest_path = File.join(archive_path, "ARCHIVE_MANIFEST.json")
       manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+      if entry["archive_manifest_sha256"]
+        actual_manifest_sha = Digest::SHA256.file(manifest_path).hexdigest
+        errors << "archive manifest SHA-256 mismatch for #{entry["archive_id"]}" unless
+          entry["archive_manifest_sha256"] == actual_manifest_sha
+      end
       %w[archive_id captured_at evidence_type repository agent campaign_metrics requested_runs completed_runs analysis].each do |key|
         errors << "#{key} does not match archive manifest for #{entry["archive_id"]}" unless entry[key] == manifest[key]
       end
@@ -68,6 +97,18 @@ if entries.is_a?(Array)
     rescue Errno::ENOENT, JSON::ParserError, KeyError => e
       errors << "archive manifest invalid for #{entry["archive_id"]}: #{e.message}"
     end
+  end
+
+  if history["archive_set_sha256"]
+    archive_set = entries.map do |entry|
+      {
+        "archive_id" => entry["archive_id"],
+        "archive_path_relative" => entry["archive_path_relative"],
+        "archive_manifest_sha256" => entry["archive_manifest_sha256"]
+      }
+    end.sort_by { |entry| [entry["archive_id"].to_s, entry["archive_path_relative"].to_s] }
+    actual_set_sha = Digest::SHA256.hexdigest(JSON.generate(archive_set))
+    errors << "archive_set_sha256 mismatch" unless actual_set_sha == history["archive_set_sha256"]
   end
 end
 
