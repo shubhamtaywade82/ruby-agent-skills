@@ -40,7 +40,7 @@ The archive carries the agent-facing surface only — no git history, no evaluat
 | Path | Purpose |
 | --- | --- |
 | `skills/` | 88 agent-executable skills (`SKILL.md` per skill) |
-| `patterns/` | 437 implementation patterns |
+| `patterns/` | 443 implementation patterns |
 | `skill-manifest.yml` | Canonical skill inventory and routing metadata |
 | `router/ROUTING.md` | Routing contract |
 | `AGENTS.md` | Agent-facing entry point |

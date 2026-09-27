@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 135 — Frontend Tier 1: react-frontend-security, react-frameworks, EARP protocol, T6 fixture
+> **Current milestone:** Iteration 136 — RSpec coverage in rails-test-engineering
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -409,3 +409,7 @@ Added the `rails-react-integration` skill, five cross-stack patterns, cross-stac
 ## Iteration 135 — Frontend Tier 1: react-frontend-security, react-frameworks, EARP protocol, T6 fixture
 
 Added the `react-frontend-security` and `react-frameworks` skills, the empirical agent-routing evaluation protocol (EARP), the release-cut checklist, and the first EARP fixture (T6).
+
+## Iteration 136 — RSpec coverage in rails-test-engineering
+
+Added RSpec guidance to `rails-test-engineering` and six RSpec patterns whose examples were run in a Rails 8.0 app.

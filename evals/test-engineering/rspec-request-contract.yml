@@ -1,0 +1,35 @@
+id: rspec-request-contract
+version: 1
+title: Cover a JSON write endpoint in an existing RSpec suite
+category: rails
+source: rails-test-engineering-v1
+skills:
+  - rails-test-engineering
+patterns:
+  - rspec-request-spec
+  - rspec-job-and-mail-enqueue
+  - rspec-shared-examples-contract
+prompt: |
+  The repository uses rspec-rails. Cover POST /orders: a valid order returns 201, enqueues FulfilOrderJob on the fulfilment queue, and enqueues OrderMailer#confirmation; an invalid quantity returns 422 with the Rails validation error shape and persists nothing. Reuse the 422 contract for other write endpoints.
+constraints:
+  required_design:
+    - request spec, not controller spec
+    - block-form enqueue matchers
+    - shared examples for the repeated 422 contract
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: created
+    input: valid order params
+    expected: 201, job and mail enqueued
+  - name: rejected
+    input: quantity 0
+    expected: 422 error shape, Order count unchanged
+grading:
+  functional: success and rejection paths are both asserted
+  tests: have_enqueued_job and have_enqueued_mail use block form against the :test adapter
+  contract: status, parsed body, and persistence are asserted at the HTTP boundary
+  scope_control: no Minitest suite added, no allow_any_instance_of, no sleeps
