@@ -329,6 +329,23 @@ This coverage deepens the Rails request boundary into explicit Rack/middleware e
 - `evals/rails/rack-middleware-contract.yml`
 - `test/rails_rack_middleware_system_test.rb`
 
+# React + TypeScript frontend migration
+
+Standalone React + TypeScript engineering is moving to shubhamtaywade82/react-agent-skills.
+
+The following frontend skills are deprecated for new standalone frontend work but remain installed during the deprecation window:
+- typescript-core-engineering -> react-agent-skills / typescript-core-engineering
+- typescript-type-design -> react-agent-skills / typescript-type-design
+- typescript-runtime-contracts -> react-agent-skills / typescript-runtime-contracts
+- react-component-engineering -> react-agent-skills / react-component-engineering
+- react-state-effects -> react-agent-skills / react-hooks-effects + react-state-management
+- react-data-fetching -> react-agent-skills / react-data-fetching
+- react-testing-engineering -> react-agent-skills / react-testing-engineering + frontend-e2e
+- react-accessibility-performance -> react-agent-skills / react-accessibility + react-performance
+- react-architecture -> react-agent-skills / react-architecture
+
+See docs/REACT_AGENT_SKILLS_MIGRATION.md for retention and removal gates. Rails backend and cross-boundary integration skills remain in this repository.
+ 
 # Agent operating model
 
 The agent is expected to follow this workflow:

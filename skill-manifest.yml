@@ -71,26 +71,32 @@ retired_skills:
 
 skills:
 
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / typescript-core-engineering
   typescript-core-engineering:
     family: typescript
     path: skills/typescript-core-engineering/SKILL.md
     triggers: [TypeScript language, strictness, modules, type narrowing, generics, public type contracts]
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / typescript-type-design
   typescript-type-design:
     family: typescript
     path: skills/typescript-type-design/SKILL.md
     triggers: [TypeScript type design, discriminated unions, branded identifiers, utility types, generic API design]
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / typescript-runtime-contracts
   typescript-runtime-contracts:
     family: typescript
     path: skills/typescript-runtime-contracts/SKILL.md
     triggers: [TypeScript runtime validation, JSON, HTTP responses, environment values, browser storage, dynamic values]
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-component-engineering
   react-component-engineering:
     family: react-typescript
     path: skills/react-component-engineering/SKILL.md
     triggers: [React components, props, composition, controlled inputs, reusable UI boundaries]
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-hooks-effects + react-state-management
   react-state-effects:
     family: react-typescript
     path: skills/react-state-effects/SKILL.md
     triggers: [React state, reducers, context, refs, effects, subscriptions, stale closures, lifecycle]
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-data-fetching
   react-data-fetching:
     family: react-typescript
     path: skills/react-data-fetching/SKILL.md
@@ -99,14 +105,17 @@ skills:
     family: react-typescript
     path: skills/rails-react-integration/SKILL.md
     triggers: [Rails React integration, Inertia, Rails JSON API client, CSRF token in fetch, Rails validation errors in React forms, Rails pagination in React]
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-testing-engineering + frontend-e2e
   react-testing-engineering:
     family: react-typescript
     path: skills/react-testing-engineering/SKILL.md
     triggers: [React component testing, hooks testing, user interactions, async UI, Testing Library]
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-accessibility + react-performance
   react-accessibility-performance:
     family: react-typescript
     path: skills/react-accessibility-performance/SKILL.md
     triggers: [React accessibility, keyboard, focus, render performance, memoization, virtualization]
+  # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-architecture
   react-architecture:
     family: react-typescript
     path: skills/react-architecture/SKILL.md
