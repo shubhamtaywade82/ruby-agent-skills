@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 105 — Release Infrastructure
+> **Current milestone:** Iteration 108 — Release Artifact Verification
 
 ---
 
@@ -179,7 +179,7 @@ The skill system is built from five connected layers:
 | Skills | **91** |
 | Implementation patterns | **431** |
 | Evaluation cases | **442** |
-| Dedicated system/contract tests | **82** |
+| Dedicated system/contract tests | **83** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
