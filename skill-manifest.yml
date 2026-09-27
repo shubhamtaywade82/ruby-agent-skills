@@ -1228,6 +1228,7 @@ evaluations:
       - evals/test-engineering/flaky-diagnosis.yml
       - evals/test-engineering/system-contract.yml
       - evals/test-engineering/test-performance.yml
+      - evals/test-engineering/rspec-request-contract.yml
     checks:
       - functional
       - tests
