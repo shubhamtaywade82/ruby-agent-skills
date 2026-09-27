@@ -8,6 +8,7 @@ require "optparse"
 require "shellwords"
 require "yaml"
 require_relative "../lib/ruby_agent_skills/eval_runner"
+require_relative "../lib/ruby_agent_skills/fixture_registry"
 
 ROOT = File.expand_path("..", __dir__)
 DEFAULT_FIXTURE_ROOT = File.join(ROOT, "benchmarks", "ruby-training", "fixtures")
@@ -145,6 +146,18 @@ when "campaign"
 
   selected_ids = Array(campaign.fetch("evaluations"))
   selected_ids &= [options.fetch(:evaluation)] if options[:evaluation]
+
+  # Resolve every workspace before any agent runs so a registry/campaign
+  # mismatch fails the whole campaign instead of aborting partway through.
+  fixtures = RubyAgentSkills::FixtureRegistry.for_campaign(root: ROOT, campaign: campaign)
+  unresolved = []
+  workspaces = selected_ids.to_h do |eval_id|
+    [eval_id, fixtures.path(eval_id)]
+  rescue RubyAgentSkills::FixtureRegistry::Error => e
+    unresolved << e.message
+    [eval_id, nil]
+  end
+  abort "campaign fixtures unresolved:\n  #{unresolved.join("\n  ")}" unless unresolved.empty?
   repetitions = (options[:runs] || campaign.fetch("execution").fetch("repetitions", 1)).to_i
   abort "repetitions must be >= 1" if repetitions < 1
 
@@ -157,7 +170,7 @@ when "campaign"
     File.expand_path(manifest_path)
   end
 
-  registry_path = File.join(ROOT, "benchmarks", campaign.fetch("evaluation_set"), "fixtures.yml")
+  registry_path = fixtures.registry_path
   campaign_result = {
     "protocol_version" => 1,
     "campaign_result_schema_version" => 2,
@@ -202,7 +215,7 @@ when "campaign"
 
       baseline = runner.run(
         id: eval_id,
-        workspace: fixture_path(eval_id, campaign_fixture_root),
+        workspace: workspaces.fetch(eval_id),
         agent_command: options.fetch(:baseline),
         verify_command: "ruby #{Shellwords.escape(campaign_verifier)}",
         output: baseline_path,
@@ -213,7 +226,7 @@ when "campaign"
 
       skills = runner.run(
         id: eval_id,
-        workspace: fixture_path(eval_id, campaign_fixture_root),
+        workspace: workspaces.fetch(eval_id),
         agent_command: options.fetch(:skills),
         verify_command: "ruby #{Shellwords.escape(campaign_verifier)}",
         output: skills_path,

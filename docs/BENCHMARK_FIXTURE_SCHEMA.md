@@ -16,9 +16,29 @@ Example:
 
 ## Fields
 
-- `implementation_file`: implementation seam loaded by the verifier
+- `root`: fixture workspace directory; overrides the conventional `<campaign fixture_root>/<evaluation_id>`
+- `implementation_file` / `implementation_files`: implementation seam loaded by the verifier
 - `classes`: class boundaries required for the OOP check
 - `api`: stable callable names exposed to deterministic checks
+- `noop_expected`: `fail` (default) or `pass`; `pass` is allowed only for review/preserve tasks where leaving the fixture unchanged is a correct outcome
+- `noop_rationale`: required when `noop_expected: pass`
+
+`bin/benchmark campaign` and `scripts/audit_benchmark_quality.rb` both resolve fixtures through `RubyAgentSkills::FixtureRegistry`, so the audit checks the same workspace paths the runner executes. A campaign aborts before any agent run if an evaluation does not resolve.
+
+## Starting state and controls
+
+The fixture directory is copied verbatim into every agent workspace, so it must hold the task's *starting state*, never its answer:
+
+- implementation tasks ship a skeleton whose method bodies raise `NotImplementedError`;
+- refactor tasks ship the pre-refactor code the prompt describes;
+- review/preserve tasks may ship code that is already correct and declare `noop_expected: pass`.
+
+Known-good implementations live outside the workspace, at `benchmarks/<evaluation_set>/references/<evaluation_id>/`, and contain only implementation-seam files.
+
+`test/benchmark_fixture_controls_system_test.rb` enforces both controls through `EvalRunner` and the campaign verifier:
+
+- **negative control:** a no-op agent must produce `overall: failed` on every fixture unless `noop_expected: pass` is declared;
+- **positive control:** copying a reference into the workspace must produce `overall: passed`.
 
 The fixture contract is benchmark infrastructure. It exists because the source assessment examples use free-function-style names while also requiring OOP; the benchmark needs a concrete seam to execute the behavior repeatedly.
 

@@ -1,12 +1,12 @@
 class PendingState
   def shippable?
-    false
+    raise NotImplementedError
   end
 end
 
 class PaidState
   def shippable?
-    true
+    raise NotImplementedError
   end
 end
 
@@ -16,10 +16,10 @@ class Order
   end
 
   def state
-    @state
+    raise NotImplementedError
   end
 
   def shippable?
-    @state.shippable?
+    raise NotImplementedError
   end
 end

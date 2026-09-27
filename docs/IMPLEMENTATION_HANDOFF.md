@@ -9,7 +9,7 @@ Current inventory:
 - 91 skills
 - 432 implementation patterns
 - 442 evaluation cases
-- 84 system/contract tests
+- 85 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -225,4 +225,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 112. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 113. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.

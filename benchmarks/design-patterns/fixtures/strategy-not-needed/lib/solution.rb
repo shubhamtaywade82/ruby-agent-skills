@@ -4,6 +4,6 @@ class ShippingCost
   end
 
   def cents
-    500 + (@weight_grams * 2)
+    raise NotImplementedError
   end
 end

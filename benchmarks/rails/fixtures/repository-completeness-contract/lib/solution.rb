@@ -2,11 +2,11 @@
 class CompletenessAuditor
   def initialize(skills:,patterns:,evaluations:,routes:,system_tests:) = (@skills,@patterns,@evaluations,@routes,@system_tests=skills,patterns,evaluations,routes,system_tests)
   def registry_complete?
-    @skills.all? && @patterns.all? && @evaluations.all?
+    raise NotImplementedError
   end
-  def routing_complete? = @routes.sort == @skills.sort
-  def system_test_complete? = @system_tests[:declared] == @system_tests[:executed]
+  def routing_complete? = raise(NotImplementedError)
+  def system_test_complete? = raise(NotImplementedError)
   def rails_8_1_coverage
-    %w[ActiveJob::Continuable Rails.event config/ci.rb render markdown Solid Cache Solid Cable rails credentials:fetch].all?
+    raise NotImplementedError
   end
 end

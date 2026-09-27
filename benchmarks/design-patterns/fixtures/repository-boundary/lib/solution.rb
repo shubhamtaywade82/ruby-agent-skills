@@ -6,10 +6,10 @@ class OrderRepository
   end
 
   def find(id)
-    @store.fetch(id)
+    raise NotImplementedError
   end
 
   def save(order)
-    @store[order.id] = order
+    raise NotImplementedError
   end
 end

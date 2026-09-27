@@ -4,6 +4,6 @@ class Inventory
   end
 
   def available?(sku:)
-    @items.any? { |item| item.fetch(:sku) == sku && item.fetch(:quantity) > 0 }
+    raise NotImplementedError
   end
 end

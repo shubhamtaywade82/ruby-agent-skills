@@ -1,33 +1,15 @@
 # frozen_string_literal: true
 
+# Pre-refactor reporting and state-transition layer. Filters materialize to
+# Arrays, ordering is implicit, exports load every record, the external-effect
+# callback fires before commit, and destroy is an alias for bulk delete.
 class Relation
-  include Enumerable
-
-  def initialize(rows, filters: [], ordering: nil)
+  def initialize(rows)
     @rows = rows
-    @filters = filters
-    @ordering = ordering
   end
 
   def where(**conditions)
-    self.class.new(@rows, filters: @filters + [conditions], ordering: @ordering)
-  end
-
-  def order(key)
-    self.class.new(@rows, filters: @filters, ordering: key)
-  end
-
-  def pluck(*keys)
-    to_a.map { |row| keys.length == 1 ? row.fetch(keys.first) : keys.map { |key| row.fetch(key) } }
-  end
-
-  def to_a
-    rows = @filters.reduce(@rows) { |current, filter| current.select { |row| filter.all? { |k, v| row.fetch(k) == v } } }
-    @ordering ? rows.sort_by { |row| row.fetch(@ordering) } : rows
-  end
-
-  def each(&block)
-    to_a.each(&block)
+    @rows.select { |row| conditions.all? { |key, value| row.fetch(key) == value } }
   end
 end
 
@@ -40,14 +22,9 @@ class OrderReport
     Relation.new(@rows).where(tenant_id: tenant_id)
   end
 
-  def export_rows(batch_size: 2)
-    each_batch(batch_size: batch_size).to_a
-  end
-
-  def each_batch(batch_size:)
-    Enumerator.new do |yielder|
-      @rows.each_slice(batch_size) { |batch| yielder << batch }
-    end
+  def export_rows
+    all_records = @rows.to_a
+    all_records.map { |row| row }
   end
 end
 
@@ -59,27 +36,18 @@ class OrderStateWriter
   end
 
   def transition(order_id:, commit:)
-    @pending = order_id if commit
+    @events << order_id
   end
 
-  def commit
-    after_commit
-  end
+  def commit; end
 
-  def rollback
-    @pending = nil
-  end
-
-  def after_commit
-    @events << @pending if @pending
-    @pending = nil
-  end
-
-  def destroy(order)
-    order[:destroyed] = true
-  end
+  def rollback; end
 
   def delete(order)
     order[:deleted] = true
+  end
+
+  def destroy(order)
+    delete(order)
   end
 end
