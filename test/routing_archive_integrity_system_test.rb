@@ -93,6 +93,7 @@ class RoutingArchiveIntegritySystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_archive_integrity_system_test.rb"
   end
 
@@ -111,14 +112,14 @@ class RoutingArchiveIntegritySystemTest < Minitest::Test
       "evidence" => "skill-routing-campaign-v1",
       "campaign" => "skill-routing-public-v1",
       "campaign_version" => 1,
-      "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
-      "agent" => {"provider" => "ollama", "model" => "fixture-model"},
+      "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
+      "agent" => { "provider" => "ollama", "model" => "fixture-model" },
       "campaign_metrics" => {
         "primary_accuracy" => 1.0,
         "secondary_recall" => 1.0,
         "average_unexpected_secondary_count" => 0.0
       },
-      "analysis" => {"primary_accuracy" => 1.0},
+      "analysis" => { "primary_accuracy" => 1.0 },
       "requested_runs" => 1,
       "completed_runs" => 1,
       "artifacts" => {

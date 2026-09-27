@@ -54,6 +54,7 @@ class RoutingCampaignResumeSystemTest < Minitest::Test
 
       refute status.success?, "#{stdout}\n#{stderr}"
       checkpoint = JSON.parse(File.read(File.join(dir, "campaign.json"), encoding: "UTF-8"))
+
       assert_equal 1, checkpoint.fetch("completed_runs")
       refute checkpoint.fetch("complete")
       assert File.file?(File.join(dir, CASE_ID, "run-1", "run.json"))
@@ -63,11 +64,13 @@ class RoutingCampaignResumeSystemTest < Minitest::Test
 
       assert status.success?, "#{stdout}\n#{stderr}"
       final_campaign = JSON.parse(File.read(File.join(dir, "campaign.json"), encoding: "UTF-8"))
+
       assert_equal 2, final_campaign.fetch("completed_runs")
       assert final_campaign.fetch("complete")
 
       first_run = final_campaign.fetch("cases").fetch(CASE_ID).fetch("runs").first
       second_run = final_campaign.fetch("cases").fetch(CASE_ID).fetch("runs").last
+
       assert_equal true, first_run.fetch("resumed")
       refute second_run.key?("resumed")
       assert_includes stdout, "Resumed #{CASE_ID} run 1"
@@ -78,6 +81,7 @@ class RoutingCampaignResumeSystemTest < Minitest::Test
     Dir.mktmpdir("routing-resume") do |dir|
       success_agent = write_agent(dir, exit_on_run_two: false)
       _stdout, _stderr, status = run_eval(success_agent, dir)
+
       assert status.success?
 
       _stdout, stderr, status = Open3.capture3(
@@ -104,6 +108,7 @@ class RoutingCampaignResumeSystemTest < Minitest::Test
     Dir.mktmpdir("routing-resume") do |dir|
       success_agent = write_agent(dir, exit_on_run_two: false)
       _stdout, _stderr, status = run_eval(success_agent, dir)
+
       assert status.success?
 
       _stdout, stderr, status = Open3.capture3(
@@ -128,6 +133,7 @@ class RoutingCampaignResumeSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_campaign_resume_system_test.rb"
   end
 end

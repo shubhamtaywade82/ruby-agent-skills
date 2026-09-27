@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 130 — RuboCop in CI and Executable Scripts
+
+- Run `bundle exec rubocop` in the `Validate skills` workflow. A `Gemfile` (lint group only: `rubocop ~> 1.90`, `rubocop-performance`, `rubocop-minitest`, `rubocop-rspec`, `rubocop-thread_safety`) and lockfile pin the toolchain; the skill library, validators, and harness still use only the Ruby standard library.
+- Replace the previous `.rubocop.yml`, which could not load: it listed the whole target-application plugin catalog, including three extensions that are not `lint_roller` plugins, `cookstyle` (which replaces RuboCop's defaults with Chef's), `rubocop-changed`, and framework plugins this repository does not use. The catalog stays documented in `data/rubocop/plugins.yml` and `docs/RUBOCOP_PLUGINS.md`. `benchmarks/` is excluded because fixtures and references are digest-pinned measurement infrastructure.
+- Apply whitespace-only layout autocorrections (plus leading-dot method chains) to the repository's own Ruby; line length, trailing whitespace inside heredocs, and heredoc indentation are left alone. The remaining 2,686 pre-existing offenses across 90 cops are recorded in `.rubocop_todo.yml`, so CI fails only on new offenses.
+- Set the executable bit on the 70 tracked scripts with a shebang that lacked it (39 in `bin/`, 30 in `scripts/`, 1 in `adapters/`).
+- `CONTRIBUTING.md` and the README validation section describe the lint step.
+
 ## Iteration 129 — Code Examples for Every Skill and Pattern
 
 - Add a fenced `## Example` to the 421 patterns that had none (324 Ruby, 20 TSX, 9 TypeScript, 4 JavaScript, 11 ERB, 24 Bash, 6 YAML, 1 SQL, and 22 Markdown runbook/decision tables); the other 11 patterns already carried code. Examples use real Rails, Ruby, React, and TypeScript APIs and were syntax-checked before insertion (`ruby -c`, ERB compiled inside a method, `bash -n`, `node --check`, and `tsc --strict` or vitest with jsdom for TypeScript and React).

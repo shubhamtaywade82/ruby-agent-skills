@@ -50,9 +50,9 @@ end
 
 def safe_component(value)
   value.to_s.strip.downcase
-    .gsub(/[^a-z0-9._-]+/, "-")
-    .gsub(/\A-+|-+\z/, "")
-    .yield_self { |v| v.empty? ? "unknown" : v }
+       .gsub(/[^a-z0-9._-]+/, "-")
+       .gsub(/\A-+|-+\z/, "")
+       .yield_self { |v| v.empty? ? "unknown" : v }
 end
 
 expected_archive_id = [
@@ -76,6 +76,7 @@ end
 
 %w[compatibility gate intake].each do |key|
   next unless evidence.key?(key)
+
   errors << "#{key} does not match evidence" unless manifest[key] == evidence[key]
 end
 
@@ -104,8 +105,8 @@ else
 
     archive_path = metadata["archive_path"].to_s
     if archive_path.empty? || archive_path.start_with?(File::SEPARATOR) ||
-        archive_path.split("/").include?("..") ||
-        archive_path == "." || archive_path.split("/").include?(".")
+       archive_path.split("/").include?("..") ||
+       archive_path == "." || archive_path.split("/").include?(".")
       errors << "archive path must be relative and stay within archive: #{archive_path}"
       next
     end
@@ -122,6 +123,7 @@ else
     archive_path.split("/").each_with_index do |component, index|
       path_cursor = File.join(path_cursor, component)
       next if index == archive_path.split("/").length - 1
+
       if File.symlink?(path_cursor)
         errors << "archive path traverses a symlink: #{archive_path}"
         break

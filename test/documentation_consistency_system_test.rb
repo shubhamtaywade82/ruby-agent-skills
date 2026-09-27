@@ -15,6 +15,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
 
   def test_documentation_audit_is_registered_and_executable
     script = source("scripts/audit_documentation_consistency.rb")
+
     assert_includes script, "CHANGELOG.md"
     assert_includes script, "IMPLEMENTATION_HANDOFF.md"
     assert_includes script, "evaluation_count"
@@ -56,6 +57,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
       audit = File.join(ROOT, "scripts", "audit_documentation_consistency.rb")
 
       _stdout, stderr, status = Open3.capture3(RbConfig.ruby, audit, "--root", dir, chdir: ROOT)
+
       refute status.success?
       assert_includes stderr, "IMPLEMENTATION_HANDOFF.md"
     end

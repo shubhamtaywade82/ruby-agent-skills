@@ -43,6 +43,7 @@ class RailsAssociationsSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "association callbacks"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       association-cardinality-contract
       association-inverse-contract
@@ -58,9 +59,11 @@ class RailsAssociationsSystemTest < Minitest::Test
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/association-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-associations").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/associations-contract.yml"
   end
 

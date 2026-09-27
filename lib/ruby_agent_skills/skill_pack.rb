@@ -119,6 +119,7 @@ module RubyAgentSkills
       return candidates.first if candidates.length == 1
 
       raise Error, "ambiguous pattern: #{pattern} (#{candidates.join(", ")})" if candidates.length > 1
+
       raise Error, "unknown pattern: #{pattern}"
     end
 

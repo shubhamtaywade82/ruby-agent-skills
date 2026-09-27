@@ -222,6 +222,7 @@ class BenchmarkFixtureControlsSystemTest < Minitest::Test
 
       before = registry.digest("demo-long-name")
       File.write(File.join(root, "benchmarks", "demo", "fixtures", "short-name", "solution.rb"), "# start\n")
+
       refute_equal before, registry.digest("demo-long-name"), "starting-state changes must change the fixture digest"
     end
   end

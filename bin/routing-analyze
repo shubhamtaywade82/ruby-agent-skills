@@ -129,6 +129,7 @@ cases.each do |case_id, case_data|
   modal_primary, modal_count = observed_counts.max_by { |skill, count| [count, skill] }
   expected_secondary_values = runs.filter_map do |run|
     next unless run["status"] == "completed"
+
     Array(run.dig("expected", "secondary_skills")).map(&:to_s).uniq
   end
   expected_secondary_union = expected_secondary_values.flatten.uniq

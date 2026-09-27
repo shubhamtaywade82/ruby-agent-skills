@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "minitest/autorun"
 require "yaml"
 
@@ -26,43 +27,48 @@ class RailsSerializationGlobalidSystemTest < Minitest::Test
   end
 
   def test_manifest_registration
-    m=YAML.safe_load(File.read(File.join(ROOT,"skill-manifest.yml"),encoding:"UTF-8"))
-    s=m.fetch("skills").fetch("rails-serialization-globalid-engineering")
-    assert_equal "skills/rails-serialization-globalid-engineering/SKILL.md",s.fetch("path")
+    m = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
+    s = m.fetch("skills").fetch("rails-serialization-globalid-engineering")
+
+    assert_equal "skills/rails-serialization-globalid-engineering/SKILL.md", s.fetch("path")
     %w[serialization serializable_hash as_json to_json GlobalID SignedGlobalID GlobalID::Locator to_global_id to_signed_global_id to_sgid Active Job arguments custom serializer deserialization].each { |t| assert_includes s.fetch("triggers"), t }
-    rails=m.fetch("patterns").fetch("rails").fetch("paths")
-    REQUIRED_PATHS.grep(%r{^patterns/rails/}).each { |p| assert_includes rails,p }
+    rails = m.fetch("patterns").fetch("rails").fetch("paths")
+
+    REQUIRED_PATHS.grep(%r{^patterns/rails/}).each { |p| assert_includes rails, p }
     assert_includes m.fetch("evaluations").fetch("rails-serialization-globalid-engineering").fetch("paths"), "evals/rails/serialization-globalid-contract.yml"
   end
 
   def test_router_agents_validator
-    routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    change_contract=File.read(File.join(ROOT,"skills/rails-serialization-globalid-engineering/SKILL.md"),encoding:"UTF-8")
-    validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
-    assert_includes routing,"Rails Serialization and Global IDs engineering"
-    assert_includes routing,"rails-serialization-globalid-engineering"
-    assert_includes change_contract,"Rails serialization/Global ID changes"
-    assert_includes change_contract,"Signed Global ID"
-    assert_includes validator,"rails_serialization_globalid_system_test.rb"
+    routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-serialization-globalid-engineering/SKILL.md"), encoding: "UTF-8")
+    validator = File.read(File.join(ROOT, "bin/validate"), encoding: "UTF-8")
+
+    assert_includes routing, "Rails Serialization and Global IDs engineering"
+    assert_includes routing, "rails-serialization-globalid-engineering"
+    assert_includes change_contract, "Rails serialization/Global ID changes"
+    assert_includes change_contract, "Signed Global ID"
+    assert_includes validator, "rails_serialization_globalid_system_test.rb"
   end
 
   def test_evaluation_contract
-    e=YAML.safe_load(File.read(File.join(ROOT,"evals/rails/serialization-globalid-contract.yml"),encoding:"UTF-8"))
-    assert_includes e.fetch("skills"),"rails-serialization-globalid-engineering"
-    assert_includes e.fetch("patterns"),"globalid-identity-contract"
-    assert_includes e.fetch("patterns"),"custom-activejob-serializer-contract"
-    assert_equal "scope_control",e.fetch("checks").last
+    e = YAML.safe_load(File.read(File.join(ROOT, "evals/rails/serialization-globalid-contract.yml"), encoding: "UTF-8"))
+
+    assert_includes e.fetch("skills"), "rails-serialization-globalid-engineering"
+    assert_includes e.fetch("patterns"), "globalid-identity-contract"
+    assert_includes e.fetch("patterns"), "custom-activejob-serializer-contract"
+    assert_equal "scope_control", e.fetch("checks").last
   end
 
   def test_skill_contract
-    s=File.read(File.join(ROOT,"skills/rails-serialization-globalid-engineering/SKILL.md"),encoding:"UTF-8")
+    s = File.read(File.join(ROOT, "skills/rails-serialization-globalid-engineering/SKILL.md"), encoding: "UTF-8")
+
     [
-      "Serialization boundary","ActiveModel serialization","JSON representation",
-      "Nested serialization and performance","Sensitive data serialization",
-      "Payload versioning and compatibility","Global ID identity contract",
-      "Signed Global IDs","Global ID resolution and authorization",
-      "Active Job arguments and serializers","Deserialization failures","Testing strategy"
-    ].each { |x| assert_includes s,x }
-    assert_includes s,"Signature integrity is not authorization."
+      "Serialization boundary", "ActiveModel serialization", "JSON representation",
+      "Nested serialization and performance", "Sensitive data serialization",
+      "Payload versioning and compatibility", "Global ID identity contract",
+      "Signed Global IDs", "Global ID resolution and authorization",
+      "Active Job arguments and serializers", "Deserialization failures", "Testing strategy"
+    ].each { |x| assert_includes s, x }
+    assert_includes s, "Signature integrity is not authorization."
   end
 end

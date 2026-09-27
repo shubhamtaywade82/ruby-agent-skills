@@ -44,9 +44,9 @@ manifest_skills.each do |name, entry|
 end
 
 pattern_files = Dir[File.join(ROOT, "patterns", "**", "*.md")]
-  .reject { |p| p.end_with?("/README.md") }
-  .map { |p| p.delete_prefix(ROOT + "/") }
-  .sort
+                .reject { |p| p.end_with?("/README.md") }
+                .map { |p| p.delete_prefix(ROOT + "/") }
+                .sort
 
 pattern_refs = manifest.fetch("patterns").each_with_object([]) do |(_category, entry), refs|
   refs.concat(Array(entry.fetch("paths")))
@@ -79,8 +79,8 @@ errors << "skills missing from router: #{missing_routes.join(", ")}" unless miss
 
 validate = File.read(VALIDATE_PATH, encoding: "UTF-8")
 system_tests = Dir[File.join(ROOT, "test", "*_system_test.rb")]
-  .map { |p| p.delete_prefix(ROOT + "/") }
-  .sort
+               .map { |p| p.delete_prefix(ROOT + "/") }
+               .sort
 invoked_system_tests = validate.scan(%r{test/[^\s"']+_system_test\.rb}).uniq.sort
 missing_system_tests = system_tests.reject { |path| invoked_system_tests.include?(path) }
 stale_system_tests = invoked_system_tests.reject { |path| File.file?(File.join(ROOT, path)) }
@@ -88,9 +88,9 @@ errors << "system tests not invoked by bin/validate: #{missing_system_tests.join
 errors << "bin/validate invokes missing system tests: #{stale_system_tests.join(", ")}" unless stale_system_tests.empty?
 
 stack_minimality_files = eval_files.select { |path| path.start_with?("evals/stack-minimality/") }
-expected_stack_minimality_evals = Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")].
-  map { |p| p.delete_prefix(ROOT + "/") }.
-  sort
+expected_stack_minimality_evals = Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")]
+                                  .map { |p| p.delete_prefix(ROOT + "/") }
+                                  .sort
 errors << "stack-minimality evaluation registry mismatch" unless stack_minimality_files == expected_stack_minimality_evals
 errors << "stack-minimality evaluation count must be >= 13" unless stack_minimality_files.length >= 13
 

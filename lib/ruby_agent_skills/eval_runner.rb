@@ -81,10 +81,10 @@ module RubyAgentSkills
 
         packer = SkillPack.new(root: root)
         skill_pack = if skills_enabled
-          packer.materialize(evaluation: evaluation, workspace: temp_dir)
-        else
-          packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
-        end
+                       packer.materialize(evaluation: evaluation, workspace: temp_dir)
+                     else
+                       packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
+                     end
 
         env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
         run_command(agent_command, temp_dir, agent_env(env), timeout, result["agent"])
@@ -227,6 +227,7 @@ module RubyAgentSkills
       checks = parsed.fetch("checks", {})
       checks.each do |name, value|
         next unless result["checks"].key?(name)
+
         result["checks"][name] = value.is_a?(Hash) ? value : { "status" => value.to_s }
       end
       result["verification"]["reported_result"] = parsed.fetch("metadata", {})
@@ -243,6 +244,7 @@ module RubyAgentSkills
     rescue JSON::ParserError => e
       result["agent"]["metadata_error"] = "invalid agent metadata JSON: #{e.message}"
     end
+
     def overall_status(result)
       statuses = result["checks"].values.map { |value| value.fetch("status", "not_evaluated") }
       return "failed" if result["agent"]["timed_out"] || result["verification"]["timed_out"]
@@ -250,6 +252,7 @@ module RubyAgentSkills
       return "failed" if result["verification"]["exit_code"] && result["verification"]["exit_code"] != 0
       return "failed" if statuses.include?("fail")
       return "passed" if statuses.any? && statuses.none? { |status| status == "not_evaluated" }
+
       "incomplete"
     end
 

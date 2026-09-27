@@ -41,26 +41,26 @@ end
 implementation = File.join(WORKSPACE, fixture.fetch("implementation_file"))
 source = File.file?(implementation) ? File.read(implementation, encoding: "UTF-8") : ""
 ruby_sources = Dir[File.join(WORKSPACE, "lib", "**", "*.rb"), File.join(WORKSPACE, "app", "**", "*.rb")]
-  .select { |path| File.file?(path) }
-  .map { |path| File.read(path, encoding: "UTF-8") }
-  .join("\n")
+               .select { |path| File.file?(path) }
+               .map { |path| File.read(path, encoding: "UTF-8") }
+               .join("\n")
 
 begin
   case evaluation.fetch("id")
   when "enumerable-transform"
     require implementation
     actual = Catalog.new.available_names([
-      { name: "Ruby", available: true },
+                                           { name: "Ruby", available: true },
       { name: "Rails", available: false },
       { name: "PostgreSQL", available: true }
-    ])
+                                         ])
     checks["functional"] =
       actual == ["Ruby", "PostgreSQL"] ? check("pass") : check("fail", actual.inspect)
   when "method-contract"
     require implementation
     formatter = NotificationFormatter.new
     good = formatter.format(recipient: "Sam", channel: :email) == "email: Sam" &&
-      formatter.format(recipient: "Sam", channel: :sms) == "sms: Sam"
+           formatter.format(recipient: "Sam", channel: :sms) == "sms: Sam"
     bad = begin
       formatter.format(recipient: "Sam", channel: :push)
       false
@@ -168,13 +168,13 @@ end
 
 files = changed_files
 checks["oop"] = if declared.include?("oop")
-  class_names = Array(fixture.fetch("classes"))
+                  class_names = Array(fixture.fetch("classes"))
   design_source = ruby_sources.empty? ? source : ruby_sources
   missing = class_names.reject { |name| static_class_present?(design_source, name) }
   missing.empty? ? check("pass", "declared benchmark classes are present") : check("fail", "missing classes: #{missing.join(", ")}")
-else
-  check("not_evaluated", "OOP is not a declared dimension for this case")
-end
+                else
+                  check("not_evaluated", "OOP is not a declared dimension for this case")
+                end
 
 checks["tests"] =
   if tests_changed?(files)

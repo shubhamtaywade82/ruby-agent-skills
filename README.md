@@ -4,7 +4,7 @@ A repository of **agent-executable Ruby and Ruby on Rails engineering knowledge*
 
 The goal is not to store passive notes. The repository turns engineering material into a system an AI coding agent can use to **classify a task, inspect a repository, select skills and patterns, implement a bounded change, verify behavior, and report evidence**.
 
-> **Current milestone:** Iteration 129 — Code Examples for Every Skill and Pattern
+> **Current milestone:** Iteration 130 — RuboCop in CI and Executable Scripts
 
 ## Quick start
 
@@ -714,6 +714,8 @@ The repository has one integrated validation entry point:
 ```bash
 bin/validate
 ```
+
+Ruby style is enforced separately in CI with `bundle exec rubocop` (configuration in `.rubocop.yml`; the pre-existing offense baseline lives in `.rubocop_todo.yml` and only shrinks).
 
 Validation covers:
 

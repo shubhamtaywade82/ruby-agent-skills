@@ -50,6 +50,7 @@ end
 
 expected.each do |key, value|
   next if key == "git_sha"
+
   errors << "#{key} mismatch: preflight=#{value} current=#{actual[key]}" unless actual[key] == value
 end
 

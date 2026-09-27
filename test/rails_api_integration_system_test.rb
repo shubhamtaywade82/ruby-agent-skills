@@ -27,6 +27,7 @@ class RailsApiIntegrationSystemTest < Minitest::Test
     manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
 
     skill = manifest.fetch("skills").fetch("rails-api-integration")
+
     assert_equal "skills/rails-api-integration/SKILL.md", skill.fetch("path")
     assert_includes skill.fetch("triggers"), "API contract"
     assert_includes skill.fetch("triggers"), "webhook"
@@ -47,12 +48,14 @@ class RailsApiIntegrationSystemTest < Minitest::Test
       evaluation = YAML.safe_load(
         File.read(File.join(ROOT, "evals/ruby-workshop", filename), encoding: "UTF-8")
       )
+
       assert_includes evaluation.fetch("skills"), "rails-api-integration"
     end
   end
 
   def test_routing_contains_integration_composition
     routing = File.read(File.join(ROOT, "router", "ROUTING.md"), encoding: "UTF-8")
+
     assert_includes routing, "Rails API and integration architecture"
     assert_includes routing, "rails-api-integration"
   end

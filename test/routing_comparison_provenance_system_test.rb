@@ -17,7 +17,7 @@ class RoutingComparisonProvenanceSystemTest < Minitest::Test
       "requested_repetitions" => 1,
       "complete" => true,
       "routing_contract" => File.join(File.dirname(path), "#{File.basename(path, ".json")}-router.md"),
-      "agent" => {"provider" => "test", "model" => "test-model", "model_version" => nil, "tool_mode" => "test"},
+      "agent" => { "provider" => "test", "model" => "test-model", "model_version" => nil, "tool_mode" => "test" },
       "metrics" => {
         "primary_accuracy" => observed_skill == primary_skill ? 1.0 : 0.0,
         "secondary_recall" => 1.0,
@@ -28,8 +28,8 @@ class RoutingComparisonProvenanceSystemTest < Minitest::Test
           "expected_primary_skill" => primary_skill,
           "runs" => [{
             "status" => "completed",
-            "expected" => {"primary_skill" => primary_skill, "secondary_skills" => []},
-            "observed" => {"primary_skill" => observed_skill, "secondary_skills" => []}
+            "expected" => { "primary_skill" => primary_skill, "secondary_skills" => [] },
+            "observed" => { "primary_skill" => observed_skill, "secondary_skills" => [] }
           }]
         }
       }
@@ -53,6 +53,7 @@ class RoutingComparisonProvenanceSystemTest < Minitest::Test
       "--output", report,
       chdir: ROOT
     )
+
     assert status.success?, "#{stdout}\n#{stderr}"
     report
   end
@@ -80,6 +81,7 @@ class RoutingComparisonProvenanceSystemTest < Minitest::Test
       stdout, stderr, status = Open3.capture3(
         RbConfig.ruby, verifier, report_path, "--check-files", chdir: ROOT
       )
+
       assert status.success?, "#{stdout}\n#{stderr}"
 
       report = JSON.parse(File.read(report_path, encoding: "UTF-8"))
@@ -89,6 +91,7 @@ class RoutingComparisonProvenanceSystemTest < Minitest::Test
       _stdout, mismatch_stderr, mismatch_status = Open3.capture3(
         RbConfig.ruby, verifier, report_path, "--check-files", chdir: ROOT
       )
+
       refute mismatch_status.success?
       assert_includes mismatch_stderr, "does not match recomputed comparison"
     end
@@ -96,6 +99,7 @@ class RoutingComparisonProvenanceSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_comparison_provenance_system_test.rb"
   end
 end

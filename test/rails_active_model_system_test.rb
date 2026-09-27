@@ -37,6 +37,7 @@ class RailsActiveModelSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "ActiveModel::Callbacks"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       active-model-boundary
       active-model-attributes-contract
@@ -50,9 +51,11 @@ class RailsActiveModelSystemTest < Minitest::Test
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/active-model-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-active-model").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/active-model-contract.yml"
   end
 

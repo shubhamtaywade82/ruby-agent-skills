@@ -39,8 +39,8 @@ expected_skills.each do |name, entry|
 end
 
 installed_skill_dirs = Dir.children(root)
-  .select { |name| File.file?(File.join(root, name, "SKILL.md")) }
-  .sort
+                          .select { |name| File.file?(File.join(root, name, "SKILL.md")) }
+                          .sort
 errors << "installed skill count mismatch" unless installed_skill_dirs.length == expected_skills.length
 errors << "installed skill set mismatch" unless installed_skill_dirs.sort == expected_skills.keys.sort
 
@@ -51,8 +51,8 @@ expected_pattern_files.each do |path|
   errors << "missing installed pattern: #{relative}" unless File.file?(path)
 end
 installed_pattern_files = Dir[File.join(patterns_root, "**", "*.md")]
-  .reject { |p| p.end_with?("/README.md") }
-  .sort
+                          .reject { |p| p.end_with?("/README.md") }
+                          .sort
 errors << "installed pattern count mismatch" unless installed_pattern_files.length == expected_pattern_files.length
 errors << "installed pattern set mismatch" unless installed_pattern_files == expected_pattern_files
 
@@ -64,6 +64,7 @@ unless tool_entries.empty?
     root_prefix = File.expand_path(tools_root) + File::SEPARATOR
     raise "invalid tool path: #{relative}" unless path.start_with?(root_prefix)
     raise "missing tool: #{relative}" unless File.file?(path)
+
     actual = Digest::SHA256.file(path).hexdigest
     raise "tool SHA-256 mismatch: #{relative}" unless actual == entry.fetch("sha256")
   end
@@ -87,6 +88,7 @@ def verify_file_hashes(metadata_entries, root:, label:)
     root_prefix = File.expand_path(root) + File::SEPARATOR
     raise "invalid #{label} path: #{relative}" unless path.start_with?(root_prefix)
     raise "missing #{label}: #{relative}" unless File.file?(path)
+
     actual[relative] = Digest::SHA256.file(path).hexdigest
     raise "#{label} SHA-256 mismatch: #{relative}" unless actual[relative] == digest
   end

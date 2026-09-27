@@ -5,7 +5,7 @@ require "digest"
 require "json"
 require "optparse"
 
-options = {check_files: false}
+options = { check_files: false }
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-hidden-benchmark-receipt-verify RECEIPT_JSON [options]"
   opts.on("--check-files", "Verify the recorded external artifact SHA-256 and byte size") { options[:check_files] = true }

@@ -19,6 +19,7 @@ class CiToolchainSystemTest < Minitest::Test
 
   def test_validate_workflow_uses_node24_compatible_checkout
     workflow = File.read(File.join(ROOT, ".github", "workflows", "validate.yml"), encoding: "UTF-8")
+
     assert_includes workflow, "actions/checkout@v7"
     refute_includes workflow, "actions/checkout@v4"
   end

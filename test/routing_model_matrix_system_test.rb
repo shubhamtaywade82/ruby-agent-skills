@@ -11,6 +11,7 @@ class RoutingModelMatrixSystemTest < Minitest::Test
       File.read(File.join(ROOT, "router", "ROUTING_MODEL_MATRIX.yml"), encoding: "UTF-8"),
       permitted_classes: [], aliases: false
     )
+
     assert_empty config.fetch("models")
     assert_equal true, config.fetch("controls").fetch("descriptive_comparison_only")
     assert_equal true, config.fetch("controls").fetch("do_not_compare_unexecuted_models")
@@ -22,6 +23,7 @@ class RoutingModelMatrixSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_model_matrix_system_test.rb"
   end
 end

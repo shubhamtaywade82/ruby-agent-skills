@@ -36,14 +36,17 @@ class RailsI18nSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "missing translation"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[i18n-locale-resolution i18n-translation-key-contract i18n-pluralization-formatting i18n-localized-routing i18n-context-propagation i18n-cache-identity i18n-security-boundary].each do |name|
       assert_includes rails_patterns, "patterns/rails/#{name}.md"
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/i18n-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-i18n").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/i18n-contract.yml"
   end
 

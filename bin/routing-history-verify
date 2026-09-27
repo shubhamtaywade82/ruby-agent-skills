@@ -9,7 +9,7 @@ require "optparse"
 ROOT = File.expand_path("..", __dir__)
 ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
 
-options = {check_files: false}
+options = { check_files: false }
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-history-verify HISTORY_JSON [options]"
   opts.on("--check-files", "Replay the archive verifier for every history entry") { options[:check_files] = true }

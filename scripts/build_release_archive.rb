@@ -104,13 +104,13 @@ Dir.mktmpdir("ruby-agent-skills-release") do |stage|
   # exactly what ships, including anything cp_r picked up from the source.
   staged_prefix = "#{archive_root}/"
   file_inventory = Dir.glob(File.join(archive_root, "**", "*"), File::FNM_DOTMATCH)
-    .select { |path| File.file?(path) }
-    .map { |path| path.delete_prefix(staged_prefix) }
-    .sort
-    .to_h do |path|
-      staged = File.join(archive_root, path)
-      [path, { "bytes" => File.size(staged), "sha256" => Digest::SHA256.file(staged).hexdigest }]
-    end
+                      .select { |path| File.file?(path) }
+                      .map { |path| path.delete_prefix(staged_prefix) }
+                      .sort
+                      .to_h do |path|
+                        staged = File.join(archive_root, path)
+                        [path, { "bytes" => File.size(staged), "sha256" => Digest::SHA256.file(staged).hexdigest }]
+                      end
 
   release = inventory.merge("files" => file_inventory)
   File.write(File.join(archive_root, "RELEASE.json"), JSON.pretty_generate(release) + "\n", encoding: "UTF-8")

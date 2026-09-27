@@ -49,6 +49,7 @@ class RailsAuthorizationSystemTest < Minitest::Test
     ].each { |trigger| assert_includes skill.fetch("triggers"), trigger }
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       authorization-mechanism-boundary
       policy-object-boundary
@@ -65,9 +66,11 @@ class RailsAuthorizationSystemTest < Minitest::Test
     ].each { |name| assert_includes rails_patterns, "patterns/rails/#{name}.md" }
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/testing/authorization-testing.md"
 
     eval_paths = manifest.fetch("evaluations").fetch("rails-authorization").fetch("paths")
+
     assert_includes eval_paths, "evals/rails/authorization-contract.yml"
   end
 

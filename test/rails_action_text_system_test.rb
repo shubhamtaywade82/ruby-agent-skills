@@ -37,14 +37,17 @@ class RailsActionTextSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "Signed Global ID attachable"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[action-text-content-contract action-text-sanitization-security action-text-attachment-authorization action-text-rendering action-text-api-boundary action-text-preload-performance action-text-lifecycle action-text-attachable-contract].each do |name|
       assert_includes rails_patterns, "patterns/rails/#{name}.md"
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/action-text-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-action-text").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/action-text-contract.yml"
   end
 

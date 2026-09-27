@@ -10,7 +10,7 @@ require "tempfile"
 ROOT = File.expand_path("..", __dir__)
 COMPARATOR = File.join(ROOT, "bin", "routing-compare")
 
-options = {check_files: false}
+options = { check_files: false }
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-compare-verify COMPARISON_JSON [options]"
   opts.on("--check-files", "Recalculate SHA-256 for every provenance artifact") { options[:check_files] = true }

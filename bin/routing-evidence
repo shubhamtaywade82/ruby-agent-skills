@@ -93,16 +93,16 @@ evidence = {
     "same_repetition_count" => baseline.fetch("requested_repetitions") == candidate.fetch("requested_repetitions")
   },
   "artifacts" => {
-    "baseline" => {"path" => baseline_path, "sha256" => sha256(baseline_path)},
-    "candidate" => {"path" => candidate_path, "sha256" => sha256(candidate_path)},
-    "comparison" => {"path" => comparison_path, "sha256" => sha256(comparison_path)},
+    "baseline" => { "path" => baseline_path, "sha256" => sha256(baseline_path) },
+    "candidate" => { "path" => candidate_path, "sha256" => sha256(candidate_path) },
+    "comparison" => { "path" => comparison_path, "sha256" => sha256(comparison_path) },
     "baseline_routing_contract" => contract_metadata(baseline),
     "candidate_routing_contract" => contract_metadata(candidate),
-    "skill_manifest" => {"path" => manifest_path, "sha256" => sha256(manifest_path)},
-    "campaign_manifest" => {"path" => campaign_manifest_path, "sha256" => sha256(campaign_manifest_path)},
-    "result_schema" => {"path" => result_schema_path, "sha256" => sha256(result_schema_path)},
-    "remediation_policy" => {"path" => remediation_policy_path, "sha256" => sha256(remediation_policy_path)},
-    "evidence_schema" => {"path" => evidence_schema_path, "sha256" => sha256(evidence_schema_path)}
+    "skill_manifest" => { "path" => manifest_path, "sha256" => sha256(manifest_path) },
+    "campaign_manifest" => { "path" => campaign_manifest_path, "sha256" => sha256(campaign_manifest_path) },
+    "result_schema" => { "path" => result_schema_path, "sha256" => sha256(result_schema_path) },
+    "remediation_policy" => { "path" => remediation_policy_path, "sha256" => sha256(remediation_policy_path) },
+    "evidence_schema" => { "path" => evidence_schema_path, "sha256" => sha256(evidence_schema_path) }
   },
   "metrics" => {
     "baseline" => baseline.fetch("metrics"),

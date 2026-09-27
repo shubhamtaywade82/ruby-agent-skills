@@ -36,13 +36,14 @@ class RailsPerformanceSystemTest < Minitest::Test
   def test_existing_performance_evals_cover_the_rails_skill
     Dir[File.join(ROOT, "evals/performance/*.yml")].each do |file|
       evaluation = YAML.safe_load(File.read(file, encoding: "UTF-8"))
+
       assert_includes evaluation.fetch("skills"), "rails-performance"
     end
   end
 
   def test_manifest_exposes_all_new_patterns
     patterns = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
-      .fetch("patterns").fetch("rails").fetch("paths")
+                   .fetch("patterns").fetch("rails").fetch("paths")
 
     REQUIRED_PATHS.grep(%r{\Apatterns/}).each do |relative|
       assert_includes patterns, relative

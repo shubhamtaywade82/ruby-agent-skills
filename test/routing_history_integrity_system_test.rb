@@ -16,6 +16,7 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
 
   def test_history_has_an_independent_verifier
     script = source("bin/routing-history-verify")
+
     assert_includes script, "routing-archive-verify"
     assert_includes script, "archive_id"
     assert_includes script, "routing history verification error"
@@ -23,12 +24,14 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
 
   def test_history_generation_can_require_verified_archives
     script = source("bin/routing-history")
+
     assert_includes script, "--verify"
     assert_includes script, "routing-history-verify"
   end
 
   def test_matrix_report_can_gate_on_verified_history
     script = source("bin/routing-model-matrix-report")
+
     assert_includes script, "--verify"
     assert_includes script, "routing-history-verify"
     assert_includes script, "descriptive-only"
@@ -52,10 +55,10 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
           "captured_at" => "2026-09-23T00:00:00Z",
           "campaign" => "skill-routing-public-v1",
           "evidence_type" => "skill-routing-campaign-v1",
-          "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
-          "agent" => {"provider" => "ollama", "model" => "fixture-model"},
-          "campaign_metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0},
-          "analysis" => {"primary_accuracy" => 1.0},
+          "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
+          "agent" => { "provider" => "ollama", "model" => "fixture-model" },
+          "campaign_metrics" => { "primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0 },
+          "analysis" => { "primary_accuracy" => 1.0 },
           "requested_runs" => 1,
           "completed_runs" => 1,
           "artifact_count" => 1,
@@ -70,6 +73,7 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
       _stdout, stderr, status = Open3.capture3(
         RbConfig.ruby, verifier, history_path, "--check-files", chdir: ROOT
       )
+
       refute status.success?
       assert_includes stderr, "archive path escapes archive root"
     end
@@ -78,6 +82,7 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
   def test_history_records_deterministic_archive_set_provenance
     script = source("bin/routing-history")
     verifier = source("bin/routing-history-verify")
+
     assert_includes script, "archive_set_sha256"
     assert_includes verifier, "archive_set_sha256"
   end
@@ -99,10 +104,10 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
           "captured_at" => "2026-09-23T00:00:00Z",
           "campaign" => "skill-routing-public-v1",
           "evidence_type" => "skill-routing-campaign-v1",
-          "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
-          "agent" => {"provider" => "ollama", "model" => "fixture-model"},
-          "campaign_metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0},
-          "analysis" => {"primary_accuracy" => 1.0},
+          "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
+          "agent" => { "provider" => "ollama", "model" => "fixture-model" },
+          "campaign_metrics" => { "primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0 },
+          "analysis" => { "primary_accuracy" => 1.0 },
           "requested_runs" => 1,
           "completed_runs" => 1,
           "artifact_count" => 1,
@@ -114,12 +119,14 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
 
       verifier = File.join(ROOT, "bin", "routing-history-verify")
       _stdout, stderr, status = Open3.capture3(RbConfig.ruby, verifier, history_path, "--check-files", chdir: ROOT)
+
       assert status.success?, stderr
 
       File.write(File.join(archive, "artifacts", "raw-result.json"), "tampered", encoding: "UTF-8")
       _stdout, mismatch_stderr, mismatch_status = Open3.capture3(
         RbConfig.ruby, verifier, history_path, "--check-files", chdir: ROOT
       )
+
       refute mismatch_status.success?
       assert_includes mismatch_stderr, "archive verification failed"
     end
@@ -141,14 +148,14 @@ class RoutingHistoryIntegritySystemTest < Minitest::Test
       "protocol_version" => 1,
       "evidence" => "skill-routing-campaign-v1",
       "campaign" => "skill-routing-public-v1",
-      "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
-      "agent" => {"provider" => "ollama", "model" => "fixture-model"},
-      "campaign_metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0},
+      "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
+      "agent" => { "provider" => "ollama", "model" => "fixture-model" },
+      "campaign_metrics" => { "primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0 },
       "requested_runs" => 1,
       "completed_runs" => 1,
-      "analysis" => {"primary_accuracy" => 1.0},
+      "analysis" => { "primary_accuracy" => 1.0 },
       "artifacts" => {
-        "raw_result" => {"path" => "/source/raw-result.json", "sha256" => artifact_sha, "bytes" => File.size(artifact_path)}
+        "raw_result" => { "path" => "/source/raw-result.json", "sha256" => artifact_sha, "bytes" => File.size(artifact_path) }
       }
     }
     evidence_path = File.join(archive, "evidence.json")

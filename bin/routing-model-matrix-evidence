@@ -33,6 +33,7 @@ def archive_metadata(path)
   files = {}
   Dir.glob(File.join(path, "**", "*"), File::FNM_DOTMATCH).sort.each do |entry|
     next if [".", ".."].include?(File.basename(entry))
+
     abort "archive contains a symlink: #{entry}" if File.symlink?(entry)
     next unless File.file?(entry)
 

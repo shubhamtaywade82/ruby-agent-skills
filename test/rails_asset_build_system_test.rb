@@ -52,6 +52,7 @@ class RailsAssetBuildSystemTest < Minitest::Test
     ].each { |trigger| assert_includes skill.fetch("triggers"), trigger }
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       rails-asset-pipeline-contract
       importmap-contract

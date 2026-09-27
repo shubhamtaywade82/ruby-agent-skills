@@ -16,6 +16,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
 
   def test_matrix_contract_is_explicit_and_non_ranking
     matrix = YAML.safe_load(File.read(File.join(ROOT, "router", "ROUTING_MODEL_MATRIX.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false)
+
     assert_equal 2, matrix.fetch("version")
     assert_equal "ollama", matrix.fetch("execution").fetch("provider")
     assert_equal true, matrix.fetch("controls").fetch("descriptive_comparison_only")
@@ -29,10 +30,12 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
         "--model", "model-b",
         "--output", dir
       )
+
       assert status.success?, "#{out}
 #{err}"
 
       plan = JSON.parse(File.read(File.join(dir, "matrix-plan.json"), encoding: "UTF-8"))
+
       assert_equal "plan", plan.fetch("mode")
       assert_equal ["model-a", "model-b"], plan.fetch("models").map { |m| m.fetch("name") }
       assert_equal 42, plan.fetch("campaign").fetch("expected_runs_per_model")
@@ -44,6 +47,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
   def test_missing_models_is_rejected
     Dir.mktmpdir("routing-model-matrix") do |dir|
       _out, err, status = run_runner("--output", dir)
+
       refute status.success?
       assert_includes err, "no models supplied"
     end
@@ -52,6 +56,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
   def test_execute_requires_archive_destination
     Dir.mktmpdir("routing-model-matrix") do |dir|
       _out, err, status = run_runner("--model", "model-a", "--execute", "--output", dir)
+
       refute status.success?
       assert_includes err, "--archive is required"
     end
@@ -66,6 +71,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
         "--output", dir,
         "--resume"
       )
+
       refute status.success?
       assert_includes err, "cannot resume without an existing matrix checkpoint"
     end
@@ -73,6 +79,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
 
   def test_resume_flag_is_exposed
     source = File.read(RUNNER, encoding: "UTF-8")
+
     assert_includes source, "--resume"
     assert_includes source, "matrix checkpoint"
   end
@@ -93,7 +100,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
           "url" => "http://127.0.0.1:11434",
           "timeout_seconds" => 300
         },
-        "models" => [{"provider" => "ollama", "name" => "model-a", "status" => "failed"}],
+        "models" => [{ "provider" => "ollama", "name" => "model-a", "status" => "failed" }],
         "controls" => {},
         "results" => []
       }
@@ -115,6 +122,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_model_matrix_campaign_system_test.rb"
   end
 end

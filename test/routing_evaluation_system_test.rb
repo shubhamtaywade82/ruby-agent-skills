@@ -40,6 +40,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
       assert status.success?, "#{stdout}\n#{stderr}"
 
       campaign = JSON.parse(File.read(File.join(dir, "campaign.json"), encoding: "UTF-8"))
+
       assert_equal true, campaign.fetch("complete")
       assert_in_delta 1.0, campaign.fetch("metrics").fetch("primary_accuracy"), 0.0001
       assert_in_delta 1.0, campaign.fetch("metrics").fetch("secondary_recall"), 0.0001
@@ -57,6 +58,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
     )
 
     routing = manifest.fetch("routing")
+
     assert_equal "router/ROUTING.md", routing.fetch("contract")
     assert_equal "router/ROUTING_CASES.yml", routing.fetch("cases")
     assert_equal "scripts/audit_skill_routing.rb", routing.fetch("audit")
@@ -75,6 +77,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/routing_evaluation_system_test.rb"
   end
 end
@@ -95,7 +98,6 @@ class RoutingCampaignContractSystemTest < Minitest::Test
     assert_equal "external-only", campaign.fetch("controls").fetch("hidden_cases")
   end
 end
-
 
 class OllamaRoutingAgentSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
@@ -127,7 +129,7 @@ class OllamaRoutingAgentSystemTest < Minitest::Test
       )
 
       socket.write(
-        "HTTP/1.1 200 OK\r\n"         "Content-Type: application/json\r\n"         "Content-Length: #{response_body.bytesize}\r\n"         "Connection: close\r\n\r\n#{response_body}"
+        "HTTP/1.1 200 OK\r\n" "Content-Type: application/json\r\n" "Content-Length: #{response_body.bytesize}\r\n" "Connection: close\r\n\r\n#{response_body}"
       )
       socket.close
     end
@@ -158,6 +160,7 @@ class OllamaRoutingAgentSystemTest < Minitest::Test
       assert status.success?, stderr
 
       result = JSON.parse(File.read(result_file, encoding: "UTF-8"))
+
       assert_equal "password-recovery-not-authorization", result.fetch("case_id")
       assert_equal "rails-authentication", result.fetch("primary_skill")
       assert_equal ["rails-security-engineering"], result.fetch("secondary_skills")

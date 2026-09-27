@@ -40,6 +40,7 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
   def test_skill_contracts_have_required_sections
     SKILLS.each do |skill|
       content = File.read(File.join(ROOT, "skills", skill, "SKILL.md"), encoding: "UTF-8")
+
       ["Purpose", "Activate when", "Repository inspection", "Decision rules", "Implementation procedure", "Anti-patterns / failure modes", "Agent review checklist", "Verification", "Source foundation"].each do |section|
         assert_includes content, "## #{section}", "#{skill} missing #{section}"
       end
@@ -48,12 +49,14 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
 
   def test_react_typescript_patterns_are_registered
     paths = manifest.fetch("patterns").fetch("react-typescript").fetch("paths")
+
     assert_equal 24, paths.length
     paths.each { |path| assert File.file?(File.join(ROOT, path)) }
   end
 
   def test_react_typescript_evaluations_are_registered
     entries = manifest.fetch("evaluations").select { |name, _| name.to_s.start_with?("react-typescript-", "react-") }
+
     assert_equal 9, entries.length
     entries.each_value do |entry|
       Array(entry.fetch("paths")).each { |path| assert File.file?(File.join(ROOT, path)) }
@@ -62,6 +65,7 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/react_typescript_skill_pack_system_test.rb"
   end
 end

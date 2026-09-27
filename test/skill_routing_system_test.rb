@@ -61,6 +61,7 @@ class SkillRoutingSystemTest < Minitest::Test
 
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
     assert_includes validator, "test/skill_routing_system_test.rb"
   end
 end

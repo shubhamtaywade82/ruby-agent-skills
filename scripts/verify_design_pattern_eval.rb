@@ -36,10 +36,10 @@ def changed_files
 end
 
 def read_ruby_sources(root)
-  Dir[File.join(root, "lib", "**", "*.rb"), File.join(root, "app", "**", "*.rb")].
-    select { |path| File.file?(path) }.
-    map { |path| File.read(path, encoding: "UTF-8") }.
-    join("
+  Dir[File.join(root, "lib", "**", "*.rb"), File.join(root, "app", "**", "*.rb")]
+    .select { |path| File.file?(path) }
+    .map { |path| File.read(path, encoding: "UTF-8") }
+    .join("
 ")
 end
 

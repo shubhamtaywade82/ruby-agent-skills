@@ -16,6 +16,7 @@ class SecurityAuditCliTest < Minitest::Test
 
       assert status.success?
       result = JSON.parse(output)
+
       assert_equal 1, result.fetch("schema_version")
       assert_equal root, result.fetch("repository")
       assert result.fetch("checks").fetch("brakeman").fetch("status").to_s.match?(/pass|fail|skipped/)

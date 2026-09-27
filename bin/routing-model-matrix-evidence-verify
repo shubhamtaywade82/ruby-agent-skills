@@ -10,7 +10,7 @@ ROOT = File.expand_path("..", __dir__)
 CAMPAIGN_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-campaign-evidence-verify")
 ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
 
-options = {check_files: false}
+options = { check_files: false }
 
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-model-matrix-evidence-verify MATRIX_EVIDENCE_JSON [options]"
@@ -29,6 +29,7 @@ def archive_tree(path)
   files = {}
   Dir.glob(File.join(path, "**", "*"), File::FNM_DOTMATCH).sort.each do |entry|
     next if [".", ".."].include?(File.basename(entry))
+
     abort "archive contains a symlink: #{entry}" if File.symlink?(entry)
     next unless File.file?(entry)
 

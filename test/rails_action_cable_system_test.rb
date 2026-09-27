@@ -36,14 +36,17 @@ class RailsActionCableSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "reconnect"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[action-cable-connection-auth action-cable-channel-authorization action-cable-stream-contract action-cable-broadcast-contract action-cable-reconciliation action-cable-capacity action-cable-failure-boundary].each do |name|
       assert_includes rails_patterns, "patterns/rails/#{name}.md"
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/action-cable-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-action-cable").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/action-cable-contract.yml"
   end
 

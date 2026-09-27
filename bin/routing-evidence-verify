@@ -6,7 +6,7 @@ require "json"
 require "optparse"
 require "open3"
 
-options = {check_files: false, allow_dirty: false}
+options = { check_files: false, allow_dirty: false }
 COMPARISON_VERIFIER = File.expand_path("routing-compare-verify", __dir__)
 
 OptionParser.new do |opts|

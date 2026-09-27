@@ -28,6 +28,7 @@ class RailsSecurityEngineeringSystemTest < Minitest::Test
     manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
 
     skill = manifest.fetch("skills").fetch("rails-security-engineering")
+
     assert_equal "skills/rails-security-engineering/SKILL.md", skill.fetch("path")
     assert_includes skill.fetch("triggers"), "threat model"
     assert_includes skill.fetch("triggers"), "tenant isolation"
@@ -37,6 +38,7 @@ class RailsSecurityEngineeringSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "security regression"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     REQUIRED_PATHS.drop(1).each do |relative|
       assert_includes rails_patterns, relative
     end
@@ -58,6 +60,7 @@ class RailsSecurityEngineeringSystemTest < Minitest::Test
       evaluation = YAML.safe_load(
         File.read(File.join(ROOT, "evals/security", filename), encoding: "UTF-8")
       )
+
       assert_includes evaluation.fetch("skills"), "rails-security-engineering"
     end
   end

@@ -35,14 +35,17 @@ class RailsActiveStorageSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "storage migration"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[active-storage-boundary active-storage-upload-security active-storage-direct-upload active-storage-serving active-storage-processing active-storage-purge].each do |name|
       assert_includes rails_patterns, "patterns/rails/#{name}.md"
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/active-storage-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-active-storage").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/active-storage-contract.yml"
   end
 

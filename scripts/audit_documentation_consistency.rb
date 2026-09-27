@@ -5,7 +5,7 @@ require "optparse"
 require "yaml"
 
 default_root = File.expand_path("..", __dir__)
-options = {root: default_root}
+options = { root: default_root }
 
 OptionParser.new do |opts|
   opts.banner = "usage: ruby scripts/audit_documentation_consistency.rb [--root PATH]"
@@ -75,11 +75,11 @@ expected_inventory.each do |label, count|
   errors << "README #{label} count drift: #{matches.inspect} != #{count}" unless matches.all? { |value| value == count }
 
   handoff_pattern = case label
-  when "Skills" then /- (\d+) skills/
-  when "Implementation patterns" then /- (\d+) implementation patterns/
-  when "Evaluation cases" then /- (\d+) evaluation cases/
-  when "Dedicated system/contract tests" then /- (\d+) system\/contract tests/
-  end
+                    when "Skills" then /- (\d+) skills/
+                    when "Implementation patterns" then /- (\d+) implementation patterns/
+                    when "Evaluation cases" then /- (\d+) evaluation cases/
+                    when "Dedicated system/contract tests" then /- (\d+) system\/contract tests/
+                    end
   handoff_matches = handoff.scan(handoff_pattern).flatten.map(&:to_i)
   errors << "IMPLEMENTATION_HANDOFF.md #{label} count drift: #{handoff_matches.inspect} != #{count}" unless handoff_matches.all? { |value| value == count } && !handoff_matches.empty?
 end

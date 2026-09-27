@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "minitest/autorun"
 require "yaml"
 
@@ -25,48 +26,53 @@ class RailsStaffPrincipalArchitectureSystemTest < Minitest::Test
   ].freeze
 
   def test_required_artifacts_exist
-    REQUIRED_PATHS.each { |p| assert File.file?(File.join(ROOT,p)), "missing #{p}" }
+    REQUIRED_PATHS.each { |p| assert File.file?(File.join(ROOT, p)), "missing #{p}" }
   end
 
   def test_manifest_registration
-    m=YAML.safe_load(File.read(File.join(ROOT,"skill-manifest.yml"),encoding:"UTF-8"))
-    s=m.fetch("skills").fetch("rails-staff-principal-architecture")
-    assert_equal "skills/rails-staff-principal-architecture/SKILL.md",s.fetch("path")
+    m = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
+    s = m.fetch("skills").fetch("rails-staff-principal-architecture")
+
+    assert_equal "skills/rails-staff-principal-architecture/SKILL.md", s.fetch("path")
     %w[architecture staff principal modular monolith bounded context dependency direction data ownership coupling extraction migration ADR fitness tradeoff ownership].each { |t| assert_includes s.fetch("triggers"), t }
-    rails=m.fetch("patterns").fetch("rails").fetch("paths")
-    REQUIRED_PATHS.grep(%r{^patterns/rails/}).each { |p| assert_includes rails,p }
+    rails = m.fetch("patterns").fetch("rails").fetch("paths")
+
+    REQUIRED_PATHS.grep(%r{^patterns/rails/}).each { |p| assert_includes rails, p }
     assert_includes m.fetch("evaluations").fetch("rails-staff-principal-architecture").fetch("paths"), "evals/rails/staff-principal-architecture-contract.yml"
   end
 
   def test_router_agents_validator
-    routing=File.read(File.join(ROOT,"router/ROUTING.md"),encoding:"UTF-8")
-    change_contract=File.read(File.join(ROOT,"skills/rails-staff-principal-architecture/SKILL.md"),encoding:"UTF-8")
-    validator=File.read(File.join(ROOT,"bin/validate"),encoding:"UTF-8")
-    assert_includes routing,"Rails Staff and Principal Architecture"
-    assert_includes routing,"rails-staff-principal-architecture"
-    assert_includes change_contract,"Rails staff/principal architecture changes"
-    assert_includes change_contract,"dependency direction"
-    assert_includes validator,"rails_staff_principal_architecture_system_test.rb"
+    routing = File.read(File.join(ROOT, "router/ROUTING.md"), encoding: "UTF-8")
+    change_contract = File.read(File.join(ROOT, "skills/rails-staff-principal-architecture/SKILL.md"), encoding: "UTF-8")
+    validator = File.read(File.join(ROOT, "bin/validate"), encoding: "UTF-8")
+
+    assert_includes routing, "Rails Staff and Principal Architecture"
+    assert_includes routing, "rails-staff-principal-architecture"
+    assert_includes change_contract, "Rails staff/principal architecture changes"
+    assert_includes change_contract, "dependency direction"
+    assert_includes validator, "rails_staff_principal_architecture_system_test.rb"
   end
 
   def test_evaluation_contract
-    e=YAML.safe_load(File.read(File.join(ROOT,"evals/rails/staff-principal-architecture-contract.yml"),encoding:"UTF-8"))
-    assert_includes e.fetch("skills"),"rails-staff-principal-architecture"
-    assert_includes e.fetch("patterns"),"data-ownership-contract"
-    assert_includes e.fetch("patterns"),"distributed-boundary-readiness"
-    assert_equal "scope_control",e.fetch("checks").last
+    e = YAML.safe_load(File.read(File.join(ROOT, "evals/rails/staff-principal-architecture-contract.yml"), encoding: "UTF-8"))
+
+    assert_includes e.fetch("skills"), "rails-staff-principal-architecture"
+    assert_includes e.fetch("patterns"), "data-ownership-contract"
+    assert_includes e.fetch("patterns"), "distributed-boundary-readiness"
+    assert_equal "scope_control", e.fetch("checks").last
   end
 
   def test_skill_contract
-    s=File.read(File.join(ROOT,"skills/rails-staff-principal-architecture/SKILL.md"),encoding:"UTF-8")
+    s = File.read(File.join(ROOT, "skills/rails-staff-principal-architecture/SKILL.md"), encoding: "UTF-8")
+
     [
-      "Architecture decision sequence","Boundary design","Dependency direction",
-      "Modularity and modular monoliths","Bounded contexts and shared kernel",
-      "Data ownership","Dependency graph and cycle control","Change coupling",
-      "Extraction and service decomposition","Architectural migration",
-      "Architecture decision records","Architecture fitness and enforcement",
+      "Architecture decision sequence", "Boundary design", "Dependency direction",
+      "Modularity and modular monoliths", "Bounded contexts and shared kernel",
+      "Data ownership", "Dependency graph and cycle control", "Change coupling",
+      "Extraction and service decomposition", "Architectural migration",
+      "Architecture decision records", "Architecture fitness and enforcement",
       "Team ownership and operational responsibility"
-    ].each { |x| assert_includes s,x }
-    assert_includes s,"Do not introduce layers, services, packages, engines, abstractions, or distributed systems merely because they are fashionable."
+    ].each { |x| assert_includes s, x }
+    assert_includes s, "Do not introduce layers, services, packages, engines, abstractions, or distributed systems merely because they are fashionable."
   end
 end

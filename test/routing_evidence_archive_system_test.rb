@@ -14,28 +14,33 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
     Dir.mktmpdir("routing-archive") do |dir|
       router = File.join(dir, "ROUTING.md")
       File.write(router, "# Test routing contract\n")
-      baseline = {"protocol_version"=>1,"campaign"=>"skill-routing-public-v1","campaign_version"=>1,"routing_case_count"=>1,"requested_repetitions"=>1,"complete"=>true,"routing_contract"=>router,"agent"=>{"provider"=>"test","model"=>"test-model","model_version"=>nil,"tool_mode"=>"test"},"metrics"=>{"primary_accuracy"=>1.0,"secondary_recall"=>1.0,"average_unexpected_secondary_count"=>0.0}}
+      baseline = { "protocol_version" => 1, "campaign" => "skill-routing-public-v1", "campaign_version" => 1, "routing_case_count" => 1, "requested_repetitions" => 1, "complete" => true, "routing_contract" => router, "agent" => { "provider" => "test", "model" => "test-model", "model_version" => nil, "tool_mode" => "test" }, "metrics" => { "primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0 } }
       candidate = baseline.dup
-      comparison = {"deltas"=>{"primary_accuracy"=>0.0,"secondary_recall"=>0.0,"average_unexpected_secondary_count"=>0.0},"gate"=>{"passed"=>true,"errors"=>[]}}
-      File.write(File.join(dir,"baseline.json"),JSON.pretty_generate(baseline))
-      File.write(File.join(dir,"candidate.json"),JSON.pretty_generate(candidate))
-      File.write(File.join(dir,"comparison.json"),JSON.pretty_generate(comparison))
-      evidence_path=File.join(dir,"evidence.json")
-      _out,err,status=Open3.capture3(RbConfig.ruby,File.join(ROOT,"bin","routing-evidence"),dir,"--output",evidence_path,chdir:ROOT)
+      comparison = { "deltas" => { "primary_accuracy" => 0.0, "secondary_recall" => 0.0, "average_unexpected_secondary_count" => 0.0 }, "gate" => { "passed" => true, "errors" => [] } }
+      File.write(File.join(dir, "baseline.json"), JSON.pretty_generate(baseline))
+      File.write(File.join(dir, "candidate.json"), JSON.pretty_generate(candidate))
+      File.write(File.join(dir, "comparison.json"), JSON.pretty_generate(comparison))
+      evidence_path = File.join(dir, "evidence.json")
+      _out, err, status = Open3.capture3(RbConfig.ruby, File.join(ROOT, "bin", "routing-evidence"), dir, "--output", evidence_path, chdir: ROOT)
+
       assert status.success?, err
-      archive_root=File.join(dir,"archive")
-      out,err,status=Open3.capture3(RbConfig.ruby,File.join(ROOT,"bin","routing-archive"),evidence_path,"--destination",archive_root,chdir:ROOT)
+      archive_root = File.join(dir, "archive")
+      out, err, status = Open3.capture3(RbConfig.ruby, File.join(ROOT, "bin", "routing-archive"), evidence_path, "--destination", archive_root, chdir: ROOT)
+
       assert status.success?, "#{out}\n#{err}"
-      manifests=Dir[File.join(archive_root,"**","ARCHIVE_MANIFEST.json")]
+      manifests = Dir[File.join(archive_root, "**", "ARCHIVE_MANIFEST.json")]
+
       assert_equal 1, manifests.length
-      manifest=JSON.parse(File.read(manifests.first,encoding:"UTF-8"))
-      assert_equal "skill-routing-evidence-archive-v1",manifest.fetch("archive")
-      assert_equal 10,manifest.fetch("artifacts").length
-      assert_equal true,manifest.fetch("gate").fetch("passed")
-      assert File.file?(File.join(File.dirname(manifests.first),"evidence.json"))
-      _out,err,status=Open3.capture3(RbConfig.ruby,File.join(ROOT,"bin","routing-archive"),evidence_path,"--destination",archive_root,chdir:ROOT)
+      manifest = JSON.parse(File.read(manifests.first, encoding: "UTF-8"))
+
+      assert_equal "skill-routing-evidence-archive-v1", manifest.fetch("archive")
+      assert_equal 10, manifest.fetch("artifacts").length
+      assert_equal true, manifest.fetch("gate").fetch("passed")
+      assert File.file?(File.join(File.dirname(manifests.first), "evidence.json"))
+      _out, err, status = Open3.capture3(RbConfig.ruby, File.join(ROOT, "bin", "routing-archive"), evidence_path, "--destination", archive_root, chdir: ROOT)
+
       refute status.success?
-      assert_includes err,"archive already exists"
+      assert_includes err, "archive already exists"
     end
   end
 
@@ -56,6 +61,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "--output", report_path,
         chdir: ROOT
       )
+
       assert status.success?, "#{out}\n#{err}"
 
       artifact_names = %w[
@@ -65,13 +71,13 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       artifacts = {}
       artifact_names.each do |name|
         path = case name
-        when "campaign" then campaign_path
-        when "routing_report" then report_path
-        else
-          path = File.join(dir, "#{name}.txt")
+               when "campaign" then campaign_path
+               when "routing_report" then report_path
+               else
+                 path = File.join(dir, "#{name}.txt")
           File.write(path, name)
           path
-        end
+               end
         artifacts[name] = {
           "path" => path,
           "sha256" => Digest::SHA256.file(path).hexdigest,
@@ -99,13 +105,13 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "requested_repetitions" => 3,
         "requested_runs" => 42,
         "completed_runs" => 42,
-        "repository" => {"git_sha" => "abc123", "worktree_clean" => true},
-        "agent" => {"provider" => "ollama", "model" => "test-model"},
+        "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
+        "agent" => { "provider" => "ollama", "model" => "test-model" },
         "campaign_metrics" => campaign.fetch("metrics"),
         "analysis" => report.fetch("summary"),
         "artifacts" => artifacts,
-        "intake" => {"verified" => true},
-        "replay" => {"campaign_runner" => "bin/routing-campaign"}
+        "intake" => { "verified" => true },
+        "replay" => { "campaign_runner" => "bin/routing-campaign" }
       }
       evidence_path = File.join(dir, "evidence.json")
       File.write(evidence_path, JSON.pretty_generate(evidence))
@@ -117,9 +123,11 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "--destination", archive_root,
         chdir: ROOT
       )
+
       assert status.success?, "#{out}\n#{err}"
       manifest_path = Dir[File.join(archive_root, "**", "ARCHIVE_MANIFEST.json")].first
       manifest = JSON.parse(File.read(manifest_path, encoding: "UTF-8"))
+
       assert_equal "skill-routing-campaign-v1", manifest.fetch("evidence_type")
       assert_equal true, manifest.fetch("intake").fetch("verified")
       assert_equal 42, manifest.fetch("completed_runs")
@@ -159,9 +167,9 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         {
           "run_number" => index + 1,
           "status" => "completed",
-          "expected" => {"primary_skill" => primary, "secondary_skills" => [], "boundary" => entry.fetch("boundary")},
-          "observed" => {"primary_skill" => primary, "secondary_skills" => [], "reason" => "fixture"},
-          "scoring" => {"primary_accuracy" => true, "secondary_recall" => 1.0, "unexpected_secondary_count" => 0},
+          "expected" => { "primary_skill" => primary, "secondary_skills" => [], "boundary" => entry.fetch("boundary") },
+          "observed" => { "primary_skill" => primary, "secondary_skills" => [], "reason" => "fixture" },
+          "scoring" => { "primary_accuracy" => true, "secondary_recall" => 1.0, "unexpected_secondary_count" => 0 },
           "validation_errors" => [],
           "raw_result_file" => raw_path
         }
@@ -182,22 +190,23 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       "campaign" => campaign.fetch("id"),
       "campaign_version" => campaign.fetch("version"),
       "routing_contract" => File.join(ROOT, "router", "ROUTING.md"),
-      "agent" => {"provider" => "ollama", "model" => "fixture-model", "model_version" => "fixture-digest", "tool_mode" => "local-filesystem"},
+      "agent" => { "provider" => "ollama", "model" => "fixture-model", "model_version" => "fixture-digest", "tool_mode" => "local-filesystem" },
       "routing_case_count" => cases.length,
       "requested_repetitions" => 3,
       "requested_runs" => 42,
       "completed_runs" => 42,
       "complete" => true,
-      "execution" => {"checkpointed" => true, "mode" => "fixture"},
+      "execution" => { "checkpointed" => true, "mode" => "fixture" },
       "routing_inputs" => {},
-      "metrics" => {"primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0},
+      "metrics" => { "primary_accuracy" => 1.0, "secondary_recall" => 1.0, "average_unexpected_secondary_count" => 0.0 },
       "confusion_matrix" => {},
       "cases" => runs
     }
   end
 
   def test_validator_executes_this_system_test
-    validator=File.read(File.join(ROOT,"bin","validate"),encoding:"UTF-8")
-    assert_includes validator,"test/routing_evidence_archive_system_test.rb"
+    validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+
+    assert_includes validator, "test/routing_evidence_archive_system_test.rb"
   end
 end

@@ -54,13 +54,13 @@ SYSTEM
 payload = {
   "model" => model,
   "messages" => [
-    {"role" => "system", "content" => system_prompt},
-    {"role" => "user", "content" => prompt}
+    { "role" => "system", "content" => system_prompt },
+    { "role" => "user", "content" => prompt }
   ],
   "format" => "json",
   "stream" => false,
   "think" => false,
-  "options" => {"temperature" => 0}
+  "options" => { "temperature" => 0 }
 }
 
 uri = URI.join(ollama_url.end_with?("/") ? ollama_url : "#{ollama_url}/", "api/chat")

@@ -20,12 +20,14 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
       bin/routing-release-bundle-verify
     ].each do |path|
       _stdout, stderr, status = Open3.capture3(RbConfig.ruby, "-c", File.join(ROOT, path), chdir: ROOT)
+
       assert status.success?, "#{path}: #{stderr}"
     end
   end
 
   def test_hidden_receipt_has_standalone_verifier
     script = source("bin/routing-hidden-benchmark-receipt-verify")
+
     assert_includes script, "external-only"
     assert_includes script, "gold_labels"
     assert_includes script, "artifact"
@@ -66,12 +68,14 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
       _stdout, stderr, status = Open3.capture3(
         RbConfig.ruby, verifier, receipt_path, "--check-files", chdir: ROOT
       )
+
       assert status.success?, stderr
 
       File.write(artifact, '{"runs":2}', encoding: "UTF-8")
       _stdout, mismatch_stderr, mismatch_status = Open3.capture3(
         RbConfig.ruby, verifier, receipt_path, "--check-files", chdir: ROOT
       )
+
       refute mismatch_status.success?
       assert_includes mismatch_stderr, "artifact SHA-256 mismatch"
     end
@@ -79,6 +83,7 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
 
   def test_release_bundle_requires_public_evidence
     script = source("bin/routing-release-bundle")
+
     assert_includes script, "--public-evidence"
     assert_includes script, "routing-release-check"
     assert_includes script, "routing-campaign-evidence-verify"
@@ -86,6 +91,7 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
 
   def test_release_bundle_can_include_matrix_and_hidden_receipt
     script = source("bin/routing-release-bundle")
+
     assert_includes script, "--matrix-evidence"
     assert_includes script, "--hidden-receipt"
     assert_includes script, "routing-model-matrix-evidence-verify"
@@ -94,23 +100,27 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
 
   def test_release_bundle_self_verifies_after_creation
     script = source("bin/routing-release-bundle")
+
     assert_includes script, "routing-release-bundle-verify"
     assert_includes script, "RELEASE_MANIFEST.json"
   end
 
   def test_release_check_accepts_a_finished_bundle
     script = source("bin/routing-release-check")
+
     assert_includes script, "--bundle"
     assert_includes script, "routing-release-bundle-verify"
   end
 
   def test_release_bundle_verifier_requires_public_component
     script = source("bin/routing-release-bundle-verify")
+
     assert_includes script, "public release component is required"
   end
 
   def test_release_bundle_verifier_binds_public_evidence_to_archive_identity
     script = source("bin/routing-release-bundle-verify")
+
     assert_includes script, "source_evidence"
     assert_includes script, "archive evidence hash does not match bundled public evidence"
     assert_includes script, "archive campaign does not match bundled public evidence"
@@ -120,6 +130,7 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
 
   def test_release_bundle_verifier_rechecks_every_component
     script = source("bin/routing-release-bundle-verify")
+
     assert_includes script, "public campaign evidence verification failed"
     assert_includes script, "routing-model-matrix-evidence-verify"
     assert_includes script, "routing-hidden-benchmark-receipt-verify"
@@ -128,12 +139,14 @@ class RoutingReleaseBundleSystemTest < Minitest::Test
 
   def test_release_bundle_binds_optional_matrix_evidence_to_public_release_identity
     script = source("bin/routing-release-bundle-verify")
+
     assert_includes script, "matrix campaign does not match public campaign"
     assert_includes script, "matrix repository SHA does not match public evidence"
   end
 
   def test_release_bundle_preserves_external_hidden_boundary
     script = source("bin/routing-release-bundle-verify")
+
     assert_includes script, "HIDDEN_RECEIPT_VERIFIER"
     assert_includes script, "hidden benchmark receipt verification failed"
   end

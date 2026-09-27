@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 module RubyAgentSkills
   module RuntimeProfile
     module_function
@@ -202,14 +201,14 @@ module RubyAgentSkills
         "candidates" => candidates,
         "conflict" => conflict,
         "status" => if conflict
-          "conflict"
-        elsif resolved
-          "resolved"
-        elsif candidates.empty?
-          "unknown"
-        else
-          "constrained"
-        end
+                      "conflict"
+                    elsif resolved
+                      "resolved"
+                    elsif candidates.empty?
+                      "unknown"
+                    else
+                      "constrained"
+                    end
       }
     end
   end

@@ -35,6 +35,7 @@ class RailsCachingSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "cache failure"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     REQUIRED_PATHS.drop(1).reject { |path| path.start_with?("evals/") }.each do |relative|
       assert_includes rails_patterns, relative
     end

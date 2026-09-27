@@ -36,6 +36,7 @@ class RailsActionViewSystemTest < Minitest::Test
     assert_includes skill.fetch("triggers"), "localized views"
 
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
     %w[
       action-view-partial-contract
       action-view-strict-locals
@@ -49,9 +50,11 @@ class RailsActionViewSystemTest < Minitest::Test
     end
 
     testing_patterns = manifest.fetch("patterns").fetch("testing").fetch("paths")
+
     assert_includes testing_patterns, "patterns/rails/action-view-testing.md"
 
     evaluation_paths = manifest.fetch("evaluations").fetch("rails-action-view").fetch("paths")
+
     assert_includes evaluation_paths, "evals/rails/action-view-contract.yml"
   end
 

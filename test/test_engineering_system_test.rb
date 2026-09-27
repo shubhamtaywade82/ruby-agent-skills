@@ -40,6 +40,7 @@ class TestEngineeringSystemTest < Minitest::Test
 
     Dir[File.join(ROOT, "evals/test-engineering/*.yml")].each do |file|
       evaluation = YAML.safe_load(File.read(file))
+
       evaluation.fetch("skills").each { |skill| assert_includes registered, skill }
     end
   end

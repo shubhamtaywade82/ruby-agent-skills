@@ -165,10 +165,10 @@ when "campaign"
   FileUtils.mkdir_p(output_dir)
 
   manifest_display = if File.expand_path(manifest_path).start_with?("#{ROOT}/")
-    File.expand_path(manifest_path).delete_prefix("#{ROOT}/")
-  else
-    File.expand_path(manifest_path)
-  end
+                       File.expand_path(manifest_path).delete_prefix("#{ROOT}/")
+                     else
+                       File.expand_path(manifest_path)
+                     end
 
   registry_path = fixtures.registry_path
   campaign_result = {

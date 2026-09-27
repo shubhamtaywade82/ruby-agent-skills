@@ -12,7 +12,7 @@ MATRIX_EVIDENCE_VERIFIER = File.join(ROOT, "bin", "routing-model-matrix-evidence
 HIDDEN_RECEIPT_VERIFIER = File.join(ROOT, "bin", "routing-hidden-benchmark-receipt-verify")
 ARCHIVE_VERIFIER = File.join(ROOT, "bin", "routing-archive-verify")
 
-options = {check_files: false}
+options = { check_files: false }
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/routing-release-bundle-verify BUNDLE_DIR [options]"
   opts.on("--check-files", "Recalculate bundle component hashes and replay every supplied verifier") { options[:check_files] = true }
@@ -62,6 +62,7 @@ def verify_archive(metadata, errors, check_files:)
   end
 
   return unless check_files
+
   path = metadata["path"].to_s
   unless Dir.exist?(path)
     errors << "archive unavailable at #{path}"
@@ -71,13 +72,15 @@ def verify_archive(metadata, errors, check_files:)
   files = {}
   Dir.glob(File.join(path, "**", "*"), File::FNM_DOTMATCH).sort.each do |entry|
     next if [".", ".."].include?(File.basename(entry))
+
     if File.symlink?(entry)
       errors << "archive contains a symlink: #{entry}"
       next
     end
     next unless File.file?(entry)
+
     relative = entry.delete_prefix(File.expand_path(path) + "/")
-    files[relative] = {"sha256" => Digest::SHA256.file(entry).hexdigest, "bytes" => File.size(entry)}
+    files[relative] = { "sha256" => Digest::SHA256.file(entry).hexdigest, "bytes" => File.size(entry) }
   end
 
   canonical = files.sort.to_h
@@ -104,7 +107,7 @@ if public_component.is_a?(Hash)
   end
 
   if options[:check_files] && public_evidence.is_a?(Hash) && public_archive.is_a?(Hash) &&
-      File.file?(public_evidence["path"].to_s) && Dir.exist?(public_archive["path"].to_s)
+     File.file?(public_evidence["path"].to_s) && Dir.exist?(public_archive["path"].to_s)
     manifest_file = File.join(public_archive["path"].to_s, "ARCHIVE_MANIFEST.json")
     if File.file?(manifest_file)
       begin
