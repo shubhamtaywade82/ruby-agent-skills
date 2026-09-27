@@ -1,5 +1,10 @@
 # Changelog
 
+## Iteration 132 — Trim Duplicated Iteration History
+
+- Trim the `docs/ITERATIONS.md` entries for Iteration 101 onward (31 of them) from full copies of their `CHANGELOG.md` bullet lists to one-line summaries. Iterations 41–100 have no `CHANGELOG.md` counterpart and are unchanged.
+- `docs/ITERATIONS.md` drops from 500 to 395 lines. A note at the top of the file says iterations from 101 onward are summarized there and points to `CHANGELOG.md` for the itemized changes.
+
 ## Iteration 131 — Iteration History Out of the README
 
 - Move every iteration narrative out of `README.md` into the new `docs/ITERATIONS.md`, one section per iteration in ascending order. It merges the 65 README narratives (previously in six places and out of order) with the `CHANGELOG.md` entries, covering Iterations 41–131. The eleven narratives that had no number in their heading (for example "Rails Encryption and Credentials Engineering") are filed under the iteration their text named.
