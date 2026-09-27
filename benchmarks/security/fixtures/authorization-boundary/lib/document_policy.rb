@@ -7,6 +7,6 @@ class DocumentPolicy
   end
 
   def update?
-    @user.admin? || @document.owner_id == @user.id
+    !@user.nil?
   end
 end
