@@ -1485,6 +1485,19 @@ When a task materially changes dependency direction, domain ownership, modularit
 | Next.js App Router / RSC / server actions / SSR streaming / route segment config | react-frameworks | react-component-engineering, react-data-fetching, react-state-effects, react-frontend-security |
 | TypeScript and React feature implementation | react-component-engineering | typescript-core-engineering, typescript-type-design, react-state-effects, react-testing-engineering |
 
+## Rails and React cross-stack routing
+
+When a task spans a Rails server and a React/TypeScript client, route the client side and the fit between the two to `rails-react-integration`, and keep the server contract with its owning Rails skill. A change that only alters the Rails wire contract is primary `rails-api-integration`, with `rails-react-integration` secondary so the client parser and types move with it.
+
+| Task | Primary | Secondary |
+|---|---|---|
+| React code calling a Rails endpoint (fetch, response types, error handling) | rails-react-integration | rails-api-integration, typescript-runtime-contracts, react-data-fetching |
+| React form showing Rails 422 validation errors | rails-react-integration | rails-validations, react-component-engineering, react-testing-engineering |
+| React fetch fails with InvalidAuthenticityToken or loses the session | rails-react-integration | rails-authentication, rails-security |
+| Choosing Inertia, a JSON API with a separate client, or React islands | rails-react-integration | react-architecture, rails-api-integration, rails-hotwire |
+| Paginating, filtering, or sorting a Rails collection in React | rails-react-integration | react-data-fetching, rails-active-record |
+| Changing a Rails JSON contract that a React client consumes | rails-api-integration | rails-react-integration, rails-test-engineering |
+
 ## Stack minimality composition
 
 Use stack-minimality with the skill that owns the actual contract:

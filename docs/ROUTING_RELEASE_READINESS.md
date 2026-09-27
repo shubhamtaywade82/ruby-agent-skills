@@ -16,9 +16,9 @@ The release gate verifies the exact archived package containing the supplied evi
 
 The release contract currently expects:
 
-- 14 public routing cases;
+- 18 public routing cases;
 - 3 repetitions per case;
-- 42 completed runs;
+- 54 completed runs;
 - verified evidence with intact raw artifacts;
 - an immutable archive.
 

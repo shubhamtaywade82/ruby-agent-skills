@@ -1,0 +1,47 @@
+id: rails-react-integration-contract
+coverage: static-only
+version: 1
+title: Rails React Integration Contract
+category: react-typescript
+source: rails-react-integration-v1
+skills:
+  - rails-react-integration
+  - typescript-runtime-contracts
+patterns:
+  - rails-react-typed-api-contract
+  - rails-react-validation-error-mapping
+  - rails-react-csrf-session-fetch
+prompt: |
+  A React order form in a same-origin Rails app posts to /api/v1/orders and must show Rails validation errors next to its fields.
+  Inspect the repository before choosing the implementation shape. Keep forgery protection enabled, validate the Rails response at runtime, and add focused verification on both sides of the boundary.
+constraints:
+  required_boundary: rails-react-integration
+  forbidden:
+    - disabling protect_from_forgery or switching to null_session to make fetch succeed
+    - storing session or bearer tokens in localStorage
+    - casting response.json() to a type without a runtime check
+checks:
+  - functional
+  - tests
+  - contract
+  - security
+  - scope_control
+cases:
+  - name: design
+    input: Submit the order form and render each Rails validation error on the matching field.
+    expected:
+      rails-react-validation-error-mapping: explicit attribute-to-field table; base and unmapped errors shown
+  - name: csrf-failure-path
+    input: The same form, where mutations currently fail with ActionController::InvalidAuthenticityToken.
+    expected:
+      rails-react-csrf-session-fetch: X-CSRF-Token sent from csrf_meta_tags; forgery protection unchanged
+  - name: contract-drift
+    input: The Rails serializer renamed total_cents to amount_cents.
+    expected:
+      rails-react-typed-api-contract: runtime parser and Rails request test both fail on the old key
+grading:
+  functional: The form submits, and every Rails validation error reaches the user.
+  tests: Client boundary tests and a Rails request test cover success, 422, CSRF, and contract drift.
+  contract: The wire shape is parsed at runtime and mapped once at the boundary.
+  security: CSRF protection stays enabled and no credential is stored in browser storage.
+  scope_control: No unrelated framework, build, or authentication migration is introduced.

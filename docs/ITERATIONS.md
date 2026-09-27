@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 133 — Frontend Tier 1: react-frontend-security, react-frameworks, EARP protocol, T6 fixture
+> **Current milestone:** Iteration 134 — Rails and React Integration Seam
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -398,6 +398,10 @@ Moved iteration history out of the README into this file, one section per iterat
 
 Trimmed this file's own Iteration 101+ entries from full CHANGELOG copies down to one-line summaries.
 
-## Iteration 133 — Frontend Tier 1: react-frontend-security, react-frameworks, EARP protocol, T6 fixture
+## Iteration 133 — Release v1.1.0 Preparation
 
-Iteration 133 begins the targeted frontend/full-stack completion program. Adds two new Tier 1 skills (`react-frontend-security`, `react-frameworks`), the Empirical Agent-Routing Evaluation Protocol (EARP) spec, the Tier 0 release-cut checklist, and the first EARP task fixture (T6-cms-rich-text) with its prompt, planted-defect fixture, expected routing set, and review rubric. Both new skills are registered in `skill-manifest.yml`, the routing matrix in `router/ROUTING.md`, and have dedicated eval YAMLs under `evals/react-typescript/`. Skill count goes from 85 to 87. This is the first iteration that converts the structural "we have skills" claim into an empirical "agents route them correctly" measurement program.
+Pinned the README quick-start to `v1.1.0`, corrected the stale `RELEASE.md` inventory, and added an audit so it cannot drift again.
+
+## Iteration 134 — Rails and React Integration Seam
+
+Added the `rails-react-integration` skill, five cross-stack patterns, cross-stack routing, and the first React routing cases (public campaign version 2: 18 cases).

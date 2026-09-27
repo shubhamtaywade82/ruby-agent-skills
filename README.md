@@ -8,9 +8,9 @@ The goal is not to store passive notes. The repository turns engineering materia
 
 Install the verified skill pack from a release archive (offline; no git required):
 
-    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.0.1/ruby-agent-skills-v1.0.1.tar.gz
-    tar xzf ruby-agent-skills-v1.0.1.tar.gz
-    cd ruby-agent-skills-v1.0.1
+    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.1.0/ruby-agent-skills-v1.1.0.tar.gz
+    tar xzf ruby-agent-skills-v1.1.0.tar.gz
+    cd ruby-agent-skills-v1.1.0
     bash bin/install --agent claude
 
 Or from a git checkout:
@@ -89,9 +89,9 @@ The skill system is built from five connected layers:
 
 | Capability | Count |
 |---|---:|
-| Skills | **87** |
-| Implementation patterns | **432** |
-| Evaluation cases | **448** |
+| Skills | **86** |
+| Implementation patterns | **437** |
+| Evaluation cases | **445** |
 | Dedicated system/contract tests | **85** |
 | Manifest version | **2** |
 
@@ -130,6 +130,14 @@ The Ruby foundation covers:
 Core skills include:
 
 `ruby-core` · `ruby-data-types` · `ruby-control-flow` · `ruby-collections` · `ruby-blocks-procs-lambdas` · `ruby-enumerables` · `ruby-api-design` · `ruby-method-design` · `ruby-oop` · `ruby-modules-mixins` · `ruby-metaprogramming` · `ruby-poro` · `ruby-service-objects` · `ruby-domain-modeling` · `ruby-dependency-injection` · `ruby-object-composition` · `ruby-boolean-logic` · `ruby-gems-io-services` · `ruby-debugging` · `ruby-clean-code` · `ruby-tdd-refactoring` · `ruby-concurrency` · `ruby-performance` · `ruby-runtime-compatibility`
+
+## React and TypeScript
+
+The frontend layer covers TypeScript type design and runtime contracts, React components, state and effects, server-state fetching, testing, accessibility, performance, and architecture, plus the Rails ↔ React seam: integration mode (Inertia, JSON API, or islands), typed and runtime-validated Rails JSON, CSRF and session handling from `fetch`, Rails 422 errors in forms, and pagination.
+
+`typescript-core-engineering` · `typescript-type-design` · `typescript-runtime-contracts` · `react-component-engineering` · `react-state-effects` · `react-data-fetching` · `react-testing-engineering` · `react-accessibility-performance` · `react-architecture` · `rails-react-integration`
+
+Not yet covered: browser end-to-end testing, frontend security (DOM XSS, CSP, browser storage), complex forms, frontend build tooling, and design systems.
 
 ---
 
@@ -557,7 +565,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **87 skills**, **432 implementation patterns**, **448 evaluation cases**, and **85 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **86 skills**, **437 implementation patterns**, **445 evaluation cases**, and **85 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

@@ -92,6 +92,17 @@ expected_inventory.each do |label, count|
   errors << "IMPLEMENTATION_HANDOFF.md #{label} count drift: #{handoff_matches.inspect} != #{count}" unless handoff_matches.all? { |value| value == count } && !handoff_matches.empty?
 end
 
+# RELEASE.md documents the shipped archive contents.
+release_path = File.join(root, "RELEASE.md")
+if File.file?(release_path)
+  release = File.read(release_path, encoding: "UTF-8")
+  { "skills" => [/(\d+) agent-executable skills/, skill_count],
+    "patterns" => [/(\d+) implementation patterns/, pattern_count] }.each do |label, (pattern, count)|
+    documented = release.scan(pattern).flatten.map(&:to_i)
+    errors << "RELEASE.md #{label} count drift: #{documented.inspect} != #{count}" unless !documented.empty? && documented.all?(count)
+  end
+end
+
 manifest_skill_count = manifest.fetch("skills").length
 errors << "manifest skill count #{manifest_skill_count} != filesystem #{skill_count}" unless manifest_skill_count == skill_count
 

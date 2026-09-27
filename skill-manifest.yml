@@ -95,6 +95,10 @@ skills:
     family: react-typescript
     path: skills/react-data-fetching/SKILL.md
     triggers: [React data fetching, server state, query caches, mutations, optimistic updates, request races]
+  rails-react-integration:
+    family: react-typescript
+    path: skills/rails-react-integration/SKILL.md
+    triggers: [Rails React integration, Inertia, Rails JSON API client, CSRF token in fetch, Rails validation errors in React forms, Rails pagination in React]
   react-testing-engineering:
     family: react-typescript
     path: skills/react-testing-engineering/SKILL.md
@@ -454,6 +458,11 @@ patterns:
       - patterns/react-typescript/react-focus-management.md
       - patterns/react-typescript/react-render-performance-budget.md
       - patterns/react-typescript/react-memoization-evidence-gate.md
+      - patterns/react-typescript/rails-react-integration-mode.md
+      - patterns/react-typescript/rails-react-typed-api-contract.md
+      - patterns/react-typescript/rails-react-validation-error-mapping.md
+      - patterns/react-typescript/rails-react-csrf-session-fetch.md
+      - patterns/react-typescript/rails-react-pagination-contract.md
   stack-minimality:
     paths:
       - patterns/stack-minimality/rails-convention-before-abstraction.md
@@ -1079,6 +1088,18 @@ evaluations:
       - functional
       - tests
       - contract
+      - scope_control
+
+  rails-react-integration:
+    source: rails-react-integration-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/rails-react-integration-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - security
       - scope_control
 
   react-testing-engineering:

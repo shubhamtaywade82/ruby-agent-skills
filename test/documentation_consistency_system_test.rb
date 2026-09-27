@@ -40,7 +40,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
     Dir.mktmpdir("documentation-consistency") do |dir|
       %w[skills patterns evals test].each { |path| FileUtils.cp_r(File.join(ROOT, path), dir) }
       FileUtils.mkdir_p(File.join(dir, "docs"))
-      %w[README.md CHANGELOG.md skill-manifest.yml docs/IMPLEMENTATION_HANDOFF.md docs/ITERATIONS.md].each do |path|
+      %w[README.md RELEASE.md CHANGELOG.md skill-manifest.yml docs/IMPLEMENTATION_HANDOFF.md docs/ITERATIONS.md].each do |path|
         text = source(path)
         text = edits[path].call(text) if edits.key?(path)
         File.write(File.join(dir, path), text, encoding: "UTF-8")
@@ -53,7 +53,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
   end
 
   def test_documentation_audit_detects_stale_handoff_inventory
-    stderr, status = audit_with("docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub("442 evaluation cases", "436 evaluation cases") })
+    stderr, status = audit_with("docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub(/\d+ evaluation cases/, "1 evaluation cases") })
 
     refute status.success?
     assert_includes stderr, "IMPLEMENTATION_HANDOFF.md"
@@ -76,6 +76,13 @@ class DocumentationConsistencySystemTest < Minitest::Test
     refute status.success?
     assert_includes stderr, "not in ascending order"
     assert_includes stderr, "has no section for Iteration"
+  end
+
+  def test_documentation_audit_detects_stale_release_inventory
+    stderr, status = audit_with("RELEASE.md" => ->(text) { text.sub(/\d+ agent-executable skills/, "91 agent-executable skills") })
+
+    refute status.success?
+    assert_includes stderr, "RELEASE.md skills count drift"
   end
 
   def test_validator_invokes_this_system_test
