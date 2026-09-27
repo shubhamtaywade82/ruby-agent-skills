@@ -1,3 +1,9 @@
+## Iteration 102 — Documentation Consistency Contract
+
+- Add a deterministic documentation audit covering README, implementation handoff, changelog milestone, filesystem inventory, and manifest identity.
+- Make `bin/validate` enforce documentation consistency before release readiness.
+- Synchronize current inventory and implementation-status documentation with the verified Iteration 101 repository state.
+
 ## Iteration 101 — Verified Routing History
 
 - Add `routing-history --verify` for integrity-gated longitudinal history generation.
