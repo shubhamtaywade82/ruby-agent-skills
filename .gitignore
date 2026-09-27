@@ -21,3 +21,4 @@ benchmark-results/
 
 # Release build outputs
 dist/
+.railsforge
