@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 133 — Release v1.1.0 Preparation
+
+- Point the README quick-start at the `v1.1.0` release archive; it still downloaded `v1.0.1`, which predates the skill merge, benchmark references, code examples, and RuboCop CI.
+- Correct the `RELEASE.md` archive-contents table from 91 skills / 431 patterns to the current 85 / 432.
+- `scripts/audit_documentation_consistency.rb` now checks the `RELEASE.md` skill and pattern counts against the filesystem, so the table cannot drift silently again; covered by a new regression test.
+
 ## Iteration 132 — Trim Duplicated Iteration History
 
 - Trim the `docs/ITERATIONS.md` entries for Iteration 101 onward (31 of them) from full copies of their `CHANGELOG.md` bullet lists to one-line summaries. Iterations 41–100 have no `CHANGELOG.md` counterpart and are unchanged.
