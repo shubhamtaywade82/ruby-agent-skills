@@ -32,6 +32,24 @@ Inspect user journeys, existing telemetry, incident history, business criticalit
 6. Define engineering actions when budget is exhausted or rapidly consumed.
 7. Revisit the target from observed evidence.
 
+## Example
+
+```markdown
+## Checkout SLO
+
+- **SLI:** successful `POST /checkout` responses (2xx or intentional 4xx) ÷ all checkout attempts, measured at the load balancer.
+- **SLO:** 99.5 % over a rolling 28 days.
+- **Error budget:** 0.5 % ≈ 3,360 failed checkouts per 672,000 attempts (current volume).
+
+| Budget remaining | Policy                                                             |
+|------------------|--------------------------------------------------------------------|
+| > 50 %           | normal release cadence                                             |
+| 10 – 50 %        | high-risk releases need progressive exposure                       |
+| < 10 %           | freeze non-reliability changes to checkout; prioritize fixes       |
+
+Alert: burn rate > 14.4× over 1 h (2 % of budget) pages on-call.
+```
+
 ## Failure modes
 
 - vanity infrastructure metric used as the SLI

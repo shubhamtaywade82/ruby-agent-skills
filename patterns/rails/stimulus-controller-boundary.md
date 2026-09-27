@@ -11,6 +11,30 @@ A controller becomes a hidden application service or global coordinator.
 ## Structure
 Own one cohesive browser behavior with explicit actions, targets, values, and lifecycle.
 
+## Example
+
+```js
+// app/javascript/controllers/clipboard_controller.js — one behavior: copy a value.
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static targets = ["source", "button"]
+  static values = { successLabel: { type: String, default: "Copied" } }
+
+  async copy() {
+    await navigator.clipboard.writeText(this.sourceTarget.value)
+    this.buttonTarget.textContent = this.successLabelValue
+  }
+}
+
+// Markup:
+// <div data-controller="clipboard">
+//   <input data-clipboard-target="source" value="<%= @invite.url %>" readonly>
+//   <button data-clipboard-target="button" data-action="clipboard#copy">Copy link</button>
+// </div>
+// Not here: fetching invites, deciding who may share them, or updating other widgets.
+```
+
 ## Testing
 Test public behavior and important lifecycle transitions.
 

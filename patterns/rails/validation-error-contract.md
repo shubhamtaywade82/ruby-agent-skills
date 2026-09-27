@@ -30,6 +30,25 @@ Validation Error Contract needs an explicit contract so validation does not drif
 4. Avoid coupling clients to prose.
 5. Add regression tests for the shape.
 
+## Example
+
+```ruby
+class Api::V1::OrdersController < ActionController::API
+  def create
+    order = Current.account.orders.build(params.expect(order: %i[sku quantity]))
+    if order.save
+      render json: { id: order.id }, status: :created
+    else
+      # Stable machine-readable shape: attribute + error type, with a human message.
+      render json: {
+        errors: order.errors.map { |e| { attribute: e.attribute, type: e.type, message: e.full_message } }
+      }, status: :unprocessable_entity
+    end
+  end
+end
+# {"errors":[{"attribute":"quantity","type":"greater_than","message":"Quantity must be greater than 0"}]}
+```
+
 ## Failure modes
 - wording changes break clients;
 - base errors are serialized incorrectly;

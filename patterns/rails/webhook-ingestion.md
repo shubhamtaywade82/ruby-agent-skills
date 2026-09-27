@@ -34,6 +34,32 @@ Inspect provider signature rules, canonical signing input, secret storage, webho
 8. Acknowledge according to provider semantics.
 9. Test invalid signatures, duplicates, malformed events, retries, and processing failure.
 
+## Example
+
+```ruby
+class Webhooks::PaymentsController < ActionController::API
+  def create
+    payload = request.raw_post
+    # 1. Authenticity before parsing into domain objects.
+    signature = request.headers["X-Signature"].to_s
+    expected = OpenSSL::HMAC.hexdigest("SHA256", Rails.application.credentials.dig(:payments, :webhook_secret), payload)
+    return head :unauthorized unless ActiveSupport::SecurityUtils.secure_compare(signature, expected)
+
+    event = JSON.parse(payload)
+    # 2. Durable dedup + fast acknowledgement; processing is asynchronous.
+    record = WebhookEvent.create_or_find_by!(provider: "payments", external_id: event.fetch("id")) do |e|
+      e.event_type = event.fetch("type")
+      e.payload = event
+    end
+    ProcessWebhookEventJob.perform_later(record) if record.previously_new_record?
+    head :ok
+  rescue JSON::ParserError, KeyError
+    head :bad_request
+  end
+end
+# The job applies events idempotently and tolerates out-of-order delivery via event timestamps.
+```
+
 ## Failure modes
 
 - parsing before signature verification

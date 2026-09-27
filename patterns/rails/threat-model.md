@@ -35,6 +35,25 @@ Inspect assets, actors, entry points, trust boundaries, authorization, dangerous
 9. Add executable abuse-case tests.
 10. Record residual risk and ownership.
 
+## Example
+
+```markdown
+## Threat model: customer document uploads
+
+**Assets:** uploaded KYC documents (PII), signed download URLs, storage credentials.
+**Actors:** customers (own documents), support staff (read, audited), anonymous internet.
+
+| Trust boundary                     | Threat                                   | Control                                        |
+|------------------------------------|------------------------------------------|------------------------------------------------|
+| Browser → app (upload)             | malicious file, oversized upload         | size cap 10 MB, Marcel type check, AV scan job |
+| Browser → app (download)           | IDOR on blob id                          | download through authorized controller, not public blob URL |
+| App → S3                           | leaked credentials, public bucket        | IAM role per env, bucket policy denies public  |
+| Support tool → documents           | insider browsing                          | reason required, audit event per view          |
+| Signed URL → third parties         | URL forwarded                             | 5-minute expiry, `disposition: attachment`     |
+
+Residual risk: AV scan is async; documents are unviewable until scanned.
+```
+
 ## Failure modes
 
 - generic threat list without repository data flow

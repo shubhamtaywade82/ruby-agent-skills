@@ -11,6 +11,34 @@ Turbo reconnection duplicates listeners, timers, observers, or subscriptions.
 ## Structure
 Allocate resources in connect and release them in disconnect; make repeated lifecycle transitions safe.
 
+## Example
+
+```js
+// app/javascript/controllers/autorefresh_controller.js
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static values = { interval: { type: Number, default: 30000 } }
+
+  connect() {
+    this.stop() // connect can run again after a Turbo restore/morph: never stack timers
+    this.timer = setInterval(() => this.element.reload(), this.intervalValue)
+    this.onVisibility = () => (document.hidden ? this.stop() : this.connect())
+    document.addEventListener("visibilitychange", this.onVisibility)
+  }
+
+  disconnect() {
+    this.stop()
+    document.removeEventListener("visibilitychange", this.onVisibility)
+  }
+
+  stop() {
+    if (this.timer) clearInterval(this.timer)
+    this.timer = null
+  }
+}
+```
+
 ## Testing
 Exercise repeated lifecycle transitions and cleanup.
 ## Do not use when

@@ -30,6 +30,31 @@ Validation Uniqueness Database Contract needs an explicit contract so validation
 4. Define application behavior for the database conflict.
 5. Test sequential and conflict cases.
 
+## Example
+
+```ruby
+class Membership < ApplicationRecord
+  # Friendly error in the common case...
+  validates :user_id, uniqueness: { scope: :team_id }
+end
+
+# ...and the real guarantee under concurrency.
+class AddUniqueIndexToMemberships < ActiveRecord::Migration[8.0]
+  disable_ddl_transaction!
+
+  def change
+    add_index :memberships, %i[team_id user_id], unique: true, algorithm: :concurrently
+  end
+end
+
+# Race loser gets RecordNotUnique; map it to the same user-facing error.
+def join!(team, user)
+  Membership.create!(team:, user:)
+rescue ActiveRecord::RecordNotUnique
+  Membership.find_by!(team:, user:) # idempotent join
+end
+```
+
 ## Failure modes
 - scope mismatch;
 - case/collation mismatch;

@@ -33,6 +33,21 @@ Inspect tenant identity source, database constraints, default scopes/query objec
 7. Add cross-tenant denial tests.
 8. Review database-level guarantees where practical.
 
+## Example
+
+```markdown
+## Tenant isolation review: `Report` export
+
+| Entry point                          | Tenant source                    | Scoped? | Test                               |
+|--------------------------------------|----------------------------------|---------|------------------------------------|
+| `ReportsController#show`             | `Current.account`                | ✅      | cross-tenant id → 404              |
+| `ExportReportJob.perform(report_id)` | `Report.find(report_id)`         | ❌ → re-check `report.account` membership of `requested_by` | job test with revoked member |
+| `reports:export_all` rake task       | `ENV["ACCOUNT_ID"]`              | ✅ explicit, audited | task test                    |
+| Action Cable `ReportChannel`         | `params[:report_id]`             | ❌ → `stream_for` only after policy check | channel test          |
+| Report cache                         | key `[report, :pdf]`             | ✅ record-scoped key   | —                        |
+| Search index                         | `account_id` filter on every query| ✅     | search test with two tenants       |
+```
+
 ## Failure modes
 
 - controller-only scope

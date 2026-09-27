@@ -31,6 +31,25 @@ Custom Validator Contract needs an explicit contract so validation does not drif
 4. Define stable error types/options.
 5. Test every consuming model.
 
+## Example
+
+```ruby
+# app/validators/gstin_validator.rb — reused by Customer and Supplier.
+class GstinValidator < ActiveModel::EachValidator
+  FORMAT = /\A\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]\z/
+
+  def validate_each(record, attribute, value)
+    return if value.blank? && options[:allow_blank]
+    record.errors.add(attribute, :invalid_gstin) unless value.to_s.match?(FORMAT)
+  end
+end
+
+class Customer < ApplicationRecord
+  validates :gstin, gstin: { allow_blank: true }
+end
+# config/locales/en.yml: en.activerecord.errors.messages.invalid_gstin: "is not a valid GSTIN"
+```
+
 ## Failure modes
 - validator exists only for indirection;
 - external calls during validation;

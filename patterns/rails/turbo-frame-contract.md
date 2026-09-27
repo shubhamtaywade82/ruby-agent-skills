@@ -14,6 +14,22 @@ Implementing inline editing, tabs, lazy loading, or partial page updates.
 ## Structure
 Define stable frame ID, authorized resource context, returned frame structure, error state, and fallback HTML.
 
+## Example
+
+```erb
+<%# posts/show.html.erb: the frame id is the contract with posts/edit. %>
+<%= turbo_frame_tag dom_id(@post, :details) do %>
+  <h1><%= @post.title %></h1>
+  <%= link_to "Edit", edit_post_path(@post) if policy(@post).update? %>
+<% end %>
+
+<%# posts/edit.html.erb must return the same frame id, or Turbo shows "Content missing". %>
+<%= turbo_frame_tag dom_id(@post, :details) do %>
+  <%= render "form", post: @post %>
+<% end %>
+<%# The controller still authorizes edit; the frame id is not a permission. %>
+```
+
 ## Failure modes
 Wrong frame ID, cross-tenant lookup, stale partial, and frame-specific cache leakage.
 

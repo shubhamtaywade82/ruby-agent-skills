@@ -24,6 +24,25 @@ A database constraint or atomic update already expresses and enforces the invari
 6. Establish consistent lock ordering.
 7. Define deadlock/retry semantics.
 
+## Example
+
+```ruby
+class Wallet < ApplicationRecord
+  InsufficientFunds = Class.new(StandardError)
+
+  # Invariant: balance never goes negative, even under concurrent debits.
+  def debit!(amount_cents, reference:)
+    with_lock do # SELECT ... FOR UPDATE; the check and the write see the same row version
+      raise InsufficientFunds if balance_cents < amount_cents
+
+      update!(balance_cents: balance_cents - amount_cents)
+      entries.create!(amount_cents: -amount_cents, reference:)
+    end
+  end
+end
+# Belt and braces: CHECK (balance_cents >= 0) and a unique index on entries.reference.
+```
+
 ## Failure modes
 - locking unrelated rows
 - holding locks during network calls
