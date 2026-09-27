@@ -1,3 +1,10 @@
+## Iteration 104 — Verified Routing History Boundary
+
+- Reject history entries whose archive paths resolve outside the declared archive root.
+- Record archive-manifest SHA-256 provenance for every indexed archive.
+- Add an aggregate archive-set SHA-256 to generated history and verify it during replay.
+- Add regression coverage for archive-root escape and provenance requirements.
+
 ## Iteration 103 — Release Bundle Component Provenance
 
 - Bind bundled public evidence to its archive manifest by source-evidence hash and shared campaign/repository/agent identity.
