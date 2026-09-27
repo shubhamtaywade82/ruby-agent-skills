@@ -2,6 +2,6 @@
 
 class UserSearch
   def self.call(term, relation:)
-    relation.where("name ILIKE ?", "%#{term}%")
+    relation.where("name ILIKE '%#{term}%'")
   end
 end

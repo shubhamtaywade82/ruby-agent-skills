@@ -21,9 +21,9 @@ implementation = {
 
 source_path = File.join(workspace, implementation)
 source = File.file?(source_path) ? File.read(source_path, encoding: "UTF-8") : ""
-all_tests = Dir.glob(File.join(workspace, "test/**/*_test.rb"))
-all_bodies = all_tests.map { |file| File.read(file, encoding: "UTF-8") }.join("
-")
+all_tests = Dir.glob(File.join(workspace, "test/**/*_test.rb")).sort
+test_bodies = all_tests.map { |file| File.read(file, encoding: "UTF-8") }
+all_bodies = test_bodies.join("\n")
 checks = {}
 
 ruby_files = Dir.glob(File.join(workspace, "**/*.rb"))
@@ -38,11 +38,12 @@ checks["functional"] = syntax.empty? ?
 case evaluation.fetch("id")
 when "boundary-selection"
   request = all_bodies.match?(/ActionDispatch::IntegrationTest/)
-  direct = all_bodies.match?(/OrdersController.*gets*:/m)
+  # Per file, so unrelated files cannot combine into a false match.
+  direct = test_bodies.any? { |body| body.match?(/OrdersController.*get\s*:/m) }
   checks["functional"] = request && !direct ?
     { "status" => "pass", "evidence" => "request/integration boundary detected" } :
     { "status" => "fail", "evidence" => "request boundary or direct-controller test detected" }
-  checks["contract"] = all_bodies.match?(/assert_responses*:created/) && all_bodies.match?(/Order.exists?/) ?
+  checks["contract"] = all_bodies.match?(/assert_response\s*:created/) && all_bodies.match?(/Order\.exists\?/) ?
     { "status" => "pass", "evidence" => "HTTP and persistence contract asserted" } :
     { "status" => "fail", "evidence" => "HTTP/persistence contract incomplete" }
 
@@ -50,17 +51,18 @@ when "deterministic-job"
   helper = all_bodies.include?("ActiveJob::TestHelper")
   perform = all_bodies.include?("perform_enqueued_jobs")
   enqueue = all_bodies.include?("assert_enqueued_with")
-  sleep = all_bodies.match?(/sleeps*(/)
+  sleep = all_bodies.match?(/\bsleep\s*\(/)
   checks["functional"] = helper && perform && enqueue && !sleep ?
     { "status" => "pass", "evidence" => "deterministic Active Job test boundary detected" } :
     { "status" => "fail", "evidence" => "job test contract incomplete or sleep detected" }
-  checks["contract"] = !all_bodies.match?(/.new(.*).perform/m) || perform ?
+  checks["contract"] = !all_bodies.match?(/\.new\(.*\)\.perform/m) || perform ?
     { "status" => "pass" } : { "status" => "fail", "evidence" => "direct perform bypasses relevant job boundary" }
 
 when "parallel-safety"
-  parallel = all_bodies.include?("parallelize")
-  shared_global = all_bodies.match?(/^w+_STATEs*=s*[]/)
-  hard_port = all_bodies.match?(/^TEST_PORTs*=s*3000$/)
+  # The shared resources live in test/test_helper.rb, the implementation file.
+  parallel = source.include?("parallelize")
+  shared_global = source.match?(/^\w+_STATE\s*=\s*\[\]/)
+  hard_port = source.match?(/^TEST_PORT\s*=\s*3000$/)
   checks["functional"] = parallel && !shared_global && !hard_port ?
     { "status" => "pass", "evidence" => "parallel execution preserved with isolated resource/state" } :
     { "status" => "fail", "evidence" => "shared state/resource collision remains" }
@@ -68,9 +70,9 @@ when "parallel-safety"
     { "status" => "pass" } : { "status" => "fail", "evidence" => "global parallelization was removed" }
 
 when "flaky-diagnosis"
-  sleep = all_bodies.match?(/sleeps*(/)
-  retry_mask = all_bodies.match?(/rescue.*retry|retrys+if/m)
-  global = all_bodies.match?(/^$w+s*=/)
+  sleep = all_bodies.match?(/\bsleep\s*\(/)
+  retry_mask = all_bodies.match?(/rescue.*\bretry\b|retry\s+if/m)
+  global = all_bodies.match?(/^\$\w+\s*=/)
   fixed_state = all_bodies.include?("ShippingContext") && all_bodies.include?("current = nil")
   checks["functional"] = fixed_state && !sleep && !retry_mask && !global ?
     { "status" => "pass", "evidence" => "shared-state leak addressed without sleep/retry masking" } :
@@ -89,13 +91,12 @@ when "system-contract"
     { "status" => "pass" } : { "status" => "fail", "evidence" => "internal calculation coupled into system test" }
 
 when "test-performance"
-  helper_glob = source.match?(/Dir[Rails.root.join("test"/)
+  helper_glob = source.match?(/Dir\[Rails\.root\.join\("test"/)
   deep_factory = source.include?("build_customer_with_all_associations")
-  optimized_files = Dir.glob(File.join(workspace, "test/**/*_test.rb")).map { |file| File.read(file, encoding: "UTF-8") }
-  optimized_bodies = optimized_files.join("
-")
-  still_expensive = optimized_bodies.match?(/Dir[Rails.root.join("test"/) || optimized_bodies.include?("build_customer_with_all_associations")
-  assertions = optimized_bodies.include?("assert")
+  # The expensive setup lives in test/test_helper.rb (the implementation
+  # file); the suite's assertions live in the *_test.rb files.
+  still_expensive = helper_glob || deep_factory || all_bodies.include?("build_customer_with_all_associations")
+  assertions = all_bodies.match?(/\bassert(_\w+)?\b/)
   checks["functional"] = !still_expensive && assertions ?
     { "status" => "pass", "evidence" => "measured setup sources removed while assertions remain" } :
     { "status" => "fail", "evidence" => "performance bottleneck remains or assertions were removed" }
@@ -104,18 +105,19 @@ when "test-performance"
     { "status" => "pass" }
 end
 
-test_files = Dir.glob(File.join(workspace, "test/**/*_test.rb"))
-if test_files.empty?
-  checks["tests"] = { "status" => "fail", "evidence" => "no Rails test files found" }
-else
-  results = test_files.map do |file|
-    out, err, status = Open3.capture3("ruby", file, chdir: workspace)
-    { "file" => file, "status" => status.success? ? "pass" : "fail", "stdout" => out, "stderr" => err }
+# These fixtures contain test code only, with no Rails application, so the
+# tests cannot be executed here. The check is static: every Ruby file under
+# test/ must parse and at least one test file must assert something.
+# Behavioural judgement comes from the evaluation-specific checks above.
+test_ruby = Dir.glob(File.join(workspace, "test/**/*.rb")).sort
+unparseable = test_ruby.reject { |file| Open3.capture3("ruby", "-c", file).last.success? }
+asserting = test_bodies.any? { |body| body.match?(/\bassert(_\w+)?\b/) }
+checks["tests"] =
+  if unparseable.empty? && asserting
+    { "status" => "pass", "evidence" => "test files parse and contain assertions (static: Rails runtime not provisioned)" }
+  else
+    { "status" => "fail", "evidence" => { "unparseable" => unparseable.map { |f| f.delete_prefix("#{workspace}/") }, "assertions_present" => asserting } }
   end
-  checks["tests"] = results.all? { |result| result["status"] == "pass" } ?
-    { "status" => "pass", "evidence" => results } :
-    { "status" => "fail", "evidence" => results }
-end
 
 changed_files = %x{git status --short}.lines.map { |line| (line[3..] || line).strip }.reject(&:empty?)
 checks["scope_control"] = { "status" => "pass", "evidence" => "recorded #{changed_files.length} changed paths" }
@@ -135,7 +137,6 @@ result = {
   "checks" => checks
 }
 
-File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.pretty_generate(result) + "
-", encoding: "UTF-8")
+File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), JSON.pretty_generate(result) + "\n", encoding: "UTF-8")
 abort "verification failed" if checks.values.any? { |value| value.fetch("status") == "fail" }
 puts JSON.pretty_generate(result)

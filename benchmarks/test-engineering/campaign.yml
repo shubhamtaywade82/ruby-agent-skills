@@ -1,5 +1,5 @@
 id: rails-test-engineering-public-v1
-version: 1
+version: 2
 evaluation_set: test-engineering
 source: rails-test-engineering-v1
 fixture_root: benchmarks/test-engineering/fixtures

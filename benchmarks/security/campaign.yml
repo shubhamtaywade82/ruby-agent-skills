@@ -1,5 +1,5 @@
 id: security-public-v1
-version: 1
+version: 2
 evaluation_set: security
 source: rails-security-v1
 fixture_root: benchmarks/security/fixtures
