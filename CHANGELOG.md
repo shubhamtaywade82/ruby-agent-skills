@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 135 — RSpec coverage in rails-test-engineering
+
+- Add an "RSpec" section to `rails-test-engineering`: detect the suite before writing tests, request specs over controller specs, block-form enqueue matchers on the default `:test` adapter, `errors.of_kind?` instead of `errors.added?`, verifying doubles, trait-based factories, and shared examples only for repeated contracts. No new skill; RSpec stays owned by the test-engineering skill.
+- Add six `testing` patterns (437 → 443): `rspec-request-spec`, `rspec-job-and-mail-enqueue`, `rspec-mailer-spec`, `rspec-factory-traits`, `rspec-shared-examples-contract`, and `rspec-verifying-doubles`. Their examples come from a Rails 8.0 app with rspec-rails 8.0, where they run as 15 examples with 0 failures. Three mutations (dropping the job enqueue, making the job ignore order status, renaming the gateway keyword) each fail the suite.
+- Record two behaviours found while running the examples: `have_enqueued_mail` raises `ArgumentError` outside block form, and `errors.added?` fails unless every error option is passed.
+- Add RSpec triggers to the `testing` pattern family and the `rspec-request-contract` evaluation (two cases; 445 → 447 evaluation cases).
+- Benchmark the new evaluation in the `test-engineering` campaign (version 2 → 3). Its fixture is a controller spec with `allow_any_instance_of`, `assigns`, and a non-block `have_enqueued_mail`. `scripts/verify_test_engineering_eval.rb` gains an `rspec-request-contract` branch that scans `spec/**/*.rb`. It checks for a request spec, block-form enqueue matchers, a shared 422 contract, and the 201/422/unchanged-count assertions, and it rejects `any_instance` stubs and `sleep`. The baseline fails. The reference under `benchmarks/test-engineering/references/rspec-request-contract/` passes, and it runs green in the Rails 8.0 app (4 examples). Four mutations of the executed request spec each fail.
+
 ## Iteration 134 — Rails and React Integration Seam
 
 - Add the `rails-react-integration` skill. It owns the client side of the Rails ↔ React boundary and composes with `rails-api-integration`, `rails-authentication`, `rails-validations`, `typescript-runtime-contracts`, and `react-data-fetching` for the server side. It covers choosing the integration mode (Inertia, JSON API with a separate client, or React islands), runtime validation of Rails JSON, CSRF and session handling from `fetch`, Rails 422 errors in forms, and pagination. 85 → 86 skills.

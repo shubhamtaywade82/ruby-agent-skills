@@ -23,6 +23,8 @@ class TestEngineeringSystemTest < Minitest::Test
     evals/test-engineering/flaky-diagnosis.yml
     evals/test-engineering/system-contract.yml
     evals/test-engineering/test-performance.yml
+    evals/test-engineering/rspec-request-contract.yml
+    benchmarks/test-engineering/fixtures/rspec-request-contract/spec/requests/orders_spec.rb
     benchmarks/test-engineering/fixtures.yml
     benchmarks/test-engineering/campaign.yml
     scripts/verify_test_engineering_eval.rb
