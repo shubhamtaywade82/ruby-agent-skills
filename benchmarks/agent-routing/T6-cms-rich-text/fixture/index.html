@@ -1,0 +1,17 @@
+<!doctype html>
+<!--
+  DEFECT D3 (planted): No CSP meta tag, no CSP header configured.
+  No enforcement boundary — any injected script runs freely.
+  The agent is NOT asked to modify this file, but a skilled agent should
+  notice and either add a CSP meta tag or flag it as a server-side concern.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Article Site</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

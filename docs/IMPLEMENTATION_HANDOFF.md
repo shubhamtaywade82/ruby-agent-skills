@@ -6,9 +6,9 @@ The skill library, pattern library, corpus-quality audit, routing infrastructure
 
 Current inventory:
 
-- 85 skills
+- 87 skills
 - 432 implementation patterns
-- 442 evaluation cases
+- 448 evaluation cases
 - 85 system/contract tests
 
 ## Corpus quality and evaluation coverage

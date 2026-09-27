@@ -107,6 +107,14 @@ skills:
     family: react-typescript
     path: skills/react-architecture/SKILL.md
     triggers: [React architecture, feature modules, dependency direction, shared state, frontend boundaries]
+  react-frontend-security:
+    family: react-typescript
+    path: skills/react-frontend-security/SKILL.md
+    triggers: [React security, XSS, dangerouslySetInnerHTML, DOMPurify, sanitization, CSP, Trusted Types, postMessage, iframe, token storage, source maps, third-party scripts, reverse tabnabbing, open redirect]
+  react-frameworks:
+    family: react-typescript
+    path: skills/react-frameworks/SKILL.md
+    triggers: [Next.js, App Router, React Server Components, RSC, server components, client components, use client, use server, server actions, SSR, streaming, Suspense, revalidateTag, revalidatePath, generateMetadata, route segment config, Next.js caching]
   rails-test-engineering:
     family: rails-quality
     path: skills/rails-test-engineering/SKILL.md
@@ -1100,6 +1108,29 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/react-typescript/react-architecture-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-frontend-security:
+    source: react-frontend-security-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-frontend-security-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - security
+      - scope_control
+
+  react-frameworks:
+    source: react-frameworks-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-frameworks-contract.yml
     checks:
       - functional
       - tests
