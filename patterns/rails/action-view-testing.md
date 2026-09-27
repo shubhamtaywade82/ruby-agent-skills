@@ -34,6 +34,27 @@ Inspect the repository's view/request/system test style, helper tests, HTML asse
 6. Use request/system tests for cross-layer rendering behavior.
 7. Avoid brittle assertions on incidental HTML formatting.
 
+## Example
+
+```ruby
+class OrdersViewTest < ActionView::TestCase
+  test "partial escapes user content and honours its locals" do
+    order = orders(:one)
+    order.number = %(<script>alert(1)</script>)
+
+    render partial: "orders/order", locals: { order: order, compact: true }
+
+    assert_includes rendered, "&lt;script&gt;"
+    assert_not_includes rendered, "<script>"
+    assert_no_match(/order-status/, rendered) # compact omits the status
+  end
+
+  test "missing required local raises" do
+    assert_raises(ActionView::Template::Error) { render partial: "orders/order", locals: {} }
+  end
+end
+```
+
 ## Failure modes
 
 - giant snapshots;

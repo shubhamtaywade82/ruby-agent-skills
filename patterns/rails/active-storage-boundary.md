@@ -35,6 +35,30 @@ Inspect attachment declarations, domain ownership, tenant rules, validations, st
 7. Define processing/variant behavior.
 8. Test the lifecycle.
 
+## Example
+
+```ruby
+class Contract < ApplicationRecord
+  belongs_to :account
+
+  # One owned file; replacing it detaches the old one and purges it later.
+  has_one_attached :signed_pdf do |attachable|
+    attachable.variant :thumb, resize_to_limit: [200, 200], preprocessed: true
+  end
+
+  validate :signed_pdf_is_a_pdf
+
+  private
+
+  def signed_pdf_is_a_pdf
+    return unless signed_pdf.attached?
+
+    errors.add(:signed_pdf, :content_type) unless signed_pdf.content_type == "application/pdf"
+    errors.add(:signed_pdf, :too_large) if signed_pdf.byte_size > 20.megabytes
+  end
+end
+```
+
 ## Failure modes
 
 - blob lookup used as authorization;

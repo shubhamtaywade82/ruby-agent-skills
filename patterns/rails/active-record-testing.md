@@ -33,6 +33,35 @@ Inspect model test conventions, factories/fixtures, database cleaning/isolation,
 4. Use deterministic data and avoid fragile SQL-string assertions unless SQL shape is the actual contract.
 5. Add integration coverage when multiple Rails layers interact.
 
+## Example
+
+```ruby
+class InvoiceTest < ActiveSupport::TestCase
+  test "reminder_candidates stays a relation and excludes paid invoices" do
+    relation = Invoice.reminder_candidates(accounts(:acme))
+
+    assert_kind_of ActiveRecord::Relation, relation
+    assert_includes relation, invoices(:overdue_unpaid)
+    assert_not_includes relation, invoices(:overdue_paid)
+  end
+
+  test "loading candidates runs a bounded number of queries" do
+    assert_queries_count(2) do
+      Invoice.reminder_candidates(accounts(:acme)).includes(:customer).each { |invoice| invoice.customer.email }
+    end
+  end
+
+  test "confirmation is enqueued only after commit" do
+    assert_no_enqueued_jobs do
+      Order.transaction do
+        Order.create!(email: "a@example.test")
+        raise ActiveRecord::Rollback
+      end
+    end
+  end
+end
+```
+
 ## Failure modes
 
 - asserting only implementation calls

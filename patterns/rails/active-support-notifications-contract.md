@@ -35,6 +35,25 @@ Inspect rails-observability conventions, existing event names, subscribers, expo
 6. Use monotonic subscriptions when elapsed-time accuracy matters.
 7. Test event, payload, error, and timing semantics.
 
+## Example
+
+```ruby
+# Event name "<action>.<library>", documented payload, units in the key name,
+# no PII or high-cardinality values beyond the ids listed.
+class Checkout
+  def call(order)
+    ActiveSupport::Notifications.instrument("checkout.shop", order_id: order.id, line_item_count: order.line_items.size) do
+      order.complete!
+    end
+  end
+end
+
+# Subscribers observe; they never change the business outcome.
+ActiveSupport::Notifications.subscribe("checkout.shop") do |event|
+  StatsD.histogram("checkout.duration_ms", event.duration)
+end
+```
+
 ## Failure modes
 
 - notification used as business event bus;

@@ -34,6 +34,27 @@ Inspect auth, resource ownership, tenant scope, permitted params, file-size/type
 6. Restrict direct-upload origins.
 7. Test invalid and cross-tenant cases.
 
+## Example
+
+```ruby
+class Upload < ApplicationRecord
+  belongs_to :account
+  has_one_attached :file
+
+  ALLOWED_TYPES = %w[image/png image/jpeg application/pdf].freeze
+  MAX_BYTES = 25.megabytes
+
+  # Content type is re-identified by Active Storage from the bytes (Marcel),
+  # not trusted from the browser; size is bounded server-side.
+  validate do
+    next unless file.attached?
+
+    errors.add(:file, :content_type) unless ALLOWED_TYPES.include?(file.blob.content_type)
+    errors.add(:file, :too_large) if file.blob.byte_size > MAX_BYTES
+  end
+end
+```
+
 ## Failure modes
 
 - trusting MIME type;

@@ -32,6 +32,34 @@ Inspect setters, mutation methods, persistence/writer workflow, reset behavior, 
 5. Keep irreversible side effects outside mere assignment.
 6. Test current and previous values.
 
+## Example
+
+```ruby
+class Preferences
+  include ActiveModel::Dirty
+
+  define_attribute_methods :theme
+
+  def theme = @theme
+
+  def theme=(value)
+    theme_will_change! unless value == @theme
+    @theme = value
+  end
+
+  # Change tracking only means something relative to an explicit save/reset.
+  def save
+    return true unless changed?
+
+    PreferenceStore.write(theme: @theme)
+    changes_applied
+    true
+  end
+
+  def discard = restore_attributes
+end
+```
+
 ## Failure modes
 
 - Dirty state treated as persistence;

@@ -33,6 +33,20 @@ Inspect callers, current SQL/query tests, expected result type, ordering require
 5. Review joins for cardinality changes.
 6. Test empty, duplicate, and boundary cases.
 
+## Example
+
+```ruby
+class Order < ApplicationRecord
+  # Contract: returns a Relation (composable), ordered deterministically,
+  # one row per order even though it joins line items.
+  def self.containing_sku(sku)
+    where(id: LineItem.where(sku: sku).select(:order_id)).order(created_at: :desc, id: :desc)
+  end
+end
+
+Order.containing_sku("A1").where(account: current_account).limit(20) # still composes
+```
+
 ## Failure modes
 
 - Relation unexpectedly becoming Array

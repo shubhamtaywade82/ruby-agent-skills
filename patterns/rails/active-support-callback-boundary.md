@@ -33,6 +33,28 @@ Inspect callback events, callers, side effects, abort semantics, ordering, and t
 5. Keep external effects out of generic callback infrastructure.
 6. Test ordering and failure semantics.
 
+## Example
+
+```ruby
+class ImportRun
+  include ActiveSupport::Callbacks
+
+  define_callbacks :import
+
+  # A small, explicit lifecycle protocol: timing and cleanup around the run.
+  set_callback :import, :before, -> { @started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC) }
+  set_callback :import, :after, -> { Rails.logger.info("import took #{elapsed.round(2)}s") }
+
+  def call(rows)
+    run_callbacks(:import) { rows.each { |row| Importer.call(row) } }
+  end
+
+  private
+
+  def elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - @started_at
+end
+```
+
 ## Failure modes
 
 - callback chain becomes business workflow;

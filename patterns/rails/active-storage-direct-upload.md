@@ -35,6 +35,29 @@ Inspect storage service, direct upload endpoint, CORS, client events, signed blo
 7. Schedule bounded cleanup.
 8. Test interruption and retry behavior.
 
+## Example
+
+```ruby
+# 1. The browser uploads to storage and receives a signed blob id.
+# 2. The form submits that id; the server attaches it only to a record the
+#    user may edit.
+# 3. Blobs never attached are cleaned up by a scheduled job.
+class DocumentsController < ApplicationController
+  def create
+    document = current_account.documents.build(title: params.expect(document: [:title])[:title])
+    document.file.attach(params.expect(document: [:file])[:file]) # signed_id from the direct upload
+    document.save!
+    redirect_to document
+  end
+end
+
+class PurgeUnattachedBlobsJob < ApplicationJob
+  def perform
+    ActiveStorage::Blob.unattached.where(created_at: ...2.days.ago).find_each(&:purge_later)
+  end
+end
+```
+
 ## Failure modes
 
 - treating signed ID as authorization;

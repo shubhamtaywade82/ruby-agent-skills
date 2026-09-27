@@ -33,6 +33,28 @@ Inspect input boundary, existing validators, error translations, persisted-model
 5. Preserve error keys/messages as a contract.
 6. Test valid, invalid, boundary, and strict-validation behavior.
 
+## Example
+
+```ruby
+class TransferForm
+  include ActiveModel::API
+  include ActiveModel::Attributes
+
+  attribute :amount_cents, :integer
+  attribute :to_account_id, :integer
+
+  # Validation answers "is this input acceptable?" only.
+  validates :amount_cents, numericality: { greater_than: 0 }
+  validates :to_account_id, presence: true
+end
+
+# Authorization and the balance invariant live elsewhere:
+form = TransferForm.new(params.expect(transfer: [:amount_cents, :to_account_id]))
+if form.valid? && TransferPolicy.new(current_user, form.to_account_id).allowed?
+  Transfers::Execute.call(from: current_account, **form.attributes.symbolize_keys) # locks and checks balance
+end
+```
+
 ## Failure modes
 
 - validation used as authorization;

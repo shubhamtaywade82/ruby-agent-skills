@@ -33,6 +33,27 @@ Inspect API serializers, job payloads, existing serialization methods, sensitive
 5. Version or stabilize the contract when external consumers depend on it.
 6. Test positive and negative serialization cases.
 
+## Example
+
+```ruby
+class AccountSummary
+  include ActiveModel::Serializers::JSON
+
+  attr_accessor :id, :name, :plan, :api_token
+
+  def initialize(id:, name:, plan:, api_token:)
+    @id, @name, @plan, @api_token = id, name, plan, api_token
+  end
+
+  # The serializable attributes are an explicit allowlist; api_token is never
+  # included, even though it is an attribute of the object.
+  def attributes = { "id" => nil, "name" => nil, "plan" => nil }
+end
+
+AccountSummary.new(id: 1, name: "Acme", plan: "pro", api_token: "secret").to_json
+# => {"id":1,"name":"Acme","plan":"pro"}
+```
+
 ## Failure modes
 
 - all attributes serialized accidentally;

@@ -33,6 +33,31 @@ Inspect test framework, existing Active Model lint tests, form/view/request test
 4. Cover attributes, validations, conversion, callbacks, serialization, and translation as used.
 5. Add security negatives for sensitive serialization or URL semantics.
 
+## Example
+
+```ruby
+class ContactRequestTest < ActiveSupport::TestCase
+  include ActiveModel::Lint::Tests
+
+  # The lint tests prove the object works with form_with, url_for, and errors.
+  setup { @model = ContactRequest.new }
+
+  test "invalid without an email" do
+    request = ContactRequest.new(name: "Sam", message: "Hi")
+    refute request.valid?
+    assert_equal [:blank], request.errors.details[:email].map { |d| d[:error] }
+  end
+end
+
+class ContactRequestsFormTest < ActionDispatch::IntegrationTest
+  test "form renders and re-renders with errors" do
+    post contact_requests_path, params: { contact_request: { name: "Sam" } }
+    assert_response :unprocessable_content
+    assert_select "form[action=?]", contact_requests_path
+  end
+end
+```
+
 ## Failure modes
 
 - only happy-path unit tests;

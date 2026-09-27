@@ -32,6 +32,18 @@ Inspect validations, callbacks, timestamps, dependent behavior, auditing, events
 4. Bound batch size and execution time where applicable.
 5. Test both data outcome and intentionally skipped lifecycle behavior.
 
+## Example
+
+```ruby
+# Bulk write chosen deliberately: 2M rows, no per-row callbacks needed, and
+# the invariants are enforced by the database (NOT NULL, unique index).
+# Anything that normally happens in callbacks is done explicitly here.
+Product.where(discontinued_at: nil, updated_at: ...1.year.ago).in_batches(of: 5_000) do |batch|
+  batch.update_all(discontinued_at: Time.current, updated_at: Time.current)
+end
+SearchIndex.rebuild_later(Product) # the callback-driven reindex does not run for update_all
+```
+
 ## Failure modes
 
 - replacing destroy_all with delete_all blindly

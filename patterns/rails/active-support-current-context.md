@@ -34,6 +34,26 @@ Inspect Current class, middleware/controller setters, reset hooks, jobs, threads
 5. Avoid storing mutable domain state or caches.
 6. Add isolation tests.
 
+## Example
+
+```ruby
+class Current < ActiveSupport::CurrentAttributes
+  attribute :user, :account, :request_id
+end
+
+class ApplicationController < ActionController::Base
+  before_action do
+    Current.user = current_user
+    Current.account = current_user&.account
+    Current.request_id = request.request_id
+  end
+end
+
+# Current is reset per request and job execution, and is NOT carried into
+# jobs: pass what the job needs explicitly and re-load it there.
+AuditJob.perform_later(account_id: Current.account.id, actor_id: Current.user.id, request_id: Current.request_id)
+```
+
 ## Failure modes
 
 - context leaks across requests/tests;

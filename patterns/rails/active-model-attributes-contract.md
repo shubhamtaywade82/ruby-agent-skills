@@ -33,6 +33,29 @@ Inspect supported Rails version, existing attribute declarations, custom types, 
 5. Keep validation separate from casting.
 6. Test malformed, blank, nil, default, and repeated assignments.
 
+## Example
+
+```ruby
+class ReportFilter
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+
+  # Typed, defaulted attributes; casting is not validation.
+  attribute :from, :date
+  attribute :to, :date, default: -> { Date.current }
+  attribute :per_page, :integer, default: 25
+  attribute :include_archived, :boolean, default: false
+
+  validates :from, presence: true
+  validates :per_page, numericality: { in: 1..100 }
+end
+
+filter = ReportFilter.new(from: "2026-01-01", per_page: "50", include_archived: "1")
+filter.from             # => Thu, 01 Jan 2026
+filter.per_page         # => 50
+filter.include_archived # => true
+```
+
 ## Failure modes
 
 - assuming cast success means semantic validity;

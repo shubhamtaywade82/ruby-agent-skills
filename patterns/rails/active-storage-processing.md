@@ -34,6 +34,24 @@ Inspect Active Job queues, processing dependencies, transformation definitions, 
 7. Observe processing latency/failures.
 8. Test malformed/unsupported inputs.
 
+## Example
+
+```ruby
+class Photo < ApplicationRecord
+  has_one_attached :image do |attachable|
+    # Preprocessed on upload in a background job, not lazily on first view.
+    attachable.variant :card, resize_to_limit: [800, 800], format: :webp, preprocessed: true
+  end
+end
+
+# config/environments/production.rb
+Rails.application.configure do
+  config.active_storage.variant_processor = :vips # libvips must be installed in the image
+  config.active_storage.queues.analysis = :media
+  config.active_storage.queues.transform = :media   # isolated, concurrency-limited queue
+end
+```
+
 ## Failure modes
 
 - user-controlled transformation parameters;

@@ -33,6 +33,21 @@ Inspect inflections.rb, Zeitwerk conventions, routing/serialization names, dynam
 5. Test irregular names and missing constants.
 6. Review authorization around dynamic type selection.
 
+## Example
+
+```ruby
+# config/initializers/inflections.rb
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.acronym "API"
+  inflect.irregular "criterion", "criteria"
+end
+
+# Never constantize external input directly; map it through an allowlist.
+EXPORTERS = { "orders" => OrderExporter, "invoices" => InvoiceExporter }.freeze
+exporter_class = EXPORTERS.fetch(params[:type]) { raise ActionController::BadRequest }
+# not: params[:type].classify.constantize
+```
+
 ## Failure modes
 
 - arbitrary user string constantized;

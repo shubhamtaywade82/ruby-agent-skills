@@ -35,6 +35,29 @@ Inspect test framework, Active Storage test service, fixture strategy, Active Jo
 7. Use fake/local test storage for normal CI.
 8. Isolate real provider tests to explicit integration environments.
 
+## Example
+
+```ruby
+class ContractTest < ActiveSupport::TestCase
+  test "rejects non-PDF uploads" do
+    contract = contracts(:draft)
+    contract.signed_pdf.attach(io: StringIO.new("not a pdf"), filename: "x.txt", content_type: "text/plain")
+
+    refute contract.valid?
+    assert_includes contract.errors.details[:signed_pdf].map { |d| d[:error] }, :content_type
+  end
+end
+
+class InvoicePdfsTest < ActionDispatch::IntegrationTest
+  test "another account cannot download the PDF" do
+    sign_in users(:globex_admin)
+    get invoice_pdf_path(invoices(:acme_q3))
+    assert_response :not_found
+  end
+end
+# config/storage.yml (test): service: Disk, root: tmp/storage — no cloud calls in CI.
+```
+
 ## Failure modes
 
 - live cloud dependency;

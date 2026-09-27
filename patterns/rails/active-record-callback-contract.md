@@ -34,6 +34,22 @@ Inspect callback order, validation lifecycle, transaction boundaries, inherited 
 5. Test callback scope and transaction outcome.
 6. Extract workflows when responsibility crosses record boundaries.
 
+## Example
+
+```ruby
+class Order < ApplicationRecord
+  # Intrinsic to the record: normalize its own attribute.
+  before_validation { self.email = email.to_s.strip.downcase }
+
+  # External effect: only after the transaction commits, and idempotent
+  # because the job keys on the order id.
+  after_create_commit { OrderConfirmationJob.perform_later(id) }
+
+  # Not here: charging cards, creating other aggregates, calling APIs in
+  # before_save/after_save, where a rollback would leave them half-done.
+end
+```
+
 ## Failure modes
 
 - network calls in before_save

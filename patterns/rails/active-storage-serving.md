@@ -35,6 +35,26 @@ Inspect default Active Storage routes, route configuration, authentication, reso
 6. Disable conflicting public routes when required.
 7. Test unauthorized access.
 
+## Example
+
+```ruby
+# Private files: an authorized controller action redirects to a short-lived
+# URL, instead of exposing the default /rails/active_storage routes.
+class InvoicePdfsController < ApplicationController
+  def show
+    invoice = current_account.invoices.find(params[:invoice_id])
+    redirect_to invoice.pdf.url(expires_in: 5.minutes, disposition: :attachment), allow_other_host: true
+  end
+end
+
+# config/routes.rb
+#   resources :invoices, only: [] do
+#     resource :pdf, only: :show, controller: "invoice_pdfs"
+#   end
+# config/application.rb
+#   config.active_storage.draw_routes = false # public blob routes disabled
+```
+
 ## Failure modes
 
 - blob-ID authorization;

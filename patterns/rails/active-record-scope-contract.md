@@ -33,6 +33,23 @@ Inspect existing scopes, default_scope, unscoped callers, creation paths, and au
 4. Prefer explicit scopes over broad default_scope for visibility rules.
 5. Test both scoped and deliberately unscoped paths.
 
+## Example
+
+```ruby
+class Post < ApplicationRecord
+  # Named, narrow, unsurprising: a filter only, no ordering or joins hidden
+  # inside, so callers choose those explicitly.
+  scope :published, -> { where.not(published_at: nil) }
+  scope :by_author, ->(author) { where(author: author) }
+
+  # Avoid: default_scope { where(deleted_at: nil) } as a security filter, or
+  # scopes that return an Array or call external services.
+end
+
+Post.published.by_author(user).order(published_at: :desc)
+Post.unscope(where: :published_at) # nothing implicit to fight against
+```
+
 ## Failure modes
 
 - default_scope as authorization

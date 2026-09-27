@@ -33,6 +33,21 @@ Inspect validations, callbacks, associations, transactions, timestamps, bulk API
 5. Test success, validation failure, and persistence failure.
 6. Re-read from the database when post-write truth matters.
 
+## Example
+
+```ruby
+user.update(name: "Sam")            # validations, callbacks, timestamps; returns false on failure
+user.update!(name: "Sam")           # same, raises ActiveRecord::RecordInvalid
+user.update_column(:name, "Sam")    # no validations, no callbacks, no updated_at
+user.update_columns(name: "Sam")    # same, several columns in one UPDATE
+user.touch                          # updated_at only, runs after_touch
+User.where(id: ids).update_all(active: false) # one SQL statement, no model lifecycle
+
+# Choose by what must run: a login counter can skip callbacks; a name change
+# that must validate and reindex cannot.
+user.increment!(:sign_in_count, touch: true)
+```
+
 ## Failure modes
 
 - assuming every write path runs validations

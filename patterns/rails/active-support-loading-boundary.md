@@ -33,6 +33,24 @@ Inspect gemspec/Gemfile dependencies, Rails boot files, existing require stateme
 5. Test the code in the repository's supported boot modes.
 6. Document standalone requirements when applicable.
 
+## Example
+
+```ruby
+# lib/money_parser.rb in a standalone gem: load only what is used, instead of
+# `require "active_support/all"` and relying on the whole core_ext set.
+require "active_support"
+require "active_support/core_ext/object/blank"
+require "active_support/core_ext/string/filters"
+
+module MoneyParser
+  def self.cents(input)
+    return nil if input.blank?
+
+    (BigDecimal(input.squish.delete(",$")) * 100).to_i
+  end
+end
+```
+
 ## Failure modes
 
 - works only because Rails already loaded an extension;
