@@ -38,7 +38,8 @@ Known-good implementations live outside the workspace, at `benchmarks/<evaluatio
 `test/benchmark_fixture_controls_system_test.rb` enforces both controls through `EvalRunner` and the campaign verifier:
 
 - **negative control:** a no-op agent must produce `overall: failed` on every fixture unless `noop_expected: pass` is declared;
-- **positive control:** copying a reference into the workspace must produce `overall: passed`;
+- **positive control:** copying a reference into the workspace must produce `overall: passed`, and every fixture has a reference unless it declares `noop_expected: pass`;
+- **reference tests:** a reference's own `*_test.rb` / `test_*.rb` files must pass against the reference (tests that need a Rails application are covered by the verifier's static checks instead);
 - **tamper control:** for verifiers that grade with the registry `test_file` (Rails and design-patterns), rewriting the workspace test file to pass trivially must not change the grade. `functional` runs the fixture's original test file against the agent's code (`RubyAgentSkills::FixtureTestRun`); the agent's edited tests only count toward the separate `tests` check.
 
 Every `*_regex` entry must compile and must not contain an escaped backslash. In single-quoted YAML write `'all_records\.map'`, not `'all_records\\.map'`: the doubled form requires a literal backslash and never matches Ruby source.

@@ -2,6 +2,7 @@
 
 require "fileutils"
 require "minitest/autorun"
+require "open3"
 require "shellwords"
 require "tmpdir"
 require "yaml"
@@ -149,6 +150,52 @@ class BenchmarkFixtureControlsSystemTest < Minitest::Test
 
     refute_equal "passed", result.fetch("overall")
     assert(result.fetch("checks").values.none? { |check| check["status"] == "pass" })
+  end
+
+  def test_every_fixture_has_a_positive_control
+    missing = []
+    each_fixture do |campaign, registry, eval_id|
+      next if registry.noop_expected(eval_id) == "pass"
+
+      missing << "#{campaign.fetch("id")}/#{eval_id}" unless registry.reference?(eval_id)
+    end
+
+    assert_empty missing, "every implementation fixture needs a reference under benchmarks/<set>/references/<id>/"
+  end
+
+  # A reference's own tests must pass against the reference. Tests that need a
+  # Rails application cannot load in these workspaces and are covered by the
+  # verifier's static checks instead.
+  RAILS_TEST_MARKERS = [
+    /require\s+"test_helper"/, /require\s+"application_system_test_case"/,
+    /ActiveSupport::TestCase|ActionDispatch::IntegrationTest|ApplicationSystemTestCase/
+  ].freeze
+
+  def test_reference_tests_pass_against_the_reference
+    failures = []
+    ran = 0
+    each_fixture do |_campaign, registry, eval_id|
+      next unless registry.reference?(eval_id)
+
+      reference = registry.reference_root(eval_id)
+      tests = Dir.glob(File.join(reference, "{test,spec}", "**", "{*_test,test_*}.rb")).sort
+      next if tests.empty?
+
+      Dir.mktmpdir("reference-tests") do |workspace|
+        FileUtils.cp_r(File.join(registry.path(eval_id), "."), workspace)
+        FileUtils.cp_r(File.join(reference, "."), workspace)
+        tests.map { |path| path.delete_prefix("#{reference}/") }.each do |relative|
+          next if RAILS_TEST_MARKERS.any? { |marker| File.read(File.join(workspace, relative)).match?(marker) }
+
+          ran += 1
+          out, err, status = Open3.capture3(RbConfig.ruby, "-Ilib", relative, chdir: workspace)
+          failures << "#{eval_id}/#{relative}: #{(out + err).lines.last(3).join.strip}" unless status.success?
+        end
+      end
+    end
+
+    assert_operator ran, :>, 0
+    assert_empty failures
   end
 
   def test_registry_root_overrides_conventional_directory

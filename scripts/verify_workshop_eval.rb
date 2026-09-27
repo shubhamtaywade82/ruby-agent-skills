@@ -151,7 +151,7 @@ begin
     params_ok = controller.match?(/params\.require\(:post\)/) && controller.match?(/permit\(/)
     route_ok = routes.match?(/resources\s+:posts/)
     checks["functional"] = route_ok && actions_ok ? check("pass") : check("fail", "route/actions contract incomplete")
-    checks["contract"] = params_ok ? check("pass") : check("strong_parameter_contract_missing")
+    checks["contract"] = params_ok ? check("pass") : check("fail", "strong parameter contract missing")
   when "rails-authentication-boundary"
     dashboard = File.read(implementation, encoding: "UTF-8")
     health = File.read(File.join(WORKSPACE, "app/controllers/health_controller.rb"), encoding: "UTF-8")
@@ -160,7 +160,9 @@ begin
     checks["functional"] = protected_ok && public_ok ? check("pass") : check("fail", "public/private boundary incomplete")
     checks["contract"] = protected_ok ? check("pass") : check("fail", "dashboard authentication boundary missing")
   end
-rescue LoadError, NameError, NoMethodError, ArgumentError, StandardError => e
+rescue LoadError, NotImplementedError, StandardError => e
+  # NotImplementedError is a ScriptError, not a StandardError: an unimplemented
+  # skeleton is a failed submission, not a verifier crash.
   checks["functional"] ||= check("fail", "verification raised #{e.class}: #{e.message}")
 end
 
