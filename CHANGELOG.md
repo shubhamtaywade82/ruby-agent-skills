@@ -15,7 +15,7 @@
 - `rails-database-engineering` now points schema-design decisions to the new skill.
 - **Routing:** a matrix row, a `Rails data modeling` composition, and one routing case (`schema-design-before-migration`). The public routing campaign moves to version 5: 23 cases × 3 repetitions = 69 runs; the release contract, routing docs, and pinned tests are updated. No empirical campaign evidence was recorded under version 4.
 - **Evaluation and test:**
-  - the static-only `data-modeling-contract` evaluation (4 cases; 460 → 464): snapshots, tenant uniqueness, plan history, and retirement;
+  - the static-only `data-modeling-contract` evaluation (4 cases; 460 → 464): snapshots, tenant uniqueness, plan history, and retirement. It lives in `evals/data-modeling/`, not `evals/rails/`, because the Rails benchmark campaign requires every evaluation there to have a benchmark fixture, and this one has none yet. The static-only classification test now covers that directory;
   - `test/rails_data_modeling_system_test.rb` (89 system tests), registered in `bin/validate`. It checks registration, routing, the key invariants, and the drift table, syntax-checks every Ruby example in the skill, and rejects removed APIs in those examples.
 
 ## Iteration 138 — Tracker-Neutral Planning Layer

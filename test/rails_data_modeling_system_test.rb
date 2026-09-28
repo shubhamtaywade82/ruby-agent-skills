@@ -8,7 +8,7 @@ require "yaml"
 class RailsDataModelingSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   SKILL_DIR = "skills/rails-data-modeling"
-  EVALUATION = "evals/rails/data-modeling-contract.yml"
+  EVALUATION = "evals/data-modeling/data-modeling-contract.yml"
 
   REQUIRED_TEXT = {
     "#{SKILL_DIR}/SKILL.md" => [

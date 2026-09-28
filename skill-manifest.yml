@@ -1443,7 +1443,7 @@ evaluations:
     source: rails-data-modeling-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/rails/data-modeling-contract.yml
+      - evals/data-modeling/data-modeling-contract.yml
     checks:
       - functional
       - tests
