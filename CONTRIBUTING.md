@@ -9,7 +9,7 @@ This repository is an executable skill system for Ruby and Ruby on Rails coding 
 1. Inspect the existing skill, pattern, manifest, router, evaluation, and test contracts before changing them.
 2. Reuse an existing skill or pattern when it already owns the responsibility.
 3. Add behavior changes with deterministic tests and update the evaluation corpus when the agent contract changes.
-4. Register every new skill, pattern, evaluation, and system test in the canonical manifest/validation paths.
+4. Register every new skill, pattern, evaluation, and system test in the canonical manifest/validation paths. Keep `SKILL.md` within the size gate in `docs/SKILL_CONTRACT.md`; put deep knowledge in the skill's `references/` directory and link each file from its `## References` table. Follow `docs/WRITING_SKILLS.md` for wording.
 5. Run `bin/validate` and, when Ruby files change, `bundle exec rubocop` (new offenses fail CI; `.rubocop_todo.yml` records the pre-existing baseline and should only shrink).
 6. Review the Git diff for accidental generated artifacts, secrets, unrelated changes, or stale inventory/documentation.
 7. Wait for repository CI to pass before treating the change as complete.

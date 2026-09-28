@@ -85,6 +85,15 @@ Use this evidence order:
 
 If the direct implementation is simpler and satisfies the contract, prefer the direct implementation.
 
+## Implementation loop
+
+When a spec, ticket, or agreed plan exists:
+
+1. Agree the test seams (see `ruby-tdd-refactoring`), then work test-first in vertical slices at those seams.
+2. Run the single test file after each slice and the repository's linters or type checks regularly.
+3. Run the full suite once at the end, not after every slice.
+4. Review the diff with `change-review` against the repository's standards and the originating spec before committing.
+
 ## Change discipline
 
 - Keep each slice independently verifiable.
@@ -105,6 +114,8 @@ Review the implementation across:
 - scope
 
 Then ask whether every abstraction earns its complexity.
+
+For a diff that is ready to hand off, run `change-review`: it reports repository standards and spec fidelity as two separate axes. Add `stack-minimality-review` when the question is only whether the change can be smaller.
 
 ## Reference example
 
@@ -136,7 +147,9 @@ puts "selected: #{selected.join(', ')}"
 - [ ] ambiguity resolved
 - [ ] smallest justified pattern selected
 - [ ] stack-minimality applied without weakening required guarantees
+- [ ] test seams agreed before test-first work
 - [ ] focused tests run
+- [ ] diff reviewed on both standards and spec axes
 - [ ] validators/CI-equivalent checks run
 - [ ] final diff reviewed
 - [ ] unrun checks disclosed
@@ -155,3 +168,5 @@ If a check cannot be run, state that instead of inferring success.
 ## Source foundation
 
 This repository-local workflow is based on the external Agent Skills methodology, adapted to the Ruby/Rails skill library and its existing validation/evaluation architecture. It is workflow guidance rather than source-book content.
+
+The implementation loop (test-first at agreed seams, focused tests per slice, one full-suite run, review before commit) is adapted from the `implement` skill in https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock).

@@ -99,8 +99,17 @@ end
 
 begin
   skill_hashes = verify_file_hashes(metadata.dig("integrity", "skill_files"), root: root, label: "skill file")
-  installed_skill_hash_paths = expected_skills.keys.map { |name| "#{name}/SKILL.md" }.sort
-  errors << "skill integrity set mismatch" unless skill_hashes.keys.sort == installed_skill_hash_paths
+  # Every file shipped in a skill directory (SKILL.md and its references) is
+  # recorded, so a missing, altered, or injected reference fails verification.
+  installed_skill_files = expected_skills.keys.flat_map do |name|
+    Dir.glob(File.join(root, name, "**", "*"), File::FNM_DOTMATCH)
+       .select { |path| File.file?(path) }
+       .map { |path| path.delete_prefix(File.join(root, "")) }
+  end.sort
+  required_skill_files = expected_skills.keys.map { |name| "#{name}/SKILL.md" }
+  errors << "skill integrity set mismatch" unless (required_skill_files - skill_hashes.keys).empty?
+  (installed_skill_files - skill_hashes.keys).each { |relative| errors << "unrecorded skill file: #{relative}" }
+  (skill_hashes.keys - installed_skill_files).each { |relative| errors << "recorded skill file outside installed skills: #{relative}" }
 
   pattern_entries = Array(metadata.dig("integrity", "pattern_files")).map do |entry|
     entry.merge("path" => entry.fetch("path").delete_prefix("patterns/"))

@@ -1,0 +1,52 @@
+id: change-review-contract
+coverage: static-only
+version: 1
+title: Change Review Contract
+category: agent-workflow
+source: change-review-v1
+skills:
+  - change-review
+  - rails-active-record
+patterns:
+  - rubocop-review
+prompt: |
+  Review the changes on this branch since main. Issue #214 asked for partial refunds that keep the original tax split.
+  Pin the range, find the spec and the repository's standards, and report the Standards and Spec axes separately. Do not change any code.
+constraints:
+  required_boundary: change-review
+  forbidden:
+    - merging Standards and Spec findings into one ranked list
+    - reporting a code smell as a hard violation
+    - claiming RuboCop or tests passed without running them
+    - editing files during the review
+checks:
+  - functional
+  - tests
+  - contract
+  - evidence
+  - scope_control
+cases:
+  - name: spec-gap-behind-clean-standards
+    input: The diff follows every documented standard but refunds tax proportionally only for full refunds.
+    expected:
+      spec: missing requirement reported with the quoted line from issue 214
+      standards: no hard findings; the axis still reports what was checked
+  - name: contract-breach-behind-met-spec
+    input: The diff meets issue 214 but marks refunds with update_all, skipping the audit callback without a note.
+    expected:
+      standards: hard finding citing the rails-active-record change contract for bulk writes
+      spec: no missing requirements
+  - name: no-spec
+    input: The branch has no issue reference and no spec file.
+    expected:
+      spec: states that no spec is available after asking, instead of skipping silently
+  - name: smell-overridden-by-repository
+    input: A service reads many Invoice attributes, and CONTRIBUTING.md requires calculations to live in service objects.
+    expected:
+      standards: no Feature Envy finding, because the documented standard overrides the baseline
+grading:
+  functional: Each case produces the expected verdict on each axis.
+  tests: The review states whether the repository's tests and RuboCop ran for the range, citing observed output, and never infers a pass.
+  contract: Both axes are reported separately, each with its own worst finding, and every finding cites a file and rule or a spec line.
+  evidence: Tool and test results are cited only when run during the review; smells are labelled as judgement calls.
+  scope_control: No code is changed and no unrequested refactor is proposed as a Spec finding.

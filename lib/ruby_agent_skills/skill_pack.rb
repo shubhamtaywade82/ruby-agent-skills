@@ -37,7 +37,12 @@ module RubyAgentSkills
         source = @manifest.fetch("skills").fetch(skill).fetch("path")
         destination = File.join(skills_dir, skill, "SKILL.md")
         copy_file(source, destination)
-        { "id" => skill, "path" => relative_path(destination), "sha256" => digest(source) }
+        references = reference_sources(source).map do |reference|
+          reference_destination = File.join(skills_dir, skill, "references", File.basename(reference))
+          copy_file(reference, reference_destination)
+          { "path" => relative_path(reference_destination), "sha256" => digest(reference) }
+        end
+        { "id" => skill, "path" => relative_path(destination), "sha256" => digest(source), "references" => references }
       end
 
       pattern_files = selected_patterns.map do |pattern|
@@ -123,6 +128,13 @@ module RubyAgentSkills
       raise Error, "unknown pattern: #{pattern}"
     end
 
+    # Skill-local references load on demand from SKILL.md links, so they ship
+    # with the skill; they are one level deep by repository contract.
+    def reference_sources(skill_source)
+      references_dir = File.join(@root, File.dirname(skill_source), "references")
+      Dir[File.join(references_dir, "*.md")].map { |path| path.delete_prefix(@root + File::SEPARATOR) }
+    end
+
     def copy_file(source_relative, destination)
       source = File.join(@root, source_relative)
       raise Error, "missing source file: #{source_relative}" unless File.file?(source)
@@ -146,6 +158,10 @@ module RubyAgentSkills
         lines << ""
         lines << "## #{entry.fetch("id")}"
         lines << File.read(File.join(root, @manifest.fetch("skills").fetch(entry.fetch("id")).fetch("path")), encoding: "UTF-8").strip
+        next if entry.fetch("references").empty?
+
+        lines << ""
+        lines << "References for #{entry.fetch("id")} load on demand from `#{File.dirname(entry.fetch("path"))}/references/`."
       end
 
       unless pattern_files.empty?

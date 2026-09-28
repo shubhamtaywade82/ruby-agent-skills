@@ -25,6 +25,8 @@ class SkillPackInstallerSystemTest < Minitest::Test
     FileUtils.mkdir_p(File.join(dir, "bin"))
 
     File.write(File.join(dir, "skills", skill_name, "SKILL.md"), "---\nname: #{skill_name}\ndescription: Test skill.\n---\n\n# Demo\n", encoding: "UTF-8")
+    FileUtils.mkdir_p(File.join(dir, "skills", skill_name, "references"))
+    File.write(File.join(dir, "skills", skill_name, "references", "detail.md"), "# Detail\n", encoding: "UTF-8")
     File.write(File.join(dir, "patterns", "ruby", "demo.md"), "# Demo pattern\n", encoding: "UTF-8")
     File.write(File.join(dir, "router", "ROUTING.md"), "# Routing\n", encoding: "UTF-8")
     File.write(File.join(dir, "docs", "SKILL_CONTRACT.md"), "# Contract\n", encoding: "UTF-8")
@@ -134,6 +136,58 @@ class SkillPackInstallerSystemTest < Minitest::Test
 
     refute verify_status.success?
     assert_includes verify_err, "skill"
+  end
+
+  def test_installer_records_skill_references
+    source = build_source
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+    out, err, status = install(source, project)
+
+    assert status.success?, "#{out}\n#{err}"
+    target = File.join(project, ".agents", "skills")
+
+    assert File.file?(File.join(target, "demo-skill", "references", "detail.md"))
+
+    metadata = JSON.parse(File.read(File.join(target, ".ruby-agent-skills", "INSTALLATION.json"), encoding: "UTF-8"))
+    recorded = metadata.fetch("integrity").fetch("skill_files").map { |entry| entry.fetch("path") }
+
+    assert_equal ["demo-skill/SKILL.md", "demo-skill/references/detail.md"], recorded.sort
+  end
+
+  def test_verifier_rejects_tampered_skill_reference
+    source = build_source
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+    out, err, status = install(source, project)
+
+    assert status.success?, "#{out}\n#{err}"
+
+    target = File.join(project, ".agents", "skills")
+    File.open(File.join(target, "demo-skill", "references", "detail.md"), "a", encoding: "UTF-8") { |file| file.write("tampered\n") }
+
+    _verify_out, verify_err, verify_status = Open3.capture3(
+      RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
+    )
+
+    refute verify_status.success?
+    assert_includes verify_err, "skill file SHA-256 mismatch: demo-skill/references/detail.md"
+  end
+
+  def test_verifier_rejects_injected_skill_reference
+    source = build_source
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+    out, err, status = install(source, project)
+
+    assert status.success?, "#{out}\n#{err}"
+
+    target = File.join(project, ".agents", "skills")
+    File.write(File.join(target, "demo-skill", "references", "injected.md"), "# Injected\n", encoding: "UTF-8")
+
+    _verify_out, verify_err, verify_status = Open3.capture3(
+      RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
+    )
+
+    refute verify_status.success?
+    assert_includes verify_err, "unrecorded skill file: demo-skill/references/injected.md"
   end
 
   def test_verifier_rejects_tampered_minimality_tool

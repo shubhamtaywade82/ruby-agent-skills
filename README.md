@@ -85,14 +85,29 @@ The skill system is built from five connected layers:
                          └──────────────────────┘
 ```
 
+### Skill layout and progressive disclosure
+
+An agent loads a whole `SKILL.md` when the skill activates, so `SKILL.md` holds only what is needed to act: purpose, activation, repository inspection, decision rules, critical invariants, the domain change contract, review checklist, failure modes, and verification. Deep framework knowledge lives in skill-local `references/*.md` files that the agent loads only when the change touches that boundary. The `## References` table in each `SKILL.md` says when to load each file and which patterns to consult.
+
+```text
+skills/rails-active-record/
+├── SKILL.md                 # operating playbook, always loaded on activation
+└── references/              # loaded on demand, one level deep
+    ├── relations-and-queries.md
+    ├── persistence-lifecycle-and-callbacks.md
+    └── ...
+```
+
+`scripts/validate_skills.rb` enforces the budget from the Agent Skills specification: at most 500 lines and about 5,000 estimated tokens per `SKILL.md`, reference files at most 500 lines, directly under `references/`, never linking to another reference, and every reference linked from `SKILL.md`. The repository target of 350 lines / about 3,500 tokens is reported but not enforced. Patterns stay in the shared `patterns/` catalog; a skill names the pattern to consult rather than copying it.
+
 ### Current validated inventory
 
 | Capability | Count |
 |---|---:|
-| Skills | **86** |
+| Skills | **87** |
 | Implementation patterns | **443** |
-| Evaluation cases | **447** |
-| Dedicated system/contract tests | **85** |
+| Evaluation cases | **451** |
+| Dedicated system/contract tests | **87** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -395,6 +410,8 @@ The core principles are:
 - deterministic verification
 - no claims of correctness without evidence
 
+Process skills sit around the Ruby and Rails skills: `agent-workflow` runs the implementation loop (test-first at agreed seams, focused tests per slice, one full-suite run), `change-review` reviews a diff on two separate axes (repository standards and spec fidelity), `ruby-debugging` builds a failing feedback loop before any hypothesis, `ruby-domain-modeling` keeps a domain glossary and decision records, and `ruby-api-design` applies deep-module design. `docs/WRITING_SKILLS.md` covers how to write skills for agents. Several of these disciplines are adapted from https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock).
+
 ---
 
 # Skill routing
@@ -573,7 +590,7 @@ Ruby style is enforced separately in CI with `bundle exec rubocop` (configuratio
 
 Validation covers:
 
-- skill contracts
+- skill contracts, including the SKILL.md size gate and skill-local reference structure
 - pattern contracts
 - evaluation contracts
 - runtime/security/loader/observability/database/production/test-engineering system checks
@@ -582,7 +599,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **86 skills**, **443 implementation patterns**, **447 evaluation cases**, and **85 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **87 skills**, **443 implementation patterns**, **451 evaluation cases**, and **87 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
@@ -592,7 +609,7 @@ The exact counts are enforced by `scripts/audit_repository_completeness.rb` and 
 
 ```text
 ruby-agent-skills/
-├── skills/                    # agent skills
+├── skills/                    # agent skills: SKILL.md + optional references/
 ├── patterns/                  # reusable implementation patterns
 │   ├── ruby-design/
 │   ├── rails/

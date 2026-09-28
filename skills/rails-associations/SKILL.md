@@ -11,7 +11,7 @@ Treat Active Record associations as executable relationship contracts, not merel
 
 An association defines how records are connected, how foreign keys are interpreted, how objects are traversed and mutated, and what lifecycle behavior occurs when records are added, removed, destroyed, or saved.
 
-This skill deepens the foundational association guidance. Active Record query semantics belong to rails-active-record; schema constraints, foreign keys, indexes, transactions, locks, and migrations belong to rails-database-engineering.
+Active Record query semantics belong to rails-active-record; schema constraints, foreign keys, indexes, transactions, locks, and migrations belong to rails-database-engineering.
 
 ## Activate when
 
@@ -89,261 +89,29 @@ For every relationship state:
 
 Do not model one-to-one semantics with has_one alone when the database permits multiple child rows.
 
-## belongs_to contract
+## Decision rules
 
-A belongs_to association expresses that the declaring row references another record.
+1. Settle cardinality and ownership above, then classify the change: association declarations (belongs_to, has_one, has_many, through, polymorphic, inverse), persistence effects (autosave, dependent lifecycle, counter caches and touch, callbacks, extensions), or loading, security, performance, and testing.
+2. Load the matching reference below before changing behavior; any dependent or autosave change needs the lifecycle reference.
+3. Back every association invariant that must hold under concurrency with a database constraint owned by rails-database-engineering.
 
-Review:
+## Critical invariants
 
-- required versus optional relationship
-- foreign key name/type
-- primary key when nonstandard
-- database foreign key
-- validation semantics
-- inverse association
-- authorization of referenced records.
+- Do not model one-to-one semantics with has_one alone when the database permits multiple child rows.
+- Do not assume belongs_to validation replaces a database foreign key.
+- Do not accept arbitrary client-provided polymorphic type names for constantization or lookup.
+- Do not combine database cascading and application destruction callbacks without proving their combined semantics.
+- Do not use association callbacks for multi-record workflows, external API calls, authorization engines, or background job orchestration.
 
-Do not assume belongs_to validation replaces a database foreign key. Application validation and database referential integrity protect different failure paths.
+## References
 
-When optional: true is required, explicitly reason about what NULL means and what happens when a non-NULL foreign key points to a missing row.
+Load only the reference for the boundary being changed, before changing behavior there. Each reference is self-contained and one level deep; none links to another. Consult a listed pattern from the pattern catalog only when the change needs its implementation shape.
 
-## has_one and uniqueness
-
-A has_one declaration describes expected cardinality, but it does not by itself guarantee database uniqueness.
-
-When exactly one child is required:
-
-1. define the association
-2. inspect/create the corresponding foreign key
-3. enforce uniqueness where the database contract requires it
-4. test duplicate creation under concurrent or independent writes.
-
-Do not rely on a model association to prevent two rows from referencing the same owner.
-
-## has_many collection semantics
-
-A has_many association exposes a collection API with add, remove, clear, build, create, and assignment behavior.
-
-Before changing collection mutation, establish:
-
-- whether add saves immediately
-- whether build leaves records unsaved
-- what happens to removed members
-- which callbacks/validations execute
-- how dependent behavior interacts with collection methods
-- whether the collection is loaded or query-backed.
-
-Do not infer collection mutation semantics from ordinary Array behavior.
-
-Test add, remove, replace/assignment, clear, unsaved parent, and persisted parent scenarios when they are contractual.
-
-## Through associations
-
-Use has_many :through when the intermediate relationship is meaningful or already exists.
-
-Inspect the join model's:
-
-- belongs_to associations
-- validations
-- uniqueness constraints
-- additional attributes
-- callbacks
-- authorization/tenant ownership
-- lifecycle.
-
-For writable through associations, explicitly determine what Rails creates or removes in the join table when assigning or mutating the association.
-
-Remember that deleting/replacing through join records is not necessarily equivalent to destroying the target records. The current Rails guide notes that automatic deletion of join models can be direct and does not invoke destroy callbacks.
-
-Avoid HABTM when the join itself carries domain attributes or behavior. Prefer a join model so those semantics have an explicit owner.
-
-## Polymorphic associations
-
-Polymorphism stores both an identifier and a type discriminator.
-
-Before adding or changing polymorphism define:
-
-- allowed target classes
-- tenant/security ownership
-- type naming/stability
-- foreign-key/index strategy
-- deletion behavior
-- serialization/API exposure
-- migration strategy if class names change.
-
-Do not accept arbitrary client-provided polymorphic type names for constantization or lookup.
-
-Treat the type column as untrusted data at external boundaries and use an explicit allowlist in application code where it crosses a trust boundary.
-
-## Inverse associations
-
-Bidirectional recognition can affect:
-
-- duplicate queries
-- object identity in memory
-- autosave
-- validation of associated records
-- building child records through parent associations.
-
-Use inverse_of explicitly when automatic inference is not reliable, especially when using custom class_name, foreign_key, through relationships, or scopes.
-
-Audit both sides whenever an association name, foreign key, or scope changes.
-
-Do not add inverse_of blindly to every association. Verify that the relationship is genuinely bidirectional and that the local Rails version supports the declaration.
-
-## Autosave and nested persistence
-
-Understand which associated records are automatically saved as part of parent persistence.
-
-Review:
-
-- new versus existing associated records
-- validation behavior
-- autosave
-- nested attributes if present
-- transaction ownership
-- rollback behavior.
-
-Do not assume every associated change is persisted just because the parent is saved.
-
-Do not introduce autosave simply to make a form work. Define which object owns the write workflow and test the failure path.
-
-## Dependent lifecycle
-
-dependent options are lifecycle contracts, not cleanup decorations.
-
-Before changing dependent behavior review:
-
-- destroy callbacks
-- database ON DELETE behavior
-- foreign key nullability
-- storage attachments
-- audit/events
-- soft deletion
-- tenant boundaries
-- request latency or asynchronous work.
-
-Important distinctions include destroy, delete, nullify, restrict_with_exception, restrict_with_error, and asynchronous destruction where supported by the resolved Rails version.
-
-Do not combine database cascading and application destruction callbacks without proving their combined semantics.
-
-For asynchronous dependent destruction, verify the queue/runtime contract and whether database foreign keys are compatible with the chosen mode. Current Rails documentation explicitly warns about combining asynchronous association destruction with foreign-key constraints.
-
-## Counter caches and touch
-
-counter_cache and touch create denormalized lifecycle coupling.
-
-Before using counter_cache:
-
-- identify the authoritative count
-- define how records are added/removed
-- review backfill/reconciliation requirements
-- consider concurrent updates and repair strategy.
-
-Before using touch:
-
-- identify which timestamp drives caches or clients
-- verify write amplification
-- review callback/commit behavior
-- avoid turning incidental child updates into broad cache invalidation storms.
-
-Do not treat counter caches or timestamps as the sole source of truth when correctness requires querying authoritative data.
-
-## Association callbacks
-
-Association callbacks include before_add, after_add, before_remove, and after_remove.
-
-Use them only for narrow collection lifecycle behavior intrinsic to the association.
-
-For each callback review:
-
-- which mutation methods trigger it
-- whether it can halt the mutation
-- transaction scope
-- side effects
-- retry/idempotency
-- behavior during bulk or direct database operations.
-
-Do not use association callbacks for multi-record workflows, external API calls, authorization engines, or background job orchestration.
-
-## Association extensions
-
-Association extensions can add domain-specific methods to the association proxy.
-
-Use them only when the behavior is truly relationship-scoped and remains query/object-boundary behavior.
-
-Keep extension methods deterministic and avoid hidden network/database workflows beyond the query operation they clearly represent.
-
-## Loading and inverse-aware performance
-
-Association traversal is a frequent source of N+1 queries.
-
-Before optimizing:
-
-1. identify the actual traversal path
-2. inspect whether inverse recognition removes duplicate loads
-3. choose preload/includes/eager_load only for the demonstrated path
-4. use strict loading where accidental lazy loading should be prohibited
-5. measure query count and object allocation.
-
-Do not solve an N+1 by globally preloading every association.
-
-## Security and tenant isolation
-
-Associations do not authorize access.
-
-Review:
-
-- tenant ownership across both sides
-- cross-tenant foreign keys
-- polymorphic targets
-- through joins
-- collection assignment
-- direct ID-based association creation
-- unscoped association access.
-
-A valid association can still cross a security boundary.
-
-Authorization belongs to rails-security or the application's policy boundary. Database ownership/integrity belongs to rails-database-engineering.
-
-## Performance and capacity
-
-Association design affects:
-
-- query count
-- row cardinality
-- object allocation
-- write amplification
-- delete fan-out
-- callback execution
-- asynchronous job volume.
-
-Measure before changing association shape for performance.
-
-Large collections should use bounded query/batch behavior rather than materializing every associated record. Compose with rails-active-record and rails-performance.
-
-## Testing
-
-Test the relationship contract, not merely that Rails accepts the declaration.
-
-Where applicable test:
-
-- cardinality
-- required/optional belongs_to
-- foreign-key integrity
-- uniqueness for has_one semantics
-- collection build/create/add/remove/clear
-- through join creation/removal
-- polymorphic allowed types
-- inverse behavior
-- autosave success/failure
-- dependent destroy/delete/restrict/nullify
-- counter cache and touch behavior
-- association callbacks
-- tenant/authorization boundaries
-- representative loading/N+1 paths.
-
-Prefer behavior tests over brittle assertions on generated method names.
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change declares or alters an association's type, options, through path, polymorphism, or inverse | [references/declarations.md](references/declarations.md) | belongs_to contract; has_one and uniqueness; has_many collection semantics; Through associations; Polymorphic associations; Inverse associations | `association-cardinality-contract`, `through-association-contract`, `polymorphic-association-boundary`, `association-inverse-contract` |
+| a change alters autosave or nested writes, dependent behavior, counter caches or touch, association callbacks, or extensions | [references/persistence-effects.md](references/persistence-effects.md) | Autosave and nested persistence; Dependent lifecycle; Counter caches and touch; Association callbacks; Association extensions | `association-autosave-contract`, `association-dependent-lifecycle`, `association-counter-touch-contract`, `association-callback-contract` |
+| a change alters association loading, crosses tenant or authorization boundaries, has capacity impact, or needs association tests | [references/loading-security-testing.md](references/loading-security-testing.md) | Loading and inverse-aware performance; Security and tenant isolation; Performance and capacity; Testing | `association-loading-contract`, `association-testing` |
 
 ## Reference example
 
@@ -438,7 +206,7 @@ Version-sensitive behavior must be resolved against the repository's actual Rail
 
 ## Composition
 
-This skill composes with rails-active-record, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering, rails-test-engineering, rails-zeitwerk, ruby-clean-code, and ruby-tdd-refactoring.
+This skill composes with rails-active-record, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering, rails-zeitwerk, ruby-clean-code, and ruby-tdd-refactoring.
 
 ## Rails Associations changes
 

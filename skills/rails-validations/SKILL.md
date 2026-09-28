@@ -82,211 +82,27 @@ Authorization answers whether an actor may perform an action against a resource.
 
 Do not use validation to send external requests, publish events, enqueue durable business work, mutate unrelated aggregates, coordinate multi-step workflows, or implement authorization policy.
 
-## Validation lifecycle
+## Decision rules
 
-Establish exactly which entry points run validation.
+1. Select the boundary above, then load the matching reference below before changing behavior: lifecycle, validators, and conditions; contexts and errors; custom, associated, strict, and callback validation; uniqueness and bypass paths; or integration, performance, and security.
+2. Put integrity that must hold under concurrency in the database; validation provides feedback, not a guarantee.
 
-Rails normally runs validations before common persistence methods such as create, save, and update, while several direct/bulk write APIs bypass normal validation. save(validate: false) explicitly skips validation.
+## Critical invariants
 
-For each changed rule, answer:
+- Do not use custom contexts to make ordinary save silently accept invalid domain states.
+- Treat direct and bulk writers as a validation bypass audit surface and make intentional bypasses explicit.
 
-- Is it always active?
-- Is it create-only or update-only?
-- Is a custom validation context used?
-- Is it conditional?
-- Can the write path bypass it?
-- Does association validation invoke additional validators?
-- Does persistence depend on database constraints after validation?
+## References
 
-Never infer validation coverage from a model declaration alone.
+Load only the reference for the boundary being changed, before changing behavior there. Each reference is self-contained and one level deep; none links to another. Consult a listed pattern from the pattern catalog only when the change needs its implementation shape.
 
-## Built-in validator selection
-
-Prefer the narrowest built-in validator that expresses the contract.
-
-Common categories include absence, acceptance, confirmation, comparison, format, inclusion/exclusion, length, numericality, presence, uniqueness, validates_associated, validates_each, and validates_with.
-
-Validator options include on, except_on, if, unless, allow_nil, allow_blank, strict, and message.
-
-Do not stack overlapping validators merely for defensive appearance. Make the contract readable and test boundary cases.
-
-### Presence and absence
-
-Be explicit about nil, blank strings, false, empty collections, and absent associations.
-
-Boolean requiredness should use boolean-appropriate inclusion/exclusion rules rather than presence, because false is blank in Rails.
-
-For association presence, validate the association when the domain contract is about the related object rather than only its foreign-key column. Coordinate with rails-associations.
-
-### Format
-
-Use anchored formats when the entire string is the contract. Prefer absolute string anchors where appropriate. Keep format validation separate from normalization and parsing.
-
-### Numericality and comparison
-
-Define units, bounds, inclusivity, nilability, and coercion expectations. A successfully cast number is not automatically valid domain state.
-
-## Optionality and conditional validation
-
-Treat these as different decisions:
-
-- allow_nil: skip when nil;
-- allow_blank: skip when blank;
-- if: run only when a predicate is true;
-- unless: skip when a predicate is true;
-- on: run in named contexts;
-- except_on: exclude named contexts.
-
-Rails supports symbol/proc/array-style conditional guards and validation contexts.
-
-Prefer named predicate methods for non-trivial conditions so the rule is inspectable and testable. Keep inline procs for genuinely local predicates.
-
-Avoid a large web of interacting conditions. If the validation matrix becomes workflow orchestration, move that workflow to a higher-level boundary.
-
-## Validation contexts
-
-Use a validation context only when the repository has a real operation/state boundary that differs from the default validation contract.
-
-Prefer built-in create/update behavior when sufficient. Custom contexts should have explicit callers and focused tests.
-
-For each custom context, document:
-
-- who invokes the context;
-- which rules are shared with default validation;
-- which rules are context-specific;
-- whether ordinary persistence still runs the required rules;
-- how invalid state is reported.
-
-Do not use custom contexts to make ordinary save silently accept invalid domain states.
-
-## Validation errors
-
-Treat ActiveModel::Errors as a structured contract, not merely a collection of display strings.
-
-Relevant surfaces include error objects, errors[attribute], details, full_messages, full_messages_for, to_hash/as_json, add, base-level errors, and importing/merging errors.
-
-Choose the representation from the consumer:
-
-model/service tests -> error type/details
-HTML form -> field association + human messages
-API -> stable machine-readable field/type/details
-
-Do not make API clients depend on human-readable prose when stable error identity can be exposed.
-
-When changing errors, inspect locale files, form rendering, request/API serializers, client consumers, tests, and any metrics or logs that parse error keys.
-
-Never expose secrets or internal query data through custom error messages.
-
-## Custom validation methods
-
-Use validate :method when the rule is small, local, and specific to one model.
-
-A custom validation method should inspect state, add precise errors, avoid persistence, avoid external calls, avoid mutating unrelated records, and remain deterministic.
-
-Use a custom validator class when the same coherent rule is genuinely reused across model types or needs a configurable contract.
-
-ActiveModel::Validator and ActiveModel::EachValidator provide the reusable validator boundaries.
-
-Do not create a validator class for one simple predicate merely to add indirection.
-
-## Associated validation
-
-Validate associated state only when the parent contract owns or requires that associated validity.
-
-Coordinate with rails-associations for inverse, autosave, nested attributes, and lifecycle semantics.
-
-Avoid recursively validating an unbounded object graph. Keep the graph narrow and test exact failure propagation.
-
-## Uniqueness and concurrent invariants
-
-Uniqueness validation is an application-level preflight check and can race under concurrent writes.
-
-For authoritative uniqueness:
-
-1. define the logical uniqueness key;
-2. align application validation with normalized database values;
-3. add or verify the database unique index/constraint;
-4. decide how the application handles conflict errors;
-5. test both friendly validation and authoritative conflict paths.
-
-Scope, case sensitivity, collation, partial conditions, tenant keys, and normalization must agree across application and database semantics.
-
-Do not normalize only inside validation when persistence identity depends on the normalized representation.
-
-## Strict validations
-
-Use strict validation only when invalid state should raise immediately and callers explicitly expect that exception boundary.
-
-Strict validation raises ActiveModel::StrictValidationFailed by default or a configured exception class.
-
-Before enabling strict behavior, inspect all callers and form/API error handling. Do not convert a user-correction path into an exception-only path accidentally.
-
-## Validation callbacks
-
-Treat before_validation and after_validation as lifecycle hooks, not as workflow engines.
-
-Good uses can include deterministic normalization or preparation intrinsic to validation.
-
-Avoid callbacks that send email, publish events, call external APIs, enqueue durable work, mutate unrelated aggregates, or implement authorization.
-
-When a callback changes a value another validator observes, test ordering and the resulting validation state.
-
-## Validation bypass paths
-
-Audit direct/bulk writes whenever an invariant changes.
-
-Examples include insert, insert_all, upsert, upsert_all, update_all, update_column, update_columns, touch, touch_all, counter-update methods, and save(validate: false).
-
-The response is not to ban every bypass. Instead:
-
-- identify the authoritative invariant;
-- determine whether the writer is allowed to bypass application validation;
-- move critical invariants to database constraints when necessary;
-- document intentional exceptions;
-- test the path independently.
-
-## API, form, and controller integration
-
-Keep request parsing outside model validation:
-
-request boundary
-  -> permitted/typed input
-  -> model/domain validation
-  -> application operation
-  -> stable error representation
-
-Controllers should not duplicate every model rule.
-
-For APIs, map validation errors to the repository's stable schema and preserve machine-readable identity. For HTML forms, preserve field-level error associations and translation behavior.
-
-## Performance
-
-Validation can perform database queries and traverse associated objects.
-
-Before optimizing:
-
-1. measure query count and latency;
-2. identify repeated or graph-wide validation;
-3. measure representative inputs;
-4. reduce unnecessary work without weakening the contract.
-
-Do not memoize mutable validation state across persistence attempts unless lifecycle/reset semantics are explicit.
-
-## Security and tenant isolation
-
-Validation does not establish authorization.
-
-Review:
-
-- tenant keys in uniqueness scopes;
-- resource authorization before validation of private records;
-- user-controlled values used in validator queries;
-- dynamic constantization in custom validators;
-- error-message disclosure;
-- existence-check behavior for sensitive resources;
-- API error representation across tenants.
-
-Never turn “record exists” or “value is unique” into an authorization decision.
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change adds or alters validators, when validation runs, or optional/conditional rules | [references/lifecycle-and-validators.md](references/lifecycle-and-validators.md) | Validation lifecycle; Built-in validator selection; Optionality and conditional validation | `validation-boundary`, `validation-condition-contract` |
+| a change adds validation contexts or alters error keys, messages, or error details | [references/contexts-and-errors.md](references/contexts-and-errors.md) | Validation contexts; Validation errors | `validation-context-contract`, `validation-error-contract` |
+| a change adds custom validation methods or validators, validates associations, uses strict validation, or adds validation callbacks | [references/custom-associated-strict.md](references/custom-associated-strict.md) | Custom validation methods; Associated validation; Strict validations; Validation callbacks | `validation-custom-validator`, `validation-associated-graph`, `validation-strict-failure`, `validation-callback-boundary` |
+| a change validates uniqueness or concurrent invariants, or writes through paths that skip validation | [references/uniqueness-and-bypass.md](references/uniqueness-and-bypass.md) | Uniqueness and concurrent invariants; Validation bypass paths | `validation-uniqueness-database-contract`, `validation-bypass-audit` |
+| validation errors cross an API/form/controller boundary, or a validation has performance or tenant-isolation impact | [references/integration-performance-security.md](references/integration-performance-security.md) | API, form, and controller integration; Performance; Security and tenant isolation | none |
 
 ## Implementation procedure
 

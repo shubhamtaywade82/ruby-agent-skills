@@ -244,6 +244,10 @@ skills:
     family: meta
     path: skills/agent-workflow/SKILL.md
     triggers: [agent workflow, skill selection, repository agent process, context management, implementation workflow]
+  change-review:
+    family: meta
+    path: skills/change-review/SKILL.md
+    triggers: [change review, review diff, review branch, review pull request, PR review, review since, spec fidelity, standards review]
   stack-minimality:
     family: architecture-quality
     path: skills/stack-minimality/SKILL.md
@@ -1095,6 +1099,18 @@ evaluations:
       - functional
       - tests
       - contract
+      - scope_control
+
+  change-review:
+    source: change-review-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/agent-workflow/change-review-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - evidence
       - scope_control
 
   rails-react-integration:

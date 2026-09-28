@@ -76,333 +76,31 @@ failure/recovery semantics
 
 Do not hide business behavior in a giant `perform` method merely because it runs asynchronously. Keep domain/application behavior in the repository's appropriate service/domain layer and make the job a durable execution boundary.
 
-## Arguments and serialization
-
-Prefer small, stable arguments.
-
-Use identifiers or supported serializable values when possible:
-
-```ruby
-ProcessInvoiceJob.perform_later(invoice.id)
-```
-
-Active Job supports common primitive/container types and Active Record objects through GlobalID. Passing a live record means deserialization can fail later if the record no longer exists. 
-
-Do not pass:
-
-- database connections
-- request objects
-- controllers
-- open file handles
-- transient service instances
-- arbitrary complex runtime state
-- secrets that should not be persisted in the queue payload
-
-When passing an Active Record object is appropriate, understand that it is serialized by GlobalID and is looked up again when the job runs.
-
-For custom types, inspect serializer support rather than inventing ad-hoc Marshal/JSON behavior.
-
-## Idempotency
-
-Assume a job can run more than once.
-
-Make side effects safe against duplicate execution where retry/redelivery can repeat them.
-
-Common techniques:
-
-- database unique constraints
-- idempotency keys
-- state transitions guarded by predicates
-- upserts
-- compare-and-set updates
-- external API idempotency keys
-- durable execution records
-
-Do not use an in-memory mutex as an idempotency mechanism across processes or hosts.
-
-A job that sends an email, charges a payment, publishes an event, or calls an external API must explicitly answer:
-
-```text
-"What happens if perform runs twice?"
-```
-
-## Transactions and enqueue timing
-
-Do not assume:
-
-```text
-record.save!
-Job.perform_later(record.id)
-```
-
-is equivalent to "the job can safely run after the record is committed."
-
-When enqueueing occurs inside a transaction, inspect the queue adapter and the repository's transaction semantics.
-
-Rails supports `enqueue_after_transaction_commit` and documents it as a way to defer enqueueing until a surrounding transaction commits. It can be configured per job or on a common job base. 
-
-Use this only when its semantics match the application's contract. Do not silently couple application correctness to a queue database sharing the application database.
-
-A robust design should state whether the job requires:
-
-- committed database state
-- same-transaction durability
-- independent queue storage
-- eventual consistency
-
-## Retry policy
-
-Use `retry_on` for transient failures where re-execution can reasonably succeed.
-
-Specify:
-
-- exception class
-- attempts
-- delay/backoff
-- queue/priority changes when justified
-- jitter where supported
-- terminal behavior after retries
-- error reporting
-
-Rails' current API documents `retry_on` with configurable wait, attempts, queue, priority, jitter, reporting, and a terminal block. 
-
-Example:
-
-```ruby
-class SyncCustomerJob < ApplicationJob
-  retry_on ExternalServiceTimeout,
-    wait: :polynomially_longer,
-    attempts: 5,
-    report: true
-
-  def perform(customer_id)
-    # ...
-  end
-end
-```
-
-Do not retry deterministic bugs, malformed input, authorization failures, or permanent domain-invalid states.
-
-## Discard policy
-
-Use `discard_on` when the work is no longer meaningful and retrying cannot make it valid.
-
-Typical examples include deserialization of an object that has been deliberately removed, or a domain condition where the work is permanently obsolete.
-
-Rails documents `discard_on` separately from `retry_on`; it performs no retry attempts for matching exceptions. 
-
-Do not use discard as a substitute for fixing an unknown production failure.
-
-Report discarded failures when operational visibility matters.
-
-## Retry storm prevention
-
-A retry is a capacity decision.
-
-Before adding retries, determine:
-
-```text
-failure frequency
-x
-retry attempts
-x
-backoff duration
-x
-job concurrency
-=
-additional system load
-```
-
-Protect dependencies from amplification.
-
-Use backoff/jitter and appropriate concurrency/queue isolation rather than immediate repeated retries.
-
-## Concurrency controls
-
-Concurrency has two distinct meanings:
-
-1. worker capacity: how many jobs a worker can execute
-2. business/resource concurrency: how many jobs for the same key may overlap
-
-Solid Queue provides `limits_concurrency` for the second category. The current documentation supports a key, limit, duration, optional group, and conflict behavior.
-
-Example:
-
-```ruby
-class RebuildAccountJob < ApplicationJob
-  limits_concurrency(
-    to: 1,
-    key: ->(account_id) { account_id },
-    duration: 5.minutes
-  )
-end
-```
-
-Use a concurrency control when overlap itself violates a contract.
-
-Do not use a concurrency limit as a generic replacement for worker sizing. For high-throughput throttling, queue-level worker capacity can be simpler and cheaper.
-
-Always analyze:
-
-- database connection pool
-- external API limits
-- lock contention
-- CPU/memory
-- downstream queue capacity
-- number of worker processes
-- thread count per process
-
-## Queues and priorities
-
-Queues are capacity/isolation boundaries, not merely labels.
-
-Use separate queues when workloads have materially different:
-
-- latency requirements
-- resource usage
-- failure characteristics
-- external rate limits
-- operational ownership
-
-Avoid creating a unique queue for every job without operational justification.
-
-Remember that queue order and numeric priority are backend-dependent. With Solid Queue, queue order has precedence across queues and priority applies within a queue. 
-
-## Scheduling and recurring tasks
-
-Scheduled jobs and recurring tasks are different concepts:
-
-```text
-scheduled job
-→ one future execution
-
-recurring task
-→ recurring enqueue schedule
-```
-
-Use the backend's durable scheduler/configuration rather than application boot code that manually creates timers.
-
-For recurring jobs, define:
-
-- schedule
-- timezone expectations
-- idempotency
-- overlap policy
-- failure/retry semantics
-- deployment behavior
-- disable/maintenance behavior
-
-Solid Queue uses `config/recurring.yml` for recurring tasks and a scheduler process.
-
-## Bulk enqueue
-
-For large batches, consider `ActiveJob.perform_all_later` instead of issuing individual enqueue calls when the backend supports the desired behavior.
-
-Bulk enqueue reduces queue-store round trips. However, backend-specific constraints can change the trade-off. Solid Queue documents that concurrency-controlled jobs need individual enqueue handling to enforce concurrency limits, reducing the benefit of bulk enqueue in that case.
-
-Do not bulk enqueue millions of jobs without analyzing queue storage, database write pressure, payload size, and worker capacity.
-
-## Callbacks
-
-Active Job provides enqueue and perform lifecycle callbacks.
-
-Use callbacks for narrow cross-cutting concerns such as instrumentation.
-
-Avoid putting business workflows inside `before_enqueue`, `after_enqueue`, `before_perform`, or `after_perform` merely because the hook is available.
-
-Keep callback behavior:
-
-- small
-- observable
-- deterministic
-- safe under retries
-
-Remember that bulk enqueue has different callback behavior from individual enqueue.
-
-## Error reporting
-
-Job failures need operational visibility.
-
-Prefer the repository's existing error reporter/logging infrastructure.
-
-A common pattern is reporting exceptions through `Rails.error` and then re-raising so the queue backend retains failure semantics.
-
-Do not rescue `StandardError` and silently return success.
-
-## Shutdown and graceful termination
-
-Job execution is interruptible.
-
-For long-running jobs:
-
-- make work restartable
-- persist progress when useful
-- use checkpoints/cursors for large datasets
-- keep side effects idempotent
-- understand worker TERM/QUIT semantics
-- avoid assuming the process will always reach the end of `perform`
-
-Current Active Job supports continuations for resumable multi-step jobs in Rails versions that expose `ActiveJob::Continuable`. Use version-aware guidance before activating this API.
-
-## Observability
-
-At minimum, be able to answer:
-
-- what job ran?
-- which arguments/identifier?
-- when was it enqueued?
-- when did execution begin/end?
-- which queue?
-- attempt count?
-- duration?
-- failure exception?
-- retry/discard outcome?
-- correlation/request ID?
-- what downstream dependency was involved?
-
-Never log secrets or sensitive payloads merely for debugging.
-
-Prefer structured events/metrics over parsing free-form log strings.
-
-## Security
-
-Queue payloads are durable data.
-
-Treat arguments as sensitive persistence where applicable.
-
-Do not enqueue:
-
-- passwords
-- access tokens
-- private credentials
-- unnecessary personal data
-- entire request/session objects
-
-Authorize again at execution time when permissions may have changed since enqueue.
-
-Do not assume authorization at enqueue time remains valid later.
-
-## Testing
-
-Test jobs at the behavior boundary.
-
-At minimum cover the applicable dimensions:
-
-- enqueued job class and arguments
-- queue selection
-- scheduling
-- perform behavior
-- retry/discard semantics
-- idempotency
-- transaction/enqueue boundary
-- concurrency key/limit
-- failure reporting
-- deserialization behavior
-- bulk enqueue behavior when used
-
-Rails provides dedicated job testing support and separate guidance for isolated/contextual job tests.
-
-Prefer deterministic fake/adaptor behavior over sleeping in tests.
+## Decision rules
+
+1. Resolve the Rails, Active Job, and queue-adapter versions; adapter semantics decide enqueue timing, retries, and concurrency.
+2. Classify the change: arguments, idempotency, and enqueue timing; retry, discard, and error reporting; concurrency, queues, scheduling, and bulk enqueue; or callbacks, shutdown, observability, security, and testing.
+3. Load the matching reference below before changing behavior; a new job needs at least the arguments-and-idempotency and retries references.
+
+## Critical invariants
+
+- Do not use an in-memory mutex as an idempotency mechanism across processes or hosts.
+- Do not retry deterministic bugs, malformed input, authorization failures, or permanent domain-invalid states.
+- Do not rescue `StandardError` and silently return success.
+- Do not assume authorization at enqueue time remains valid later.
+- Never log secrets or sensitive payloads merely for debugging.
+- Never claim a job is reliable from a unit test that only exercises `perform`.
+
+## References
+
+Load only the reference for the boundary being changed, before changing behavior there. Each reference is self-contained and one level deep; none links to another. Consult a listed pattern from the pattern catalog only when the change needs its implementation shape.
+
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change alters job arguments or serializers, duplicate-execution safety, or enqueueing from a transaction | [references/arguments-idempotency-enqueue.md](references/arguments-idempotency-enqueue.md) | Arguments and serialization; Idempotency; Transactions and enqueue timing | `activejob-argument-serialization-contract`, `custom-activejob-serializer-contract`, `idempotent-job`, `transactional-job-enqueue` |
+| a change alters retry_on/discard_on, backoff, failure classification, or error reporting | [references/retries-and-failures.md](references/retries-and-failures.md) | Retry policy; Discard policy; Retry storm prevention; Error reporting | `job-retry-policy` |
+| a change adds concurrency limits, queues or priorities, recurring/scheduled jobs, or bulk enqueue | [references/concurrency-queues-scheduling.md](references/concurrency-queues-scheduling.md) | Concurrency controls; Queues and priorities; Scheduling and recurring tasks; Bulk enqueue | `concurrency-controlled-job`, `scheduled-maintenance-overlap-contract` |
+| a change adds job callbacks, affects worker shutdown, job telemetry, or job security, or needs job tests | [references/operations-and-testing.md](references/operations-and-testing.md) | Callbacks; Shutdown and graceful termination; Observability; Security; Testing | `rspec-job-and-mail-enqueue` |
 
 ## Debugging procedure
 
@@ -467,7 +165,6 @@ Never claim a job is reliable from a unit test that only exercises `perform`.
 Verify the enqueue contract, execution behavior, failure policy, and relevant adapter/worker configuration.
 
 For Rails/Solid Queue changes, inspect actual queue configuration and use version-supported commands/tests.
-
 
 ## Rails 8.1 current framework considerations
 

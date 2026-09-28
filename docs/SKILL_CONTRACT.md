@@ -35,6 +35,29 @@ Additional sections are encouraged when they improve execution, such as:
 - framework-specific conventions
 - troubleshooting
 
+## Size and progressive disclosure
+
+The whole `SKILL.md` is loaded when a skill activates. Keep it to the information needed to act:
+
+- purpose, activation conditions, and boundary ownership;
+- repository inspection;
+- decision rules, including which reference to load for which change;
+- critical invariants and the `## <Domain> changes` contract;
+- review checklist, failure modes, and verification;
+- a `## References` index when the skill has references.
+
+Move detailed knowledge into `references/<topic>.md` inside the skill directory: exhaustive edge cases, long examples, version-specific detail, deep performance and security guidance, and testing matrices. Split references by knowledge boundary, not by size alone, and keep one routing boundary per skill; do not create a new skill for a topic that is only a reference.
+
+| Limit | Target | Enforced by `scripts/validate_skills.rb` |
+|---|---|---|
+| `SKILL.md` lines | 150–350 | 500 |
+| `SKILL.md` estimated tokens (bytes ÷ 4) | 1,500–3,500 | 5,000 |
+| Reference file lines | 100–400 | 500 |
+| Reference depth | one level | files directly under `references/`; no links between references |
+| Reference index | every reference linked from `SKILL.md` | orphaned or missing references fail |
+
+A skill directory may contain only `SKILL.md`, `references/`, `scripts/`, and `assets/`. For how to word descriptions, triggers, steps, and references so agents load and follow them reliably, see `docs/WRITING_SKILLS.md`. Patterns named in the `## References` table must be registered in `skill-manifest.yml`. The token figure is an estimate, not a tokenizer count.
+
 ## Agent behavior
 
 A coding agent using a skill should:

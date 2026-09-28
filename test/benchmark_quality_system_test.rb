@@ -70,6 +70,7 @@ class BenchmarkQualitySystemTest < Minitest::Test
 
   def test_unbenchmarked_public_evaluations_are_explicitly_classified
     static_only = Dir[
+      File.join(ROOT, "evals", "agent-workflow", "*.yml"),
       File.join(ROOT, "evals", "react-typescript", "*.yml"),
       File.join(ROOT, "evals", "stack-minimality", "*.yml")
     ].flatten.sort
@@ -80,7 +81,7 @@ class BenchmarkQualitySystemTest < Minitest::Test
       assert_equal "static-only", data.fetch("coverage"), path
     end
 
-    assert_equal 23, static_only.length
+    assert_equal 24, static_only.length
   end
 
   def test_benchmark_campaign_result_schema_keeps_provenance

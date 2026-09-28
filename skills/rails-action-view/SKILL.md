@@ -9,7 +9,7 @@ description: Use when designing, implementing, reviewing, testing, or optimizing
 
 Treat Action View as a response-rendering subsystem with explicit contracts for data boundaries, HTML safety, template composition, localization, caching interaction, and rendering performance.
 
-This skill deepens the foundational rails-action-view skill. It owns Action View-specific runtime behavior rather than replacing basic Rails view guidance.
+This skill owns Action View-specific runtime behavior as well as routine template, partial, helper, and form changes.
 
 Compose with:
 
@@ -49,7 +49,7 @@ Core flow:
 
 Do not replace rails-action-view with this skill for simple view edits that do not involve an Action View runtime concern.
 
-For ordinary template, form, or partial edits, `rails-action-view` is the lighter entry point; activate this skill only when the deeper boundaries above are actually in play.
+Ordinary template, form, or partial edits also route here; start them from `references/routine-changes.md`.
 
 ## Repository inspection
 
@@ -68,194 +68,29 @@ Inspect before implementing:
 
 Search for an existing local solution before introducing a new helper, presenter, rendering abstraction, or partial hierarchy.
 
-## Rendering boundary
+## Decision rules
 
-The template should render already-authorized and already-prepared information.
+1. Classify the change: rendering boundary and template lookup, partials/strict locals/layouts, helpers/forms/output safety, localization, rendering performance and caching, or security and testing.
+2. Load the matching reference below before changing behavior. Ordinary template, form, partial, or helper edits load `references/routine-changes.md` first and escalate only when a deeper boundary is in play.
+3. Keep views presentation-only: queries, authorization, and domain decisions happen before rendering.
 
-Prefer:
+## Critical invariants
 
-    controller/application service
-    -> authorization/domain logic
-    -> query/data preparation
-    -> Action View rendering
+- Do not use locale-specific templates as an authorization mechanism.
+- Never mark user input HTML-safe merely because it is expected to contain markup.
+- Never cache a private fragment under a key shared across tenants or authorization scopes.
+- Do not make ordinary rendering tests depend on external network services.
 
-Avoid making templates responsible for business state transitions, authorization decisions, database writes, network calls, unbounded queries, or complex cross-resource policy.
+## References
 
-A helper may format presentation data, but it should not become an application service hidden inside the view layer.
+Load only the reference for the boundary being changed, before changing behavior there. Each reference is self-contained and one level deep; none links to another. Consult a listed pattern from the pattern catalog only when the change needs its implementation shape.
 
-## Template and lookup contract
-
-Action View resolves templates using Rails naming and lookup conventions. Treat template paths, formats, variants, locales, and handlers as part of the rendering contract.
-
-Review:
-
-- controller/action naming;
-- .html.erb, .json.jbuilder, builder, and other installed handlers;
-- locale variants such as .de.html.erb;
-- device/request variants where used;
-- fallback behavior;
-- missing-template errors;
-- custom view_paths.
-
-Do not add arbitrary view-path manipulation merely to bypass a naming problem.
-
-Keep view-path mutation scoped and intentional when engines or modular applications require it.
-
-## Partial contract
-
-Partials are reusable rendering units. Define their inputs explicitly.
-
-Prefer meaningful locals, explicit locals:, object rendering when the repository convention supports it, strict local signatures for stable interfaces, and small coherent responsibilities.
-
-Avoid hidden dependency on unrelated controller instance variables, query execution inside the partial, helper chains that reach deep into infrastructure, and partials whose behavior changes based on many undocumented locals.
-
-A partial contract should be explainable as:
-
-    inputs
-    -> presentation transformation
-    -> rendered fragment
-
-For collection rendering, define empty collection behavior and per-item local naming.
-
-## Strict locals
-
-Modern Rails supports strict local signatures for templates and partials using a locals signature comment. This constrains accepted locals and can avoid compiling multiple local combinations.
-
-Use strict locals when:
-
-- a partial has a stable interface;
-- accidental local omissions are expensive to diagnose;
-- a partial is widely reused;
-- compilation variants are measurable or clearly unnecessary.
-
-Do not add strict locals blindly to every one-off partial.
-
-Treat changes to required, default, optional locals as API changes for the template's callers.
-
-## Layout boundary
-
-Layouts wrap action responses and provide shared presentation structure.
-
-Keep layouts concerned with document structure, navigation/presentation chrome, shared metadata, content slots, and globally expected helper output.
-
-Do not put business workflows into layouts.
-
-When introducing multiple layouts, define selection criteria explicitly rather than allowing controller actions to infer layout names dynamically from user input.
-
-Review layout changes for authentication-sensitive navigation, tenant identity, locale, CSP/security metadata, asset/script inclusion, and content-for contracts.
-
-## Helper boundary
-
-Helpers should be presentation-focused and composable.
-
-Good helper responsibilities include formatting, HTML tag generation, link/button construction, view-specific predicates, and small representation decisions.
-
-Avoid helpers that load collections, write to the database, call external providers, decide business authorization, mutate global/application state, or become unbounded orchestration layers.
-
-When helper logic becomes domain logic, move it to an owning domain object/service/policy and leave a thin presentation adapter in the view layer.
-
-## Output safety and sanitization
-
-Rails escapes dynamic template output by default. raw bypasses escaping, and sanitize removes unsafe HTML using configured sanitizer rules.
-
-Treat HTML safety as a security contract.
-
-Review user-controlled strings, translated/interpolated content, raw, html_safe, safe_join, sanitize, custom allowlists, URLs and protocols, Action Text output, and helpers returning SafeBuffer.
-
-Never mark user input HTML-safe merely because it is expected to contain markup.
-
-Do not weaken the sanitizer allowlist to fix a presentation defect without a security review.
-
-Use sanitize or escaping at the owning rendering boundary when untrusted HTML is intentionally allowed.
-
-## Forms and tag helpers
-
-Action View form and tag helpers produce HTML and commonly encode security behavior such as CSRF tokens for non-GET forms.
-
-Compose with rails-action-controller for parameter/response contracts, rails-validations for validation errors, and rails-authentication or rails-security for authorization and CSRF boundaries.
-
-Do not treat hidden inputs, disabled fields, DOM attributes, or generated HTML as authorization.
-
-Verify successful and failed render paths, including validation error state and accessibility-critical labels when the repository tests them.
-
-## Localization
-
-Action View can resolve locale-specific templates before falling back to the non-localized template.
-
-Use rails-i18n for locale context and policy.
-
-Define locale source, supported locale contract, fallback, template naming, translation interpolation, and locale-sensitive fragment cache identity.
-
-Do not use locale-specific templates as an authorization mechanism.
-
-Do not duplicate business logic across localized templates. Prefer shared structure plus localized presentation data.
-
-## Rendering performance
-
-Rendering performance is a workload problem.
-
-Measure before optimizing:
-
-- template lookup;
-- database queries triggered by views;
-- partial count;
-- collection rendering;
-- helper allocations;
-- HTML output size;
-- fragment-cache hit rate;
-- view compilation/runtime.
-
-Prefer preparing data outside templates, collection/object rendering where appropriate, cache only with correctness identity, appropriate preload/query shaping in the owning data layer, and bounded partial depth.
-
-Rails supports collection fragment caching and can fetch cached collection fragments efficiently.
-
-Do not solve an N+1 by globally caching private or authorization-sensitive output.
-
-Do not add presenters solely to disguise an unmeasured performance issue.
-
-## Caching interaction
-
-Coordinate with rails-caching.
-
-For cached view fragments define cache key identity, template dependencies, record/version identity, locale, tenant/user/permission dimensions when applicable, invalidation behavior, and public/private scope.
-
-Rails fragment caches can incorporate template tree digests and record versions, while collection caching can use explicit cache keys.
-
-Never cache a private fragment under a key shared across tenants or authorization scopes.
-
-## Security and privacy
-
-Review Action View as an output boundary.
-
-Threats include XSS, unsafe URLs, HTML injection, sensitive data in shared fragments, authorization checks hidden in rendering, secrets in debug output, unsafe helper output, user-controlled translation interpolation, and cache leakage.
-
-Keep authorization decisions outside templates but preserve authorization context in data/cache identity when rendered output depends on it.
-
-Do not expose secrets merely because the view is rendered only to authenticated users.
-
-## Testing
-
-Test at the smallest owning boundary:
-
-- template lookup;
-- strict local failures/defaults;
-- partial rendering with explicit locals;
-- layout selection;
-- helper output;
-- HTML escaping;
-- sanitizer behavior;
-- unsafe URL handling;
-- localized template selection;
-- authorization-sensitive output;
-- cache-key isolation when view caching exists;
-- collection rendering;
-- view-triggered query behavior where performance matters.
-
-Security regressions should include representative malicious markup or unsafe protocols.
-
-Prefer deterministic view/request/system tests over brittle full-page snapshots when only a small contract matters.
-
-Do not make ordinary rendering tests depend on external network services.
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change alters what a view renders, template lookup, partial contracts, strict locals, or layouts | [references/rendering-and-templates.md](references/rendering-and-templates.md) | Rendering boundary; Template and lookup contract; Partial contract; Strict locals; Layout boundary | `action-view-partial-contract`, `action-view-strict-locals`, `action-view-layout-contract` |
+| a change adds or alters helpers, forms or tag helpers, html_safe/raw/sanitize, or localized templates | [references/helpers-forms-safety.md](references/helpers-forms-safety.md) | Helper boundary; Forms and tag helpers; Output safety and sanitization; Localization | `action-view-helper-boundary`, `action-view-output-safety`, `action-view-localized-template` |
+| a change has rendering-performance, fragment-caching, security/privacy, or view-test impact | [references/performance-caching-security-testing.md](references/performance-caching-security-testing.md) | Rendering performance; Caching interaction; Security and privacy; Testing | `action-view-render-performance`, `action-view-testing` |
+| the change is a routine template, partial, helper, or form edit | [references/routine-changes.md](references/routine-changes.md) | Routine view, partial, helper, and form changes | none |
 
 ## Reference example
 
@@ -376,123 +211,6 @@ Composed repository skills:
 - skills/rails-action-text/SKILL.md
 - skills/rails-test-engineering/SKILL.md
 - skills/rails-test-engineering/SKILL.md
-
-## Routine view, partial, helper, and form changes
-
-_Merged from the retired `rails-action-view` skill._
-
-### Repository inspection
-
-Inspect:
-
-- neighboring views
-- partial conventions
-- layout
-- helpers/presenters if present
-- form builder conventions
-- request/system tests
-- response formats
-
-### Decision rules
-
-### Views
-
-A view should answer:
-
-> How is the already-prepared information presented?
-
-Avoid:
-
-- database queries
-- substantial business rules
-- destructive side effects
-- complicated data transformations
-
-### Partials
-
-Extract a partial when a repeated, coherent presentation fragment exists or the template's intent becomes obscured.
-
-Do not fragment tiny one-use pieces solely to reduce line count.
-
-### Helpers/presenters
-
-Use existing helper/presenter conventions when presentation logic becomes complex.
-
-Keep helpers presentation-specific.
-
-### Forms
-
-Verify:
-
-- parameter names/nesting
-- field defaults
-- validation errors
-- CSRF conventions
-- submit behavior
-- failed/successful render paths
-
-Do not assume a form field is an authorization mechanism.
-
-### ERB readability
-
-Prefer:
-
-- clear locals
-- meaningful partial names
-- modest conditional logic
-- explicit iteration
-
-over deeply nested or compressed Ruby expressions.
-
-### Accessibility/user behavior
-
-When the repository tests user-facing behavior, preserve important labels, form semantics, links/buttons, and validation messaging.
-
-### Anti-patterns
-
-- SQL/database access in templates
-- hidden business rules
-- massive helpers that become service objects
-- conditionals repeated across many views
-- relying on client-side state for server authorization
-
-### Reference example
-
-Presentation logic in a helper with arguments, template calls kept to named locals, and no queries hidden in views.
-
-```ruby
-module ProjectsHelper
-  # Presentation only: no queries, no writes, no instance variables from the controller.
-  def status_dot(project)
-    tag.span(class: "dot dot--#{project.status}")
-  end
-
-  def formatted_deadline(project)
-    project.deadline ? l(project.deadline, format: :short) : t("projects.no_deadline")
-  end
-end
-
-# app/views/projects/_card.html.erb (locals in, markup out):
-#   <article class="card">
-#     <%= link_to project.name, project, class: "card__title" %>
-#     <%= status_dot(project) %>
-#     <p><%= truncate project.description, length: 120 %></p>
-#     <time><%= formatted_deadline(project) %></time>
-#   </article>
-```
-
-### Agent review checklist
-
-- [ ] template is presentation-focused
-- [ ] partial boundaries are coherent
-- [ ] helpers remain presentation-specific
-- [ ] form contract matches controller
-- [ ] errors render correctly
-- [ ] response behavior is covered by appropriate tests
-
-### Verification
-
-Use request/system/view tests according to the repository. Verify rendered content and important interactions, especially form submission and error states.
 
 ## Rails Action View changes
 
