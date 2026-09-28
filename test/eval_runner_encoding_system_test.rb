@@ -11,6 +11,11 @@ require_relative "../lib/ruby_agent_skills/eval_runner"
 # no UTF-8 locale configured (US-ASCII, as in a bare container) then crashes
 # JSON.pretty_generate the moment an agent's diff contains a non-ASCII byte
 # (an em dash, a curly quote), even though the bytes are valid UTF-8.
+#
+# Also covers a bug that surfaced fixing the above: `stdout = +"", stderr =
+# +"", status = nil, timed_out = false` is Ruby multiple assignment, so
+# stdout silently became ["", "", nil, false] whenever the agent timed out
+# (the only path that never reassigns it from out.read).
 class EvalRunnerEncodingSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   FIXTURE = File.join(ROOT, "benchmarks", "rails", "fixtures", "action-cable-contract")
@@ -56,6 +61,27 @@ class EvalRunnerEncodingSystemTest < Minitest::Test
       assert_includes diff, "—"
       assert_equal Encoding::UTF_8, diff.encoding
       assert_includes File.read(output_path, encoding: "UTF-8"), "—"
+    end
+  end
+
+  def run_with_timeout(output_path)
+    runner.run(
+      id: "action-cable-contract",
+      workspace: FIXTURE,
+      agent_command: "sleep 5",
+      output: output_path,
+      timeout: 1
+    )
+  end
+
+  def test_a_timed_out_agent_still_writes_a_valid_string_result
+    Dir.mktmpdir("eval-runner-encoding") do |output_dir|
+      output_path = File.join(output_dir, "result.json")
+      agent = run_with_timeout(output_path).fetch("agent")
+
+      assert agent.fetch("timed_out")
+      assert_instance_of String, agent.fetch("stdout")
+      assert_instance_of String, agent.fetch("stderr")
     end
   end
 

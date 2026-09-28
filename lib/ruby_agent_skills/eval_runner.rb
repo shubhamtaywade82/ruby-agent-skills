@@ -171,7 +171,10 @@ module RubyAgentSkills
 
     def run_command(command, chdir, env, timeout, target)
       started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      stdout = +"", stderr = +"", status = nil, timed_out = false
+      stdout = +""
+      stderr = +""
+      status = nil
+      timed_out = false
 
       Open3.popen3(env, command, chdir: chdir) do |stdin, out, err, wait_thread|
         stdin.close
