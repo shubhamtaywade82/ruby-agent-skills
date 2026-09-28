@@ -191,9 +191,21 @@ module RubyAgentSkills
 
       target["exit_code"] = status&.exitstatus
       target["timed_out"] = timed_out
-      target["stdout"] = stdout
-      target["stderr"] = stderr
+      target["stdout"] = utf8(stdout)
+      target["stderr"] = utf8(stderr)
       target["duration_seconds"] = elapsed(started)
+    end
+
+    # Captured process output carries Encoding.default_external, which is
+    # US-ASCII whenever the runner has no UTF-8 locale (this sandbox has
+    # none). An agent's diff or transcript containing a non-ASCII byte (an
+    # em dash, a curly quote) then crashes JSON generation in write_result
+    # even though the bytes are valid UTF-8. Re-tag them explicitly, and
+    # scrub only if a capture genuinely is not valid UTF-8 (e.g. `--binary`
+    # diff content).
+    def utf8(string)
+      retagged = string.dup.force_encoding("UTF-8")
+      retagged.valid_encoding? ? retagged : retagged.scrub
     end
 
     def ensure_git_repository(workdir)
@@ -214,10 +226,10 @@ module RubyAgentSkills
       return unless Dir.exist?(File.join(workdir, ".git"))
 
       patch["git_repository"] = true
-      patch["status"] = Open3.capture2("git", "-C", workdir, "status", "--short").first
+      patch["status"] = utf8(Open3.capture2("git", "-C", workdir, "status", "--short").first)
       Open3.capture2("git", "-C", workdir, "add", "-N", "--", ".")
-      patch["diff_stat"] = Open3.capture2("git", "-C", workdir, "diff", "--stat").first
-      patch["diff"] = Open3.capture2("git", "-C", workdir, "diff", "--binary").first
+      patch["diff_stat"] = utf8(Open3.capture2("git", "-C", workdir, "diff", "--stat").first)
+      patch["diff"] = utf8(Open3.capture2("git", "-C", workdir, "diff", "--binary").first)
     end
 
     def apply_verifier_result(result, result_path)

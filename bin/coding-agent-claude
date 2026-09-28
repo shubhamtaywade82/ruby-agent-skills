@@ -35,7 +35,7 @@ warn stderr unless stderr.to_s.empty?
 
 begin
   envelope = JSON.parse(stdout)
-  warn "claude coding run reported an error: #{envelope["result"]}" if envelope["is_error"]
+  warn "claude coding run reported an error: #{envelope['result']}" if envelope["is_error"]
 rescue JSON::ParserError
   warn "claude coding run produced non-JSON output"
 end

@@ -44,7 +44,7 @@ system_prompt = <<~SYSTEM
   The routing corpus's expected answer is intentionally not provided to you. Make the routing decision from the task and the routing contract.
 
   Registered skills:
-  #{skills.join(", ")}
+  #{skills.join(', ')}
 
   Routing contract:
   #{router}
@@ -71,7 +71,7 @@ envelope = JSON.parse(stdout)
 abort "claude routing request errored: #{envelope}" if envelope["is_error"]
 
 content = envelope.fetch("result").to_s.strip
-content = content.sub(/\A```(?:json)?\n/, "").sub(/\n```\z/, "")
+content = content.sub(/\A```(?:json)?\n/, "").delete_suffix("\n```")
 agent_result = JSON.parse(content)
 
 primary = agent_result.fetch("primary_skill").to_s
@@ -94,4 +94,4 @@ normalized = {
   }
 }
 
-File.write(result_file, JSON.pretty_generate(normalized) + "\n", encoding: "UTF-8")
+File.write(result_file, "#{JSON.pretty_generate(normalized)}\n", encoding: "UTF-8")
