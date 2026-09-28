@@ -31,6 +31,8 @@ Use a model/domain object for state and invariants it naturally owns, a value ob
 
 Do not create a domain layer merely because the label sounds desirable.
 
+For the persisted shape of a domain model in Rails (tables, keys, aggregate ownership, constraints, history), use `rails-data-modeling`; this skill owns the Ruby objects and the language.
+
 ## Domain language and decisions
 
 Keep the model's vocabulary and hard-to-reverse decisions written down while the design is being discussed, not afterwards:

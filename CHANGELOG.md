@@ -1,5 +1,31 @@
 # Changelog
 
+## Iteration 140 — Rails Data Modeling: Decision Framework, Worked Examples, and Cross-Skill Boundaries
+
+- `rails-data-modeling` gains a 14-question **decision framework**. It runs from the business fact through identity, lifecycle, ownership, determinant, cardinality, optionality, uniqueness, normal form, history, the JSON boundary, the enforcing constraint, and the Rails representation, to the queries and write paths served. Unanswerable questions go to `planning-interview`.
+- **Version-sensitive compatibility** section: use the modern API on current Rails; recognize historical APIs (finder option hashes, `update_attributes`, `set_table_name`, `set_primary_key`, observers, plugin composite keys) only to read and upgrade old code; never generate them in a modern application unless repository evidence requires it.
+- **Data-model review procedure**: ten ordered steps from facts and normal form through identity, integrity, tenancy, flexible data, history, access paths, and evolution to the Rails mapping and version. Two new decision rules: design indexes from access paths, and treat existing data as part of the model.
+- **New reference `aggregates-access-and-evolution.md`**: aggregate ownership (root-controlled mutation, transaction and lock scope), a Rails mapping matrix from relational decision to representation, query-driven index design, write-path analysis (creators, immutable and append-only rows, contention, bulk writers), counter caches and aggregates, and schema evolution (splitting facts, tightening integrity, changing hierarchies, renames).
+- **New reference `worked-examples.md`**, six Rails 8.1 examples:
+  1. commerce with `products.price_cents` versus `order_items.unit_price_cents` snapshots;
+  2. SaaS multi-tenancy with memberships and a composite `[:account_id, :slug]` unique index;
+  3. a field-by-field JSON-versus-relational table;
+  4. UUID versus bigint as a per-table decision, including a public UUID beside a bigint key;
+  5. a natural composite primary key with composite-foreign-key associations, versus a surrogate key with a composite unique index;
+  6. a stored order total with source, update path, reconciliation job, and failure behavior, plus the counter-cache equivalent.
+
+  The Ruby reference example moved from `SKILL.md` into these examples.
+- **Rails documentation check**: the version-sensitive claims were compared against the Rails 8.1.4 guides and API documentation. These cover composite primary keys, composite `foreign_key:` arrays, `id: :uuid` defaulting to `gen_random_uuid()`, `create_enum` and `t.enum`, unique and exclusion constraints, stored virtual columns, `enum ... validate:`, and the Rails 8.0 removal of the keyword `enum` form. They also cover counter-cache limits and `reset_counters`, `dependent:` values, `delegated_type`, `add_check_constraint`, `add_foreign_key ... on_delete:`, and partial and concurrent indexes.
+- **Cross-skill boundaries**, composed rather than duplicated:
+  - `rails-active-record`: what is modeled versus how Active Record operates on it;
+  - `rails-associations`: decide the relationship, express it in Rails, enforce it in the database;
+  - `rails-database-engineering`: "Should this fact be a separate relation?" versus "How do I migrate it safely?";
+  - `ruby-domain-modeling`: persisted shape versus Ruby objects and language.
+
+  Each skill gains a boundary row or a short routing block.
+- **Evaluation**: `data-modeling-contract` gains `json-boundary` and `key-choice` cases (464 → 466).
+- **System test**: `test/rails_data_modeling_system_test.rb` checks the new sections, all six examples, and the four cross-skill boundaries. It still syntax-checks every Ruby example and rejects removed APIs in them.
+
 ## Iteration 139 — Rails Data Modeling
 
 - Add the `rails-data-modeling` skill (92 → 93 skills). It decides what a Rails schema should represent before models or migrations are written, and sits above `rails-associations`, `rails-database-engineering`, and `rails-active-record`.

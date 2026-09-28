@@ -32,6 +32,7 @@ Active Record query semantics belong to rails-active-record; schema constraints,
 
 | Concern | Primary owner |
 |---|---|
+| Which relationship should exist: cardinality, ownership, join entity, polymorphism choice | rails-data-modeling |
 | Association cardinality and object relationship | rails-associations |
 | Relation/query composition and materialization | rails-active-record |
 | Foreign keys, indexes, constraints, migrations | rails-database-engineering |
@@ -43,6 +44,14 @@ Active Record query semantics belong to rails-active-record; schema constraints,
 | Non-persisted model relationships | rails-active-model |
 
 An association does not itself establish authorization, database integrity, or business workflow ownership.
+
+```text
+rails-data-modeling         -> decide the relationship (cardinality, ownership, join entity or polymorphism)
+rails-associations          -> express it in Rails (declarations, options, dependent and inverse behavior)
+rails-database-engineering  -> enforce it in the database (foreign keys, unique indexes, safe migrations)
+```
+
+Compose these skills; do not re-decide a relationship here that `rails-data-modeling` has settled.
 
 ## Repository inspection
 

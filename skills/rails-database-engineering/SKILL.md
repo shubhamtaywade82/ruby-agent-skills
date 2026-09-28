@@ -8,6 +8,11 @@ description: Use when changing Rails database schemas, migrations, indexes, cons
 ## Purpose
 Treat the database as a production contract, not an implementation detail. Deciding what the schema should represent (entities, keys, normalization, hierarchies, history, denormalization) belongs to `rails-data-modeling`; this skill evolves and enforces it safely.
 
+```text
+"Should this fact be a separate relation?"  -> rails-data-modeling
+"How do I migrate it safely?"               -> rails-database-engineering
+```
+
 Reason across:
 ```text
 application code

@@ -32,6 +32,7 @@ Routine model, migration, or query changes also route here; start them from `ref
 
 | Concern | Primary skill |
 |---|---|
+| What the schema should represent: entities, keys, normalization, history, denormalization | rails-data-modeling |
 | Active Record model and Relation semantics | rails-active-record |
 | Associations/cardinality/dependent relationships | rails-associations |
 | Model validation/error semantics | rails-validations |
@@ -43,6 +44,13 @@ Routine model, migration, or query changes also route here; start them from `ref
 | Async lifecycle/retries | rails-active-job |
 
 Do not collapse these skills into one model abstraction merely because they all touch Active Record.
+
+```text
+rails-data-modeling  -> defines what is modeled: facts, tables, keys, constraints
+rails-active-record  -> defines how Active Record operates on it: relations, persistence, callbacks
+```
+
+When a change adds a table, moves a fact, or adds a cached or copied value, settle the model with `rails-data-modeling` first.
 
 ## Repository inspection
 

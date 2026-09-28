@@ -60,18 +60,52 @@ This skill decides the target model and the constraints it needs; `rails-databas
 
 Never infer database behavior from model code alone.
 
+## Decision framework
+
+Walk every new piece of data through these questions, in order, and record the answers in the change or its spec. Each answer constrains the next.
+
+```text
+ 1. What business fact is this?                       -> name it in the domain glossary
+ 2. Does it have independent identity?                 -> entity (table) or value (columns)
+ 3. Does it have an independent lifecycle?             -> separate table, or owned by its aggregate
+ 4. Who owns it?                                       -> aggregate root; tenant column
+ 5. What determines its value?                         -> functional dependency; which table stores it
+ 6. What is its cardinality?                           -> 1:1, 1:N, N:M (join model)
+ 7. Is it optional, and what would absence mean?       -> NOT NULL, or one stated meaning for NULL
+ 8. Must it be unique, and within what scope?          -> unique index, composite with tenant or parent
+ 9. Should it be normalized?                           -> 3NF unless a recorded reason says otherwise
+10. Is it historical or current state?                 -> snapshot, effective-dated rows, or plain column
+11. Is a JSON column justified?                        -> only if never joined, filtered, sorted, or constrained
+12. What database constraint enforces it?              -> FK, NOT NULL, UNIQUE, CHECK, EXCLUDE
+13. How will Rails represent it?                       -> model, association, enum, value object, type
+14. Which queries and write paths does it serve?       -> indexes, counters, caches, and who writes it
+```
+
+A question you cannot answer from the requirements or the repository goes to `planning-interview`, not to a guess.
+
 ## Decision rules
 
-1. **List the facts first.** For each fact, ask what determines it (its functional dependency) and who owns it. A fact is stored once, where its determinant lives.
+1. **List the facts first.** A fact is stored once, where its determinant lives.
 2. **Separate entities from values.** Things with identity and a lifecycle (Order, Invoice, Membership) get tables. Values defined only by their content (Money, Address, DateRange) are columns owned by an entity, read through a value object, unless they need their own lifecycle or sharing.
 3. **Normalize to 3NF by default.** Remove repeating groups (1NF), attributes that depend on only part of a composite key (2NF), and attributes that depend on another non-key attribute (3NF). Depart from it only by a recorded decision.
 4. **Keep identity and uniqueness separate.** The primary key is persistence identity; business uniqueness (email, SKU, slug) is a unique constraint. Do not make a mutable business value the primary key.
-5. **Give `NULL` one meaning.** For every nullable column, write down what absence means. When the column can hold "unknown", "not applicable", and "not yet", use an explicit state instead of `NULL`.
-6. **Back every invariant with a constraint.** Required values get `NOT NULL`; relationships get foreign keys; business uniqueness gets a unique index scoped as the business rule is (often by tenant); value domains get check constraints. Validations add user feedback, not integrity.
-7. **Choose hierarchies and flexible data deliberately.** STI, delegated types, polymorphic associations, and JSON columns each trade integrity or queryability for convenience. Use the decision tables in the reference, and record the choice.
-8. **Preserve history on purpose.** A value that records what was true at a moment (the price on an order line) is a separate fact from the current value (the product's price), not a normalization error.
-9. **Denormalize only with an owner.** Every cached, counted, or copied value names its authoritative source, how it is updated, how drift is detected and repaired, and what happens when the update fails.
-10. **Treat existing data as part of the model.** A schema change is not done until existing rows satisfy the new model; plan the backfill and constraint rollout with `rails-database-engineering`.
+5. **Give `NULL` one meaning.** When a column could mean "unknown", "not applicable", and "not yet", use an explicit state instead of `NULL`.
+6. **Back every invariant with a constraint.** Validations add user feedback, not integrity.
+7. **Choose hierarchies and flexible data deliberately.** STI, delegated types, polymorphic associations, and JSON columns each trade integrity or queryability for convenience; record the choice.
+8. **Preserve history on purpose.** A value recording what was true at a moment (the price on an order line) is a separate fact from the current value, not a normalization error.
+9. **Denormalize only with an owner.** Every cached, counted, or copied value names its source, update path, repair path, and behavior on failure.
+10. **Design indexes from access paths.** Normalization decides which facts exist; indexes follow the queries and write paths that use them.
+11. **Treat existing data as part of the model.** A schema change is done only when existing rows satisfy it; plan backfills and constraint rollout with `rails-database-engineering`.
+
+## Version-sensitive compatibility
+
+Resolve the Rails version from `Gemfile.lock` before choosing an API.
+
+- **Current Rails**: use the modern API: relation methods, `update`, `self.table_name =`, `enum :status, {...}`, native composite primary keys, `id: :uuid`, check, unique, and exclusion constraints.
+- **Legacy Rails**: recognize historical APIs (`find(:all, conditions: ...)`, `update_attributes`, `set_table_name`, `set_primary_key`, `ActiveRecord::Observer`, plugin-based composite keys) so you can read and upgrade old code and old guidance.
+- **Never generate a legacy API in a modern application** unless repository evidence (the resolved version, or an established local convention during an upgrade) requires it. Older books and blog posts are sources of concepts, never of syntax.
+
+The removed-API table and the version each feature needs are in `references/legacy-schemas-and-api-drift.md`.
 
 ## Critical invariants
 
@@ -95,39 +129,23 @@ Load only the reference for the decision in front of you; each is one level deep
 | choosing STI, delegated types, polymorphism, enums, JSON columns, or value-object mapping | [references/types-hierarchies-and-flexible-data.md](references/types-hierarchies-and-flexible-data.md) | Hierarchy decision table; enum options; JSON boundary; value-object mapping | `value-object` |
 | modeling history, snapshots, soft deletion, derived values, or denormalization | [references/history-and-denormalization.md](references/history-and-denormalization.md) | Snapshots; temporal data; soft deletion; derived versus stored; controlled denormalization | none |
 | mapping a legacy schema or modernizing older Rails guidance | [references/legacy-schemas-and-api-drift.md](references/legacy-schemas-and-api-drift.md) | Legacy mapping APIs; removed and replaced APIs; version-gated features | none |
+| deciding aggregate ownership, the Rails representation, indexes, write paths, counters, or how the model evolves | [references/aggregates-access-and-evolution.md](references/aggregates-access-and-evolution.md) | Aggregate ownership; Rails mapping matrix; query-driven index design; write paths; counter caches and aggregates; schema evolution | `postgres-index-from-query-evidence`, `association-counter-touch-contract`, `expand-contract-migration` |
+| a worked example is closer to the task than the rules | [references/worked-examples.md](references/worked-examples.md) | Commerce snapshots; SaaS multi-tenancy; JSON versus relational; UUID versus bigint; composite primary keys; a reconciled order total | `value-object` |
 
-## Reference example
+## Data-model review procedure
 
-A membership join entity with integrity in the database and a readable Rails mapping:
+Review a proposed or existing schema in this order, and report findings per step:
 
-```ruby
-class CreateProjectMemberships < ActiveRecord::Migration[8.0]
-  def change
-    create_table :project_memberships do |t|
-      t.references :account, null: false, foreign_key: true
-      t.references :project, null: false, foreign_key: true
-      t.references :user, null: false, foreign_key: true
-      t.string :role, null: false, default: "member"
-      t.timestamps
-    end
-
-    add_index :project_memberships, [:project_id, :user_id], unique: true
-    add_check_constraint :project_memberships, "role IN ('owner', 'member', 'viewer')",
-                         name: "project_memberships_role_valid"
-  end
-end
-
-class ProjectMembership < ApplicationRecord
-  belongs_to :account
-  belongs_to :project
-  belongs_to :user
-
-  enum :role, { owner: "owner", member: "member", viewer: "viewer" }, validate: true
-  validates :user_id, uniqueness: { scope: :project_id } # feedback; the index is the guarantee
-end
-```
-
-The relationship has attributes (role, timestamps), so it is an entity, not a bare `has_and_belongs_to_many`. The unique index and check constraint hold under concurrent writes; the validation only produces a friendly error. `enum ... validate: true` requires Rails 7.1 or later.
+1. **Facts**: list every stored fact and its determinant; flag facts stored twice without a snapshot or denormalization record.
+2. **Normal form**: flag repeating groups, partial dependencies, and transitive dependencies.
+3. **Identity**: check primary keys, business keys, and public identifiers; flag mutable primary keys.
+4. **Integrity**: every relationship has a foreign key, every required value `NOT NULL`, every business key a unique index at the right scope, every value domain a check constraint.
+5. **Tenancy**: every tenant-owned table carries the tenant column; uniqueness and foreign keys are tenant-scoped.
+6. **Flexible data**: JSON columns hold nothing the application joins, filters, sorts, or constrains on; hierarchy and polymorphism choices are justified.
+7. **History and derived data**: snapshots preserved, derived values not stored without an owner, soft deletion decided end to end.
+8. **Access paths**: indexes match real queries; write paths, hot rows, and counters are accounted for.
+9. **Evolution**: the migration path from today's data is safe and staged (with `rails-database-engineering`).
+10. **Rails mapping and version**: associations, enums, and types match the schema and the resolved Rails version; no removed APIs.
 
 ## Agent review checklist
 
@@ -141,7 +159,10 @@ The relationship has attributes (role, timestamps), so it is an entity, not a ba
 - [ ] hierarchy, polymorphism, enum, and JSON choices justified
 - [ ] historical snapshots preserved; derived values not stored without an owner
 - [ ] each denormalized value has a source, update path, and repair path
+- [ ] each index traces to a query or write path
+- [ ] aggregate roots own their children's mutations
 - [ ] existing data, backfill, and constraint rollout planned with rails-database-engineering
+- [ ] no legacy API generated for a modern application
 
 ## Failure modes
 
