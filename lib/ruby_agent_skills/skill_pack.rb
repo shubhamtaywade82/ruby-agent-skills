@@ -115,7 +115,7 @@ module RubyAgentSkills
     private
 
     def resolve_pattern(pattern)
-      paths = @manifest.fetch("patterns").values.flat_map { |entry| entry.fetch("paths") }
+      paths = @manifest.fetch("patterns").values.flat_map { |entry| entry.fetch("paths") }.uniq
       relative = pattern.sub(%r{\Apatterns/}, "")
       exact = paths.find { |path| path.delete_prefix("patterns/").delete_suffix(".md") == relative }
       return exact if exact
