@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Coding-agent adapter for bin/agent-benchmark's --command hook. Reads the
+# task+skill context the runner already materialized at
+# RUBY_AGENT_CONTEXT_FILE and drives the `claude` CLI, headless, inside the
+# disposable RUBY_AGENT_WORKSPACE (command_agent.rb has already chdir'd the
+# child process there).
+#
+# --restricted plus --setting-sources "" keeps this a controlled benchmark
+# run: no user/project/local CLAUDE.md, skills, or MCP servers leak in, and
+# file tools stay confined to the workspace, so the only skill/pattern
+# content the agent ever sees is what RUBY_AGENT_CONTEXT_FILE carries.
+
+require "json"
+require "open3"
+
+context_file = ENV.fetch("RUBY_AGENT_CONTEXT_FILE")
+context = File.read(context_file, encoding: "UTF-8")
+claude_bin = ENV.fetch("CLAUDE_BIN", "claude")
+model = ENV.fetch("CLAUDE_MODEL", "claude-sonnet-5")
+
+command = [
+  claude_bin,
+  "--print",
+  "--output-format", "json",
+  "--model", model,
+  "--permission-mode", "acceptEdits",
+  "--restricted",
+  "--setting-sources", ""
+]
+
+stdout, stderr, status = Open3.capture3(*command, stdin_data: context)
+warn stderr unless stderr.to_s.empty?
+
+begin
+  envelope = JSON.parse(stdout)
+  warn "claude coding run reported an error: #{envelope["result"]}" if envelope["is_error"]
+rescue JSON::ParserError
+  warn "claude coding run produced non-JSON output"
+end
+
+exit(status.exitstatus)

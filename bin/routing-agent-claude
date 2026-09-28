@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "open3"
+require "yaml"
+
+prompt_file = ENV.fetch("RUBY_AGENT_ROUTING_PROMPT_FILE")
+result_file = ENV.fetch("RUBY_AGENT_ROUTING_RESULT_FILE")
+manifest_file = ENV.fetch("RUBY_AGENT_ROUTING_MANIFEST_FILE")
+router_file = ENV.fetch("RUBY_AGENT_ROUTING_ROUTER_FILE")
+case_id = ENV.fetch("RUBY_AGENT_ROUTING_CASE_ID")
+protocol_version = ENV.fetch("RUBY_AGENT_ROUTING_PROTOCOL_VERSION", "1")
+claude_bin = ENV.fetch("CLAUDE_BIN", "claude")
+model = ENV.fetch("CLAUDE_MODEL", "claude-sonnet-5")
+
+prompt = File.read(prompt_file, encoding: "UTF-8")
+router = File.read(router_file, encoding: "UTF-8")
+manifest = YAML.safe_load(
+  File.read(manifest_file, encoding: "UTF-8"),
+  permitted_classes: [],
+  aliases: false
+)
+skills = manifest.fetch("skills").keys
+
+system_prompt = <<~SYSTEM
+  You are the skill-routing agent for a Ruby/Rails engineering repository.
+
+  Route the supplied engineering task to the smallest set of applicable skills.
+
+  Rules:
+  1. Select exactly one primary_skill: the skill that owns the dominant engineering boundary.
+  2. Select secondary_skills only for real dependent constraints or execution boundaries.
+  3. Do not create skill names; every skill must come from the supplied registry.
+  4. Do not treat keyword overlap as proof of ownership.
+  5. Keep authentication, authorization, security analysis, persistence, and execution-boundary ownership distinct.
+  6. Return JSON only, with no prose before or after it, matching exactly:
+     {
+       "primary_skill": "registered-skill",
+       "secondary_skills": ["registered-skill"],
+       "reason": "brief ownership rationale"
+     }
+
+  The routing corpus's expected answer is intentionally not provided to you. Make the routing decision from the task and the routing contract.
+
+  Registered skills:
+  #{skills.join(", ")}
+
+  Routing contract:
+  #{router}
+SYSTEM
+
+# Tool-free, non-interactive, no project/user customizations: the routing
+# decision must come from the system prompt's contract alone, never from a
+# skill this adapter happens to find on disk (skill isolation).
+command = [
+  claude_bin,
+  "--print",
+  "--output-format", "json",
+  "--tools", "",
+  "--model", model,
+  "--setting-sources", "",
+  "--system-prompt", system_prompt,
+  prompt
+]
+
+stdout, stderr, status = Open3.capture3(*command)
+abort "claude routing request failed: #{status}: #{stderr}" unless status.success?
+
+envelope = JSON.parse(stdout)
+abort "claude routing request errored: #{envelope}" if envelope["is_error"]
+
+content = envelope.fetch("result").to_s.strip
+content = content.sub(/\A```(?:json)?\n/, "").sub(/\n```\z/, "")
+agent_result = JSON.parse(content)
+
+primary = agent_result.fetch("primary_skill").to_s
+secondary = Array(agent_result.fetch("secondary_skills")).map(&:to_s).uniq
+reason = agent_result["reason"].to_s
+
+abort "primary_skill must be registered" unless skills.include?(primary)
+abort "secondary_skills contains unknown skill" unless (secondary - skills).empty?
+abort "secondary_skills contains primary_skill" if secondary.include?(primary)
+
+normalized = {
+  "protocol_version" => protocol_version.to_i,
+  "case_id" => case_id,
+  "primary_skill" => primary,
+  "secondary_skills" => secondary,
+  "reason" => reason,
+  "metadata" => {
+    "provider" => "anthropic",
+    "model" => model
+  }
+}
+
+File.write(result_file, JSON.pretty_generate(normalized) + "\n", encoding: "UTF-8")
