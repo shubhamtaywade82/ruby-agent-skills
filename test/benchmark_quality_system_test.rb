@@ -70,6 +70,7 @@ class BenchmarkQualitySystemTest < Minitest::Test
 
   def test_unbenchmarked_public_evaluations_are_explicitly_classified
     static_only = Dir[
+      File.join(ROOT, "evals", "agent-workflow", "*.yml"),
       File.join(ROOT, "evals", "react-typescript", "*.yml"),
       File.join(ROOT, "evals", "stack-minimality", "*.yml")
     ].flatten.sort
