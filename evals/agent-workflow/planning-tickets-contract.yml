@@ -1,0 +1,44 @@
+id: planning-tickets-contract
+coverage: static-only
+version: 1
+title: Planning Tickets Contract
+category: agent-workflow
+source: planning-layer-v1
+skills:
+  - planning-tickets
+  - planning-tracker
+  - rails-database-engineering
+patterns: []
+prompt: |
+  Break the published partial-refunds spec (docs/planning/0004-partial-refunds-spec.md) into tickets, including the rename of invoices.total to invoices.total_cents that the spec requires.
+  Publish them to the local planning tracker once I approve the breakdown.
+constraints:
+  required_boundary: planning-tickets
+  forbidden:
+    - horizontal tickets that each cover one layer for every feature
+    - renaming the column in a single ticket that breaks running code
+    - publishing before the breakdown is approved
+    - blocking edges that point at missing tickets or form a cycle
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: vertical-slices
+    input: The spec's user stories for partial refunds.
+    expected:
+      tickets: each ticket runs from migration and model through request to tests and is verifiable alone
+  - name: wide-rename
+    input: The rename of invoices.total to invoices.total_cents.
+    expected:
+      tickets: expand ticket first, migrate batches blocked by it, contract ticket blocked by every batch
+  - name: publish-and-frontier
+    input: The user approves the breakdown.
+    expected:
+      tracker: tickets written in dependency order with parent 4; tracker.rb validate passes; the frontier lists only the unblocked first tickets
+grading:
+  functional: The breakdown covers the whole spec.
+  tests: Every ticket has acceptance criteria tied to an agreed test seam.
+  contract: Blocking edges are real, present, and acyclic, and published through the local backend.
+  scope_control: Only the approved tickets are published; the parent spec is not modified.

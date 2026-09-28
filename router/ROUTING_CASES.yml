@@ -235,3 +235,25 @@ cases:
     secondary_skills:
       - ruby-api-design
     boundary: minimality-review-vs-change-review
+
+  - id: spec-then-tickets-not-wayfinder
+    prompt: >
+      We agreed partial refunds in this conversation; write it up as a spec
+      with test seams and publish it to our local planning tracker.
+    primary_skills:
+      - planning-spec
+    secondary_skills:
+      - planning-tracker
+    boundary: spec-vs-wayfinding
+
+  - id: multi-session-effort-needs-a-map
+    prompt: >
+      Moving billing into its own Rails engine is too big for one session and
+      we do not yet know the order of the decisions; plan it so several
+      sessions can pick up the next decision.
+    primary_skills:
+      - planning-wayfinder
+    secondary_skills:
+      - planning-interview
+      - planning-tracker
+    boundary: wayfinding-vs-ticket-breakdown

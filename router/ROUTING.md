@@ -40,6 +40,11 @@ This file defines how an agent should select and compose skills.
 | Rails application structure | rails-architecture | ruby-clean-code, stack-minimality |
 | Ruby/Rails + React + PostgreSQL implementation minimality | stack-minimality | relevant domain skill, ruby-clean-code, ruby-tdd-refactoring |
 | Branch/PR/diff review for standards and spec fidelity | change-review | stack-minimality-review, rubocop, relevant domain skill |
+| Stress-test a plan or design with the user | planning-interview | ruby-domain-modeling |
+| Write a spec from a discussed feature | planning-spec | planning-tracker, owning domain skill |
+| Break a spec or plan into tickets | planning-tickets | planning-tracker, rails-database-engineering (schema expand–contract) |
+| Chart an effort larger than one session | planning-wayfinder | planning-interview, planning-tracker |
+| Read, create, link, or validate planning items | planning-tracker | the planning skill that owns the item |
 | Over-engineering review | stack-minimality-review | relevant domain review skill |
 | Whole-repository minimality audit | stack-minimality-audit | stack-minimality |
 | Deliberate simplification debt | stack-minimality-debt | stack-minimality |
@@ -182,6 +187,20 @@ change-review
 ```
 
 Report the Standards and Spec axes separately; never re-rank findings across them.
+
+### Planning layer
+
+```text
+planning-wayfinder   (effort larger than one session: map of decisions)
+  -> planning-interview  (settle each decision with the user)
+  -> planning-spec       (write up the destination, with agreed test seams)
+  -> planning-tickets    (vertical slices with blocking edges)
+  -> agent-workflow      (implement one ticket per session)
+  -> change-review       (standards and spec axes before merge)
+planning-tracker underlies every step: local Markdown by default, or GitHub Issues.
+```
+
+Skip steps the work does not need: a small, clear change goes straight to `planning-spec` or implementation. Planning skills produce decisions and items, never code.
 
 ### Cross-cutting refactor
 

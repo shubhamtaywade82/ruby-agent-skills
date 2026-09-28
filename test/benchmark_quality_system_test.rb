@@ -81,7 +81,7 @@ class BenchmarkQualitySystemTest < Minitest::Test
       assert_equal "static-only", data.fetch("coverage"), path
     end
 
-    assert_equal 24, static_only.length
+    assert_equal 27, static_only.length
   end
 
   def test_benchmark_campaign_result_schema_keeps_provenance

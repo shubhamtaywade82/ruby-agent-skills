@@ -1,0 +1,45 @@
+id: planning-spec-contract
+coverage: static-only
+version: 1
+title: Planning Spec Contract
+category: agent-workflow
+source: planning-layer-v1
+skills:
+  - planning-spec
+  - planning-interview
+  - planning-tracker
+patterns: []
+prompt: |
+  In this conversation we agreed that support staff can refund selected invoice lines, keeping each line's tax.
+  Write this up as a spec and publish it to the repository's planning tracker. The repository has docs/planning/ with existing items and no tracker declaration.
+constraints:
+  required_boundary: planning-spec
+  forbidden:
+    - re-interviewing the user on decisions already made in the conversation
+    - inventing a decision the conversation did not make
+    - listing files to edit instead of behavior, contracts, and data impact
+    - publishing to GitHub when the repository uses a local tracker
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: complete-conversation
+    input: Every decision the spec needs was made in the conversation.
+    expected:
+      spec: problem, solution, user stories, decisions with owning skills and migrations, agreed test seams, out of scope
+      tracker: a kind spec item in docs/planning with the next id and the ready-for-agent label; tracker validates
+  - name: missing-decision
+    input: The conversation never decided whether account owners may refund.
+    expected:
+      spec: the gap is named and handed back to planning-interview instead of guessed
+  - name: data-changing-feature
+    input: The feature adds a refund_lines table.
+    expected:
+      spec: names the migration, foreign keys, the unique index, and whether a backfill is needed
+grading:
+  functional: The spec covers every user story with a decision.
+  tests: Test seams are listed, agreed, and tied to prior-art tests in the repository.
+  contract: The backend is resolved as local Markdown, and the item uses the shared kinds, labels, and ids.
+  scope_control: No code, no file-by-file plan, and no decisions beyond the conversation.

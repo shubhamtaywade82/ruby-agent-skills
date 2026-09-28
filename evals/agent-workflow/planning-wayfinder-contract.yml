@@ -1,0 +1,44 @@
+id: planning-wayfinder-contract
+coverage: static-only
+version: 1
+title: Planning Wayfinder Contract
+category: agent-workflow
+source: planning-layer-v1
+skills:
+  - planning-wayfinder
+  - planning-interview
+  - planning-tracker
+patterns: []
+prompt: |
+  We want invoices in the customer's currency, but it touches billing, payments, and the ledger, and we do not know which decisions come first.
+  Chart this so later sessions can take the next decision.
+constraints:
+  required_boundary: planning-wayfinder
+  forbidden:
+    - writing implementation code or migrations while charting
+    - resolving more than one interview decision in a session
+    - answering the user's side of an interview decision
+    - pre-slicing unclear questions into vague decision items
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: chart
+    input: A new effort with no map.
+    expected:
+      map: destination named first; decision items only for precise questions, each typed; fog in Not yet specified; blocking edges wired
+  - name: work-one-decision
+    input: The user returns with the map and names no item.
+    expected:
+      wayfinder: takes the first frontier item, claims it, resolves only it, records the answer, closes it, adds one line to Decisions so far
+  - name: no-fog
+    input: The effort turns out to be one small, clear change.
+    expected:
+      wayfinder: no map is created; the work goes to planning-spec
+grading:
+  functional: The map leads toward the named destination and its frontier is correct.
+  tests: The local tracker validates after charting and after each resolved decision.
+  contract: The map indexes decisions without restating them, and out-of-scope items are closed and listed.
+  scope_control: No deliverables are built inside the map.
