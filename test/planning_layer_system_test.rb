@@ -153,4 +153,12 @@ class PlanningLayerSystemTest < Minitest::Test
   def test_validator_executes_this_system_test
     assert_includes read("bin/validate"), "test/planning_layer_system_test.rb"
   end
+
+  def test_planning_spec_names_the_regression_surface
+    text = read("skills/planning-spec/SKILL.md")
+
+    assert_includes text, "**Name the regression surface.**"
+    assert_includes text, "regression surface"
+    assert_includes text, "Never mark a touched boundary's dependents as safe"
+  end
 end

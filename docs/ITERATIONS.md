@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 141 — Fix Ambiguous-Pattern False Positive for Dual-Registered Patterns
+> **Current milestone:** Iteration 142 — Training-Corpus Review Heuristics, Regression-Surface Planning, and Two New Algorithm Benchmarks
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -433,3 +433,7 @@ Gave `rails-data-modeling` a 14-question decision framework, a version-safety se
 ## Iteration 141 — Fix Ambiguous-Pattern False Positive for Dual-Registered Patterns
 
 Fixed `SkillPack#resolve_pattern` raising `ambiguous pattern` for a pattern intentionally registered under two manifest families, which broke `bin/agent-benchmark` against the Rails campaign for `credentials-testing-contract`.
+
+## Iteration 142 — Training-Corpus Review Heuristics, Regression-Surface Planning, and Two New Algorithm Benchmarks
+
+Folded reviewer heuristics from a personal Ruby/Rails training corpus into `change-review` and `rails-test-engineering`, added a regression-surface step to `planning-spec`, and added two `ruby-training` algorithm benchmarks (`bubble-sort`, `equilibrium-index`) continuing the corpus's `allerin-ruby-set-*` fixtures.

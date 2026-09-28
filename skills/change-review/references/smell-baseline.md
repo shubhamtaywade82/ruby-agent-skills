@@ -28,6 +28,17 @@ Each entry: what it looks like in Ruby or Rails, then the usual fix.
 - **Middle man**: a class or module that mostly forwards to one collaborator. → Remove it and call the real target; apply the deletion test from `ruby-api-design`.
 - **Refused bequest**: a subclass or includer that overrides or ignores most of what it inherits, including an `ApplicationRecord` subclass that disables most callbacks or validations of a shared concern. → Replace inheritance or the mixin with composition.
 
+## More smells
+
+- **Redundant context argument**: a method takes an argument the receiving object already exposes through its own state or association (`order.refund(order.customer)` when `order` already has `customer`). → Read it from `self` instead of the caller's hand.
+- **Control flow via exit**: `exit`, `abort`, or a `return`/`break` buried inside a loop or block used to short-circuit normal processing, rather than a value the caller can act on. → Return a domain result, or use an Enumerable method that already short-circuits (`find`, `all?`, `any?`).
+- **Validation glued to parsing**: one method both gathers/parses input and validates it, so a caller cannot re-validate already-parsed input or reuse the parser alone. → Split fetching/parsing from the validation step.
+- **Concern without a bounded responsibility**: an `included do ... end` module mixed in for two or more unrelated reasons. → Split into one concern per responsibility, or inline it when only one includer exists.
+
+## Heuristics with no fixed threshold
+
+Argument count, method length, and line length are real signals but have no single correct number that holds across repositories. Treat the repository's own linter/formatter configuration as authoritative for the number, per the boundary table above (RuboCop findings belong to `rubocop`); never invent a hard finding from an argument count or line count the repository's own tooling does not enforce.
+
 ## Rails-specific checks that are standards, not smells
 
 These come from skill change contracts, so a breach is a hard finding when the owning skill is in scope:

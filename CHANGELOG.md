@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 142 — Training-Corpus Review Heuristics, Regression-Surface Planning, and Two New Algorithm Benchmarks
+
+- Fold reviewer heuristics from a personal Ruby/Rails training corpus into the skills that already own that boundary, rather than a new parallel skill tree: `change-review`'s smell baseline gains four judgement-call smells (redundant context argument, control flow via exit/abort, validation glued to parsing, an unbounded concern) plus an explicit "argument count/method length/line length are heuristics, not hard rules — defer to the repository's own linter" note; `rails-test-engineering`'s RSpec reference gains the `let` vs `let!` distinction.
+- `planning-spec` gains a regression-surface step: for each touched boundary, name its dependents (direct callers, indirect readers) and whether existing tests already cover them; an uncovered dependent goes in the spec's Notes as a gap, never an assumption. `ruby-debugging` already fully owned the corpus's bug-fix protocol (reproduce → hypothesize → instrument → fix → regression test), so no change was needed there.
+- Add two new `ruby-training` algorithm benchmarks continuing the `allerin-ruby-set-*` corpus already partially covered by Set 2 (`selection-sort` and siblings): `bubble-sort` (Set 1) and `equilibrium-index` (Set 3), each with a fixture, a verified reference implementation, and wiring into `scripts/verify_training_eval.rb`, `benchmarks/ruby-training/{campaign,fixtures}.yml`, and `skill-manifest.yml` (128 → 130 evaluation files, 466 → 476 evaluation cases).
+
 ## Iteration 141 — Fix Ambiguous-Pattern False Positive for Dual-Registered Patterns
 
 - Fix `RubyAgentSkills::SkillPack#resolve_pattern`: a pattern registered under two manifest families at once (the repository's intentional "testing" cross-listing, checked by `scripts/audit_repository_completeness.rb`) made every basename lookup for that pattern raise `ambiguous pattern`, because the candidate list was built from the flattened, non-deduplicated set of family paths. `bin/agent-benchmark` against `benchmarks/rails/campaign.yml` failed immediately with this error for `credentials-testing-contract`, which is registered under both `rails` and `testing`.
