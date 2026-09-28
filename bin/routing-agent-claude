@@ -67,7 +67,16 @@ command = [
 stdout, stderr, status = Open3.capture3(*command)
 abort "claude routing request failed: #{status}: #{stderr}" unless status.success?
 
-envelope = JSON.parse(stdout)
+# Open3 tags captured output with Encoding.default_external, US-ASCII on a
+# runner with no UTF-8 locale; the claude CLI's JSON result routinely
+# contains non-ASCII bytes (an em dash, a curly quote) that are valid UTF-8
+# but crash JSON.parse under that wrong tag.
+def utf8(string)
+  retagged = string.dup.force_encoding("UTF-8")
+  retagged.valid_encoding? ? retagged : retagged.scrub
+end
+
+envelope = JSON.parse(utf8(stdout))
 abort "claude routing request errored: #{envelope}" if envelope["is_error"]
 
 content = envelope.fetch("result").to_s.strip

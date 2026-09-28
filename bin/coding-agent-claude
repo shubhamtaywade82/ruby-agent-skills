@@ -33,8 +33,17 @@ command = [
 stdout, stderr, status = Open3.capture3(*command, stdin_data: context)
 warn stderr unless stderr.to_s.empty?
 
+# Open3 tags captured output with Encoding.default_external, US-ASCII on a
+# runner with no UTF-8 locale; the claude CLI's JSON result routinely
+# contains non-ASCII bytes (an em dash, a curly quote) that are valid UTF-8
+# but crash JSON.parse under that wrong tag.
+def utf8(string)
+  retagged = string.dup.force_encoding("UTF-8")
+  retagged.valid_encoding? ? retagged : retagged.scrub
+end
+
 begin
-  envelope = JSON.parse(stdout)
+  envelope = JSON.parse(utf8(stdout))
   warn "claude coding run reported an error: #{envelope['result']}" if envelope["is_error"]
 rescue JSON::ParserError
   warn "claude coding run produced non-JSON output"
