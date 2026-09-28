@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 140 — Rails Data Modeling: Decision Framework, Worked Examples, and Cross-Skill Boundaries
+> **Current milestone:** Iteration 141 — Fix Ambiguous-Pattern False Positive for Dual-Registered Patterns
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -429,3 +429,7 @@ Added `rails-data-modeling`, which decides what the schema represents (facts, ke
 ## Iteration 140 — Rails Data Modeling: Decision Framework, Worked Examples, and Cross-Skill Boundaries
 
 Gave `rails-data-modeling` a 14-question decision framework, a version-safety section, a review procedure, and six worked Rails 8.1 examples. Its Rails claims were checked against the 8.1.4 guides. Made its boundary explicit in `rails-active-record`, `rails-associations`, `rails-database-engineering`, and `ruby-domain-modeling`.
+
+## Iteration 141 — Fix Ambiguous-Pattern False Positive for Dual-Registered Patterns
+
+Fixed `SkillPack#resolve_pattern` raising `ambiguous pattern` for a pattern intentionally registered under two manifest families, which broke `bin/agent-benchmark` against the Rails campaign for `credentials-testing-contract`.

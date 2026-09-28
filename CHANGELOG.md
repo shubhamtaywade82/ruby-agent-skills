@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 141 — Fix Ambiguous-Pattern False Positive for Dual-Registered Patterns
+
+- Fix `RubyAgentSkills::SkillPack#resolve_pattern`: a pattern registered under two manifest families at once (the repository's intentional "testing" cross-listing, checked by `scripts/audit_repository_completeness.rb`) made every basename lookup for that pattern raise `ambiguous pattern`, because the candidate list was built from the flattened, non-deduplicated set of family paths. `bin/agent-benchmark` against `benchmarks/rails/campaign.yml` failed immediately with this error for `credentials-testing-contract`, which is registered under both `rails` and `testing`.
+- The fix deduplicates the flattened path list before comparing candidates, so a pattern registered under several families resolves to the one file it names; a pattern whose basename is shared by two genuinely different files still raises `ambiguous pattern` as before.
+- Add `test/skill_pack_dual_registered_pattern_system_test.rb` (89 → 90 system tests), verified to fail against the pre-fix code with the exact error reported, and to pass with the fix, without touching the existing ambiguous-basename regression test.
+
 ## Iteration 140 — Rails Data Modeling: Decision Framework, Worked Examples, and Cross-Skill Boundaries
 
 - `rails-data-modeling` gains a 14-question **decision framework**. It runs from the business fact through identity, lifecycle, ownership, determinant, cardinality, optionality, uniqueness, normal form, history, the JSON boundary, the enforcing constraint, and the Rails representation, to the queries and write paths served. Unanswerable questions go to `planning-interview`.
