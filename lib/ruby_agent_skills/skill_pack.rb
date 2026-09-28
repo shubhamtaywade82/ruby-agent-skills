@@ -115,6 +115,9 @@ module RubyAgentSkills
     private
 
     def resolve_pattern(pattern)
+      # A pattern path can be registered under more than one family (for
+      # example, also under "testing"); that is a deliberate cross-listing of
+      # the same file, not an ambiguous match, so dedupe before comparing.
       paths = @manifest.fetch("patterns").values.flat_map { |entry| entry.fetch("paths") }.uniq
       relative = pattern.sub(%r{\Apatterns/}, "")
       exact = paths.find { |path| path.delete_prefix("patterns/").delete_suffix(".md") == relative }
