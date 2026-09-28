@@ -38,7 +38,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
 
       assert_equal "plan", plan.fetch("mode")
       assert_equal ["model-a", "model-b"], plan.fetch("models").map { |m| m.fetch("name") }
-      assert_equal 54, plan.fetch("campaign").fetch("expected_runs_per_model")
+      assert_equal 60, plan.fetch("campaign").fetch("expected_runs_per_model")
       assert plan.fetch("controls").fetch("descriptive_comparison_only")
       assert plan.fetch("controls").fetch("no_synthetic_results")
     end

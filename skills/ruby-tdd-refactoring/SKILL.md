@@ -31,17 +31,28 @@ Before writing tests:
 
 Do not introduce a second test framework without a reason.
 
+## Test seams
+
+A seam is the public interface a test exercises: the place where behavior is observable without reaching inside. Before writing the first test, write down the seams under test and confirm them with the user when they are available. Prefer existing seams and the highest seam that still gives a fast, precise signal; for Rails that is often a request, job, or model public method rather than a private helper.
+
+When the interface itself is in question (how much it should hide, where the seam belongs), load `ruby-api-design` and its deep-module reference before writing tests.
+
 ## TDD loop
 
-When practical:
+When practical, work in vertical slices: one test, the minimal code to pass it, then the next test.
 
 ```text
-red
-  -> smallest behavior
-  -> green
-  -> refactor
+agree seams
+  -> red: one failing test at an agreed seam
+  -> green: the smallest code that passes it
+  -> refactor on green, one structural change at a time
+  -> next slice
   -> regression suite
 ```
+
+- Write the failing test first and only enough code to pass it; do not anticipate later tests.
+- Do not write a batch of tests before any implementation. Tests written ahead of the code test an imagined shape and stop responding to what each slice teaches.
+- Refactor only on green, as its own step, and keep structural changes out of the red → green step.
 
 For an existing bug, a regression test should demonstrate the defect before the fix when feasible.
 
@@ -63,6 +74,10 @@ Cover:
 - regression conditions
 
 Avoid coupling tests to incidental private implementation details.
+
+Take expected values from an independent source: a known literal, a worked example, or the requirement. A test that recomputes the expected value the way the code does passes by construction and can never catch a bug.
+
+Double only at system boundaries you do not control (external HTTP APIs, payment and mail providers, time, randomness). Use the real objects you own. Load `references/test-quality.md` for Ruby examples of good and bad tests and for mocking rules.
 
 ## RSpec readability
 
@@ -100,8 +115,11 @@ Include:
 ## Failure modes
 
 - tests that pass despite broken behavior
+- tautological tests whose expected value is recomputed with the implementation's own logic
 - over-mocking the system under test
-- asserting implementation details
+- asserting implementation details, private methods, call counts, or database rows instead of the public interface
+- writing every test before any implementation (horizontal slicing)
+- tests at seams nobody agreed to
 - one huge integration test for every behavior
 - adding tests after a broad refactor with no characterization coverage
 - changing tests simply to make a failing implementation pass
@@ -145,12 +163,23 @@ end
 ## Agent review checklist
 
 - [ ] repository test stack identified
-- [ ] contract expressed by tests
+- [ ] seams under test agreed before the first test
+- [ ] contract expressed by tests at those seams
+- [ ] expected values come from an independent source, not recomputed
+- [ ] doubles used only at system boundaries
 - [ ] edge/failure paths considered
 - [ ] regression case added when appropriate
 - [ ] focused tests pass
 - [ ] broader checks run where appropriate
 - [ ] tests remain readable
+
+## References
+
+Load only when needed; the reference is one level deep. Consult a listed pattern only when the change needs its implementation shape.
+
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| writing or reviewing test assertions, doubles, or mocks | [references/test-quality.md](references/test-quality.md) | Good and bad tests; tautological tests; verifying through the interface; when to mock; designing for doubles | `regression-test`, `rspec-verifying-doubles` |
 
 ## Verification
 
@@ -159,3 +188,5 @@ Run the smallest useful test first, then the affected suite, then broader regres
 ## Source foundation
 
 Grounded in the TDD and clean-test material of *Clean Ruby*, including the emphasis on behavior clarity and readable RSpec structure, and reinforced by the exercise-driven Ruby practice model of *The Ruby Workshop*.
+
+Agreed test seams, vertical slices, the tautological and implementation-coupled test anti-patterns, and mocking only at system boundaries are adapted, in this repository's words and with Ruby examples, from the `tdd` skill in https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock). This skill keeps refactoring inside the loop, on green, where that skill moves it to review.

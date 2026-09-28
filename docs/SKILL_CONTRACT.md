@@ -56,7 +56,7 @@ Move detailed knowledge into `references/<topic>.md` inside the skill directory:
 | Reference depth | one level | files directly under `references/`; no links between references |
 | Reference index | every reference linked from `SKILL.md` | orphaned or missing references fail |
 
-A skill directory may contain only `SKILL.md`, `references/`, `scripts/`, and `assets/`. Patterns named in the `## References` table must be registered in `skill-manifest.yml`. The token figure is an estimate, not a tokenizer count.
+A skill directory may contain only `SKILL.md`, `references/`, `scripts/`, and `assets/`. For how to word descriptions, triggers, steps, and references so agents load and follow them reliably, see `docs/WRITING_SKILLS.md`. Patterns named in the `## References` table must be registered in `skill-manifest.yml`. The token figure is an estimate, not a tokenizer count.
 
 ## Agent behavior
 

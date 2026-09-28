@@ -39,6 +39,7 @@ This file defines how an agent should select and compose skills.
 | Runtime failure/exception | ruby-debugging | ruby-tdd-refactoring |
 | Rails application structure | rails-architecture | ruby-clean-code, stack-minimality |
 | Ruby/Rails + React + PostgreSQL implementation minimality | stack-minimality | relevant domain skill, ruby-clean-code, ruby-tdd-refactoring |
+| Branch/PR/diff review for standards and spec fidelity | change-review | stack-minimality-review, rubocop, relevant domain skill |
 | Over-engineering review | stack-minimality-review | relevant domain review skill |
 | Whole-repository minimality audit | stack-minimality-audit | stack-minimality |
 | Deliberate simplification debt | stack-minimality-debt | stack-minimality |
@@ -170,6 +171,17 @@ rails-architecture
 ```
 
 Treat analyzer findings as signals. Translate historical rules to the actual Rails version and repository contract.
+
+### Change review
+
+```text
+change-review
+  + owning skill(s) of each touched boundary (their change contracts are Standards sources)
+  + rubocop (report whether it ran; do not repeat its findings)
+  + stack-minimality-review (only when size or simplicity is in question)
+```
+
+Report the Standards and Spec axes separately; never re-rank findings across them.
 
 ### Cross-cutting refactor
 

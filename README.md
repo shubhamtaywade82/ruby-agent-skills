@@ -104,10 +104,10 @@ skills/rails-active-record/
 
 | Capability | Count |
 |---|---:|
-| Skills | **86** |
+| Skills | **87** |
 | Implementation patterns | **443** |
-| Evaluation cases | **447** |
-| Dedicated system/contract tests | **86** |
+| Evaluation cases | **451** |
+| Dedicated system/contract tests | **87** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -410,6 +410,8 @@ The core principles are:
 - deterministic verification
 - no claims of correctness without evidence
 
+Process skills sit around the Ruby and Rails skills: `agent-workflow` runs the implementation loop (test-first at agreed seams, focused tests per slice, one full-suite run), `change-review` reviews a diff on two separate axes (repository standards and spec fidelity), `ruby-debugging` builds a failing feedback loop before any hypothesis, `ruby-domain-modeling` keeps a domain glossary and decision records, and `ruby-api-design` applies deep-module design. `docs/WRITING_SKILLS.md` covers how to write skills for agents. Several of these disciplines are adapted from https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock).
+
 ---
 
 # Skill routing
@@ -597,7 +599,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **86 skills**, **443 implementation patterns**, **447 evaluation cases**, and **86 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **87 skills**, **443 implementation patterns**, **451 evaluation cases**, and **87 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

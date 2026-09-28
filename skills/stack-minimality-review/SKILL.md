@@ -25,6 +25,10 @@ Use concrete finding tags:
 - shrink: equivalent behavior with a smaller clear implementation;
 - boundary: duplicated logic that belongs at an existing shared owner.
 
+Apply the deletion test before tagging an abstraction `yagni` or `shrink`: inline it into its callers mentally. If complexity reappears across several callers, the module earns its keep; if it disappears, it is a pass-through. A port or strategy with a single implementation and no test adapter is a hypothetical seam, not a real one (see the deep-module reference in `ruby-api-design`).
+
+This review covers simplicity only. Use `change-review` for the full standards-and-spec review of a diff.
+
 Do not label security controls, accessibility behavior, required validation, integrity constraints, observability, or the minimum test proving non-trivial behavior as bloat.
 
 ## Implementation procedure

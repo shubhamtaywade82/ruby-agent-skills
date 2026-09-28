@@ -85,7 +85,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         }
       end
 
-      54.times do |index|
+      60.times do |index|
         path = File.join(dir, "raw-#{index + 1}.json")
         File.write(path, "{}")
         artifacts["raw_case_#{index + 1}"] = {
@@ -100,11 +100,11 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
         "campaign" => "skill-routing-public-v1",
-        "campaign_version" => 2,
-        "routing_case_count" => 18,
+        "campaign_version" => 3,
+        "routing_case_count" => 20,
         "requested_repetitions" => 3,
-        "requested_runs" => 54,
-        "completed_runs" => 54,
+        "requested_runs" => 60,
+        "completed_runs" => 60,
         "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
         "agent" => { "provider" => "ollama", "model" => "test-model" },
         "campaign_metrics" => campaign.fetch("metrics"),
@@ -130,7 +130,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
 
       assert_equal "skill-routing-campaign-v1", manifest.fetch("evidence_type")
       assert_equal true, manifest.fetch("intake").fetch("verified")
-      assert_equal 54, manifest.fetch("completed_runs")
+      assert_equal 60, manifest.fetch("completed_runs")
     end
   end
 
@@ -193,8 +193,8 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       "agent" => { "provider" => "ollama", "model" => "fixture-model", "model_version" => "fixture-digest", "tool_mode" => "local-filesystem" },
       "routing_case_count" => cases.length,
       "requested_repetitions" => 3,
-      "requested_runs" => 54,
-      "completed_runs" => 54,
+      "requested_runs" => 60,
+      "completed_runs" => 60,
       "complete" => true,
       "execution" => { "checkpointed" => true, "mode" => "fixture" },
       "routing_inputs" => {},

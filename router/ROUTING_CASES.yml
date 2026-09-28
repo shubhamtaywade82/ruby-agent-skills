@@ -213,3 +213,25 @@ cases:
     secondary_skills:
       - react-state-effects
     boundary: render-performance-vs-state-ownership
+
+  - id: branch-review-standards-and-spec
+    prompt: >
+      Review this branch against main: check it follows the repository's
+      conventions and does everything issue 214 asked for, without scope
+      creep. Do not change the code.
+    primary_skills:
+      - change-review
+    secondary_skills:
+      - ruby-clean-code
+      - rubocop
+    boundary: change-review-vs-minimality-review
+
+  - id: diff-simplification-review
+    prompt: >
+      Review this diff only for what can be deleted or simplified: unused
+      flexibility, one-use abstractions, and pass-through wrappers.
+    primary_skills:
+      - stack-minimality-review
+    secondary_skills:
+      - ruby-api-design
+    boundary: minimality-review-vs-change-review
