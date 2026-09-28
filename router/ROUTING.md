@@ -56,6 +56,7 @@ This file defines how an agent should select and compose skills.
 | Rails Action Controller HTTP boundary | rails-action-controller | rails-routing, rails-authentication, rails-security, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-test-engineering |
 | Rails view/form | rails-action-view | rails-action-controller, rails-test-engineering |
 | Model/migration/query | rails-active-record | rails-architecture, rails-test-engineering |
+| Rails data modeling: what the schema represents (facts, keys, normalization, hierarchies, JSON boundary, history, denormalization) | rails-data-modeling | rails-associations, rails-database-engineering, rails-active-record, ruby-domain-modeling |
 | Rails Active Record deep engineering | rails-active-record | rails-associations, rails-validations, rails-database-engineering, rails-performance, rails-security, rails-test-engineering |
 | Active Record association | rails-associations | rails-active-record, rails-test-engineering |
 | Rails Association deep engineering | rails-associations | rails-active-record, rails-database-engineering, rails-validations, rails-security, rails-active-job, rails-active-storage, rails-performance, rails-test-engineering |
@@ -503,6 +504,21 @@ ActiveSupport::Notifications / instrumentation / health / liveness / readiness
 
 Prefer an existing framework/request boundary over introducing duplicate middleware or controller callbacks.
 
+
+## Rails data modeling
+
+```text
+new tables / normalization / keys / STI vs delegated types vs polymorphic /
+JSON column vs relational columns / snapshots / soft deletion /
+denormalization / legacy schema mapping
+  -> rails-data-modeling (decide what the schema represents and which constraints it needs)
+  -> rails-associations (declare the relationships)
+  -> rails-database-engineering (migrate, backfill, and roll out constraints safely)
+  -> rails-active-record (query and persistence semantics)
+  -> ruby-domain-modeling when the Ruby domain object model is also changing
+```
+
+Decide the model before writing migrations; the database constraint, not the validation, is the integrity guarantee.
 
 ## Rails database engineering
 

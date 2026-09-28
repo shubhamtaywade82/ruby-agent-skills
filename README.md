@@ -104,10 +104,10 @@ skills/rails-active-record/
 
 | Capability | Count |
 |---|---:|
-| Skills | **92** |
+| Skills | **93** |
 | Implementation patterns | **443** |
-| Evaluation cases | **460** |
-| Dedicated system/contract tests | **88** |
+| Evaluation cases | **464** |
+| Dedicated system/contract tests | **89** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -165,6 +165,7 @@ The Rails layer has both foundational skills and deep framework-boundary skills.
 - `rails-architecture`
 - `rails-routing`
 - `rails-action-controller`
+- `rails-data-modeling`
 - `rails-active-record`
 - `rails-associations`
 - `rails-validations`
@@ -599,7 +600,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **92 skills**, **443 implementation patterns**, **460 evaluation cases**, and **88 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **93 skills**, **443 implementation patterns**, **464 evaluation cases**, and **89 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

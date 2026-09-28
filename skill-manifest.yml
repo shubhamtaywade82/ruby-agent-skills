@@ -128,6 +128,10 @@ skills:
     family: rails
     path: skills/rails-production-runtime/SKILL.md
     triggers: [production runtime, Puma, puma.rb, WEB_CONCURRENCY, RAILS_MAX_THREADS, workers, threads, graceful shutdown, zero downtime deploy, rolling deploy, phased restart, hot restart, Solid Queue process, bin/jobs, container lifecycle, PID 1, readiness, release process, runtime configuration, RAILS_MASTER_KEY, production boot]
+  rails-data-modeling:
+    family: rails
+    path: skills/rails-data-modeling/SKILL.md
+    triggers: [data modeling, schema design, normalization, normal form, functional dependency, denormalization, single-table inheritance, delegated_type, JSONB boundary, UUID primary key, composite primary key, soft delete, historical snapshot, legacy schema mapping]
   rails-database-engineering:
     family: rails
     path: skills/rails-database-engineering/SKILL.md
@@ -1429,6 +1433,17 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/active-record-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-data-modeling:
+    source: rails-data-modeling-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/data-modeling-contract.yml
     checks:
       - functional
       - tests

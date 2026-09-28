@@ -1,5 +1,23 @@
 # Changelog
 
+## Iteration 139 — Rails Data Modeling
+
+- Add the `rails-data-modeling` skill (92 → 93 skills). It decides what a Rails schema should represent before models or migrations are written, and sits above `rails-associations`, `rails-database-engineering`, and `rails-active-record`.
+  - **Order of work:** business facts → entities and values → ownership and cardinality → keys and functional dependencies → 3NF by default → constraints → Rails mapping → access paths → deliberate denormalization → existing data.
+  - **Invariants:** a database constraint, not an association or validation, guarantees integrity. `has_one` needs a unique index on its foreign key. Tenant-scoped business keys need composite unique indexes. JSON columns never hold values the application joins, filters, sorts, or constrains on. Historical snapshots are never "normalized away".
+- Five references hold the detail:
+  - `normalization-and-keys.md`: functional dependencies, 1NF through BCNF with Rails examples, update/insert/delete anomalies, and primary key strategies (bigint, UUID, composite, custom) with a decision rule;
+  - `relationships-and-integrity.md`: foreign-key ownership, one-to-one, join models, `NULL` semantics, a constraint matrix pairing validations with database guarantees, and multi-tenant ownership;
+  - `types-hierarchies-and-flexible-data.md`: STI, delegated types, separate tables, and composition; polymorphic trade-offs and alternatives that keep foreign keys; Rails enums versus check constraints versus PostgreSQL enum types; the JSON boundary; value-object mapping;
+  - `history-and-denormalization.md`: snapshots, effective-dated and append-only history, soft deletion decisions with partial unique indexes, derived values, and the source/update/repair/failure rule for every denormalized value;
+  - `legacy-schemas-and-api-drift.md`: legacy table mapping (`self.table_name`, `self.primary_key`, `ignored_columns`, `alias_attribute`, explicit keys), a table of removed or replaced APIs (finder option hashes, `find_all_by_*`, `update_attributes`, `set_table_name`, observers, the keyword `enum` form), and the Rails version each gated feature needs.
+- The durable concepts of *Pro Active Record: Databases with Ruby and Rails* (Apress, 2007) are credited in the source foundation. Its API examples are not reused; the drift table lists their replacements. The book's text was not available in this repository, so version claims come from the Rails guides and release history, gated on the application's resolved Rails version.
+- `rails-database-engineering` now points schema-design decisions to the new skill.
+- **Routing:** a matrix row, a `Rails data modeling` composition, and one routing case (`schema-design-before-migration`). The public routing campaign moves to version 5: 23 cases × 3 repetitions = 69 runs; the release contract, routing docs, and pinned tests are updated. No empirical campaign evidence was recorded under version 4.
+- **Evaluation and test:**
+  - the static-only `data-modeling-contract` evaluation (4 cases; 460 → 464): snapshots, tenant uniqueness, plan history, and retirement;
+  - `test/rails_data_modeling_system_test.rb` (89 system tests), registered in `bin/validate`. It checks registration, routing, the key invariants, and the drift table, syntax-checks every Ruby example in the skill, and rejects removed APIs in those examples.
+
 ## Iteration 138 — Tracker-Neutral Planning Layer
 
 - Add five `planning` skills (87 → 92 skills) that turn ideas into decisions and work items before code:
