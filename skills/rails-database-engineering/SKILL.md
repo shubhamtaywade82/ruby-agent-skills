@@ -6,7 +6,7 @@ description: Use when changing Rails database schemas, migrations, indexes, cons
 # Rails Database Engineering
 
 ## Purpose
-Treat the database as a production contract, not an implementation detail.
+Treat the database as a production contract, not an implementation detail. Deciding what the schema should represent (entities, keys, normalization, hierarchies, history, denormalization) belongs to `rails-data-modeling`; this skill evolves and enforces it safely.
 
 Reason across:
 ```text

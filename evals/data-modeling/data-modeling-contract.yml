@@ -1,0 +1,49 @@
+id: data-modeling-contract
+coverage: static-only
+version: 1
+title: Rails Data Modeling Contract
+category: rails
+source: rails-data-modeling-v1
+skills:
+  - rails-data-modeling
+  - rails-associations
+  - rails-database-engineering
+patterns:
+  - value-object
+prompt: |
+  Design the schema for account subscriptions: an account changes plans over time, invoices must keep the price and plan name that applied when issued, plan names are unique within an account, and a plan can be retired but never deleted while invoices reference it.
+  Inspect the repository's Rails version and schema first. Deliver the tables, keys, constraints, and Rails mapping; do not write application workflows.
+constraints:
+  required_boundary: rails-data-modeling
+  forbidden:
+    - joining invoices to the current plan price instead of storing the issued price
+    - relying on validates uniqueness without a unique index
+    - storing plan_id or status inside a JSON column
+    - using removed Rails APIs such as update_attributes or the keyword enum form
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: snapshot
+    input: A plan's price changes after invoices were issued.
+    expected:
+      schema: invoice lines keep unit_price_cents and plan_name snapshots; existing invoices do not change
+  - name: tenant-uniqueness
+    input: Two accounts each create a plan named "Pro"; one account tries a second "Pro".
+    expected:
+      schema: composite unique index on (account_id, name); the second plan in the same account is rejected by the database
+  - name: plan-history
+    input: The account needs its plan as of any past date.
+    expected:
+      schema: effective-dated subscription rows or an append-only plan-change history, with overlapping periods prevented
+  - name: retirement
+    input: A retired plan is still referenced by invoices.
+    expected:
+      schema: an explicit retired state or timestamp; foreign keys restrict deletion; NULL has one stated meaning
+grading:
+  functional: The schema records every stated fact once, with snapshots where history must not change.
+  tests: Constraint tests insert duplicates, orphans, overlaps, and NULLs through SQL or insert_all and expect database errors.
+  contract: Keys, foreign keys, unique and check constraints, and the Rails mapping match the stated invariants and the resolved Rails version.
+  scope_control: No workflows, jobs, or controllers; only the model and its constraints.

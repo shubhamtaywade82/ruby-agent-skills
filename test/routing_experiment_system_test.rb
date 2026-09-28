@@ -40,7 +40,7 @@ class RoutingExperimentSystemTest < Minitest::Test
       evidence = JSON.parse(File.read(File.join(output, "evidence.json"), encoding: "UTF-8"))
 
       assert_equal false, baseline.fetch("metrics").fetch("primary_accuracy") == 1.0
-      assert_in_delta 1.0.fdiv(22), candidate.fetch("metrics").fetch("primary_accuracy"), 0.0001
+      assert_in_delta 1.0.fdiv(23), candidate.fetch("metrics").fetch("primary_accuracy"), 0.0001
       assert_equal true, comparison.fetch("gate").fetch("passed")
       assert_equal "test-model", baseline.fetch("agent").fetch("model")
       assert_equal "test-model", candidate.fetch("agent").fetch("model")

@@ -257,3 +257,15 @@ cases:
       - planning-interview
       - planning-tracker
     boundary: wayfinding-vs-ticket-breakdown
+
+  - id: schema-design-before-migration
+    prompt: >
+      Design the tables for subscriptions with plan changes over time, where
+      invoices must keep the price that applied when they were issued and
+      plan names must be unique per account.
+    primary_skills:
+      - rails-data-modeling
+    secondary_skills:
+      - rails-associations
+      - rails-database-engineering
+    boundary: data-modeling-vs-database-engineering

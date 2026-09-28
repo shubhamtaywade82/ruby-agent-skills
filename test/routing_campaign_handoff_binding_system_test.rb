@@ -17,10 +17,10 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
       "handoff" => "skill-routing-external-run-v1",
       "campaign" => {
         "id" => "skill-routing-public-v1",
-        "version" => 4,
-        "case_count" => 22,
+        "version" => 5,
+        "case_count" => 23,
         "repetitions" => 3,
-        "expected_runs" => 66
+        "expected_runs" => 69
       },
       "runtime" => {
         "provider" => "ollama",

@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 138 — Tracker-Neutral Planning Layer
+> **Current milestone:** Iteration 139 — Rails Data Modeling
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -421,3 +421,7 @@ Added the two-axis `change-review` skill and folded feedback-loop debugging, sea
 ## Iteration 138 — Tracker-Neutral Planning Layer
 
 Added five planning skills (interview, spec, tickets, wayfinder, tracker) over one backend-neutral item model, with local Markdown validated by a bundled script and GitHub Issues as the second backend.
+
+## Iteration 139 — Rails Data Modeling
+
+Added `rails-data-modeling`, which decides what the schema represents (facts, keys, normal forms, constraints, hierarchies, JSON boundary, history, denormalization) before associations and migrations, with a table of removed Rails APIs and their replacements.
