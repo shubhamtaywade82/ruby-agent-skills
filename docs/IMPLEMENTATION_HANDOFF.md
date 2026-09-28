@@ -9,7 +9,7 @@ Current inventory:
 - 93 skills
 - 443 implementation patterns
 - 466 evaluation cases
-- 90 system/contract tests
+- 91 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
