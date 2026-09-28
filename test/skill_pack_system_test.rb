@@ -13,6 +13,8 @@ class SkillPackSystemTest < Minitest::Test
     FileUtils.mkdir_p(File.join(root, "patterns", "two"))
 
     File.write(File.join(root, "skills", "demo", "SKILL.md"), "---\nname: demo\ndescription: Demo.\n---\n\n# Demo\n")
+    FileUtils.mkdir_p(File.join(root, "skills", "demo", "references"))
+    File.write(File.join(root, "skills", "demo", "references", "detail.md"), "# Detail\n")
     File.write(File.join(root, "patterns", "one", "shared.md"), "# One\n")
     File.write(File.join(root, "patterns", "two", "shared.md"), "# Two\n")
     File.write(
@@ -50,6 +52,24 @@ class SkillPackSystemTest < Minitest::Test
     assert_equal Digest::SHA256.file(File.join(root, "skill-manifest.yml")).hexdigest, manifest.fetch("skill_manifest_sha256")
     assert File.directory?(result.fetch("skills_dir"))
     assert File.directory?(result.fetch("patterns_dir"))
+  end
+
+  def test_materialized_skill_carries_its_references
+    root = build_pack
+    workspace = Dir.mktmpdir("workspace")
+    pack = RubyAgentSkills::SkillPack.new(root: root)
+    result = pack.materialize(evaluation: { "prompt" => "Demo", "skills" => ["demo"], "patterns" => [] }, workspace: workspace)
+
+    reference = File.join(result.fetch("skills_dir"), "demo", "references", "detail.md")
+
+    assert_equal "# Detail\n", File.read(reference, encoding: "UTF-8")
+
+    entry = JSON.parse(File.read(result.fetch("manifest"), encoding: "UTF-8")).fetch("skills").first
+
+    assert_equal([".ruby-agent-eval/skill-pack/skills/demo/references/detail.md"], entry.fetch("references").map { |ref| ref.fetch("path") })
+    assert_equal Digest::SHA256.file(File.join(root, "skills", "demo", "references", "detail.md")).hexdigest,
+                 entry.fetch("references").first.fetch("sha256")
+    assert_includes File.read(result.fetch("context"), encoding: "UTF-8"), "References for demo load on demand"
   end
 
   def test_materialized_patterns_preserve_relative_paths

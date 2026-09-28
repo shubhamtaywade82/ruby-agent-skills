@@ -9,7 +9,7 @@ description: Use when implementing or reviewing deep Active Record model, relati
 
 Treat Active Record as both an object/persistence protocol and a query-building system whose behavior must remain explicit at the model, relation, and database boundaries.
 
-This skill deepens the foundational rails-active-record skill. It owns Active Record object and Relation semantics; rails-database-engineering owns production database mechanics such as schema migration, indexes, constraints, transaction isolation, locking, connection pools, and query-plan operations. rails-associations and rails-validations remain specialized ownership boundaries.
+This skill owns Active Record object and Relation semantics; rails-database-engineering owns production database mechanics such as schema migration, indexes, constraints, transaction isolation, locking, connection pools, and query-plan operations. rails-associations and rails-validations remain specialized ownership boundaries.
 
 ## Activate when
 
@@ -26,7 +26,7 @@ This skill deepens the foundational rails-active-record skill. It owns Active Re
 - debugging differences between in-memory model state and persisted database state
 - reviewing Active Record code for accidental materialization or hidden queries
 
-For routine model, migration, or query changes, `rails-active-record` is the lighter entry point; activate this skill only when the deep boundaries above are actually in play.
+Routine model, migration, or query changes also route here; start them from `references/routine-changes.md`.
 
 ## Boundary ownership
 
@@ -66,278 +66,36 @@ Before implementation inspect:
 
 Never infer database semantics from model code alone.
 
-## Model boundary
-
-Use an Active Record model when the object represents persisted relational state and Active Record behavior is an actual consumer contract.
-
-Keep the model cohesive:
-
-- attributes and persisted behavior
-- local domain predicates
-- query scopes with explicit semantics
-- lifecycle behavior that truly belongs to the record
-- validation hooks owned by rails-validations.
-
-Do not turn models into service containers, API clients, mailers, job schedulers, or authorization engines.
-
-When a workflow coordinates multiple records, external systems, or several steps, prefer an application/domain service and keep each model responsible for its own persisted invariants.
-
-## Relation semantics
-
-Treat ActiveRecord::Relation as a lazy query description until a terminal operation/materialization occurs.
-
-Review whether code:
-
-- chains relations or accidentally turns them into Arrays
-- triggers SQL earlier than expected
-- reuses a relation after mutation or scoping
-- changes ordering or grouping implicitly
-- introduces joins that alter cardinality
-- uses distinct/group/having intentionally
-- returns model instances when scalar or projection data is enough.
-
-Common terminal/materializing operations include loading records, iteration in many contexts, to_a, pluck, pick, count, and other query execution methods. Verify exact behavior against the resolved Rails version.
-
-Prefer a relation as an internal query contract when callers need further composition. Return materialized values only when that is the intended API.
-
-## Query composition
-
-Build queries from explicit relation operations.
-
-Review:
-
-- where
-- select
-- reorder/order
-- joins
-- left_joins
-- merge
-- distinct
-- group
-- having
-- limit/offset
-- exists?
-- calculations
-- pluck/pick
-- batch iteration.
-
-Avoid string SQL when a structured relation API expresses the contract safely and clearly. When raw SQL is necessary, keep values parameterized and make adapter/version assumptions explicit.
-
-Do not use Ruby-side filtering or sorting for datasets that should be filtered or ordered by the database unless the data set is deliberately small and that tradeoff is documented by repository evidence.
-
-## Scopes and default_scope
-
-Use scopes for named, composable query semantics that are unsurprising to callers.
-
-A good scope:
-
-- returns a relation
-- has predictable composition behavior
-- does not perform external side effects
-- does not hide expensive work unexpectedly
-- has a name describing its semantic filter or order.
-
-Be cautious with default_scope. It silently participates in many relations and can affect both reads and record creation. Use explicit scopes when visibility or lifecycle rules must be obvious.
-
-When changing default_scope:
-
-- inspect every call site that assumes implicit filtering
-- inspect creation defaults
-- inspect unscoped callers
-- verify tenant/security semantics
-- add regression coverage for both scoped and unscoped behavior.
-
-Never use default_scope as an authorization mechanism.
-
-## Loading strategy
-
-Choose the smallest loading strategy that matches the access pattern.
-
-Distinguish:
-
-- lazy association access
-- preload
-- eager_load
-- includes
-- joins
-- strict loading.
-
-Use eager loading/preloading when a real access pattern would otherwise issue repeated queries. Do not preload the entire object graph just in case.
-
-Use strict loading when the repository wants accidental lazy association access to fail or when an explicit N+1 contract is valuable. Treat strict loading failures as evidence to fix the query boundary rather than disable the check indiscriminately.
-
-Coordinate measured N+1/query cost with rails-performance.
-
-## Projection and calculations
-
-Avoid instantiating full Active Record objects when the caller only needs scalar data.
-
-Use explicit projections such as pluck or pick when the contract is a scalar or array result.
-
-Review the tradeoff:
-
-- projected values do not carry model methods or callback behavior
-- immediate materialization can prevent further relation composition
-- custom attribute methods may not apply
-- type casting must match the caller's expectations.
-
-Never change a model query to pluck solely for perceived speed without verifying the consumer contract and measuring the workload when performance is material.
-
-## Persistence lifecycle
-
-Understand the distinction among:
-
-- new in-memory record
-- valid record
-- persisted record
-- saved record
-- updated record
-- destroyed record
-- deleted row.
-
-Before changing a write path, inspect which callbacks and validations execute and which direct methods intentionally bypass them.
-
-Methods such as save, update, destroy, direct SQL updates/deletes, and bulk methods do not all provide the same lifecycle semantics.
-
-Do not assume an in-memory object proves database state after a concurrent or independent write.
-
-## Callbacks
-
-Use Active Record callbacks only for lifecycle behavior intrinsically owned by the persisted record.
-
-Good candidates can include small, deterministic normalization or lifecycle bookkeeping already consistent with repository conventions.
-
-External side effects require particular care:
-
-- prefer after_commit or after_rollback when the effect depends on transaction outcome
-- understand that after_commit runs after persistence and cannot roll the transaction back
-- preserve durable identity if the external operation can be retried
-- avoid hidden network calls and large workflows in save callbacks.
-
-Do not use callbacks to hide:
-
-- multi-record application workflows
-- authorization decisions
-- unrelated integrations
-- request-specific behavior
-- job orchestration that belongs to an application boundary.
-
-## Bulk writes and deletes
-
-Distinguish object lifecycle methods from direct bulk operations.
-
-Before using update_all, delete_all, destroy_all, import/upsert helpers, or adapter-specific bulk SQL, determine:
-
-- validations
-- callbacks
-- timestamps
-- dirty tracking
-- association/dependent behavior
-- returned values
-- database constraint behavior
-- audit/event semantics.
-
-A bulk operation is not automatically equivalent to iterating through model instances.
-
-Never replace destroy_all with delete_all just for speed without reviewing lifecycle, dependency, and audit contracts.
-
-## Deletion semantics
-
-Understand the difference between deleting a row and destroying a record through Active Record lifecycle.
-
-Before changing deletion behavior inspect:
-
-- dependent associations
-- destroy callbacks
-- soft-delete conventions
-- database cascades
-- auditing/events
-- attachment cleanup
-- authorization.
-
-Keep irreversible side effects outside the model when their orchestration is broader than one record's lifecycle.
-
-## Dirty and persistence state
-
-Do not confuse attribute change tracking with persistence success.
-
-When a feature depends on what changed, verify:
-
-- when the change is observed
-- whether the value was saved
-- which callback phase runs
-- whether a reload or fresh query is required
-- whether another process can change the row independently.
-
-Coordinate attribute/dirty protocol with Active Model and database transaction behavior with rails-database-engineering.
-
-## Transactions and consistency
-
-This skill reasons about Active Record transaction participation and lifecycle; rails-database-engineering owns deep transaction, locking, and isolation engineering.
-
-When a write spans several Active Record calls, verify:
-
-- which transaction owns them
-- which callbacks fire before/after commit
-- what external effects occur before or after commit
-- whether retry can duplicate side effects
-- whether failure leaves in-memory objects misleadingly changed.
-
-Do not claim atomicity from a chain of model calls unless the actual transaction boundary proves it.
-
-## Security and tenant scope
-
-Active Record queries are not inherently authorized.
-
-Review:
-
-- tenant predicates
-- authorization/policy boundary
-- default_scope assumptions
-- unscoped
-- raw SQL
-- dynamic column/order inputs
-- IDs from external requests
-- cross-tenant associations.
-
-Do not use default_scope, model existence, or obscurity of an ID as an authorization mechanism.
-
-Dynamic SQL identifiers require an explicit allowlist; values should remain parameterized.
-
-## Performance and capacity
-
-Review query shape and object allocation separately.
-
-Look for:
-
-- accidental full-table loads
-- unnecessary model instantiation
-- N+1 association access
-- repeated COUNT/EXISTS queries
-- unbounded batch jobs
-- large to_a
-- excessive callback fan-out
-- duplicate loads caused by mixed preload/join usage.
-
-Use evidence from rails-performance and rails-database-engineering before claiming improvement.
-
-For large datasets, prefer bounded batch APIs such as find_each/find_in_batches where their ordering and concurrency semantics fit the workload.
-
-## Testing
-
-Choose tests that prove the Active Record contract:
-
-- model lifecycle tests for callbacks/persistence semantics
-- query tests for relation composition
-- request/integration tests where controller behavior depends on query semantics
-- integration tests for tenant/security boundaries
-- query-count/performance tests when the repository already uses them.
-
-For lifecycle changes, test both successful and failing paths.
-
-For bulk operations, test which validations/callbacks are intentionally absent or present.
-
-For strict loading, test that unintended lazy loading fails where that is the contract.
+## Decision rules
+
+1. Classify the change before editing: model boundary, Relation/query semantics, scope/default_scope, loading, persistence lifecycle, callbacks, bulk writes/deletes, transactions, tenant scope, or testing. A change can touch several.
+2. Load the matching reference below and apply it before changing behavior. Routine model, migration, and query edits load `references/routine-changes.md` first and escalate to the deeper references only when those boundaries are in play.
+3. Hand schema, index, constraint, locking, and isolation work to rails-database-engineering, and measured query cost to rails-performance.
+
+## Critical invariants
+
+- Treat ActiveRecord::Relation as a lazy query description until a terminal operation; do not turn a composable Relation into an Array or scalar without preserving the caller contract.
+- Never use default_scope as an authorization mechanism.
+- Do not use callbacks to hide multi-record workflows, authorization decisions, unrelated integrations, request-specific behavior, or job orchestration.
+- Use after_commit or after_rollback when an effect depends on transaction outcome; after_save does not mean the transaction committed.
+- A bulk operation is not automatically equivalent to iterating through model instances: validations, callbacks, timestamps, and dirty tracking may not run.
+- Never replace destroy_all with delete_all just for speed without reviewing lifecycle, dependency, and audit contracts.
+- Do not treat in-memory model state as authoritative database state after independent or concurrent writes.
+- Dynamic SQL identifiers require an explicit allowlist; values stay parameterized.
+
+## References
+
+Load only the reference for the boundary being changed, before changing behavior there. Each reference is self-contained and one level deep; none links to another. Consult a listed pattern from the pattern catalog only when the change needs its implementation shape.
+
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change alters model ownership, Relation composition, query shape, scopes/default_scope, or projections | [references/relations-and-queries.md](references/relations-and-queries.md) | Model boundary; Relation semantics; Query composition; Scopes and default_scope; Projection and calculations | `active-record-model-boundary`, `active-record-relation-composition`, `active-record-query-contract`, `active-record-scope-contract` |
+| a change alters eager/strict loading, N+1 behavior, batching, or query cost | [references/loading-and-performance.md](references/loading-and-performance.md) | Loading strategy; Performance and capacity | `active-record-strict-loading` |
+| a change alters save/update/destroy semantics, callbacks, dirty tracking, or transaction participation | [references/persistence-lifecycle-and-callbacks.md](references/persistence-lifecycle-and-callbacks.md) | Persistence lifecycle; Callbacks; Dirty and persistence state; Transactions and consistency | `active-record-persistence-lifecycle`, `active-record-callback-contract` |
+| a change uses update_all, delete_all, destroy_all, insert/upsert, or alters deletion behavior | [references/bulk-writes-and-deletion.md](references/bulk-writes-and-deletion.md) | Bulk writes and deletes; Deletion semantics | `active-record-bulk-write-boundary`, `active-record-deletion-contract` |
+| a query crosses tenant, authorization, unscoped, raw SQL, or dynamic identifier boundaries | [references/security-and-tenant-scope.md](references/security-and-tenant-scope.md) | Security and tenant scope | none |
+| choosing or writing tests for Active Record behavior | [references/testing.md](references/testing.md) | Testing | `active-record-testing` |
+| the change is a routine model, migration, scope, callback, or query edit | [references/routine-changes.md](references/routine-changes.md) | Routine model, migration, and query changes | none |
 
 ## Reference example
 
@@ -428,135 +186,7 @@ Current Rails documentation explicitly covers CRUD/model persistence, Relations,
 
 ## Composition
 
-This skill composes with rails-active-record, rails-associations, rails-validations, rails-active-model, rails-database-engineering, rails-performance, rails-security, rails-test-engineering, rails-test-engineering, ruby-clean-code, and ruby-tdd-refactoring.
-
-## Routine model, migration, and query changes
-
-_Merged from the retired `rails-active-record` skill._
-
-### Repository inspection
-
-Always inspect:
-
-- schema.rb/structure.sql
-- relevant migrations
-- model
-- associations
-- validations
-- callbacks
-- scopes
-- existing queries
-- factories/fixtures
-- tests
-- indexes/constraints where visible
-
-Never infer database behavior from the model file alone.
-
-### Migrations
-
-A migration describes a schema transition.
-
-Review:
-
-- column type
-- nullability
-- defaults
-- foreign keys
-- indexes
-- uniqueness
-- reversibility
-- existing-data impact
-- table size/production safety
-
-Do not assume a migration is safe merely because it runs on an empty development database.
-
-### Models
-
-A model can contain behavior that naturally belongs to the persisted/domain record.
-
-Do not turn it into a universal service container.
-
-### Validations versus constraints
-
-Model validation provides application-level feedback.
-
-Database constraints provide stronger integrity guarantees, especially under concurrent writes.
-
-For important invariants, consider both.
-
-### Queries
-
-Watch for:
-
-- N+1 queries
-- accidental full-table loads
-- Ruby-side filtering that belongs in SQL
-- unnecessary joins
-- duplicate rows
-- ambiguous ordering
-- missing indexes
-- large `.to_a`/materialization
-- repeated queries inside loops
-
-Choose SQL versus Ruby based on data volume, correctness, and repository conventions.
-
-### Scopes
-
-Use scopes when they are named, composable, and unsurprising.
-
-Avoid scopes that hide large side effects or return surprising query shapes.
-
-### Callbacks
-
-Callbacks can make persistence side effects implicit.
-
-Before adding one, ask whether an explicit application/domain workflow is clearer.
-
-If callbacks already exist, map their lifecycle before refactoring.
-
-### Transactions
-
-Use the repository's transaction conventions when multiple persistence changes must succeed or fail together.
-
-Do not assume external API calls participate in database transactions.
-
-### Reference example
-
-The routine path: a model with association and validation, SQL-side filtering, and a reversible migration with an index.
-
-```ruby
-class Invoice < ApplicationRecord
-  belongs_to :customer, counter_cache: true
-  has_many :line_items, dependent: :destroy
-
-  validates :reference, presence: true, uniqueness: true
-end
-
-# Filter and order in SQL; Ruby-side filtering only for tiny, in-memory sets.
-customer.invoices.where(paid: false).order(:due_on).limit(10)
-
-class AddReferenceToInvoices < ActiveRecord::Migration[8.0]
-  def change
-    add_column :invoices, :reference, :string, null: false, default: ""
-    add_index :invoices, :reference, unique: true
-  end
-end
-```
-
-### Agent review checklist
-
-- [ ] schema inspected
-- [ ] migration impact considered
-- [ ] database constraints evaluated
-- [ ] query plan/performance considered where material
-- [ ] N+1 risk checked
-- [ ] callback side effects mapped
-- [ ] transaction boundary correct
-- [ ] tests cover persistence behavior
-
-### Verification
-
-Run migration/schema checks and model/query tests. For performance-sensitive changes, inspect generated SQL/query counts and use the repository's profiling tools where available.
+This skill composes with rails-associations, rails-validations, rails-active-model, rails-database-engineering, rails-performance, rails-security, rails-test-engineering, ruby-clean-code, and ruby-tdd-refactoring.
 
 ## Rails Active Record changes
 

@@ -179,7 +179,8 @@ PATTERN_COUNT="$(find "$REPO_DIR/patterns" -type f -name '*.md' ! -name README.m
 
 SKILL_FILE_HASHES="$(ruby -rdigest -rjson -e '
 root = ARGV.fetch(0)
-paths = Dir[File.join(root, "skills", "*", "SKILL.md")].sort
+skill_dirs = Dir[File.join(root, "skills", "*", "SKILL.md")].map { |path| File.dirname(path) }
+paths = skill_dirs.flat_map { |dir| Dir[File.join(dir, "**", "*")].select { |path| File.file?(path) } }.sort
 puts JSON.generate(paths.map { |path|
   {"path" => path.delete_prefix(File.join(root, "skills") + "/"), "sha256" => Digest::SHA256.file(path).hexdigest}
 })

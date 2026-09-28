@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 135 — RSpec coverage in rails-test-engineering
+> **Current milestone:** Iteration 136 — Progressive Disclosure for Oversized Skills
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -409,3 +409,7 @@ Added the `rails-react-integration` skill, five cross-stack patterns, cross-stac
 ## Iteration 135 — RSpec coverage in rails-test-engineering
 
 Added RSpec guidance to `rails-test-engineering` and six RSpec patterns whose examples were run in a Rails 8.0 app.
+
+## Iteration 136 — Progressive Disclosure for Oversized Skills
+
+Split the 17 largest skills into an operating `SKILL.md` plus on-demand `references/` files, and made `bin/validate` enforce a 500-line / ~5,000-token `SKILL.md` limit with one-level-deep references.

@@ -133,6 +133,7 @@ For changes to the skill repository itself:
 - treat the manifest, router, validator, system-test suite, evaluations, benchmarks, README inventory, and agent guidance as one consistency surface;
 - preserve one owning skill for a framework capability unless repository evidence justifies a new boundary;
 - register every new artifact and make the canonical validator execute every repository system test;
+- keep each `SKILL.md` within the size gate in `docs/SKILL_CONTRACT.md` (500 lines, ~5,000 estimated tokens) by moving deep knowledge into skill-local `references/` one level deep, never into a new skill unless it is a separate routing boundary;
 - resolve current Rails behavior from the supported Rails version before adding triggers or guidance;
 - treat Rails 8/8.1 additions such as ActiveJob::Continuable, structured Event Reporting, Local CI, Solid Cache/Cable, Kamal, and CLI credential fetching as version-sensitive framework concerns;
 - do not claim repository completeness from counts alone; verify executable registration, routing, evaluation coverage, and regression tests.

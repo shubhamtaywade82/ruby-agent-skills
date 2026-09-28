@@ -117,199 +117,6 @@ Multiple processes must coordinate access to one resource.
 
 Prefer a database constraint or atomic state transition when sufficient. A distributed lock is a coordination primitive, not a substitute for ownership or idempotency.
 
-## Ownership and invariants
-
-For every distributed workflow identify:
-
-- system of record;
-- authoritative writer;
-- invariant owner;
-- command owner;
-- event producer;
-- consumer responsibilities;
-- recovery authority.
-
-Do not maintain one business invariant in several services and hope eventual synchronization preserves it.
-
-Persist the invariant where the authoritative writer can enforce it atomically.
-
-## Delivery semantics
-
-Do not assume exactly-once execution.
-
-Make delivery explicit:
-
-- at-most-once;
-- at-least-once;
-- effectively-once through durable deduplication/idempotency;
-- ordered or unordered;
-- immediate or eventual.
-
-For at-least-once delivery, duplicate execution is a normal state, not an exceptional state.
-
-Define acknowledgement semantics:
-
-`receive -> persist/claim -> process -> acknowledge`
-
-or the provider/broker-specific equivalent.
-
-Never acknowledge durable work before the required state is safely recorded.
-
-Use `patterns/rails/message-delivery-contract.md`.
-
-## Outbox
-
-When one database transaction must atomically produce application state and a message/event:
-
-`business transaction -> durable outbox row -> asynchronous publisher -> broker -> consumer`
-
-The outbox closes the "database committed but message was not published" gap.
-
-An outbox does not provide exactly-once publication. Publishers may send the same logical event more than once.
-
-Use stable event identity, publication state, retry/replay, and consumer idempotency.
-
-Use `patterns/rails/outbox-publication.md`.
-
-Compose with `transaction-boundary` and `transactional-job-enqueue` rather than duplicating their concerns.
-
-## Inbox and deduplication
-
-For a consumer that may receive duplicates:
-
-`receive -> identify -> durably claim/deduplicate -> apply side effect -> record outcome`
-
-Prefer a database-enforced uniqueness boundary for event/message identity when the consumer datastore owns the side effect.
-
-Do not use an in-memory set or process-local mutex for cross-process deduplication.
-
-Reuse `idempotent-job` when the final execution is an Active Job.
-
-Use `patterns/rails/inbox-deduplication.md`.
-
-## Retries and backpressure
-
-A retry is a load multiplier.
-
-Define:
-
-- retryable failures;
-- permanent failures;
-- maximum attempts/deadline;
-- backoff/jitter;
-- queue isolation;
-- dead-letter behavior;
-- replay authority.
-
-Do not let independently retrying layers multiply without a budget.
-
-Bound concurrency against database pools, provider limits, broker capacity, and service throughput.
-
-Use `rails-active-job`, `ruby-concurrency`, and `rails-performance` for the local capacity boundary.
-
-## Consistency
-
-Choose consistency deliberately:
-
-- strong/read-after-write where user-visible correctness requires it;
-- eventual consistency where independent services and asynchronous propagation are acceptable;
-- explicit stale-read behavior where replicas/read models may lag.
-
-Define what a caller observes during propagation:
-
-`accepted`, `pending`, `committed`, `available`, or `failed`.
-
-Never hide eventual consistency behind a synchronous-looking API that promises data the system cannot guarantee yet.
-
-Use `patterns/rails/eventual-consistency.md`.
-
-## Sagas
-
-A saga coordinates multiple local transactions without pretending they are one distributed transaction.
-
-Use when a business workflow must span independently owned transaction boundaries.
-
-For each step define:
-
-- forward action;
-- success state;
-- timeout;
-- retry behavior;
-- compensation;
-- compensation failure/recovery;
-- workflow state;
-- operator/replay path.
-
-Prefer orchestration when one component must own workflow state and sequencing. Prefer choreography only when independently reacting services keep coupling manageable and observability remains sufficient.
-
-Do not use a saga when one local transaction can enforce the invariant.
-
-Use `patterns/rails/saga-orchestration.md`.
-
-## Distributed locks
-
-Before adding a distributed lock ask whether:
-
-- a unique constraint;
-- compare-and-set update;
-- row lock;
-- queue partition/key;
-- concurrency-controlled job;
-- single authoritative writer
-
-already solves the invariant.
-
-If a distributed lock is required, define:
-
-- lease duration;
-- ownership identity;
-- renewal;
-- expiration behavior;
-- failure after lease loss;
-- fencing/token semantics where stale holders are dangerous;
-- contention/backoff;
-- monitoring.
-
-A lock without fencing can still permit stale owners after pauses or network partitions.
-
-Never treat a lock as proof that a side effect happened exactly once.
-
-Use `patterns/rails/distributed-lock.md`.
-
-## Multi-region deployments
-
-Do not adopt multi-region topology without a concrete residency, latency, or regional-availability requirement. A single region with edge caching satisfies most latency goals.
-
-Before designing for multiple regions, define:
-
-- the requirement single-region cannot satisfy;
-- the authoritative write region and replication direction/lag budget;
-- the ownership model: single write region, region-partitioned data, or independent stacks with reconciliation;
-- data residency boundaries enforced at the storage layer, not by convention;
-- region routing and user pinning, and their behavior during failover;
-- failover: promotion, fencing against the old primary, RPO/RTO, and conflict handling;
-- region-local dependencies (jobs, cache, blob storage) and their failover targets.
-
-Keep synchronous cross-region calls out of user request paths.
-
-Use `patterns/rails/multi-region-data-boundary.md`.
-
-## Ordering and replay
-
-Do not assume message order unless the transport guarantees it for the relevant key/partition.
-
-Where order matters, define one of:
-
-- sequence/version check;
-- monotonic state transition;
-- partition/key affinity;
-- buffering of future events;
-- reconciliation from source of truth.
-
-Replay must be safe and observable.
-
-Design event handlers so operators can replay from a durable event/message identity without creating uncontrolled duplicate side effects.
-
 ## Failure model
 
 Explicitly model:
@@ -330,63 +137,27 @@ Explicitly model:
 
 For each failure, define whether the system retries, deduplicates, compensates, reconciles, dead-letters, or requires operator intervention.
 
-## Observability
+## Decision rules
 
-Propagate a stable correlation/causation context across:
+1. Classify the boundary and model its failures above, then name the owner of each invariant before choosing a mechanism.
+2. Load the matching reference below before changing behavior: ownership and delivery semantics (outbox, inbox, retries, consistency), coordination (sagas, distributed locks, multi-region), or ordering, replay, observability, rollout, and testing.
+3. Prefer a database constraint or atomic state transition over a distributed lock when it is sufficient.
 
-`request -> command -> outbox -> broker -> consumer -> dependency`
+## Critical invariants
 
-Record safe metadata:
+- Do not assume exactly-once execution.
+- An outbox does not provide exactly-once publication. Publishers may send the same logical event more than once.
+- A distributed lock is a coordination primitive, not a substitute for ownership or idempotency.
 
-- event/message ID;
-- correlation/causation ID;
-- producer/consumer;
-- attempt/retry count;
-- state transition;
-- latency;
-- queue age;
-- outcome.
+## References
 
-Do not log credentials, raw authorization headers, or unnecessary sensitive payloads.
+Load only the reference for the boundary being changed, before changing behavior there. Each reference is self-contained and one level deep; none links to another. Consult a listed pattern from the pattern catalog only when the change needs its implementation shape.
 
-Distributed debugging requires state-transition evidence, not only exception logs.
-
-Compose with `rails-observability`.
-
-## Rollout compatibility
-
-For message-specific topology/schema/consumer concerns, compose with `rails-event-driven-messaging` rather than expanding this skill with broker-specific mechanics.
-
-During rolling deployment:
-
-- old and new consumers may coexist;
-- old messages may arrive at new consumers;
-- new messages may arrive at old consumers;
-- retries may outlive the deployment that created them.
-
-Therefore evolve message schemas additively first, tolerate unknown fields where appropriate, and delay destructive changes until old traffic/messages are drained.
-
-For cross-service API changes use `rails-api-integration`.
-
-## Testing
-
-Every distributed boundary needs failure-path tests.
-
-At minimum consider:
-
-- duplicate delivery;
-- producer failure around commit/publish;
-- consumer failure before/after side effect;
-- retry exhaustion;
-- out-of-order events when relevant;
-- replay;
-- schema compatibility;
-- partial saga completion;
-- stale lock/lease behavior;
-- eventual-consistency visibility;
-- correlation/state-transition observability.
-
-Use deterministic seams and fake transports/brokers where possible. Do not rely on random sleeps to "prove" distributed correctness.
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change crosses a service or process boundary with messages, retries, or eventual consistency | [references/ownership-and-delivery.md](references/ownership-and-delivery.md) | Ownership and invariants; Delivery semantics; Outbox; Inbox and deduplication; Retries and backpressure; Consistency | `distributed-service-boundary`, `outbox-publication`, `inbox-deduplication`, `eventual-consistency` |
+| a change coordinates multi-step workflows, introduces a distributed lock or lease, or spans regions | [references/coordination.md](references/coordination.md) | Sagas; Distributed locks; Multi-region deployments | `saga-orchestration`, `distributed-lock`, `multi-region-data-boundary` |
+| a change depends on ordering or replay, or affects distributed telemetry, rollout compatibility, or tests | [references/ordering-rollout-testing.md](references/ordering-rollout-testing.md) | Ordering and replay; Observability; Rollout compatibility; Testing | `distributed-boundary-readiness` |
 
 ## Reference example
 

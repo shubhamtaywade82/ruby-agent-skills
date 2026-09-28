@@ -25,7 +25,7 @@ The controller owns request interpretation, boundary input filtering, request-sc
 - adding controller-level exception mapping with rescue_from
 - debugging unexpected dispatch, double renders, missing responses, or request/response behavior
 
-For a simple CRUD action, params handling, or a status/render/redirect change, `rails-action-controller` is the lighter entry point; activate this skill only when the deeper boundaries above are actually in play.
+Simple CRUD actions, params handling, and status/render/redirect changes also route here; start them from `references/routine-changes.md`.
 
 ## Boundary ownership
 
@@ -66,192 +66,34 @@ Before changing a controller boundary, inspect:
 
 Resolve version-sensitive APIs before implementation. Newer Rails releases support params.expect; older supported versions may require require plus permit.
 
-## Request boundary
-
-Treat every request value as untrusted input, including query parameters, body parameters, path parameters, headers, cookies, session-derived identifiers, format values, redirect targets, file names, and download options.
-
-Translate these values into a narrow, explicit input contract before calling domain code.
-
-Do not use request metadata as a substitute for authorization. A route, header, cookie, or parameter can identify context, but the owning authorization boundary decides whether an operation is permitted.
-
-## Parameters and strong parameters
-
-Use the repository's supported strong-parameter API.
-
-For versions supporting params.expect, prefer it when the repository convention allows it because it can require and permit the expected structure in one boundary operation. Otherwise use require and permit deliberately.
-
-Guidance:
-
-- permit only fields the action is allowed to mutate or consume
-- keep permitted shapes explicit
-- treat nested arrays/hashes as deliberate contracts
-- separate transport normalization from domain validation
-- Do not use permit! merely to make an integration work
-- do not permit fields just because the model has them
-- avoid forwarding the entire params object into domain/persistence code
-- test omitted, extra, malformed, and nested inputs.
-
-Strong parameters are an input boundary, not an authorization system and not a substitute for domain validation.
-
-## Request object semantics
-
-Use the request object for HTTP facts, not domain state.
-
-Review method, path, host, protocol, headers, query/body/path parameter separation, requested format, content type, and trusted proxy conventions.
-
-Do not derive security-sensitive identity directly from forwarded headers without inspecting trusted proxy configuration and local conventions.
-
-## Response contract
-
-Every controller action should have an intentional response contract.
-
-Review:
-
-- status
-- response format/content type
-- body/render target
-- redirect location
-- headers
-- caching validators
-- empty-body semantics
-- error representation
-- content negotiation behavior.
-
-Avoid accidental implicit rendering when the action requires a stable API or download contract. Conversely, do not add explicit render calls merely to restate normal Rails behavior when the repository relies on implicit rendering.
-
-A redirect is a response; code after redirect_to can still execute. Return immediately when continuing could cause side effects or a second response.
-
-Never create two response paths that can both render or redirect.
-
-## Render and redirect semantics
-
-For render:
-
-- preserve repository view/serializer conventions
-- verify status and content type for non-default responses
-- keep representation decisions separate from domain logic
-- distinguish rendering an error page from raising an exception.
-
-For redirect:
-
-- use stable route helpers or records when possible
-- treat user-provided redirect targets as untrusted
-- preserve Rails open-redirect protections
-- use an explicit safe fallback for return-to flows
-- choose redirect status deliberately for non-GET requests
-- stop execution when redirect is terminal.
-
-Do not enable cross-host redirects for untrusted input merely to preserve convenience behavior.
-
-## Sessions, cookies, and flash
-
-Treat session, cookie, and flash state as HTTP state with explicit lifecycle and privacy contracts.
-
-Inspect the session store, cookie serializer, signed versus encrypted cookies, size limits, expiration/rotation behavior, authentication integration, and flash semantics.
-
-Store the smallest state necessary. Do not put Active Record objects, secrets, authorization decisions, large collections, or sensitive provider responses into client-side cookie-backed state.
-
-Signed cookies provide integrity protection; encrypted cookies add confidentiality. Neither means arbitrary application data should be stored there without an ownership and retention contract.
-
-Do not infer authorization from the presence of a session value. Load and authorize the authoritative resource through the application's authentication/authorization boundary.
-
-## Controller callbacks
-
-Use callbacks for small, deterministic, cross-cutting request prerequisites such as authentication gating and resource loading.
-
-For each callback verify affected actions, execution order, inherited callbacks, halting behavior, response state, and hidden database/network work.
-
-Avoid callbacks that hide business workflows, external side effects, transactions, or large orchestration graphs.
-
-When action order matters, make lifecycle assumptions explicit and test the affected action set.
-
-## Content negotiation
-
-Treat request format and content negotiation as part of the public HTTP contract.
-
-Define supported formats explicitly. Verify route constraints, requested format, Accept behavior, request content type, HTML fallback, API error format, and unsupported-format behavior.
-
-Do not silently add formats because a serializer or helper exists.
-
-Keep API wire contracts composed through rails-api-integration; this skill owns controller-level negotiation and response dispatch.
-
-## Conditional GET and HTTP cache validators
-
-Use conditional responses when a resource can provide a stable representation and validators.
-
-Review ETag strength/semantics, Last-Modified, Cache-Control, private/public cache scope, and whether the representation varies by identity, permission, locale, tenant, or other request context.
-
-A 304 Not Modified response is a transport optimization, not proof that application state is unchanged forever.
-
-Do not derive a shared public cache validator from private data without including all relevant identity dimensions. Coordinate representation cache correctness with rails-caching.
-
-## Streaming and downloads
-
-Use file/download or streaming helpers only when their lifecycle and resource costs are understood.
-
-Inspect file ownership/authorization, content type, content disposition, file size, buffering versus streaming, client disconnect behavior, resource cleanup, timeouts, and concurrency impact.
-
-Do not stream an unbounded database query, external provider, or object graph directly from a controller without a bounded producer and cleanup design.
-
-For Active Storage objects, compose with rails-active-storage rather than duplicating storage access rules.
-
-## Exception handling
-
-Use controller-level exception mapping only for errors with an explicit HTTP contract.
-
-A good rescue_from boundary:
-
-- identifies the expected exception class
-- maps it to a stable response
-- preserves status/content-type semantics
-- emits appropriate observability context
-- does not hide programmer defects.
-
-Do not catch StandardError broadly to turn unexpected failures into successful-looking responses.
-
-Keep authentication/authorization failures distinct from not-found, domain conflicts, validation errors, and dependency failures.
-
-Coordinate error reporting with rails-observability; do not duplicate global error reporting inside one controller.
-
-## Security and privacy
-
-Compose rather than duplicate rails-security and rails-security-engineering.
-
-Controller-specific checks include strong parameter boundaries, authorization before sensitive lookup/use, open-redirect prevention, cookie/session sensitivity, CSRF behavior for browser sessions, response content-type correctness, download authorization, error-detail exposure, filtered logging, host/proxy trust, and tenant isolation.
-
-Never log raw authorization headers, session contents, password/reset fields, or full request bodies containing secrets.
-
-## Performance and capacity
-
-Controllers are part of the request concurrency budget.
-
-Review synchronous database work, synchronous external calls, serialization size, response buffering, streaming connection duration, callback fan-out, cache validation work, and repeated authorization/lookups.
-
-Long-lived streaming responses consume concurrency and must be included in capacity planning.
-
-Do not call an endpoint fast based on controller line count. Use measured request/query/allocation/network evidence from rails-performance, ruby-performance, and rails-observability.
-
-## Testing
-
-Choose the narrowest test that proves the HTTP contract, then add focused integration coverage where lifecycle interactions matter.
-
-At minimum, test relevant:
-
-- permitted and rejected input
-- missing/extra/nested parameters
-- authenticated versus unauthenticated requests
-- authorized versus forbidden requests
-- success status/body/format
-- redirect target and status
-- session/cookie/flash behavior
-- callback scope
-- unsupported formats
-- conditional response behavior
-- exception-to-response mapping
-- download authorization and headers
-- streaming lifecycle when used.
-
-Use deterministic local doubles for external providers and storage.
+## Decision rules
+
+1. Classify the change: request input and strong parameters, response/render/redirect contract, content negotiation, conditional GET, streaming and downloads, sessions/cookies/flash, controller callbacks, exception handling, or performance/testing.
+2. Load the matching reference below before changing behavior. Routine controller action edits load `references/routine-changes.md` first and escalate only when a deeper boundary is in play.
+3. Keep the controller a thin HTTP boundary: domain rules go to models or domain services, authorization to rails-authorization, and route shape to rails-routing.
+
+## Critical invariants
+
+- Do not use permit! merely to make an integration work.
+- Strong parameters are an input boundary, not an authorization system and not a substitute for domain validation; never treat validation success as authorization.
+- Do not infer authorization from the presence of a session value, route, header, cookie, or parameter.
+- Do not catch StandardError broadly to turn unexpected failures into successful-looking responses.
+- Do not enable cross-host redirects for untrusted input merely to preserve convenience behavior.
+- Do not stream an unbounded database query, external provider, or object graph directly from a controller without a bounded producer and cleanup design.
+- Keep controller callbacks narrow and action-scoped; they are request prerequisites, not business workflows or transactions.
+- Use ETag/Last-Modified only when validator identity covers every representation dimension such as tenant, permission, and locale.
+
+## References
+
+Load only the reference for the boundary being changed, before changing behavior there. Each reference is self-contained and one level deep; none links to another. Consult a listed pattern from the pattern catalog only when the change needs its implementation shape.
+
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change reads request input, alters strong parameters or params.expect, or depends on request object semantics | [references/request-and-parameters.md](references/request-and-parameters.md) | Request boundary; Parameters and strong parameters; Request object semantics | `action-controller-request-boundary`, `strong-parameters-contract` |
+| a change alters status codes, render/redirect behavior, formats, ETag/Last-Modified, or file/streaming responses | [references/responses.md](references/responses.md) | Response contract; Render and redirect semantics; Content negotiation; Conditional GET and HTTP cache validators; Streaming and downloads | `controller-response-contract`, `controller-content-negotiation`, `controller-streaming-download` |
+| a change alters session/cookie/flash state, controller callbacks, rescue_from/exception mapping, or request security | [references/sessions-callbacks-exceptions.md](references/sessions-callbacks-exceptions.md) | Sessions, cookies, and flash; Controller callbacks; Exception handling; Security and privacy | `controller-session-cookie-boundary`, `action-controller-callback-contract`, `controller-exception-boundary` |
+| a change has request-path performance impact or needs controller/request tests | [references/performance-and-testing.md](references/performance-and-testing.md) | Performance and capacity; Testing | `action-controller-testing` |
+| the change is a routine controller action edit | [references/routine-changes.md](references/routine-changes.md) | Routine controller action changes | none |
 
 ## Reference example
 
@@ -350,120 +192,7 @@ Framework behavior is interpreted against the repository's resolved Rails versio
 
 ## Composition
 
-This skill composes with rails-routing, rails-action-controller, rails-authentication, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-active-job, rails-i18n, rails-test-engineering, rails-test-engineering, ruby-clean-code, and ruby-tdd-refactoring.
-
-## Routine controller action changes
-
-_Merged from the retired `rails-action-controller` skill._
-
-### Repository inspection
-
-Read:
-
-- route declaration
-- action and neighboring actions
-- authentication/authorization patterns
-- service/domain/model collaborators
-- serializer/view
-- request tests
-- error response conventions
-
-### Responsibilities
-
-A controller generally:
-
-1. receives request
-2. establishes requester context
-3. authorizes according to project convention
-4. filters/normalizes boundary input
-5. invokes application/domain behavior
-6. maps result to HTTP response
-
-Keep substantial business logic outside the action when it does not naturally belong at the HTTP boundary.
-
-### Parameters
-
-Treat incoming values as untrusted.
-
-Use the repository's established strong-parameter or request validation approach.
-
-Do not duplicate every model rule in the controller.
-
-### Response contract
-
-Verify:
-
-- status
-- headers where relevant
-- render/template/serializer
-- redirect destination
-- response format
-- error shape
-
-A controller refactor must not silently change an API response.
-
-### Error handling
-
-Follow repository conventions for expected domain failures versus unexpected exceptions.
-
-Do not use broad rescue clauses to hide programming errors.
-
-### Action complexity
-
-When an action becomes a workflow involving several concepts, consider a service/application object, but do not extract trivial code merely to shorten the controller.
-
-### Security boundary
-
-Do not assume hidden fields or UI state are trusted. Authorization must be enforced at the server boundary.
-
-### Reference example
-
-A plain CRUD controller: strong parameters, one lookup, explicit status, nothing else.
-
-```ruby
-class ProjectsController < ApplicationController
-  def index
-    @projects = current_user.projects.order(created_at: :desc)
-  end
-
-  def create
-    @project = current_user.projects.build(project_params)
-
-    if @project.save
-      redirect_to @project, notice: t(".created")
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
-
-  private
-
-  def project_params
-    params.require(:project).permit(:name, :description)
-  end
-end
-```
-
-### Agent review checklist
-
-- [ ] route/action relationship checked
-- [ ] authentication/authorization behavior preserved
-- [ ] params boundary explicit
-- [ ] business logic owned elsewhere when appropriate
-- [ ] response contract preserved
-- [ ] expected and unexpected failures distinguished
-
-### Verification
-
-Use request/controller tests that exercise the actual HTTP contract: successful request, invalid input, unauthorized/forbidden behavior, not-found behavior where relevant, and expected response format.
-
-### Book integration: controller filters
-
-Controller callbacks such as before_action are useful for repeatable request prerequisites such as authentication and loading a resource. Keep the callback small and explicit.
-
-Do not move arbitrary business workflows into callbacks. If the operation coordinates several domain steps, keep the callback as a boundary check and delegate the workflow elsewhere.
-
-Always verify which actions are affected by a callback; an authentication filter intended for private actions must not accidentally protect public endpoints.
+This skill composes with rails-routing, rails-authentication, rails-security, rails-security-engineering, rails-api-integration, rails-observability, rails-caching, rails-active-storage, rails-active-job, rails-i18n, rails-test-engineering, ruby-clean-code, and ruby-tdd-refactoring.
 
 ## Rails Action Controller changes
 
