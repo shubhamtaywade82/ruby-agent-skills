@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 139 — Rails Data Modeling
+> **Current milestone:** Iteration 140 — Rails Data Modeling: Decision Framework, Worked Examples, and Cross-Skill Boundaries
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -425,3 +425,7 @@ Added five planning skills (interview, spec, tickets, wayfinder, tracker) over o
 ## Iteration 139 — Rails Data Modeling
 
 Added `rails-data-modeling`, which decides what the schema represents (facts, keys, normal forms, constraints, hierarchies, JSON boundary, history, denormalization) before associations and migrations, with a table of removed Rails APIs and their replacements.
+
+## Iteration 140 — Rails Data Modeling: Decision Framework, Worked Examples, and Cross-Skill Boundaries
+
+Gave `rails-data-modeling` a 14-question decision framework, a version-safety section, a review procedure, and six worked Rails 8.1 examples. Its Rails claims were checked against the 8.1.4 guides. Made its boundary explicit in `rails-active-record`, `rails-associations`, `rails-database-engineering`, and `ruby-domain-modeling`.

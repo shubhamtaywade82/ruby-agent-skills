@@ -42,6 +42,14 @@ cases:
     input: A retired plan is still referenced by invoices.
     expected:
       schema: an explicit retired state or timestamp; foreign keys restrict deletion; NULL has one stated meaning
+  - name: json-boundary
+    input: Each plan has provider-specific billing settings, and support staff filter plans by billing interval.
+    expected:
+      schema: billing_interval is a relational column with a check constraint; only the provider-specific settings go in JSONB
+  - name: key-choice
+    input: Plans are shown in public pricing URLs and must not reveal how many plans exist.
+    expected:
+      schema: a bigint primary key with a unique public UUID column, or a UUID key, with the reason stated; not a mutable slug as primary key
 grading:
   functional: The schema records every stated fact once, with snapshots where history must not change.
   tests: Constraint tests insert duplicates, orphans, overlaps, and NULLs through SQL or insert_all and expect database errors.
