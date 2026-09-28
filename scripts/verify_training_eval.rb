@@ -99,6 +99,14 @@ unless checks.key?("functional")
         object.call(input.fetch("money"), input.fetch("cost"), input.fetch("wrappers")) == c.fetch("expected")
       end
       checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "bubble-sort"
+      sorter = BubbleSorter.new
+      bad = evaluation.fetch("cases").reject { |c| sorter.sort(c.fetch("input").dup) == c.fetch("expected") }
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
+    when "equilibrium-index"
+      object = EquilibriumIndex.new
+      bad = evaluation.fetch("cases").reject { |c| object.find(c.fetch("input").dup) == c.fetch("expected") }
+      checks["functional"] = bad.empty? ? check("pass") : check("fail", bad.map { |c| c.fetch("name") }.join(", "))
     when "shopping-cart"
       begin
         mall = Mall.new

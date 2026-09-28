@@ -1,0 +1,44 @@
+id: bubble-sort
+version: 1
+title: Bubble sort
+category: ruby-training
+source: allerin-ruby-set-1
+skills:
+  - ruby-collections
+  - ruby-method-design
+  - ruby-oop
+  - ruby-tdd-refactoring
+patterns: []
+prompt: |
+  Implement bubble sort in Ruby: repeatedly compare adjacent elements and
+  swap them when out of order, until the array is sorted. Do not use Ruby's
+  built-in Array#sort or Array#sort!.
+constraints:
+  time_complexity: O(n^2)
+  required_design:
+    - object-oriented design
+checks:
+  - functional
+  - oop
+  - tests
+cases:
+  - name: unsorted
+    input: [5, 1, 4, 2, 8]
+    expected: [1, 2, 4, 5, 8]
+  - name: already-sorted
+    input: [1, 2, 3, 4]
+    expected: [1, 2, 3, 4]
+  - name: reverse-sorted
+    input: [5, 4, 3, 2, 1]
+    expected: [1, 2, 3, 4, 5]
+  - name: duplicates
+    input: [3, 1, 3, 2, 1]
+    expected: [1, 1, 2, 3, 3]
+  - name: empty
+    input: []
+    expected: []
+grading:
+  functional: the implementation produces the expected ordering for every case.
+  oop: the sort behavior is encapsulated in a cohesive object.
+  tests: tests cover unsorted, sorted, reverse-sorted, duplicate and empty inputs.
+  scope: no unrelated framework or repository changes.

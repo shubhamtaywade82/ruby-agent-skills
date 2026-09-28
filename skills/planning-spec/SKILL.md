@@ -20,7 +20,8 @@ Turn what the conversation and the repository already establish into a spec that
 - read the glossary and decision records so the spec uses the project's terms and respects recorded decisions;
 - inspect the models, schema, routes, jobs, and tests the feature touches;
 - identify the owning skill for each touched boundary (route with `skill-manifest.yml` and `router/ROUTING.md`) and read its `## <Domain> changes` contract;
-- find prior art for tests of the same kind: request, model, job, or system tests.
+- find prior art for tests of the same kind: request, model, job, or system tests;
+- for each touched boundary, find its direct callers and indirect readers (other models, jobs, serializers, other services) and check whether existing tests already cover them.
 
 ## Decision rules
 
@@ -28,7 +29,8 @@ Turn what the conversation and the repository already establish into a spec that
 2. **Agree the test seams before writing.** Prefer existing seams and the highest seam that still gives a precise signal; propose new seams only where none fits, as few as possible. Confirm them with the user when available.
 3. **Write for behavior, not files.** Describe modules, interfaces, schema changes, and contracts. Leave out file paths and code, which go stale; the exception is a snippet, such as a schema or state table, that states a decision more precisely than prose.
 4. **Name the Rails boundaries.** For each touched boundary, name the owning skill, and include the data impact: migrations, backfills, and constraints that change.
-5. **Publish through `planning-tracker`** as a `kind: spec` item with the `ready-for-agent` label, after resolving the backend and confirming any remote write.
+5. **Name the regression surface.** For each touched boundary, list what depends on it and whether existing tests already cover that dependent; an uncovered dependent goes in the spec's Notes as a gap to close, not an assumption that it is safe.
+6. **Publish through `planning-tracker`** as a `kind: spec` item with the `ready-for-agent` label, after resolving the backend and confirming any remote write.
 
 ## Spec template
 
@@ -56,7 +58,7 @@ What changes for them, from their point of view.
 - What this spec deliberately does not cover.
 
 ## Notes
-- Open risks, rollout order, and references to decision records.
+- Open risks, rollout order, references to decision records, and the regression surface: dependents of each touched boundary that existing tests do not yet cover.
 ```
 
 ## Critical invariants
@@ -64,6 +66,7 @@ What changes for them, from their point of view.
 - Never invent a decision to fill a gap in the spec; hand the gap back to `planning-interview`.
 - Never publish before the backend is resolved and any remote write is confirmed.
 - Test seams are agreed, not assumed; a spec without them is incomplete.
+- Never mark a touched boundary's dependents as safe without checking their existing test coverage.
 
 ## Reference example
 
@@ -80,6 +83,10 @@ What changes for them, from their point of view.
 - POST /refunds request test: creates a partial refund and returns 422 for over-refunds
   (prior art: test/integration/refunds_test.rb).
 - Refund#issue! model test: tax per line is preserved for partial refunds.
+
+## Notes
+- Regression surface: InvoiceExport reads refunds.amount_cents directly and has
+  no test for a refund with multiple lines; add that case before shipping.
 ```
 
 ## Agent review checklist
@@ -87,6 +94,7 @@ What changes for them, from their point of view.
 - [ ] every needed decision is present, or the gap was handed back
 - [ ] test seams agreed and listed with prior art
 - [ ] owning skills and data impact named for each boundary
+- [ ] regression surface named for each boundary, with uncovered dependents listed in Notes
 - [ ] no file paths or code except decision-bearing snippets
 - [ ] out-of-scope list present
 - [ ] published through the resolved tracker backend
@@ -97,6 +105,7 @@ What changes for them, from their point of view.
 - filling missing decisions with plausible guesses
 - a spec that lists files to edit instead of behavior and contracts
 - omitting migrations, backfills, or constraints from a data-changing feature
+- assuming a boundary's dependents are safe without checking their test coverage
 - publishing to GitHub without confirmation
 
 ## Verification

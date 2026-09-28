@@ -76,3 +76,17 @@ fixtures:
       - ChocolateFeast
     api:
       call: ChocolateFeast#call(money, cost, wrappers)
+
+  bubble-sort:
+    implementation_file: lib/solution.rb
+    classes:
+      - BubbleSorter
+    api:
+      sort: BubbleSorter#sort(values)
+
+  equilibrium-index:
+    implementation_file: lib/solution.rb
+    classes:
+      - EquilibriumIndex
+    api:
+      find: EquilibriumIndex#find(values)

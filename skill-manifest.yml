@@ -1379,6 +1379,8 @@ evaluations:
       - evals/ruby-training/distinct-elements.yml
       - evals/ruby-training/power-of-two.yml
       - evals/ruby-training/chocolate-feast.yml
+      - evals/ruby-training/bubble-sort.yml
+      - evals/ruby-training/equilibrium-index.yml
     checks:
       - functional
       - oop
