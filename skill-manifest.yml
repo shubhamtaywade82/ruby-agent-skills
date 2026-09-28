@@ -248,6 +248,26 @@ skills:
     family: meta
     path: skills/change-review/SKILL.md
     triggers: [change review, review diff, review branch, review pull request, PR review, review since, spec fidelity, standards review]
+  planning-tracker:
+    family: planning
+    path: skills/planning-tracker/SKILL.md
+    triggers: [planning tracker, tracker backend, local planning items, planning frontier, blocking edges, GitHub issues backend]
+  planning-interview:
+    family: planning
+    path: skills/planning-interview/SKILL.md
+    triggers: [grill me, grill this plan, stress-test a plan, design interview, design tree, interview me]
+  planning-spec:
+    family: planning
+    path: skills/planning-spec/SKILL.md
+    triggers: [write a spec, feature spec, PRD, specification, spec from conversation, test seams]
+  planning-tickets:
+    family: planning
+    path: skills/planning-tickets/SKILL.md
+    triggers: [break into tickets, tracer bullet tickets, vertical slices, work breakdown, ticket breakdown, expand-contract refactor]
+  planning-wayfinder:
+    family: planning
+    path: skills/planning-wayfinder/SKILL.md
+    triggers: [wayfinder, decision map, multi-session plan, too big for one session, chart the work, decision tickets]
   stack-minimality:
     family: architecture-quality
     path: skills/stack-minimality/SKILL.md
@@ -1095,6 +1115,39 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/react-typescript/react-data-fetching-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  planning-spec:
+    source: planning-layer-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/agent-workflow/planning-spec-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  planning-tickets:
+    source: planning-layer-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/agent-workflow/planning-tickets-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  planning-wayfinder:
+    source: planning-layer-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/agent-workflow/planning-wayfinder-contract.yml
     checks:
       - functional
       - tests

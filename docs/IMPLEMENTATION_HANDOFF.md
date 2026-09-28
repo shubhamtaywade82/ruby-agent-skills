@@ -6,10 +6,10 @@ The skill library, pattern library, corpus-quality audit, routing infrastructure
 
 Current inventory:
 
-- 87 skills
+- 92 skills
 - 443 implementation patterns
-- 451 evaluation cases
-- 87 system/contract tests
+- 460 evaluation cases
+- 88 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 124 evaluation files / 451 cases. Campaigns provide empirical coverage for 100 evaluation files; the remaining 24 files / 51 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
+The public evaluation corpus has 127 evaluation files / 460 cases. Campaigns provide empirical coverage for 100 evaluation files; the remaining 27 files / 60 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
 
 ## Release archive verification
 
@@ -80,7 +80,7 @@ Run the generated campaign on the machine that has Ollama access:
 
     ./routing-handoff/run-campaign.sh
 
-The campaign is 20 public cases × 3 repetitions = 60 model decisions.
+The campaign is 22 public cases × 3 repetitions = 66 model decisions.
 
 If interrupted, rerun the generated launcher. When a checkpoint exists, it automatically resumes verified completed repetitions.
 
@@ -225,4 +225,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 137. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.
+The repository-side implementation line is complete through Iteration 138. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model.

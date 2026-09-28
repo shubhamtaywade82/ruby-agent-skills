@@ -1,4 +1,4 @@
-version: 3
+version: 4
 id: skill-routing-public-v1
 evaluation_set: skill-routing
 source: repository-routing-contract-v1

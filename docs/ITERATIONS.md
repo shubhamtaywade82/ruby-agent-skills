@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 137 — Change Review and Adapted Engineering Disciplines
+> **Current milestone:** Iteration 138 — Tracker-Neutral Planning Layer
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -417,3 +417,7 @@ Split the 17 largest skills into an operating `SKILL.md` plus on-demand `referen
 ## Iteration 137 — Change Review and Adapted Engineering Disciplines
 
 Added the two-axis `change-review` skill and folded feedback-loop debugging, seam-first TDD, glossary and decision-record discipline, and deep-module design into existing skills, adapted from mattpocock/skills (MIT).
+
+## Iteration 138 — Tracker-Neutral Planning Layer
+
+Added five planning skills (interview, spec, tickets, wayfinder, tracker) over one backend-neutral item model, with local Markdown validated by a bundled script and GitHub Issues as the second backend.

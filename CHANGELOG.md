@@ -1,5 +1,26 @@
 # Changelog
 
+## Iteration 138 — Tracker-Neutral Planning Layer
+
+- Add five `planning` skills (87 → 92 skills) that turn ideas into decisions and work items before code:
+  - `planning-interview`: interviews the user in rounds over a design tree. Each round asks every question whose prerequisites are settled, each with a recommended answer. Facts come from the repository, never from the user, and nothing proceeds until the user confirms the summary. Glossary and decision records go through `ruby-domain-modeling`.
+  - `planning-spec`: writes a discussed feature up as a spec without re-interviewing. It hands missing decisions back to `planning-interview`, requires agreed test seams, names each boundary's owning skill and its data impact (migrations, backfills, constraints), and publishes as a `kind: spec` item.
+  - `planning-tickets`: slices a spec into vertical tracer-bullet tickets that fit one session, with prefactoring first, honest blocking edges, and expand–contract sequencing for wide refactors such as column renames. The user approves the breakdown before anything is published.
+  - `planning-wayfinder`: charts an effort larger than one session as a map of typed decision items (`research`, `interview`, `prototype`, `task`) toward a named destination. It resolves one decision per session and keeps unclear questions in `Not yet specified` and ruled-out work in `Out of scope`.
+  - `planning-tracker`: the shared, backend-neutral item model (`map`, `decision`, `spec`, `ticket`; open or closed; labels, parent, blocking edges, assignee) and its operations. Backend resolution order: the task's instruction, a `## Planning tracker` declaration in `AGENTS.md` or `CLAUDE.md`, an existing `docs/planning/` directory, then the user, with local Markdown as the fallback. `references/local-markdown.md` and `references/github.md` map every operation. GitHub writes need the user's confirmation unless the repository declaration authorizes them.
+- Add `skills/planning-tracker/scripts/tracker.rb`, a standard-library Ruby script for local trackers:
+  - `validate`: rejects bad front matter, id and file-name mismatches, unknown kinds or statuses, duplicate ids, missing parents or blockers, self-blocks, and blocking cycles;
+  - `list`: filters items;
+  - `frontier`: lists open, unclaimed, non-map items whose blockers are closed;
+  - `next-id`: gives the next free id.
+
+  It ships with the skill; the installer already hashes every skill file.
+- Route the planning layer in `router/ROUTING.md`: five matrix rows, and a composition from wayfinder through interview, spec, tickets, and implementation to `change-review`. `agent-workflow` points to it before its implementation loop.
+- Add two routing cases, `spec-then-tickets-not-wayfinder` and `multi-session-effort-needs-a-map`. The public routing campaign moves to version 4: 22 cases × 3 repetitions = 66 runs; `router/ROUTING_RELEASE.yml`, the routing docs, and the tests that pin the protocol are updated. No empirical campaign evidence was recorded under version 3.
+- Add three static-only evaluations: `planning-spec-contract`, `planning-tickets-contract`, and `planning-wayfinder-contract`, with 3 cases each (451 → 460 cases).
+- Add `test/planning_layer_system_test.rb` (88 system tests). It checks registration, routing, credit, and the evaluations, and runs `tracker.rb` against temporary trackers for the frontier, claims, parent filters, `next-id`, cycles, missing links, bad kinds, and id mismatches. Registered in `bin/validate`.
+- The skills are adapted, in this repository's words and with Rails slices and schema expand–contract, from `grilling`, `grill-with-docs`, `to-spec`, `to-tickets`, and `wayfinder` in https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock). That repository's tracker setup and labels are replaced by `planning-tracker`. Linear and Jira are not supported yet.
+
 ## Iteration 137 — Change Review and Adapted Engineering Disciplines
 
 - Add the `change-review` skill (86 → 87 skills). It reviews the diff between `HEAD` and a pinned fixed point on two separate axes: **Standards** (the repository's documented standards, `.rubocop.yml`, and the `## <Domain> changes` contract of each owning skill) and **Spec** (missing, extra, or wrong behavior against the originating issue or spec). It never merges or re-ranks findings across the axes, reports code smells only as labelled judgement calls that a repository standard overrides, and cites tool runs only when observed. `references/smell-baseline.md` lists the baseline smells with Ruby signs and fixes, plus Rails checks that are hard findings because a skill change contract owns them. Triggers avoid `code review`, which stays with `ruby-clean-code`.

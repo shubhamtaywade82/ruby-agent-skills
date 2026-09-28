@@ -87,6 +87,8 @@ If the direct implementation is simpler and satisfies the contract, prefer the d
 
 ## Implementation loop
 
+When the work is not yet decided or is larger than one session, plan first with the planning layer: `planning-interview` to settle decisions, `planning-spec` to write them up, `planning-tickets` to slice them, and `planning-wayfinder` for multi-session efforts, all through `planning-tracker`. Take one ticket per session.
+
 When a spec, ticket, or agreed plan exists:
 
 1. Agree the test seams (see `ruby-tdd-refactoring`), then work test-first in vertical slices at those seams.
