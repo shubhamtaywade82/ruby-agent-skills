@@ -89,7 +89,7 @@ skill_files.each do |path|
     errors << relative + ": name must be a non-empty string"
   else
     errors << relative + ": name must be <= 64 characters" if name.length > 64
-    errors << relative + ": name must use lowercase letters, numbers, and single hyphens" unless name.match?(/\\A[a-z0-9]+(?:-[a-z0-9]+)*\\z/)
+    errors << relative + ": name must use lowercase letters, numbers, and single hyphens" unless name.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/)
     errors << relative + ": name must match directory " + folder unless name == folder
     errors << relative + ": duplicate skill name " + name unless names.add?(name)
     errors << relative + ": missing from skill-manifest.yml" unless skills_manifest.key?(name)
