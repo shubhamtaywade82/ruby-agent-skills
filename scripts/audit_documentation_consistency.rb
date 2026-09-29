@@ -19,14 +19,13 @@ handoff_path = File.join(root, "docs", "IMPLEMENTATION_HANDOFF.md")
 iterations_path = File.join(root, "docs", "ITERATIONS.md")
 manifest_path = File.join(root, "skill-manifest.yml")
 routing_campaign_path = File.join(root, "router", "ROUTING_CAMPAIGN.yml")
-routing_campaign = if File.file?(routing_campaign_path)
-  YAML.safe_load(
+routing_campaign = {}
+if File.file?(routing_campaign_path)
+  routing_campaign = YAML.safe_load(
     File.read(routing_campaign_path, encoding: "UTF-8"),
     permitted_classes: [],
     aliases: false
   )
-else
-  {}
 end
 
 [readme_path, changelog_path, handoff_path, iterations_path, manifest_path].each do |path|
@@ -54,15 +53,14 @@ handoff_milestones = handoff.scan(/complete through Iteration (\d+)/).flatten.ma
 
 routing_execution = routing_campaign.fetch("execution", {})
 routing_case_file = File.join(root, routing_campaign.fetch("cases_file", ""))
-routing_case_count = if File.file?(routing_case_file)
+routing_case_count = 0
+if File.file?(routing_case_file)
   routing_cases = YAML.safe_load(
     File.read(routing_case_file, encoding: "UTF-8"),
     permitted_classes: [],
     aliases: false
   )
-  Array(routing_cases.fetch("cases")).length
-else
-  0
+  routing_case_count = Array(routing_cases.fetch("cases")).length
 end
 routing_repetitions = routing_execution.fetch("repetitions", 0).to_i
 routing_expected_runs = routing_case_count * routing_repetitions
