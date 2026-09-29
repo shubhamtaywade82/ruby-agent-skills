@@ -52,6 +52,15 @@ class DocumentationConsistencySystemTest < Minitest::Test
     end
   end
 
+  def test_documentation_audit_detects_stale_routing_campaign_run_count
+    stderr, status = audit_with(
+      "docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub("23 public cases × 3 repetitions = 69", "14 public cases × 3 repetitions = 42") }
+    )
+
+    refute status.success?
+    assert_includes stderr, "public routing campaign run-count documentation drift"
+  end
+
   def test_documentation_audit_detects_stale_handoff_inventory
     stderr, status = audit_with("docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub(/\d+ evaluation cases/, "1 evaluation cases") })
 
