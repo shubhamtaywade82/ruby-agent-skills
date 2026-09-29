@@ -6,6 +6,7 @@
 - Enforce skill names at most 64 characters using lowercase letters, numbers, and single hyphens; descriptions must be non-empty strings of at most 1024 characters; compatibility is optional but must be a non-empty string of at most 500 characters when present.
 - Validate optional metadata as a string-to-string mapping and reject non-string `allowed-tools` values.
 - Add `test/skill_frontmatter_spec_system_test.rb` and wire it into `bin/validate`, increasing the dedicated system/contract test inventory from 92 to 93.
+- Bind the documented public routing campaign run count to `router/ROUTING_CAMPAIGN.yml` in `scripts/audit_documentation_consistency.rb`, preventing stale 42-run handoff instructions when the campaign corpus changes.
 - This is a repository-spec hardening change only; no model-quality or benchmark outcome is claimed.
 
 ## Iteration 143 — Consumer-Side Change Verification
