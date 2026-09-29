@@ -134,4 +134,6 @@ ruby -I"$ROOT/test" "$ROOT/test/corpus_quality_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/benchmark_fixture_controls_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/eval_runner_encoding_system_test.rb"
 
+ruby -I"$ROOT/test" "$ROOT/test/skill_frontmatter_spec_system_test.rb"
+
 ruby -I"$ROOT/test" "$ROOT/test/change_verifier_system_test.rb"
