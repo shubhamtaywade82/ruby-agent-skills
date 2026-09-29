@@ -175,5 +175,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       ]
       assert(messages.all? { |message| stdout.include?(message) }, stdout)
     end
-  end  
+  end
+
+  # rubocop:enable Metrics/ClassLength, Metrics/MethodLength, Metrics/BlockLength
 end
