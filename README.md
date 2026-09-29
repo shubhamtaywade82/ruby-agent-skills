@@ -107,7 +107,7 @@ skills/rails-active-record/
 | Skills | **93** |
 | Implementation patterns | **443** |
 | Evaluation cases | **476** |
-| Dedicated system/contract tests | **91** |
+| Dedicated system/contract tests | **92** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -579,6 +579,20 @@ Agents should not guess Rails behavior when the repository can provide the versi
 
 ---
 
+# Change verification
+
+`bin/validate` checks this pack. To check a change in **your** project, run:
+
+```bash
+ruby bin/verify-change /path/to/app --base origin/main --strict --out verify-change.json
+```
+
+It runs the project's own RuboCop (changed files), tests, Brakeman, bundler-audit, and `zeitwerk:check`, plus deterministic checks (Gemfile/lockfile sync, migration/schema sync, tests changed alongside source), and writes an evidence report with git provenance, per-check status, commands, exit codes, and output tails. It is provider-neutral, uses only the standard library, and never reports a check it could not run as passed: the overall status is `pass`, `fail`, or `incomplete`, and `--strict` turns `incomplete` into a failing exit code for CI.
+
+It also lists the owning skills whose change contract applies to the changed paths. That is a routing hint, not a verification of adherence. See `docs/VERIFY_CHANGE.md`.
+
+---
+
 # Repository validation
 
 The repository has one integrated validation entry point:
@@ -600,7 +614,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **93 skills**, **443 implementation patterns**, **476 evaluation cases**, and **91 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **93 skills**, **443 implementation patterns**, **476 evaluation cases**, and **92 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
@@ -642,6 +656,7 @@ ruby-agent-skills/
 │   ├── benchmark
 │   ├── agent-benchmark
 │   ├── runtime-profile
+│   ├── verify-change
 │   └── ...
 ├── AGENTS.md
 ├── skill-manifest.yml

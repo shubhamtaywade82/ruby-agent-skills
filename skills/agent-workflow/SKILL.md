@@ -165,6 +165,8 @@ Run:
 3. affected broader tests/CI-equivalent checks
 4. final diff inspection
 
+In a consuming Ruby/Rails project, `ruby bin/verify-change --base <base-ref> --strict` runs RuboCop, tests, Brakeman, bundler-audit, and `zeitwerk:check` as applicable and reports each check's status; report `overall.status`, and treat `incomplete` as not verified. See `docs/VERIFY_CHANGE.md`.
+
 If a check cannot be run, state that instead of inferring success.
 
 ## Source foundation

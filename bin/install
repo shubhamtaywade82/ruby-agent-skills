@@ -186,12 +186,16 @@ puts JSON.generate(paths.map { |path|
 })
 ' "$REPO_DIR")"
 
-STACK_MINIMALITY_TOOL_SHA256=""
-STACK_MINIMALITY_TOOL_METADATA="[]"
-if [[ -f "$REPO_DIR/bin/stack-minimality" ]]; then
-  STACK_MINIMALITY_TOOL_SHA256="$(sha256_file "$REPO_DIR/bin/stack-minimality")"
-  STACK_MINIMALITY_TOOL_METADATA='[{"path":"bin/stack-minimality","sha256":"'"$STACK_MINIMALITY_TOOL_SHA256"'"}]'
-fi
+# Executables (and the library files they load) installed under
+# .ruby-agent-skills/ and hash-verified by skill-pack-verify. Only files that
+# exist in the source are installed, so older sources still install.
+TOOL_PATHS="bin/stack-minimality bin/verify-change lib/ruby_agent_skills/change_verifier.rb lib/ruby_agent_skills/runtime_profile.rb"
+TOOL_METADATA="$(ruby -rdigest -rjson -e '
+root = ARGV.shift
+puts JSON.generate(ARGV.select { |path| File.file?(File.join(root, path)) }.map { |path|
+  {"path" => path, "sha256" => Digest::SHA256.file(File.join(root, path)).hexdigest}
+})
+' "$REPO_DIR" $TOOL_PATHS)"
 
 PATTERN_FILE_HASHES="$(ruby -rdigest -rjson -e '
 root = ARGV.fetch(0)
@@ -231,8 +235,13 @@ cp "$REPO_DIR/router/ROUTING.md" "$STAGE/.ruby-agent-skills/ROUTING.md"
 cp "$REPO_DIR/AGENTS.md" "$STAGE/.ruby-agent-skills/AGENTS.md"
 cp "$REPO_DIR/docs/SKILL_CONTRACT.md" "$STAGE/.ruby-agent-skills/docs/SKILL_CONTRACT.md"
 cp "$REPO_DIR/bin/skill-pack-verify" "$STAGE/.ruby-agent-skills/skill-pack-verify"
-if [[ -f "$REPO_DIR/bin/stack-minimality" ]]; then
-  cp "$REPO_DIR/bin/stack-minimality" "$STAGE/.ruby-agent-skills/bin/stack-minimality"
+for tool in $TOOL_PATHS; do
+  [[ -f "$REPO_DIR/$tool" ]] || continue
+  mkdir -p "$(dirname "$STAGE/.ruby-agent-skills/$tool")"
+  cp "$REPO_DIR/$tool" "$STAGE/.ruby-agent-skills/$tool"
+done
+if [[ -f "$REPO_DIR/docs/VERIFY_CHANGE.md" ]]; then
+  cp "$REPO_DIR/docs/VERIFY_CHANGE.md" "$STAGE/.ruby-agent-skills/docs/VERIFY_CHANGE.md"
 fi
 
 cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
@@ -248,7 +257,7 @@ cat > "$STAGE/.ruby-agent-skills/INSTALLATION.json" <<EOF
     "routing_contract_sha256": "$ROUTING_SHA256",
     "skill_files": $SKILL_FILE_HASHES,
     "pattern_files": $PATTERN_FILE_HASHES,
-    "tools": $STACK_MINIMALITY_TOOL_METADATA
+    "tools": $TOOL_METADATA
   },
   "inventory": {
     "skills": $SKILL_COUNT,

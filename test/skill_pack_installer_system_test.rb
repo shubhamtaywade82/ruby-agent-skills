@@ -33,6 +33,12 @@ class SkillPackInstallerSystemTest < Minitest::Test
     File.write(File.join(dir, "AGENTS.md"), "# Agents\n", encoding: "UTF-8")
     FileUtils.cp(VERIFIER, File.join(dir, "bin", "skill-pack-verify"))
     File.write(File.join(dir, "bin", "stack-minimality"), "#!/usr/bin/env ruby\nputs \"ok\"\n", encoding: "UTF-8")
+    FileUtils.mkdir_p(File.join(dir, "lib", "ruby_agent_skills"))
+    FileUtils.cp(File.join(ROOT, "bin", "verify-change"), File.join(dir, "bin", "verify-change"))
+    %w[change_verifier runtime_profile].each do |name|
+      FileUtils.cp(File.join(ROOT, "lib", "ruby_agent_skills", "#{name}.rb"),
+                   File.join(dir, "lib", "ruby_agent_skills", "#{name}.rb"))
+    end
     File.write(
       File.join(dir, "skill-manifest.yml"),
       <<~YAML,
@@ -204,6 +210,28 @@ class SkillPackInstallerSystemTest < Minitest::Test
     _verify_out, verify_err, verify_status = Open3.capture3(
       RbConfig.ruby, VERIFIER, "--root", target, chdir: ROOT
     )
+
+    refute verify_status.success?
+    assert_includes verify_err, "tool SHA-256 mismatch"
+  end
+
+  def test_installed_verify_change_runs_from_the_pack_and_is_hash_verified
+    source = build_source
+    project = Dir.mktmpdir("ruby-agent-skills-project")
+    out, err, status = install(source, project)
+
+    assert status.success?, "#{out}\n#{err}"
+
+    pack = File.join(project, ".agents", "skills", ".ruby-agent-skills")
+    listed, list_status = Open3.capture2(RbConfig.ruby, File.join(pack, "bin", "verify-change"), "--list-checks")
+    metadata = JSON.parse(File.read(File.join(pack, "INSTALLATION.json"), encoding: "UTF-8"))
+    hashed = metadata.dig("integrity", "tools").map { |tool| tool.fetch("path") }
+
+    assert list_status.success?
+    assert_includes listed.split, "rubocop"
+    assert_includes hashed, "lib/ruby_agent_skills/change_verifier.rb"
+    File.open(File.join(pack, "lib", "ruby_agent_skills", "change_verifier.rb"), "a") { |file| file.write("#\n") }
+    _out, verify_err, verify_status = Open3.capture3(RbConfig.ruby, VERIFIER, "--root", File.dirname(pack), chdir: ROOT)
 
     refute verify_status.success?
     assert_includes verify_err, "tool SHA-256 mismatch"

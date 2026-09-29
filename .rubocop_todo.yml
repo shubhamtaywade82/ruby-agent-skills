@@ -109,6 +109,7 @@ Layout/LineLength:
     - 'scripts/verify_zeitwerk_eval.rb'
     - 'test/benchmark_fixture_controls_system_test.rb'
     - 'test/benchmark_quality_system_test.rb'
+    - 'test/change_verifier_system_test.rb'
     - 'test/corpus_quality_system_test.rb'
     - 'test/documentation_consistency_system_test.rb'
     - 'test/rails_action_cable_system_test.rb'
@@ -309,6 +310,7 @@ Metrics/AbcSize:
     - 'bin/routing-release-bundle-verify'
     - 'bin/skill-pack-verify'
     - 'bin/stack-minimality'
+    - 'lib/ruby_agent_skills/change_verifier.rb'
     - 'lib/ruby_agent_skills/eval_runner.rb'
     - 'lib/ruby_agent_skills/fixture_test_run.rb'
     - 'lib/ruby_agent_skills/runtime_profile.rb'
@@ -316,6 +318,7 @@ Metrics/AbcSize:
     - 'scripts/verify_training_eval.rb'
     - 'test/benchmark_fixture_controls_system_test.rb'
     - 'test/benchmark_quality_system_test.rb'
+    - 'test/change_verifier_system_test.rb'
     - 'test/documentation_consistency_system_test.rb'
     - 'test/rails_action_cable_system_test.rb'
     - 'test/rails_action_controller_system_test.rb'
@@ -390,6 +393,7 @@ Metrics/BlockLength:
     - 'bin/routing-history-verify'
     - 'bin/routing-model-matrix-campaign'
     - 'bin/routing-model-matrix-evidence-verify'
+    - 'bin/verify-change'
     - 'scripts/audit_benchmark_quality.rb'
     - 'scripts/build_release_archive.rb'
     - 'scripts/validate_evals.rb'
@@ -419,9 +423,11 @@ Metrics/BlockNesting:
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
+    - 'lib/ruby_agent_skills/change_verifier.rb'
     - 'lib/ruby_agent_skills/eval_runner.rb'
     - 'lib/ruby_agent_skills/skill_pack.rb'
     - 'test/benchmark_fixture_controls_system_test.rb'
+    - 'test/change_verifier_system_test.rb'
     - 'test/rails_associations_system_test.rb'
     - 'test/rails_authentication_system_test.rb'
     - 'test/rails_authorization_system_test.rb'
@@ -444,6 +450,7 @@ Metrics/CyclomaticComplexity:
     - 'bin/routing-eval'
     - 'bin/routing-release-bundle-verify'
     - 'bin/stack-minimality'
+    - 'lib/ruby_agent_skills/change_verifier.rb'
     - 'lib/ruby_agent_skills/eval_runner.rb'
     - 'lib/ruby_agent_skills/runtime_profile.rb'
     - 'scripts/audit_provenance_hygiene.rb'
@@ -462,6 +469,7 @@ Metrics/MethodLength:
     - 'bin/skill-pack-verify'
     - 'bin/stack-minimality'
     - 'lib/ruby_agent_skills/agent_adapter.rb'
+    - 'lib/ruby_agent_skills/change_verifier.rb'
     - 'lib/ruby_agent_skills/eval_runner.rb'
     - 'lib/ruby_agent_skills/fixture_test_run.rb'
     - 'lib/ruby_agent_skills/runtime_profile.rb'
@@ -469,6 +477,7 @@ Metrics/MethodLength:
     - 'scripts/audit_provenance_hygiene.rb'
     - 'test/benchmark_fixture_controls_system_test.rb'
     - 'test/benchmark_quality_system_test.rb'
+    - 'test/change_verifier_system_test.rb'
     - 'test/corpus_quality_system_test.rb'
     - 'test/documentation_consistency_system_test.rb'
     - 'test/provenance_hygiene_system_test.rb'
@@ -544,6 +553,7 @@ Metrics/ParameterLists:
   Exclude:
     - 'bin/routing-eval'
     - 'bin/routing-experiment'
+    - 'lib/ruby_agent_skills/change_verifier.rb'
     - 'lib/ruby_agent_skills/eval_runner.rb'
 
 # Offense count: 9
@@ -554,6 +564,7 @@ Metrics/PerceivedComplexity:
     - 'bin/routing-eval'
     - 'bin/routing-release-bundle-verify'
     - 'bin/stack-minimality'
+    - 'lib/ruby_agent_skills/change_verifier.rb'
     - 'lib/ruby_agent_skills/eval_runner.rb'
     - 'lib/ruby_agent_skills/runtime_profile.rb'
     - 'scripts/audit_provenance_hygiene.rb'
@@ -649,6 +660,7 @@ Minitest/AssertWithExpectedArgument:
 Minitest/MultipleAssertions:
   Exclude:
     - 'test/benchmark_fixture_controls_system_test.rb'
+    - 'test/change_verifier_system_test.rb'
     - 'test/corpus_quality_system_test.rb'
     - 'test/documentation_consistency_system_test.rb'
     - 'test/rails_action_cable_system_test.rb'
