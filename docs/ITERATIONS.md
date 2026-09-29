@@ -446,4 +446,4 @@ Added `bin/verify-change`, a provider-neutral verifier that runs a downstream pr
 
 ## Iteration 144 — Agent Skills Frontmatter Contract Validation
 
-Iteration 144 extends skill validation to enforce the current Agent Skills frontmatter contract for name, description, optional compatibility/metadata, and allowed-tools typing. A dedicated system test exercises valid and invalid metadata, including length limits and naming constraints, and is included in the repository validation gate.
+Iteration 144 extends skill validation to enforce the current Agent Skills frontmatter contract for name, description, optional compatibility/metadata, and allowed-tools typing. A dedicated system test exercises valid and invalid metadata, including length limits and naming constraints, and is included in the repository validation gate. The documentation audit also binds the public routing campaign's documented run count to its manifest, preventing stale handoff cardinality.
