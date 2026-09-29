@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 144 — Agent Skills Frontmatter Contract Validation
+
+- Extend `scripts/validate_skills.rb` to enforce the current Agent Skills frontmatter constraints for `name`, `description`, `compatibility`, `metadata`, and `allowed-tools`.
+- Enforce skill names at most 64 characters using lowercase letters, numbers, and single hyphens; descriptions must be non-empty strings of at most 1024 characters; compatibility is optional but must be a non-empty string of at most 500 characters when present.
+- Validate optional metadata as a string-to-string mapping and reject non-string `allowed-tools` values.
+- Add `test/skill_frontmatter_spec_system_test.rb` and wire it into `bin/validate`, increasing the dedicated system/contract test inventory from 92 to 93.
+- This is a repository-spec hardening change only; no model-quality or benchmark outcome is claimed.
+
 ## Iteration 143 — Consumer-Side Change Verification
 
 - Add `bin/verify-change` (`RubyAgentSkills::ChangeVerifier`): verifies a change in a downstream Ruby/Rails project and writes a JSON (or Markdown) evidence report. `bin/validate` validates this pack; nothing verified a consuming project's change, so an agent's "done" could not be checked.
