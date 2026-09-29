@@ -238,7 +238,8 @@ end
 
 puts "Validated " + skill_files.length.to_s + " skills."
 puts "Manifest contains " + skills_manifest.length.to_s + " skills."
-puts "Skill contract: frontmatter + activation + inspection + review + verification + source + decision/failure guidance"\nputs "Agent Skills frontmatter: name <= 64 chars; description <= 1024 chars; compatibility <= 500 chars"
+puts "Skill contract: frontmatter + activation + inspection + review + verification + source + decision/failure guidance"
+puts "Agent Skills frontmatter: name <= 64 chars; description <= 1024 chars; compatibility <= 500 chars"
 puts "Size policy: SKILL.md <= #{MAX_SKILL_LINES} lines and <= ~#{MAX_SKILL_TOKENS} estimated tokens; " \
      "#{reference_count} references, one level deep, each <= #{MAX_REFERENCE_LINES} lines"
 unless above_target.empty?
