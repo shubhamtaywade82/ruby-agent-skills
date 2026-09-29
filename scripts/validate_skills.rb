@@ -81,14 +81,41 @@ skill_files.each do |path|
 
   name = metadata["name"]
   description = metadata["description"]
+  compatibility = metadata["compatibility"]
+  metadata_field = metadata["metadata"]
+  allowed_tools = metadata["allowed-tools"]
 
-  errors << relative + ": missing name" if name.to_s.empty?
-  errors << relative + ": missing description" if description.to_s.empty?
-  errors << relative + ": name must match directory " + folder unless name == folder
-
-  if name && !name.to_s.empty?
+  if !name.is_a?(String) || name.strip.empty?
+    errors << relative + ": name must be a non-empty string"
+  else
+    errors << relative + ": name must be <= 64 characters" if name.length > 64
+    errors << relative + ": name must use lowercase letters, numbers, and single hyphens" unless name.match?(/\\A[a-z0-9]+(?:-[a-z0-9]+)*\\z/)
+    errors << relative + ": name must match directory " + folder unless name == folder
     errors << relative + ": duplicate skill name " + name unless names.add?(name)
     errors << relative + ": missing from skill-manifest.yml" unless skills_manifest.key?(name)
+  end
+
+  if !description.is_a?(String) || description.strip.empty?
+    errors << relative + ": description must be a non-empty string"
+  elsif description.length > 1_024
+    errors << relative + ": description must be <= 1024 characters"
+  end
+
+  if metadata.key?("compatibility")
+    unless compatibility.is_a?(String) && !compatibility.strip.empty?
+      errors << relative + ": compatibility must be a non-empty string"
+    end
+    errors << relative + ": compatibility must be <= 500 characters" if compatibility.is_a?(String) && compatibility.length > 500
+  end
+
+  if metadata.key?("metadata")
+    valid_metadata = metadata_field.is_a?(Hash) &&
+                     metadata_field.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
+    errors << relative + ": metadata must be a mapping of string keys to string values" unless valid_metadata
+  end
+
+  if metadata.key?("allowed-tools") && !allowed_tools.is_a?(String)
+    errors << relative + ": allowed-tools must be a string"
   end
 
   body = text[(closing + 5)..] || ""
@@ -206,7 +233,7 @@ end
 
 puts "Validated " + skill_files.length.to_s + " skills."
 puts "Manifest contains " + skills_manifest.length.to_s + " skills."
-puts "Skill contract: frontmatter + activation + inspection + review + verification + source + decision/failure guidance"
+puts "Skill contract: frontmatter + activation + inspection + review + verification + source + decision/failure guidance"\nputs "Agent Skills frontmatter: name <= 64 chars; description <= 1024 chars; compatibility <= 500 chars"
 puts "Size policy: SKILL.md <= #{MAX_SKILL_LINES} lines and <= ~#{MAX_SKILL_TOKENS} estimated tokens; " \
      "#{reference_count} references, one level deep, each <= #{MAX_REFERENCE_LINES} lines"
 unless above_target.empty?
