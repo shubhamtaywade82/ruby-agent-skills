@@ -52,7 +52,11 @@ SHIPPED_PATHS = %w[
   bin/skill-pack-doctor
   bin/skill-pack-verify
   bin/stack-minimality
+  bin/verify-change
   docs/SKILL_CONTRACT.md
+  docs/VERIFY_CHANGE.md
+  lib/ruby_agent_skills/change_verifier.rb
+  lib/ruby_agent_skills/runtime_profile.rb
   router/ROUTING.md
   skill-manifest.yml
 ].freeze

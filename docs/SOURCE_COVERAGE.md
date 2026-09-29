@@ -174,6 +174,16 @@ Operational coverage:
 - `docs/RUNTIME_PROFILE.md` — evidence model and agent workflow
 - `test/runtime_profile_test.rb` — deterministic resolution/conflict tests
 
+## Change verification
+
+`bin/verify-change` is the consumer-side verifier: it checks a change in a downstream project rather than the skill pack.
+
+Operational coverage:
+- `lib/ruby_agent_skills/change_verifier.rb` — change detection, checks, runner, evidence report, Markdown rendering
+- `bin/verify-change` — CLI and exit-code contract
+- `docs/VERIFY_CHANGE.md` — checks, statuses, report schema, CI wiring, limits
+- `test/change_verifier_system_test.rb` — detection, each check, failure and skip semantics, timeouts, CLI
+
 ## Ruby concurrency
 
 The concurrency layer adds:

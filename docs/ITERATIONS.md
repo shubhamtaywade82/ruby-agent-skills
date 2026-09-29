@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 142 — Training-Corpus Review Heuristics, Regression-Surface Planning, and Two New Algorithm Benchmarks
+> **Current milestone:** Iteration 143 — Consumer-Side Change Verification
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -437,3 +437,7 @@ Fixed `SkillPack#resolve_pattern` raising `ambiguous pattern` for a pattern inte
 ## Iteration 142 — Training-Corpus Review Heuristics, Regression-Surface Planning, and Two New Algorithm Benchmarks
 
 Folded reviewer heuristics from a personal Ruby/Rails training corpus into `change-review` and `rails-test-engineering`, added a regression-surface step to `planning-spec`, and added two `ruby-training` algorithm benchmarks (`bubble-sort`, `equilibrium-index`) continuing the corpus's `allerin-ruby-set-*` fixtures.
+
+## Iteration 143 — Consumer-Side Change Verification
+
+Added `bin/verify-change`, a provider-neutral verifier that runs a downstream project's own gates (RuboCop, tests, Brakeman, bundler-audit, `zeitwerk:check`) plus deterministic structural checks and writes an evidence report that never reports an unrun check as passed. It ships in the installer and the release archive.

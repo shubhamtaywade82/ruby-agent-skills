@@ -1,5 +1,17 @@
 # Changelog
 
+## Iteration 143 — Consumer-Side Change Verification
+
+- Add `bin/verify-change` (`RubyAgentSkills::ChangeVerifier`): verifies a change in a downstream Ruby/Rails project and writes a JSON (or Markdown) evidence report. `bin/validate` validates this pack; nothing verified a consuming project's change, so an agent's "done" could not be checked.
+- Nine checks: `runtime_profile`, `dependency_lock_sync`, `migration_integrity`, `test_presence`, `rubocop` (changed files only), `tests` (rspec, `bin/rails test`, or `--test-command`), `brakeman`, `bundler_audit`, `zeitwerk`. Tools resolve from the project's bundle or `PATH`; a missing tool is `skipped`, never `pass`.
+- Overall status is `pass`, `fail`, or `incomplete`. Exit codes: 0, 1 (failed check), 2 (usage), 3 (`incomplete` under `--strict`).
+- Change detection from git (working tree versus `HEAD`, optionally `--base REF`), or an explicit `--files` list. The report records HEAD, branch, dirty state, per-check command, exit code, duration, and output tail (`--no-output` omits tails).
+- Commands run as argv arrays with no shell, a per-check timeout that kills the process group, and a stripped Bundler environment. Changed paths are passed to RuboCop after `--`.
+- `contract_pointers` names the owning skills whose change contract applies to the changed paths; it is a routing hint and does not verify adherence. A test asserts every pointed-at skill exists.
+- `bin/install` and the release archive ship the tool and its two library files; `bin/skill-pack-verify` hash-checks them. `skill-manifest.yml` registers `installation.change_verifier`.
+- Add `docs/VERIFY_CHANGE.md` (usage, checks, statuses, report schema, CI and agent wiring, limits) and `test/change_verifier_system_test.rb` (91 → 92 system tests).
+- Not done: no measured effect on agent behavior is claimed, frontend code is not verified, and the `tests` check always runs the full suite (ceiling recorded in the docs).
+
 ## Iteration 142 — Training-Corpus Review Heuristics, Regression-Surface Planning, and Two New Algorithm Benchmarks
 
 - Fold reviewer heuristics from a personal Ruby/Rails training corpus into the skills that already own that boundary, rather than a new parallel skill tree: `change-review`'s smell baseline gains four judgement-call smells (redundant context argument, control flow via exit/abort, validation glued to parsing, an unbounded concern) plus an explicit "argument count/method length/line length are heuristics, not hard rules — defer to the repository's own linter" note; `rails-test-engineering`'s RSpec reference gains the `let` vs `let!` distinction.

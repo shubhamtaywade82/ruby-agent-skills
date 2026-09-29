@@ -18,7 +18,7 @@ Framework- and domain-specific rules (Active Record, Action Controller, Action C
 8. **Run security verification** for security-sensitive Ruby/Rails changes, using the configured scanners and abuse-case tests.
 9. **Review the change** for correctness, simplicity, architecture, security, performance, and scope.
 10. **Simplify** if an abstraction does not earn its complexity.
-11. **Verify** with the repository's validators, focused tests, and applicable CI-equivalent checks.
+11. **Verify** with the repository's validators, focused tests, and applicable CI-equivalent checks. In a consuming Ruby/Rails project, `bin/verify-change` runs the project's gates and emits an evidence report (`docs/VERIFY_CHANGE.md`).
 12. **Report evidence**, not assumptions. Never claim a test, benchmark, CI run, or deployment passed unless it was actually observed.
 
 ## Context rules

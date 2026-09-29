@@ -5,6 +5,7 @@ installation:
   installer: bin/install
   verifier: bin/skill-pack-verify
   doctor: bin/skill-pack-doctor
+  change_verifier: bin/verify-change
   metadata: .ruby-agent-skills/INSTALLATION.json
 
 defaults:
