@@ -173,7 +173,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
         "license must be a string",
         "allowed-tools must be a string"
       ]
-      assert(messages.all? { |message| stdout.include?(message) }, stdout)
+      assert_equal(true, messages.all? { |message| stdout.include?(message) }, stdout)
     end
   end
 
