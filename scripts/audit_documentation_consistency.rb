@@ -20,7 +20,11 @@ iterations_path = File.join(root, "docs", "ITERATIONS.md")
 manifest_path = File.join(root, "skill-manifest.yml")
 routing_campaign_path = File.join(root, "router", "ROUTING_CAMPAIGN.yml")
 routing_campaign = if File.file?(routing_campaign_path)
-  YAML.safe_load(File.read(routing_campaign_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  YAML.safe_load(
+    File.read(routing_campaign_path, encoding: "UTF-8"),
+    permitted_classes: [],
+    aliases: false
+  )
 else
   {}
 end
@@ -51,7 +55,11 @@ handoff_milestones = handoff.scan(/complete through Iteration (\d+)/).flatten.ma
 routing_execution = routing_campaign.fetch("execution", {})
 routing_case_file = File.join(root, routing_campaign.fetch("cases_file", ""))
 routing_case_count = if File.file?(routing_case_file)
-  routing_cases = YAML.safe_load(File.read(routing_case_file, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  routing_cases = YAML.safe_load(
+    File.read(routing_case_file, encoding: "UTF-8"),
+    permitted_classes: [],
+    aliases: false
+  )
   Array(routing_cases.fetch("cases")).length
 else
   0
