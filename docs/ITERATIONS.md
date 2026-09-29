@@ -10,12 +10,6 @@ Iterations 101 and later summarize in one line what `CHANGELOG.md` records in fu
 
 ---
 
-## Iteration 144 — Agent Skills Frontmatter Contract Validation
-
-Iteration 144 extends skill validation to enforce the current Agent Skills frontmatter contract for name, description, optional compatibility/metadata, and allowed-tools typing. A dedicated system test exercises valid and invalid metadata, including length limits and naming constraints, and is included in the repository validation gate.
-
----
-
 ## Iteration 41 — Rails Encryption and Credentials Engineering
 
 Iteration 41 adds explicit contracts for Rails encrypted credentials, master-key delivery, environment-specific credential selection, secret redaction, Active Record Encryption, deterministic encrypted queries, storage sizing, encrypted-data migration, key rotation, and synthetic-secret testing.
@@ -447,3 +441,9 @@ Folded reviewer heuristics from a personal Ruby/Rails training corpus into `chan
 ## Iteration 143 — Consumer-Side Change Verification
 
 Added `bin/verify-change`, a provider-neutral verifier that runs a downstream project's own gates (RuboCop, tests, Brakeman, bundler-audit, `zeitwerk:check`) plus deterministic structural checks and writes an evidence report that never reports an unrun check as passed. It ships in the installer and the release archive.
+
+---
+
+## Iteration 144 — Agent Skills Frontmatter Contract Validation
+
+Iteration 144 extends skill validation to enforce the current Agent Skills frontmatter contract for name, description, optional compatibility/metadata, and allowed-tools typing. A dedicated system test exercises valid and invalid metadata, including length limits and naming constraints, and is included in the repository validation gate.
