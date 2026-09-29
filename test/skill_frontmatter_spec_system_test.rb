@@ -158,6 +158,8 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       description: "A valid description."
       metadata:
         owner: 123
+      license:
+        - MIT
       allowed-tools:
         - Read
     YAML
@@ -165,6 +167,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
 
       refute_predicate status, :success?
       assert_includes stdout, "metadata must be a mapping of string keys to string values"
+      assert_includes stdout, "license must be a string"
       assert_includes stdout, "allowed-tools must be a string"
     end
   end
