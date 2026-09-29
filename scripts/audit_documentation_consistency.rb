@@ -18,6 +18,12 @@ changelog_path = File.join(root, "CHANGELOG.md")
 handoff_path = File.join(root, "docs", "IMPLEMENTATION_HANDOFF.md")
 iterations_path = File.join(root, "docs", "ITERATIONS.md")
 manifest_path = File.join(root, "skill-manifest.yml")
+routing_campaign_path = File.join(root, "router", "ROUTING_CAMPAIGN.yml")
+routing_campaign = if File.file?(routing_campaign_path)
+  YAML.safe_load(File.read(routing_campaign_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+else
+  {}
+end
 
 [readme_path, changelog_path, handoff_path, iterations_path, manifest_path].each do |path|
   abort "missing documentation audit input: #{path}" unless File.file?(path)
@@ -42,6 +48,17 @@ milestone = iterations[/Current milestone:\*\* Iteration (\d+)/, 1].to_i
 iteration_numbers = iterations.scan(/^## Iteration (\d+) /).flatten.map(&:to_i)
 handoff_milestones = handoff.scan(/complete through Iteration (\d+)/).flatten.map(&:to_i).uniq
 
+routing_execution = routing_campaign.fetch("execution", {})
+routing_case_file = File.join(root, routing_campaign.fetch("cases_file", ""))
+routing_case_count = if File.file?(routing_case_file)
+  routing_cases = YAML.safe_load(File.read(routing_case_file, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  Array(routing_cases.fetch("cases")).length
+else
+  0
+end
+routing_repetitions = routing_execution.fetch("repetitions", 0).to_i
+routing_expected_runs = routing_case_count * routing_repetitions
+
 errors = []
 errors << "docs/ITERATIONS.md current milestone #{milestone} != latest changelog #{latest_changelog}" unless milestone == latest_changelog
 errors << "docs/ITERATIONS.md has no section for Iteration #{latest_changelog}" unless iteration_numbers.include?(latest_changelog)
@@ -50,6 +67,12 @@ errors << "docs/ITERATIONS.md sections are not in ascending order" unless iterat
 readme_iteration_lines = readme.lines.each_with_index.select { |line, _| line.match?(/\bIteration \d+/) }.map { |_, index| index + 1 }
 errors << "README.md mentions iterations on lines #{readme_iteration_lines.join(", ")}; move history to docs/ITERATIONS.md" unless readme_iteration_lines.empty?
 errors << "IMPLEMENTATION_HANDOFF.md status #{handoff_milestones.inspect} != latest changelog #{latest_changelog}" unless handoff_milestones == [latest_changelog]
+
+if routing_expected_runs.positive?
+  documented_routing = handoff[/The campaign is (\d+) public cases × (\d+) repetitions = (\d+) model decisions\./]
+  expected_routing = "The campaign is #{routing_case_count} public cases × #{routing_repetitions} repetitions = #{routing_expected_runs} model decisions."
+  errors << "public routing campaign run-count documentation drift: #{documented_routing.inspect} != #{expected_routing.inspect}" unless documented_routing == expected_routing
+end
 
 # AGENTS.md is loaded on every task, so it holds only the repository-wide
 # operating contract. Domain rules live in the owning skill's
