@@ -6,6 +6,8 @@ require "tmpdir"
 require "fileutils"
 
 class SkillFrontmatterSpecSystemTest < Minitest::Test
+  # The fixture builder is intentionally verbose because this is a system-contract test.
+  # rubocop:disable Metrics/ClassLength, Metrics/MethodLength, Metrics/BlockLength
   ROOT = File.expand_path("..", __dir__)
 
   def with_skill(frontmatter)
@@ -166,9 +168,12 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       stdout, _stderr, status = run_validator(root)
 
       refute_predicate status, :success?
-      assert_includes stdout, "metadata must be a mapping of string keys to string values"
-      assert_includes stdout, "license must be a string"
-      assert_includes stdout, "allowed-tools must be a string"
+      messages = [
+        "metadata must be a mapping of string keys to string values",
+        "license must be a string",
+        "allowed-tools must be a string"
+      ]
+      assert(messages.all? { |message| stdout.include?(message) }, stdout)
     end
-  end
+  end  
 end
