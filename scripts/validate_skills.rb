@@ -81,6 +81,7 @@ skill_files.each do |path|
 
   name = metadata["name"]
   description = metadata["description"]
+  license = metadata["license"]
   compatibility = metadata["compatibility"]
   metadata_field = metadata["metadata"]
   allowed_tools = metadata["allowed-tools"]
@@ -99,6 +100,10 @@ skill_files.each do |path|
     errors << relative + ": description must be a non-empty string"
   elsif description.length > 1_024
     errors << relative + ": description must be <= 1024 characters"
+  end
+
+  if metadata.key?("license") && !license.is_a?(String)
+    errors << relative + ": license must be a string"
   end
 
   if metadata.key?("compatibility")
