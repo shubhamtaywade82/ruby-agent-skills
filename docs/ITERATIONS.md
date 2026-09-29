@@ -2,11 +2,17 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 143 — Consumer-Side Change Verification
+> **Current milestone:** Iteration 144 — Agent Skills Frontmatter Contract Validation
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
 Iterations 101 and later summarize in one line what `CHANGELOG.md` records in full; see `CHANGELOG.md` for the itemized changes behind each of those entries.
+
+---
+
+## Iteration 144 — Agent Skills Frontmatter Contract Validation
+
+Iteration 144 extends skill validation to enforce the current Agent Skills frontmatter contract for name, description, optional compatibility/metadata, and allowed-tools typing. A dedicated system test exercises valid and invalid metadata, including length limits and naming constraints, and is included in the repository validation gate.
 
 ---
 
