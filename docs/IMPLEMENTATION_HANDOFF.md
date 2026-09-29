@@ -213,7 +213,7 @@ Use `stack-minimality` with the domain skill that owns the actual contract. The 
 
 ## Remaining non-implementation work
 
-1. Execute the real 42-run public routing campaign.
+1. Execute the real 69-run public routing campaign.
 2. Analyze observed confusion and repetition instability.
 3. Perform evidence-based routing remediation where failures are observed.
 4. Run compatible baseline/candidate experiments.
@@ -225,4 +225,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 143. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 144. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
