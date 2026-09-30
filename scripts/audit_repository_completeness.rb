@@ -62,7 +62,6 @@ manifest_skills.each do |name, entry|
   end
 
 end
-
 pattern_files = Dir[File.join(ROOT, "patterns", "**", "*.md")]
                 .reject { |p| p.end_with?("/README.md") }
                 .map { |p| p.delete_prefix(ROOT + "/") }
