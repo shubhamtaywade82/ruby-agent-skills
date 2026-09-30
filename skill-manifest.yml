@@ -462,6 +462,107 @@ skills:
 
 
 
+deprecations:
+  typescript-core-engineering:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / typescript-core-engineering
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  typescript-type-design:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / typescript-type-design
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  typescript-runtime-contracts:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / typescript-runtime-contracts
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-component-engineering:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-component-engineering
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-state-effects:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-hooks-effects + react-state-management
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-data-fetching:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-data-fetching
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-testing-engineering:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-testing-engineering + frontend-e2e
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-accessibility-performance:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-accessibility + react-performance
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-architecture:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-architecture
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+
 patterns:
   react-typescript:
     paths:
