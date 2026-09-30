@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 146 — Deprecation Governance
+
+- Add `docs/DEPRECATION_GOVERNANCE.md) as the operational contract for skills retained during migration but excluded from new standalone work.
+- Add `scripts/validate_deprecations.rb` to require explicit deprecated status, migration scope, replacement, migration documentation, and exactly five removal gates.
+- Register the nine migrated React/TypeScript skills in `skill-manifest.yml` and prevent duplicate replacement ownership.
+- Add `test/deprecation_governance_system_test.rb` and wire the validator into `bin/validate`.
+- Keep removal evidence-driven: the repository does not infer adoption, dates, or completion from the existence of the replacement repository.
+
 ## Iteration 145 — Executable Runtime Compatibility Gate
 
 - Add `RubyAgentSkills::VersionConstraint`, using RubyGems version/requirement semantics for deterministic compatibility checks.
