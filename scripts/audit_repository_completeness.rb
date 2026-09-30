@@ -43,20 +43,22 @@ manifest_skills.each do |name, entry|
   path = entry.fetch("path")
   errors << "manifest skill #{name} missing file #{path}" unless File.file?(File.join(ROOT, path))
   errors << "skill #{name} has no triggers" if Array(entry["triggers"]).empty?
-  if entry.key?("compatibility")
-    compatibility = entry["compatibility"]
-    unless compatibility.is_a?(Hash) &&
-           compatibility.all? { |runtime, requirement| runtime.is_a?(String) && requirement.is_a?(String) && !requirement.strip.empty? }
-      errors << "manifest skill #{name} compatibility must map string runtime names to string requirements"
-    else
-      compatibility.each do |runtime, requirement|
-        begin
-          RubyAgentSkills::VersionConstraint.validate(requirement)
-        rescue RubyAgentSkills::VersionConstraint::InvalidRequirement => e
-          errors << "manifest skill #{name} invalid #{runtime} compatibility requirement: #{e.message}"
-        end
-      end
+  next unless entry.key?("compatibility")
+
+  compatibility = entry["compatibility"]
+  valid_compatibility = compatibility.is_a?(Hash) &&
+                         compatibility.all? do |runtime, requirement|
+                           runtime.is_a?(String) && requirement.is_a?(String) && !requirement.strip.empty?
+                         end
+
+  if valid_compatibility
+    compatibility.each do |runtime, requirement|
+      RubyAgentSkills::VersionConstraint.validate(requirement)
+    rescue RubyAgentSkills::VersionConstraint::InvalidRequirement => e
+      errors << "manifest skill #{name} invalid #{runtime} compatibility requirement: #{e.message}"
     end
+  else
+    errors << "manifest skill #{name} compatibility must map string runtime names to string requirements"
   end
 
 end
