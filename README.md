@@ -124,4 +124,4 @@ skills/rails-active-record/
 | Skills | **93** |
 | Implementation patterns | **446** |
 | Evaluation cases | **476** |
-| Dedicated system/contract tests | **96** |
+| Dedicated system/contract tests | **97** |
