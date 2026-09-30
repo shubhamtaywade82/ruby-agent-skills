@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 145 — Executable Runtime Compatibility Gate
+> **Current milestone:** Iteration 146 — Deprecation Governance
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -442,13 +442,15 @@ Folded reviewer heuristics from a personal Ruby/Rails training corpus into `chan
 
 Added `bin/verify-change`, a provider-neutral verifier that runs a downstream project's own gates (RuboCop, tests, Brakeman, bundler-audit, `zeitwerk:check`) plus deterministic structural checks and writes an evidence report that never reports an unrun check as passed. It ships in the installer and the release archive.
 
----
-
 ## Iteration 144 — Agent Skills Frontmatter Contract Validation
+
+Extended `scripts/validate_skills.rb` with the Agent Skills frontmatter contract for skill names, descriptions, optional metadata, compatibility, and allowed-tools typing. Added regression coverage and bound routing campaign cardinality documentation to the campaign manifest.
 
 ## Iteration 145 — Executable Runtime Compatibility Gate
 
-Iteration 145 turns the existing runtime-compatibility skill into executable infrastructure: semver requirements, selected skill/pattern compatibility reports, materialization enforcement, target-runtime evidence in evaluations, an installed-pack CLI, and three explicit Rails 8.1 version-bound patterns. Known-incompatible or conflicting material is blocked without claiming empirical model outcomes.
+Turned the existing runtime-compatibility knowledge into an executable compatibility boundary: RubyGems requirement semantics, selected skill/pattern compatibility reports, materialization enforcement, target-runtime evidence in evaluations, an installed-pack compatibility CLI, and three explicit Rails 8.1 version-bound patterns. Known-incompatible or conflicting material is blocked; unknown runtime evidence can fail closed in strict mode. No empirical model result is claimed.
 
+## Iteration 146 — Deprecation Governance
 
-Iteration 144 extends skill validation to enforce the current Agent Skills frontmatter contract for name, description, optional compatibility/metadata, and allowed-tools typing. A dedicated system test exercises valid and invalid metadata, including length limits and naming constraints, and is included in the repository validation gate. The documentation audit also binds the public routing campaign's documented run count to its manifest, preventing stale handoff cardinality.
+Added a machine-verifiable deprecation registry for the standalone React/TypeScript skills retained during the migration to `react-agent-skills`. The registry requires explicit status, scope, replacement, migration documentation, and removal gates; `scripts/validate_deprecations.rb` validates the boundary and `bin/validate` plus system-test coverage enforce it. Deprecation does not imply removal until every declared removal gate is independently satisfied.
+
