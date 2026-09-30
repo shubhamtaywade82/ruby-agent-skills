@@ -46,10 +46,10 @@ manifest_skills.each do |name, entry|
   next unless entry.key?("compatibility")
 
   compatibility = entry["compatibility"]
-  valid_compatibility = compatibility.is_a?(Hash) &&
-                         compatibility.all? do |runtime, requirement|
-                           runtime.is_a?(String) && requirement.is_a?(String) && !requirement.strip.empty?
-                         end
+  valid_compatibility = compatibility.is_a?(Hash)
+  valid_compatibility &&= compatibility.all? do |runtime, requirement|
+    runtime.is_a?(String) && requirement.is_a?(String) && !requirement.strip.empty?
+  end
 
   if valid_compatibility
     compatibility.each do |runtime, requirement|
@@ -60,7 +60,6 @@ manifest_skills.each do |name, entry|
   else
     errors << "manifest skill #{name} compatibility must map string runtime names to string requirements"
   end
-
 end
 pattern_files = Dir[File.join(ROOT, "patterns", "**", "*.md")]
                 .reject { |p| p.end_with?("/README.md") }
