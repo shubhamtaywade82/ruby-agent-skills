@@ -1,5 +1,15 @@
 # Changelog
 
+## Iteration 145 — Executable Runtime Compatibility Gate
+
+- Add `RubyAgentSkills::VersionConstraint`, using RubyGems version/requirement semantics for deterministic compatibility checks.
+- Extend `SkillPack` with compatibility reporting and enforcement for selected skills and pattern frontmatter. Known `unsupported`/`conflict` material is rejected; strict mode also rejects unknown runtime evidence.
+- Bind `EvalRunner` to the target workspace runtime profile so compatibility evidence travels with evaluation results.
+- Add `bin/skill-pack-compatibility` for project-side compatibility checks and ship/verify it through installer and release integrity surfaces.
+- Add three Rails 8.1 version-bound patterns: `active-job-continuation-contract`, `structured-event-reporting`, and `credentials-fetch-contract`.
+- Validate pattern/manifest compatibility requirements and add system/unit coverage.
+- No model benchmark result is claimed; this iteration hardens deterministic version safety only.
+
 ## Iteration 144 — Agent Skills Frontmatter Contract Validation
 
 - Extend `scripts/validate_skills.rb` to enforce the current Agent Skills frontmatter constraints for `name`, `description`, `compatibility`, `metadata`, and `allowed-tools`.
