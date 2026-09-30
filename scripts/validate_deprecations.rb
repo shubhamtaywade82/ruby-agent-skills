@@ -13,12 +13,10 @@ abort "missing skill-manifest.yml" unless File.file?(MANIFEST_PATH)
 
 def validate_entry(errors, skill, entry)
   errors << "deprecation #{skill} must have status deprecated" unless entry["status"] == "deprecated"
-  unless entry["scope"] == REQUIRED_SCOPE
-    errors << "deprecation #{skill} has an invalid scope"
-  end
+  errors << "deprecation #{skill} has an invalid scope" unless entry["scope"] == REQUIRED_SCOPE
 
   replacement = entry["replacement"]
-  unless replacement.is_a?(String) && replacement.match?(/\Areact-agent-skills \/ .+/)
+  unless replacement.is_a?(String) && replacement.match?(%r{\Areact-agent-skills / .+})
     errors << "deprecation #{skill} must declare a react-agent-skills replacement"
   end
 
@@ -32,7 +30,9 @@ def validate_entry(errors, skill, entry)
   valid_gate = gate.is_a?(Array) &&
                gate.length == 5 &&
                gate.all? { |item| item.is_a?(String) && !item.strip.empty? }
-  errors << "deprecation #{skill} must declare exactly five non-empty removal gates" unless valid_gate
+  unless valid_gate
+    errors << "deprecation #{skill} must declare exactly five non-empty removal gates"
+  end
 end
 manifest = YAML.safe_load(
   File.read(MANIFEST_PATH, encoding: "UTF-8"),
