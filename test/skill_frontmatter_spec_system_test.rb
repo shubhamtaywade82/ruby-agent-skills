@@ -118,7 +118,8 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       YAML
         stdout, stderr, status = run_validator(root)
 
-        refute_predicate status, :success?, "unexpectedly accepted #{name.inspect}: #{stdout}#{stderr}"
+        refute_predicate status, :success?,
+          "unexpectedly accepted #{name.inspect}: #{stdout}#{stderr}"
         assert_includes stderr, "name must use lowercase letters, numbers, and single hyphens"
       end
     end
@@ -129,7 +130,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       name: 123
       description: 456
     YAML
-      stdout, stderr, status = run_validator(root)
+_stdout, stderr, status = run_validator(root)
 
       refute_predicate status, :success?
       assert_includes stderr, "name must be a non-empty string"
@@ -146,7 +147,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       description: #{long_description.inspect}
       compatibility: #{long_compatibility.inspect}
     YAML
-      stdout, stderr, status = run_validator(root)
+_stdout, stderr, status = run_validator(root)
 
       refute_predicate status, :success?
       assert_includes stderr, "description must be <= 1024 characters"
@@ -165,7 +166,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       allowed-tools:
         - Read
     YAML
-      stdout, stderr, status = run_validator(root)
+_stdout, stderr, status = run_validator(root)
 
       refute_predicate status, :success?
       messages = [
