@@ -198,6 +198,7 @@ class SkillPackSystemTest < Minitest::Test
     assert_equal "supported",
                  report.dig("requirements", "demo", "requirements", "ruby", "status")
   end
+
   def test_compatible_version_bound_pattern_materializes
     root = build_pack
     pattern = File.join(root, "patterns/one/shared.md")
