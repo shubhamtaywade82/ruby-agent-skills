@@ -6,6 +6,7 @@ installation:
   verifier: bin/skill-pack-verify
   doctor: bin/skill-pack-doctor
   change_verifier: bin/verify-change
+  compatibility_checker: bin/skill-pack-compatibility
   metadata: .ruby-agent-skills/INSTALLATION.json
 
 defaults:
@@ -858,6 +859,9 @@ patterns:
       - patterns/rails/globalid-resolution-failure-contract.md
       - patterns/rails/activejob-argument-serialization-contract.md
       - patterns/rails/custom-activejob-serializer-contract.md
+      - patterns/rails/active-job-continuation-contract.md
+      - patterns/rails/structured-event-reporting.md
+      - patterns/rails/credentials-fetch-contract.md
 
       - patterns/rails/rack-request-response-contract.md
       - patterns/rails/middleware-stack-ordering.md
