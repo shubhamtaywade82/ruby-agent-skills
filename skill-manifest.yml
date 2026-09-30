@@ -1072,7 +1072,7 @@ evaluations:
       - tests
       - contract
 
-  eval-data-modeling-data-modeling-contract:
+  rails-data-modeling:
     source: data-modeling-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
