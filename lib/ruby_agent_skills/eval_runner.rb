@@ -8,7 +8,6 @@ require "yaml"
 require "time"
 require_relative "skill_pack"
 require_relative "runtime_profile"
-require_relative "runtime_profile"
 
 module RubyAgentSkills
   class EvalRunner
@@ -83,12 +82,18 @@ module RubyAgentSkills
 
         packer = SkillPack.new(root: root)
         runtime_profile = RuntimeProfile.call(temp_dir)
-        result["runtime_profile"] = runtime_profile
-        skill_pack = materialize_skill_pack(packer, evaluation, temp_dir, runtime_profile, skills_enabled)
-        result["compatibility"] = skill_pack.fetch("compatibility") if skills_enabled
+        skill_pack = if skills_enabled
+                       packer.materialize(
+                         evaluation: evaluation,
+                         workspace: temp_dir,
+                         runtime_profile: runtime_profile
+                       )
+                     else
+                       packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
+                     end
 
         result["configuration"]["runtime_profile"] = runtime_profile
-        result["configuration"]["compatibility"] = skill_pack.fetch("compatibility")
+        result["configuration"]["compatibility"] = skill_pack.fetch("compatibility", {})
         env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
         run_command(agent_command, temp_dir, agent_env(env), timeout, result["agent"])
         run_git_snapshot(temp_dir, result["patch"])
@@ -106,3 +111,181 @@ module RubyAgentSkills
       result["completed_at"] = Time.now.utc.iso8601
       result["overall"] = overall_status(result)
       write_result(output, result) if output
+      result
+    end
+
+    private
+
+    def safe_load(path)
+      YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+    rescue Psych::Exception => e
+      raise Error, "invalid evaluation YAML #{path}: #{e.message}"
+    end
+
+    def load_evaluation(path)
+      data = safe_load(path)
+      data["__path"] = path.delete_prefix(root + "/") if path.start_with?(root + "/")
+      data
+    end
+
+    def base_result(evaluation, agent_command, verify_command, skills_enabled)
+      {
+        "protocol_version" => 1,
+        "evaluation" => evaluation.fetch("id"),
+        "title" => evaluation.fetch("title"),
+        "configuration" => {
+          "skills_enabled" => skills_enabled,
+          "skills" => skills_enabled ? evaluation.fetch("skills", []) : [],
+          "patterns" => skills_enabled ? evaluation.fetch("patterns", []) : []
+        },
+        "started_at" => Time.now.utc.iso8601,
+        "agent" => {
+          "command" => agent_command, "exit_code" => nil, "timed_out" => false,
+          "stdout" => nil, "stderr" => nil, "duration_seconds" => nil
+        },
+        "verification" => {
+          "configured" => !verify_command.to_s.strip.empty?, "command" => verify_command,
+          "exit_code" => nil, "timed_out" => false, "stdout" => nil, "stderr" => nil,
+          "duration_seconds" => nil
+        },
+        "patch" => { "git_repository" => false, "status" => nil, "diff_stat" => nil, "diff" => nil },
+        "checks" => evaluation.fetch("checks", []).to_h { |check| [check, { "status" => "not_evaluated" }] }
+      }
+    end
+
+    def runner_env(evaluation, workspace, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
+      {
+        "RUBY_AGENT_EVAL_ID" => evaluation.fetch("id"),
+        "RUBY_AGENT_EVAL_PROMPT" => prompt_path,
+        "RUBY_AGENT_EVAL_FILE" => eval_path,
+        "RUBY_AGENT_EVAL_RESULT_FILE" => result_path,
+        "RUBY_AGENT_EVAL_ROOT" => root,
+        "RUBY_AGENT_WORKSPACE" => workspace,
+        "RUBY_AGENT_SKILLS_ENABLED" => skills_enabled ? "true" : "false",
+        "RUBY_AGENT_SKILLS_DIR" => skill_pack.fetch("skills_dir"),
+        "RUBY_AGENT_PATTERNS_DIR" => skill_pack.fetch("patterns_dir"),
+        "RUBY_AGENT_SKILL_MANIFEST" => skill_pack.fetch("manifest"),
+        "RUBY_AGENT_CONTEXT_FILE" => skill_pack.fetch("context"),
+        "RUBY_AGENT_METADATA_FILE" => File.join(File.dirname(result_path), "agent-metadata.json")
+      }
+    end
+
+    # The agent does not receive the benchmark repository root: it holds the
+    # verifier registries and reference implementations. nil unsets a value
+    # inherited from the runner's own environment.
+    def agent_env(env)
+      env.merge("RUBY_AGENT_EVAL_ROOT" => nil)
+    end
+
+    def run_command(command, chdir, env, timeout, target)
+      started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      stdout = +""
+      stderr = +""
+      status = nil
+      timed_out = false
+
+      Open3.popen3(env, command, chdir: chdir) do |stdin, out, err, wait_thread|
+        stdin.close
+        begin
+          require "timeout"
+          Timeout.timeout(timeout) do
+            stdout = out.read
+            stderr = err.read
+          end
+          status = wait_thread.value
+        rescue Timeout::Error
+          timed_out = true
+          Process.kill("TERM", wait_thread.pid) rescue nil
+          Process.wait(wait_thread.pid) rescue nil
+        end
+      end
+
+      target["exit_code"] = status&.exitstatus
+      target["timed_out"] = timed_out
+      target["stdout"] = utf8(stdout)
+      target["stderr"] = utf8(stderr)
+      target["duration_seconds"] = elapsed(started)
+    end
+
+    # Captured process output carries Encoding.default_external, which is
+    # US-ASCII whenever the runner has no UTF-8 locale (this sandbox has
+    # none). An agent's diff or transcript containing a non-ASCII byte (an
+    # em dash, a curly quote) then crashes JSON generation in write_result
+    # even though the bytes are valid UTF-8. Re-tag them explicitly, and
+    # scrub only if a capture genuinely is not valid UTF-8 (e.g. `--binary`
+    # diff content).
+    def utf8(string)
+      retagged = string.dup.force_encoding("UTF-8")
+      retagged.valid_encoding? ? retagged : retagged.scrub
+    end
+
+    def ensure_git_repository(workdir)
+      return if Dir.exist?(File.join(workdir, ".git"))
+
+      system("git", "-C", workdir, "init", "-q") or raise Error, "git init failed"
+      system("git", "-C", workdir, "config", "user.email", "benchmark@ruby-agent-skills.local") or raise Error, "git config failed"
+      system("git", "-C", workdir, "config", "user.name", "Ruby Agent Skills Benchmark") or raise Error, "git config failed"
+
+      exclude = File.join(workdir, ".git", "info", "exclude")
+      File.open(exclude, "a", encoding: "UTF-8") { |file| file.puts(".ruby-agent-eval/") }
+
+      system("git", "-C", workdir, "add", "-A") or raise Error, "git add failed"
+      system("git", "-C", workdir, "commit", "-qm", "benchmark baseline") or raise Error, "git baseline commit failed"
+    end
+
+    def run_git_snapshot(workdir, patch)
+      return unless Dir.exist?(File.join(workdir, ".git"))
+
+      patch["git_repository"] = true
+      patch["status"] = utf8(Open3.capture2("git", "-C", workdir, "status", "--short").first)
+      Open3.capture2("git", "-C", workdir, "add", "-N", "--", ".")
+      patch["diff_stat"] = utf8(Open3.capture2("git", "-C", workdir, "diff", "--stat").first)
+      patch["diff"] = utf8(Open3.capture2("git", "-C", workdir, "diff", "--binary").first)
+    end
+
+    def apply_verifier_result(result, result_path)
+      return unless File.file?(result_path)
+
+      parsed = JSON.parse(File.read(result_path, encoding: "UTF-8"))
+      checks = parsed.fetch("checks", {})
+      checks.each do |name, value|
+        next unless result["checks"].key?(name)
+
+        result["checks"][name] = value.is_a?(Hash) ? value : { "status" => value.to_s }
+      end
+      result["verification"]["reported_result"] = parsed.fetch("metadata", {})
+    rescue JSON::ParserError => e
+      result["verification"]["reported_result_error"] = "invalid verifier JSON: #{e.message}"
+    rescue KeyError
+      result["verification"]["reported_result_error"] = "verifier JSON must contain a checks mapping"
+    end
+
+    def apply_agent_metadata(result, metadata_path)
+      return unless File.file?(metadata_path)
+
+      result["agent"]["metadata"] = JSON.parse(File.read(metadata_path, encoding: "UTF-8"))
+    rescue JSON::ParserError => e
+      result["agent"]["metadata_error"] = "invalid agent metadata JSON: #{e.message}"
+    end
+
+    def overall_status(result)
+      statuses = result["checks"].values.map { |value| value.fetch("status", "not_evaluated") }
+      return "failed" if result["agent"]["timed_out"] || result["verification"]["timed_out"]
+      return "failed" if result["agent"]["exit_code"] && result["agent"]["exit_code"] != 0
+      return "failed" if result["verification"]["exit_code"] && result["verification"]["exit_code"] != 0
+      return "failed" if statuses.include?("fail")
+      return "passed" if statuses.any? && statuses.none? { |status| status == "not_evaluated" }
+
+      "incomplete"
+    end
+
+    def write_result(output, result)
+      FileUtils.mkdir_p(File.dirname(File.expand_path(output)))
+      File.write(output, JSON.pretty_generate(result) + "\n", encoding: "UTF-8")
+    end
+
+    def elapsed(started)
+      (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).round(3)
+    end
+  end
+end
