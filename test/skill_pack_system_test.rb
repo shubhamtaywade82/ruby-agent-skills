@@ -124,7 +124,7 @@ class SkillPackSystemTest < Minitest::Test
         "          skills:\n",
         "          skills:\n"
       ).sub(
-        "        demo:\n",
+        "          demo:\n",
         "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
       )
     )
@@ -153,7 +153,7 @@ class SkillPackSystemTest < Minitest::Test
     File.write(
       manifest,
       File.read(manifest, encoding: "UTF-8").sub(
-        "        demo:\n",
+        "          demo:\n",
         "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
       )
     )
@@ -175,7 +175,7 @@ class SkillPackSystemTest < Minitest::Test
     File.write(
       manifest,
       File.read(manifest, encoding: "UTF-8").sub(
-        "        demo:\n",
+        "          demo:\n",
         "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
       )
     )
@@ -199,7 +199,7 @@ class SkillPackSystemTest < Minitest::Test
     File.write(
       manifest,
       File.read(manifest, encoding: "UTF-8").sub(
-        "        demo:\n",
+        "          demo:\n",
         "        demo:\n          compatibility:\n            ruby: \">= 3.2\"\n"
       )
     )
@@ -269,7 +269,7 @@ class SkillPackSystemTest < Minitest::Test
 
     assert_equal "unsupported", report.fetch("status")
     assert_equal "unsupported",
-                 report.dig("requirements", "patterns/one/shared", "rails", "status")
+                 report.dig("requirements", "patterns/one/shared", "requirements", "rails", "status")
 
     assert_raises(RubyAgentSkills::SkillPack::IncompatibleError) do
       pack.materialize(evaluation: evaluation, workspace: workspace, runtime_profile: {
