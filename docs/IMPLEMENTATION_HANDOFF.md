@@ -7,9 +7,9 @@ The skill library, pattern library, corpus-quality audit, routing infrastructure
 Current inventory:
 
 - 93 skills
-- 443 implementation patterns
+- 446 implementation patterns
 - 476 evaluation cases
-- 93 system/contract tests
+- 94 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -190,6 +190,14 @@ Optionally add verified matrix evidence and the safe hidden-benchmark receipt wi
 The command self-verifies the resulting bundle. An existing bundle can be gated independently with:
 
     ruby bin/routing-release-check --bundle ./routing-release-bundle
+
+## Runtime compatibility
+
+Before using version-bound material, run:
+
+    ruby bin/skill-pack-compatibility /path/to/rails-app --pattern <pattern-id>
+
+The checker reads the target repository with `runtime-profile`, reports supported/unsupported/unknown/conflict status, and can fail closed with `--strict`. The evaluator also records the target runtime profile and blocks known-incompatible material during skills-enabled runs.
 
 ## Installation doctor
 
