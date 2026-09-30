@@ -52,13 +52,16 @@ module RubyAgentSkills
       state = entry["status"].to_s
 
       return base_result("unspecified", requirement) if requirement.empty?
-      validate(requirement)
 
+      validate(requirement)
       return base_result("conflict", requirement) if state == "conflict"
       return base_result("unknown", requirement) if actual.to_s.empty?
 
-      result_status = satisfies?(actual, requirement) ? "supported" : "unsupported"
-      base_result(result_status, requirement, actual)
+      base_result(support_status(actual, requirement), requirement, actual)
+    end
+
+    def support_status(version, requirement)
+      satisfies?(version, requirement) ? "supported" : "unsupported"
     end
 
     def base_result(status, requirement, version = nil)
