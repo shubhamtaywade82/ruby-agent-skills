@@ -107,8 +107,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       "Example-skill",
       "example_skill",
       "example--skill",
-      "example skill",
-      "a" * 65
+      "example skill"
     ]
 
     invalid_names.each do |name|
@@ -119,13 +118,24 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
         stdout, stderr, status = run_validator(root)
 
         message = "unexpectedly accepted #{name.inspect}: #{stdout}#{stderr}"
-
         refute_predicate status, :success?, message
+
         assert_includes stderr, "name must use lowercase letters, numbers, and single hyphens"
       end
     end
   end
 
+  def test_name_maximum_length_is_enforced
+    with_skill(<<~YAML.strip) do |root|
+      name: "#{"a" * 65}"
+      description: "A valid description."
+    YAML
+      _stdout, stderr, status = run_validator(root)
+
+      refute_predicate status, :success?
+      assert_includes stderr, "name must be <= 64 characters"
+    end
+  end
   def test_name_and_description_must_be_strings
     with_skill(<<~YAML.strip) do |root|
       name: 123
