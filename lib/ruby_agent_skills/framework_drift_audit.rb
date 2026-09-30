@@ -61,7 +61,8 @@ module RubyAgentSkills
   end
 
   class FrameworkDriftScanner
-    RUBY_BLOCK = /^\x60\x60\x60(?:ruby|rb)\s*\n(.*?)^\x60\x60\x60\s*$/m
+    RUBY_FENCE = /^\x60\x60\x60(?:ruby|rb)\s*$/
+    END_FENCE = /^\x60\x60\x60\s*$/
     FINDING_FORMAT = [
       "%<relative>s:%<line>d: framework drift %<id>s",
       " (%<status>s Rails %<version>s) uses %<symbol>s;",
@@ -88,15 +89,29 @@ module RubyAgentSkills
     end
 
     def scan_file(path)
-      text = File.read(path, encoding: "UTF-8")
-      ruby_blocks(text).flat_map { |start, lines| scan_block(path, start, lines) }
+      lines = File.readlines(path, encoding: "UTF-8")
+      ruby_blocks(lines).flat_map { |start, block| scan_block(path, start, block) }
     end
 
-    def ruby_blocks(text)
-      text.enum_for(:scan, RUBY_BLOCK).map do
-        match = Regexp.last_match
-        [text[0...match.begin(1)].count("\n") + 1, match[1].lines]
+    def ruby_blocks(lines)
+      blocks = []
+      block_start = nil
+      block_lines = []
+
+      lines.each_with_index do |line, index|
+        if block_start.nil? && line.match?(RUBY_FENCE)
+          block_start = index + 2
+          block_lines = []
+        elsif block_start && line.match?(END_FENCE)
+          blocks << [block_start, block_lines]
+          block_start = nil
+          block_lines = []
+        elsif block_start
+          block_lines << line
+        end
       end
+
+      blocks
     end
 
     def scan_block(path, start_line, lines)
