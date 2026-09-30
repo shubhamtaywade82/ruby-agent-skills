@@ -116,10 +116,10 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
         name: "#{name}"
         description: "A valid description."
       YAML
-        stdout, _stderr, status = run_validator(root)
+        stdout, stderr, status = run_validator(root)
 
-        refute_predicate status, :success?, "unexpectedly accepted #{name.inspect}: #{stdout}"
-        assert_includes stdout, "name must use lowercase letters, numbers, and single hyphens"
+        refute_predicate status, :success?, "unexpectedly accepted #{name.inspect}: #{stdout}#{stderr}"
+        assert_includes stderr, "name must use lowercase letters, numbers, and single hyphens"
       end
     end
   end
@@ -129,11 +129,11 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       name: 123
       description: 456
     YAML
-      stdout, _stderr, status = run_validator(root)
+      stdout, stderr, status = run_validator(root)
 
       refute_predicate status, :success?
-      assert_includes stdout, "name must be a non-empty string"
-      assert_includes stdout, "description must be a non-empty string"
+      assert_includes stderr, "name must be a non-empty string"
+      assert_includes stderr, "description must be a non-empty string"
     end
   end
 
@@ -146,11 +146,11 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       description: #{long_description.inspect}
       compatibility: #{long_compatibility.inspect}
     YAML
-      stdout, _stderr, status = run_validator(root)
+      stdout, stderr, status = run_validator(root)
 
       refute_predicate status, :success?
-      assert_includes stdout, "description must be <= 1024 characters"
-      assert_includes stdout, "compatibility must be <= 500 characters"
+      assert_includes stderr, "description must be <= 1024 characters"
+      assert_includes stderr, "compatibility must be <= 500 characters"
     end
   end
 
@@ -165,7 +165,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
       allowed-tools:
         - Read
     YAML
-      stdout, _stderr, status = run_validator(root)
+      stdout, stderr, status = run_validator(root)
 
       refute_predicate status, :success?
       messages = [
@@ -174,7 +174,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
         "allowed-tools must be a string"
       ]
 
-      assert(messages.all? { |message| stdout.include?(message) })
+      assert(messages.all? { |message| stderr.include?(message) })
     end
   end
 
