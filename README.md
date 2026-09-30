@@ -42,6 +42,13 @@ The pack includes a deterministic runtime compatibility gate for version-bound s
 
 Known incompatibilities fail immediately. Missing runtime evidence is reported as `unknown`; add `--strict` when unknown evidence must block use. The evaluation runner records the target runtime profile and applies the same gate to materialized version-bound patterns.
 
+## Framework drift audit
+
+The pack includes a bounded, evidence-backed framework drift registry for high-confidence Rails API/configuration removals and deprecations. `bin/validate` runs the detector against Ruby code fences in skills and patterns and reports concrete file/line findings; intentional historical examples require an explicit in-block suppression directive.
+
+    ruby scripts/audit_framework_drift.rb
+
+The current registry is intentionally limited to findings backed by the Rails 6.1 and 8.1 release notes. It is not a complete Rails deprecation database.
 ## Routing evidence integrity
 
 `bin/routing-compare` recomputes routing metrics from the recorded run data before applying the remediation gate. A campaign whose recorded metrics have been altered or drifted from its runs is rejected rather than treated as benchmark evidence.
@@ -117,4 +124,4 @@ skills/rails-active-record/
 | Skills | **93** |
 | Implementation patterns | **446** |
 | Evaluation cases | **476** |
-| Dedicated system/contract tests | **95** |
+| Dedicated system/contract tests | **96** |
