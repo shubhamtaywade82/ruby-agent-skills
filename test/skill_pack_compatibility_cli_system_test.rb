@@ -60,10 +60,11 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
       LOCK
     )
 
-    _stdout, stderr, status = run_cli(project, "--pattern", "patterns/rails/active-job-continuation-contract")
+    stdout, stderr, status = run_cli(project, "--pattern", "patterns/rails/active-job-continuation-contract")
 
     refute_predicate status, :success?
     assert_equal "", stderr
+    assert_includes stdout, "status: unsupported"
   end
 
   def test_cli_strict_mode_fails_when_runtime_is_unknown
