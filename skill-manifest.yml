@@ -2197,3 +2197,63 @@ evaluations:
       - functional
       - tests
       - contract
+
+  eval-test-engineering-parallel-safety:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/parallel-safety.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-rspec-request-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/rspec-request-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-system-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/system-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-test-performance:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/test-performance.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-zeitwerk-initializer-reload-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/zeitwerk/initializer-reload-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-zeitwerk-path-constant-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/zeitwerk/path-constant-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
