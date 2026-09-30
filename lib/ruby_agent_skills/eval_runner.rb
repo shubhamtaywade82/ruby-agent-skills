@@ -7,6 +7,7 @@ require "tmpdir"
 require "yaml"
 require "time"
 require_relative "skill_pack"
+require_relative "runtime_profile"
 
 module RubyAgentSkills
   class EvalRunner
@@ -80,8 +81,14 @@ module RubyAgentSkills
         File.write(eval_path, YAML.dump(evaluation.reject { |k, _| k == "__path" }), encoding: "UTF-8")
 
         packer = SkillPack.new(root: root)
+        runtime_profile = RuntimeProfile.call(temp_dir)
+        result["runtime_profile"] = runtime_profile
         skill_pack = if skills_enabled
-                       packer.materialize(evaluation: evaluation, workspace: temp_dir)
+                       packer.materialize(
+                         evaluation: evaluation,
+                         workspace: temp_dir,
+                         runtime_profile: runtime_profile
+                       )
                      else
                        packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
                      end
@@ -131,6 +138,7 @@ module RubyAgentSkills
           "patterns" => skills_enabled ? evaluation.fetch("patterns", []) : []
         },
         "started_at" => Time.now.utc.iso8601,
+        "runtime_profile" => nil,
         "agent" => {
           "command" => agent_command, "exit_code" => nil, "timed_out" => false,
           "stdout" => nil, "stderr" => nil, "duration_seconds" => nil
