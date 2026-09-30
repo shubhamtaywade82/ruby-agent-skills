@@ -25,7 +25,8 @@ installation = manifest.fetch("installation", {})
 installation_paths = {
   "installer" => installation.fetch("installer"),
   "verifier" => installation.fetch("verifier"),
-  "doctor" => installation.fetch("doctor")
+  "doctor" => installation.fetch("doctor"),
+  "compatibility_checker" => installation.fetch("compatibility_checker")
 }
 installation_paths.each do |kind, path|
   errors << "manifest installation #{kind} missing file #{path}" unless File.file?(File.join(ROOT, path))
