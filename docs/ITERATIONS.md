@@ -1,5 +1,8 @@
 # Iterations
 
+> **Current milestone:** Iteration 147 — Executable Framework Drift Detection
+
+
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
 ## Iteration 144 — Agent Skills Frontmatter Contract Validation
