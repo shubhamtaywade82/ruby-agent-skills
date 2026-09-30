@@ -52,6 +52,7 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
 #{stderr}"
 
     report = JSON.parse(stdout)
+
     assert_equal "supported", report.fetch("status")
 
     assert_equal(
