@@ -67,42 +67,15 @@ module RubyAgentSkills
 
       result = base_result(evaluation, agent_command, verify_command, skills_enabled)
 
-      Dir.mktmpdir("ruby-agent-eval-") do |temp_dir|
-        FileUtils.cp_r("#{source_workspace}/.", temp_dir)
-        ensure_git_repository(temp_dir)
-        metadata_dir = File.join(temp_dir, ".ruby-agent-eval")
-        FileUtils.mkdir_p(metadata_dir)
-
-        prompt_path = File.join(metadata_dir, "prompt.md")
-        eval_path = File.join(metadata_dir, "evaluation.yml")
-        result_path = File.join(metadata_dir, "result.json")
-
-        File.write(prompt_path, evaluation.fetch("prompt"), encoding: "UTF-8")
-        File.write(eval_path, YAML.dump(evaluation.reject { |k, _| k == "__path" }), encoding: "UTF-8")
-
-        skill_pack, runtime_profile = materialize_skill_pack(
-          evaluation: evaluation,
-          workspace: temp_dir,
-          skills_enabled: skills_enabled
-        )
-        compatibility = skill_pack.fetch("compatibility", {})
-        result["runtime_profile"] = runtime_profile
-        result["compatibility"] = compatibility
-        result["configuration"]["runtime_profile"] = runtime_profile
-        result["configuration"]["compatibility"] = compatibility
-        env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
-        run_command(agent_command, temp_dir, agent_env(env), timeout, result["agent"])
-        run_git_snapshot(temp_dir, result["patch"])
-        # Only the verifier may report check results.
-        FileUtils.rm_f(result_path)
-
-        if verify_command.to_s.strip != ""
-          run_command(verify_command, temp_dir, env, timeout, result["verification"])
-        end
-
-        apply_verifier_result(result, result_path)
-        apply_agent_metadata(result, env.fetch("RUBY_AGENT_METADATA_FILE"))
-      end
+      run_in_temp_workspace(
+        source_workspace: source_workspace,
+        evaluation: evaluation,
+        result: result,
+        agent_command: agent_command,
+        verify_command: verify_command,
+        timeout: timeout,
+        skills_enabled: skills_enabled
+      )
 
       result["completed_at"] = Time.now.utc.iso8601
       result["overall"] = overall_status(result)
@@ -164,6 +137,48 @@ module RubyAgentSkills
         "RUBY_AGENT_CONTEXT_FILE" => skill_pack.fetch("context"),
         "RUBY_AGENT_METADATA_FILE" => File.join(File.dirname(result_path), "agent-metadata.json")
       }
+    end
+
+    def run_in_temp_workspace(source_workspace:, evaluation:, result:, agent_command:, verify_command:, timeout:, skills_enabled:)
+      Dir.mktmpdir("ruby-agent-eval-") do |temp_dir|
+        FileUtils.cp_r("#{source_workspace}/.", temp_dir)
+        ensure_git_repository(temp_dir)
+        metadata_dir = File.join(temp_dir, ".ruby-agent-eval")
+        FileUtils.mkdir_p(metadata_dir)
+
+        prompt_path = File.join(metadata_dir, "prompt.md")
+        eval_path = File.join(metadata_dir, "evaluation.yml")
+        result_path = File.join(metadata_dir, "result.json")
+
+        File.write(prompt_path, evaluation.fetch("prompt"), encoding: "UTF-8")
+        File.write(eval_path, YAML.dump(evaluation.reject { |k, _| k == "__path" }), encoding: "UTF-8")
+
+        skill_pack, runtime_profile = materialize_skill_pack(
+          evaluation: evaluation,
+          workspace: temp_dir,
+          skills_enabled: skills_enabled
+        )
+        compatibility = skill_pack.fetch("compatibility", {})
+        result["runtime_profile"] = runtime_profile
+        result["compatibility"] = compatibility
+        result["configuration"]["runtime_profile"] = runtime_profile
+        result["configuration"]["compatibility"] = compatibility
+        env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
+        run_command(agent_command, temp_dir, agent_env(env), timeout, result["agent"])
+        run_git_snapshot(temp_dir, result["patch"])
+        # Only the verifier may report check results.
+        FileUtils.rm_f(result_path)
+
+        if verify_command.to_s.strip != ""
+          run_command(verify_command, temp_dir, env, timeout, result["verification"])
+        end
+
+        apply_verifier_result(result, result_path)
+        apply_agent_metadata(result, env.fetch("RUBY_AGENT_METADATA_FILE"))
+      end
+
+
+      end
     end
 
     def materialize_skill_pack(evaluation:, workspace:, skills_enabled:)
