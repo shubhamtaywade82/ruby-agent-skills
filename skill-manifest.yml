@@ -981,3 +981,679 @@ benchmarks:
     campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
     comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+
+evaluations:
+  react-typescript-typescript-core:
+    source: react-typescript-core-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-core-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-typescript-type-design:
+    source: react-typescript-type-design-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-type-design-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-typescript-runtime-contracts:
+    source: react-typescript-runtime-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-runtime-contracts.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-component-engineering:
+    source: react-component-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-component-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-state-effects:
+    source: react-state-effects-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-state-effects-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-data-fetching:
+    source: react-data-fetching-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-data-fetching-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  planning-spec:
+    source: planning-layer-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/agent-workflow/planning-spec-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  planning-tickets:
+    source: planning-layer-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/agent-workflow/planning-tickets-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  planning-wayfinder:
+    source: planning-layer-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/agent-workflow/planning-wayfinder-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  change-review:
+    source: change-review-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/agent-workflow/change-review-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - evidence
+      - scope_control
+
+  rails-react-integration:
+    source: rails-react-integration-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/rails-react-integration-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - security
+      - scope_control
+
+  react-testing-engineering:
+    source: react-testing-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-testing-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-accessibility-performance:
+    source: react-accessibility-performance-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-accessibility-performance-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  react-architecture:
+    source: react-architecture-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-architecture-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+  rails-repository-completeness:
+    source: rails-repository-completeness-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/repository-completeness-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-staff-principal-architecture:
+    source: rails-staff-principal-architecture-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/staff-principal-architecture-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-cross-boundary-authorization-security:
+    source: rails-cross-boundary-authorization-security-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/cross-boundary-authorization-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-operational-tasks-maintenance:
+    source: rails-operational-tasks-maintenance-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/operational-tasks-maintenance-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-engines-railties-engineering:
+    source: rails-engines-railties-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/engines-railties-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  test-engineering:
+    source: rails-test-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/boundary-selection.yml
+      - evals/test-engineering/deterministic-job.yml
+      - evals/test-engineering/parallel-safety.yml
+      - evals/test-engineering/flaky-diagnosis.yml
+      - evals/test-engineering/system-contract.yml
+      - evals/test-engineering/test-performance.yml
+      - evals/test-engineering/rspec-request-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  production-runtime:
+    source: rails-production-runtime-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/runtime/puma-capacity.yml
+      - evals/runtime/graceful-shutdown.yml
+      - evals/runtime/zero-downtime-release.yml
+      - evals/runtime/config-contract.yml
+      - evals/runtime/migration-gate.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  database-engineering:
+    source: rails-database-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/database/expand-contract.yml
+      - evals/database/concurrent-index.yml
+      - evals/database/constraint.yml
+      - evals/database/batched-backfill.yml
+      - evals/database/transaction-lock.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  observability:
+    source: rails-observability-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/observability/error-boundary.yml
+      - evals/observability/request-correlation.yml
+      - evals/observability/instrumentation-event.yml
+      - evals/observability/health-semantics.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  active-job:
+    source: active-job-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/active-job/idempotent-side-effect.yml
+      - evals/active-job/retry-policy.yml
+      - evals/active-job/transactional-enqueue.yml
+      - evals/active-job/concurrency-control.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  zeitwerk:
+    source: zeitwerk-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/zeitwerk/path-constant-contract.yml
+      - evals/zeitwerk/initializer-reload-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  performance:
+    source: performance-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/performance/performance-allocation-boundary.yml
+      - evals/performance/cache-key-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - performance
+
+  ruby-training:
+    source: allerin-ruby-set-2
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/selection-sort.yml
+      - evals/ruby-training/recursive-selection-sort.yml
+      - evals/ruby-training/smallest-missing.yml
+      - evals/ruby-training/shopping-cart.yml
+      - evals/ruby-training/triplet-sum.yml
+      - evals/ruby-training/majority-element.yml
+      - evals/ruby-training/distinct-elements.yml
+      - evals/ruby-training/power-of-two.yml
+      - evals/ruby-training/chocolate-feast.yml
+      - evals/ruby-training/bubble-sort.yml
+      - evals/ruby-training/equilibrium-index.yml
+    checks:
+      - functional
+      - oop
+      - tests
+
+  rails-active-support:
+    source: rails-active-support-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-support-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-active-model:
+    source: rails-active-model-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-model-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-action-view:
+    source: rails-action-view-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-view-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-action-controller:
+    source: rails-action-controller-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-controller-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-active-record:
+    source: rails-active-record-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-record-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-data-modeling:
+    source: rails-data-modeling-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/data-modeling/data-modeling-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-associations:
+    source: rails-associations-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/associations-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-validations:
+    source: rails-validations-v2
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/validations-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-authentication:
+    source: rails-authentication-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/authentication-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-authorization:
+    source: rails-authorization-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/authorization-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-asset-build-engineering:
+    source: rails-asset-build-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/asset-build-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-rack-middleware-engineering:
+    source: rails-rack-middleware-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/rack-middleware-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-serialization-globalid-engineering:
+    source: rails-serialization-globalid-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/serialization-globalid-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-encryption-credentials-engineering:
+    source: rails-encryption-credentials-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/encryption-credentials-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-initialization-configuration-engineering:
+    source: rails-initialization-configuration-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/initialization-configuration-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-hotwire:
+    source: rails-hotwire-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/hotwire-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-routing:
+    source: rails-routing-v2
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/routing-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-action-mailbox:
+    source: rails-action-mailbox-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-mailbox-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-action-mailer:
+    source: rails-action-mailer-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-mailer-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-action-text:
+    source: rails-action-text-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-text-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-i18n:
+    source: rails-i18n-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/i18n-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-action-cable:
+    source: rails-action-cable-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-cable-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-active-storage:
+    source: rails-active-storage-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-storage-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  ruby-workshop:
+    source: book-integration-v2
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/enumerable-transform.yml
+      - evals/ruby-workshop/method-contract.yml
+      - evals/ruby-workshop/voting-application.yml
+      - evals/ruby-workshop/service-object.yml
+      - evals/ruby-workshop/external-api-client.yml
+      - evals/ruby-workshop/ruby-gem-boundary.yml
+      - evals/ruby-workshop/rails-rest-contract.yml
+      - evals/ruby-workshop/rails-authentication-boundary.yml
+    checks:
+      - functional
+      - tests
+
+  concurrency:
+    source: concurrency-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/concurrency/concurrency-counter.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  security:
+    source: rails-security-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/security/parameterized-query-boundary.yml
+      - evals/security/authorization-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  design-patterns:
+    source: design-pattern-system-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/poro-extraction.yml
+      - evals/design-patterns/service-object-selection.yml
+      - evals/design-patterns/command-object.yml
+      - evals/design-patterns/strategy-selection.yml
+      - evals/design-patterns/adapter-boundary.yml
+      - evals/design-patterns/policy-object.yml
+      - evals/design-patterns/dependency-injection.yml
+      - evals/design-patterns/factory-selection.yml
+      - evals/design-patterns/builder-selection.yml
+      - evals/design-patterns/null-object.yml
+      - evals/design-patterns/decorator.yml
+      - evals/design-patterns/facade.yml
+      - evals/design-patterns/repository-boundary.yml
+      - evals/design-patterns/specification.yml
+      - evals/design-patterns/state-object.yml
+      - evals/design-patterns/composition-over-inheritance.yml
+      - evals/design-patterns/presenter.yml
+      - evals/design-patterns/pattern-restraint.yml
+      - evals/design-patterns/service-object-not-needed.yml
+      - evals/design-patterns/strategy-not-needed.yml
+      - evals/design-patterns/factory-not-needed.yml
+      - evals/design-patterns/repository-not-needed.yml
+      - evals/design-patterns/value-object-not-needed.yml
+      - evals/design-patterns/presenter-not-needed.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - pattern_selection
+      - scope_control
+
+  stack-minimality:
+    source: ponytail-stack-adaptation-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-rails-direct-boundary.yml
+      - evals/stack-minimality/stack-minimality-postgres-invariant.yml
+      - evals/stack-minimality/stack-minimality-react-state-boundary.yml
+      - evals/stack-minimality/stack-minimality-native-before-dependency.yml
+      - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
+      - evals/stack-minimality/stack-minimality-minimal-change-root.yml
+      - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
+      - evals/stack-minimality/stack-minimality-security-boundary.yml
+      - evals/stack-minimality/stack-minimality-accessibility-boundary.yml
+      - evals/stack-minimality/stack-minimality-performance-evidence.yml
+      - evals/stack-minimality/stack-minimality-migration-safety.yml
+      - evals/stack-minimality/stack-minimality-service-boundary.yml
+      - evals/stack-minimality/stack-minimality-derived-state.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
