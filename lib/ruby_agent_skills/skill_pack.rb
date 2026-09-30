@@ -139,8 +139,6 @@ module RubyAgentSkills
       }
     end
 
-    end
-
     private
 
     def enforce_compatibility!(report, strict:)
