@@ -1556,7 +1556,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-action-cable-contract:
+  rails-action-cable:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1566,7 +1566,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-action-controller-contract:
+  rails-action-controller:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1576,7 +1576,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-action-mailbox-contract:
+  rails-action-mailbox:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1586,7 +1586,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-action-mailer-contract:
+  rails-action-mailer:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1596,7 +1596,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-action-text-contract:
+  rails-action-text:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1606,7 +1606,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-action-view-contract:
+  rails-action-view:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1616,7 +1616,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-active-model-contract:
+  rails-active-model:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1626,7 +1626,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-active-record-contract:
+  rails-active-record:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1636,7 +1636,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-active-storage-contract:
+  rails-active-storage:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1646,7 +1646,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-active-support-contract:
+  rails-active-support:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1656,7 +1656,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-asset-build-contract:
+  rails-asset-build-engineering:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1666,7 +1666,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-associations-contract:
+  rails-associations:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1676,7 +1676,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-authentication-contract:
+  rails-authentication:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1686,7 +1686,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-authorization-contract:
+  rails-authorization:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1706,7 +1706,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-hotwire-contract:
+  rails-hotwire:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1716,7 +1716,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-i18n-contract:
+  rails-i18n:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1736,7 +1736,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-rack-middleware-contract:
+  rails-rack-middleware-engineering:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1746,7 +1746,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-routing-contract:
+  rails-routing:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1766,7 +1766,7 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-validations-contract:
+  rails-validations:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1798,300 +1798,3 @@ evaluations:
 
   recovered-ruby-training-distinct-elements:
     source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-training/distinct-elements.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-training-equilibrium-index:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-training/equilibrium-index.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-training-majority-element:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-training/majority-element.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-training-power-of-two:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-training/power-of-two.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-training-shopping-cart:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-training/shopping-cart.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-training-smallest-missing:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-training/smallest-missing.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-training-triplet-sum:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-training/triplet-sum.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-workshop-enumerable-transform:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-workshop/enumerable-transform.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-workshop-external-api-client:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-workshop/external-api-client.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-workshop-method-contract:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-workshop/method-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-workshop-rails-authentication-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-workshop/rails-authentication-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-workshop-rails-rest-contract:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-workshop/rails-rest-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-workshop-ruby-gem-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-workshop/ruby-gem-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-workshop-service-object:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-workshop/service-object.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-ruby-workshop-voting-application:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-workshop/voting-application.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-security-authorization-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/security/authorization-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-security-parameterized-query-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/security/parameterized-query-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-abstraction-restraint:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-accessibility-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-accessibility-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-derived-state:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-derived-state.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-fullstack-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-migration-safety:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-migration-safety.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-minimal-change-root:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-minimal-change-root.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-native-before-dependency:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-native-before-dependency.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-performance-evidence:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-performance-evidence.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-postgres-invariant:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-postgres-invariant.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-rails-direct-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-rails-direct-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-react-state-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-react-state-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-security-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-security-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  recovered-stack-minimality-stack-minimality-service-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-service-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
