@@ -2,7 +2,7 @@
 
 ## Repository-side implementation status
 
-The skill library, pattern library, corpus-quality audit, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, and stack-minimality layer are implemented in the current release line. The runtime compatibility gate, machine-verifiable deprecation governance, and executable framework-drift detection layers are implemented through Iteration 147.
+The skill library, pattern library, corpus-quality audit, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, stack-minimality layer, runtime compatibility gate, deprecation governance, framework-drift detection, and validation-gate integrity preflight are implemented in the current release line. The repository-side implementation line is complete through Iteration 148.
 
 Current inventory:
 
@@ -25,6 +25,8 @@ The audit reports exact measurements rather than estimates for:
 - routing trigger collisions and stale manifest skill paths.
 
 The public evaluation corpus has 130 evaluation files / 476 cases. Campaigns provide empirical coverage for 102 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
+
+The campaign is 23 public cases × 3 repetitions = 69 model decisions.
 
 ## Release archive verification
 
