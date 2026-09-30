@@ -29,6 +29,11 @@ installation_paths = {
   "doctor" => installation.fetch("doctor"),
   "compatibility_checker" => installation.fetch("compatibility_checker")
 }
+framework_drift = manifest.fetch("framework_drift")
+framework_drift.each do |kind, path|
+  errors << "manifest framework_drift #{kind} missing file #{path}" unless File.file?(File.join(ROOT, path))
+end
+
 installation_paths.each do |kind, path|
   errors << "manifest installation #{kind} missing file #{path}" unless File.file?(File.join(ROOT, path))
 end
