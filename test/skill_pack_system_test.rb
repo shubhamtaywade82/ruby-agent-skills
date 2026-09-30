@@ -6,6 +6,8 @@ require "tmpdir"
 require_relative "../lib/ruby_agent_skills/skill_pack"
 
 class SkillPackSystemTest < Minitest::Test
+  # Compatibility scenarios intentionally share one integration boundary.
+  # rubocop:disable Metrics/ClassLength
   def build_pack
     root = Dir.mktmpdir("skill-pack")
     FileUtils.mkdir_p(File.join(root, "skills", "demo"))
@@ -314,4 +316,5 @@ class SkillPackSystemTest < Minitest::Test
     end
     assert_includes error.message, "ambiguous pattern"
   end
+  # rubocop:enable Metrics/ClassLength
 end
