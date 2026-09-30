@@ -30,7 +30,10 @@ module RubyAgentSkills
     end
 
     def validate(requirement)
-      Gem::Requirement.new(requirement.to_s)
+      requirements = requirement.to_s.split(",").map(&:strip).reject(&:empty?)
+      raise InvalidRequirement, "requirement must not be empty" if requirements.empty?
+
+      Gem::Requirement.new(*requirements)
     rescue ArgumentError => e
       raise InvalidRequirement, e.message
     end
