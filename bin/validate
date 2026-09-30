@@ -16,6 +16,8 @@ ruby "$ROOT/scripts/audit_corpus_quality.rb"
 ruby "$ROOT/scripts/audit_documentation_consistency.rb"
 ruby "$ROOT/scripts/audit_release_readiness.rb"
 ruby -I"$ROOT/test" "$ROOT/test/runtime_profile_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/version_constraint_test.rb"
+
 
 ruby -I"$ROOT/test" "$ROOT/test/security_audit_test.rb"
 
@@ -133,6 +135,8 @@ ruby -I"$ROOT/test" "$ROOT/test/stack_minimality_tools_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/corpus_quality_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/benchmark_fixture_controls_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/eval_runner_encoding_system_test.rb"
+
+ruby -I"$ROOT/test" "$ROOT/test/skill_pack_compatibility_cli_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/skill_frontmatter_spec_system_test.rb"
 
