@@ -13,9 +13,9 @@ class VersionConstraintTest < Minitest::Test
   end
 
   def test_supports_pessimistic_requirement
-    assert V.satisfies?("8.1.4", "~> 8.1")
+    assert V.satisfies?("8.1.4", "~> 8.1.0")
 
-    refute V.satisfies?("8.2.0", "~> 8.1")
+    refute V.satisfies?("8.2.0", "~> 8.1.0")
   end
 
   def test_supports_comma_separated_requirements
@@ -38,7 +38,7 @@ class VersionConstraintTest < Minitest::Test
       "rails" => { "resolved" => "8.1.4", "status" => "resolved" }
     }
 
-    result = V.evaluate({ "ruby" => ">= 3.2", "rails" => "~> 8.1" }, profile)
+    result = V.evaluate({ "ruby" => ">= 3.2", "rails" => "~> 8.1.0" }, profile)
 
     assert_equal "supported", result.fetch("status")
     assert_equal "supported", result.dig("requirements", "ruby", "status")
