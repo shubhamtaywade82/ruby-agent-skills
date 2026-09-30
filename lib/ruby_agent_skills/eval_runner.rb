@@ -84,9 +84,7 @@ module RubyAgentSkills
         runtime_profile = RuntimeProfile.call(temp_dir)
         result["runtime_profile"] = runtime_profile
         skill_pack = materialize_skill_pack(packer, evaluation, temp_dir, runtime_profile, skills_enabled)
-                     else
-                       packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
-                     end
+        result["compatibility"] = skill_pack.fetch("compatibility") if skills_enabled
 
         env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
         run_command(agent_command, temp_dir, agent_env(env), timeout, result["agent"])
