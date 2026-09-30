@@ -85,8 +85,11 @@ module RubyAgentSkills
           workspace: temp_dir,
           skills_enabled: skills_enabled
         )
+        compatibility = skill_pack.fetch("compatibility", {})
+        result["runtime_profile"] = runtime_profile
+        result["compatibility"] = compatibility
         result["configuration"]["runtime_profile"] = runtime_profile
-        result["configuration"]["compatibility"] = skill_pack.fetch("compatibility", {})
+        result["configuration"]["compatibility"] = compatibility
         env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
         run_command(agent_command, temp_dir, agent_env(env), timeout, result["agent"])
         run_git_snapshot(temp_dir, result["patch"])
