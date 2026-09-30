@@ -11,9 +11,7 @@ module RubyAgentSkills
     module_function
 
     def satisfies?(version, requirement)
-      Gem::Requirement.new(requirement.to_s).satisfied_by?(normalized_version(version))
-    rescue ArgumentError => e
-      raise InvalidRequirement, e.message
+      validate(requirement).satisfied_by?(normalized_version(version))
     end
 
     def evaluate(requirements, runtime_profile)
