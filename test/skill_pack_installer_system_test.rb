@@ -33,9 +33,13 @@ class SkillPackInstallerSystemTest < Minitest::Test
     File.write(File.join(dir, "AGENTS.md"), "# Agents\n", encoding: "UTF-8")
     FileUtils.cp(VERIFIER, File.join(dir, "bin", "skill-pack-verify"))
     File.write(File.join(dir, "bin", "stack-minimality"), "#!/usr/bin/env ruby\nputs \"ok\"\n", encoding: "UTF-8")
+    FileUtils.cp(
+      File.join(ROOT, "bin", "skill-pack-compatibility"),
+      File.join(dir, "bin", "skill-pack-compatibility")
+    )
     FileUtils.mkdir_p(File.join(dir, "lib", "ruby_agent_skills"))
     FileUtils.cp(File.join(ROOT, "bin", "verify-change"), File.join(dir, "bin", "verify-change"))
-    %w[change_verifier runtime_profile].each do |name|
+    %w[change_verifier runtime_profile version_constraint].each do |name|
       FileUtils.cp(File.join(ROOT, "lib", "ruby_agent_skills", "#{name}.rb"),
                    File.join(dir, "lib", "ruby_agent_skills", "#{name}.rb"))
     end
