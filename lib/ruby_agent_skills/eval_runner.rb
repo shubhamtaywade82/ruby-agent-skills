@@ -83,12 +83,7 @@ module RubyAgentSkills
         packer = SkillPack.new(root: root)
         runtime_profile = RuntimeProfile.call(temp_dir)
         result["runtime_profile"] = runtime_profile
-        skill_pack = if skills_enabled
-                       packer.materialize(
-                         evaluation: evaluation,
-                         workspace: temp_dir,
-                         runtime_profile: runtime_profile
-                       )
+        skill_pack = materialize_skill_pack(packer, evaluation, temp_dir, runtime_profile, skills_enabled)
                      else
                        packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
                      end
@@ -151,6 +146,16 @@ module RubyAgentSkills
         "patch" => { "git_repository" => false, "status" => nil, "diff_stat" => nil, "diff" => nil },
         "checks" => evaluation.fetch("checks", []).to_h { |check| [check, { "status" => "not_evaluated" }] }
       }
+    end
+
+    def materialize_skill_pack(packer, evaluation, workspace, runtime_profile, skills_enabled)
+      return packer.write_baseline_context(evaluation: evaluation, workspace: workspace) unless skills_enabled
+
+      packer.materialize(
+        evaluation: evaluation,
+        workspace: workspace,
+        runtime_profile: runtime_profile
+      )
     end
 
     def runner_env(evaluation, workspace, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
