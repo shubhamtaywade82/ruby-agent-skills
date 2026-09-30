@@ -113,6 +113,105 @@ class SkillPackSystemTest < Minitest::Test
     assert_equal Digest::SHA256.file(File.join(root, "skill-manifest.yml")).hexdigest, manifest.fetch("skill_manifest_sha256")
   end
 
+  def test_materialize_rejects_known_incompatible_skill
+    root = build_pack
+    manifest = File.join(root, "skill-manifest.yml")
+    File.write(
+      manifest,
+      File.read(manifest, encoding: "UTF-8").sub(
+        "          skills:\n",
+        "          skills:\n"
+      ).sub(
+        "        demo:\n",
+        "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
+      )
+    )
+
+    workspace = Dir.mktmpdir("workspace")
+    pack = RubyAgentSkills::SkillPack.new(root: root)
+    runtime_profile = {
+      "ruby" => { "resolved" => "3.3.12", "status" => "resolved" }
+    }
+
+    error = assert_raises(RubyAgentSkills::SkillPack::IncompatibleError) do
+      pack.materialize(
+        evaluation: { "prompt" => "Demo", "skills" => ["demo"], "patterns" => [] },
+        workspace: workspace,
+        runtime_profile: runtime_profile
+      )
+    end
+
+    assert_includes error.message, "demo"
+    assert_includes error.message, "Ruby"
+  end
+
+  def test_materialize_allows_unknown_runtime_without_strict_mode
+    root = build_pack
+    manifest = File.join(root, "skill-manifest.yml")
+    File.write(
+      manifest,
+      File.read(manifest, encoding: "UTF-8").sub(
+        "        demo:\n",
+        "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
+      )
+    )
+
+    workspace = Dir.mktmpdir("workspace")
+    pack = RubyAgentSkills::SkillPack.new(root: root)
+    result = pack.materialize(
+      evaluation: { "prompt" => "Demo", "skills" => ["demo"], "patterns" => [] },
+      workspace: workspace,
+      runtime_profile: { "ruby" => { "resolved" => nil, "status" => "unknown" } }
+    )
+
+    assert_equal "unknown", JSON.parse(File.read(result.fetch("manifest"), encoding: "UTF-8")).dig("compatibility", "requirements", "ruby", "status")
+  end
+
+  def test_strict_materialize_rejects_unknown_runtime
+    root = build_pack
+    manifest = File.join(root, "skill-manifest.yml")
+    File.write(
+      manifest,
+      File.read(manifest, encoding: "UTF-8").sub(
+        "        demo:\n",
+        "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
+      )
+    )
+
+    workspace = Dir.mktmpdir("workspace")
+    pack = RubyAgentSkills::SkillPack.new(root: root)
+
+    assert_raises(RubyAgentSkills::SkillPack::IncompatibleError) do
+      pack.materialize(
+        evaluation: { "prompt" => "Demo", "skills" => ["demo"], "patterns" => [] },
+        workspace: workspace,
+        runtime_profile: { "ruby" => { "resolved" => nil, "status" => "unknown" } },
+        strict_compatibility: true
+      )
+    end
+  end
+
+  def test_compatibility_report_is_available_without_materializing
+    root = build_pack
+    manifest = File.join(root, "skill-manifest.yml")
+    File.write(
+      manifest,
+      File.read(manifest, encoding: "UTF-8").sub(
+        "        demo:\n",
+        "        demo:\n          compatibility:\n            ruby: \">= 3.2\"\n"
+      )
+    )
+
+    pack = RubyAgentSkills::SkillPack.new(root: root)
+    report = pack.compatibility_report(
+      evaluation: { "skills" => ["demo"], "patterns" => [] },
+      runtime_profile: { "ruby" => { "resolved" => "3.3.12", "status" => "resolved" } }
+    )
+
+    assert_equal "supported", report.fetch("status")
+    assert_equal "supported", report.dig("requirements", "demo", "ruby", "status")
+  end
+
   def test_ambiguous_basename_pattern_is_rejected
     root = build_pack
     pack = RubyAgentSkills::SkillPack.new(root: root)
