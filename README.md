@@ -32,6 +32,16 @@ Every release publishes a `SHA256SUMS` checksum alongside the archive. See [Inst
 
 After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-root>` to verify the installed metadata, skill inventory, embedded verifier, and content integrity before using the pack in a controlled agent environment.
 
+## Runtime compatibility
+
+The pack includes a deterministic runtime compatibility gate for version-bound skills/patterns:
+
+    ruby bin/skill-pack-compatibility /path/to/rails-app \
+      --pattern patterns/rails/active-job-continuation-contract \
+      --json
+
+Known incompatibilities fail immediately. Missing runtime evidence is reported as `unknown`; add `--strict` when unknown evidence must block use. The evaluation runner records the target runtime profile and applies the same gate to materialized version-bound patterns.
+
 ## Routing evidence integrity
 
 `bin/routing-compare` recomputes routing metrics from the recorded run data before applying the remediation gate. A campaign whose recorded metrics have been altered or drifted from its runs is rejected rather than treated as benchmark evidence.
@@ -105,7 +115,7 @@ skills/rails-active-record/
 | Capability | Count |
 |---|---:|
 | Skills | **93** |
-| Implementation patterns | **443** |
+| Implementation patterns | **446** |
 | Evaluation cases | **476** |
 | Dedicated system/contract tests | **93** |
 | Manifest version | **2** |
@@ -614,7 +624,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **93 skills**, **443 implementation patterns**, **476 evaluation cases**, and **92 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **93 skills**, **446 implementation patterns**, **476 evaluation cases**, and **94 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
