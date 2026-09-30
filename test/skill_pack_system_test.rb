@@ -146,7 +146,7 @@ class SkillPackSystemTest < Minitest::Test
     end
 
     assert_includes error.message, "demo"
-    assert_includes error.message, "Ruby"
+    assert_includes error.message, "ruby"
   end
 
   def test_materialize_allows_unknown_runtime_without_strict_mode
@@ -162,7 +162,7 @@ class SkillPackSystemTest < Minitest::Test
       runtime_profile: { "ruby" => { "resolved" => nil, "status" => "unknown" } }
     )
 
-    assert_equal "unknown", JSON.parse(File.read(result.fetch("manifest"), encoding: "UTF-8")).dig("compatibility", "requirements", "ruby", "status")
+    assert_equal "unknown", JSON.parse(File.read(result.fetch("manifest"), encoding: "UTF-8")).dig("compatibility", "requirements", "demo", "requirements", "ruby", "status")
   end
 
   def test_strict_materialize_rejects_unknown_runtime
