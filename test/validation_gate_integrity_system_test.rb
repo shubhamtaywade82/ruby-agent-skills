@@ -13,14 +13,18 @@ class ValidationGateIntegritySystemTest < Minitest::Test
   def test_validation_gate_bootstraps_root_before_using_it
     script = validate_script
 
-    assert_match(/A#!\/usr\/bin\/env bash\nset -euo pipefail\n\nROOT="\$\(cd "\$\(dirname "\$0"\)\/\.\." && pwd\)"\n/, script)
+    pattern = %r{A#!\/usr\/bin\/env bash\nset -euo pipefail\n\nROOT="\$\(cd "\$\(dirname "\$0"\)\/\.\." && pwd\)"\n}
+    assert_match(pattern, script)
   end
 
   def test_validation_gate_uses_repository_root_for_all_repo_paths
     script = validate_script
 
-    refute_match(/(?:^|\n)ruby "(?:scripts|test)\//, script)
-    refute_match(/(?:^|\n)ruby -I"\$ROOT\/test" "(?:\/test|\/scripts)\//, script)
+    refute_match(%r{(?:^|\n)ruby "(?:scripts|test)/}, script)
+    refute_match(
+      %r{(?:^|\n)ruby -I"\$ROOT/test" "(?:/test|/scripts)/},
+      script
+    )
   end
 
   def test_validation_gate_invokes_the_framework_drift_check_and_test
