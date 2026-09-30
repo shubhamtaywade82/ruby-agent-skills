@@ -28,6 +28,12 @@ Human-oriented logs are difficult to consume consistently across operational sys
 
 Resolve the Rails version. Inspect existing `Rails.error`, ActiveSupport::Notifications, logging, metrics, tracing, and event conventions before adding a new event stream.
 
+## Example
+
+```ruby
+Rails.event.notify("user.signup", user_id: user.id)
+```
+
 ## Implementation procedure
 
 1. Define a stable event name and ownership boundary.
