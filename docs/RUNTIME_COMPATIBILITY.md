@@ -48,3 +48,7 @@ These patterns are intentionally version-bound because their contract depends on
 The gate does not infer compatibility from a pattern's prose, from current online documentation, or from a successful installation alone. It only enforces explicit machine-readable constraints against observed runtime evidence.
 
 Unknown compatibility is not silently converted into supported compatibility.
+
+## Evaluation evidence
+
+Evaluation results retain the resolved target runtime profile and compatibility report so compatibility decisions can be replayed without re-resolving the source repository.
