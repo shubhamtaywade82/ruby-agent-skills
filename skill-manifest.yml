@@ -20,6 +20,10 @@ defaults:
   prefer_existing_conventions: true
   require_version_awareness: true
 
+framework_drift:
+  registry: framework-drift.yml
+  audit: scripts/audit_framework_drift.rb
+
 routing:
   contract: router/ROUTING.md
   cases: router/ROUTING_CASES.yml
