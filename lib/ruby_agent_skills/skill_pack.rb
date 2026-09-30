@@ -4,10 +4,12 @@ require "digest"
 require "fileutils"
 require "json"
 require "yaml"
+require_relative "version_constraint"
 
 module RubyAgentSkills
   class SkillPack
     class Error < StandardError; end
+    class IncompatibleError < Error; end
 
     attr_reader :root
 
@@ -21,7 +23,7 @@ module RubyAgentSkills
       )
     end
 
-    def materialize(evaluation:, workspace:)
+    def materialize(evaluation:, workspace:, runtime_profile: nil, strict_compatibility: false)
       target = File.join(workspace, ".ruby-agent-eval", "skill-pack")
       skills_dir = File.join(target, "skills")
       patterns_dir = File.join(target, "patterns")
@@ -29,6 +31,9 @@ module RubyAgentSkills
       FileUtils.mkdir_p(patterns_dir)
 
       selected_skills = Array(evaluation.fetch("skills", [])).map(&:to_s)
+      compatibility = compatibility_report(evaluation: evaluation, runtime_profile: runtime_profile || {})
+      enforce_compatibility!(compatibility, strict: strict_compatibility)
+
       selected_patterns = Array(evaluation.fetch("patterns", [])).map do |pattern|
         pattern.to_s.sub(%r{\Apattern:}, "")
       end
@@ -57,7 +62,8 @@ module RubyAgentSkills
         "skills_enabled" => true,
         "skill_manifest_sha256" => Digest::SHA256.file(@manifest_path).hexdigest,
         "skills" => skill_files,
-        "patterns" => pattern_files
+        "patterns" => pattern_files,
+        "compatibility" => compatibility
       }
 
       manifest_path = File.join(target, "manifest.json")
@@ -113,6 +119,57 @@ module RubyAgentSkills
     end
 
     private
+
+    def compatibility_report(evaluation:, runtime_profile:)
+      requirements = {}
+
+      Array(evaluation.fetch("skills", [])).map(&:to_s).each do |skill|
+        metadata = @manifest.fetch("skills").fetch(skill)
+        requirements[skill] = VersionConstraint.evaluate(metadata.fetch("compatibility", {}), runtime_profile)
+      end
+
+      Array(evaluation.fetch("patterns", [])).map { |pattern| pattern.to_s.sub(%r{\Apattern:}, "") }.each do |pattern|
+        source = resolve_pattern(pattern)
+        metadata = pattern_metadata(source)
+        requirements[pattern] = VersionConstraint.evaluate(metadata.fetch("compatibility", {}), runtime_profile)
+      end
+
+      statuses = requirements.values.map { |value| value.fetch("status") }
+      {
+        "status" => aggregate_compatibility_status(statuses),
+        "requirements" => requirements
+      }
+    end
+
+    def enforce_compatibility!(report, strict:)
+      status = report.fetch("status")
+      return if status == "supported" || status == "unspecified"
+      return if status == "unknown" && !strict
+
+      raise IncompatibleError, "incompatible skill/pattern compatibility: #{report.fetch("requirements").inspect}"
+    end
+
+    def aggregate_compatibility_status(statuses)
+      return "unsupported" if statuses.include?("unsupported")
+      return "conflict" if statuses.include?("conflict")
+      return "unknown" if statuses.include?("unknown")
+      return "supported" if statuses.include?("supported")
+      "unspecified"
+    end
+
+    def pattern_metadata(source)
+      path = File.join(@root, source)
+      text = File.read(path, encoding: "UTF-8")
+      return {} unless text.start_with?("---\n")
+
+      closing = text.index("\n---\n", 4)
+      return {} unless closing
+
+      metadata = YAML.safe_load(text[4...closing], permitted_classes: [], aliases: false)
+      metadata.is_a?(Hash) ? metadata : {}
+    rescue Psych::Exception
+      {}
+    end
 
     def resolve_pattern(pattern)
       # A pattern path can be registered under more than one family (for
