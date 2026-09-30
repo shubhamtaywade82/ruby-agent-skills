@@ -34,7 +34,7 @@ After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-r
 
 ## Runtime compatibility
 
-The pack includes a deterministic runtime compatibility gate for version-bound skills/patterns:
+The pack includes a deterministic runtime compatibility gate for version-bound skills/patterns: Version-bound pattern requirements are checked against the target repository's resolved runtime evidence before materialization.
 
     ruby bin/skill-pack-compatibility /path/to/rails-app \
       --pattern patterns/rails/active-job-continuation-contract \
