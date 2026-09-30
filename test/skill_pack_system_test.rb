@@ -304,6 +304,7 @@ class SkillPackSystemTest < Minitest::Test
     )
 
     manifest = JSON.parse(File.read(result.fetch("manifest"), encoding: "UTF-8"))
+
     assert_equal "supported", manifest.dig("compatibility", "status")
   end
 
