@@ -49,14 +49,18 @@ SHIPPED_PATHS = %w[
   README.md
   SECURITY.md
   bin/install
+  bin/skill-pack-compatibility
   bin/skill-pack-doctor
   bin/skill-pack-verify
   bin/stack-minimality
   bin/verify-change
+  docs/EVAL_RESULT_SCHEMA.md
+  docs/RUNTIME_COMPATIBILITY.md
   docs/SKILL_CONTRACT.md
   docs/VERIFY_CHANGE.md
   lib/ruby_agent_skills/change_verifier.rb
   lib/ruby_agent_skills/runtime_profile.rb
+  lib/ruby_agent_skills/version_constraint.rb
   router/ROUTING.md
   skill-manifest.yml
 ].freeze
