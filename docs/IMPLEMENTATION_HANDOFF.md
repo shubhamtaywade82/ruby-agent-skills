@@ -9,7 +9,7 @@ Current inventory:
 - 93 skills
 - 446 implementation patterns
 - 476 evaluation cases
-- 95 system/contract tests
+- 96 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -199,6 +199,15 @@ Before using version-bound material, run:
 
 The checker reads the target repository with `runtime-profile`, reports supported/unsupported/unknown/conflict status, and can fail closed with `--strict`. The evaluator also records the target runtime profile and blocks known-incompatible material during skills-enabled runs.
 
+## Framework drift
+
+Audit version-sensitive Ruby/Rails code examples before releasing a skill-pack change:
+
+    ruby scripts/audit_framework_drift.rb
+
+The detector reads `framework-drift.yml`, scans Ruby code fences under `skills/` and `patterns/`, and reports exact file/line findings for registered removals/deprecations. Prose is intentionally not scanned. Historical examples that must retain a deprecated API require an explicit in-block `framework-drift: allow <entry-id>` directive.
+
+The registry currently covers a bounded set of Rails 6.1 and 8.1 findings backed by official Rails release notes; it must not be treated as exhaustive framework-drift coverage.
 ## Installation doctor
 
 After installation and before controlled agent use:
