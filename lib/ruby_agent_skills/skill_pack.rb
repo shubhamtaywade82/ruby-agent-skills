@@ -143,7 +143,7 @@ module RubyAgentSkills
 
     def enforce_compatibility!(report, strict:)
       status = report.fetch("status")
-      return if status == "supported" || status == "unspecified"
+      return if %w[supported unspecified].include?(status)
       return if status == "unknown" && !strict
 
       raise IncompatibleError, "incompatible skill/pattern compatibility: #{report.fetch("requirements").inspect}"
@@ -154,6 +154,7 @@ module RubyAgentSkills
       return "conflict" if statuses.include?("conflict")
       return "unknown" if statuses.include?("unknown")
       return "supported" if statuses.include?("supported")
+
       "unspecified"
     end
 
