@@ -981,6 +981,8 @@ benchmarks:
     campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
     comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/observability/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
   react-typescript-typescript-core:
