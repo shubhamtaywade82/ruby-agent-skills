@@ -11,9 +11,15 @@ options = { skills: [], patterns: [], strict: false, json: false }
 
 OptionParser.new do |opts|
   opts.banner = "usage: ruby bin/skill-pack-compatibility TARGET_ROOT [options]"
-  opts.on("--skill ID", "Skill ID to evaluate (repeatable)") { |value| options[:skills] << value }
-  opts.on("--pattern ID", "Pattern ID/path to evaluate (repeatable)") { |value| options[:patterns] << value }
-  opts.on("--strict", "Treat unknown/conflicted runtime evidence as a compatibility failure") { options[:strict] = true }
+  opts.on("--skill ID", "Skill ID to evaluate (repeatable)") do |value|
+    options[:skills] << value
+  end
+  opts.on("--pattern ID", "Pattern ID/path to evaluate (repeatable)") do |value|
+    options[:patterns] << value
+  end
+  opts.on("--strict", "Treat unknown/conflicted runtime evidence as a compatibility failure") do
+    options[:strict] = true
+  end
   opts.on("--json", "Emit JSON") { options[:json] = true }
 end.parse!
 
@@ -22,7 +28,9 @@ abort "usage: ruby bin/skill-pack-compatibility TARGET_ROOT [options]" unless ta
 
 target = File.expand_path(target)
 abort "target repository does not exist: #{target}" unless Dir.exist?(target)
-abort "select at least one --skill or --pattern" if options[:skills].empty? && options[:patterns].empty?
+if options[:skills].empty? && options[:patterns].empty?
+  abort "select at least one --skill or --pattern"
+end
 
 runtime_profile = RubyAgentSkills::RuntimeProfile.call(target)
 evaluation = {
@@ -40,12 +48,12 @@ if options[:json]
   puts JSON.pretty_generate(report)
 else
   puts "Skill-pack compatibility"
-  puts "  status: #{report.fetch("status")}"
+  puts "  status: #{report.fetch('status')}"
   puts "  target: #{target}"
   report.fetch("requirements").each do |name, result|
-    puts "  #{name}: #{result.fetch("status")}"
+    puts "  #{name}: #{result.fetch('status')}"
   end
 end
 
-exit 1 if report.fetch("status") == "unsupported" || report.fetch("status") == "conflict"
+exit 1 if %w[unsupported conflict].include?(report.fetch("status"))
 exit 1 if options[:strict] && report.fetch("status") == "unknown"
