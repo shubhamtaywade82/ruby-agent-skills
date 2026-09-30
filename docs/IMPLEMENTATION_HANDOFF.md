@@ -2,7 +2,7 @@
 
 ## Repository-side implementation status
 
-The skill library, pattern library, corpus-quality audit, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, and stack-minimality layer are implemented in the current release line. The runtime compatibility gate and version-bound Rails pattern layer are implemented through Iteration 145.
+The skill library, pattern library, corpus-quality audit, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, and stack-minimality layer are implemented in the current release line. The runtime compatibility gate and version-bound Rails pattern layer are implemented through Iteration 145; machine-verifiable deprecation governance for the React/TypeScript migration is implemented through Iteration 146.
 
 Current inventory:
 
