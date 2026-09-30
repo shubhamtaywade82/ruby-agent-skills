@@ -7,6 +7,8 @@ require "tmpdir"
 require "fileutils"
 
 class SkillPackCompatibilityCliSystemTest < Minitest::Test
+  # The CLI tests exercise the complete external boundary.
+  # rubocop:disable Metrics/MethodLength
   ROOT = File.expand_path("..", __dir__)
 
   def build_project
@@ -15,12 +17,12 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
     root
   end
 
-  def run_cli(project, *args)
+  def run_cli(project, *)
     Open3.capture3(
       RbConfig.ruby,
       File.join(ROOT, "bin", "skill-pack-compatibility"),
       project,
-      *args,
+      *
       chdir: ROOT
     )
   end
@@ -39,12 +41,19 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
       LOCK
     )
 
-    stdout, stderr, status = run_cli(project, "--pattern", "patterns/rails/active-job-continuation-contract", "--json")
+    stdout, stderr, status = run_cli(
+      project,
+      "--pattern",
+      "patterns/rails/active-job-continuation-contract",
+      "--json"
+    )
 
     assert_predicate status, :success?, "#{stdout}
 #{stderr}"
+
     report = JSON.parse(stdout)
     assert_equal "supported", report.fetch("status")
+
     assert_equal "supported",
                  report.dig("requirements", "patterns/rails/active-job-continuation-contract", "rails", "status")
   end
@@ -84,4 +93,5 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
 
     assert_includes validator, "test/skill_pack_compatibility_cli_system_test.rb"
   end
+  # rubocop:enable Metrics/MethodLength
 end
