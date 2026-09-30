@@ -980,6 +980,89 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/observability/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  active-job:
+    fixture_registry: benchmarks/active-job/fixtures.yml
+    fixture_root: benchmarks/active-job/fixtures
+    verifier: scripts/verify_active_job_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/active-job/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  zeitwerk:
+    fixture_registry: benchmarks/zeitwerk/fixtures.yml
+    fixture_root: benchmarks/zeitwerk/fixtures
+    verifier: scripts/verify_zeitwerk_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/zeitwerk/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  performance:
+    fixture_registry: benchmarks/performance/fixtures.yml
+    fixture_root: benchmarks/performance/fixtures
+    verifier: scripts/verify_performance_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/performance/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  ruby-training:
+    fixture_registry: benchmarks/ruby-training/fixtures.yml
+    fixture_root: benchmarks/ruby-training/fixtures
+    verifier: scripts/verify_training_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/ruby-training/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  ruby-workshop:
+    fixture_registry: benchmarks/ruby-workshop/fixtures.yml
+    fixture_root: benchmarks/ruby-workshop/fixtures
+    verifier: scripts/verify_workshop_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/ruby-workshop/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  concurrency:
+    fixture_registry: benchmarks/concurrency/fixtures.yml
+    fixture_root: benchmarks/concurrency/fixtures
+    verifier: scripts/verify_concurrency_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/concurrency/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  security:
+    fixture_registry: benchmarks/security/fixtures.yml
+    fixture_root: benchmarks/security/fixtures
+    verifier: scripts/verify_security_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/security/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+
+  rails:
+    fixture_registry: benchmarks/rails/fixtures.yml
+    fixture_root: benchmarks/rails/fixtures
+    verifier: scripts/verify_rails_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/rails/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+
+  design-patterns:
+    fixture_registry: benchmarks/design-patterns/fixtures.yml
+    fixture_root: benchmarks/design-patterns/fixtures
+    verifier: scripts/verify_design_pattern_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/design-patterns/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
   eval-active-job-concurrency-control:
