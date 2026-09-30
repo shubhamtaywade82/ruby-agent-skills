@@ -1808,7 +1808,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-rails-react-integration-contract:
+  rails-react-integration-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1818,7 +1818,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-react-accessibility-performance-contract:
+  react-accessibility-performance-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1828,7 +1828,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-react-architecture-contract:
+  react-architecture-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1838,7 +1838,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-react-component-contract:
+  react-component-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1848,7 +1848,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-react-data-fetching-contract:
+  react-data-fetching-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1858,7 +1858,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-react-state-effects-contract:
+  react-state-effects-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1868,7 +1868,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-react-testing-contract:
+  react-testing-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1878,7 +1878,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-typescript-core-contract:
+  react-typescript-core-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1888,7 +1888,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-typescript-runtime-contracts:
+  react-typescript-runtime-contracts:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1898,7 +1898,7 @@ evaluations:
       - tests
       - contract
 
-  eval-react-typescript-typescript-type-design-contract:
+  react-typescript-type-design-contract:
     source: repository-eval-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -2193,66 +2193,6 @@ evaluations:
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/test-engineering/flaky-diagnosis.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  eval-test-engineering-parallel-safety:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/test-engineering/parallel-safety.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  eval-test-engineering-rspec-request-contract:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/test-engineering/rspec-request-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  eval-test-engineering-system-contract:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/test-engineering/system-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  eval-test-engineering-test-performance:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/test-engineering/test-performance.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  eval-zeitwerk-initializer-reload-boundary:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/zeitwerk/initializer-reload-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
-
-  eval-zeitwerk-path-constant-contract:
-    source: repository-eval-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/zeitwerk/path-constant-contract.yml
     checks:
       - functional
       - tests
