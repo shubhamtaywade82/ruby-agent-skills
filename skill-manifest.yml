@@ -1065,6 +1065,29 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
+  stack-minimality:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
+      - evals/stack-minimality/stack-minimality-accessibility-boundary.yml
+      - evals/stack-minimality/stack-minimality-derived-state.yml
+      - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
+      - evals/stack-minimality/stack-minimality-migration-safety.yml
+      - evals/stack-minimality/stack-minimality-minimal-change-root.yml
+      - evals/stack-minimality/stack-minimality-native-before-dependency.yml
+      - evals/stack-minimality/stack-minimality-performance-evidence.yml
+      - evals/stack-minimality/stack-minimality-postgres-invariant.yml
+      - evals/stack-minimality/stack-minimality-rails-direct-boundary.yml
+      - evals/stack-minimality/stack-minimality-react-state-boundary.yml
+      - evals/stack-minimality/stack-minimality-security-boundary.yml
+      - evals/stack-minimality/stack-minimality-service-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   eval-active-job-concurrency-control:
     source: active-job-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
@@ -2145,135 +2168,18 @@ evaluations:
       - tests
       - contract
 
-  eval-stack-minimality-stack-minimality-abstraction-restraint:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-accessibility-boundary:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-accessibility-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-derived-state:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-derived-state.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-fullstack-boundary:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-migration-safety:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-migration-safety.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-minimal-change-root:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-minimal-change-root.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-native-before-dependency:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-native-before-dependency.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-performance-evidence:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-performance-evidence.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-postgres-invariant:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-postgres-invariant.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-rails-direct-boundary:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-rails-direct-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-react-state-boundary:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-react-state-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-security-boundary:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-security-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
-  eval-stack-minimality-stack-minimality-service-boundary:
-    source: stack-minimality-evaluation-corpus-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/stack-minimality/stack-minimality-service-boundary.yml
-    checks:
-      - functional
-      - tests
-      - contract
 
   eval-test-engineering-boundary-selection:
     source: test-engineering-evaluation-corpus-v1
