@@ -55,28 +55,35 @@ class FrameworkDriftSystemTest < Minitest::Test
   end
 
   def test_scanner_matches_fixture_pattern_inside_code_fence
-    with_fixture(<<~MARKDOWN) do |root, registry|
+    with_fixture(fixture_markdown) do |root, registry|
+      findings = scanner_for(root, registry).call
+
+      assert_equal 1, findings.length, findings.inspect
+      assert_includes findings.first, "rails-update-attributes"
+    end
+  end
+
+  def fixture_markdown
+    <<~MARKDOWN
       # Example
 
       ```ruby
       order.update_attributes!(status: :paid)
       ```
     MARKDOWN
-      data = YAML.safe_load(
-        File.read(registry, encoding: "UTF-8"),
-        permitted_classes: [],
-        aliases: false
-      )
-      scanner = RubyAgentSkills::FrameworkDriftScanner.new(
-        root: root,
-        entries: data.fetch("entries"),
-        scan_roots: data.fetch("policy").fetch("scan_roots")
-      )
+  end
 
-      findings = scanner.call
-      assert_equal 1, findings.length, findings.inspect
-      assert_includes findings.first, "rails-update-attributes"
-    end
+  def scanner_for(root, registry)
+    data = YAML.safe_load(
+      File.read(registry, encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    RubyAgentSkills::FrameworkDriftScanner.new(
+      root: root,
+      entries: data.fetch("entries"),
+      scan_roots: data.fetch("policy").fetch("scan_roots")
+    )
   end
 
   def test_detects_deprecated_api_inside_ruby_code_fence
