@@ -60,6 +60,7 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
       report.dig(
         "requirements",
         "patterns/rails/active-job-continuation-contract",
+        "requirements",
         "rails",
         "status"
       )
