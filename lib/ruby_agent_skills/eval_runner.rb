@@ -80,18 +80,11 @@ module RubyAgentSkills
         File.write(prompt_path, evaluation.fetch("prompt"), encoding: "UTF-8")
         File.write(eval_path, YAML.dump(evaluation.reject { |k, _| k == "__path" }), encoding: "UTF-8")
 
-        packer = SkillPack.new(root: root)
-        runtime_profile = RuntimeProfile.call(temp_dir)
-        skill_pack = if skills_enabled
-                       packer.materialize(
-                         evaluation: evaluation,
-                         workspace: temp_dir,
-                         runtime_profile: runtime_profile
-                       )
-                     else
-                       packer.write_baseline_context(evaluation: evaluation, workspace: temp_dir)
-                     end
-
+        skill_pack, runtime_profile = materialize_skill_pack(
+          evaluation: evaluation,
+          workspace: temp_dir,
+          skills_enabled: skills_enabled
+        )
         result["configuration"]["runtime_profile"] = runtime_profile
         result["configuration"]["compatibility"] = skill_pack.fetch("compatibility", {})
         env = runner_env(evaluation, temp_dir, prompt_path, eval_path, result_path, skill_pack, skills_enabled)
@@ -168,6 +161,21 @@ module RubyAgentSkills
         "RUBY_AGENT_CONTEXT_FILE" => skill_pack.fetch("context"),
         "RUBY_AGENT_METADATA_FILE" => File.join(File.dirname(result_path), "agent-metadata.json")
       }
+    end
+
+    def materialize_skill_pack(evaluation:, workspace:, skills_enabled:)
+      runtime_profile = RuntimeProfile.call(workspace)
+      packer = SkillPack.new(root: root)
+      skill_pack = if skills_enabled
+                     packer.materialize(
+                       evaluation: evaluation,
+                       workspace: workspace,
+                       runtime_profile: runtime_profile
+                     )
+                   else
+                     packer.write_baseline_context(evaluation: evaluation, workspace: workspace)
+                   end
+      [skill_pack, runtime_profile]
     end
 
     # The agent does not receive the benchmark repository root: it holds the
