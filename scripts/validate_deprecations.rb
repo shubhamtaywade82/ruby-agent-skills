@@ -9,7 +9,9 @@ MIGRATION_DOC = "docs/REACT_AGENT_SKILLS_MIGRATION.md"
 REQUIRED_SCOPE = "new_standalone_react_typescript_work"
 
 def validate_status_and_scope(errors, skill, entry)
-  errors << "deprecation #{skill} must have status deprecated" unless entry["status"] == "deprecated"
+  unless entry["status"] == "deprecated"
+    errors << "deprecation #{skill} must have status deprecated"
+  end
   return if entry["scope"] == REQUIRED_SCOPE
 
   errors << "deprecation #{skill} has an invalid scope"
