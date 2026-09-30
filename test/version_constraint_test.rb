@@ -6,10 +6,15 @@ require_relative "../lib/ruby_agent_skills/version_constraint"
 class VersionConstraintTest < Minitest::Test
   V = RubyAgentSkills::VersionConstraint
 
-  def test_supports_standard_gem_requirements
+  def test_supports_greater_than_requirement
     assert V.satisfies?("8.1.4", ">= 8.1")
-    assert V.satisfies?("8.1.4", "~> 8.1")
+
     refute V.satisfies?("7.2.2", ">= 8.1")
+  end
+
+  def test_supports_pessimistic_requirement
+    assert V.satisfies?("8.1.4", "~> 8.1")
+
     refute V.satisfies?("8.2.0", "~> 8.1")
   end
 
@@ -33,10 +38,7 @@ class VersionConstraintTest < Minitest::Test
       "rails" => { "resolved" => "8.1.4", "status" => "resolved" }
     }
 
-    result = V.evaluate(
-      { "ruby" => ">= 3.2", "rails" => "~> 8.1" },
-      profile
-    )
+    result = V.evaluate({ "ruby" => ">= 3.2", "rails" => "~> 8.1" }, profile)
 
     assert_equal "supported", result.fetch("status")
     assert_equal "supported", result.dig("requirements", "ruby", "status")
