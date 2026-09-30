@@ -444,10 +444,11 @@ Added `bin/verify-change`, a provider-neutral verifier that runs a downstream pr
 
 ---
 
+## Iteration 144 — Agent Skills Frontmatter Contract Validation
+
 ## Iteration 145 — Executable Runtime Compatibility Gate
 
 Iteration 145 turns the existing runtime-compatibility skill into executable infrastructure: semver requirements, selected skill/pattern compatibility reports, materialization enforcement, target-runtime evidence in evaluations, an installed-pack CLI, and three explicit Rails 8.1 version-bound patterns. Known-incompatible or conflicting material is blocked without claiming empirical model outcomes.
 
-## Iteration 144 — Agent Skills Frontmatter Contract Validation
 
 Iteration 144 extends skill validation to enforce the current Agent Skills frontmatter contract for name, description, optional compatibility/metadata, and allowed-tools typing. A dedicated system test exercises valid and invalid metadata, including length limits and naming constraints, and is included in the repository validation gate. The documentation audit also binds the public routing campaign's documented run count to its manifest, preventing stale handoff cardinality.
