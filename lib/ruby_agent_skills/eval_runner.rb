@@ -146,12 +146,7 @@ module RubyAgentSkills
         metadata_dir = File.join(temp_dir, ".ruby-agent-eval")
         FileUtils.mkdir_p(metadata_dir)
 
-        prompt_path = File.join(metadata_dir, "prompt.md")
-        eval_path = File.join(metadata_dir, "evaluation.yml")
-        result_path = File.join(metadata_dir, "result.json")
-
-        File.write(prompt_path, evaluation.fetch("prompt"), encoding: "UTF-8")
-        File.write(eval_path, YAML.dump(evaluation.reject { |k, _| k == "__path" }), encoding: "UTF-8")
+        prompt_path, eval_path, result_path = write_evaluation_metadata(metadata_dir, evaluation)
 
         skill_pack, runtime_profile = materialize_skill_pack(
           evaluation: evaluation,
@@ -176,6 +171,15 @@ module RubyAgentSkills
         apply_verifier_result(result, result_path)
         apply_agent_metadata(result, env.fetch("RUBY_AGENT_METADATA_FILE"))
       end
+    end
+
+    def write_evaluation_metadata(metadata_dir, evaluation)
+      prompt_path = File.join(metadata_dir, "prompt.md")
+      eval_path = File.join(metadata_dir, "evaluation.yml")
+      result_path = File.join(metadata_dir, "result.json")
+      File.write(prompt_path, evaluation.fetch("prompt"), encoding: "UTF-8")
+      File.write(eval_path, YAML.dump(evaluation.reject { |k, _| k == "__path" }), encoding: "UTF-8")
+      [prompt_path, eval_path, result_path]
     end
 
     def materialize_skill_pack(evaluation:, workspace:, skills_enabled:)
