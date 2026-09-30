@@ -28,6 +28,23 @@ A long-running job can lose progress when a worker stops between durable steps. 
 
 Resolve the Rails version and job adapter first. Inspect existing retry, idempotency, persistence, and worker lifecycle conventions before adopting continuations.
 
+## Example
+
+```ruby
+class ProcessImportJob < ApplicationJob
+  include ActiveJob::Continuable
+
+  def perform(import_id)
+    step :process_records do |step|
+      Import.find(import_id).records.find_each(start: step.cursor) do |record|
+        record.process!
+        step.advance! from: record.id
+      end
+    end
+  end
+end
+```
+
 ## Implementation procedure
 
 1. Define durable step boundaries and persisted progress.
