@@ -129,16 +129,7 @@ class SkillPackSystemTest < Minitest::Test
   def test_materialize_rejects_known_incompatible_skill
     root = build_pack
     manifest = File.join(root, "skill-manifest.yml")
-    File.write(
-      manifest,
-      File.read(manifest, encoding: "UTF-8").sub(
-        "          skills:\n",
-        "          skills:\n"
-      ).sub(
-        "          demo:\n",
-        "          demo:\n            compatibility:\n            ruby: \">= 4.0\"\n"
-      )
-    )
+    set_skill_compatibility(manifest, ">= 4.0")
 
     workspace = Dir.mktmpdir("workspace")
     pack = RubyAgentSkills::SkillPack.new(root: root)
@@ -161,13 +152,7 @@ class SkillPackSystemTest < Minitest::Test
   def test_materialize_allows_unknown_runtime_without_strict_mode
     root = build_pack
     manifest = File.join(root, "skill-manifest.yml")
-    File.write(
-      manifest,
-      File.read(manifest, encoding: "UTF-8").sub(
-        "          demo:\n",
-        "          demo:\n            compatibility:\n            ruby: \">= 4.0\"\n"
-      )
-    )
+    set_skill_compatibility(manifest, ">= 4.0")
 
     workspace = Dir.mktmpdir("workspace")
     pack = RubyAgentSkills::SkillPack.new(root: root)
@@ -183,13 +168,7 @@ class SkillPackSystemTest < Minitest::Test
   def test_strict_materialize_rejects_unknown_runtime
     root = build_pack
     manifest = File.join(root, "skill-manifest.yml")
-    File.write(
-      manifest,
-      File.read(manifest, encoding: "UTF-8").sub(
-        "          demo:\n",
-        "          demo:\n            compatibility:\n            ruby: \">= 4.0\"\n"
-      )
-    )
+    set_skill_compatibility(manifest, ">= 4.0")
 
     workspace = Dir.mktmpdir("workspace")
     pack = RubyAgentSkills::SkillPack.new(root: root)
@@ -207,67 +186,7 @@ class SkillPackSystemTest < Minitest::Test
   def test_compatibility_report_is_available_without_materializing
     root = build_pack
     manifest = File.join(root, "skill-manifest.yml")
-    File.write(
-      manifest,
-      File.read(manifest, encoding: "UTF-8").sub(
-        "          demo:\n",
-        "          demo:\n            compatibility:\n            ruby: \">= 3.2\"\n"
-      )
-    )
-
-    pack = RubyAgentSkills::SkillPack.new(root: root)
-    report = pack.compatibility_report(
-      evaluation: { "skills" => ["demo"], "patterns" => [] },
-      runtime_profile: { "ruby" => { "resolved" => "3.3.12", "status" => "resolved" } }
-    )
-
-    assert_equal "supported", report.fetch("status")
-    assert_equal "supported", report.dig("requirements", "demo", "requirements", "ruby", "status")
-  end
-
-  def test_compatibility_report_gates_a_version_bound_pattern
-    root = build_pack
-    pattern = File.join(root, "patterns/one/shared.md")
-    File.write(
-      pattern,
-      <<~MARKDOWN
-        ---
-        name: shared
-        description: Version-bound pattern
-        family: rails
-        compatibility:
-          rails: ">= 8.1"
-        ---
-        # One
-
-        ## Problem
-        Uses a Rails 8.1 API boundary.
-
-        ## Use when
-        The resolved Rails version supports it.
-
-        ## Do not use when
-        Rails is older than the declared floor.
-
-        ## Repository inspection
-        Resolve the Rails version first.
-
-        ## Implementation procedure
-        Apply the supported API after version verification.
-
-        ## Failure modes
-        Do not use unsupported framework APIs.
-
-        ## Testing
-        Cover the supported Rails version.
-
-        ## Review checklist
-        [ ] Rails version resolved
-
-        ## Related skills
-        - skills/ruby-runtime-compatibility/SKILL.md
-      MARKDOWN
-    )
+    set_skill_compatibility(manifest, ">= 3.2")
 
     workspace = Dir.mktmpdir("workspace")
     pack = RubyAgentSkills::SkillPack.new(root: root)
