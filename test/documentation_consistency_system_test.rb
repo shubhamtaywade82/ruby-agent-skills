@@ -38,7 +38,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
   # per-file edits, and returns the audit's [stderr, status].
   def audit_with(edits = {})
     Dir.mktmpdir("documentation-consistency") do |dir|
-      %w[skills patterns evals test].each { |path| FileUtils.cp_r(File.join(ROOT, path), dir) }
+      %w[skills patterns evals test router].each { |path| FileUtils.cp_r(File.join(ROOT, path), dir) }
       FileUtils.mkdir_p(File.join(dir, "docs"))
       %w[README.md RELEASE.md CHANGELOG.md skill-manifest.yml docs/IMPLEMENTATION_HANDOFF.md docs/ITERATIONS.md].each do |path|
         text = source(path)
