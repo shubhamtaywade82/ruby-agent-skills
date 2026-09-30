@@ -176,9 +176,6 @@ module RubyAgentSkills
         apply_verifier_result(result, result_path)
         apply_agent_metadata(result, env.fetch("RUBY_AGENT_METADATA_FILE"))
       end
-
-
-      end
     end
 
     def materialize_skill_pack(evaluation:, workspace:, skills_enabled:)
