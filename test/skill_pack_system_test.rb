@@ -125,7 +125,7 @@ class SkillPackSystemTest < Minitest::Test
         "          skills:\n"
       ).sub(
         "          demo:\n",
-        "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
+        "          demo:\n            compatibility:\n            ruby: \">= 4.0\"\n"
       )
     )
 
@@ -154,7 +154,7 @@ class SkillPackSystemTest < Minitest::Test
       manifest,
       File.read(manifest, encoding: "UTF-8").sub(
         "          demo:\n",
-        "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
+        "          demo:\n            compatibility:\n            ruby: \">= 4.0\"\n"
       )
     )
 
@@ -176,7 +176,7 @@ class SkillPackSystemTest < Minitest::Test
       manifest,
       File.read(manifest, encoding: "UTF-8").sub(
         "          demo:\n",
-        "        demo:\n          compatibility:\n            ruby: \">= 4.0\"\n"
+        "          demo:\n            compatibility:\n            ruby: \">= 4.0\"\n"
       )
     )
 
@@ -200,7 +200,7 @@ class SkillPackSystemTest < Minitest::Test
       manifest,
       File.read(manifest, encoding: "UTF-8").sub(
         "          demo:\n",
-        "        demo:\n          compatibility:\n            ruby: \">= 3.2\"\n"
+        "          demo:\n            compatibility:\n            ruby: \">= 3.2\"\n"
       )
     )
 
@@ -211,7 +211,7 @@ class SkillPackSystemTest < Minitest::Test
     )
 
     assert_equal "supported", report.fetch("status")
-    assert_equal "supported", report.dig("requirements", "demo", "ruby", "status")
+    assert_equal "supported", report.dig("requirements", "demo", "requirements", "ruby", "status")
   end
 
   def test_compatibility_report_gates_a_version_bound_pattern
