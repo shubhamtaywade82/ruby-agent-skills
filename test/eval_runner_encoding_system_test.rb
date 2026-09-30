@@ -52,6 +52,25 @@ class EvalRunnerEncodingSystemTest < Minitest::Test
     end
   end
 
+  def test_skills_enabled_result_records_runtime_and_compatibility_evidence
+    Dir.mktmpdir("eval-runner-compatibility") do |output_dir|
+      output_path = File.join(output_dir, "result.json")
+      result = runner.run(
+        id: "action-cable-contract",
+        workspace: FIXTURE,
+        agent_command: "ruby -e 'exit 0'",
+        verify_command: "ruby -e 'puts({\"checks\" => {}}.to_json)'",
+        output: output_path,
+        timeout: TIMEOUT,
+        skills_enabled: true
+      )
+
+      assert_kind_of Hash, result.fetch("runtime_profile")
+      assert_kind_of Hash, result.fetch("compatibility")
+      assert_includes %w[supported unspecified unknown conflict unsupported],
+                      result.dig("compatibility", "status")
+    end
+  end
   def test_a_non_ascii_diff_does_not_crash_result_writing
     Dir.mktmpdir("eval-runner-encoding") do |output_dir|
       output_path = File.join(output_dir, "result.json")
