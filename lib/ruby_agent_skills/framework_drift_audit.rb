@@ -54,10 +54,19 @@ module RubyAgentSkills
     rescue RegexpError => e
       ["entry #{id} has invalid match: #{e.message}"]
     end
+
+    def valid_source_url?(entry)
+      entry.fetch("source_url").start_with?("https://")
+    end
   end
 
   class FrameworkDriftScanner
     RUBY_BLOCK = /^\x60\x60\x60(?:ruby|rb)\s*\n(.*?)^\x60\x60\x60\s*$/m
+    FINDING_FORMAT = [
+      "%<relative>s:%<line>d: framework drift %<id>s",
+      " (%<status>s Rails %<version>s) uses %<symbol>s;",
+      " replace with %<replacement>s"
+    ].freeze
 
     def initialize(root:, entries:, scan_roots:)
       @root = root
@@ -110,18 +119,17 @@ module RubyAgentSkills
     end
 
     def finding(path, line, id, entry)
-      relative = path.delete_prefix("#{@root}/")
-      parts = finding_parts(relative, line, id, entry)
-      parts.join(" ")
+      format(
+        FINDING_FORMAT.join,
+        relative: path.delete_prefix("#{@root}/"),
+        line: line,
+        id: id,
+        status: entry.fetch("status"),
+        version: entry.fetch("version"),
+        symbol: entry.fetch("symbol"),
+        replacement: entry.fetch("replacement")
+      )
     end
-
-    def finding_parts(relative, line, id, entry)
-      [
-        "#{relative}:#{line}: framework drift #{id}",
-        "(#{entry.fetch('status')} Rails #{entry.fetch('version')})",
-        "uses #{entry.fetch('symbol')};",
-        "replace with #{entry.fetch('replacement')}"
-      ]
     end
   end
 
