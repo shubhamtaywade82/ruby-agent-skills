@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 143 — Consumer-Side Change Verification
+> **Current milestone:** Iteration 148 — Validation Gate Integrity Preflight — Consumer-Side Change Verification
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
