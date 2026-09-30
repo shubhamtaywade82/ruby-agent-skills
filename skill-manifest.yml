@@ -1295,3 +1295,803 @@ evaluations:
     paths:
       - evals/ruby-training/selection-sort.yml
       - evals/ruby-training/recursive-selection-sort.yml
+
+  recovered-concurrency-concurrency-counter:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/concurrency/concurrency-counter.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-data-modeling-data-modeling-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/data-modeling/data-modeling-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-adapter-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/adapter-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-builder-selection:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/builder-selection.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-command-object:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/command-object.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-composition-over-inheritance:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/composition-over-inheritance.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-decorator:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/decorator.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-dependency-injection:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/dependency-injection.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-facade:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/facade.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-factory-not-needed:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/factory-not-needed.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-factory-selection:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/factory-selection.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-null-object:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/null-object.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-pattern-restraint:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/pattern-restraint.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-policy-object:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/policy-object.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-poro-extraction:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/poro-extraction.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-presenter-not-needed:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/presenter-not-needed.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-presenter:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/presenter.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-repository-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/repository-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-repository-not-needed:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/repository-not-needed.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-service-object-not-needed:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/service-object-not-needed.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-service-object-selection:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/service-object-selection.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-specification:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/specification.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-state-object:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/state-object.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-strategy-not-needed:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/strategy-not-needed.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-strategy-selection:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/strategy-selection.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-design-patterns-value-object-not-needed:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/design-patterns/value-object-not-needed.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-action-cable-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-cable-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-action-controller-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-controller-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-action-mailbox-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-mailbox-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-action-mailer-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-mailer-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-action-text-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-text-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-action-view-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/action-view-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-active-model-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-model-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-active-record-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-record-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-active-storage-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-storage-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-active-support-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/active-support-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-asset-build-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/asset-build-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-associations-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/associations-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-authentication-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/authentication-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-authorization-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/authorization-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-encryption-credentials-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/encryption-credentials-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-hotwire-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/hotwire-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-i18n-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/i18n-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-initialization-configuration-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/initialization-configuration-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-rack-middleware-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/rack-middleware-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-routing-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/routing-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-serialization-globalid-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/serialization-globalid-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-rails-validations-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/validations-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-bubble-sort:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/bubble-sort.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-chocolate-feast:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/chocolate-feast.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-distinct-elements:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/distinct-elements.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-equilibrium-index:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/equilibrium-index.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-majority-element:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/majority-element.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-power-of-two:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/power-of-two.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-shopping-cart:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/shopping-cart.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-smallest-missing:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/smallest-missing.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-training-triplet-sum:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/triplet-sum.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-workshop-enumerable-transform:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/enumerable-transform.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-workshop-external-api-client:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/external-api-client.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-workshop-method-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/method-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-workshop-rails-authentication-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/rails-authentication-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-workshop-rails-rest-contract:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/rails-rest-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-workshop-ruby-gem-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/ruby-gem-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-workshop-service-object:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/service-object.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-ruby-workshop-voting-application:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/voting-application.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-security-authorization-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/security/authorization-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-security-parameterized-query-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/security/parameterized-query-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-abstraction-restraint:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-accessibility-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-accessibility-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-derived-state:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-derived-state.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-fullstack-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-migration-safety:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-migration-safety.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-minimal-change-root:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-minimal-change-root.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-native-before-dependency:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-native-before-dependency.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-performance-evidence:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-performance-evidence.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-postgres-invariant:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-postgres-invariant.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-rails-direct-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-rails-direct-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-react-state-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-react-state-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-security-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-security-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  recovered-stack-minimality-stack-minimality-service-boundary:
+    source: repository-eval-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-service-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
