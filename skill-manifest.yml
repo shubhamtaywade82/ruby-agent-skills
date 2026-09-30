@@ -982,107 +982,48 @@ benchmarks:
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
 evaluations:
-  react-typescript-typescript-core:
-    source: react-typescript-core-v1
+  eval-active-job-concurrency-control:
+    source: active-job-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/react-typescript/typescript-core-contract.yml
+      - evals/active-job/concurrency-control.yml
     checks:
       - functional
       - tests
       - contract
-      - scope_control
 
-  react-typescript-type-design:
-    source: react-typescript-type-design-v1
+  eval-active-job-idempotent-side-effect:
+    source: active-job-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/react-typescript/typescript-type-design-contract.yml
+      - evals/active-job/idempotent-side-effect.yml
     checks:
       - functional
       - tests
       - contract
-      - scope_control
 
-  react-typescript-runtime-contracts:
-    source: react-typescript-runtime-v1
+  eval-active-job-retry-policy:
+    source: active-job-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/react-typescript/typescript-runtime-contracts.yml
+      - evals/active-job/retry-policy.yml
     checks:
       - functional
       - tests
       - contract
-      - scope_control
 
-  react-component-engineering:
-    source: react-component-engineering-v1
+  eval-active-job-transactional-enqueue:
+    source: active-job-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/react-typescript/react-component-contract.yml
+      - evals/active-job/transactional-enqueue.yml
     checks:
       - functional
       - tests
       - contract
-      - scope_control
-
-  react-state-effects:
-    source: react-state-effects-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/react-typescript/react-state-effects-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  react-data-fetching:
-    source: react-data-fetching-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/react-typescript/react-data-fetching-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  planning-spec:
-    source: planning-layer-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/agent-workflow/planning-spec-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  planning-tickets:
-    source: planning-layer-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/agent-workflow/planning-tickets-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  planning-wayfinder:
-    source: planning-layer-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/agent-workflow/planning-wayfinder-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
 
   change-review:
-    source: change-review-v1
+    source: agent-workflow-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/agent-workflow/change-review-contract.yml
@@ -1090,214 +1031,39 @@ evaluations:
       - functional
       - tests
       - contract
-      - evidence
-      - scope_control
 
-  rails-react-integration:
-    source: rails-react-integration-v1
+  eval-agent-workflow-planning-spec-contract:
+    source: agent-workflow-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/react-typescript/rails-react-integration-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - security
-      - scope_control
-
-  react-testing-engineering:
-    source: react-testing-engineering-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/react-typescript/react-testing-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  react-accessibility-performance:
-    source: react-accessibility-performance-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/react-typescript/react-accessibility-performance-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  react-architecture:
-    source: react-architecture-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/react-typescript/react-architecture-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-  rails-repository-completeness:
-    source: rails-repository-completeness-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/repository-completeness-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  rails-staff-principal-architecture:
-    source: rails-staff-principal-architecture-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/staff-principal-architecture-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  rails-cross-boundary-authorization-security:
-    source: rails-cross-boundary-authorization-security-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/cross-boundary-authorization-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  rails-operational-tasks-maintenance:
-    source: rails-operational-tasks-maintenance-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/operational-tasks-maintenance-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  rails-engines-railties-engineering:
-    source: rails-engines-railties-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/rails/engines-railties-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  test-engineering:
-    source: rails-test-engineering-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/test-engineering/boundary-selection.yml
-      - evals/test-engineering/deterministic-job.yml
-      - evals/test-engineering/parallel-safety.yml
-      - evals/test-engineering/flaky-diagnosis.yml
-      - evals/test-engineering/system-contract.yml
-      - evals/test-engineering/test-performance.yml
-      - evals/test-engineering/rspec-request-contract.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  production-runtime:
-    source: rails-production-runtime-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/runtime/puma-capacity.yml
-      - evals/runtime/graceful-shutdown.yml
-      - evals/runtime/zero-downtime-release.yml
-      - evals/runtime/config-contract.yml
-      - evals/runtime/migration-gate.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  database-engineering:
-    source: rails-database-engineering-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/database/expand-contract.yml
-      - evals/database/concurrent-index.yml
-      - evals/database/constraint.yml
-      - evals/database/batched-backfill.yml
-      - evals/database/transaction-lock.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  observability:
-    source: rails-observability-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/observability/error-boundary.yml
-      - evals/observability/request-correlation.yml
-      - evals/observability/instrumentation-event.yml
-      - evals/observability/health-semantics.yml
+      - evals/agent-workflow/planning-spec-contract.yml
     checks:
       - functional
       - tests
       - contract
 
-  active-job:
-    source: active-job-v1
+  eval-agent-workflow-planning-tickets-contract:
+    source: agent-workflow-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/active-job/idempotent-side-effect.yml
-      - evals/active-job/retry-policy.yml
-      - evals/active-job/transactional-enqueue.yml
-      - evals/active-job/concurrency-control.yml
-    checks:
-      - functional
-      - tests
-      - contract
-      - scope_control
-
-  zeitwerk:
-    source: zeitwerk-v1
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/zeitwerk/path-constant-contract.yml
-      - evals/zeitwerk/initializer-reload-boundary.yml
+      - evals/agent-workflow/planning-tickets-contract.yml
     checks:
       - functional
       - tests
       - contract
 
-  performance:
-    source: performance-v1
+  eval-agent-workflow-planning-wayfinder-contract:
+    source: agent-workflow-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/performance/performance-allocation-boundary.yml
-      - evals/performance/cache-key-boundary.yml
+      - evals/agent-workflow/planning-wayfinder-contract.yml
     checks:
       - functional
       - tests
       - contract
-      - performance
 
-  ruby-training:
-    source: allerin-ruby-set-2
-    schema: docs/EVAL_SCHEMA.md
-    paths:
-      - evals/ruby-training/selection-sort.yml
-      - evals/ruby-training/recursive-selection-sort.yml
-
-  recovered-concurrency-concurrency-counter:
-    source: repository-eval-corpus-v1
+  eval-concurrency-concurrency-counter:
+    source: concurrency-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/concurrency/concurrency-counter.yml
@@ -1306,8 +1072,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-data-modeling-data-modeling-contract:
-    source: repository-eval-corpus-v1
+  eval-data-modeling-data-modeling-contract:
+    source: data-modeling-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/data-modeling/data-modeling-contract.yml
@@ -1316,8 +1082,58 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-adapter-boundary:
-    source: repository-eval-corpus-v1
+  eval-database-batched-backfill:
+    source: database-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/database/batched-backfill.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-database-concurrent-index:
+    source: database-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/database/concurrent-index.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-database-constraint:
+    source: database-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/database/constraint.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-database-expand-contract:
+    source: database-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/database/expand-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-database-transaction-lock:
+    source: database-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/database/transaction-lock.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-design-patterns-adapter-boundary:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/adapter-boundary.yml
@@ -1326,8 +1142,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-builder-selection:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-builder-selection:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/builder-selection.yml
@@ -1336,8 +1152,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-command-object:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-command-object:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/command-object.yml
@@ -1346,8 +1162,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-composition-over-inheritance:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-composition-over-inheritance:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/composition-over-inheritance.yml
@@ -1356,8 +1172,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-decorator:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-decorator:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/decorator.yml
@@ -1366,8 +1182,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-dependency-injection:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-dependency-injection:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/dependency-injection.yml
@@ -1376,8 +1192,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-facade:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-facade:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/facade.yml
@@ -1386,8 +1202,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-factory-not-needed:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-factory-not-needed:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/factory-not-needed.yml
@@ -1396,8 +1212,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-factory-selection:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-factory-selection:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/factory-selection.yml
@@ -1406,8 +1222,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-null-object:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-null-object:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/null-object.yml
@@ -1416,8 +1232,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-pattern-restraint:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-pattern-restraint:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/pattern-restraint.yml
@@ -1426,8 +1242,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-policy-object:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-policy-object:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/policy-object.yml
@@ -1436,8 +1252,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-poro-extraction:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-poro-extraction:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/poro-extraction.yml
@@ -1446,8 +1262,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-presenter-not-needed:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-presenter-not-needed:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/presenter-not-needed.yml
@@ -1456,8 +1272,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-presenter:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-presenter:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/presenter.yml
@@ -1466,8 +1282,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-repository-boundary:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-repository-boundary:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/repository-boundary.yml
@@ -1476,8 +1292,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-repository-not-needed:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-repository-not-needed:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/repository-not-needed.yml
@@ -1486,8 +1302,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-service-object-not-needed:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-service-object-not-needed:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/service-object-not-needed.yml
@@ -1496,8 +1312,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-service-object-selection:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-service-object-selection:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/service-object-selection.yml
@@ -1506,8 +1322,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-specification:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-specification:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/specification.yml
@@ -1516,8 +1332,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-state-object:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-state-object:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/state-object.yml
@@ -1526,8 +1342,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-strategy-not-needed:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-strategy-not-needed:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/strategy-not-needed.yml
@@ -1536,8 +1352,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-strategy-selection:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-strategy-selection:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/strategy-selection.yml
@@ -1546,8 +1362,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-design-patterns-value-object-not-needed:
-    source: repository-eval-corpus-v1
+  eval-design-patterns-value-object-not-needed:
+    source: design-patterns-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/design-patterns/value-object-not-needed.yml
@@ -1556,8 +1372,68 @@ evaluations:
       - tests
       - contract
 
+  eval-observability-error-boundary:
+    source: observability-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/observability/error-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-observability-health-semantics:
+    source: observability-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/observability/health-semantics.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-observability-instrumentation-event:
+    source: observability-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/observability/instrumentation-event.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-observability-request-correlation:
+    source: observability-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/observability/request-correlation.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-performance-cache-key-boundary:
+    source: performance-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/performance/cache-key-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-performance-performance-allocation-boundary:
+    source: performance-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/performance/performance-allocation-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
   rails-action-cable:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-cable-contract.yml
@@ -1567,7 +1443,7 @@ evaluations:
       - contract
 
   rails-action-controller:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-controller-contract.yml
@@ -1577,7 +1453,7 @@ evaluations:
       - contract
 
   rails-action-mailbox:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-mailbox-contract.yml
@@ -1587,7 +1463,7 @@ evaluations:
       - contract
 
   rails-action-mailer:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-mailer-contract.yml
@@ -1597,7 +1473,7 @@ evaluations:
       - contract
 
   rails-action-text:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-text-contract.yml
@@ -1607,7 +1483,7 @@ evaluations:
       - contract
 
   rails-action-view:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/action-view-contract.yml
@@ -1617,7 +1493,7 @@ evaluations:
       - contract
 
   rails-active-model:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/active-model-contract.yml
@@ -1627,7 +1503,7 @@ evaluations:
       - contract
 
   rails-active-record:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/active-record-contract.yml
@@ -1637,7 +1513,7 @@ evaluations:
       - contract
 
   rails-active-storage:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/active-storage-contract.yml
@@ -1647,7 +1523,7 @@ evaluations:
       - contract
 
   rails-active-support:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/active-support-contract.yml
@@ -1657,7 +1533,7 @@ evaluations:
       - contract
 
   rails-asset-build-engineering:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/asset-build-contract.yml
@@ -1667,7 +1543,7 @@ evaluations:
       - contract
 
   rails-associations:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/associations-contract.yml
@@ -1677,7 +1553,7 @@ evaluations:
       - contract
 
   rails-authentication:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/authentication-contract.yml
@@ -1687,7 +1563,7 @@ evaluations:
       - contract
 
   rails-authorization:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/authorization-contract.yml
@@ -1696,8 +1572,18 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-encryption-credentials-contract:
-    source: repository-eval-corpus-v1
+  eval-rails-cross-boundary-authorization-contract:
+    source: rails-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/cross-boundary-authorization-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-rails-encryption-credentials-contract:
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/encryption-credentials-contract.yml
@@ -1706,8 +1592,18 @@ evaluations:
       - tests
       - contract
 
+  eval-rails-engines-railties-contract:
+    source: rails-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/engines-railties-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
   rails-hotwire:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/hotwire-contract.yml
@@ -1717,7 +1613,7 @@ evaluations:
       - contract
 
   rails-i18n:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/i18n-contract.yml
@@ -1726,8 +1622,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-initialization-configuration-contract:
-    source: repository-eval-corpus-v1
+  eval-rails-initialization-configuration-contract:
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/initialization-configuration-contract.yml
@@ -1736,8 +1632,18 @@ evaluations:
       - tests
       - contract
 
+  eval-rails-operational-tasks-maintenance-contract:
+    source: rails-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/operational-tasks-maintenance-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
   rails-rack-middleware-engineering:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/rack-middleware-contract.yml
@@ -1746,8 +1652,18 @@ evaluations:
       - tests
       - contract
 
+  eval-rails-repository-completeness-contract:
+    source: rails-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/repository-completeness-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
   rails-routing:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/routing-contract.yml
@@ -1756,8 +1672,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-rails-serialization-globalid-contract:
-    source: repository-eval-corpus-v1
+  eval-rails-serialization-globalid-contract:
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/serialization-globalid-contract.yml
@@ -1766,8 +1682,18 @@ evaluations:
       - tests
       - contract
 
+  eval-rails-staff-principal-architecture-contract:
+    source: rails-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/staff-principal-architecture-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
   rails-validations:
-    source: repository-eval-corpus-v1
+    source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/rails/validations-contract.yml
@@ -1776,8 +1702,108 @@ evaluations:
       - tests
       - contract
 
-  recovered-ruby-training-bubble-sort:
-    source: repository-eval-corpus-v1
+  eval-react-typescript-rails-react-integration-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/rails-react-integration-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-react-accessibility-performance-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-accessibility-performance-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-react-architecture-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-architecture-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-react-component-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-component-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-react-data-fetching-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-data-fetching-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-react-state-effects-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-state-effects-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-react-testing-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/react-testing-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-typescript-core-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-core-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-typescript-runtime-contracts:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-runtime-contracts.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-react-typescript-typescript-type-design-contract:
+    source: react-typescript-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/react-typescript/typescript-type-design-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-bubble-sort:
+    source: ruby-training-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/ruby-training/bubble-sort.yml
@@ -1786,8 +1812,8 @@ evaluations:
       - tests
       - contract
 
-  recovered-ruby-training-chocolate-feast:
-    source: repository-eval-corpus-v1
+  eval-ruby-training-chocolate-feast:
+    source: ruby-training-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
       - evals/ruby-training/chocolate-feast.yml
@@ -1796,5 +1822,462 @@ evaluations:
       - tests
       - contract
 
-  recovered-ruby-training-distinct-elements:
-    source: repository-eval-corpus-v1
+  eval-ruby-training-distinct-elements:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/distinct-elements.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-equilibrium-index:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/equilibrium-index.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-majority-element:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/majority-element.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-power-of-two:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/power-of-two.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-recursive-selection-sort:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/recursive-selection-sort.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-selection-sort:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/selection-sort.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-shopping-cart:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/shopping-cart.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-smallest-missing:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/smallest-missing.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-training-triplet-sum:
+    source: ruby-training-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-training/triplet-sum.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-workshop-enumerable-transform:
+    source: ruby-workshop-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/enumerable-transform.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-workshop-external-api-client:
+    source: ruby-workshop-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/external-api-client.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-workshop-method-contract:
+    source: ruby-workshop-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/method-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-workshop-rails-authentication-boundary:
+    source: ruby-workshop-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/rails-authentication-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-workshop-rails-rest-contract:
+    source: ruby-workshop-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/rails-rest-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-workshop-ruby-gem-boundary:
+    source: ruby-workshop-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/ruby-gem-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-workshop-service-object:
+    source: ruby-workshop-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/service-object.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-ruby-workshop-voting-application:
+    source: ruby-workshop-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-workshop/voting-application.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-runtime-config-contract:
+    source: runtime-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/runtime/config-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-runtime-graceful-shutdown:
+    source: runtime-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/runtime/graceful-shutdown.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-runtime-migration-gate:
+    source: runtime-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/runtime/migration-gate.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-runtime-puma-capacity:
+    source: runtime-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/runtime/puma-capacity.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-runtime-zero-downtime-release:
+    source: runtime-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/runtime/zero-downtime-release.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-security-authorization-boundary:
+    source: security-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/security/authorization-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-security-parameterized-query-boundary:
+    source: security-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/security/parameterized-query-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-abstraction-restraint:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-abstraction-restraint.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-accessibility-boundary:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-accessibility-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-derived-state:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-derived-state.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-fullstack-boundary:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-fullstack-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-migration-safety:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-migration-safety.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-minimal-change-root:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-minimal-change-root.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-native-before-dependency:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-native-before-dependency.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-performance-evidence:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-performance-evidence.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-postgres-invariant:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-postgres-invariant.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-rails-direct-boundary:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-rails-direct-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-react-state-boundary:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-react-state-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-security-boundary:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-security-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-stack-minimality-stack-minimality-service-boundary:
+    source: stack-minimality-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/stack-minimality/stack-minimality-service-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-boundary-selection:
+    source: test-engineering-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/boundary-selection.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-deterministic-job:
+    source: test-engineering-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/deterministic-job.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-flaky-diagnosis:
+    source: test-engineering-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/flaky-diagnosis.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-parallel-safety:
+    source: test-engineering-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/parallel-safety.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-rspec-request-contract:
+    source: test-engineering-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/rspec-request-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-system-contract:
+    source: test-engineering-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/system-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-test-engineering-test-performance:
+    source: test-engineering-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/test-engineering/test-performance.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-zeitwerk-initializer-reload-boundary:
+    source: zeitwerk-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/zeitwerk/initializer-reload-boundary.yml
+    checks:
+      - functional
+      - tests
+      - contract
+
+  eval-zeitwerk-path-constant-contract:
+    source: zeitwerk-evaluation-corpus-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/zeitwerk/path-constant-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
