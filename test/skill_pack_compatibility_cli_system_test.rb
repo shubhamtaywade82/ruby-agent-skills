@@ -22,7 +22,7 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
       RbConfig.ruby,
       File.join(ROOT, "bin", "skill-pack-compatibility"),
       project,
-      *
+      *,
       chdir: ROOT
     )
   end
@@ -69,7 +69,11 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
       LOCK
     )
 
-    stdout, stderr, status = run_cli(project, "--pattern", "patterns/rails/active-job-continuation-contract")
+    stdout, stderr, status = run_cli(
+      project,
+      "--pattern",
+      "patterns/rails/active-job-continuation-contract"
+    )
 
     refute_predicate status, :success?
     assert_equal "", stderr
