@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 144 — Agent Skills Frontmatter Contract Validation
+> **Current milestone:** Iteration 145 — Executable Runtime Compatibility Gate
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -443,6 +443,10 @@ Folded reviewer heuristics from a personal Ruby/Rails training corpus into `chan
 Added `bin/verify-change`, a provider-neutral verifier that runs a downstream project's own gates (RuboCop, tests, Brakeman, bundler-audit, `zeitwerk:check`) plus deterministic structural checks and writes an evidence report that never reports an unrun check as passed. It ships in the installer and the release archive.
 
 ---
+
+## Iteration 145 — Executable Runtime Compatibility Gate
+
+Iteration 145 turns the existing runtime-compatibility skill into executable infrastructure: semver requirements, selected skill/pattern compatibility reports, materialization enforcement, target-runtime evidence in evaluations, an installed-pack CLI, and three explicit Rails 8.1 version-bound patterns. Known-incompatible or conflicting material is blocked without claiming empirical model outcomes.
 
 ## Iteration 144 — Agent Skills Frontmatter Contract Validation
 
