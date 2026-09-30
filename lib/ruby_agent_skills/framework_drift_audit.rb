@@ -38,8 +38,14 @@ module RubyAgentSkills
         "entry #{id} missing #{field}" if entry[field].to_s.strip.empty?
       end
       errors.concat(validate_match(id, entry))
-      errors << "entry #{id} source_url must be HTTPS" unless entry["source_url"].to_s.start_with?("https://")
+      validate_source_url(id, entry, errors)
       errors
+    end
+
+    def validate_source_url(id, entry, errors)
+      return if entry["source_url"].to_s.start_with?("https://")
+
+      errors << "entry #{id} source_url must be HTTPS"
     end
 
     def validate_match(id, entry)
@@ -105,16 +111,17 @@ module RubyAgentSkills
 
     def finding(path, line, id, entry)
       relative = path.delete_prefix("#{@root}/")
-      format(
-        "%<relative>s:%<line>d: framework drift %<id>s (%<status>s Rails %<version>s) uses %<symbol>s; replace with %<replacement>s",
-        relative: relative,
-        line: line,
-        id: id,
-        status: entry.fetch("status"),
-        version: entry.fetch("version"),
-        symbol: entry.fetch("symbol"),
-        replacement: entry.fetch("replacement")
-      )
+      parts = finding_parts(relative, line, id, entry)
+      parts.join(" ")
+    end
+
+    def finding_parts(relative, line, id, entry)
+      [
+        "#{relative}:#{line}: framework drift #{id}",
+        "(#{entry.fetch('status')} Rails #{entry.fetch('version')})",
+        "uses #{entry.fetch('symbol')};",
+        "replace with #{entry.fetch('replacement')}"
+      ]
     end
   end
 
@@ -141,8 +148,8 @@ module RubyAgentSkills
     def success_message
       roots = @registry.roots.length
       [
-        "Framework drift audit passed: #{@registry.entries.length} registry entries scanned",
-        "across #{roots} roots."
+        "Framework drift audit passed: #{@registry.entries.length} registry entries",
+        "scanned across #{roots} roots."
       ].join(" ")
     end
   end
