@@ -2,7 +2,7 @@
 
 ## Repository-side implementation status
 
-The skill library, pattern library, corpus-quality audit, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, and stack-minimality layer are implemented in the current release line.
+The skill library, pattern library, corpus-quality audit, routing infrastructure, evidence pipeline, provenance controls, resumable execution, multi-model matrix runner, verified installer, React/TypeScript engineering layer, and stack-minimality layer are implemented in the current release line. The runtime compatibility gate and version-bound Rails pattern layer are implemented through Iteration 145.
 
 Current inventory:
 
@@ -233,4 +233,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 144. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 145. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
