@@ -7,7 +7,7 @@ module RubyAgentSkills
     REQUIRED_FIELDS = %w[
       framework status version symbol match
       replacement source_url source_section
-    ]
+    ].freeze
     RUBY_BLOCK = /^```(?:ruby|rb)\s*\n(.*?)^```\s*$/m
 
     def initialize(root:, registry_path:)
@@ -96,12 +96,25 @@ module RubyAgentSkills
       relative = path.delete_prefix("#{@root}/")
       replacement = entry.fetch("replacement")
       details = entry.fetch("symbol")
-      @errors << "#{relative}:#{line}: framework drift #{id} "                 "(#{entry.fetch('status')} Rails #{entry.fetch('version')}) "                 "uses #{details}; replace with #{replacement}"
+      @errors << format(
+        "%<relative>s:%<line>d: framework drift %<id>s "         "(%<status>s Rails %<version>s) uses %<details>s; "         "replace with %<replacement>s",
+        relative: relative,
+        line: line,
+        id: id,
+        status: entry.fetch("status"),
+        version: entry.fetch("version"),
+        details: details,
+        replacement: replacement
+      )
     end
 
     def success_message
       roots = @registry.fetch("policy").fetch("scan_roots").length
-      "Framework drift audit passed: #{entries.length} registry entries scanned across #{roots} roots."
+      format(
+        "Framework drift audit passed: %<entries>d registry entries scanned "         "across %<roots>d roots.",
+        entries: entries.length,
+        roots: roots
+      )
     end
   end
 end
