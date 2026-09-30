@@ -1,111 +1,137 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require "optparse"
-require "set"
 require "yaml"
 
-module FrameworkDriftAudit
+class FrameworkDriftAudit
   REQUIRED_FIELDS = %w[framework status version symbol match replacement source_url source_section].freeze
-  RUBY_FENCE = /\A\x60\x60\x60(?:ruby|rb)\s*\z/
-  END_FENCE = /\A\x60\x60\x60\s*\z/
-  SUPPRESSION = /\A\s*#\s*framework-drift:\s*allow\s+(\S+)(?:\s|\z)/
+  RUBY_FENCE = /^\x60\x60\x60(?:ruby|rb)\s*$/.freeze
+  END_FENCE = /^\x60\x60\x60\s*$/.freeze
 
-  module_function
-
-  def parse_registry(path)
-    YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+  def initialize(root:, registry_path:)
+    @root = root
+    @registry_path = registry_path
+    @registry = YAML.safe_load(
+      File.read(@registry_path, encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    @errors = []
   end
 
-  def validate_registry(entries)
-    entries.each_with_object([]) do |(id, entry), errors|
-      unless entry.is_a?(Hash)
-        errors << "entry #{id} must be a mapping"
-        next
-      end
+  def call
+    validate_registry
+    scan_roots
+    report
+  end
 
-      REQUIRED_FIELDS.each do |field|
-        errors << "entry #{id} missing #{field}" if entry[field].to_s.strip.empty?
-      end
+  private
 
-      begin
-        Regexp.new(entry.fetch("match"))
-      rescue RegexpError => e
-        errors << "entry #{id} has invalid match: #{e.message}"
-      end
+  def validate_registry
+    entries.each { |id, entry| validate_entry(id, entry) }
+  end
 
-      unless entry["source_url"].to_s.start_with?("https://")
-        errors << "entry #{id} source_url must be HTTPS"
-      end
+  def validate_entry(id, entry)
+    unless entry.is_a?(Hash)
+      return @errors << "entry #{id} must be a mapping"
+    end
+
+    REQUIRED_FIELDS.each do |field|
+      @errors << "entry #{id} missing #{field}" if entry[field].to_s.strip.empty?
+    end
+    validate_match(id, entry)
+    @errors << "entry #{id} source_url must be HTTPS" unless entry["source_url"].to_s.start_with?("https://")
+  end
+
+  def validate_match(id, entry)
+    Regexp.new(entry.fetch("match"))
+  rescue RegexpError => e
+    @errors << "entry #{id} has invalid match: #{e.message}"
+  end
+
+  def scan_roots
+    registry.fetch("policy").fetch("scan_roots").each { |relative| scan_root(relative) }
+  end
+
+  def scan_root(relative)
+    path = File.join(@root, relative)
+    return unless Dir.exist?(path)
+
+    Dir[File.join(path, "**", "*.md")].each { |file| scan_file(file) }
+  end
+
+  def scan_file(path)
+    ruby_blocks(File.readlines(path, encoding: "UTF-8")).each do |start_line, block|
+      scan_block(path, start_line, block)
     end
   end
 
-  def scan(root:, scan_roots:, entries:)
-    scan_roots.flat_map do |relative_root|
-      absolute_root = File.join(root, relative_root)
-      next [] unless Dir.exist?(absolute_root)
-
-      Dir[File.join(absolute_root, "**", "*.md")].sort.flat_map do |path|
-        scan_file(path: path, root: root, entries: entries)
-      end
-    end
-  end
-
-  def scan_file(path:, root:, entries:)
-    lines = File.readlines(path, encoding: "UTF-8")
+  def ruby_blocks(lines)
     blocks = []
-    in_ruby = false
-    block_start = nil
-    block_lines = []
+    start_line = nil
+    block = []
 
     lines.each_with_index do |line, index|
-      if !in_ruby && line.match?(RUBY_FENCE)
-        in_ruby = true
-        block_start = index + 2
-        block_lines = []
-      elsif in_ruby && line.match?(END_FENCE)
-        blocks << [block_start, block_lines]
-        in_ruby = false
-        block_start = nil
-        block_lines = []
-      elsif in_ruby
-        block_lines << line
+      if start_line.nil? && line.match?(RUBY_FENCE)
+        start_line = index + 2
+        block = []
+      elsif start_line && line.match?(END_FENCE)
+        blocks << [start_line, block]
+        start_line = nil
+      elsif start_line
+        block << line
       end
     end
 
-    blocks.flat_map do |start_line, code_lines|
-      scan_block(
-        path: path,
-        root: root,
-        start_line: start_line,
-        code_lines: code_lines,
-        entries: entries
-      )
+    blocks
+  end
+
+  def scan_block(path, start_line, block)
+    entries.each do |id, entry|
+      next if suppressed?(id, block)
+
+      matcher = Regexp.new(entry.fetch("match"))
+      block.each_with_index do |line, offset|
+        next unless matcher.match?(line)
+
+        add_finding(path, start_line + offset, id, entry)
+      end
     end
   end
 
-  def scan_block(path:, root:, start_line:, code_lines:, entries:)
-    suppressed = code_lines.filter_map do |line|
-      match = line.match(SUPPRESSION)
-      match && match[1]
-    end.to_set
-
-    relative = path.delete_prefix("#{root}/")
-    entries.flat_map do |id, entry|
-      next [] if suppressed.include?(id)
-
-      matcher = Regexp.new(entry.fetch("match"))
-      code_lines.each_with_index.filter_map do |line, offset|
-        next unless matcher.match?(line)
-
-        "#{relative}:#{start_line + offset}: framework drift #{id} "           "(#{entry.fetch('status')} Rails #{entry.fetch('version')}) "           "uses #{entry.fetch('symbol')}; replace with #{entry.fetch('replacement')}"
-      end
+  def suppressed?(id, block)
+    block.any? do |line|
+      line.match?(/^\s*#\s*framework-drift:\s*allow\s+#{Regexp.escape(id)}(?:\s|$)/)
     end
+  end
+
+  def add_finding(path, line, id, entry)
+    relative = path.delete_prefix("#{@root}/")
+    details = "#{entry.fetch('symbol')}; replace with #{entry.fetch('replacement')}"
+    @errors << "#{relative}:#{line}: framework drift #{id} "               "(#{entry.fetch('status')} Rails #{entry.fetch('version')}) "               "uses #{details}"
+  end
+
+  def report
+    abort_with_errors unless @errors.empty?
+    puts "Framework drift audit passed: #{entries.length} registry entries "         "scanned across #{registry.fetch('policy').fetch('scan_roots').length} roots."
+  end
+
+  def abort_with_errors
+    @errors.each { |error| warn "ERROR: #{error}" }
+    abort "#{@errors.length} framework drift finding(s)"
+  end
+
+  def registry
+    @registry
+  end
+
+  def entries
+    registry.fetch("entries")
   end
 end
 
-ROOT = File.expand_path("..", __dir__)
-options = { root: ROOT, registry: File.join(ROOT, "framework-drift.yml") }
+root = File.expand_path("..", __dir__)
+options = { root: root, registry: File.join(root, "framework-drift.yml") }
 
 OptionParser.new do |opts|
   opts.banner = "usage: ruby scripts/audit_framework_drift.rb [--root PATH] [--registry PATH]"
@@ -115,24 +141,7 @@ end.parse!
 
 abort "missing registry: #{options[:registry]}" unless File.file?(options[:registry])
 
-registry = FrameworkDriftAudit.parse_registry(options.fetch(:registry))
-entries = registry.fetch("entries")
-scan_roots = registry.fetch("policy").fetch("scan_roots")
-
-errors = FrameworkDriftAudit.validate_registry(entries)
-errors.concat(
-  FrameworkDriftAudit.scan(
-    root: options.fetch(:root),
-    scan_roots: scan_roots,
-    entries: entries
-  )
-)
-
-if errors.any?
-  errors.each { |error| warn "ERROR: #{error}" }
-  abort "#{errors.length} framework drift finding(s)"
-end
-
-puts(
-  "Framework drift audit passed: #{entries.length} registry entries scanned "   "across #{scan_roots.length} roots."
-)
+FrameworkDriftAudit.new(
+  root: options[:root],
+  registry_path: options[:registry]
+).call
