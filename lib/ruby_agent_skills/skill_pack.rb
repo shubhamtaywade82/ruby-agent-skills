@@ -116,10 +116,6 @@ module RubyAgentSkills
         "skills" => [],
         "patterns" => []
       }
-    end
-
-    private
-
     def compatibility_report(evaluation:, runtime_profile:)
       requirements = {}
 
@@ -140,6 +136,10 @@ module RubyAgentSkills
         "requirements" => requirements
       }
     end
+
+    end
+
+    private
 
     def enforce_compatibility!(report, strict:)
       status = report.fetch("status")
