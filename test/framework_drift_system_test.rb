@@ -60,7 +60,7 @@ class FrameworkDriftSystemTest < Minitest::Test
 
       refute_predicate status, :success?, stdout
       assert_includes stderr, "rails-update-attributes"
-      assert_includes stderr, "skills/example/SKILL.md:5"
+      assert_includes stderr, "skills/example/SKILL.md:4"
     end
   end
 
@@ -74,6 +74,15 @@ class FrameworkDriftSystemTest < Minitest::Test
 
       assert_predicate status, :success?, "#{stdout}\n#{stderr}"
     end
+  end
+
+  def test_validator_gate_is_registered
+    validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
+    manifest = File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8")
+
+    assert_includes validator, "scripts/audit_framework_drift.rb"
+    assert_includes manifest, "framework-drift.yml"
+    assert_includes manifest, "scripts/audit_framework_drift.rb"
   end
 
   def test_allows_explicit_in_block_suppression
