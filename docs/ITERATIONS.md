@@ -1,6 +1,6 @@
 # Iterations
 
-> **Current milestone:** Iteration 147 — Executable Framework Drift Detection
+> **Current milestone:** Iteration 148 — Validation Gate Integrity Preflight
 
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
@@ -20,3 +20,7 @@ Added a machine-readable deprecation registry for the React/TypeScript migration
 ## Iteration 147 — Executable Framework Drift Detection
 
 Added a bounded framework-drift registry backed by official Rails release notes and an executable detector for Ruby code fences in skills and patterns. Findings include exact file/line locations; intentional historical examples require an explicit in-block suppression directive.
+
+## Iteration 148 — Validation Gate Integrity Preflight
+
+Added an independent CI preflight that checks the validation gate itself before running it, preventing truncation or repository-path corruption from hiding later validation checks.
