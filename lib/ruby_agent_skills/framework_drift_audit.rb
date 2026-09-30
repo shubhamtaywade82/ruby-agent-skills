@@ -130,7 +130,6 @@ module RubyAgentSkills
         replacement: entry.fetch("replacement")
       )
     end
-    end
   end
 
   class FrameworkDriftAudit
