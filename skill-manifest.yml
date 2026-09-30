@@ -1572,7 +1572,7 @@ evaluations:
       - tests
       - contract
 
-  eval-rails-cross-boundary-authorization-contract:
+  rails-cross-boundary-authorization-security:
     source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1582,7 +1582,7 @@ evaluations:
       - tests
       - contract
 
-  eval-rails-encryption-credentials-contract:
+  rails-encryption-credentials-engineering:
     source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1592,7 +1592,7 @@ evaluations:
       - tests
       - contract
 
-  eval-rails-engines-railties-contract:
+  rails-engines-railties-engineering:
     source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1622,7 +1622,7 @@ evaluations:
       - tests
       - contract
 
-  eval-rails-initialization-configuration-contract:
+  rails-initialization-configuration-engineering:
     source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1632,7 +1632,7 @@ evaluations:
       - tests
       - contract
 
-  eval-rails-operational-tasks-maintenance-contract:
+  rails-operational-tasks-maintenance:
     source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1672,7 +1672,7 @@ evaluations:
       - tests
       - contract
 
-  eval-rails-serialization-globalid-contract:
+  rails-serialization-globalid-engineering:
     source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
@@ -1682,7 +1682,7 @@ evaluations:
       - tests
       - contract
 
-  eval-rails-staff-principal-architecture-contract:
+  rails-staff-principal-architecture:
     source: rails-evaluation-corpus-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
