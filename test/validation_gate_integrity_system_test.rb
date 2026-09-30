@@ -10,21 +10,23 @@ class ValidationGateIntegritySystemTest < Minitest::Test
     File.read(VALIDATE_PATH, encoding: "UTF-8")
   end
 
-  def test_validation_gate_bootstraps_root_before_using_it
+  def test_validation_gate_bootstraps_root_before_use
     script = validate_script
+    expected = <<~BASH
+      #!/usr/bin/env bash
+      set -euo pipefail
 
-    pattern = %r{A#!\/usr\/bin\/env bash\nset -euo pipefail\n\nROOT="\$\(cd "\$\(dirname "\$0"\)\/\.\." && pwd\)"\n}
-    assert_match(pattern, script)
+      ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+    BASH
+
+    assert script.start_with?(expected)
   end
 
-  def test_validation_gate_uses_repository_root_for_all_repo_paths
-    script = validate_script
+  def test_validation_gate_uses_repository_root_for_all_ruby_paths
+    ruby_lines = validate_script.lines.select { |line| line.start_with?("ruby ") }
+    unrooted = ruby_lines.reject { |line| line.include?("$ROOT/") }
 
-    refute_match(%r{(?:^|\n)ruby "(?:scripts|test)/}, script)
-    refute_match(
-      %r{(?:^|\n)ruby -I"\$ROOT/test" "(?:/test|/scripts)/},
-      script
-    )
+    assert_empty unrooted
   end
 
   def test_validation_gate_invokes_the_framework_drift_check_and_test
