@@ -57,6 +57,6 @@ class DeprecationGovernanceSystemTest < Minitest::Test
     assert_match %r{\Areact-agent-skills / .+}, entry.fetch("replacement"), skill
     assert_equal "docs/REACT_AGENT_SKILLS_MIGRATION.md", entry.fetch("migration_doc"), skill
     assert_equal 5, Array(entry.fetch("removal_gate")).length, skill
-    assert_equal true, File.file?(File.join(ROOT, entry.fetch("migration_doc"))), skill
+    assert File.file?(File.join(ROOT, entry.fetch("migration_doc"))), skill
   end
 end
