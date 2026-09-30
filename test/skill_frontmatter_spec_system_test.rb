@@ -174,7 +174,7 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
         "allowed-tools must be a string"
       ]
 
-      assert(messages.all? { |message| stdout.include?(message) }, stdout)
+      assert(messages.all? { |message| stdout.include?(message) })
     end
   end
 
