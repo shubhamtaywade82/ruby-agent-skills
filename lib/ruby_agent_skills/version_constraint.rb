@@ -52,11 +52,10 @@ module RubyAgentSkills
       state = profile_entry["status"].to_s
 
       return base_result("unspecified", requirement) if requirement.empty?
+
       validate(requirement)
 
-      if state == "conflict"
-        return base_result("conflict", requirement)
-      end
+      return base_result("conflict", requirement) if state == "conflict"
 
       return base_result("unknown", requirement) if actual.to_s.empty?
 
@@ -81,6 +80,7 @@ module RubyAgentSkills
       return "conflict" if statuses.include?("conflict")
       return "unknown" if statuses.include?("unknown")
       return "supported" if statuses.include?("supported")
+
       "unspecified"
     end
 
