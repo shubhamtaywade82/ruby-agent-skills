@@ -10,6 +10,30 @@ REQUIRED_SCOPE = "new_standalone_react_typescript_work"
 
 abort "missing skill-manifest.yml" unless File.file?(MANIFEST_PATH)
 
+
+def validate_entry(errors, skill, entry)
+  errors << "deprecation #{skill} must have status deprecated" unless entry["status"] == "deprecated"
+  unless entry["scope"] == REQUIRED_SCOPE
+    errors << "deprecation #{skill} has an invalid scope"
+  end
+
+  replacement = entry["replacement"]
+  unless replacement.is_a?(String) && replacement.match?(/\Areact-agent-skills \/ .+/)
+    errors << "deprecation #{skill} must declare a react-agent-skills replacement"
+  end
+
+  migration_doc = entry["migration_doc"]
+  unless migration_doc == MIGRATION_DOC &&
+         File.file?(File.join(ROOT, migration_doc.to_s))
+    errors << "deprecation #{skill} must point to the migration document"
+  end
+
+  gate = entry["removal_gate"]
+  valid_gate = gate.is_a?(Array) &&
+               gate.length == 5 &&
+               gate.all? { |item| item.is_a?(String) && !item.strip.empty? }
+  errors << "deprecation #{skill} must declare exactly five non-empty removal gates" unless valid_gate
+end
 manifest = YAML.safe_load(
   File.read(MANIFEST_PATH, encoding: "UTF-8"),
   permitted_classes: [],
@@ -50,27 +74,3 @@ if errors.any?
 end
 
 puts "Validated #{entries.length} deprecation entries."
-
-def validate_entry(errors, skill, entry)
-  errors << "deprecation #{skill} must have status deprecated" unless entry["status"] == "deprecated"
-  unless entry["scope"] == REQUIRED_SCOPE
-    errors << "deprecation #{skill} has an invalid scope"
-  end
-
-  replacement = entry["replacement"]
-  unless replacement.is_a?(String) && replacement.match?(/\Areact-agent-skills \/ .+/)
-    errors << "deprecation #{skill} must declare a react-agent-skills replacement"
-  end
-
-  migration_doc = entry["migration_doc"]
-  unless migration_doc == MIGRATION_DOC &&
-         File.file?(File.join(ROOT, migration_doc.to_s))
-    errors << "deprecation #{skill} must point to the migration document"
-  end
-
-  gate = entry["removal_gate"]
-  valid_gate = gate.is_a?(Array) &&
-               gate.length == 5 &&
-               gate.all? { |item| item.is_a?(String) && !item.strip.empty? }
-  errors << "deprecation #{skill} must declare exactly five non-empty removal gates" unless valid_gate
-end
