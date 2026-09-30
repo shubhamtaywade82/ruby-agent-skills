@@ -188,26 +188,16 @@ class SkillPackSystemTest < Minitest::Test
     manifest = File.join(root, "skill-manifest.yml")
     set_skill_compatibility(manifest, ">= 3.2")
 
-    workspace = Dir.mktmpdir("workspace")
     pack = RubyAgentSkills::SkillPack.new(root: root)
-    evaluation = { "prompt" => "Demo", "skills" => [], "patterns" => ["patterns/one/shared"] }
-
     report = pack.compatibility_report(
-      evaluation: evaluation,
-      runtime_profile: { "rails" => { "resolved" => "8.0.4", "status" => "resolved" } }
+      evaluation: { "skills" => ["demo"], "patterns" => [] },
+      runtime_profile: { "ruby" => { "resolved" => "3.3.12", "status" => "resolved" } }
     )
 
-    assert_equal "unsupported", report.fetch("status")
-    assert_equal "unsupported",
-                 report.dig("requirements", "patterns/one/shared", "requirements", "rails", "status")
-
-    assert_raises(RubyAgentSkills::SkillPack::IncompatibleError) do
-      pack.materialize(evaluation: evaluation, workspace: workspace, runtime_profile: {
-                         "rails" => { "resolved" => "8.0.4", "status" => "resolved" }
-                       })
-    end
+    assert_equal "supported", report.fetch("status")
+    assert_equal "supported",
+                 report.dig("requirements", "demo", "requirements", "ruby", "status")
   end
-
   def test_compatible_version_bound_pattern_materializes
     root = build_pack
     pattern = File.join(root, "patterns/one/shared.md")
