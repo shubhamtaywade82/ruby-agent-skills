@@ -212,6 +212,99 @@ class SkillPackSystemTest < Minitest::Test
     assert_equal "supported", report.dig("requirements", "demo", "ruby", "status")
   end
 
+  def test_compatibility_report_gates_a_version_bound_pattern
+    root = build_pack
+    pattern = File.join(root, "patterns/one/shared.md")
+    File.write(
+      pattern,
+      <<~MARKDOWN
+        ---
+        name: shared
+        description: Version-bound pattern
+        family: rails
+        compatibility:
+          rails: ">= 8.1"
+        ---
+        # One
+
+        ## Problem
+        Uses a Rails 8.1 API boundary.
+
+        ## Use when
+        The resolved Rails version supports it.
+
+        ## Do not use when
+        Rails is older than the declared floor.
+
+        ## Repository inspection
+        Resolve the Rails version first.
+
+        ## Implementation procedure
+        Apply the supported API after version verification.
+
+        ## Failure modes
+        Do not use unsupported framework APIs.
+
+        ## Testing
+        Cover the supported Rails version.
+
+        ## Review checklist
+        [ ] Rails version resolved
+
+        ## Related skills
+        - skills/ruby-runtime-compatibility/SKILL.md
+      MARKDOWN
+    )
+
+    workspace = Dir.mktmpdir("workspace")
+    pack = RubyAgentSkills::SkillPack.new(root: root)
+    evaluation = { "prompt" => "Demo", "skills" => [], "patterns" => ["patterns/one/shared"] }
+
+    report = pack.compatibility_report(
+      evaluation: evaluation,
+      runtime_profile: { "rails" => { "resolved" => "8.0.4", "status" => "resolved" } }
+    )
+
+    assert_equal "unsupported", report.fetch("status")
+    assert_equal "unsupported",
+                 report.dig("requirements", "patterns/one/shared", "rails", "status")
+
+    assert_raises(RubyAgentSkills::SkillPack::IncompatibleError) do
+      pack.materialize(evaluation: evaluation, workspace: workspace, runtime_profile: {
+                         "rails" => { "resolved" => "8.0.4", "status" => "resolved" }
+                       })
+    end
+  end
+
+  def test_compatible_version_bound_pattern_materializes
+    root = build_pack
+    pattern = File.join(root, "patterns/one/shared.md")
+    File.write(
+      pattern,
+      File.read(pattern, encoding: "UTF-8").sub("# One", <<~MARKDOWN.chomp)
+        ---
+        name: shared
+        description: Version-bound pattern
+        family: rails
+        compatibility:
+          rails: ">= 8.1"
+        ---
+        # One
+      MARKDOWN
+    )
+
+    workspace = Dir.mktmpdir("workspace")
+    pack = RubyAgentSkills::SkillPack.new(root: root)
+    result = pack.materialize(
+      evaluation: { "prompt" => "Demo", "skills" => [], "patterns" => ["patterns/one/shared"] },
+      workspace: workspace,
+      runtime_profile: { "rails" => { "resolved" => "8.1.4", "status" => "resolved" } }
+    )
+
+    manifest = JSON.parse(File.read(result.fetch("manifest"), encoding: "UTF-8"))
+    assert_equal "supported", manifest.dig("compatibility", "status")
+  end
+
   def test_ambiguous_basename_pattern_is_rejected
     root = build_pack
     pack = RubyAgentSkills::SkillPack.new(root: root)
