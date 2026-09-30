@@ -116,6 +116,8 @@ module RubyAgentSkills
         "skills" => [],
         "patterns" => []
       }
+    end
+
     def compatibility_report(evaluation:, runtime_profile:)
       requirements = {}
 
