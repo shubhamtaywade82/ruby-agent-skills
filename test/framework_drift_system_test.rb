@@ -1,0 +1,93 @@
+# frozen_string_literal: true
+
+require "minitest/autorun"
+require "open3"
+require "tmpdir"
+require "fileutils"
+
+class FrameworkDriftSystemTest < Minitest::Test
+  ROOT = File.expand_path("..", __dir__)
+
+  def with_fixture(markdown)
+    Dir.mktmpdir("ruby-agent-framework-drift-") do |root|
+      FileUtils.mkdir_p(File.join(root, "skills/example"))
+      File.write(File.join(root, "skills/example/SKILL.md"), markdown, encoding: "UTF-8")
+      registry = File.join(root, "framework-drift.yml")
+      File.write(registry, <<~YAML, encoding: "UTF-8")
+        version: 1
+        policy:
+          scan_roots:
+            - skills
+          languages:
+            - ruby
+          default_framework: rails
+        entries:
+          rails-update-attributes:
+            framework: rails
+            status: removed
+            version: "6.1"
+            symbol: ActiveRecord::Base#update_attributes / #update_attributes!
+            match: "\\bupdate_attributes!?\\b"
+            replacement: update / update!
+            source_url: https://guides.rubyonrails.org/v6.1.5/6_1_release_notes.html
+            source_section: Active Record removals
+      YAML
+      yield root, registry
+    end
+  end
+
+  def run_audit(root, registry)
+    Open3.capture3(
+      RbConfig.ruby,
+      File.join(ROOT, "scripts/audit_framework_drift.rb"),
+      "--root",
+      root,
+      "--registry",
+      registry,
+      chdir: ROOT
+    )
+  end
+
+  def test_detects_deprecated_api_inside_ruby_code_fence
+    with_fixture(<<~MARKDOWN) do |root, registry|
+      # Example
+
+      ```ruby
+      order.update_attributes!(status: :paid)
+      ```
+    MARKDOWN
+      stdout, stderr, status = run_audit(root, registry)
+
+      refute_predicate status, :success?, stdout
+      assert_includes stderr, "rails-update-attributes"
+      assert_includes stderr, "skills/example/SKILL.md:5"
+    end
+  end
+
+  def test_ignores_deprecated_api_in_prose
+    with_fixture(<<~MARKDOWN) do |root, registry|
+      # Example
+
+      Historical guidance mentions update_attributes but contains no Ruby code block.
+    MARKDOWN
+      stdout, stderr, status = run_audit(root, registry)
+
+      assert_predicate status, :success?, "#{stdout}\n#{stderr}"
+    end
+  end
+
+  def test_allows_explicit_in_block_suppression
+    with_fixture(<<~MARKDOWN) do |root, registry|
+      # Example
+
+      ```ruby
+      # framework-drift: allow rails-update-attributes historical migration example
+      order.update_attributes!(status: :paid)
+      ```
+    MARKDOWN
+      stdout, stderr, status = run_audit(root, registry)
+
+      assert_predicate status, :success?, "#{stdout}\n#{stderr}"
+    end
+  end
+end
