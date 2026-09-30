@@ -44,7 +44,7 @@ pattern_files.each do |path|
   errors << relative + ": missing family" if metadata["family"].to_s.empty?
   if metadata.key?("compatibility")
     compatibility = metadata["compatibility"]
-    unless compatibility.is_a?(Hash) && compatibility.all? { |runtime, requirement| runtime.is_a?(String) && requirement.is_a?(String) }
+    unless compatibility.is_a?(Hash) && compatibility.all? { |runtime, requirement| runtime.is_a?(String) && requirement.is_a?(String) && !requirement.strip.empty? }
       errors << relative + ": compatibility must be a mapping of string runtime names to string requirements"
     else
       compatibility.each do |runtime, requirement|
