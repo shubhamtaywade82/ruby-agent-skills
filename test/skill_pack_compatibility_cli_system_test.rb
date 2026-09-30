@@ -54,8 +54,15 @@ class SkillPackCompatibilityCliSystemTest < Minitest::Test
     report = JSON.parse(stdout)
     assert_equal "supported", report.fetch("status")
 
-    assert_equal "supported",
-                 report.dig("requirements", "patterns/rails/active-job-continuation-contract", "rails", "status")
+    assert_equal(
+      "supported",
+      report.dig(
+        "requirements",
+        "patterns/rails/active-job-continuation-contract",
+        "rails",
+        "status"
+      )
+    )
   end
 
   def test_cli_fails_for_known_incompatible_runtime
