@@ -3,11 +3,22 @@
 require "json"
 require "minitest/autorun"
 require "tmpdir"
+require "yaml"
 require_relative "../lib/ruby_agent_skills/skill_pack"
 
 class SkillPackSystemTest < Minitest::Test
   # Compatibility scenarios intentionally share one integration boundary.
   # rubocop:disable Metrics/ClassLength
+  def set_skill_compatibility(manifest, requirement)
+    data = YAML.safe_load(
+      File.read(manifest, encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    data.fetch("skills").fetch("demo")["compatibility"] = { "ruby" => requirement }
+    File.write(manifest, YAML.dump(data), encoding: "UTF-8")
+  end
+
   def build_pack
     root = Dir.mktmpdir("skill-pack")
     FileUtils.mkdir_p(File.join(root, "skills", "demo"))
