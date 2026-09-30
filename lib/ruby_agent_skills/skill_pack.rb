@@ -79,7 +79,8 @@ module RubyAgentSkills
         "manifest" => manifest_path,
         "context" => context_path,
         "skills" => selected_skills,
-        "patterns" => selected_patterns
+        "patterns" => selected_patterns,
+        "compatibility" => compatibility
       }
     end
 
