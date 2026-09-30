@@ -47,23 +47,18 @@ module RubyAgentSkills
     end
 
     def evaluate_requirement(runtime, requirement, profile)
-      profile_entry = profile.fetch(runtime, {})
-      actual = profile_entry["resolved"]
-      state = profile_entry["status"].to_s
+      entry = profile.fetch(runtime, {})
+      actual = entry["resolved"]
+      state = entry["status"].to_s
 
       return base_result("unspecified", requirement) if requirement.empty?
 
       validate(requirement)
-
       return base_result("conflict", requirement) if state == "conflict"
-
       return base_result("unknown", requirement) if actual.to_s.empty?
 
-      base_result(
-        satisfies?(actual, requirement) ? "supported" : "unsupported",
-        requirement,
-        actual
-      )
+      status = satisfies?(actual, requirement) ? "supported" : "unsupported"
+      base_result(status, requirement, actual)
     end
 
     def base_result(status, requirement, version = nil)
