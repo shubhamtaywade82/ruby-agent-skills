@@ -140,7 +140,10 @@ module RubyAgentSkills
 
     def success_message
       roots = @registry.roots.length
-      "Framework drift audit passed: #{@registry.entries.length} registry entries scanned across #{roots} roots."
+      [
+        "Framework drift audit passed: #{@registry.entries.length} registry entries scanned",
+        "across #{roots} roots."
+      ].join(" ")
     end
   end
 end
