@@ -28,6 +28,12 @@ Deploy-time automation can accidentally expose encrypted credentials through ad 
 
 Resolve the Rails version and inspect encrypted credentials configuration, master-key delivery, deployment environment variables, secret redaction, and existing release tooling.
 
+## Example
+
+```bash
+KAMAL_REGISTRY_PASSWORD=$(rails credentials:fetch kamal.registry_password)
+```
+
 ## Implementation procedure
 
 1. Define the exact credential needed and its deployment owner.
