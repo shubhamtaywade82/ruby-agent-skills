@@ -21,7 +21,7 @@ class FrameworkDriftSystemTest < Minitest::Test
         status: removed
         version: "6.1"
         symbol: ActiveRecord::Base#update_attributes / #update_attributes!
-        match: "\\bupdate_attributes!?\\b"
+        match: '\\bupdate_attributes!?\\b'
         replacement: update / update!
         source_url: https://guides.rubyonrails.org/v6.1.5/6_1_release_notes.html
         source_section: Active Record removals
@@ -54,8 +54,8 @@ class FrameworkDriftSystemTest < Minitest::Test
 
   def test_rejects_control_character_match_from_yaml
     registry = REGISTRY.sub(
-      'match: "\\\\bupdate_attributes!?\\\\b"',
-      'match: "\\bupdate_attributes!?\\b"'
+      %q{match: '\\bupdate_attributes!?\\b'},
+      "match: \"\\bupdate_attributes!?\\b\""
     )
 
     with_fixture(<<~MARKDOWN) do |root, path|
