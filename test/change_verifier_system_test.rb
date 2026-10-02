@@ -429,6 +429,15 @@ class ChangeVerifierRunnerTest < Minitest::Test
     assert_operator Process.clock_gettime(Process::CLOCK_MONOTONIC) - started, :<, 15
   end
 
+  def test_runner_normalizes_non_ascii_command_output
+    result = RubyAgentSkills::ChangeVerifier::CommandRunner.new
+                                                           .call([RbConfig.ruby, "-e", "STDOUT.write(%q{hello — world})"],
+                                                                 chdir: Dir.pwd, timeout: 5)
+
+    assert result.stdout.valid_encoding?
+    assert_equal "hello — world", result.stdout
+  end
+
   def test_runner_reports_missing_executables_without_raising
     result = RubyAgentSkills::ChangeVerifier::CommandRunner.new
                                                            .call(["definitely-not-a-real-binary"], chdir: Dir.pwd, timeout: 5)
