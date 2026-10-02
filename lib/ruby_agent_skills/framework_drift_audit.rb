@@ -51,9 +51,7 @@ module RubyAgentSkills
     def validate_match(id, entry)
       match = entry.fetch("match")
       if match.bytes.any? { |byte| byte <= 31 || byte == 127 }
-        return [
-          "entry #{id} match contains control characters; "           "quote regexes with YAML single quotes"
-        ]
+        return ["entry #{id} match contains control characters; quote regexes with YAML single quotes"]
       end
 
       Regexp.new(match)
