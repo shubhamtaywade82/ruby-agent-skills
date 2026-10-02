@@ -12,7 +12,7 @@ entries:
     status: removed
     version: "6.1"
     symbol: ActiveRecord::Base#update_attributes / #update_attributes!
-    match: "\\bupdate_attributes!?\\b"
+    match: "\\bupdate_attributes!?(?![A-Za-z0-9_])"
     replacement: update / update!
     source_url: https://guides.rubyonrails.org/v6.1.5/6_1_release_notes.html
     source_section: Active Record removals
