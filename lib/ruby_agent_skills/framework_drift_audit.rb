@@ -50,8 +50,10 @@ module RubyAgentSkills
 
     def validate_match(id, entry)
       match = entry.fetch("match")
-      if match.match?(/[\\u0000-\\u001F\\u007F]/)
-        return ["entry #{id} match contains control characters; quote regexes with YAML single quotes"]
+      if match.bytes.any? { |byte| byte <= 31 || byte == 127 }
+        return [
+          "entry #{id} match contains control characters; "           "quote regexes with YAML single quotes"
+        ]
       end
 
       Regexp.new(match)
