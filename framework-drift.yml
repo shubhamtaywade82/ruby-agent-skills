@@ -12,7 +12,7 @@ entries:
     status: removed
     version: "6.1"
     symbol: ActiveRecord::Base#update_attributes / #update_attributes!
-    match: "\\bupdate_attributes!?(?![A-Za-z0-9_])"
+    match: '\\bupdate_attributes!?(?![A-Za-z0-9_])'
     replacement: update / update!
     source_url: https://guides.rubyonrails.org/v6.1.5/6_1_release_notes.html
     source_section: Active Record removals
@@ -21,7 +21,7 @@ entries:
     status: deprecated
     version: "8.1"
     symbol: ActiveRecord::Base.signed_id_verifier_secret
-    match: "ActiveRecord::Base\\.signed_id_verifier_secret\\b"
+    match: 'ActiveRecord::Base\\.signed_id_verifier_secret\\b'
     replacement: Rails.application.message_verifiers or Model.signed_id_verifier
     source_url: https://guides.rubyonrails.org/8_1_release_notes.html
     source_section: Active Record deprecations
@@ -30,7 +30,7 @@ entries:
     status: deprecated
     version: "8.1"
     symbol: config.active_support.to_time_preserves_timezone
-    match: "config\\.active_support\\.to_time_preserves_timezone\\b"
+    match: 'config\\.active_support\\.to_time_preserves_timezone\\b'
     replacement: remove the legacy configuration after migrating to current timezone semantics
     source_url: https://guides.rubyonrails.org/8_1_release_notes.html
     source_section: Active Support deprecations
@@ -39,7 +39,7 @@ entries:
     status: deprecated
     version: "8.1"
     symbol: String#mb_chars / ActiveSupport::Multibyte::Chars
-    match: "\\b(?:mb_chars|ActiveSupport::Multibyte::Chars)\\b"
+    match: '\\b(?:mb_chars|ActiveSupport::Multibyte::Chars)\\b'
     replacement: modern String Unicode APIs
     source_url: https://guides.rubyonrails.org/8_1_release_notes.html
     source_section: Active Support deprecations
@@ -48,7 +48,7 @@ entries:
     status: deprecated
     version: "8.1"
     symbol: ActiveSupport::Configurable
-    match: "\\bActiveSupport::Configurable\\b"
+    match: '\\bActiveSupport::Configurable\\b'
     replacement: explicit configuration ownership or supported framework configuration APIs
     source_url: https://guides.rubyonrails.org/8_1_release_notes.html
     source_section: Active Support deprecations
