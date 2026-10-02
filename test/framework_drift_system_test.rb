@@ -52,6 +52,27 @@ class FrameworkDriftSystemTest < Minitest::Test
     )
   end
 
+  def test_rejects_control_character_match_from_yaml
+    registry = REGISTRY.sub(
+      'match: "\\\\bupdate_attributes!?\\\\b"',
+      'match: "\\bupdate_attributes!?\\b"'
+    )
+
+    with_fixture(<<~MARKDOWN) do |root, path|
+      # Example
+
+      ```ruby
+      order.update(status: :paid)
+      ```
+    MARKDOWN
+      File.write(path, registry, encoding: "UTF-8")
+      stdout, stderr, status = run_audit(root, path)
+
+      refute_predicate status, :success?, stdout
+      assert_includes stderr, "contains control characters"
+    end
+  end
+
   def test_detects_deprecated_api_inside_ruby_code_fence
     with_fixture(<<~MARKDOWN) do |root, registry|
       # Example
