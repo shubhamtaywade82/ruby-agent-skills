@@ -49,7 +49,12 @@ module RubyAgentSkills
     end
 
     def validate_match(id, entry)
-      Regexp.new(entry.fetch("match"))
+      match = entry.fetch("match")
+      if match.match?(/[\\u0000-\\u001F\\u007F]/)
+        return ["entry #{id} match contains control characters; quote regexes with YAML single quotes"]
+      end
+
+      Regexp.new(match)
       []
     rescue RegexpError => e
       ["entry #{id} has invalid match: #{e.message}"]
