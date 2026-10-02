@@ -68,6 +68,22 @@ class FrameworkDriftSystemTest < Minitest::Test
     end
   end
 
+  def test_detects_deprecated_api_inside_rb_code_fence
+    with_fixture(<<~MARKDOWN) do |root, registry|
+      # Example
+
+      ```rb
+      order.update_attributes(status: :paid)
+      ```
+    MARKDOWN
+      stdout, stderr, status = run_audit(root, registry)
+
+      refute_predicate status, :success?, stdout
+      assert_includes stderr, "rails-update-attributes"
+      assert_includes stderr, "skills/example/SKILL.md:4"
+    end
+  end
+
   def test_ignores_deprecated_api_in_prose
     with_fixture(<<~MARKDOWN) do |root, registry|
       # Example
