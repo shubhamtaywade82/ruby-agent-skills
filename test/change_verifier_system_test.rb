@@ -434,7 +434,7 @@ class ChangeVerifierRunnerTest < Minitest::Test
                                                            .call([RbConfig.ruby, "-e", "STDOUT.write(%q{hello — world})"],
                                                                  chdir: Dir.pwd, timeout: 5)
 
-    assert result.stdout.valid_encoding?
+    assert_predicate result.stdout, :valid_encoding?
     assert_equal "hello — world", result.stdout
   end
 
