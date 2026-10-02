@@ -28,8 +28,6 @@ The campaign is 23 public cases × 3 repetitions = 69 model decisions.
 
 The public evaluation corpus has 130 evaluation files / 476 cases. Campaigns provide empirical coverage for 102 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
 
-The campaign is 23 public cases × 3 repetitions = 69 model decisions.
-
 ## Release archive verification
 
 The release archive builder records file-level SHA-256/byte-size provenance in `RELEASE.json`. Independently verify a built archive with:
