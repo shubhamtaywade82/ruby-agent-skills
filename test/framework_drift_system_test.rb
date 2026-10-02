@@ -5,6 +5,7 @@ require "open3"
 require "tmpdir"
 require "fileutils"
 
+# rubocop:disable Metrics/ClassLength, Metrics/MethodLength
 class FrameworkDriftSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   REGISTRY = <<~YAML
