@@ -7,9 +7,9 @@ The skill library, pattern library, corpus-quality audit, routing infrastructure
 Current inventory:
 
 - 96 skills
-- 443 implementation patterns
+- 446 implementation patterns
 - 490 evaluation cases
-- 93 system/contract tests
+- 99 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 133 evaluation files / 490 cases. Campaigns provide empirical coverage for 103 evaluation files; the remaining 30 files / 75 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
+The public evaluation corpus has 133 evaluation files / 490 cases. Campaigns provide controlled benchmark coverage for 105 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new `ruby-platform` campaign covers `ruby-toolchain-contract` and `ruby-gem-development-contract` with independent fixture references; actual model results remain separate empirical evidence.
 
 ## Release archive verification
 
@@ -213,7 +213,7 @@ Use `stack-minimality` with the domain skill that owns the actual contract. The 
 
 ## Remaining non-implementation work
 
-1. Execute the real 42-run public routing campaign.
+1. Execute the real 78-run public routing campaign.
 2. Analyze observed confusion and repetition instability.
 3. Perform evidence-based routing remediation where failures are observed.
 4. Run compatible baseline/candidate experiments.
@@ -225,4 +225,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 149. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 150. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
