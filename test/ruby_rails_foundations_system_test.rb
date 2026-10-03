@@ -47,7 +47,7 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
 
   def test_routing_keeps_bootstrap_separate_from_generators
     required = [
-      "Create a Rails application /",
+      "Create a Rails application / `rails new`",
       "rails new",
       "rails new versus generator",
       "rails-generators",
