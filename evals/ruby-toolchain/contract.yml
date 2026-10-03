@@ -2,6 +2,7 @@ id: ruby-toolchain-contract
 version: 1
 title: Resolve and verify a Ruby development toolchain
 category: ruby
+coverage: static-only
 source: ruby-toolchain-v1
 skills:
   - ruby-toolchain
