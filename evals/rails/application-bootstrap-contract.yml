@@ -1,0 +1,54 @@
+id: rails-application-bootstrap-contract
+version: 1
+title: Bootstrap the correct Rails application shape
+category: rails
+source: rails-application-bootstrap-v1
+skills:
+  - rails-application-bootstrap
+  - ruby-toolchain
+  - ruby-runtime-compatibility
+patterns: []
+prompt: |
+  Create a Rails application from scratch using repository and product
+  requirements. Resolve Ruby and Rails first, inspect the target release's
+  rails new --help, choose monolith versus API-only, choose the database and
+  frontend strategy where required, use justified skip/template options, and
+  verify the generated project without copying flags from a different release.
+constraints:
+  required_design:
+    - runtime and Rails version are resolved before generation
+    - rails new --help is treated as version-specific evidence
+    - application shape is explicit
+    - database and frontend decisions are explicit when relevant
+    - skip, force, and template options have documented reasons
+    - generated output is reviewed
+  forbidden:
+    - assuming historical generator flags
+    - blind force-overwrite
+    - using API-only mode without an API-only requirement
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: standard-monolith
+    input: conventional full-stack Rails application
+    expected: bootstrap a standard Rails app with only required options
+  - name: api-only
+    input: JSON API without server-rendered Rails views
+    expected: use API-only mode and verify the generated controller/middleware shape
+  - name: postgres
+    input: PostgreSQL is the required database
+    expected: use the version-supported database option and verify generated dependency/configuration
+  - name: evolving-flags
+    input: requested skip/frontend option may be version-sensitive
+    expected: inspect target-release generator help before selecting it
+  - name: nonempty-directory
+    input: target directory contains existing files
+    expected: inspect collisions and never use force blindly
+grading:
+  functional: generated application matches the requested architectural shape
+  tests: bootstrap and post-bootstrap checks are executable
+  contract: options are tied to observed Rails-version evidence
+  scope_control: generation does not create unrelated framework surface
