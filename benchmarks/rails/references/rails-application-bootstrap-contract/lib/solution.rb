@@ -5,7 +5,16 @@ class RailsApplicationBootstrap
     @help_output = help_output
   end
 
-  def command(app_name, api_only: false, database: nil, javascript: nil, css: nil, skip: [], template: nil, force: false)
+  def command(
+    app_name,
+    api_only: false,
+    database: nil,
+    javascript: nil,
+    css: nil,
+    skip: [],
+    template: nil,
+    force: false
+  )
     raise ArgumentError, "force requires explicit override" if force
 
     args = ["rails", "new", app_name]
