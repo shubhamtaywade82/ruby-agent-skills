@@ -38,7 +38,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
   # per-file edits, and returns the audit's [stderr, status].
   def audit_with(edits = {})
     Dir.mktmpdir("documentation-consistency") do |dir|
-      %w[skills patterns evals test].each { |path| FileUtils.cp_r(File.join(ROOT, path), dir) }
+      %w[skills patterns evals test router].each { |path| FileUtils.cp_r(File.join(ROOT, path), dir) }
       FileUtils.mkdir_p(File.join(dir, "docs"))
       %w[README.md RELEASE.md CHANGELOG.md skill-manifest.yml docs/IMPLEMENTATION_HANDOFF.md docs/ITERATIONS.md].each do |path|
         text = source(path)
@@ -50,6 +50,15 @@ class DocumentationConsistencySystemTest < Minitest::Test
       _stdout, stderr, status = Open3.capture3(RbConfig.ruby, audit, "--root", dir, chdir: ROOT)
       [stderr, status]
     end
+  end
+
+  def test_documentation_audit_detects_stale_routing_campaign_run_count
+    stderr, status = audit_with(
+      "docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub("23 public cases × 3 repetitions = 69", "14 public cases × 3 repetitions = 42") }
+    )
+
+    refute status.success?
+    assert_includes stderr, "public routing campaign run-count documentation drift"
   end
 
   def test_documentation_audit_detects_stale_handoff_inventory
