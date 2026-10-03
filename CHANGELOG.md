@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
+
+- Reconcile the still-missing Iterations 144–148 validation hardening onto the Iteration 149 release line instead of merging the stale #80 branch wholesale.
+- Restore Agent Skills frontmatter validation, runtime compatibility enforcement, deprecation governance, executable framework-drift detection, validation-gate integrity preflight, and their release/install integrity surfaces.
+- Add validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark families with independent pristine references and verifier coverage.
+- Promote both foundation evaluations from static-only to controlled benchmark-backed coverage; no model-quality result is claimed until an external campaign is actually executed.
+- Update inventories, routing/evaluation provenance, documentation, and release surfaces.
+
 ## Iteration 149 — Ruby and Rails Platform Foundations
 
 - Add `ruby-toolchain` for Ruby version-manager/toolchain selection, RubyGems/Bundler setup, executable provenance, PATH/GEM_HOME diagnostics, dependency installation, and native-extension failure diagnosis.
@@ -7,6 +15,31 @@
 - Add `ruby-gem-development` for `bundle gem`, gemspec/package contracts, namespaces/load paths, runtime versus development dependencies, executables, `.gem` build/inspection, isolated installation, and release authorization.
 - Add three deterministic evaluations and adversarial routing cases for the new boundaries; update manifest, source coverage, README inventory, and validation registration.
 - CI policy: no workflow relaxation or skipped validation was introduced; new coverage is wired into the existing repository validation path.
+
+## Iteration 148 — Validation Gate Integrity Preflight
+
+- Add `test/validation_gate_integrity_system_test.rb` to verify that `bin/validate` initializes its repository root before use, keeps repository paths root-qualified, and retains the framework-drift audit/test.
+- Run the integrity test as an independent CI step before `bash bin/validate`, so validation-gate truncation or path corruption cannot silently disable later checks.
+
+## Iteration 147 — Executable Framework Drift Detection
+
+- Add a bounded, machine-readable Rails framework-drift registry and executable scanner for Ruby code fences, with explicit in-block suppressions and official source references.
+- Register and enforce the detector through `skill-manifest.yml`, `bin/validate`, repository completeness, and system tests.
+
+## Iteration 146 — Deprecation Governance
+
+- Add explicit migration-state governance for deprecated React/TypeScript skills, with evidence-backed replacement paths and exactly five removal gates per entry.
+- Validate the registry and prevent duplicate replacement ownership.
+
+## Iteration 145 — Executable Runtime Compatibility Gate
+
+- Add `RubyAgentSkills::VersionConstraint` using RubyGems requirement semantics and enforce explicit compatibility constraints for selected skills and patterns.
+- Add `bin/skill-pack-compatibility`, runtime-profile propagation in evaluations, and three Rails 8.1 version-bound patterns without claiming model-quality improvement.
+
+## Iteration 144 — Agent Skills Frontmatter Contract Validation
+
+- Enforce the Agent Skills frontmatter contract for `name`, `description`, `compatibility`, `metadata`, `license`, and `allowed-tools`, including deterministic length/type/name checks.
+- Add system coverage and bind campaign cardinality documentation/tests to the configured routing campaign.
 
 ## Iteration 143 — Consumer-Side Change Verification
 

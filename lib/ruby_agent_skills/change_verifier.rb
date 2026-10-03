@@ -93,7 +93,11 @@ module RubyAgentSkills
       def drain(io, buffer)
         Thread.new do # rubocop:disable ThreadSafety/NewThread -- per-call readers, no shared state
           io.each_line do |line|
-            buffer << line if buffer.bytesize < OUTPUT_CAP_BYTES
+            next unless buffer.bytesize < OUTPUT_CAP_BYTES
+
+            normalized = line.dup.force_encoding("UTF-8")
+            normalized = normalized.scrub unless normalized.valid_encoding?
+            buffer << normalized
           end
         rescue IOError
           nil

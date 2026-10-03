@@ -40,13 +40,13 @@ The archive carries the agent-facing surface only — no git history, no evaluat
 | Path | Purpose |
 | --- | --- |
 | `skills/` | 96 agent-executable skills (`SKILL.md` per skill) |
-| `patterns/` | 443 implementation patterns |
+| `patterns/` | 446 implementation patterns |
 | `skill-manifest.yml` | Canonical skill inventory and routing metadata |
 | `router/ROUTING.md` | Routing contract |
 | `AGENTS.md` | Agent-facing entry point |
 | `docs/SKILL_CONTRACT.md` | Skill authoring contract |
 | `bin/install` | Installer (git and offline archive modes) |
-| `bin/skill-pack-verify`, `bin/skill-pack-doctor` | Installed-pack verification tools |
+| `bin/skill-pack-verify`, `bin/skill-pack-doctor`, `bin/skill-pack-compatibility` | Installed-pack verification and compatibility tools |
 | `bin/stack-minimality` | Deterministic minimality evidence tool |
 | `RELEASE.json` | Version, source git SHA, and inventory provenance |
 | `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE` | Public metadata |

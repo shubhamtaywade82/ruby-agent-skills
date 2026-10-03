@@ -1,0 +1,26 @@
+version: 1
+source: ruby-gem-development-v1
+description: Deterministic executable fixture for Ruby gem development and release-boundary decisions.
+fixtures:
+  ruby-gem-development-contract:
+    root: benchmarks/ruby-gem-development/fixtures/ruby-gem-development-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class RubyGemDevelopmentAdvisor"
+      - "def skeleton_command"
+      - "def dependency_groups"
+      - "def consumer_require_command"
+      - "def safe_package_files"
+      - "def release_allowed?"
+    forbidden_regex:
+      - 'FileUtils\.rm_rf.*gemspec'
+      - 'gem\s+push'
+      - 'publish'
+    contract_regex:
+      - "bundle gem"
+      - "gemspec"
+      - "runtime"
+      - "development"
+      - "require"
+      - "release_allowed"

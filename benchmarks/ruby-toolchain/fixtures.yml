@@ -1,0 +1,23 @@
+version: 1
+source: ruby-toolchain-v1
+description: Deterministic executable fixture for Ruby runtime/toolchain decisions.
+fixtures:
+  ruby-toolchain-contract:
+    root: benchmarks/ruby-toolchain/fixtures/ruby-toolchain-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class RubyToolchainAdvisor"
+      - "def resolve"
+      - "def dependency_command"
+      - "def native_extension_classification"
+      - "def runtime_change_allowed?"
+    forbidden_regex:
+      - 'gem\s+install\s+(?!.*bundle)'
+      - 'rm\s+Gemfile\.lock'
+      - 'FileUtils\.rm_rf.*Gemfile\.lock'
+    contract_regex:
+      - "Gem::Version"
+      - "bundle check"
+      - "missing-ruby-header"
+      - "runtime_change_allowed"
