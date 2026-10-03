@@ -5,6 +5,7 @@
 - Record the closed `#80` reconciliation explicitly: all 43 paths touched by the stale branch are present in current `main`; 31 are byte-identical and the remaining 12 have current-main equivalents that supersede the stale versions.
 - Correct the controlled benchmark documentation to match the current corpus: the Rails campaign covers all 28 public Rails evaluations / 268 cases.
 - Document the dedicated `ruby-toolchain` and `ruby-gem-development` three-repetition paired campaigns and distinguish benchmark infrastructure integrity from actual external-agent model evidence.
+- Add CI smoke coverage that executes both foundation campaign manifests through the real benchmark runner for all three paired repetitions using a no-op agent, proving campaign completion without fabricating model-quality results.
 
 
 ## Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
