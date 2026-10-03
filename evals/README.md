@@ -47,6 +47,16 @@ The second public family is derived from practical material in The Ruby Workshop
 
 These are benchmark tasks, not copied book exercises. The cases preserve the engineering concepts and add deterministic executable contracts.
 
+### Ruby and Rails platform foundations
+
+The platform-foundation evaluations cover the developer lifecycle before and around application code:
+- Ruby toolchain selection and executable provenance;
+- RubyGems and Bundler dependency installation and native-extension diagnosis;
+- Rails application bootstrap with `rails new`, API-only versus standard application shape, database/frontend choices, and version-aware generator options;
+- reusable Ruby gem development with `bundle gem`, gemspec/load-path contracts, package verification, isolated installation, and release authorization.
+
+The Rails bootstrap evaluation has a disposable fixture/reference in the controlled Rails campaign. Toolchain and gem-development evaluations remain `coverage: static-only` until their own benchmark fixture families exist.
+
 ### Design-pattern system
 
 The design-pattern family evaluates whether an agent can choose an appropriate abstraction and avoid unjustified patterns. It includes PORO extraction, service/application objects, commands, strategies, adapters, policies, dependency injection, factories, builders, null objects, decorators, facades, repositories, specifications, state objects, composition over inheritance, presenters, and an explicit pattern-restraint case.
