@@ -1,5 +1,12 @@
 # Changelog
 
+## Iteration 151 — Benchmark Documentation and Reconciliation Audit
+
+- Record the closed `#80` reconciliation explicitly: all 43 paths touched by the stale branch are present in current `main`; 31 are byte-identical and the remaining 12 have current-main equivalents that supersede the stale versions.
+- Correct the controlled benchmark documentation to match the current corpus: the Rails campaign covers all 28 public Rails evaluations / 268 cases.
+- Document the dedicated `ruby-toolchain` and `ruby-gem-development` three-repetition paired campaigns and distinguish benchmark infrastructure integrity from actual external-agent model evidence.
+
+
 ## Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
 
 - Reconcile the still-missing Iterations 144–148 validation hardening onto the Iteration 149 release line instead of merging the stale #80 branch wholesale.
