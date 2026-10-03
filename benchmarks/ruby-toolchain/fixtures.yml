@@ -19,5 +19,5 @@ fixtures:
     contract_regex:
       - "Gem::Version"
       - "bundle check"
-      - "ruby\.h"
+      - 'ruby\.h'
       - "runtime_change_allowed"
