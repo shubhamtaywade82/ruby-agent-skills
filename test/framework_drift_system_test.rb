@@ -142,3 +142,5 @@ class FrameworkDriftSystemTest < Minitest::Test
     end
   end
 end
+
+# rubocop:enable Metrics/ClassLength, Metrics/MethodLength
