@@ -6,10 +6,10 @@ The skill library, pattern library, corpus-quality audit, routing infrastructure
 
 Current inventory:
 
-- 93 skills
+- 96 skills
 - 443 implementation patterns
-- 476 evaluation cases
-- 92 system/contract tests
+- 490 evaluation cases
+- 93 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 130 evaluation files / 476 cases. Campaigns provide empirical coverage for 102 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
+The public evaluation corpus has 133 evaluation files / 490 cases. Campaigns provide empirical coverage for 103 evaluation files; the remaining 30 files / 75 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results.
 
 ## Release archive verification
 
@@ -80,7 +80,7 @@ Run the generated campaign on the machine that has Ollama access:
 
     ./routing-handoff/run-campaign.sh
 
-The campaign is 23 public cases × 3 repetitions = 69 model decisions.
+The campaign is 26 public cases × 3 repetitions = 78 model decisions.
 
 If interrupted, rerun the generated launcher. When a checkpoint exists, it automatically resumes verified completed repetitions.
 
@@ -225,4 +225,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 143. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 149. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).

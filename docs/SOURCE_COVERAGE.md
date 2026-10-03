@@ -9,17 +9,20 @@ The repository intentionally synthesizes concepts rather than reproducing source
 | Source area | Agent coverage |
 |---|---|
 | Writing and running Ruby programs | ruby-core |
+| Ruby runtime/toolchain installation, RubyGems, Bundler, executable provenance | ruby-toolchain |
 | Ruby data types and operations | ruby-core, ruby-data-types, ruby-collections |
 | Program flow | ruby-control-flow, ruby-boolean-logic |
 | Ruby methods | ruby-method-design, ruby-api-design |
 | Object-oriented programming | ruby-oop, ruby-poro, ruby-object-composition |
 | Modules and mixins | ruby-modules-mixins |
 | RubyGems, files, CSV and service classes | ruby-gems-io-services, ruby-service-objects |
+| Ruby gem authoring, gemspec, packaging, isolated install and release boundaries | ruby-gem-development, ruby-gems-io-services |
 | Debugging | ruby-debugging |
 | Metaprogramming/reflection | ruby-metaprogramming, metaprogramming-boundary |
 | Blocks/Procs/lambdas | ruby-blocks-procs-lambdas |
 | Enumerable and collection design | ruby-enumerables, ruby-collections |
 | HTTP/client integration | ruby-gems-io-services, external-api-client, ruby-dependency-injection |
+| Rails application creation with `rails new`, application archetypes, database/frontend/build choices, templates and skip options | rails-application-bootstrap |
 | Rails MVC/application anatomy | rails-architecture |
 | Rails routes/controllers/views/forms | rails-routing, rails-action-controller, rails-action-view |
 | Deep Active Record Relation and lifecycle boundary | rails-active-record, rails-associations, rails-validations, rails-database-engineering, rails-performance |

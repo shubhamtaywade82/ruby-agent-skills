@@ -46,7 +46,20 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         artifact_paths[key] = path
       end
 
-      69.times do |index|
+      campaign_config = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      )
+      case_count = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      ).fetch("cases").length
+      repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
+      expected_runs = case_count * repetitions
+
+      expected_runs.times do |index|
         path = File.join(dir, "raw-#{index + 1}.json")
         File.write(path, "{}")
         artifact_paths["raw_case_#{index + 1}"] = path
@@ -63,12 +76,12 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
       evidence = {
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
-        "campaign" => "skill-routing-public-v1",
-        "campaign_version" => 5,
-        "routing_case_count" => 23,
-        "requested_repetitions" => 3,
-        "requested_runs" => 69,
-        "completed_runs" => 69,
+        "campaign" => campaign_config.fetch("id"),
+        "campaign_version" => campaign_config.fetch("version"),
+        "routing_case_count" => case_count,
+        "requested_repetitions" => repetitions,
+        "requested_runs" => expected_runs,
+        "completed_runs" => expected_runs,
         "repository" => { "git_sha" => "abc", "worktree_clean" => true },
         "agent" => campaign.fetch("agent"),
         "campaign_metrics" => campaign.fetch("metrics"),
@@ -89,7 +102,7 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
       )
 
       assert status.success?, "#{stdout}\n#{stderr}"
-      assert_includes stdout, "69/69"
+      assert_includes stdout, "#{expected_runs}/#{expected_runs}"
     end
   end
 

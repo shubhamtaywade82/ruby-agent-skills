@@ -241,6 +241,18 @@ skills:
     family: runtime
     path: skills/ruby-runtime-compatibility/SKILL.md
     triggers: [Ruby version, Rails version, Bundler version, runtime compatibility, version compatibility, Ruby upgrade, Rails upgrade, deprecation compatibility]
+  ruby-toolchain:
+    family: runtime
+    path: skills/ruby-toolchain/SKILL.md
+    triggers: [Ruby installation, Ruby toolchain, ruby --version, RubyGems, gem install, gem env, Bundler setup, bundle install, bundle check, bundle exec, bundle config, PATH, GEM_HOME, GEM_PATH, native extension, native gem build]
+  rails-application-bootstrap:
+    family: rails
+    path: skills/rails-application-bootstrap/SKILL.md
+    triggers: [rails new, create Rails app, new Rails application, Rails application bootstrap, Rails monolith, Rails API-only, rails new --api, Rails database option, Rails template, Rails skip options]
+  ruby-gem-development:
+    family: ruby-gem
+    path: skills/ruby-gem-development/SKILL.md
+    triggers: [Ruby gem development, bundle gem, gemspec, gem build, gem specification, gem contents, gem package, gem release, gem executable, RubyGems packaging, gem development]
   rubocop:
     family: quality
     path: skills/rubocop/SKILL.md
@@ -1060,6 +1072,39 @@ benchmarks:
     campaign_manifest: benchmarks/design-patterns/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  ruby-toolchain-foundation:
+    source: ruby-toolchain-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-toolchain/contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-application-bootstrap:
+    source: rails-application-bootstrap-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/application-bootstrap-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  ruby-gem-development:
+    source: ruby-gem-development-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-gem-development/contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   react-typescript-typescript-core:
     source: react-typescript-core-v1
     schema: docs/EVAL_SCHEMA.md

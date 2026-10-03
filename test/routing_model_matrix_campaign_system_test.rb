@@ -6,6 +6,7 @@ require "open3"
 require "tmpdir"
 require "yaml"
 
+# rubocop:disable Metrics/ClassLength
 class RoutingModelMatrixCampaignSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   RUNNER = File.join(ROOT, "bin", "routing-model-matrix-campaign")
@@ -38,7 +39,19 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
 
       assert_equal "plan", plan.fetch("mode")
       assert_equal ["model-a", "model-b"], plan.fetch("models").map { |m| m.fetch("name") }
-      assert_equal 69, plan.fetch("campaign").fetch("expected_runs_per_model")
+      cases = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      ).fetch("cases")
+      campaign = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      )
+      repetitions = campaign.fetch("execution").fetch("repetitions").to_i
+
+      assert_equal cases.length * repetitions, plan.fetch("campaign").fetch("expected_runs_per_model")
       assert plan.fetch("controls").fetch("descriptive_comparison_only")
       assert plan.fetch("controls").fetch("no_synthetic_results")
     end
@@ -125,4 +138,5 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
 
     assert_includes validator, "test/routing_model_matrix_campaign_system_test.rb"
   end
+  # rubocop:enable Metrics/ClassLength
 end

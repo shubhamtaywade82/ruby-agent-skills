@@ -104,10 +104,10 @@ skills/rails-active-record/
 
 | Capability | Count |
 |---|---:|
-| Skills | **93** |
+| Skills | **96** |
 | Implementation patterns | **443** |
-| Evaluation cases | **476** |
-| Dedicated system/contract tests | **92** |
+| Evaluation cases | **490** |
+| Dedicated system/contract tests | **93** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -117,6 +117,10 @@ The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the s
 ## Ruby fundamentals
 
 The Ruby foundation covers:
+
+- Ruby toolchain and environment setup
+- RubyGems/Bundler installation and executable provenance
+- Ruby gem development, packaging, and release boundaries
 
 - language semantics and object model
 - core data types
@@ -144,7 +148,7 @@ The Ruby foundation covers:
 
 Core skills include:
 
-`ruby-core` · `ruby-data-types` · `ruby-control-flow` · `ruby-collections` · `ruby-blocks-procs-lambdas` · `ruby-enumerables` · `ruby-api-design` · `ruby-method-design` · `ruby-oop` · `ruby-modules-mixins` · `ruby-metaprogramming` · `ruby-poro` · `ruby-service-objects` · `ruby-domain-modeling` · `ruby-dependency-injection` · `ruby-object-composition` · `ruby-boolean-logic` · `ruby-gems-io-services` · `ruby-debugging` · `ruby-clean-code` · `ruby-tdd-refactoring` · `ruby-concurrency` · `ruby-performance` · `ruby-runtime-compatibility`
+`ruby-core` · `ruby-toolchain` · `ruby-gem-development` · `ruby-data-types` · `ruby-control-flow` · `ruby-collections` · `ruby-blocks-procs-lambdas` · `ruby-enumerables` · `ruby-api-design` · `ruby-method-design` · `ruby-oop` · `ruby-modules-mixins` · `ruby-metaprogramming` · `ruby-poro` · `ruby-service-objects` · `ruby-domain-modeling` · `ruby-dependency-injection` · `ruby-object-composition` · `ruby-boolean-logic` · `ruby-gems-io-services` · `ruby-debugging` · `ruby-clean-code` · `ruby-tdd-refactoring` · `ruby-concurrency` · `ruby-performance` · `ruby-runtime-compatibility`
 
 ## React and TypeScript
 
@@ -158,10 +162,11 @@ Not yet covered: browser end-to-end testing, frontend security (DOM XSS, CSP, br
 
 # Rails framework coverage
 
-The Rails layer has both foundational skills and deep framework-boundary skills.
+The Rails layer has both foundational skills and deep framework-boundary skills. Application bootstrap is distinct from in-app generators: `rails-application-bootstrap` owns `rails new`; `rails-generators` owns `bin/rails generate` inside an existing application.
 
 ## Core Rails
 
+- `rails-application-bootstrap`
 - `rails-architecture`
 - `rails-routing`
 - `rails-action-controller`
@@ -478,7 +483,7 @@ Each evaluation can specify:
 - scope control
 - expected failure modes
 
-Current validated evaluation inventory: **442 cases**.
+Current validated evaluation inventory: **490 cases**.
 
 Important evaluation families include:
 
@@ -614,7 +619,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **93 skills**, **443 implementation patterns**, **476 evaluation cases**, and **92 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **96 skills**, **443 implementation patterns**, **490 evaluation cases**, and **93 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

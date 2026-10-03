@@ -6,6 +6,7 @@ require "json"
 require "minitest/autorun"
 require "open3"
 require "tmpdir"
+require "yaml"
 
 class RoutingEvidenceArchiveSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
@@ -64,6 +65,18 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
 
       assert status.success?, "#{out}\n#{err}"
 
+      campaign_config = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      )
+      case_count = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      ).fetch("cases").length
+      repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
+
       artifact_names = %w[
         campaign routing_report routing_contract skill_manifest campaign_manifest
         routing_cases result_schema campaign_intake_schema preflight
@@ -85,7 +98,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         }
       end
 
-      69.times do |index|
+      (case_count * repetitions).times do |index|
         path = File.join(dir, "raw-#{index + 1}.json")
         File.write(path, "{}")
         artifacts["raw_case_#{index + 1}"] = {
@@ -100,11 +113,11 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
         "campaign" => "skill-routing-public-v1",
-        "campaign_version" => 5,
-        "routing_case_count" => 23,
-        "requested_repetitions" => 3,
-        "requested_runs" => 69,
-        "completed_runs" => 69,
+        "campaign_version" => 6,
+        "routing_case_count" => case_count,
+        "requested_repetitions" => repetitions,
+        "requested_runs" => case_count * repetitions,
+        "completed_runs" => case_count * repetitions,
         "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
         "agent" => { "provider" => "ollama", "model" => "test-model" },
         "campaign_metrics" => campaign.fetch("metrics"),
@@ -130,7 +143,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
 
       assert_equal "skill-routing-campaign-v1", manifest.fetch("evidence_type")
       assert_equal true, manifest.fetch("intake").fetch("verified")
-      assert_equal 69, manifest.fetch("completed_runs")
+      assert_equal case_count * repetitions, manifest.fetch("completed_runs")
     end
   end
 
@@ -148,10 +161,11 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       aliases: false
     )
 
+    repetitions = campaign.fetch("execution").fetch("repetitions").to_i
     runs = {}
     cases.each do |entry|
       primary = entry.fetch("primary_skills").first
-      case_runs = 3.times.map do |index|
+      case_runs = repetitions.times.map do |index|
         run_dir = File.join(dir, entry.fetch("id"), "run-#{index + 1}")
         FileUtils.mkdir_p(run_dir)
         raw_path = File.join(run_dir, "result.json")
@@ -176,8 +190,8 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       end
       runs[entry.fetch("id")] = {
         "case_id" => entry.fetch("id"),
-        "requested_repetitions" => 3,
-        "completed_repetitions" => 3,
+        "requested_repetitions" => repetitions,
+        "completed_repetitions" => repetitions,
         "complete" => true,
         "expected_primary_skill" => primary,
         "runs" => case_runs
@@ -192,9 +206,9 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       "routing_contract" => File.join(ROOT, "router", "ROUTING.md"),
       "agent" => { "provider" => "ollama", "model" => "fixture-model", "model_version" => "fixture-digest", "tool_mode" => "local-filesystem" },
       "routing_case_count" => cases.length,
-      "requested_repetitions" => 3,
-      "requested_runs" => 69,
-      "completed_runs" => 69,
+      "requested_repetitions" => repetitions,
+      "requested_runs" => cases.length * repetitions,
+      "completed_runs" => cases.length * repetitions,
       "complete" => true,
       "execution" => { "checkpointed" => true, "mode" => "fixture" },
       "routing_inputs" => {},

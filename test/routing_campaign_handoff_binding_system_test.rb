@@ -5,22 +5,35 @@ require "json"
 require "minitest/autorun"
 require "open3"
 require "tmpdir"
+require "yaml"
 
 class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   RUNNER = File.join(ROOT, "bin", "routing-campaign-handoff-verify")
 
+  # rubocop:disable Metrics/AbcSize
   def valid_handoff(root)
     sha = Open3.capture2("git", "-C", root, "rev-parse", "HEAD").first.strip
+    campaign_config = YAML.safe_load(
+      File.read(File.join(root, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    cases = YAML.safe_load(
+      File.read(File.join(root, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    ).fetch("cases")
+    repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
     {
       "protocol_version" => 1,
       "handoff" => "skill-routing-external-run-v1",
       "campaign" => {
-        "id" => "skill-routing-public-v1",
-        "version" => 5,
-        "case_count" => 23,
-        "repetitions" => 3,
-        "expected_runs" => 69
+        "id" => campaign_config.fetch("id"),
+        "version" => campaign_config.fetch("version"),
+        "case_count" => cases.length,
+        "repetitions" => repetitions,
+        "expected_runs" => cases.length * repetitions
       },
       "runtime" => {
         "provider" => "ollama",
@@ -39,6 +52,8 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
       }
     }
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   def test_accepts_matching_handoff
     Dir.mktmpdir("routing-handoff") do |dir|

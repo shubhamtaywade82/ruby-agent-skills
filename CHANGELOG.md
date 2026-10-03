@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 149 — Ruby and Rails Platform Foundations
+
+- Add `ruby-toolchain` for Ruby version-manager/toolchain selection, RubyGems/Bundler setup, executable provenance, PATH/GEM_HOME diagnostics, dependency installation, and native-extension failure diagnosis.
+- Add `rails-application-bootstrap` for `rails new`, standard monolith versus API-only shape, database/frontend/build choices, version-aware generator help, templates, skip/force safety, and post-bootstrap verification. In-app `bin/rails generate` remains owned by `rails-generators`.
+- Add `ruby-gem-development` for `bundle gem`, gemspec/package contracts, namespaces/load paths, runtime versus development dependencies, executables, `.gem` build/inspection, isolated installation, and release authorization.
+- Add three deterministic evaluations and adversarial routing cases for the new boundaries; update manifest, source coverage, README inventory, and validation registration.
+- CI policy: no workflow relaxation or skipped validation was introduced; new coverage is wired into the existing repository validation path.
+
 ## Iteration 143 — Consumer-Side Change Verification
 
 - Add `bin/verify-change` (`RubyAgentSkills::ChangeVerifier`): verifies a change in a downstream Ruby/Rails project and writes a JSON (or Markdown) evidence report. `bin/validate` validates this pack; nothing verified a consuming project's change, so an agent's "done" could not be checked.
