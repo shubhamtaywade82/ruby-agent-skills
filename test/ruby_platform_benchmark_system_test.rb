@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require "json"
 require "minitest/autorun"
+require "open3"
+require "tmpdir"
 require "yaml"
 
 class RubyPlatformBenchmarkSystemTest < Minitest::Test
@@ -78,6 +81,51 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
         reference_present?(family, eval_id, fixture(family, eval_id))
       end
     )
+  end
+
+  def run_campaign(family)
+    Dir.mktmpdir("ruby-platform-campaign") do |output|
+      command = [
+        RbConfig.ruby,
+        File.join(ROOT, "bin", "benchmark"),
+        "campaign",
+        "--manifest",
+        File.join(ROOT, "benchmarks", family, "campaign.yml"),
+        "--agent-command",
+        "true",
+        "--runs",
+        "3",
+        "--continue-on-failure",
+        "--output",
+        output
+      ]
+      stdout, stderr, status = Open3.capture3(*command, chdir: ROOT)
+      result_path = File.join(output, "campaign.json")
+      result = if File.file?(result_path)
+                 JSON.parse(File.read(result_path, encoding: "UTF-8"))
+               else
+                 {}
+               end
+      yield status, result, stdout + stderr
+    end
+  end
+
+  def test_campaign_runner_completes_three_paired_repetitions
+    failures = []
+    FAMILIES.each_key do |family|
+      run_campaign(family) do |status, result, output|
+        evaluation = result.dig("evaluations", FAMILIES.fetch(family))
+        complete = result.dig("measurement", "complete")
+        repetitions = evaluation && [
+          evaluation["baseline_completed_repetitions"],
+          evaluation["skills_completed_repetitions"]
+        ]
+        valid = status.success? && complete == true && repetitions == [3, 3]
+        failures << "#{family}: #{output.lines.last(5).join.strip}" unless valid
+      end
+    end
+
+    assert_empty failures, "campaign runner did not complete the Ruby foundation smoke campaigns"
   end
 
   def test_public_evaluations_are_benchmark_backed
