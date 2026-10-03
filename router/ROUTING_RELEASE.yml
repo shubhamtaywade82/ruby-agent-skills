@@ -4,7 +4,7 @@ campaign:
   id: skill-routing-public-v1
   expected_case_count: 26
   expected_repetitions: 3
-  expected_runs: 69
+  expected_runs: 78
 gates:
   ci_required: true
   public_campaign_evidence_required: true
