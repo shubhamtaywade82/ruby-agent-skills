@@ -8,11 +8,11 @@ The first campaign is intentionally incremental. It does not claim that every Ra
 
 ## Current coverage
 
-The Rails corpus contains **27 public evaluation files** covering **263 cases**.
+The Rails corpus contains **28 public evaluation files** covering **268 cases**.
 
-The public campaign now covers all 27 evaluation files. The benchmark-quality audit requires complete Rails campaign coverage, so no public Rails evaluation is treated as unmeasured.
+The public campaign now covers all 28 evaluation files. The benchmark-quality audit requires complete Rails campaign coverage, so no public Rails evaluation is treated as unmeasured.
 
-**Completed in Iteration 51:** 27 evaluations / 263 cases.
+**Current campaign coverage:** 28 evaluations / 268 cases.
 
 ## Campaign contract
 
