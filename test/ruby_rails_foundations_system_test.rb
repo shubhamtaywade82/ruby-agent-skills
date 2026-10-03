@@ -66,7 +66,7 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
       "ruby-gem-development"
     ]
 
-    assert required.all? { |token| routing.include?(token) }
+    assert(required.all? { |token| routing.include?(token) })
   end
 
   def test_foundational_evaluations_are_registered
