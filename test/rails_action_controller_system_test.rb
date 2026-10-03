@@ -103,7 +103,9 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes evaluation_case_names, "memoization-performance-claim"
   end
 
-module RailsActionControllerLifecycleAssertions
+end
+
+class RailsActionControllerLifecycleSystemTest < Minitest::Test
   def test_skill_covers_action_controller_lifecycle
     skill = File.read(File.join(ROOT, "skills/rails-action-controller/SKILL.md"), encoding: "UTF-8")
 
@@ -132,6 +134,3 @@ module RailsActionControllerLifecycleAssertions
     assert_includes skill, "Resource loading is a boundary-placement decision"
     assert_includes skill, "Do not treat `||=` memoization as inherently faster"
   end
-end
-
-class RailsActionControllerSystemTest < Minitest::Test
