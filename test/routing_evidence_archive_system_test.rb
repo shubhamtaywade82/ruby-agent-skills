@@ -64,6 +64,19 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
 
       assert status.success?, "#{out}\n#{err}"
 
+      campaign_config = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      )
+      case_count = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      ).fetch("cases").length
+      repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
+      expected_runs = case_count * repetitions
+
       artifact_names = %w[
         campaign routing_report routing_contract skill_manifest campaign_manifest
         routing_cases result_schema campaign_intake_schema preflight
@@ -100,8 +113,8 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
         "campaign" => "skill-routing-public-v1",
-        "campaign_version" => 5,
-        "routing_case_count" => 23,
+        "campaign_version" => 6,
+        "routing_case_count" => expected_runs / repetitions,
         "requested_repetitions" => repetitions,
         "requested_runs" => expected_runs,
         "completed_runs" => expected_runs,
