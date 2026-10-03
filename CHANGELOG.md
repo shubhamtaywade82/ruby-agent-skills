@@ -1,5 +1,12 @@
 # Changelog
 
+## Iteration 152 — Action Controller Resource-Loading Evidence
+
+- Make resource-loading placement explicit in `rails-action-controller`: narrow `before_action` for shared request prerequisites, action-local lookup for one-off access when clearer, and memoized readers only as a lazy-access option.
+- Explicitly reject the unsupported claim that `@resource ||= ...` is inherently faster than `before_action`; performance claims require representative workload evidence.
+- Add the resource-loading policy and memoization evidence cases to the Action Controller evaluation and system-test coverage.
+- Record the evidence boundary between repository-authored Rails rules and the uploaded historical training/assessment material.
+
 ## Iteration 151 — Benchmark Documentation and Reconciliation Audit
 
 - Record the closed `#80` reconciliation explicitly: all 43 paths touched by the stale branch are present in current `main`; 31 are byte-identical and the remaining 12 have current-main equivalents that supersede the stale versions.

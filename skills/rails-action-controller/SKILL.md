@@ -71,6 +71,12 @@ Resolve version-sensitive APIs before implementation. Newer Rails releases suppo
 1. Classify the change: request input and strong parameters, response/render/redirect contract, content negotiation, conditional GET, streaming and downloads, sessions/cookies/flash, controller callbacks, exception handling, or performance/testing.
 2. Load the matching reference below before changing behavior. Routine controller action edits load `references/routine-changes.md` first and escalate only when a deeper boundary is in play.
 3. Keep the controller a thin HTTP boundary: domain rules go to models or domain services, authorization to rails-authorization, and route shape to rails-routing.
+4. Choose resource-loading placement from the request contract, not from a blanket style preference:
+   - use a narrow `before_action` when the resource is a prerequisite shared by several actions or must exist before later callbacks/action execution;
+   - use an action-local lookup when only one action needs it and that keeps the request flow clearer;
+   - a memoized reader (`@resource ||= ...`) is permitted when lazy access or repeated access within the action genuinely simplifies the boundary, but it is not a default performance optimization;
+   - never claim memoization is faster than a callback without workload-specific evidence.
+5. For complex reads, prefer an explicit query/read boundary when the lookup becomes difficult to reason about, test, or scope in the controller.
 
 ## Critical invariants
 
@@ -81,6 +87,8 @@ Resolve version-sensitive APIs before implementation. Newer Rails releases suppo
 - Do not enable cross-host redirects for untrusted input merely to preserve convenience behavior.
 - Do not stream an unbounded database query, external provider, or object graph directly from a controller without a bounded producer and cleanup design.
 - Keep controller callbacks narrow and action-scoped; they are request prerequisites, not business workflows or transactions.
+- Resource loading is a boundary-placement decision, not a performance shortcut: callback-based loading and memoized readers must preserve the same authorization, tenant scope, failure semantics, and request contract.
+- Do not treat `||=` memoization as inherently faster, cheaper, or more scalable; performance claims require a representative workload, baseline, and re-measurement.
 - Use ETag/Last-Modified only when validator identity covers every representation dimension such as tenant, permission, and locale.
 
 ## References
@@ -198,7 +206,7 @@ This skill composes with rails-routing, rails-authentication, rails-security, ra
 
 For Action Controller and deep controller-boundary changes:
 - inspect the Rails/Ruby version, routes, controller inheritance, ApplicationController callbacks, authentication/authorization, parameter filtering, request/response formats, session/cookie configuration, exception handling, cache validators, download/streaming code, observability, and request tests before implementation;
-- classify the boundary as request input, response contract, session/cookie state, callback lifecycle, content negotiation, conditional response, streaming/download, or controller exception handling;
+- classify the boundary as request input, response contract, session/cookie state, callback lifecycle, resource-loading placement, content negotiation, conditional response, streaming/download, or controller exception handling;
 - use the smallest supported strong-parameter API for the resolved Rails version; prefer params.expect where supported and locally adopted, otherwise use require plus permit;
 - treat every request value, header, cookie, session-derived identifier, redirect target, and file name as untrusted until its owning boundary validates or authorizes it;
 - never forward raw params into persistence or domain code; strong parameters are an input boundary, not authorization;
@@ -207,6 +215,8 @@ For Action Controller and deep controller-boundary changes:
 - preserve Rails open-redirect protections and never enable cross-host redirects for untrusted input;
 - keep session/cookie payloads minimal, treat signed versus encrypted storage deliberately, and never use session/cookie presence as the authorization source;
 - keep controller callbacks narrow and action-scoped; use them for request prerequisites, not business workflows, transactions, or large orchestration graphs;
+- choose callback versus action-local resource loading from actual request prerequisites and local readability; memoized readers are an option for lazy access, not a repository-wide performance rule;
+- when performance is claimed, measure callback versus memoized loading under the same representative workload rather than assuming `||=` avoids meaningful cost;
 - define supported response formats explicitly and compose API wire contracts with rails-api-integration;
 - use ETag/Last-Modified only when validator identity covers every representation dimension such as tenant, permission, locale, and other private variants;
 - distinguish HTTP 304 transport behavior from application-state correctness and coordinate shared/private caching with rails-caching;
