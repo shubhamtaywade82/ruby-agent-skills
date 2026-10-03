@@ -3,8 +3,6 @@
 require "minitest/autorun"
 require "yaml"
 
-module RailsActionControllerLifecycleAssertions
-end
 
 class RailsActionControllerSystemTest < Minitest::Test
   include RailsActionControllerLifecycleAssertions
@@ -105,6 +103,7 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes evaluation_case_names, "memoization-performance-claim"
   end
 
+module RailsActionControllerLifecycleAssertions
   def test_skill_covers_action_controller_lifecycle
     skill = File.read(File.join(ROOT, "skills/rails-action-controller/SKILL.md"), encoding: "UTF-8")
 
@@ -134,3 +133,5 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes skill, "Do not treat `||=` memoization as inherently faster"
   end
 end
+
+class RailsActionControllerSystemTest < Minitest::Test
