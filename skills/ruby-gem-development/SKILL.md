@@ -38,6 +38,19 @@ classify reusable boundary
 
 Do not activate merely because an application uses gems; use `ruby-gems-io-services` or `ruby-toolchain` as appropriate.
 
+## Repository inspection
+
+Before creating or changing a gem, inspect:
+
+1. the gemspec and current public require paths;
+2. `Gemfile`/`Gemfile.lock` and supported Ruby versions;
+3. existing namespace and file layout;
+4. test/lint conventions and CI;
+5. release/versioning conventions;
+6. package contents and existing executables/extensions.
+
+Do not replace an existing gem architecture merely because `bundle gem` would produce a different skeleton.
+
 ## Start with the skeleton
 
 Bundler provides:
