@@ -54,7 +54,7 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
       "rails-application-bootstrap"
     ]
 
-    assert required.all? { |token| routing.include?(token) }
+    assert(required.all? { |token| routing.include?(token) })
   end
 
   def test_routing_keeps_toolchain_and_gem_boundaries
