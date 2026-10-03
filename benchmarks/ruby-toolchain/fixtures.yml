@@ -13,9 +13,9 @@ fixtures:
       - "def native_extension_classification"
       - "def runtime_change_allowed?"
     forbidden_regex:
-      - 'gem\\s+install\\s+(?!.*bundle)'
-      - 'rm\\s+Gemfile\\.lock'
-      - 'FileUtils\\.rm_rf.*Gemfile\\.lock'
+      - 'gem\s+install\s+(?!.*bundle)'
+      - 'rm\s+Gemfile\.lock'
+      - 'FileUtils\.rm_rf.*Gemfile\.lock'
     contract_regex:
       - "Gem::Version"
       - "bundle check"
