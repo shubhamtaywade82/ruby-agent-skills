@@ -13,20 +13,20 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
 
   def valid_handoff(root)
     sha = Open3.capture2("git", "-C", root, "rev-parse", "HEAD").first.strip
+    campaign_config = YAML.safe_load(
+      File.read(File.join(root, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    cases = YAML.safe_load(
+      File.read(File.join(root, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    ).fetch("cases")
+    repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
     {
       "protocol_version" => 1,
       "handoff" => "skill-routing-external-run-v1",
-      campaign_config = YAML.safe_load(
-        File.read(File.join(root, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
-        permitted_classes: [],
-        aliases: false
-      )
-      cases = YAML.safe_load(
-        File.read(File.join(root, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
-        permitted_classes: [],
-        aliases: false
-      ).fetch("cases")
-      repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
       "campaign" => {
         "id" => campaign_config.fetch("id"),
         "version" => campaign_config.fetch("version"),
