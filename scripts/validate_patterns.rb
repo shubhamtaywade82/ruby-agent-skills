@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "yaml"
+require_relative "../lib/ruby_agent_skills/version_constraint"
 
 ROOT = File.expand_path("..", __dir__)
 pattern_files = Dir[File.join(ROOT, "patterns", "**", "*.md")]
@@ -41,6 +42,28 @@ pattern_files.each do |path|
   errors << relative + ": missing name" if metadata["name"].to_s.empty?
   errors << relative + ": missing description" if metadata["description"].to_s.empty?
   errors << relative + ": missing family" if metadata["family"].to_s.empty?
+  if metadata.key?("compatibility")
+    compatibility = metadata["compatibility"]
+    valid_compatibility = compatibility.is_a?(Hash)
+    valid_compatibility &&= compatibility.all? do |runtime, requirement|
+      runtime.is_a?(String) &&
+        requirement.is_a?(String) &&
+        !requirement.strip.empty?
+    end
+
+    if valid_compatibility
+      compatibility.each do |runtime, requirement|
+        RubyAgentSkills::VersionConstraint.validate(requirement)
+      rescue RubyAgentSkills::VersionConstraint::InvalidRequirement => e
+        errors << relative + ": invalid #{runtime} compatibility requirement: #{e.message}"
+      end
+    else
+      errors << format(
+        "%s: compatibility must be a mapping of string runtime names to string requirements",
+        relative
+      )
+    end
+  end
 
   body = text[(closing + 5)..] || ""
 
