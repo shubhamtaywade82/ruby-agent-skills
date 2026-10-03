@@ -49,7 +49,7 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
     required = [
       "Create a Rails application / `rails new`",
       "rails new",
-      "rails new versus generator",
+      "`rails new` versus generator",
       "rails-generators",
       "rails-application-bootstrap"
     ]
