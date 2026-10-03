@@ -189,7 +189,7 @@ puts JSON.generate(paths.map { |path|
 # Executables (and the library files they load) installed under
 # .ruby-agent-skills/ and hash-verified by skill-pack-verify. Only files that
 # exist in the source are installed, so older sources still install.
-TOOL_PATHS="bin/stack-minimality bin/verify-change lib/ruby_agent_skills/change_verifier.rb lib/ruby_agent_skills/runtime_profile.rb"
+TOOL_PATHS="bin/stack-minimality bin/verify-change bin/skill-pack-compatibility lib/ruby_agent_skills/change_verifier.rb lib/ruby_agent_skills/runtime_profile.rb lib/ruby_agent_skills/version_constraint.rb"
 TOOL_METADATA="$(ruby -rdigest -rjson -e '
 root = ARGV.shift
 puts JSON.generate(ARGV.select { |path| File.file?(File.join(root, path)) }.map { |path|
