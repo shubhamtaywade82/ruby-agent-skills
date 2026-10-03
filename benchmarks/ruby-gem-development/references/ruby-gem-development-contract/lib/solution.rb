@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# The gemspec is part of the package contract.
+
 class RubyGemDevelopmentAdvisor
   def skeleton_command(name)
     "bundle gem #{name}"
