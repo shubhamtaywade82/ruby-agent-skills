@@ -70,11 +70,15 @@ files = changed_files
 test_file = File.join(WORKSPACE, fixture.fetch("test_file"))
 stdout, stderr, status = Open3.capture3("ruby", test_file, chdir: WORKSPACE)
 test_source = File.file?(test_file) ? File.read(test_file, encoding: "UTF-8") : ""
-checks["tests"] = if test_source.match?(/Minitest|assert|refute|def test_/) && status.success?
-  check("pass", "workspace tests pass")
-else
-  check("fail", "missing workspace tests or failing test suite: #{tail(stdout + stderr, 2000)}")
-end
+checks["tests"] =
+  if test_source.match?(/Minitest|assert|refute|def test_/) && status.success?
+    check("pass", "workspace tests pass")
+  else
+    check(
+      "fail",
+      "missing workspace tests or failing test suite: #{tail(stdout + stderr, 2000)}"
+    )
+  end
 
 required = Array(fixture.fetch("required_regex"))
 forbidden = Array(fixture.fetch("forbidden_regex"))
@@ -106,11 +110,12 @@ checks["contract"] =
 
 allowed = %w[lib/ app/ config/ test/ spec/]
 unexpected = files.reject { |path| allowed.any? { |prefix| path.start_with?(prefix) } }
-checks["scope_control"] = if unexpected.empty?
-  check("pass")
-else
-  check("fail", "unexpected files: #{unexpected.join(', ')}")
-end
+checks["scope_control"] =
+  if unexpected.empty?
+    check("pass")
+  else
+    check("fail", "unexpected files: #{unexpected.join(', ')}")
+  end
 
 result = {
   "metadata" => {
