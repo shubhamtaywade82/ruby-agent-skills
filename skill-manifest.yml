@@ -5,6 +5,7 @@ installation:
   installer: bin/install
   verifier: bin/skill-pack-verify
   doctor: bin/skill-pack-doctor
+  compatibility_checker: bin/skill-pack-compatibility
   change_verifier: bin/verify-change
   metadata: .ruby-agent-skills/INSTALLATION.json
 
@@ -18,6 +19,10 @@ defaults:
   require_tests_for_behavior_changes: true
   prefer_existing_conventions: true
   require_version_awareness: true
+
+framework_drift:
+  registry: framework-drift.yml
+  audit: scripts/audit_framework_drift.rb
 
 routing:
   contract: router/ROUTING.md
@@ -473,6 +478,107 @@ skills:
 
 
 
+deprecations:
+  typescript-core-engineering:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / typescript-core-engineering
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  typescript-type-design:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / typescript-type-design
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  typescript-runtime-contracts:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / typescript-runtime-contracts
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-component-engineering:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-component-engineering
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-state-effects:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-hooks-effects + react-state-management
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-data-fetching:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-data-fetching
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-testing-engineering:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-testing-engineering + frontend-e2e
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-accessibility-performance:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-accessibility + react-performance
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+  react-architecture:
+    status: deprecated
+    scope: new_standalone_react_typescript_work
+    replacement: react-agent-skills / react-architecture
+    migration_doc: docs/REACT_AGENT_SKILLS_MIGRATION.md
+    removal_gate:
+      - react pack is merged and CI-verified
+      - source-to-destination pattern and evaluation inventory is verified
+      - full-stack composition guidance is available
+      - a release note communicates replacement paths
+      - downstream installation impact is reviewed
+
 patterns:
   react-typescript:
     paths:
@@ -636,6 +742,9 @@ patterns:
       - patterns/rails/idempotent-job.md
       - patterns/rails/job-retry-policy.md
       - patterns/rails/transactional-job-enqueue.md
+      - patterns/rails/active-job-continuation-contract.md
+      - patterns/rails/structured-event-reporting.md
+      - patterns/rails/credentials-fetch-contract.md
       - patterns/rails/concurrency-controlled-job.md
       - patterns/rails/incident-triage.md
       - patterns/rails/operational-runbook.md
