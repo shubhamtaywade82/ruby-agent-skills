@@ -103,6 +103,36 @@ if File.file?(release_path)
   end
 end
 
+routing_cases_path = File.join(root, "router", "ROUTING_CASES.yml")
+routing_campaign_path = File.join(root, "router", "ROUTING_CAMPAIGN.yml")
+if File.file?(routing_cases_path) && File.file?(routing_campaign_path)
+  routing_cases = YAML.safe_load(
+    File.read(routing_cases_path, encoding: "UTF-8"),
+    permitted_classes: [],
+    aliases: false
+  )
+  routing_campaign = YAML.safe_load(
+    File.read(routing_campaign_path, encoding: "UTF-8"),
+    permitted_classes: [],
+    aliases: false
+  )
+  routing_case_count = Array(routing_cases.fetch("cases")).length
+  repetitions = routing_campaign.fetch("execution").fetch("repetitions").to_i
+  documented = handoff[/(d+) public cases × (d+) repetitions = (d+) model decisions./, 1..3]
+  if documented
+    documented_cases, documented_repetitions, documented_runs = documented.map(&:to_i)
+    if [documented_cases, documented_repetitions, documented_runs] != [
+      routing_case_count,
+      repetitions,
+      routing_case_count * repetitions
+    ]
+      errors << "public routing campaign run-count documentation drift"
+    end
+  else
+    errors << "IMPLEMENTATION_HANDOFF.md public routing campaign run-count documentation is missing"
+  end
+end
+
 manifest_skill_count = manifest.fetch("skills").length
 errors << "manifest skill count #{manifest_skill_count} != filesystem #{skill_count}" unless manifest_skill_count == skill_count
 
