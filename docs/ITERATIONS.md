@@ -473,4 +473,4 @@ Reconciled Iterations 144–148 onto the Iteration 149 release line, added indep
 
 ## Iteration 151 — Benchmark Documentation and Reconciliation Audit
 
-Recorded the closed #80 reconciliation, corrected stale controlled-benchmark documentation, and documented the remaining boundary between verified benchmark infrastructure and actual external-agent empirical execution.
+Recorded the closed #80 reconciliation, corrected stale controlled-benchmark documentation, documented the remaining boundary between verified benchmark infrastructure and actual external-agent empirical execution, and exercised both Ruby foundation campaigns end-to-end in CI with the real benchmark runner.
