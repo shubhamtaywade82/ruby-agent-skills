@@ -2,6 +2,7 @@ id: rails-application-bootstrap-contract
 version: 1
 title: Bootstrap the correct Rails application shape
 category: rails
+coverage: static-only
 source: rails-application-bootstrap-v1
 skills:
   - rails-application-bootstrap
