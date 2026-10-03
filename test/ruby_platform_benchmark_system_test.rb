@@ -83,47 +83,43 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
     )
   end
 
-  def run_campaign(family)
+  def campaign_command(family, output)
+    [
+      RbConfig.ruby,
+      File.join(ROOT, "bin", "benchmark"),
+      "campaign",
+      "--manifest",
+      File.join(ROOT, "benchmarks", family, "campaign.yml"),
+      "--agent-command",
+      "true",
+      "--runs",
+      "3",
+      "--continue-on-failure",
+      "--output",
+      output
+    ]
+  end
+
+  def campaign_succeeds?(family)
     Dir.mktmpdir("ruby-platform-campaign") do |output|
-      command = [
-        RbConfig.ruby,
-        File.join(ROOT, "bin", "benchmark"),
-        "campaign",
-        "--manifest",
-        File.join(ROOT, "benchmarks", family, "campaign.yml"),
-        "--agent-command",
-        "true",
-        "--runs",
-        "3",
-        "--continue-on-failure",
-        "--output",
-        output
-      ]
-      stdout, stderr, status = Open3.capture3(*command, chdir: ROOT)
+      stdout, stderr, status = Open3.capture3(*campaign_command(family, output), chdir: ROOT)
+      return false unless status.success?
+
       result_path = File.join(output, "campaign.json")
-      result = if File.file?(result_path)
-                 JSON.parse(File.read(result_path, encoding: "UTF-8"))
-               else
-                 {}
-               end
-      yield status, result, stdout + stderr
+      return false unless File.file?(result_path)
+
+      result = JSON.parse(File.read(result_path, encoding: "UTF-8"))
+      evaluation = result.dig("evaluations", FAMILIES.fetch(family))
+      result.dig("measurement", "complete") == true &&
+        evaluation &&
+        [evaluation["baseline_completed_repetitions"], evaluation["skills_completed_repetitions"]] == [3, 3]
+    rescue JSON::ParserError, StandardError
+      false
     end
   end
 
   def test_campaign_runner_completes_three_paired_repetitions
-    failures = []
-    FAMILIES.each_key do |family|
-      run_campaign(family) do |status, result, output|
-        evaluation = result.dig("evaluations", FAMILIES.fetch(family))
-        complete = result.dig("measurement", "complete")
-        repetitions = evaluation && [
-          evaluation["baseline_completed_repetitions"],
-          evaluation["skills_completed_repetitions"]
-        ]
-        valid = status.success? && complete == true && repetitions == [3, 3]
-        failures << "#{family}: #{output.lines.last(5).join.strip}" unless valid
-      end
-    end
+    failures = FAMILIES.keys.reject { |family| campaign_succeeds?(family) }
 
     assert_empty failures, "campaign runner did not complete the Ruby foundation smoke campaigns"
   end
