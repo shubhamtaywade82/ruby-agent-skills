@@ -25,6 +25,7 @@ registry = YAML.safe_load(
 fixture = registry.fetch("fixtures").fetch(evaluation.fetch("id"))
 implementation = File.join(WORKSPACE, fixture.fetch("implementation_file"))
 source = File.file?(implementation) ? File.read(implementation, encoding: "UTF-8") : ""
+declared = evaluation.fetch("checks")
 
 def check(status, evidence = nil)
   result = { "status" => status }
@@ -37,47 +38,43 @@ def changed_files
   stdout.lines.map { |line| line[3..] || line }.map(&:strip).reject(&:empty?)
 end
 
+def tail(text, limit)
+  text.length > limit ? text[-limit..] : text
+end
+
 checks = {}
-graded = nil
 
 begin
-  require File.join(
-    ROOT, "lib", "ruby_agent_skills", "fixture_test_run"
-  )
+  require File.join(ROOT, "lib", "ruby_agent_skills", "fixture_test_run")
   graded = RubyAgentSkills::FixtureTestRun.call(
     workspace: WORKSPACE,
     fixture_root: File.join(
-      ROOT, "benchmarks", "ruby-toolchain", "fixtures",
+      ROOT,
+      "benchmarks",
+      "ruby-toolchain",
+      "fixtures",
       evaluation.fetch("id")
     ),
     test_file: fixture.fetch("test_file")
   )
-  checks["functional"] =
-    graded.success? ? check("pass", "fixture contract tests passed") :
-      check("fail", graded.output[-4000..] || "")
+  checks["functional"] = if graded.success?
+    check("pass", "fixture contract tests passed")
+  else
+    check("fail", tail(graded.output, 4000))
+  end
 rescue StandardError => e
   checks["functional"] = check("fail", "#{e.class}: #{e.message}")
 end
 
 files = changed_files
 test_file = File.join(WORKSPACE, fixture.fetch("test_file"))
-stdout, stderr, status = Open3.capture3(
-  "ruby", test_file, chdir: WORKSPACE
-)
+stdout, stderr, status = Open3.capture3("ruby", test_file, chdir: WORKSPACE)
 test_source = File.file?(test_file) ? File.read(test_file, encoding: "UTF-8") : ""
-checks["tests"] =
-  if test_source.match?(/Minitest|assert|refute|def test_/) && status.success?
-    check(
-      "pass",
-      graded&.test_modified ? "workspace tests pass (extended from fixture tests)" :
-        "workspace tests pass"
-    )
-  else
-    check(
-      "fail",
-      "missing workspace tests or failing test suite: #{(stdout + stderr)[-2000..] || ""}"
-    )
-  end
+checks["tests"] = if test_source.match?(/Minitest|assert|refute|def test_/) && status.success?
+  check("pass", "workspace tests pass")
+else
+  check("fail", "missing workspace tests or failing test suite: #{tail(stdout + stderr, 2000)}")
+end
 
 required = Array(fixture.fetch("required_regex"))
 forbidden = Array(fixture.fetch("forbidden_regex"))
@@ -88,40 +85,50 @@ contract_missing = contract.reject { |expression| Regexp.new(expression).match?(
 
 checks["contract"] =
   if missing.empty? && forbidden_found.empty? && contract_missing.empty?
-    check("pass", "runtime, dependency, native-build, and lockfile boundary evidence present")
+    check(
+      "pass",
+      [
+        "runtime and executable provenance",
+        "Bundler and native-build diagnosis",
+        "lockfile safety boundary"
+      ].join("; ")
+    )
   else
     check(
       "fail",
       [
-        ("missing required: #{missing.join(", ")}" unless missing.empty?),
-        ("forbidden present: #{forbidden_found.join(", ")}" unless forbidden_found.empty?),
-        ("missing contract evidence: #{contract_missing.join(", ")}" unless contract_missing.empty?)
+        ("missing required: #{missing.join(', ')}" unless missing.empty?),
+        ("forbidden present: #{forbidden_found.join(', ')}" unless forbidden_found.empty?),
+        ("missing contract evidence: #{contract_missing.join(', ')}" unless contract_missing.empty?)
       ].compact.join("; ")
     )
   end
 
-allowed = ["lib/", "app/", "config/", "test/", "spec/"]
+allowed = %w[lib/ app/ config/ test/ spec/]
 unexpected = files.reject { |path| allowed.any? { |prefix| path.start_with?(prefix) } }
-checks["scope_control"] =
-  if unexpected.empty?
-    check("pass")
-  else
-    check("fail", "unexpected files: #{unexpected.join(", ")}")
-  end
+checks["scope_control"] = if unexpected.empty?
+  check("pass")
+else
+  check("fail", "unexpected files: #{unexpected.join(', ')}")
+end
 
-declared = evaluation.fetch("checks")
 result = {
   "metadata" => {
     "verifier" => "scripts/verify_ruby_toolchain_eval.rb",
     "fixture" => fixture,
     "changed_files" => files
   },
-  "checks" => checks.select { |name, _| declared.include?(name) }
+  "checks" => checks.slice(*declared)
 }
+
 File.write(
   ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"),
   "#{JSON.pretty_generate(result)}\n",
   encoding: "UTF-8"
 )
-abort "verification failed" if result["checks"].values.any? { |value| value.fetch("status") == "fail" }
+
+if result["checks"].values.any? { |value| value.fetch("status") == "fail" }
+  abort "verification failed"
+end
+
 puts JSON.pretty_generate(result)
