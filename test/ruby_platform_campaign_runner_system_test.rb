@@ -20,8 +20,8 @@ class RubyPlatformCampaignRunnerSystemTest < Minitest::Test
 
   def campaign_result(family, output)
     path = File.join(output, "campaign.json")
-    JSON.parse(File.read(path, encoding: "UTF-8"))
-      .dig("evaluations", "#{family}-contract")
+    result = JSON.parse(File.read(path, encoding: "UTF-8"))
+    result.dig("evaluations", "#{family}-contract")
   end
 
   def run_campaign(family)
