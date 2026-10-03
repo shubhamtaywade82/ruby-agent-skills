@@ -96,6 +96,7 @@ class RailsActionControllerSystemTest < Minitest::Test
 
     evaluation_case_names = evaluation.fetch("cases").map { |case_data| case_data.fetch("name") }
     assert_includes evaluation_case_names, "resource-loading-placement"
+
     assert_includes evaluation_case_names, "memoization-performance-claim"
   end
 
