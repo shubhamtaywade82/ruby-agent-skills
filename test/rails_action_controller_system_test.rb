@@ -93,8 +93,10 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes evaluation.fetch("patterns"), "conditional-response-cache"
     assert_includes evaluation.fetch("patterns"), "controller-streaming-download"
     assert_includes evaluation.fetch("patterns"), "action-controller-testing"
-    assert_includes evaluation.fetch("cases").map { |case_data| case_data.fetch("name") }, "resource-loading-placement"
-    assert_includes evaluation.fetch("cases").map { |case_data| case_data.fetch("name") }, "memoization-performance-claim"
+
+    evaluation_case_names = evaluation.fetch("cases").map { |case_data| case_data.fetch("name") }
+    assert_includes evaluation_case_names, "resource-loading-placement"
+    assert_includes evaluation_case_names, "memoization-performance-claim"
   end
 
   def test_skill_covers_action_controller_lifecycle
