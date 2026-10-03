@@ -34,8 +34,8 @@ Inspect ApplicationController, inherited concerns, callback declarations, only/e
 4. Document what state it establishes or what response it may produce.
 5. Select callback loading because the resource is a request prerequisite, not because callbacks are presumed faster.
 6. When lazy access is clearer for a single action, an action-local memoized reader is acceptable if it preserves authorization, tenant scoping, and failure semantics.
-5. Keep business workflows in services/domain objects.
-6. Add tests for affected and unaffected actions.
+7. Keep business workflows in services/domain objects.
+8. Add tests for affected and unaffected actions.
 
 ## Example
 
