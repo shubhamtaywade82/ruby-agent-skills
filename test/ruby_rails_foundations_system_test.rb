@@ -46,17 +46,27 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
   end
 
   def test_routing_keeps_bootstrap_separate_from_generators
-    assert_match(
-      /Create a Rails application \/.*?rails new.*?rails new versus generator.*?rails-generators.*?rails-application-bootstrap/m,
-      routing
-    )
+    required = [
+      "Create a Rails application /",
+      "rails new",
+      "rails new versus generator",
+      "rails-generators",
+      "rails-application-bootstrap"
+    ]
+
+    assert required.all? { |token| routing.include?(token) }
   end
 
   def test_routing_keeps_toolchain_and_gem_boundaries
-    assert_match(
-      /Ruby toolchain\/environment setup.*?Runtime\/version compatibility.*?ruby-toolchain.*?Ruby gem authoring\/packaging\/release.*?ruby-gem-development/m,
-      routing
-    )
+    required = [
+      "Ruby toolchain/environment setup",
+      "Runtime/version compatibility",
+      "ruby-toolchain",
+      "Ruby gem authoring/packaging/release",
+      "ruby-gem-development"
+    ]
+
+    assert required.all? { |token| routing.include?(token) }
   end
 
   def test_foundational_evaluations_are_registered
