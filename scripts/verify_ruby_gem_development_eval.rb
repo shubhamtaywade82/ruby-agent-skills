@@ -57,11 +57,12 @@ begin
     ),
     test_file: fixture.fetch("test_file")
   )
-  checks["functional"] = if graded.success?
-    check("pass", "fixture contract tests passed")
-  else
-    check("fail", tail(graded.output, 4000))
-  end
+  checks["functional"] =
+    if graded.success?
+      check("pass", "fixture contract tests passed")
+    else
+      check("fail", tail(graded.output, 4000))
+    end
 rescue StandardError => e
   checks["functional"] = check("fail", "#{e.class}: #{e.message}")
 end
