@@ -6,6 +6,8 @@ require "open3"
 require "tmpdir"
 require "yaml"
 
+# The runner smoke test and fixture contract share this focused platform boundary.
+# rubocop:disable Metrics/ClassLength
 class RubyPlatformBenchmarkSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   FAMILIES = {
@@ -85,34 +87,31 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
 
   def campaign_command(family, output)
     [
-      RbConfig.ruby,
-      File.join(ROOT, "bin", "benchmark"),
-      "campaign",
-      "--manifest",
-      File.join(ROOT, "benchmarks", family, "campaign.yml"),
-      "--agent-command",
-      "true",
-      "--runs",
-      "3",
-      "--continue-on-failure",
-      "--output",
-      output
+      RbConfig.ruby, File.join(ROOT, "bin", "benchmark"), "campaign",
+      "--manifest", File.join(ROOT, "benchmarks", family, "campaign.yml"),
+      "--agent-command", "true", "--runs", "3", "--continue-on-failure",
+      "--output", output
     ]
+  end
+
+  def campaign_result(family, output)
+    path = File.join(output, "campaign.json")
+    return unless File.file?(path)
+
+    JSON.parse(File.read(path, encoding: "UTF-8"))
+      .dig("evaluations", FAMILIES.fetch(family))
   end
 
   def campaign_succeeds?(family)
     Dir.mktmpdir("ruby-platform-campaign") do |output|
-      _stdout, _stderr, status = Open3.capture3(*campaign_command(family, output), chdir: ROOT)
-      return false unless status.success?
+      _, _, status = Open3.capture3(*campaign_command(family, output), chdir: ROOT)
+      result = campaign_result(family, output)
 
-      result_path = File.join(output, "campaign.json")
-      return false unless File.file?(result_path)
-
-      result = JSON.parse(File.read(result_path, encoding: "UTF-8"))
-      evaluation = result.dig("evaluations", FAMILIES.fetch(family))
-      result.dig("measurement", "complete") == true &&
-        evaluation &&
-        [evaluation["baseline_completed_repetitions"], evaluation["skills_completed_repetitions"]] == [3, 3]
+      status.success? &&
+        result &&
+        result.dig("complete") == true &&
+        result.fetch("baseline_completed_repetitions") == 3 &&
+        result.fetch("skills_completed_repetitions") == 3
     rescue StandardError
       false
     end
@@ -147,3 +146,5 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
     assert_includes validator, "test/ruby_platform_benchmark_system_test.rb"
   end
 end
+
+# rubocop:enable Metrics/ClassLength
