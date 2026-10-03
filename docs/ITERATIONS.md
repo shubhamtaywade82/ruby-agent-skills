@@ -470,3 +470,7 @@ Added explicit foundational ownership for the platform setup and project-creatio
 ## Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
 
 Reconciled Iterations 144–148 onto the Iteration 149 release line, added independent benchmark fixtures/references for Ruby toolchain and gem development, and moved those evaluations from static-only to controlled benchmark-backed coverage.
+
+## Iteration 151 — Benchmark Documentation and Reconciliation Audit
+
+Recorded the closed #80 reconciliation, corrected stale controlled-benchmark documentation, and documented the remaining boundary between verified benchmark infrastructure and actual external-agent empirical execution.
