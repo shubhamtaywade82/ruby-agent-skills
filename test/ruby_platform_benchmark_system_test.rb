@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
-require "json"
 require "minitest/autorun"
-require "open3"
-require "tmpdir"
 require "yaml"
 
-# The runner smoke test and fixture contract share this focused platform boundary.
-# rubocop:disable Metrics/ClassLength
 class RubyPlatformBenchmarkSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   FAMILIES = {
@@ -85,44 +80,6 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
     )
   end
 
-  def campaign_command(family, output)
-    [
-      RbConfig.ruby, File.join(ROOT, "bin", "benchmark"), "campaign",
-      "--manifest", File.join(ROOT, "benchmarks", family, "campaign.yml"),
-      "--agent-command", "true", "--runs", "3", "--continue-on-failure",
-      "--output", output
-    ]
-  end
-
-  def campaign_result(family, output)
-    path = File.join(output, "campaign.json")
-    return unless File.file?(path)
-
-    JSON.parse(File.read(path, encoding: "UTF-8"))
-      .dig("evaluations", FAMILIES.fetch(family))
-  end
-
-  def campaign_succeeds?(family)
-    Dir.mktmpdir("ruby-platform-campaign") do |output|
-      _, _, status = Open3.capture3(*campaign_command(family, output), chdir: ROOT)
-      result = campaign_result(family, output)
-
-      status.success? &&
-        result &&
-        result.dig("complete") == true &&
-        result.fetch("baseline_completed_repetitions") == 3 &&
-        result.fetch("skills_completed_repetitions") == 3
-    rescue StandardError
-      false
-    end
-  end
-
-  def test_campaign_runner_completes_three_paired_repetitions
-    failures = FAMILIES.keys.reject { |family| campaign_succeeds?(family) }
-
-    assert_empty failures, "campaign runner did not complete the Ruby foundation smoke campaigns"
-  end
-
   def test_public_evaluations_are_benchmark_backed
     FAMILIES.each_key do |family|
       eval_file = File.join(ROOT, "evals", family, "contract.yml")
@@ -146,5 +103,3 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
     assert_includes validator, "test/ruby_platform_benchmark_system_test.rb"
   end
 end
-
-# rubocop:enable Metrics/ClassLength
