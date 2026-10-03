@@ -80,7 +80,7 @@ Run the generated campaign on the machine that has Ollama access:
 
     ./routing-handoff/run-campaign.sh
 
-The campaign is 23 public cases × 3 repetitions = 69 model decisions.
+The campaign is 26 public cases × 3 repetitions = 78 model decisions.
 
 If interrupted, rerun the generated launcher. When a checkpoint exists, it automatically resumes verified completed repetitions.
 
