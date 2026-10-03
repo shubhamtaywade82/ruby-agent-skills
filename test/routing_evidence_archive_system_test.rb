@@ -76,7 +76,6 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         aliases: false
       ).fetch("cases").length
       repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
-      expected_runs = case_count * repetitions
 
       artifact_names = %w[
         campaign routing_report routing_contract skill_manifest campaign_manifest
