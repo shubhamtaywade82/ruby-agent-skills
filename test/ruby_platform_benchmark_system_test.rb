@@ -48,7 +48,7 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
   def test_fixture_registry_has_pristine_implementation_and_reference
     registry = load_yaml(REGISTRY)
 
-    assert EVALUATIONS.all? { |eval_id| fixture_contract_present?(registry, eval_id) }
+    assert(EVALUATIONS.all? { |eval_id| fixture_contract_present?(registry, eval_id) })
   end
 
   def test_public_evaluations_are_benchmark_backed
