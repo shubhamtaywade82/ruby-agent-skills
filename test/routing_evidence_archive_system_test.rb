@@ -7,7 +7,6 @@ require "minitest/autorun"
 require "open3"
 require "tmpdir"
 require "yaml"
-require "yaml"
 
 class RoutingEvidenceArchiveSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
