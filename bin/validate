@@ -75,6 +75,7 @@ ruby -I"$ROOT/test" "$ROOT/test/rails_staff_principal_architecture_system_test.r
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_asset_build_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/rails_authentication_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/ruby_rails_foundations_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/rails_authorization_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/rails_hotwire_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/rails_routing_system_test.rb"
