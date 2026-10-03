@@ -6,6 +6,7 @@ require "open3"
 require "tmpdir"
 require "yaml"
 
+# rubocop:disable Metrics/ClassLength
 class RoutingModelMatrixCampaignSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   RUNNER = File.join(ROOT, "bin", "routing-model-matrix-campaign")
@@ -49,6 +50,7 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
         aliases: false
       )
       repetitions = campaign.fetch("execution").fetch("repetitions").to_i
+
       assert_equal cases.length * repetitions, plan.fetch("campaign").fetch("expected_runs_per_model")
       assert plan.fetch("controls").fetch("descriptive_comparison_only")
       assert plan.fetch("controls").fetch("no_synthetic_results")
