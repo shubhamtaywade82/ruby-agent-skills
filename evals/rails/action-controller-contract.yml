@@ -1,5 +1,5 @@
 id: action-controller-contract
-version: 1
+version: 2
 title: Preserve Rails Action Controller request, response, state, HTTP cache, streaming, and exception boundaries
 category: rails
 source: rails-action-controller-v1
@@ -36,6 +36,8 @@ constraints:
     - safe conditional response semantics
     - bounded download/streaming design
     - request-level regression tests
+    - resource-loading placement based on request prerequisites and local readability
+    - no unsupported performance claim for memoized readers
 checks:
   - functional
   - tests
@@ -48,6 +50,12 @@ cases:
   - name: callback-scope
     input: public and authenticated actions in one controller
     expected: only the intended actions require the callback
+  - name: resource-loading-placement
+    input: a resource is needed by several actions versus only one action
+    expected: use a narrow callback for shared request prerequisites and keep one-off loading local when that makes the request flow clearer
+  - name: memoization-performance-claim
+    input: a proposed `@resource ||= ...` replacement for `before_action`
+    expected: treat memoization as a lazy-access/readability option, not an inherent performance improvement; require comparable workload evidence before making a performance claim
   - name: response-contract
     input: successful HTML and JSON requests
     expected: status, content type, body/representation, and redirect behavior match the declared contract
