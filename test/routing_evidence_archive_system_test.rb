@@ -6,6 +6,7 @@ require "json"
 require "minitest/autorun"
 require "open3"
 require "tmpdir"
+require "yaml"
 
 class RoutingEvidenceArchiveSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
@@ -98,7 +99,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         }
       end
 
-      expected_runs.times do |index|
+      (cases.length * repetitions).times do |index|
         path = File.join(dir, "raw-#{index + 1}.json")
         File.write(path, "{}")
         artifacts["raw_case_#{index + 1}"] = {
@@ -114,10 +115,10 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "evidence" => "skill-routing-campaign-v1",
         "campaign" => "skill-routing-public-v1",
         "campaign_version" => 6,
-        "routing_case_count" => expected_runs / repetitions,
+        "routing_case_count" => case_count,
         "requested_repetitions" => repetitions,
-        "requested_runs" => expected_runs,
-        "completed_runs" => expected_runs,
+        "requested_runs" => cases.length * repetitions,
+        "completed_runs" => cases.length * repetitions,
         "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
         "agent" => { "provider" => "ollama", "model" => "test-model" },
         "campaign_metrics" => campaign.fetch("metrics"),
@@ -143,7 +144,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
 
       assert_equal "skill-routing-campaign-v1", manifest.fetch("evidence_type")
       assert_equal true, manifest.fetch("intake").fetch("verified")
-      assert_equal expected_runs, manifest.fetch("completed_runs")
+      assert_equal case_count * repetitions, manifest.fetch("completed_runs")
     end
   end
 
@@ -162,7 +163,6 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
     )
 
     repetitions = campaign.fetch("execution").fetch("repetitions").to_i
-    expected_runs = cases.length * repetitions
     runs = {}
     cases.each do |entry|
       primary = entry.fetch("primary_skills").first
@@ -191,7 +191,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       end
       runs[entry.fetch("id")] = {
         "case_id" => entry.fetch("id"),
-        "requested_repetitions" => 3,
+        "requested_repetitions" => repetitions,
         "completed_repetitions" => repetitions,
         "complete" => true,
         "expected_primary_skill" => primary,
@@ -207,9 +207,9 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       "routing_contract" => File.join(ROOT, "router", "ROUTING.md"),
       "agent" => { "provider" => "ollama", "model" => "fixture-model", "model_version" => "fixture-digest", "tool_mode" => "local-filesystem" },
       "routing_case_count" => cases.length,
-      "requested_repetitions" => 3,
-      "requested_runs" => 69,
-      "completed_runs" => 69,
+      "requested_repetitions" => repetitions,
+      "requested_runs" => cases.length * repetitions,
+      "completed_runs" => cases.length * repetitions,
       "complete" => true,
       "execution" => { "checkpointed" => true, "mode" => "fixture" },
       "routing_inputs" => {},
