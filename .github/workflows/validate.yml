@@ -21,6 +21,9 @@ jobs:
       - name: Lint Ruby (RuboCop)
         run: bundle exec rubocop
 
+      - name: Audit validation gate integrity
+        run: ruby -Itest test/validation_gate_integrity_system_test.rb
+
       - name: Validate skill library
         run: bash bin/validate
 
