@@ -164,14 +164,14 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
       "lib/fixture_gem/version.rb"
     ]
 
+    consumer_require = advisor.consumer_require_command("fixture_gem")
     contract_ok =
       advisor.skeleton_command("fixture_gem") == "bundle gem fixture_gem" &&
       advisor.dependency_groups == {
         "runtime" => ["json"],
         "development" => ["minitest", "rake"]
       } &&
-      advisor.consumer_require_command("fixture_gem") ==
-        "ruby -e 'require \"fixture_gem\"'" &&
+      consumer_require == "ruby -e 'require \"fixture_gem\"'" &&
       allowed == expected_files &&
       !advisor.release_allowed?(authorized: false) &&
       advisor.release_allowed?(authorized: true)
