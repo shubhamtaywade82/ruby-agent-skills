@@ -1,5 +1,5 @@
 id: rails-framework-public-v2
-version: 5
+version: 6
 evaluation_set: rails
 source: rails-framework-v3
 fixture_root: benchmarks/rails/fixtures
@@ -28,6 +28,7 @@ evaluations:
   - rails-operational-tasks-maintenance-contract
   - rails-rack-middleware-contract
   - rails-repository-completeness-contract
+  - rails-application-bootstrap-contract
   - rails-routing-contract
   - rails-serialization-globalid-contract
   - rails-staff-principal-architecture-contract
