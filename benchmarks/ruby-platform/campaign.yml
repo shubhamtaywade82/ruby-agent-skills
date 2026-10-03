@@ -1,0 +1,21 @@
+version: 1
+id: ruby-platform-public-v1
+evaluation_set: ruby-platform
+source: ruby-platform-foundations-v1
+fixture_root: benchmarks/ruby-platform/fixtures
+verifier: scripts/verify_ruby_platform_eval.rb
+evaluations:
+  - ruby-toolchain-contract
+  - ruby-gem-development-contract
+execution:
+  repetitions: 3
+  paired: true
+  fresh_workspace_per_run: true
+  same_fixture_for_pair: true
+  require_same_agent_command_when_using_agent_command: true
+controls:
+  runtime:
+    ruby: "3.3"
+  verifier: scripts/verify_ruby_platform_eval.rb
+  hidden_cases: external-only
+  require_complete_repetitions: true
