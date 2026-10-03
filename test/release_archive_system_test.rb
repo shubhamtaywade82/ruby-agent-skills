@@ -84,8 +84,11 @@ class ReleaseArchiveSystemTest < Minitest::Test
 
         %w[
           AGENTS.md LICENSE README.md CHANGELOG.md SECURITY.md CONTRIBUTING.md
-          skill-manifest.yml router/ROUTING.md docs/SKILL_CONTRACT.md
-          bin/install bin/skill-pack-verify bin/skill-pack-doctor bin/stack-minimality
+          skill-manifest.yml router/ROUTING.md docs/EVAL_RESULT_SCHEMA.md
+          docs/RUNTIME_COMPATIBILITY.md docs/SKILL_CONTRACT.md
+          docs/VERIFY_CHANGE.md
+          bin/install bin/skill-pack-compatibility bin/skill-pack-verify
+          bin/skill-pack-doctor bin/stack-minimality
         ].each do |path|
           assert File.file?(File.join(archive_root, path)), "archive missing #{path}"
         end
