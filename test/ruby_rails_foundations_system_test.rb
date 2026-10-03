@@ -18,19 +18,27 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
     File.read(File.join(ROOT, "router", "ROUTING.md"), encoding: "UTF-8")
   end
 
-  def test_foundational_skills_are_registered_with_distinct_boundaries
-    skills = manifest.fetch("skills")
+  def test_ruby_toolchain_skill_is_registered
+    assert_equal "skills/ruby-toolchain/SKILL.md",
+                 manifest.fetch("skills").fetch("ruby-toolchain").fetch("path")
+  end
 
-    {
-      "ruby-toolchain" => "skills/ruby-toolchain/SKILL.md",
-      "rails-application-bootstrap" => "skills/rails-application-bootstrap/SKILL.md",
-      "ruby-gem-development" => "skills/ruby-gem-development/SKILL.md"
-    }.each do |name, path|
-      assert_equal path, skills.fetch(name).fetch("path")
-    end
+  def test_rails_application_bootstrap_skill_is_registered
+    assert_equal "skills/rails-application-bootstrap/SKILL.md",
+                 manifest.fetch("skills").fetch("rails-application-bootstrap").fetch("path")
+  end
 
-    assert_includes skills.fetch("rails-application-bootstrap").fetch("triggers"), "rails new"
-    assert_includes skills.fetch("ruby-gem-development").fetch("triggers"), "bundle gem"
+  def test_ruby_gem_development_skill_is_registered
+    assert_equal "skills/ruby-gem-development/SKILL.md",
+                 manifest.fetch("skills").fetch("ruby-gem-development").fetch("path")
+  end
+
+  def test_rails_bootstrap_trigger_is_registered
+    assert_includes manifest.fetch("skills").fetch("rails-application-bootstrap").fetch("triggers"), "rails new"
+  end
+
+  def test_ruby_gem_trigger_is_registered
+    assert_includes manifest.fetch("skills").fetch("ruby-gem-development").fetch("triggers"), "bundle gem"
   end
 
   def test_routing_keeps_bootstrap_separate_from_generators
@@ -58,14 +66,21 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
     assert_includes text, "ruby-gem-development"
   end
 
-  def test_evaluations_are_registered
-    evaluations = manifest.fetch("evaluations")
+  def test_ruby_toolchain_evaluation_is_registered
+    assert_includes manifest.fetch("evaluations").keys, "ruby-toolchain-foundation"
+  end
 
-    assert_includes evaluations.keys, "ruby-toolchain-foundation"
-    assert_includes evaluations.keys, "rails-application-bootstrap"
-    assert_includes evaluations.keys, "ruby-gem-development"
+  def test_rails_bootstrap_evaluation_is_registered
+    assert_includes manifest.fetch("evaluations").keys, "rails-application-bootstrap"
+  end
 
-    paths = evaluations.values.flat_map { |entry| Array(entry.fetch("paths")) }
+  def test_ruby_gem_development_evaluation_is_registered
+    assert_includes manifest.fetch("evaluations").keys, "ruby-gem-development"
+  end
+
+  def test_foundational_evaluation_paths_are_registered
+    paths = manifest.fetch("evaluations").values.flat_map { |entry| Array(entry.fetch("paths")) }
+
     assert_includes paths, "evals/ruby-toolchain/contract.yml"
     assert_includes paths, "evals/rails/application-bootstrap-contract.yml"
     assert_includes paths, "evals/ruby-gem-development/contract.yml"
