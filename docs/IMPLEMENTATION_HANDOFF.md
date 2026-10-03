@@ -8,7 +8,7 @@ Current inventory:
 
 - 96 skills
 - 446 implementation patterns
-- 490 evaluation cases
+- 492 evaluation cases
 - 100 system/contract tests
 
 ## Corpus quality and evaluation coverage
@@ -24,7 +24,17 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 133 evaluation files / 490 cases. Campaigns provide controlled benchmark coverage for 105 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark campaigns cover their respective contract evaluations with independent fixture references; actual model results remain separate empirical evidence.
+The public evaluation corpus has 133 evaluation files / 492 cases. Campaigns provide controlled benchmark coverage for 105 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark campaigns cover their respective contract evaluations with independent fixture references; actual model results remain separate empirical evidence.
+
+## Iteration 152 — Action Controller Resource-Loading Evidence
+
+This iteration makes the controller resource-loading policy explicit and regression-checked:
+
+- `before_action` remains a narrow request-prerequisite mechanism.
+- one-off resource access may stay action-local;
+- memoized readers are allowed for lazy access but are not treated as an inherent performance optimization;
+- performance comparisons require comparable workload evidence;
+- query/read boundaries remain the escalation path for complex controller reads.
 
 ## Release archive verification
 
