@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
+> **Current milestone:** Iteration 151 — Benchmark Documentation and Reconciliation Audit
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
