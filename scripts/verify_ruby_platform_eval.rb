@@ -106,7 +106,8 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
     contract_ok = [
       supported == expected_supported,
       conflict.fetch("status") == "conflict",
-      advisor.dependency_command(lockfile_present: true) == "bundle check && bundle install",
+      advisor.dependency_command(lockfile_present: true) ==
+        "bundle check && bundle install",
       advisor.native_extension_classification(
         "fatal error: ruby.h: No such file or directory"
       ) == "missing-ruby-header",
@@ -125,8 +126,8 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
           "pass",
           [
             "runtime evidence and executable provenance",
-            "Bundler dependency handling and native-build diagnosis",
-            "lockfile safety"
+            "Bundler dependency handling",
+            "native-build diagnosis and lockfile safety"
           ].join("; ")
         )
       else
@@ -170,7 +171,7 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
         "development" => ["minitest", "rake"]
       } &&
       advisor.consumer_require_command("fixture_gem") ==
-        "ruby -e 'require \"fixture_gem\"'" &&
+        %(ruby -e 'require "fixture_gem"') &&
       allowed == expected_files &&
       !advisor.release_allowed?(authorized: false) &&
       advisor.release_allowed?(authorized: true)
