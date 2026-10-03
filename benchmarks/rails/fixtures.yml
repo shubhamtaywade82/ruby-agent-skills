@@ -445,3 +445,21 @@ fixtures:
       - "data_owner"
       - "dependency_direction"
       - "fitness_rule"
+
+  rails-application-bootstrap-contract:
+    root: benchmarks/rails/fixtures/application-bootstrap-contract
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class RailsApplicationBootstrap"
+      - "def command"
+      - "def option_supported?"
+      - "rails.*new"
+    forbidden_regex: []
+    contract_regex:
+      - "api_only"
+      - "database"
+      - "javascript"
+      - "css"
+      - "skip"
+      - "template"
