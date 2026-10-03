@@ -55,7 +55,7 @@ class FrameworkDriftSystemTest < Minitest::Test
 
   def test_rejects_control_character_match_from_yaml
     registry = REGISTRY.sub(
-      %q{match: '\\bupdate_attributes!?\\b'},
+      "match: '\\bupdate_attributes!?\\b'",
       "match: \"\\bupdate_attributes!?\\b\""
     )
 
