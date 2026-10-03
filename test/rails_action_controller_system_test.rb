@@ -3,7 +3,6 @@
 require "minitest/autorun"
 require "yaml"
 
-
 class RailsActionControllerSystemTest < Minitest::Test
   include RailsActionControllerLifecycleAssertions
 
@@ -98,6 +97,7 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes evaluation.fetch("patterns"), "action-controller-testing"
 
     evaluation_case_names = evaluation.fetch("cases").map { |case_data| case_data.fetch("name") }
+
     assert_includes evaluation_case_names, "resource-loading-placement"
 
     assert_includes evaluation_case_names, "memoization-performance-claim"
