@@ -55,7 +55,7 @@ The platform-foundation evaluations cover the developer lifecycle before and aro
 - Rails application bootstrap with `rails new`, API-only versus standard application shape, database/frontend choices, and version-aware generator options;
 - reusable Ruby gem development with `bundle gem`, gemspec/load-path contracts, package verification, isolated installation, and release authorization.
 
-The Rails bootstrap evaluation has a disposable fixture/reference in the controlled Rails campaign. Toolchain and gem-development evaluations remain `coverage: static-only` until their own benchmark fixture families exist.
+The Rails bootstrap evaluation has a disposable fixture/reference in the controlled Rails campaign. `ruby-toolchain-contract` and `ruby-gem-development-contract` are now covered by the controlled `ruby-platform` fixture family with pristine references and an independent verifier.
 
 ### Design-pattern system
 
