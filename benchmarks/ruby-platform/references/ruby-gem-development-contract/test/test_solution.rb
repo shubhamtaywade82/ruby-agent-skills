@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "minitest/autorun"
-require_relative "../../../fixtures/ruby-gem-development-contract/lib/solution"
+require_relative "../lib/solution"
 
 class RubyGemDevelopmentAdvisorReferenceTest < Minitest::Test
   def test_reference_gem_skeleton_command
