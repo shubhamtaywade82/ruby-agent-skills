@@ -3,6 +3,7 @@
 
 require "set"
 require "yaml"
+require_relative "../lib/ruby_agent_skills/version_constraint"
 
 ROOT = File.expand_path("..", __dir__)
 MANIFEST_PATH = File.join(ROOT, "skill-manifest.yml")
@@ -25,8 +26,14 @@ installation = manifest.fetch("installation", {})
 installation_paths = {
   "installer" => installation.fetch("installer"),
   "verifier" => installation.fetch("verifier"),
-  "doctor" => installation.fetch("doctor")
+  "doctor" => installation.fetch("doctor"),
+  "compatibility_checker" => installation.fetch("compatibility_checker")
 }
+framework_drift = manifest.fetch("framework_drift")
+framework_drift.each do |kind, path|
+  errors << "manifest framework_drift #{kind} missing file #{path}" unless File.file?(File.join(ROOT, path))
+end
+
 installation_paths.each do |kind, path|
   errors << "manifest installation #{kind} missing file #{path}" unless File.file?(File.join(ROOT, path))
 end
@@ -41,8 +48,24 @@ manifest_skills.each do |name, entry|
   path = entry.fetch("path")
   errors << "manifest skill #{name} missing file #{path}" unless File.file?(File.join(ROOT, path))
   errors << "skill #{name} has no triggers" if Array(entry["triggers"]).empty?
-end
+  next unless entry.key?("compatibility")
 
+  compatibility = entry["compatibility"]
+  valid_compatibility = compatibility.is_a?(Hash)
+  valid_compatibility &&= compatibility.all? do |runtime, requirement|
+    runtime.is_a?(String) && requirement.is_a?(String) && !requirement.strip.empty?
+  end
+
+  if valid_compatibility
+    compatibility.each do |runtime, requirement|
+      RubyAgentSkills::VersionConstraint.validate(requirement)
+    rescue RubyAgentSkills::VersionConstraint::InvalidRequirement => e
+      errors << "manifest skill #{name} invalid #{runtime} compatibility requirement: #{e.message}"
+    end
+  else
+    errors << "manifest skill #{name} compatibility must map string runtime names to string requirements"
+  end
+end
 pattern_files = Dir[File.join(ROOT, "patterns", "**", "*.md")]
                 .reject { |p| p.end_with?("/README.md") }
                 .map { |p| p.delete_prefix(ROOT + "/") }
