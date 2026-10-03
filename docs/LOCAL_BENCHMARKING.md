@@ -65,7 +65,7 @@ ruby bin/routing-eval \
   --router router/ROUTING.md \
   --output benchmark-results/routing-claude
 
-# Rails campaign (27 evaluations x 3 repetitions x 2, paired):
+# Rails campaign (28 evaluations x 3 repetitions x 2, paired):
 ruby bin/agent-benchmark \
   --command "ruby $(pwd)/bin/coding-agent-claude" \
   --manifest benchmarks/rails/campaign.yml \
@@ -85,7 +85,7 @@ from the skill/pattern context the runner itself materialized.
 
 ## Smoke-test before a full run
 
-Both campaigns are large (69 and up to 162 real calls). Prove the adapter
+Routing uses 69 model invocations (23 cases × 3). The Rails campaign uses 168 model invocations (28 evaluations × 3 paired repetitions × 2 configurations). Each Ruby platform foundation campaign uses 6 model invocations (1 evaluation × 3 paired repetitions × 2 configurations). Prove the adapter
 works on one case before spending the full budget:
 
 ```bash
@@ -132,3 +132,26 @@ directly.
   `EvalRunner`'s JSON writer before this was fixed (`lib/ruby_agent_skills/eval_runner.rb`'s
   `utf8` helper) — make sure your checkout includes that fix before running
   a long campaign unattended.
+
+
+## Ruby platform foundation campaigns
+
+The two newly benchmark-backed foundation families can be run through the same local coding-agent adapter:
+
+```bash
+# Ruby toolchain: 1 evaluation × 3 paired repetitions × 2 configurations.
+ruby bin/agent-benchmark \
+  --command "ruby $(pwd)/bin/coding-agent-claude" \
+  --manifest benchmarks/ruby-toolchain/campaign.yml \
+  --provider anthropic --model claude-sonnet-5 \
+  --timeout 300 --output benchmark-results/ruby-toolchain-claude
+
+# Ruby gem development: 1 evaluation × 3 paired repetitions × 2 configurations.
+ruby bin/agent-benchmark \
+  --command "ruby $(pwd)/bin/coding-agent-claude" \
+  --manifest benchmarks/ruby-gem-development/campaign.yml \
+  --provider anthropic --model claude-sonnet-5 \
+  --timeout 300 --output benchmark-results/ruby-gem-development-claude
+```
+
+These campaigns are intentionally small enough to use as adapter smoke tests while still preserving the repository's paired three-repetition protocol. They produce empirical evidence only when a real coding agent actually edits the disposable fixture and the declared verifier evaluates the result.

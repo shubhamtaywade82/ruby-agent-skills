@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
+> **Current milestone:** Iteration 151 — Benchmark Documentation and Reconciliation Audit
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -470,3 +470,7 @@ Added explicit foundational ownership for the platform setup and project-creatio
 ## Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
 
 Reconciled Iterations 144–148 onto the Iteration 149 release line, added independent benchmark fixtures/references for Ruby toolchain and gem development, and moved those evaluations from static-only to controlled benchmark-backed coverage.
+
+## Iteration 151 — Benchmark Documentation and Reconciliation Audit
+
+Recorded the closed #80 reconciliation, corrected stale controlled-benchmark documentation, documented the remaining boundary between verified benchmark infrastructure and actual external-agent empirical execution, and exercised both Ruby foundation campaigns end-to-end in CI with the real benchmark runner.

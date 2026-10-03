@@ -121,7 +121,9 @@ A benchmark family may cover a deliberate subset of its public evaluation corpus
 
 ## Rails framework campaign
 
-The Rails campaign is defined at benchmarks/rails/campaign.yml and now covers nine evaluations: Action Controller, Active Record, Routing, Validations, Authentication, Authorization, Cross-Boundary Authorization, Encryption/Credentials, and Serialization/Global ID. The campaign intentionally leaves the remaining 20 public Rails evaluations unbenchmarked until fixture and verifier quality are added.
+The Rails campaign is defined at `benchmarks/rails/campaign.yml` and covers all **28 public Rails evaluation files** in the current corpus. The campaign is configured with `require_all_public_evaluations: true`, so an omitted public Rails evaluation is a validation error rather than an implicit unmeasured case.
+
+The Rails corpus currently contains **268 cases**. Campaign configuration supplies the empirical measurement protocol; it does not imply that a real model has already produced results. Actual model execution still requires an external agent adapter.
 
 ## Multiple campaign families
 
@@ -144,3 +146,29 @@ For a concrete provider-neutral command adapter:
       --model your-model
 
 The adapter is intentionally outside model-specific launch logic. Authentication and provider-specific harness code remain external.
+
+
+## Ruby platform foundation campaigns
+
+The Ruby platform foundation evaluations now have dedicated controlled benchmark families:
+
+| Family | Public evaluation | Fixture/reference | Repetitions |
+| --- | --- | --- | ---: |
+| `ruby-toolchain` | `ruby-toolchain-contract` | independent disposable fixture + pristine reference | 3 |
+| `ruby-gem-development` | `ruby-gem-development-contract` | independent disposable fixture + pristine reference | 3 |
+
+Both campaigns enforce paired skills-disabled/skills-enabled execution, fresh workspaces, the same fixture and verifier, the same agent command, explicit Ruby 3.3 runtime control, and `hidden_cases: external-only`.
+
+The repository's fixture-control tests verify both negative controls (the unmodified fixture must fail) and positive controls (the independent reference must pass). This establishes benchmark integrity, not model-quality results.
+
+Run one of these families with a real coding-agent adapter:
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/ruby-toolchain/campaign.yml \
+      --agent-command 'YOUR_AGENT_ADAPTER_COMMAND'
+
+    ruby bin/benchmark campaign \
+      --manifest benchmarks/ruby-gem-development/campaign.yml \
+      --agent-command 'YOUR_AGENT_ADAPTER_COMMAND'
+
+The remaining empirical gap is **actual external-agent execution and evidence capture**. The repository already contains the campaign definitions, disposable fixtures, independent references, verifier scripts, provenance controls, and CI integrity checks needed to conduct that measurement.
