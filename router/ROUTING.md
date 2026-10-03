@@ -18,6 +18,9 @@ This file defines how an agent should select and compose skills.
 | Task | Primary | Secondary |
 |---|---|---|
 | Runtime/version compatibility | ruby-runtime-compatibility | ruby-core, ruby-gems-io-services, ruby-debugging |
+| Ruby toolchain/environment setup | ruby-toolchain | ruby-runtime-compatibility, ruby-gems-io-services, ruby-debugging |
+| Create a Rails application / `rails new` | rails-application-bootstrap | ruby-toolchain, ruby-runtime-compatibility, rails-architecture, rails-generators |
+| Ruby gem authoring/packaging/release | ruby-gem-development | ruby-toolchain, ruby-gems-io-services, ruby-tdd-refactoring, pattern:ruby-gem |
 | Skill-system maintenance, completeness, registry, routing, or audit | agent-workflow | ruby-clean-code, ruby-tdd-refactoring |
 | Ruby syntax/semantics | ruby-core | ruby-clean-code |
 | Ruby values/data representation | ruby-data-types | ruby-core, ruby-clean-code |
@@ -65,6 +68,7 @@ This file defines how an agent should select and compose skills.
 | Authentication/session | rails-authentication | rails-action-controller, rails-test-engineering, session-fixation-rotation |
 | Rails test design | rails-test-engineering | relevant implementation skill, ruby-tdd-refactoring |
 | Rails generator/scaffold | rails-generators | relevant Rails skill, rails-test-engineering, pattern:scaffold-lifecycle |
+| `rails new` versus generator | rails-application-bootstrap | rails-generators, ruby-toolchain, ruby-runtime-compatibility |
 | Rails REST resource | rails-routing | rails-action-controller, rails-authentication, rails-test-engineering, pattern:rest-resource |
 | Route precedence/shadowing | rails-routing | rails-action-controller, rails-test-engineering, pattern:route-precedence-contract |
 | Nested/shallow route design | rails-routing | rails-associations, rails-authentication, rails-test-engineering, pattern:nested-route-boundary |
@@ -1563,3 +1567,9 @@ YAGNI
   -> new abstraction/dependency only when earned
 
 Minimality is never a reason to remove security, accessibility, validation at trust boundaries, database integrity, required observability, or verification.
+
+## Foundational boundary rules
+
+- `ruby-toolchain` owns machine/runtime setup and executable provenance; `ruby-runtime-compatibility` owns compatibility decisions once the runtime evidence exists.
+- `rails-application-bootstrap` owns `rails new` and initial application shape; `rails-generators` owns `bin/rails generate` and scaffolding inside an existing application.
+- `ruby-gem-development` owns reusable gem authoring and packaging; `ruby-gems-io-services` owns application dependency and external-boundary decisions.
