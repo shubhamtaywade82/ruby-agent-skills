@@ -11,6 +11,7 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   RUNNER = File.join(ROOT, "bin", "routing-campaign-handoff-verify")
 
+  # rubocop:disable Metrics/AbcSize
   def valid_handoff(root)
     sha = Open3.capture2("git", "-C", root, "rev-parse", "HEAD").first.strip
     campaign_config = YAML.safe_load(
@@ -51,6 +52,8 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
       }
     }
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   def test_accepts_matching_handoff
     Dir.mktmpdir("routing-handoff") do |dir|
