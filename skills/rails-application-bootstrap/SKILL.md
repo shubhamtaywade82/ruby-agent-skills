@@ -34,6 +34,16 @@ resolve Ruby/Rails
 
 Do not activate for resource generators inside an existing app; use `rails-generators`.
 
+## Repository inspection
+
+Inspect, in order:
+
+1. `.ruby-version`, `.tool-versions`, or other runtime declarations;
+2. Gemfile/Gemfile.lock and Rails dependency constraints;
+3. existing application type, frontend/build strategy, database, and test stack when bootstrapping an existing repository;
+4. CI/deployment setup when reproducing an existing project's bootstrap;
+5. target directory state before running `rails new`.
+
 ## Preconditions
 
 Resolve Ruby and Rails versions first. Prefer the repository or project constraint over current Rails documentation.
