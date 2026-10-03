@@ -1,0 +1,49 @@
+id: ruby-toolchain-contract
+version: 1
+title: Resolve and verify a Ruby development toolchain
+category: ruby
+source: ruby-toolchain-v1
+skills:
+  - ruby-toolchain
+  - ruby-runtime-compatibility
+  - ruby-core
+patterns: []
+prompt: |
+  Prepare an existing Ruby application for development. Resolve Ruby and
+  Bundler from repository evidence, verify executable provenance, install
+  application dependencies through Bundler, and diagnose any native-extension
+  failure without changing runtime requirements simply to make installation pass.
+constraints:
+  required_design:
+    - repository runtime evidence is inspected first
+    - local runtime is observed rather than assumed
+    - application dependencies use Bundler
+    - native build failures are diagnosed from concrete evidence
+    - runtime requirements are not weakened to hide installation failures
+  forbidden:
+    - deleting Gemfile.lock as a first response
+    - using global gems for application dependencies
+    - mixing unrelated Ruby installations
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: inspect-runtime
+    input: repository declares Ruby and Bundler constraints
+    expected: resolve declared requirements separately from observed runtime versions
+  - name: verify-provenance
+    input: ruby and bundle resolve from different installations
+    expected: report inconsistent provenance before dependency changes
+  - name: bundle-dependencies
+    input: an application dependency belongs in Gemfile
+    expected: use Bundler rather than global gem installation
+  - name: native-extension
+    input: gem installation fails while compiling an extension
+    expected: identify compiler/header/build prerequisite failure before changing versions
+grading:
+  functional: toolchain commands and dependency installation follow repository evidence
+  tests: commands and failure paths are explicitly verified
+  contract: requirements, observed runtime, and dependency provenance are separated
+  scope_control: application code is not changed to compensate for environment failures
