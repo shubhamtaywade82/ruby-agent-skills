@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "minitest/autorun"
-require_relative "../../../fixtures/ruby-toolchain-contract/lib/solution"
+require_relative "../lib/solution"
 
 class RubyToolchainAdvisorReferenceTest < Minitest::Test
   def test_reference_resolves_declared_and_observed_runtime
