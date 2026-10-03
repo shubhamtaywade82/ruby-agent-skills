@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 149 — Ruby and Rails Platform Foundations
+> **Current milestone:** Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -442,6 +442,31 @@ Folded reviewer heuristics from a personal Ruby/Rails training corpus into `chan
 
 Added `bin/verify-change`, a provider-neutral verifier that runs a downstream project's own gates (RuboCop, tests, Brakeman, bundler-audit, `zeitwerk:check`) plus deterministic structural checks and writes an evidence report that never reports an unrun check as passed. It ships in the installer and the release archive.
 
+## Iteration 144 — Agent Skills Frontmatter Contract Validation
+
+Frontmatter validation is executable for the Agent Skills contract, including name, description, compatibility, metadata, license, and allowed-tools constraints.
+
+## Iteration 145 — Executable Runtime Compatibility Gate
+
+Version requirements are enforced with RubyGems semantics; runtime profiles and compatibility reports travel through evaluation and installation paths, with explicit version-bound patterns.
+
+## Iteration 146 — Deprecation Governance
+
+Deprecated frontend skills now have explicit migration scope, replacements, migration documentation, and evidence-backed removal gates.
+
+## Iteration 147 — Executable Framework Drift Detection
+
+A bounded Rails framework-drift registry and Ruby-code-fence scanner detect evidence-backed API drift and require explicit suppressions.
+
+## Iteration 148 — Validation Gate Integrity Preflight
+
+An independent integrity test protects the validation gate itself from root/path corruption or accidental removal of critical checks.
+
 ## Iteration 149 — Ruby and Rails Platform Foundations
 
 Added explicit foundational ownership for the platform setup and project-creation lifecycle that was missing from the prior skill tree: `ruby-toolchain`, `rails-application-bootstrap`, and `ruby-gem-development`. Added routing contracts, evaluations, and registration so agents can distinguish machine/toolchain setup from runtime compatibility, `rails new` from in-app generators, and gem authoring from application dependency installation.
+
+
+## Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
+
+Reconciled Iterations 144–148 onto the Iteration 149 release line, added independent benchmark fixtures/references for Ruby toolchain and gem development, and moved those evaluations from static-only to controlled benchmark-backed coverage.
