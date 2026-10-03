@@ -12,7 +12,6 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
   RUNNER = File.join(ROOT, "bin", "routing-campaign-handoff-verify")
 
   # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/AbcSize
   def valid_handoff(root)
     sha = Open3.capture2("git", "-C", root, "rev-parse", "HEAD").first.strip
     campaign_config = YAML.safe_load(
@@ -53,8 +52,6 @@ class RoutingCampaignHandoffBindingSystemTest < Minitest::Test
       }
     }
   end
-
-  # rubocop:enable Metrics/AbcSize
 
   # rubocop:enable Metrics/AbcSize
 
