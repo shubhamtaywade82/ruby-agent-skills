@@ -138,5 +138,5 @@ class RoutingModelMatrixCampaignSystemTest < Minitest::Test
 
     assert_includes validator, "test/routing_model_matrix_campaign_system_test.rb"
   end
-# rubocop:enable Metrics/ClassLength
+  # rubocop:enable Metrics/ClassLength
 end
