@@ -102,7 +102,7 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
 
   def campaign_succeeds?(family)
     Dir.mktmpdir("ruby-platform-campaign") do |output|
-      stdout, stderr, status = Open3.capture3(*campaign_command(family, output), chdir: ROOT)
+      _stdout, _stderr, status = Open3.capture3(*campaign_command(family, output), chdir: ROOT)
       return false unless status.success?
 
       result_path = File.join(output, "campaign.json")
@@ -113,7 +113,7 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
       result.dig("measurement", "complete") == true &&
         evaluation &&
         [evaluation["baseline_completed_repetitions"], evaluation["skills_completed_repetitions"]] == [3, 3]
-    rescue JSON::ParserError, StandardError
+    rescue StandardError
       false
     end
   end
