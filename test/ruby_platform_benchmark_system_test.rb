@@ -57,9 +57,11 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
       File.join(ROOT, "evals", "ruby-gem-development", "contract.yml")
     ]
 
-    assert paths.all? do |path|
-      load_yaml(path).fetch("coverage", "benchmark-backed") != "static-only"
-    end
+    assert(
+      paths.all? do |path|
+        load_yaml(path).fetch("coverage", "benchmark-backed") != "static-only"
+      end
+    )
   end
 
   def test_verifier_exists_and_validate_registers_this_test
