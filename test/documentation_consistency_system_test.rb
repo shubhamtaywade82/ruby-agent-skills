@@ -54,7 +54,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
 
   def test_documentation_audit_detects_stale_routing_campaign_run_count
     stderr, status = audit_with(
-      "docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub("23 public cases × 3 repetitions = 69", "14 public cases × 3 repetitions = 42") }
+      "docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub("26 public cases × 3 repetitions = 78", "25 public cases × 3 repetitions = 75") }
     )
 
     refute status.success?
