@@ -9,6 +9,12 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
     "ruby-toolchain" => "ruby-toolchain-contract",
     "ruby-gem-development" => "ruby-gem-development-contract"
   }.freeze
+  EXPECTED_EXECUTION = {
+    "paired" => true,
+    "fresh_workspace_per_run" => true,
+    "same_fixture_for_pair" => true,
+    "require_same_agent_command_when_using_agent_command" => true
+  }.freeze
 
   def load_yaml(path)
     YAML.safe_load(
@@ -18,15 +24,21 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
     )
   end
 
-  def fixture_contract_present?(family, eval_id)
-    registry = load_yaml(
-      File.join(ROOT, "benchmarks", family, "fixtures.yml")
-    )
-    fixture = registry.fetch("fixtures").fetch(eval_id)
-    fixture_root = File.join(ROOT, fixture.fetch("root"))
+  def campaign(family)
+    load_yaml(File.join(ROOT, "benchmarks", family, "campaign.yml"))
+  end
+
+  def fixture(family, eval_id)
+    load_yaml(File.join(ROOT, "benchmarks", family, "fixtures.yml"))
+      .fetch("fixtures")
+      .fetch(eval_id)
+  end
+
+  def reference_present?(family, eval_id, fixture_data)
+    fixture_root = File.join(ROOT, fixture_data.fetch("root"))
     implementation = File.join(
       fixture_root,
-      fixture.fetch("implementation_file")
+      fixture_data.fetch("implementation_file")
     )
     reference_root = File.join(
       ROOT,
@@ -38,44 +50,29 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
 
     File.file?(implementation) &&
       File.directory?(reference_root) &&
-      Dir.glob(File.join(reference_root, "**", "*")).any? do |path|
-        File.file?(path)
-      end
+      Dir.glob(File.join(reference_root, "**", "*")).any? { |path| File.file?(path) }
   end
 
   def test_each_campaign_declares_its_public_evaluation
     FAMILIES.each do |family, eval_id|
-      campaign = load_yaml(
-        File.join(ROOT, "benchmarks", family, "campaign.yml")
-      )
+      data = campaign(family)
 
-      assert_equal [eval_id], Array(campaign.fetch("evaluations"))
-      assert_equal 3, campaign.dig("execution", "repetitions")
-      assert_equal "external-only", campaign.dig("controls", "hidden_cases")
+      assert_equal [eval_id], Array(data.fetch("evaluations"))
+      assert_equal 3, data.dig("execution", "repetitions")
+      assert_equal "external-only", data.dig("controls", "hidden_cases")
     end
   end
 
   def test_each_campaign_uses_controlled_paired_execution
-    expected = {
-      "paired" => true,
-      "fresh_workspace_per_run" => true,
-      "same_fixture_for_pair" => true,
-      "require_same_agent_command_when_using_agent_command" => true
-    }
-
     FAMILIES.each_key do |family|
-      execution = load_yaml(
-        File.join(ROOT, "benchmarks", family, "campaign.yml")
-      ).fetch("execution")
-
-      assert_equal expected, execution.slice(*expected.keys)
+      assert_equal EXPECTED_EXECUTION, campaign(family).fetch("execution").slice(*EXPECTED_EXECUTION.keys)
     end
   end
 
-  def test_each_fixture_registry_has_pristine_implementation_and_reference
+  def test_each_fixture_registry_has_pristine_reference
     assert(
       FAMILIES.all? do |family, eval_id|
-        fixture_contract_present?(family, eval_id)
+        reference_present?(family, eval_id, fixture(family, eval_id))
       end
     )
   end
@@ -84,11 +81,7 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
     FAMILIES.each_key do |family|
       eval_file = File.join(ROOT, "evals", family, "contract.yml")
 
-      assert_operator(
-        load_yaml(eval_file).fetch("coverage", "benchmark-backed"),
-        :!=,
-        "static-only"
-      )
+      refute_equal "static-only", load_yaml(eval_file).fetch("coverage", "benchmark-backed")
     end
   end
 
@@ -100,11 +93,7 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
 
     FAMILIES.each_key do |family|
       assert File.file?(
-        File.join(
-          ROOT,
-          "scripts",
-          "verify_#{family.tr("-", "_")}_eval.rb"
-        )
+        File.join(ROOT, "scripts", "verify_#{family.tr("-", "_")}_eval.rb")
       )
     end
 
