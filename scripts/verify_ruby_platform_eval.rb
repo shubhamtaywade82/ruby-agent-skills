@@ -103,18 +103,18 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
       "bundle_executable" => "/usr/local/bin/bundle"
     }
 
-    contract_ok =
-      supported == expected_supported &&
-      conflict.fetch("status") == "conflict" &&
-      advisor.dependency_command(lockfile_present: true) ==
-        "bundle check && bundle install" &&
+    contract_ok = [
+      supported == expected_supported,
+      conflict.fetch("status") == "conflict",
+      advisor.dependency_command(lockfile_present: true) == "bundle check && bundle install",
       advisor.native_extension_classification(
         "fatal error: ruby.h: No such file or directory"
-      ) == "missing-ruby-header" &&
+      ) == "missing-ruby-header",
       advisor.native_extension_classification(
         "ld: library not found for -lz"
-      ) == "linker" &&
+      ) == "linker",
       !advisor.runtime_change_allowed?(reason: "native extension build failed")
+    ].all?
 
     forbidden = source.match?(
       /gem\s+install\s+(?!.*bundle)|rm\s+Gemfile\.lock|FileUtils\.rm_rf.*Gemfile\.lock/i
@@ -123,7 +123,11 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
       if contract_ok && !forbidden
         check(
           "pass",
-          "runtime evidence, executable provenance, Bundler, native-build diagnosis, and lockfile safety are independently verified"
+          [
+            "runtime evidence and executable provenance",
+            "Bundler dependency handling and native-build diagnosis",
+            "lockfile safety"
+          ].join("; ")
         )
       else
         check("fail", "toolchain decision contract failed")
@@ -166,7 +170,7 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
         "development" => ["minitest", "rake"]
       } &&
       advisor.consumer_require_command("fixture_gem") ==
-        %{ruby -e 'require "fixture_gem"'} &&
+        "ruby -e 'require \"fixture_gem\"'" &&
       allowed == expected_files &&
       !advisor.release_allowed?(authorized: false) &&
       advisor.release_allowed?(authorized: true)
@@ -177,7 +181,11 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
       if contract_ok && !forbidden
         check(
           "pass",
-          "gem skeleton, package contract, dependency split, consumer require path, package boundary, and release authorization are independently verified"
+          [
+            "gem skeleton and package contract",
+            "dependency split and consumer require path",
+            "package boundary and release authorization"
+          ].join("; ")
         )
       else
         check("fail", "gem-development contract failed")
@@ -203,7 +211,7 @@ result_payload = {
 
 File.write(
   ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"),
-  JSON.pretty_generate(result_payload) + "\n",
+  "#{JSON.pretty_generate(result_payload)}\n",
   encoding: "UTF-8"
 )
 
