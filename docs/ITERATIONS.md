@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 143 — Consumer-Side Change Verification
+> **Current milestone:** Iteration 149 — Ruby and Rails Platform Foundations
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -441,3 +441,7 @@ Folded reviewer heuristics from a personal Ruby/Rails training corpus into `chan
 ## Iteration 143 — Consumer-Side Change Verification
 
 Added `bin/verify-change`, a provider-neutral verifier that runs a downstream project's own gates (RuboCop, tests, Brakeman, bundler-audit, `zeitwerk:check`) plus deterministic structural checks and writes an evidence report that never reports an unrun check as passed. It ships in the installer and the release archive.
+
+## Iteration 149 — Ruby and Rails Platform Foundations
+
+Added explicit foundational ownership for the platform setup and project-creation lifecycle that was missing from the prior skill tree: `ruby-toolchain`, `rails-application-bootstrap`, and `ruby-gem-development`. Added routing contracts, evaluations, and registration so agents can distinguish machine/toolchain setup from runtime compatibility, `rails new` from in-app generators, and gem authoring from application dependency installation.
