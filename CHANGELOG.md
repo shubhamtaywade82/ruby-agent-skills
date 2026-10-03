@@ -4,7 +4,7 @@
 
 - Reconcile the still-missing Iterations 144–148 validation hardening onto the Iteration 149 release line instead of merging the stale #80 branch wholesale.
 - Restore Agent Skills frontmatter validation, runtime compatibility enforcement, deprecation governance, executable framework-drift detection, validation-gate integrity preflight, and their release/install integrity surfaces.
-- Add the `ruby-platform` benchmark family with independent pristine references and verifier coverage for `ruby-toolchain` and `ruby-gem-development`.
+- Add validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark families with independent pristine references and verifier coverage.
 - Promote both foundation evaluations from static-only to controlled benchmark-backed coverage; no model-quality result is claimed until an external campaign is actually executed.
 - Update inventories, routing/evaluation provenance, documentation, and release surfaces.
 
