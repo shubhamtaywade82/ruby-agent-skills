@@ -34,14 +34,15 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
   end
 
   def test_new_skill_triggers_are_registered
-    triggers = {
+    expected = {
       "rails-application-bootstrap" => "rails new",
       "ruby-gem-development" => "bundle gem"
     }
-
-    triggers.each do |skill, trigger|
-      assert_includes manifest.fetch("skills").fetch(skill).fetch("triggers"), trigger
+    observed = expected.to_h do |skill, trigger|
+      [skill, manifest.fetch("skills").fetch(skill).fetch("triggers").include?(trigger)]
     end
+
+    assert_equal expected.keys.to_h { |skill| [skill, true] }, observed
   end
 
   def test_routing_keeps_bootstrap_separate_from_generators
