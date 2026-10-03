@@ -1,0 +1,53 @@
+id: ruby-gem-development-contract
+version: 1
+title: Build and verify a reusable Ruby gem
+category: ruby
+source: ruby-gem-development-v1
+skills:
+  - ruby-gem-development
+  - ruby-toolchain
+patterns:
+  - ruby-gem
+prompt: |
+  Create or improve a reusable Ruby gem. Use the installed Bundler/RubyGems
+  command surface, define the public namespace and require path, complete the
+  gemspec, separate runtime from development dependencies, test the consumer
+  require path, build the artifact, inspect package contents, and smoke-test an
+  isolated installation. Do not publish unless explicit release authorization exists.
+constraints:
+  required_design:
+    - reusable library boundary is explicit
+    - gemspec is treated as a package contract
+    - consumer require path is tested
+    - runtime and development dependencies are separated
+    - build and isolated-install evidence is required
+  forbidden:
+    - including secrets or test artifacts in the package
+    - treating source-tree tests as proof of package usability
+    - publishing without explicit authorization
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: skeleton
+    input: request to create a new gem
+    expected: use bundle gem and inspect the generated skeleton
+  - name: gemspec
+    input: gemspec with dependencies and broad file glob
+    expected: make metadata, dependencies, and package files explicit and safe
+  - name: require
+    input: consumer executes require "gem_name"
+    expected: top-level require works independently of application boot
+  - name: package
+    input: completed gem source
+    expected: build, inspect, and isolated-install the .gem artifact
+  - name: release
+    input: release candidate without authorization
+    expected: verify release readiness but do not publish
+grading:
+  functional: gem can be consumed from its packaged boundary
+  tests: public API, package, and install paths are exercised
+  contract: gemspec and dependency/load-path contracts are explicit
+  scope_control: publishing remains a separate authorization boundary
