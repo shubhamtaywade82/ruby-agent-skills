@@ -1072,6 +1072,39 @@ benchmarks:
     campaign_manifest: benchmarks/design-patterns/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  ruby-toolchain-foundation:
+    source: ruby-toolchain-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-toolchain/contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  rails-application-bootstrap:
+    source: rails-application-bootstrap-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/application-bootstrap-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
+  ruby-gem-development:
+    source: ruby-gem-development-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/ruby-gem-development/contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   react-typescript-typescript-core:
     source: react-typescript-core-v1
     schema: docs/EVAL_SCHEMA.md
