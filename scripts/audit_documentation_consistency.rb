@@ -122,7 +122,8 @@ if File.file?(routing_cases_path) && File.file?(routing_campaign_path)
     /([0-9]+) public cases × ([0-9]+) repetitions = ([0-9]+) model decisions\./
   )
   if documented
-    documented_cases, documented_repetitions, documented_runs = documented.captures.map(&:to_i)
+    documented_cases, documented_repetitions, documented_runs =
+      documented.captures.map(&:to_i)
     if [documented_cases, documented_repetitions, documented_runs] != [
       routing_case_count,
       repetitions,
@@ -131,7 +132,7 @@ if File.file?(routing_cases_path) && File.file?(routing_campaign_path)
       errors << "public routing campaign run-count documentation drift"
     end
   else
-    errors << "IMPLEMENTATION_HANDOFF.md public routing campaign run-count documentation is missing"
+    errors << "IMPLEMENTATION_HANDOFF.md public routing campaign run-count documentation missing"
   end
 end
 
