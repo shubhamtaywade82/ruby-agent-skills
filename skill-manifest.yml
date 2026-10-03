@@ -1161,7 +1161,25 @@ benchmarks:
     campaign_manifest: benchmarks/security/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 
-  ruby-platform:
+  ruby-toolchain:
+    fixture_registry: benchmarks/ruby-toolchain/fixtures.yml
+    fixture_root: benchmarks/ruby-toolchain/fixtures
+    verifier: scripts/verify_ruby_toolchain_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/ruby-toolchain/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  ruby-gem-development:
+    fixture_registry: benchmarks/ruby-gem-development/fixtures.yml
+    fixture_root: benchmarks/ruby-gem-development/fixtures
+    verifier: scripts/verify_ruby_gem_development_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/ruby-gem-development/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+
     fixture_registry: benchmarks/ruby-platform/fixtures.yml
     fixture_root: benchmarks/ruby-platform/fixtures
     verifier: scripts/verify_ruby_platform_eval.rb
