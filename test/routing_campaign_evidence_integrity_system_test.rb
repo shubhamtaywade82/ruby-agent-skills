@@ -46,6 +46,19 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         artifact_paths[key] = path
       end
 
+      campaign_config = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      )
+      case_count = YAML.safe_load(
+        File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+        permitted_classes: [],
+        aliases: false
+      ).fetch("cases").length
+      repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
+      expected_runs = case_count * repetitions
+
       expected_runs.times do |index|
         path = File.join(dir, "raw-#{index + 1}.json")
         File.write(path, "{}")
@@ -60,18 +73,6 @@ class RoutingCampaignEvidenceIntegritySystemTest < Minitest::Test
         }
       end
 
-      campaign_config = YAML.safe_load(
-        File.read(File.join(ROOT, "router", "ROUTING_CAMPAIGN.yml"), encoding: "UTF-8"),
-        permitted_classes: [],
-        aliases: false
-      )
-      case_count = YAML.safe_load(
-        File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
-        permitted_classes: [],
-        aliases: false
-      ).fetch("cases").length
-      repetitions = campaign_config.fetch("execution").fetch("repetitions").to_i
-      expected_runs = case_count * repetitions
       evidence = {
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
