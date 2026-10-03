@@ -67,6 +67,7 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
   def test_each_campaign_uses_controlled_paired_execution
     FAMILIES.each_key do |family|
       execution = campaign(family).fetch("execution")
+
       assert_equal EXPECTED_EXECUTION, execution.slice(*EXPECTED_EXECUTION.keys)
     end
   end
@@ -95,6 +96,7 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
 
     FAMILIES.each_key do |family|
       verifier = "verify_#{family.tr('-', '_')}_eval.rb"
+
       assert File.file?(File.join(ROOT, "scripts", verifier))
     end
 
