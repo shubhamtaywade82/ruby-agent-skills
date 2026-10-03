@@ -171,7 +171,7 @@ unless checks.fetch("contract", {}).fetch("status", "") == "fail"
         "development" => ["minitest", "rake"]
       } &&
       advisor.consumer_require_command("fixture_gem") ==
-        %(ruby -e 'require "fixture_gem"') &&
+        "ruby -e 'require \"fixture_gem\"'" &&
       allowed == expected_files &&
       !advisor.release_allowed?(authorized: false) &&
       advisor.release_allowed?(authorized: true)
