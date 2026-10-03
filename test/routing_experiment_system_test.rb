@@ -42,6 +42,7 @@ class RoutingExperimentSystemTest < Minitest::Test
 
       assert_equal false, baseline.fetch("metrics").fetch("primary_accuracy") == 1.0
       case_count = YAML.safe_load(File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases").length
+
       assert_in_delta 1.0.fdiv(case_count), candidate.fetch("metrics").fetch("primary_accuracy"), 0.0001
       assert_equal true, comparison.fetch("gate").fetch("passed")
       assert_equal "test-model", baseline.fetch("agent").fetch("model")
