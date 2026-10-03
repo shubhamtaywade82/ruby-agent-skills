@@ -85,7 +85,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         }
       end
 
-      69.times do |index|
+      expected_runs.times do |index|
         path = File.join(dir, "raw-#{index + 1}.json")
         File.write(path, "{}")
         artifacts["raw_case_#{index + 1}"] = {
@@ -102,9 +102,9 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "campaign" => "skill-routing-public-v1",
         "campaign_version" => 5,
         "routing_case_count" => 23,
-        "requested_repetitions" => 3,
-        "requested_runs" => 69,
-        "completed_runs" => 69,
+        "requested_repetitions" => repetitions,
+        "requested_runs" => expected_runs,
+        "completed_runs" => expected_runs,
         "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
         "agent" => { "provider" => "ollama", "model" => "test-model" },
         "campaign_metrics" => campaign.fetch("metrics"),
@@ -130,7 +130,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
 
       assert_equal "skill-routing-campaign-v1", manifest.fetch("evidence_type")
       assert_equal true, manifest.fetch("intake").fetch("verified")
-      assert_equal 69, manifest.fetch("completed_runs")
+      assert_equal expected_runs, manifest.fetch("completed_runs")
     end
   end
 
@@ -148,10 +148,12 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       aliases: false
     )
 
+    repetitions = campaign.fetch("execution").fetch("repetitions").to_i
+    expected_runs = cases.length * repetitions
     runs = {}
     cases.each do |entry|
       primary = entry.fetch("primary_skills").first
-      case_runs = 3.times.map do |index|
+      case_runs = repetitions.times.map do |index|
         run_dir = File.join(dir, entry.fetch("id"), "run-#{index + 1}")
         FileUtils.mkdir_p(run_dir)
         raw_path = File.join(run_dir, "result.json")
@@ -177,7 +179,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
       runs[entry.fetch("id")] = {
         "case_id" => entry.fetch("id"),
         "requested_repetitions" => 3,
-        "completed_repetitions" => 3,
+        "completed_repetitions" => repetitions,
         "complete" => true,
         "expected_primary_skill" => primary,
         "runs" => case_runs
