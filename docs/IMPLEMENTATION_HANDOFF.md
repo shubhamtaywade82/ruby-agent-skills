@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 133 evaluation files / 490 cases. Campaigns provide controlled benchmark coverage for 105 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new `ruby-platform` campaign covers `ruby-toolchain-contract` and `ruby-gem-development-contract` with independent fixture references; actual model results remain separate empirical evidence.
+The public evaluation corpus has 133 evaluation files / 490 cases. Campaigns provide controlled benchmark coverage for 105 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark campaigns cover their respective contract evaluations with independent fixture references; actual model results remain separate empirical evidence.
 
 ## Release archive verification
 
