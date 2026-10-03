@@ -3,7 +3,12 @@
 require "minitest/autorun"
 require "yaml"
 
+module RailsActionControllerLifecycleAssertions
+end
+
 class RailsActionControllerSystemTest < Minitest::Test
+  include RailsActionControllerLifecycleAssertions
+
   ROOT = File.expand_path("..", __dir__)
 
   REQUIRED_PATHS = %w[
