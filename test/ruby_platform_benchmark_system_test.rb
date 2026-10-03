@@ -35,21 +35,22 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
   end
 
   def reference_present?(family, eval_id, fixture_data)
-    fixture_root = File.join(ROOT, fixture_data.fetch("root"))
-    implementation = File.join(
-      fixture_root,
+    File.file?(implementation_path(fixture_data)) &&
+      reference_files?(family, eval_id)
+  end
+
+  def implementation_path(fixture_data)
+    File.join(
+      ROOT,
+      fixture_data.fetch("root"),
       fixture_data.fetch("implementation_file")
     )
-    reference_root = File.join(
-      ROOT,
-      "benchmarks",
-      family,
-      "references",
-      eval_id
-    )
+  end
 
-    File.file?(implementation) &&
-      File.directory?(reference_root) &&
+  def reference_files?(family, eval_id)
+    reference_root = File.join(ROOT, "benchmarks", family, "references", eval_id)
+
+    File.directory?(reference_root) &&
       Dir.glob(File.join(reference_root, "**", "*")).any? { |path| File.file?(path) }
   end
 
@@ -65,7 +66,8 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
 
   def test_each_campaign_uses_controlled_paired_execution
     FAMILIES.each_key do |family|
-      assert_equal EXPECTED_EXECUTION, campaign(family).fetch("execution").slice(*EXPECTED_EXECUTION.keys)
+      execution = campaign(family).fetch("execution")
+      assert_equal EXPECTED_EXECUTION, execution.slice(*EXPECTED_EXECUTION.keys)
     end
   end
 
@@ -92,9 +94,8 @@ class RubyPlatformBenchmarkSystemTest < Minitest::Test
     )
 
     FAMILIES.each_key do |family|
-      assert File.file?(
-        File.join(ROOT, "scripts", "verify_#{family.tr("-", "_")}_eval.rb")
-      )
+      verifier = "verify_#{family.tr('-', '_')}_eval.rb"
+      assert File.file?(File.join(ROOT, "scripts", verifier))
     end
 
     assert_includes validator, "test/ruby_platform_benchmark_system_test.rb"
