@@ -7,6 +7,7 @@ require "minitest/autorun"
 require "open3"
 require "tmpdir"
 require "yaml"
+require "yaml"
 
 class RoutingEvidenceArchiveSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
@@ -98,7 +99,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         }
       end
 
-      (cases.length * repetitions).times do |index|
+      (case_count * repetitions).times do |index|
         path = File.join(dir, "raw-#{index + 1}.json")
         File.write(path, "{}")
         artifacts["raw_case_#{index + 1}"] = {
@@ -116,8 +117,8 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "campaign_version" => 6,
         "routing_case_count" => case_count,
         "requested_repetitions" => repetitions,
-        "requested_runs" => cases.length * repetitions,
-        "completed_runs" => cases.length * repetitions,
+        "requested_runs" => case_count * repetitions,
+        "completed_runs" => case_count * repetitions,
         "repository" => { "git_sha" => "abc123", "worktree_clean" => true },
         "agent" => { "provider" => "ollama", "model" => "test-model" },
         "campaign_metrics" => campaign.fetch("metrics"),
