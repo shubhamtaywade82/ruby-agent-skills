@@ -31,7 +31,7 @@ require "yaml"
 PROTOCOL_VERSION = 1
 REQUIRED_PATHS = %w[
   AGENTS.md CHANGELOG.md CONTRIBUTING.md LICENSE README.md SECURITY.md
-  bin/install bin/skill-pack-doctor bin/skill-pack-verify bin/stack-minimality
+  bin/install bin/skill-pack-doctor bin/skill-pack-verify bin/skill-pack-compatibility bin/stack-minimality
   docs/SKILL_CONTRACT.md router/ROUTING.md skill-manifest.yml RELEASE.json
 ].freeze
 REQUIRED_DIRS = %w[skills patterns].freeze
