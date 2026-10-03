@@ -269,3 +269,41 @@ cases:
       - rails-associations
       - rails-database-engineering
     boundary: data-modeling-vs-database-engineering
+
+  - id: ruby-toolchain-vs-runtime-compatibility
+    prompt: >
+      Prepare a Ruby repository whose runtime declarations and local
+      executables may disagree. Determine the actual Ruby, RubyGems, and
+      Bundler provenance before changing dependencies or version constraints.
+    primary_skills:
+      - ruby-toolchain
+    secondary_skills:
+      - ruby-runtime-compatibility
+      - ruby-debugging
+    boundary: toolchain-vs-runtime-compatibility
+
+  - id: rails-new-vs-generators
+    prompt: >
+      Create a new Rails application with an API-only shape and PostgreSQL,
+      then add a resource to it using the appropriate Rails command.
+      Distinguish application bootstrap from in-app generators.
+    primary_skills:
+      - rails-application-bootstrap
+    secondary_skills:
+      - rails-generators
+      - ruby-toolchain
+      - ruby-runtime-compatibility
+    boundary: application-bootstrap-vs-generators
+
+  - id: gem-authoring-vs-dependency-installation
+    prompt: >
+      Create a reusable Ruby gem, define its gemspec and public require path,
+      then build and smoke-test the packaged artifact without publishing it.
+      Keep this distinct from merely adding a gem dependency to an application.
+    primary_skills:
+      - ruby-gem-development
+    secondary_skills:
+      - ruby-toolchain
+      - ruby-gems-io-services
+      - ruby-tdd-refactoring
+    boundary: gem-authoring-vs-dependency-installation
