@@ -186,7 +186,7 @@ Treat analyzer findings as signals. Translate historical rules to the actual Rai
 
 ```text
 change-review
-  + owning skill(s) of each touched boundary (their change contracts are Standards sources)
+  + owning skill(s) of each touched boundary (their change contracts are Standards sources; see the Reviewer composition table in the skill)
   + rubocop (report whether it ran; do not repeat its findings)
   + stack-minimality-review (only when size or simplicity is in question)
 ```

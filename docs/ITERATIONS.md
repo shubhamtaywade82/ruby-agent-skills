@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
+> **Current milestone:** Iteration 151 — Change Review Reviewer Composition
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -470,3 +470,7 @@ Added explicit foundational ownership for the platform setup and project-creatio
 ## Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
 
 Reconciled Iterations 144–148 onto the Iteration 149 release line, added independent benchmark fixtures/references for Ruby toolchain and gem development, and moved those evaluations from static-only to controlled benchmark-backed coverage.
+
+## Iteration 151 — Change Review Reviewer Composition
+
+`change-review` now maps touched paths to the owning reviewer skills, so one diff review composes the existing domain skills' change contracts.

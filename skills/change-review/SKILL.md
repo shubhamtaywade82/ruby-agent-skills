@@ -34,6 +34,27 @@ A change can pass one axis and fail the other. Code that follows every conventio
 
 Compose the narrow reviewers as secondary skills when the diff touches their area; this skill reports their findings under the Standards axis without re-ranking them.
 
+## Reviewer composition
+
+Classify every path in the diff, then load the owning skill's `## <Domain> changes` contract for each class that appears. Load only the classes the diff touches; the contract is the Standards source, not a second review to run.
+
+| Touched path or signal | Reviewer skills |
+|---|---|
+| `app/models`, `db/migrate`, `db/schema.rb` | rails-active-record, rails-database-engineering, rails-validations |
+| `app/controllers`, `config/routes.rb` | rails-action-controller, rails-routing |
+| authentication or session code | rails-authentication |
+| policies, scopes, permission checks | rails-authorization (kept separate from authentication) |
+| `app/jobs`, queue adapters | rails-active-job, rails-reliability-engineering |
+| `app/views`, `app/javascript` with Hotwire | rails-action-view, rails-hotwire |
+| `app/javascript` React or TypeScript | react-component-engineering, react-state-effects, typescript-type-design |
+| `spec/`, `test/` | rails-test-engineering, ruby-tdd-refactoring |
+| `config/`, `Gemfile`, CI workflows | rails-initialization-configuration-engineering, rails-release-engineering |
+| external input, uploads, redirects, SQL, shell calls | rails-security-engineering |
+| plain Ruby classes in `app/` or `lib/` | ruby-clean-code, ruby-poro, ruby-service-objects |
+| hot paths, queries, caching | rails-performance, rails-caching |
+
+When no row matches, route with `skill-manifest.yml` and name the skill chosen. List the reviewer skills loaded in the Standards report; a touched class with no loaded reviewer is a gap to state, not to skip.
+
 ## Repository inspection
 
 1. **Pin the fixed point.** Use the commit, branch, tag, or ref the user gave; ask when none was given. Confirm it resolves with `git rev-parse <fixed-point>` and that `git diff <fixed-point>...HEAD` is not empty before reviewing.
@@ -98,6 +119,7 @@ Spec: 2 findings, worst is the missing partial-refund tax split.
 - [ ] fixed point resolves and the diff is not empty
 - [ ] spec located, or "no spec available" stated
 - [ ] standards sources listed, including the owning skills' change contracts
+- [ ] every touched path class mapped to a reviewer skill, or the gap stated
 - [ ] tool-enforced rules left to the tools, and tool runs reported only when observed
 - [ ] every hard Standards finding cites a file and rule
 - [ ] every smell labelled as a judgement call
@@ -110,6 +132,7 @@ Spec: 2 findings, worst is the missing partial-refund tax split.
 - reporting smells as hard violations, or reporting a smell the repository's standards endorse
 - reviewing without a pinned range, or against a two-dot diff that includes unrelated base-branch changes
 - skipping the Spec axis silently when no spec was found
+- reviewing against only `ruby-clean-code` and ignoring the domain skill that owns a touched boundary
 - repeating RuboCop output instead of reporting whether RuboCop ran
 - rewriting the code during review instead of reporting
 

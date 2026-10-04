@@ -16,6 +16,7 @@ class ChangeReviewSystemTest < Minitest::Test
     ],
     "skills/change-review/SKILL.md" => [
       "**Standards**", "**Spec**", "git rev-parse", "main...HEAD", "no spec available",
+      "## Reviewer composition", "rails-authorization (kept separate from authentication)",
       "Never merge or re-rank findings across axes",
       "Never report a smell as a violation",
       "Never claim a test, linter, or CI run passed unless its output was observed"
@@ -83,10 +84,19 @@ class ChangeReviewSystemTest < Minitest::Test
     evaluation = load_yaml(EVALUATION)
     names = evaluation.fetch("cases").map { |entry| entry.fetch("name") }
     expected = %w[spec-gap-behind-clean-standards contract-breach-behind-met-spec no-spec
-                  smell-overridden-by-repository]
+                  smell-overridden-by-repository multi-boundary-diff]
 
     assert_equal "static-only", evaluation.fetch("coverage")
     assert_equal expected, names
+  end
+
+  def test_reviewer_composition_names_only_registered_skills
+    skills = load_yaml("skill-manifest.yml").fetch("skills").keys
+    table = read("skills/change-review/SKILL.md")[/## Reviewer composition.*?(?=\n## )/m]
+    named = table.scan(/\b(?:rails|ruby|react|typescript)-[a-z-]+/).uniq
+
+    refute_empty named
+    assert_empty named - skills
   end
 
   def test_adaptations_credit_the_mit_licensed_source

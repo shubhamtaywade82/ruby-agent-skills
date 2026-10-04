@@ -1,5 +1,10 @@
 # Changelog
 
+## Iteration 151 — Change Review Reviewer Composition
+
+- Add a path-to-reviewer table to `change-review` so a diff loads the change contract of every skill that owns a touched boundary, not only the narrow reviewers.
+- Add a `multi-boundary-diff` evaluation case and a test that every skill named in the table is registered in the manifest.
+
 ## Iteration 150 — Hardening Reconciliation and Ruby Platform Benchmark Coverage
 
 - Reconcile the still-missing Iterations 144–148 validation hardening onto the Iteration 149 release line instead of merging the stale #80 branch wholesale.

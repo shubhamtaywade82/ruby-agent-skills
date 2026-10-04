@@ -44,6 +44,11 @@ cases:
     input: A service reads many Invoice attributes, and CONTRIBUTING.md requires calculations to live in service objects.
     expected:
       standards: no Feature Envy finding, because the documented standard overrides the baseline
+  - name: multi-boundary-diff
+    input: The diff touches an Active Record migration, a controller action, and a policy.
+    expected:
+      standards: loads the change contracts of rails-active-record, rails-action-controller, and rails-authorization, and reports authorization findings separately from authentication
+      spec: unaffected by which reviewer skills were loaded
 grading:
   functional: Each case produces the expected verdict on each axis.
   tests: The review states whether the repository's tests and RuboCop ran for the range, citing observed output, and never infers a pass.
