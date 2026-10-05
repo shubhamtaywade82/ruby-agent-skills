@@ -683,6 +683,18 @@ The routing coverage now extends beyond basic resource declarations to the full 
 Primary source: https://guides.rubyonrails.org/routing.html
 
 
+## Action Controller resource-loading evidence
+
+The current repository explicitly supports several controller resource-loading rules:
+
+- `before_action` is a narrow, action-scoped request-prerequisite mechanism.
+- Resource loading may be performed in an action-local method when that is clearer for a one-off action.
+- Memoized readers are a permitted implementation option for lazy access, but they are **not** a blanket repository performance convention.
+- Performance claims comparing callbacks and memoized readers require representative workload evidence; the performance skill prohibits assuming that `||=` is faster.
+- Complex reads should move toward an explicit query/read boundary when controller lookup becomes difficult to reason about or scope.
+
+These are repository-authored engineering rules. The uploaded training material establishes Ruby/OOP/service-object foundations, but it does not itself prescribe this controller memoization policy. The Allerin assessment explicitly required OOP concepts across its programs and provided algorithmic complexity targets, which is treated as assessment evidence rather than Rails controller doctrine.
+
 ## Rails Authentication
 
 Rails authentication is implemented as a full lifecycle/security boundary through:

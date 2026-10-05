@@ -106,7 +106,7 @@ skills/rails-active-record/
 |---|---:|
 | Skills | **96** |
 | Implementation patterns | **446** |
-| Evaluation cases | **490** |
+| Evaluation cases | **492** |
 | Dedicated system/contract tests | **100** |
 | Manifest version | **2** |
 
@@ -183,6 +183,7 @@ The Rails layer has both foundational skills and deep framework-boundary skills.
 The repository now has dedicated deep skills for:
 
 - **Action Controller** — request/response boundaries, strong parameters, sessions/cookies, callbacks, negotiation, conditional responses, streaming/downloads, exception mapping.
+  Resource loading is explicitly treated as a boundary-placement decision: narrow callbacks for shared request prerequisites, action-local lookup when clearer for one-off actions, and memoized readers only as a lazy-access option—not as an inherent performance optimization.
 - **Active Record** — Relation semantics, query composition, scopes, persistence lifecycle, callbacks, bulk operations, loading, deletion, strict loading.
 - **Associations** — cardinality, inverse behavior, through associations, polymorphic boundaries, dependent lifecycle, autosave, counters/touch, callbacks, loading.
 - **Validations** — lifecycle, contexts, conditions, errors, custom validators, strict failures, associated validation, uniqueness/database enforcement, bypass paths.

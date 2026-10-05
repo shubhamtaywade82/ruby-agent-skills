@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 151 — Benchmark Documentation and Reconciliation Audit
+> **Current milestone:** Iteration 152 — Action Controller Resource-Loading Evidence
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -474,3 +474,7 @@ Reconciled Iterations 144–148 onto the Iteration 149 release line, added indep
 ## Iteration 151 — Benchmark Documentation and Reconciliation Audit
 
 Recorded the closed #80 reconciliation, corrected stale controlled-benchmark documentation, documented the remaining boundary between verified benchmark infrastructure and actual external-agent empirical execution, and exercised both Ruby foundation campaigns end-to-end in CI with the real benchmark runner.
+
+## Iteration 152 — Action Controller Resource-Loading Evidence
+
+Made Rails controller resource-loading policy explicit and regression-checked: `before_action` is a request-prerequisite boundary, action-local lookup remains appropriate for one-off use, memoized readers are permitted for lazy access without an unsupported performance claim, and complex reads escalate to explicit query/read boundaries.

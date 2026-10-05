@@ -77,6 +77,9 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes change_contract, "conditional response"
     assert_includes change_contract, "streaming"
     assert_includes change_contract, "rescue_from"
+    assert_includes change_contract, "resource-loading placement"
+    assert_includes change_contract, "memoized reader"
+    assert_includes change_contract, "never claim memoization is faster"
   end
 
   def test_evaluation_activates_expected_skills_and_patterns
@@ -90,7 +93,17 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes evaluation.fetch("patterns"), "conditional-response-cache"
     assert_includes evaluation.fetch("patterns"), "controller-streaming-download"
     assert_includes evaluation.fetch("patterns"), "action-controller-testing"
+
+    evaluation_case_names = evaluation.fetch("cases").map { |case_data| case_data.fetch("name") }
+
+    assert_includes evaluation_case_names, "resource-loading-placement"
+
+    assert_includes evaluation_case_names, "memoization-performance-claim"
   end
+end
+
+class RailsActionControllerLifecycleSystemTest < Minitest::Test
+  ROOT = File.expand_path("..", __dir__)
 
   def test_skill_covers_action_controller_lifecycle
     skill = File.read(File.join(ROOT, "skills/rails-action-controller/SKILL.md"), encoding: "UTF-8")
@@ -117,5 +130,7 @@ class RailsActionControllerSystemTest < Minitest::Test
     assert_includes skill, "Do not catch StandardError broadly"
     assert_includes skill, "Do not enable cross-host redirects for untrusted input"
     assert_includes skill, "validation success as authorization"
+    assert_includes skill, "Resource loading is a boundary-placement decision"
+    assert_includes skill, "Do not treat `||=` memoization as inherently faster"
   end
 end
