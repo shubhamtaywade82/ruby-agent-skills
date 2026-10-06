@@ -296,3 +296,83 @@ cases:
       - ruby-gems-io-services
       - ruby-tdd-refactoring
     boundary: gem-authoring-vs-dependency-installation
+
+  - id: concurrent-uniqueness-race
+    prompt: >
+      Users are occasionally registered twice with the same email because the
+      signup path checks existence then inserts. Fix it so a concurrent signup
+      for the same address always results in exactly one user row.
+    primary_skills:
+      - rails-database-engineering
+    secondary_skills:
+      - rails-active-record
+      - rails-test-engineering
+    boundary: application-check-vs-database-constraint
+
+  - id: webhook-idempotency-with-redelivery
+    prompt: >
+      A payment provider re-delivers webhooks on timeout. Implement the
+      handler so the same event applied twice produces one payment record and
+      one invoice state change, and a mid-write crash on first delivery is
+      safe to retry.
+    primary_skills:
+      - rails-api-integration
+    secondary_skills:
+      - rails-reliability-engineering
+      - rails-distributed-systems
+      - rails-test-engineering
+    boundary: api-ingress-vs-idempotency
+
+  - id: transaction-retry-double-side-effect
+    prompt: >
+      A checkout flow charges a card, creates an order, and sends a
+      confirmation email. Clients retry on timeout with the same request ID.
+      Make the checkout idempotent so a retried call never charges twice and
+      sends exactly one confirmation.
+    primary_skills:
+      - rails-distributed-systems
+    secondary_skills:
+      - rails-reliability-engineering
+      - rails-active-record
+      - rails-test-engineering
+    boundary: distributed-idempotency-vs-active-record
+
+  - id: authorization-alternate-access-path
+    prompt: >
+      An invoice is accessible through a show action protected by a policy.
+      Add a CSV export endpoint and a background job that emails the CSV.
+      Every new path must enforce the same authorization rule as show, and
+      the job must re-authorize when it executes.
+    primary_skills:
+      - rails-cross-boundary-authorization-security
+    secondary_skills:
+      - rails-authorization
+      - rails-active-job
+      - rails-test-engineering
+    boundary: controller-authorization-vs-background-job-re-authorization
+
+  - id: zeitwerk-nested-constant-drift
+    prompt: >
+      A module constant resolves in development but raises NameError in
+      production eager loading. Diagnose the file/path/namespace mismatch
+      without adding require_dependency calls.
+    primary_skills:
+      - rails-zeitwerk
+    secondary_skills:
+      - rails-test-engineering
+      - ruby-runtime-compatibility
+    boundary: autoloading-vs-eager-loading
+
+  - id: sti-polymorphic-boundary
+    prompt: >
+      A table has a type column used for STI and a separate polymorphic
+      association. Add a query scope and explain what indexes, query shapes,
+      and authorization implications change.
+    primary_skills:
+      - rails-active-record
+    secondary_skills:
+      - rails-data-modeling
+      - rails-associations
+      - rails-database-engineering
+      - rails-test-engineering
+    boundary: sti-vs-polymorphism-query-contract

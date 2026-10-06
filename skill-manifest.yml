@@ -1206,7 +1206,31 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/design-patterns/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+
+  rails-adversarial:
+    fixture_registry: benchmarks/rails-adversarial/fixtures.yml
+    fixture_root: benchmarks/rails-adversarial/fixtures
+    verifier: scripts/verify_rails_adversarial_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/rails-adversarial/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  rails-adversarial:
+    source: rails-adversarial-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails-adversarial/concurrent-uniqueness-race.yml
+      - evals/rails-adversarial/webhook-idempotency.yml
+      - evals/rails-adversarial/checkout-retry-side-effects.yml
+      - evals/rails-adversarial/authorization-alternate-path.yml
+    checks:
+      - functional
+      - tests
+      - adversarial
+      - scope_control
+
   ruby-toolchain-foundation:
     source: ruby-toolchain-v1
     schema: docs/EVAL_SCHEMA.md

@@ -8,7 +8,7 @@ Current inventory:
 
 - 96 skills
 - 446 implementation patterns
-- 492 evaluation cases
+- 500 evaluation cases
 - 102 system/contract tests
 
 ## Corpus quality and evaluation coverage
@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 133 evaluation files / 492 cases. Campaigns provide controlled benchmark coverage for 105 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark campaigns cover their respective contract evaluations with independent fixture references; actual model results remain separate empirical evidence.
+The public evaluation corpus has 137 evaluation files / 500 cases. Campaigns provide controlled benchmark coverage for 109 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark campaigns cover their respective contract evaluations with independent fixture references; actual model results remain separate empirical evidence.
 
 ## Iteration 152 — Action Controller Resource-Loading Evidence
 
