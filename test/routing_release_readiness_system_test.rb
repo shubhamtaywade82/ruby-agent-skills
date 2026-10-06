@@ -6,12 +6,19 @@ require "yaml"
 class RoutingReleaseReadinessSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
 
+  def public_routing_case_count
+    YAML.safe_load_file(File.join(ROOT, "router", "ROUTING_CASES.yml")).fetch("cases").length
+  end
+
   def test_release_contract_requires_current_completed_runs
     config = YAML.safe_load(File.read(File.join(ROOT, "router", "ROUTING_RELEASE.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
-    assert_equal 25, config.fetch("campaign").fetch("expected_case_count")
-    assert_equal 3, config.fetch("campaign").fetch("expected_repetitions")
-    assert_equal 78, config.fetch("campaign").fetch("expected_runs")
+    campaign = config.fetch("campaign")
+    case_count = public_routing_case_count
+
+    assert_equal case_count, campaign.fetch("expected_case_count")
+    assert_equal 3, campaign.fetch("expected_repetitions")
+    assert_equal case_count * 3, campaign.fetch("expected_runs")
     assert_equal true, config.fetch("gates").fetch("public_campaign_evidence_required")
   end
 

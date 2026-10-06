@@ -54,7 +54,13 @@ class DocumentationConsistencySystemTest < Minitest::Test
 
   def test_documentation_audit_detects_stale_routing_campaign_run_count
     stderr, status = audit_with(
-      "docs/IMPLEMENTATION_HANDOFF.md" => ->(text) { text.sub("26 public cases × 3 repetitions = 78", "25 public cases × 3 repetitions = 75") }
+      # Off by one from whatever the current documented count is.
+      "docs/IMPLEMENTATION_HANDOFF.md" => lambda do |text|
+        text.sub(/(\d+) public cases × 3 repetitions = \d+/) do
+          stale = Regexp.last_match(1).to_i + 1
+          "#{stale} public cases × 3 repetitions = #{stale * 3}"
+        end
+      end
     )
 
     refute status.success?
