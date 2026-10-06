@@ -2,17 +2,32 @@
 
 require "minitest/autorun"
 require "open3"
+require "tmpdir"
 require "yaml"
 
 # Publish readiness must never turn a missing tool into a pass, and every
 # skill must carry the metadata external directories read.
 class PublishReadinessSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
-  # Ruby and core utilities only: no npx, uvx, or skills-ref on PATH.
-  TOOLLESS_PATH = [File.dirname(RbConfig.ruby), "/usr/bin", "/bin"].join(File::PATH_SEPARATOR)
+  # Only what the scripts themselves need. System dirs like /usr/bin can hold
+  # npx or uvx, so PATH points at a directory of links to these tools alone.
+  REQUIRED_TOOLS = %w[bash dirname git].freeze
+
+  def setup
+    @tool_dir = Dir.mktmpdir("toolless-path")
+    REQUIRED_TOOLS.each do |tool|
+      path = ENV.fetch("PATH").split(File::PATH_SEPARATOR).map { |dir| File.join(dir, tool) }
+                .find { |candidate| File.executable?(candidate) }
+      File.symlink(path, File.join(@tool_dir, tool))
+    end
+  end
+
+  def teardown
+    FileUtils.remove_entry(@tool_dir)
+  end
 
   def test_spec_check_reports_unavailable_without_skills_ref
-    _out, err, status = Open3.capture3({ "PATH" => TOOLLESS_PATH },
+    _out, err, status = Open3.capture3({ "PATH" => @tool_dir },
                                        File.join(ROOT, "bin", "skills-spec-check"))
 
     assert_equal 3, status.exitstatus
@@ -20,7 +35,7 @@ class PublishReadinessSystemTest < Minitest::Test
   end
 
   def test_readiness_never_reports_missing_tools_as_ready
-    out, _err, status = Open3.capture3({ "PATH" => TOOLLESS_PATH }, RbConfig.ruby,
+    out, _err, status = Open3.capture3({ "PATH" => @tool_dir }, RbConfig.ruby,
                                        File.join(ROOT, "bin", "publish-readiness"),
                                        "--only", "spec,cli_list,cli_install")
 

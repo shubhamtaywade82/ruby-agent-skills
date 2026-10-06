@@ -36,9 +36,13 @@ checked = 0
 SKIPPED_DIRECTORIES = %w[.git node_modules .bundle].freeze
 
 # Bundler's install path (CI uses bundler-cache) holds third-party gem
-# sources that are gitignored and not authored here.
+# sources that are gitignored and not authored here. The root tmp/ holds
+# gitignored generated reports (bin/publish-readiness --out) that quote tool
+# output verbatim.
 def skipped_directory?(parent, child)
-  SKIPPED_DIRECTORIES.include?(child) || (child == "bundle" && File.basename(parent) == "vendor")
+  SKIPPED_DIRECTORIES.include?(child) ||
+    (child == "bundle" && File.basename(parent) == "vendor") ||
+    (child == "tmp" && parent == ROOT)
 end
 
 def each_text_file(targets, &block)
