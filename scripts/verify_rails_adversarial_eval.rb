@@ -62,8 +62,21 @@ def graded_checks(fixture_root, fixture, withheld)
     visible_ok, visible_output = run_test(scratch, fixture.fetch("test_file"))
     withheld_ok, withheld_output = run_test(scratch, WITHHELD_TEST)
     {
-      "functional" => visible_ok ? check("pass", "visible fixture tests passed") : check("fail", tail(visible_output)),
-      "adversarial" => withheld_ok ? check("pass", "withheld production-condition tests passed") : check("fail", tail(withheld_output))
+      "functional" => if visible_ok
+                        check("pass",
+                              "visible fixture tests passed")
+                      else
+                        check("fail",
+                              tail(visible_output))
+                      end,
+      "adversarial" => if withheld_ok
+                         check("pass",
+                               "withheld production-condition tests passed")
+                       else
+                         check(
+                           "fail", tail(withheld_output)
+                         )
+                       end
     }
   end
 end
@@ -83,7 +96,8 @@ def changed_files
 end
 
 def scope_check(fixture_root, fixture)
-  protected_files = fixture_files(fixture_root) - [fixture.fetch("implementation_file"), fixture.fetch("test_file")]
+  protected_files = fixture_files(fixture_root) - [fixture.fetch("implementation_file"),
+                                                   fixture.fetch("test_file")]
   touched = changed_files
   outside = touched.reject { |path| ALLOWED_PREFIXES.any? { |prefix| path.start_with?(prefix) } }
   modified = touched & protected_files
@@ -91,7 +105,9 @@ def scope_check(fixture_root, fixture)
 
   problems = []
   problems << "unexpected files: #{outside.join(', ')}" unless outside.empty?
-  problems << "modified files the task says not to change: #{modified.join(', ')}" unless modified.empty?
+  unless modified.empty?
+    problems << "modified files the task says not to change: #{modified.join(', ')}"
+  end
   check("fail", problems.join("; "))
 end
 
@@ -114,7 +130,10 @@ result = {
   "checks" => checks.slice(*evaluation.fetch("checks"))
 }
 
-File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), "#{JSON.pretty_generate(result)}\n", encoding: "UTF-8")
-abort "verification failed" if result["checks"].values.any? { |value| value.fetch("status") == "fail" }
+File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), "#{JSON.pretty_generate(result)}\n",
+           encoding: "UTF-8")
+abort "verification failed" if result["checks"].values.any? do |value|
+  value.fetch("status") == "fail"
+end
 
 puts JSON.pretty_generate(result)
