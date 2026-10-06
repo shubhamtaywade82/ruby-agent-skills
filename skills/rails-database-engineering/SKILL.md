@@ -344,6 +344,14 @@ deployment order known
 observability known
 ```
 
+## References
+
+Load only when needed; the reference is one level deep. Consult a listed pattern only when the change needs its implementation shape.
+
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change touches `db/seeds.rb`, files it loads, or `bin/rails db:seed` | [references/seed-data.md](references/seed-data.md) | Rerunnable seeds; reference versus sample data; secrets outside seeds; seed verification | none |
+
 ## Reference example
 
 A production-safe migration: concurrent index outside a transaction, plus a check constraint enforcing the invariant the model only suggests.

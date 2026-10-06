@@ -457,6 +457,17 @@ Classify the boundary first. Preserve existing API/auth/versioning conventions a
 | Provider sends signed callbacks | pattern:webhook-ingestion |
 | Mutation may arrive more than once | pattern:idempotent-request |
 
+### GraphQL (graphql-ruby)
+
+A GraphQL schema is an API contract, so `rails-api-integration` owns it and loads `references/graphql.md`. The policy decision stays with `rails-authorization`, and batching evidence with `rails-performance`.
+
+| Task | Primary | Secondary |
+|---|---|---|
+| Add or change a GraphQL type, field, mutation, or resolver | rails-api-integration | rails-authorization, rails-test-engineering |
+| Protect GraphQL objects, fields, mutations, or lists | rails-authorization | rails-api-integration, rails-security-engineering |
+| N+1 queries in GraphQL resolvers or Dataloader sources | rails-performance | rails-api-integration, rails-active-record |
+| Limit GraphQL query depth, complexity, or introspection | rails-api-integration | rails-security-engineering, rails-performance |
+
 ## Zeitwerk / autoloading
 
 ```text

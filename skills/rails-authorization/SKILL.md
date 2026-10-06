@@ -99,6 +99,10 @@ Authorization must happen server-side before the protected side effect.
 
 Do not use frontend route guards as authorization.
 
+GraphQL endpoints reach the same records through many query paths, so authorizing the `/graphql` controller action is not enough. Enforce the policy on every type, field, mutation, and list. The graphql-ruby hooks are in the GraphQL reference of `rails-api-integration`; this skill still owns the decision.
+
+Verify denial with tests, not by trying an action by hand. For each protected action, a test as an actor without permission must observe the deliberate outcome: Pundit's `Pundit::NotAuthorizedError`, CanCanCan's `CanCan::AccessDenied`, or the repository's own denial response. A manual console or browser check proves nothing for the next change.
+
 ## Service objects and domain workflows
 
 A service invoked from multiple entry points must not assume that the controller already authorized it.

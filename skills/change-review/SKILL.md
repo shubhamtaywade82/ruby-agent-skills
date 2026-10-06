@@ -51,6 +51,18 @@ Compose the narrow reviewers as secondary skills when the diff touches their are
 5. Keep each axis report under about 400 words, ordered by severity within the axis.
 6. Report; do not fix. The author or a follow-up implementation step applies changes.
 
+## Always-critical findings
+
+These patterns are hard Standards findings with critical severity in every repository. Rule 3 never downgrades them: a repository convention cannot make them safe. Each finding quotes the hunk and cites the real `file:line` from the diff, never a representative location.
+
+- `params.permit!`, or mass assignment from unfiltered `params` (`rails-action-controller`).
+- `html_safe`, `raw`, or `<%==` applied to content a user can influence (`rails-security-engineering`). Confirm the data flow; a string literal or already-sanitized output is not a finding.
+- SQL built by string interpolation or concatenation of external input, in `where`, `order`, `find_by_sql`, `select`, `joins`, or `connection.execute` (`rails-security-engineering`).
+- Disabling forgery protection (`skip_forgery_protection`, `protect_from_forgery with: :null_session` on session-authenticated controllers) to make a request work (`rails-security-engineering`).
+- `constantize`, `safe_constantize`, `send`, or `public_send` with a value taken from request input (`rails-security-engineering`).
+
+Business logic in a controller is a design smell. It is reported as a smell, not as an always-critical finding.
+
 ## Critical invariants
 
 - Never merge or re-rank findings across axes; name the worst finding within each axis, never one overall winner.

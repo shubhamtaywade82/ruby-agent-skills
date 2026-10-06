@@ -150,6 +150,12 @@ Cover frame navigation/render contracts, stream response actions, Turbo form red
 
 Keep core tests deterministic and avoid live browser/WebSocket/external CDN dependencies when local contracts prove the behavior.
 
+When a workflow must work without JavaScript (forms, navigation, state that survives a reload), prove that before enhancing it. Write a test with no JavaScript first, and keep it passing after Turbo or Stimulus is added:
+- a request/integration test of the HTML contract; or
+- a system test driven by `rack_test` (`driven_by :rack_test`), since Capybara's RackTest driver does not execute JavaScript.
+
+Purely client-side widgets with no server-side fallback are exempt; say so in the change.
+
 ## Anti-patterns / failure modes
 
 - treating a Turbo Frame as an authorization boundary;

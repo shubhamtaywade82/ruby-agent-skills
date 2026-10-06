@@ -116,6 +116,7 @@ Load only the reference for the boundary being changed, before changing behavior
 reproduce
 -> inspect evidence
 -> establish baseline
+-> pin the regression (query-count fixes: a failing query-count test first)
 -> identify owning boundary
 -> choose smallest suitable pattern
 -> implement one targeted change

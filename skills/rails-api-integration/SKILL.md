@@ -287,6 +287,14 @@ Consider old/new clients, old/new webhook processors, and old/new queued payload
 
 For provider migrations, isolate provider-specific behavior behind an adapter instead of spreading conditionals through the domain.
 
+## References
+
+Load only when needed; the reference is one level deep. Consult a listed pattern only when the change needs its implementation shape.
+
+| Load when | Reference | Covers | Patterns |
+|---|---|---|---|
+| a change adds or alters a `graphql-ruby` schema, type, field, mutation, resolver, or data source | [references/graphql.md](references/graphql.md) | Schema as contract; object, field, mutation, and list authorization; Dataloader batching; query depth and complexity limits; transport and verification | none |
+
 ## Reference example
 
 An external client whose timeout is explicit, whose failure is a typed error, and whose retry/idempotency policy lives at the transport layer.

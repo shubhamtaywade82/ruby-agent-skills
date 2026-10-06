@@ -146,7 +146,7 @@ skills:
   rails-database-engineering:
     family: rails
     path: skills/rails-database-engineering/SKILL.md
-    triggers: [database migration, Active Record migration, schema change, index, unique constraint, foreign key, check constraint, database constraint, backfill, transaction, isolation, row lock, pessimistic locking, deadlock, connection pool, pool exhaustion, query plan, EXPLAIN, zero downtime migration, expand contract, PostgreSQL]
+    triggers: [database migration, Active Record migration, schema change, index, unique constraint, foreign key, check constraint, database constraint, backfill, transaction, isolation, row lock, pessimistic locking, deadlock, connection pool, pool exhaustion, query plan, EXPLAIN, zero downtime migration, expand contract, PostgreSQL, db:seed, seeds.rb, seed data, idempotent seeds]
   rails-observability:
     family: rails
     path: skills/rails-observability/SKILL.md
@@ -166,7 +166,7 @@ skills:
   rails-api-integration:
     family: rails
     path: skills/rails-api-integration/SKILL.md
-    triggers: [API contract, API versioning, API compatibility, JSON API, content negotiation, serialization contract, external API integration, HTTP integration, outbound HTTP client, retry policy, HTTP timeout, rate limit, webhook, webhook signature, webhook replay, idempotency key, idempotent request, provider adapter, integration testing]
+    triggers: [API contract, API versioning, API compatibility, JSON API, content negotiation, serialization contract, external API integration, HTTP integration, outbound HTTP client, retry policy, HTTP timeout, rate limit, webhook, webhook signature, webhook replay, idempotency key, idempotent request, provider adapter, integration testing, GraphQL, graphql-ruby, GraphQL schema, GraphQL mutation, GraphQL resolver, GraphQL field authorization, GraphQL Dataloader, query complexity, query depth, GraphQL introspection]
   rails-reliability-engineering:
     family: reliability
     path: skills/rails-reliability-engineering/SKILL.md
@@ -190,7 +190,7 @@ skills:
   rails-performance:
     family: performance
     path: skills/rails-performance/SKILL.md
-    triggers: [Rails performance, Rails performance regression, N+1, query plan, EXPLAIN, slow Rails endpoint, slow Active Record query, Active Record performance, cache stampede, cache key, connection pool, pool exhaustion, Puma capacity, web concurrency, job throughput, Rails allocations, Rails memory]
+    triggers: [Rails performance, Rails performance regression, N+1, query plan, EXPLAIN, slow Rails endpoint, slow Active Record query, Active Record performance, cache stampede, cache key, connection pool, pool exhaustion, Puma capacity, web concurrency, job throughput, Rails allocations, Rails memory, query count, assert_queries_count, query-count regression]
   rails-caching:
     family: performance
     path: skills/rails-caching/SKILL.md
@@ -471,7 +471,7 @@ skills:
   rails-engines-railties-engineering:
     family: rails
     path: skills/rails-engines-railties-engineering/SKILL.md
-    triggers: [Rails::Engine, Rails::Railtie, Engine, Railtie, plugin, mountable, isolate_namespace, routes, engine routes, engine, engine.rb, railtie.rb, generators, gemspec, engine gemspec]
+    triggers: [Rails::Engine, Rails::Railtie, Engine, Railtie, plugin, mountable, isolate_namespace, routes, engine routes, engine, engine.rb, railtie.rb, generators, gemspec, engine gemspec, install generator, engine installer, engine extraction, dummy application]
   rails-hotwire:
     family: rails
     path: skills/rails-hotwire/SKILL.md

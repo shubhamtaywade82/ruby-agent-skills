@@ -26,6 +26,17 @@ Use `EXPLAIN` or the database's plan tooling when query execution strategy is th
 
 Do not solve every query problem with `includes`. Determine whether the real issue is N+1 access, excessive row volume, object materialization, missing indexes, poor predicates, pagination, or contention.
 
+## Query-count regression gate
+
+Before changing code to fix an N+1 or reduce query count, write a test that pins the target count. Run it on the unchanged code and record the observed count it fails with. The fix is done when that test passes; a fix without a test that failed first is unverified.
+
+Use the assertion the suite already has:
+- Minitest on Rails 7.2+: `assert_queries_count(3) { get orders_path }`. Use `assert_no_queries { ... }` for paths that must not query. These ignore schema queries unless `include_schema: true` is passed.
+- RSpec with `db-query-matchers` already in the bundle: `expect { get orders_path }.to make_database_queries(count: 3)`.
+- Otherwise: count `sql.active_record` events with `ActiveSupport::Notifications.subscribed`, excluding `SCHEMA` and cached queries. Do not add a gem for one test.
+
+Size the data so the N+1 would show: at least two parents, each with associated rows. Then confirm the plan of the rewritten query with `EXPLAIN` / `EXPLAIN ANALYZE` on representative non-production data. `EXPLAIN ANALYZE` executes the query, so never run it casually against production.
+
 ## N+1 detection
 
 Treat N+1 as a query-shape defect.

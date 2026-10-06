@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
+> **Current milestone:** Iteration 156 — Verification Gates in Owning Skills and GraphQL
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -503,3 +503,16 @@ Kept the Rails side of the Rails ↔ React seam in this pack:
 - no retained dependency on deprecated skills.
 
 Also prepared the nine deprecated React/TypeScript skills for removal in a later release: relocation-aware installer messages, per-version release notes, and gate status with a removal checklist. Deletion and tagging v1.2.0 remain maintainer actions after merge.
+
+## Iteration 156 — Verification Gates in Owning Skills and GraphQL
+
+Added source-checked verification gates to the skills that own each boundary:
+- engine installers and extraction;
+- query-count regression tests;
+- no-JavaScript Hotwire baselines;
+- characterization tests;
+- seed data;
+- always-critical review findings;
+- tested authorization denial.
+
+Also added graphql-ruby guidance under `rails-api-integration`. An external review proposed five new skills; they were rejected in favour of one owning skill per capability.

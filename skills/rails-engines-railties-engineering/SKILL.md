@@ -41,11 +41,25 @@ Engine paths and namespaces must satisfy the actual loader contract. Review app 
 ## Generators, tasks, and migrations
 Generators, engine tasks, install hooks, and migrations are extension surfaces. Namespace tasks, make generated changes explicit, review migration ownership and reversibility, and avoid unexpected host mutation.
 
+### Installer generators must be rerunnable
+An install generator changes a host application, so prove it is safe to run twice:
+1. **Generate** against a clean host (the dummy application or a fresh `rails new`).
+2. **Verify** every created or modified path, and that nothing outside the declared set changed.
+3. **Rerun** the generator; the second run must leave the host unchanged (an empty `git diff`, no duplicated routes, initializer lines, or migrations).
+4. **Test** the rerun in a generator test (`Rails::Generators::TestCase`: `run_generator` twice, then `assert_file` contents unchanged).
+5. **Document** what the generator changes in the host and how to undo it.
+
+### Extracting host code into an engine
+Extract in slices, never in one big-bang move:
+- Each slice moves one coherent responsibility behind the smallest public API the host needs.
+- The host's regression suite passes after every slice before the next one starts.
+- A slice that needs host internals is a boundary signal: add an explicit configuration or extension point instead of reaching into the host.
+
 ## Assets and frontend integration
 Engine assets belong to an explicit ownership boundary. Respect the host application's established asset/build strategy, manifest, precompile, fingerprinting, and artifact contracts.
 
 ## Testing strategy
-Use isolated engine tests plus dummy-application/host integration tests. Cover namespace isolation, mount and routes, configuration, boot, autoloading, host overrides, generators/tasks/migrations, assets, and supported compatibility paths.
+Before implementing engine behavior, confirm that the dummy application boots and that one integration test proves the engine mounts and routes. Do not build on an engine whose dummy host cannot boot. Use isolated engine tests plus dummy-application/host integration tests. Cover namespace isolation, mount and routes, configuration, boot, autoloading, host overrides, generators/tasks/migrations, assets, and supported compatibility paths.
 
 ## Anti-patterns / failure modes
 Avoid unisolated engine leakage, using a Railtie as a full application boundary without justification, arbitrary host constant access, undocumented monkey patches, implicit initializer ordering, routes mounted without explicit security review, hidden global engine configuration, migration collisions, generator side effects, asset-contract bypasses, broad require calls masking Zeitwerk errors, and claiming isolation provides authorization.

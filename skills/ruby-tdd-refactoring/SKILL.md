@@ -99,6 +99,11 @@ Sequence:
 6. repeat
 7. run regression suite
 
+Characterization gate:
+- Before the first structural change, pin current observable behavior with characterization tests. Pin what the code does today, including known bugs: mark those as known, and do not fix them.
+- Run the characterization tests on the unchanged code; they must pass. A characterization test that fails before any change is describing the wrong behavior.
+- Never combine a structural change and a behavior change in one commit. A bug found during the refactor gets its own commit, with its own failing test first, before or after the refactor.
+
 ## Algorithm evaluations
 
 When an algorithm requirement gives complexity targets, tests must prove output while a separate check/review substantiates complexity and auxiliary space.
