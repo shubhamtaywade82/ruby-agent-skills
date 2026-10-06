@@ -76,7 +76,8 @@ class StackMinimalitySkillPackSystemTest < Minitest::Test
     Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")].each do |path|
       data = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
-      assert_equal 1, data.fetch("version")
+      # Versions increase when an evaluation's contract changes.
+      assert_operator data.fetch("version"), :>=, 1
       assert_equal "stack-minimality", data.fetch("category")
       assert_operator data.fetch("skills").length, :>=, 1
       assert_operator data.fetch("cases").length, :>=, 2
