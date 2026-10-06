@@ -9,11 +9,14 @@ skills:
 patterns:
   - ruby-gem
 prompt: |
-  Create or improve a reusable Ruby gem. Use the installed Bundler/RubyGems
-  command surface, define the public namespace and require path, complete the
-  gemspec, separate runtime from development dependencies, test the consumer
-  require path, build the artifact, inspect package contents, and smoke-test an
-  isolated installation. Do not publish unless explicit release authorization exists.
+  Implement RubyGemDevelopmentAdvisor in lib/solution.rb and extend
+  test/test_solution.rb. The advisor encodes how a reusable Ruby gem is built:
+  the Bundler/RubyGems command for a new skeleton, the split between runtime and
+  development dependencies, a consumer require check that runs outside
+  application boot, which files are safe to package, and whether a release may
+  be published. Do not generate a gem, gemspec, or any file outside lib/ and
+  test/, and do not run build or publish commands; the advisor describes those
+  steps rather than performing them. Publishing requires explicit authorization.
 constraints:
   required_design:
     - reusable library boundary is explicit

@@ -1,0 +1,25 @@
+version: 1
+source: rails-adversarial-v1
+description: >
+  Production-condition fixtures. Visible tests describe the requested feature;
+  a withheld test per fixture (withheld/<id>/test_withheld.rb, never placed in
+  the agent workspace) exercises the condition the visible tests leave out.
+  Negative controls in controls/ must pass the visible tests and fail the
+  withheld ones.
+fixtures:
+  concurrent-uniqueness-race:
+    root: benchmarks/rails-adversarial/fixtures/concurrent-uniqueness-race
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+  webhook-idempotency:
+    root: benchmarks/rails-adversarial/fixtures/webhook-idempotency
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+  checkout-retry-side-effects:
+    root: benchmarks/rails-adversarial/fixtures/checkout-retry-side-effects
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+  authorization-alternate-path:
+    root: benchmarks/rails-adversarial/fixtures/authorization-alternate-path
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
