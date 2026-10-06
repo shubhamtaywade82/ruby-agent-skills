@@ -59,7 +59,7 @@ you would any other adapter:
 export CLAUDE_MODEL=<full model name>   # an alias such as "sonnet" also works, but moves when new models ship
 
 # Sanity check the CLI is reachable and authenticated:
-claude --model "$CLAUDE_MODEL" --print --output-format json --tools "" "reply with: OK"
+claude --print --output-format json --tools "" --model "$CLAUDE_MODEL" "reply with: OK"
 
 # Routing campaign (all 25 cases x 3 repetitions):
 ruby bin/routing-eval \
