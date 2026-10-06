@@ -1,6 +1,6 @@
 ---
 name: react-state-effects
-description: Use for React state ownership, reducers, context, refs, effects, event handling, subscriptions, and lifecycle behavior.
+description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / react-hooks-effects + react-state-management instead. Select only to maintain existing work during the deprecation window. Use for React state ownership, reducers, context, refs, effects, event handling, subscriptions, and lifecycle behavior.
 ---
 
 # React State and Effects

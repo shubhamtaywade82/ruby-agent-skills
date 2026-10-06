@@ -34,6 +34,7 @@ class CorpusQualitySystemTest < Minitest::Test
 
   def test_audit_classifies_non_empirical_public_evaluations_explicitly
     paths = Dir[File.join(ROOT, "evals", "react-typescript", "*.yml")] +
+            Dir[File.join(ROOT, "evals", "rails-react-integration", "*.yml")] +
             Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")]
 
     refute_empty paths

@@ -1,3 +1,13 @@
+# Removed/deprecated Ruby and Rails APIs that skill and pattern Ruby code
+# fences must not recommend (scripts/audit_framework_drift.rb).
+#
+# Each entry needs: framework (rails|ruby), status, version, symbol, match,
+# example, replacement, source_url (HTTPS official release notes), and
+# source_section. Write `match` in YAML single quotes with single
+# backslashes ('\bfoo\b'); doubling them makes the regex require a literal
+# backslash. `example` is a line the regex must match, and the validator
+# rejects an entry whose match cannot match its example. Quote any value
+# containing " #" or ": " so YAML does not truncate it.
 version: 1
 policy:
   scan_roots:
@@ -11,8 +21,9 @@ entries:
     framework: rails
     status: removed
     version: "6.1"
-    symbol: ActiveRecord::Base#update_attributes / #update_attributes!
-    match: '\\bupdate_attributes!?(?![A-Za-z0-9_])'
+    symbol: 'ActiveRecord::Base#update_attributes / #update_attributes!'
+    match: '\bupdate_attributes!?(?![A-Za-z0-9_])'
+    example: 'user.update_attributes(name: "Ada")'
     replacement: update / update!
     source_url: https://guides.rubyonrails.org/v6.1.5/6_1_release_notes.html
     source_section: Active Record removals
@@ -21,7 +32,8 @@ entries:
     status: deprecated
     version: "8.1"
     symbol: ActiveRecord::Base.signed_id_verifier_secret
-    match: 'ActiveRecord::Base\\.signed_id_verifier_secret\\b'
+    match: 'ActiveRecord::Base\.signed_id_verifier_secret\b'
+    example: 'ActiveRecord::Base.signed_id_verifier_secret = "secret"'
     replacement: Rails.application.message_verifiers or Model.signed_id_verifier
     source_url: https://guides.rubyonrails.org/8_1_release_notes.html
     source_section: Active Record deprecations
@@ -30,7 +42,8 @@ entries:
     status: deprecated
     version: "8.1"
     symbol: config.active_support.to_time_preserves_timezone
-    match: 'config\\.active_support\\.to_time_preserves_timezone\\b'
+    match: 'config\.active_support\.to_time_preserves_timezone\b'
+    example: 'config.active_support.to_time_preserves_timezone = :zone'
     replacement: remove the legacy configuration after migrating to current timezone semantics
     source_url: https://guides.rubyonrails.org/8_1_release_notes.html
     source_section: Active Support deprecations
@@ -39,7 +52,8 @@ entries:
     status: deprecated
     version: "8.1"
     symbol: String#mb_chars / ActiveSupport::Multibyte::Chars
-    match: '\\b(?:mb_chars|ActiveSupport::Multibyte::Chars)\\b'
+    match: '\b(?:mb_chars|ActiveSupport::Multibyte::Chars)\b'
+    example: 'name.mb_chars.upcase'
     replacement: modern String Unicode APIs
     source_url: https://guides.rubyonrails.org/8_1_release_notes.html
     source_section: Active Support deprecations
@@ -48,7 +62,58 @@ entries:
     status: deprecated
     version: "8.1"
     symbol: ActiveSupport::Configurable
-    match: '\\bActiveSupport::Configurable\\b'
+    match: '\bActiveSupport::Configurable\b'
+    example: 'include ActiveSupport::Configurable'
     replacement: explicit configuration ownership or supported framework configuration APIs
     source_url: https://guides.rubyonrails.org/8_1_release_notes.html
     source_section: Active Support deprecations
+  rails-controller-filters:
+    framework: rails
+    status: removed
+    version: "5.1"
+    symbol: ActionController *_filter callbacks (before_filter, skip_before_filter, ...)
+    match: '\b(?:prepend_|append_|skip_)?(?:before|after|around)_filter\b'
+    example: 'before_filter :authenticate_user!'
+    replacement: the matching *_action callback (before_action, skip_before_action, ...)
+    source_url: https://guides.rubyonrails.org/5_1_release_notes.html
+    source_section: Action Pack removals
+  rails-render-text-nothing:
+    framework: rails
+    status: removed
+    version: "5.1"
+    symbol: 'render text: / render nothing:'
+    match: '\brender\s*\(?\s*(?:(?:text|nothing):|:(?:text|nothing)\s*=>)'
+    example: 'render text: "OK"'
+    replacement: 'render plain: / head :ok (or another status)'
+    source_url: https://guides.rubyonrails.org/5_1_release_notes.html
+    source_section: Action Pack removals
+  ruby-fixnum-bignum:
+    framework: ruby
+    status: removed
+    version: "3.2"
+    symbol: Fixnum / Bignum
+    match: '\b(?:Fixnum|Bignum)\b'
+    example: 'value.is_a?(Fixnum)'
+    replacement: Integer
+    source_url: https://www.ruby-lang.org/en/news/2022/12/25/ruby-3-2-0-released/
+    source_section: Removed constants
+  ruby-file-dir-exists:
+    framework: ruby
+    status: removed
+    version: "3.2"
+    symbol: File.exists? / Dir.exists?
+    match: '\b(?:File|Dir)\.exists\?'
+    example: 'File.exists?(path)'
+    replacement: File.exist? / Dir.exist?
+    source_url: https://www.ruby-lang.org/en/news/2022/12/25/ruby-3-2-0-released/
+    source_section: Removed methods
+  ruby-taint-tracking:
+    framework: ruby
+    status: removed
+    version: "3.2"
+    symbol: 'Kernel#taint / #untaint / #tainted?'
+    match: '\.(?:taint|untaint|tainted\?)(?![A-Za-z0-9_?])'
+    example: 'input.untaint'
+    replacement: remove the call; taint tracking no longer exists
+    source_url: https://www.ruby-lang.org/en/news/2022/12/25/ruby-3-2-0-released/
+    source_section: Removed methods

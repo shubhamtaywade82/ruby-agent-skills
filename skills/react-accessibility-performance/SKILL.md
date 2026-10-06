@@ -1,6 +1,6 @@
 ---
 name: react-accessibility-performance
-description: Use for React accessibility, keyboard and focus behavior, render performance, memoization, and virtualization decisions.
+description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / react-accessibility + react-performance instead. Select only to maintain existing work during the deprecation window. Use for React accessibility, keyboard and focus behavior, render performance, memoization, and virtualization decisions.
 ---
 
 # React Accessibility and Performance

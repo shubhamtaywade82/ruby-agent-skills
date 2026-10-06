@@ -60,4 +60,6 @@ Test user behavior and state ownership effects at the feature boundary.
 [ ] repository evidence checked [ ] smallest valid boundary chosen [ ] required guarantees preserved
 
 ## Related skills
-react-state-effects, react-architecture, react-testing-engineering, stack-minimality
+stack-minimality
+
+Frontend side: react-agent-skills / react-hooks-effects + react-state-management; react-agent-skills / react-architecture; react-agent-skills / react-testing-engineering + frontend-e2e

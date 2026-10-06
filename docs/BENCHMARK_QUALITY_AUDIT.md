@@ -27,6 +27,14 @@ A public evaluation family without a campaign is not considered benchmark-measur
 
 This distinction matters because the repository contains a larger evaluation corpus than the currently provisioned public fixture/campaign set.
 
+### Benchmark-measured is not the same as executed
+
+Benchmark-measured means a campaign, fixture, and verifier exist. It does not mean the verifier runs the code the agent wrote. Some fixtures contain no runnable application, so their verifiers grade statically: they check that Ruby parses (`ruby -c`) and match source patterns against the evaluation contract.
+
+The `test-engineering` campaign is graded this way. Its specs and tests are never run, so a spec can satisfy the pattern checks and still be wrong. Its verifier says so in the `tests` check evidence ("static: Rails runtime not provisioned"). Read results from statically graded families as structural conformance, not as behavioural proof.
+
+Its `scope_control` check is behavioural: any change outside `test/` or `spec/` fails it.
+
 ## Runner provenance
 
 Campaign results retain:

@@ -1520,32 +1520,35 @@ When a task materially changes dependency direction, domain ownership, modularit
 
 ## React and TypeScript routing
 
-| Task | Primary | Secondary |
-|---|---|---|
-| TypeScript language/compiler/type error | typescript-core-engineering | typescript-type-design, typescript-runtime-contracts |
-| TypeScript domain type modeling | typescript-type-design | typescript-core-engineering |
-| Untrusted JSON/API/storage input | typescript-runtime-contracts | typescript-core-engineering, typescript-type-design |
-| React component design/composition | react-component-engineering | react-architecture, react-testing-engineering |
-| React state/effect/lifecycle change | react-state-effects | react-component-engineering, react-testing-engineering |
-| React API data fetching/cache/mutation | react-data-fetching | typescript-runtime-contracts, react-state-effects, react-testing-engineering |
-| React application structure/feature boundaries | react-architecture | react-component-engineering, react-state-effects, react-data-fetching |
-| React component/hook/UI tests | react-testing-engineering | react-component-engineering, typescript-runtime-contracts |
-| React accessibility/keyboard/focus | react-accessibility-performance | react-component-engineering, react-testing-engineering |
-| React render performance/memoization | react-accessibility-performance | react-state-effects, react-architecture |
-| TypeScript and React feature implementation | react-component-engineering | typescript-core-engineering, typescript-type-design, react-state-effects, react-testing-engineering |
+Standalone React and TypeScript work belongs to the separate `react-agent-skills` pack. The in-pack skills below are deprecated: select one only to maintain existing work during the deprecation window, and never as a secondary skill for new work. Each will be removed in a later release and recorded under `relocated_skills` in `skill-manifest.yml`.
+
+| Deprecated in-pack skill | Route new work to |
+|---|---|
+| typescript-core-engineering | react-agent-skills / typescript-core-engineering |
+| typescript-type-design | react-agent-skills / typescript-type-design |
+| typescript-runtime-contracts | react-agent-skills / typescript-runtime-contracts |
+| react-component-engineering | react-agent-skills / react-component-engineering |
+| react-state-effects | react-agent-skills / react-hooks-effects + react-state-management |
+| react-data-fetching | react-agent-skills / react-data-fetching |
+| react-testing-engineering | react-agent-skills / react-testing-engineering + frontend-e2e |
+| react-accessibility-performance | react-agent-skills / react-accessibility + react-performance |
+| react-architecture | react-agent-skills / react-architecture |
 
 ## Rails and React cross-stack routing
 
-When a task spans a Rails server and a React/TypeScript client, route the client side and the fit between the two to `rails-react-integration`, and keep the server contract with its owning Rails skill. A change that only alters the Rails wire contract is primary `rails-api-integration`, with `rails-react-integration` secondary so the client parser and types move with it.
+This pack owns the Rails side of the Rails ↔ React boundary, through `rails-react-integration`.
+- Route the fit between server and client to `rails-react-integration`.
+- Keep the server contract with its owning Rails skill. A change that only alters the Rails wire contract is primary `rails-api-integration`, with `rails-react-integration` secondary so the client parser and types move with it.
+- Component, state, and test work inside the client belongs to the frontend-side skill in `react-agent-skills`. It is a cross-pack composition, never a secondary skill from this pack.
 
-| Task | Primary | Secondary |
-|---|---|---|
-| React code calling a Rails endpoint (fetch, response types, error handling) | rails-react-integration | rails-api-integration, typescript-runtime-contracts, react-data-fetching |
-| React form showing Rails 422 validation errors | rails-react-integration | rails-validations, react-component-engineering, react-testing-engineering |
-| React fetch fails with InvalidAuthenticityToken or loses the session | rails-react-integration | rails-authentication, rails-security |
-| Choosing Inertia, a JSON API with a separate client, or React islands | rails-react-integration | react-architecture, rails-api-integration, rails-hotwire |
-| Paginating, filtering, or sorting a Rails collection in React | rails-react-integration | react-data-fetching, rails-active-record |
-| Changing a Rails JSON contract that a React client consumes | rails-api-integration | rails-react-integration, rails-test-engineering |
+| Task | Primary | Secondary (this pack) | Frontend side (react-agent-skills) |
+|---|---|---|---|
+| React code calling a Rails endpoint (fetch, response types, error handling) | rails-react-integration | rails-api-integration | typescript-runtime-contracts, react-data-fetching |
+| React form showing Rails 422 validation errors | rails-react-integration | rails-validations | react-component-engineering, react-testing-engineering |
+| React fetch fails with InvalidAuthenticityToken or loses the session | rails-react-integration | rails-authentication, rails-security | — |
+| Choosing Inertia, a JSON API with a separate client, or React islands | rails-react-integration | rails-api-integration, rails-hotwire | react-architecture |
+| Paginating, filtering, or sorting a Rails collection in React | rails-react-integration | rails-active-record | react-data-fetching |
+| Changing a Rails JSON contract that a React client consumes | rails-api-integration | rails-react-integration, rails-test-engineering | — |
 
 ## Stack minimality composition
 

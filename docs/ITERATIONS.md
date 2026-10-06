@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 152 — Action Controller Resource-Loading Evidence
+> **Current milestone:** Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -478,3 +478,28 @@ Recorded the closed #80 reconciliation, corrected stale controlled-benchmark doc
 ## Iteration 152 — Action Controller Resource-Loading Evidence
 
 Made Rails controller resource-loading policy explicit and regression-checked: `before_action` is a request-prerequisite boundary, action-local lookup remains appropriate for one-off use, memoized readers are permitted for lazy access without an unsupported performance claim, and complex reads escalate to explicit query/read boundaries.
+
+## Iteration 153 — RSpec Method Naming, Aggregate Failures, and HTTP Stubbing
+
+Closed three gaps found by comparing the RSpec reference against Better Specs: describe-block method naming, `:aggregate_failures` for expensive multi-assertion specs, and WebMock/VCR HTTP stubbing with a real-connection guard. The fixtures-versus-factories and tooling (Guard, formatter) recommendations were deliberately not adopted because they conflict with the existing-convention rule or are workflow rather than spec-correctness guidance.
+
+## Iteration 154 — Review Remediation: Deprecation Visibility, Drift Detection, and Benchmark Honesty
+
+Remediated defects found in an end-to-end review:
+- Framework-drift regexes that could never match, now guarded by per-entry examples, plus five new source-verified entries.
+- Deprecations that were invisible in skill frontmatter.
+- An RSpec lint policy described as enforced although it linted nothing.
+- A test-engineering `scope_control` check that always passed.
+- An undocumented Claude model default.
+- A locale-dependent test.
+
+Cutting a release that includes Iterations 134–154 remains a maintainer action on `main`.
+
+## Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
+
+Kept the Rails side of the Rails ↔ React seam in this pack:
+- `rails-react-integration` moved to the `rails` family;
+- guidance on composing with react-agent-skills;
+- no retained dependency on deprecated skills.
+
+Also prepared the nine deprecated React/TypeScript skills for removal in a later release: relocation-aware installer messages, per-version release notes, and gate status with a removal checklist. Deletion and tagging v1.2.0 remain maintainer actions after merge.

@@ -17,7 +17,7 @@ class RoutingEvaluationSystemTest < Minitest::Test
       aliases: false
     )
 
-    assert_equal 26, Array(data.fetch("cases")).length
+    assert_equal 25, Array(data.fetch("cases")).length
     assert Array(data.fetch("cases")).all? do |entry|
       entry.fetch("primary_skills").length == 1 &&
         entry.fetch("secondary_skills").none? { |skill| skill == entry.fetch("primary_skills").first }
@@ -171,5 +171,29 @@ class OllamaRoutingAgentSystemTest < Minitest::Test
   ensure
     server.close if server
     server_thread.join if server_thread
+  end
+end
+
+class ClaudeAdapterModelSystemTest < Minitest::Test
+  ROOT = File.expand_path("..", __dir__)
+
+  # Benchmark evidence must name the model the operator chose; neither Claude
+  # adapter may fall back to a built-in model id.
+  def test_claude_adapters_refuse_to_run_without_an_explicit_model
+    Dir.mktmpdir do |dir|
+      %w[RUBY_AGENT_CONTEXT_FILE RUBY_AGENT_ROUTING_PROMPT_FILE RUBY_AGENT_ROUTING_MANIFEST_FILE
+         RUBY_AGENT_ROUTING_ROUTER_FILE].each { |key| File.write(File.join(dir, key), "skills: {}\n") }
+      env = Dir.children(dir).to_h { |key| [key, File.join(dir, key)] }
+               .merge("RUBY_AGENT_ROUTING_RESULT_FILE" => File.join(dir, "result.json"),
+                      "RUBY_AGENT_ROUTING_CASE_ID" => "case", "CLAUDE_MODEL" => nil,
+                      "CLAUDE_BIN" => File.join(dir, "missing-claude"))
+
+      %w[coding-agent-claude routing-agent-claude].each do |adapter|
+        _out, err, status = Open3.capture3(env, RbConfig.ruby, File.join(ROOT, "bin", adapter))
+
+        refute_predicate status, :success?, "#{adapter} must fail without CLAUDE_MODEL"
+        assert_includes err, "CLAUDE_MODEL must be set"
+      end
+    end
   end
 end

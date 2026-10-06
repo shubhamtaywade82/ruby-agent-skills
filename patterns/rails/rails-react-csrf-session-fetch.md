@@ -1,7 +1,7 @@
 ---
 name: rails-react-csrf-session-fetch
 description: "Send the Rails session cookie and CSRF token from React fetch calls without weakening forgery protection."
-family: react-typescript
+family: rails
 ---
 
 # Rails React CSRF Session Fetch

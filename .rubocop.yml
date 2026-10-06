@@ -16,7 +16,9 @@
 # rubocop-changed narrows linting to changed files. Plugins for frameworks
 # this repository does not use (Rails, Sequel, Capybara, FactoryBot, I18n,
 # Sorbet, GraphQL, SketchUp) only produced false positives. rubocop-rspec
-# stays loaded so the RSpec style policy below remains executable.
+# stays loaded so the RSpec style policy below is validated as a reference
+# policy; this repository has no lintable specs (benchmark fixtures are
+# excluded), and consuming projects enforce it from their own config.
 #
 # For a target application, select plugins from the catalog by the
 # frameworks it actually uses, confirm each installed extension supports the

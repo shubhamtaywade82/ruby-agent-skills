@@ -16,7 +16,6 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
     react-testing-engineering
     react-accessibility-performance
     react-architecture
-    rails-react-integration
   ].freeze
 
   def manifest
@@ -51,14 +50,14 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
   def test_react_typescript_patterns_are_registered
     paths = manifest.fetch("patterns").fetch("react-typescript").fetch("paths")
 
-    assert_equal 29, paths.length
+    assert_equal 24, paths.length
     paths.each { |path| assert File.file?(File.join(ROOT, path)) }
   end
 
   def test_react_typescript_evaluations_are_registered
-    entries = manifest.fetch("evaluations").select { |name, _| name.to_s.start_with?("react-typescript-", "react-", "rails-react-") }
+    entries = manifest.fetch("evaluations").select { |name, _| name.to_s.start_with?("react-typescript-", "react-") }
 
-    assert_equal 10, entries.length
+    assert_equal 9, entries.length
     entries.each_value do |entry|
       Array(entry.fetch("paths")).each { |path| assert File.file?(File.join(ROOT, path)) }
     end
@@ -68,5 +67,40 @@ class ReactTypescriptSkillPackSystemTest < Minitest::Test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
 
     assert_includes validator, "test/react_typescript_skill_pack_system_test.rb"
+  end
+end
+
+# The Rails side of the Rails <-> React boundary stays in this pack after the
+# standalone React/TypeScript skills move to react-agent-skills, so it must
+# not live in the react-typescript family that is scheduled for removal.
+class RailsReactIntegrationOwnershipSystemTest < Minitest::Test
+  ROOT = File.expand_path("..", __dir__)
+  PATTERNS = %w[
+    rails-react-integration-mode rails-react-typed-api-contract
+    rails-react-validation-error-mapping rails-react-csrf-session-fetch
+    rails-react-pagination-contract
+  ].freeze
+
+  def manifest
+    YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml"), encoding: "UTF-8"))
+  end
+
+  def test_integration_skill_and_evaluation_are_outside_the_react_typescript_family
+    data = manifest
+
+    assert_equal "rails", data.dig("skills", "rails-react-integration", "family")
+    assert_equal ["evals/rails-react-integration/rails-react-integration-contract.yml"],
+                 data.dig("evaluations", "rails-react-integration", "paths")
+  end
+
+  def test_integration_patterns_are_registered_in_the_rails_family
+    rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
+
+    PATTERNS.each do |name|
+      path = "patterns/rails/#{name}.md"
+
+      assert_includes rails_patterns, path
+      assert_match(/^family: rails$/, File.read(File.join(ROOT, path), encoding: "UTF-8"))
+    end
   end
 end

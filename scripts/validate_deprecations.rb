@@ -42,11 +42,27 @@ def validate_removal_gate(errors, skill, entry)
   errors << "deprecation #{skill} must declare exactly five non-empty removal gates"
 end
 
+# Agents select skills from SKILL.md frontmatter descriptions, not from the
+# manifest, so a deprecation is only effective when the description says so.
+def validate_frontmatter_notice(errors, skill, entry)
+  path = File.join(ROOT, "skills", skill, "SKILL.md")
+  return errors << "deprecation #{skill} has no SKILL.md" unless File.file?(path)
+
+  frontmatter = File.read(path, encoding: "UTF-8")[/\A---\n(.*?)\n---\n/m, 1].to_s
+  description = YAML.safe_load(frontmatter, permitted_classes: [], aliases: false)&.fetch(
+    "description", nil
+  ).to_s
+  return if description.start_with?("DEPRECATED") && description.include?(entry["replacement"].to_s)
+
+  errors << "deprecation #{skill} description must start with DEPRECATED and name its replacement"
+end
+
 def validate_entry(errors, skill, entry)
   validate_status_and_scope(errors, skill, entry)
   validate_replacement(errors, skill, entry)
   validate_migration_doc(errors, skill, entry)
   validate_removal_gate(errors, skill, entry)
+  validate_frontmatter_notice(errors, skill, entry)
 end
 
 abort "missing skill-manifest.yml" unless File.file?(MANIFEST_PATH)
@@ -75,6 +91,15 @@ entries.each do |skill, entry|
   end
 
   validate_entry(errors, skill, entry)
+end
+
+relocated = manifest.fetch("relocated_skills", nil).to_h
+relocated.each do |skill, target|
+  errors << "relocated skill #{skill} is still registered in skills" if skills.key?(skill)
+  errors << "relocated skill #{skill} is still deprecated in place" if entries.key?(skill)
+  next if target.is_a?(String) && target.match?(%r{\A[a-z0-9-]+ / .+})
+
+  errors << "relocated skill #{skill} must name its destination as '<pack> / <skill>'"
 end
 
 replacements = entries.values.filter_map do |entry|

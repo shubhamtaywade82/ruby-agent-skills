@@ -1,5 +1,35 @@
 # Changelog
 
+## Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
+
+- Keep the Rails side of the Rails ↔ React seam in this pack and prepare the deprecated standalone React/TypeScript skills for removal in a release after v1.2.0. Nothing is deleted in this iteration.
+- Move `rails-react-integration` to the `rails` family: its five patterns now live in `patterns/rails/` and its evaluation in `evals/rails-react-integration/` (version 2). Add a "Composing with react-agent-skills" section assigning each side of a full-stack change.
+- Remove every dependency of retained content on a deprecated skill:
+  - The integration skill, its patterns, six stack-minimality patterns, and five stack-minimality evaluations (each bumped one version) now point to `react-agent-skills / <skill>`, or drop the deprecated skill.
+  - `router/ROUTING.md` maps the deprecated skills to their replacements.
+  - Routing cases no longer expect a deprecated skill. The frontend-only `react-filter-render-performance` case is removed: routing campaign version 7, 25 cases, and stale case counts are corrected across the docs.
+  - `test/react_agent_skills_deprecation_test.rb` enforces all of the above pack-wide.
+- Add `relocated_skills:` to the manifest. `bin/install` removes a relocated skill from an existing installation and prints its destination pack. `scripts/validate_deprecations.rb` rejects relocated skills that are still registered or still deprecated in place.
+- Release notes: `scripts/build_release_archive.rb` includes `docs/releases/<version>.md` when present. `docs/releases/v1.2.0.md` announces the deprecations and names every replacement, and a system test ties it to the manifest.
+- `docs/REACT_AGENT_SKILLS_MIGRATION.md` records the status of each removal gate and a removal checklist. `docs/DEPRECATION_GOVERNANCE.md` documents the frontmatter and relocation rules. The README describes the retained and deprecated frontend skills.
+
+## Iteration 154 — Review Remediation: Deprecation Visibility, Drift Detection, and Benchmark Honesty
+
+- Framework drift detection was inert: every `match` in `framework-drift.yml` was double-escaped inside YAML single quotes, so no regex could match real code and the audit passed vacuously. Fix the escaping and quote values that YAML truncated at ` #`. Add a required `example` per entry that the validator must match, and a system test that the committed registry detects every entry's example.
+- Add five drift entries verified against official release notes: Rails 5.1 controller `*_filter` callbacks and `render text:`/`nothing:`; Ruby 3.2 `Fixnum`/`Bignum`, `File.exists?`/`Dir.exists?`, and `taint`/`untaint`/`tainted?`. Findings now name the framework (Rails or Ruby) instead of always saying Rails.
+- Make deprecation visible where agents select skills: the nine React/TypeScript `SKILL.md` descriptions now start with `DEPRECATED` and name their replacement. `scripts/validate_deprecations.rb` and `test/react_agent_skills_deprecation_test.rb` enforce this.
+- RSpec lint scope: the RSpec reference now ships the consumer `rubocop-rspec` settings, kept identical to `.rubocop.yml` by a system test. `docs/RSPEC_STYLE_GUIDE.md` and `.rubocop.yml` now say that this repository has no lintable specs and that installation does not lint consuming projects.
+- The test-engineering verifier's `scope_control` check now fails on any change outside `test/` or `spec/` (previously it always passed). Regression-tested against fixture and reference workspaces. `docs/BENCHMARK_QUALITY_AUDIT.md` now says that benchmark-measured does not mean executed: that campaign is graded statically.
+- `bin/coding-agent-claude` and `bin/routing-agent-claude` require `CLAUDE_MODEL` instead of defaulting to `claude-sonnet-5`, which is neither a `claude` CLI alias nor a full model name. `docs/LOCAL_BENCHMARKING.md` passes the same value to `--model`.
+- Make `ChangeVerifierRunnerTest#test_runner_normalizes_non_ascii_command_output` locale-independent. It used to fail under POSIX/US-ASCII locales because the child `ruby -e` source was non-ASCII.
+- Not changed: no release was tagged; `v1.1.0` (Iteration 133) still trails `main`. Other verifier families keep the record-only `scope_control`, because their fixtures have no shared out-of-scope rule.
+
+## Iteration 153 — RSpec Method Naming, Aggregate Failures, and HTTP Stubbing
+
+- Add three Better Specs-derived rules to `skills/rails-test-engineering/references/rspec.md`: `#instance_method` / `.class_method` describe naming (and the narrow scope of `RSpec/DescribeMethod`), `:aggregate_failures` for expensive multi-assertion specs (and how `RSpec/MultipleExpectations` treats it), and WebMock/VCR HTTP stubbing with `disable_net_connect!(allow_localhost: true)` and cassette credential filtering.
+- Keep the existing-convention rule: the reference does not prescribe factories over fixtures and does not add WebMock/VCR to suites that isolate HTTP another way.
+- Add a regression assertion for the three rules to `test/test_engineering_system_test.rb`.
+
 ## Iteration 152 — Action Controller Resource-Loading Evidence
 
 - Make resource-loading placement explicit in `rails-action-controller`: narrow `before_action` for shared request prerequisites, action-local lookup for one-off access when clearer, and memoized readers only as a lazy-access option.

@@ -53,4 +53,6 @@ Test rendered output across the inputs that change the derived value.
 [ ] repository evidence checked [ ] smallest valid boundary chosen [ ] required guarantees preserved
 
 ## Related skills
-react-state-effects, react-accessibility-performance, stack-minimality
+stack-minimality
+
+Frontend side: react-agent-skills / react-hooks-effects + react-state-management; react-agent-skills / react-accessibility + react-performance

@@ -1,7 +1,7 @@
 ---
 name: rails-react-pagination-contract
 description: "Paginate Rails collections for React with stable ordering and complete cache identity."
-family: react-typescript
+family: rails
 ---
 
 # Rails React Pagination Contract
@@ -65,4 +65,6 @@ Distinct keys for distinct pages and filters, envelope parsing, a Rails request 
 Does every input that changes the result appear in both the URL and the cache key?
 
 ## Related skills
-rails-react-integration,react-data-fetching,rails-active-record
+rails-react-integration,rails-active-record
+
+Frontend side: react-agent-skills / react-data-fetching

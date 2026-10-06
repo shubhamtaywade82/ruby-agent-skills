@@ -48,4 +48,6 @@ Verify supported-browser behavior and frontend build/test checks.
 [ ] repository evidence checked [ ] smallest valid boundary chosen [ ] required guarantees preserved
 
 ## Related skills
-react-component-engineering, react-accessibility-performance, typescript-core-engineering, stack-minimality
+stack-minimality
+
+Frontend side: react-agent-skills / react-component-engineering; react-agent-skills / react-accessibility + react-performance; react-agent-skills / typescript-core-engineering

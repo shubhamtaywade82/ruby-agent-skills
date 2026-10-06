@@ -50,4 +50,6 @@ Type-check the project and test dynamic boundary parsing.
 [ ] repository evidence checked [ ] smallest valid boundary chosen [ ] required guarantees preserved
 
 ## Related skills
-typescript-type-design, typescript-runtime-contracts, stack-minimality
+stack-minimality
+
+Frontend side: react-agent-skills / typescript-type-design; react-agent-skills / typescript-runtime-contracts

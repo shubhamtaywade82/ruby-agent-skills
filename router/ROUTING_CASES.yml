@@ -180,7 +180,6 @@ cases:
       - rails-react-integration
     secondary_skills:
       - rails-validations
-      - react-component-engineering
     boundary: client-form-vs-server-validation
 
   - id: react-fetch-csrf-failure
@@ -203,16 +202,6 @@ cases:
     secondary_skills:
       - rails-react-integration
     boundary: server-contract-vs-client-consumer
-
-  - id: react-filter-render-performance
-    prompt: >
-      A React filter panel re-renders the entire results list on every
-      keystroke and typing lags; make it responsive.
-    primary_skills:
-      - react-accessibility-performance
-    secondary_skills:
-      - react-state-effects
-    boundary: render-performance-vs-state-ownership
 
   - id: branch-review-standards-and-spec
     prompt: >

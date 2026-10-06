@@ -36,6 +36,24 @@ This iteration makes the controller resource-loading policy explicit and regress
 - performance comparisons require comparable workload evidence;
 - query/read boundaries remain the escalation path for complex controller reads.
 
+## Iteration 153 — RSpec Method Naming, Aggregate Failures, and HTTP Stubbing
+
+The RSpec reference in `rails-test-engineering` now covers `#method` / `.method` describe naming, `:aggregate_failures` for expensive multi-assertion specs, and WebMock/VCR HTTP stubbing with `disable_net_connect!`. These are regression-checked in `test/test_engineering_system_test.rb`.
+
+## Iteration 154 — Review Remediation: Deprecation Visibility, Drift Detection, and Benchmark Honesty
+
+- Framework drift detection now actually matches: registry regexes are singly escaped, each entry carries an `example` the validator must match, and the committed registry is tested against every example.
+- Deprecated React/TypeScript skills announce `DEPRECATED` and their replacement in frontmatter, enforced by the deprecation validator.
+- Test-engineering `scope_control` rejects changes outside `test/`/`spec/`. The campaign is documented as statically graded.
+- Claude benchmark adapters require an explicit `CLAUDE_MODEL`.
+- The latest release tag (`v1.1.0`) predates Iterations 134–154; cut a new release from `main` after merge.
+
+## Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
+
+- `rails-react-integration` stays in this pack under the `rails` family, with guidance on composing with react-agent-skills.
+- The nine deprecated React/TypeScript skills still ship. Tag v1.2.0 from `main` after merge; its notes come from `docs/releases/v1.2.0.md`.
+- Delete them in a later release, following the checklist in `docs/REACT_AGENT_SKILLS_MIGRATION.md`.
+
 ## Release archive verification
 
 The release archive builder records file-level SHA-256/byte-size provenance in `RELEASE.json`. Independently verify a built archive with:
@@ -90,7 +108,7 @@ Run the generated campaign on the machine that has Ollama access:
 
     ./routing-handoff/run-campaign.sh
 
-The campaign is 26 public cases × 3 repetitions = 78 model decisions.
+The campaign is 25 public cases × 3 repetitions = 75 model decisions.
 
 If interrupted, rerun the generated launcher. When a checkpoint exists, it automatically resumes verified completed repetitions.
 
@@ -235,4 +253,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 152. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 155. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).

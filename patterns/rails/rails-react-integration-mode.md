@@ -1,7 +1,7 @@
 ---
 name: rails-react-integration-mode
 description: "Choose and record one way for a Rails app to serve React: Inertia, JSON API with a separate client, or React islands."
-family: react-typescript
+family: rails
 ---
 
 # Rails React Integration Mode
@@ -73,4 +73,6 @@ Request tests per mode: Inertia component name and props, JSON status and keys, 
 Is the mode recorded, and does every React surface in this area use it?
 
 ## Related skills
-rails-react-integration,react-architecture,rails-api-integration
+rails-react-integration,rails-api-integration,rails-hotwire
+
+Frontend side: react-agent-skills / react-architecture

@@ -72,6 +72,7 @@ class BenchmarkQualitySystemTest < Minitest::Test
     static_only = Dir[
       File.join(ROOT, "evals", "agent-workflow", "*.yml"),
       File.join(ROOT, "evals", "data-modeling", "*.yml"),
+      File.join(ROOT, "evals", "rails-react-integration", "*.yml"),
       File.join(ROOT, "evals", "react-typescript", "*.yml"),
       File.join(ROOT, "evals", "stack-minimality", "*.yml")
     ].flatten.sort

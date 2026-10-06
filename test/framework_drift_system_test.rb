@@ -23,6 +23,7 @@ class FrameworkDriftSystemTest < Minitest::Test
         version: "6.1"
         symbol: ActiveRecord::Base#update_attributes / #update_attributes!
         match: '\\bupdate_attributes!?\\b'
+        example: 'order.update_attributes(status: :paid)'
         replacement: update / update!
         source_url: https://guides.rubyonrails.org/v6.1.5/6_1_release_notes.html
         source_section: Active Record removals
@@ -139,6 +140,37 @@ class FrameworkDriftSystemTest < Minitest::Test
       stdout, stderr, status = run_audit(root, registry)
 
       assert_predicate status, :success?, "#{stdout}\n#{stderr}"
+    end
+  end
+
+  # The committed registry must detect each entry's own example inside a
+  # Ruby fence. A YAML-escaping mistake (e.g. '\\b' in single quotes) once
+  # made every entry match nothing while the audit still passed.
+  def test_committed_registry_detects_every_entry_example
+    require "yaml"
+    entries = YAML.safe_load_file(File.join(ROOT, "framework-drift.yml")).fetch("entries")
+    fences = entries.values.map { |entry| "```ruby\n#{entry.fetch('example')}\n```\n" }.join("\n")
+
+    with_fixture(fences) do |root, _fixture_registry|
+      stdout, stderr, status = run_audit(root, File.join(ROOT, "framework-drift.yml"))
+
+      refute_predicate status, :success?, stdout
+      entries.each_key { |id| assert_includes stderr, "framework drift #{id} " }
+    end
+  end
+
+  def test_rejects_entry_whose_match_cannot_match_its_example
+    # Block form: a replacement string would collapse the doubled backslash.
+    registry = REGISTRY.sub("match: '\\bupdate_attributes!?\\b'") do
+      "match: '\\\\bupdate_attributes!?'"
+    end
+
+    with_fixture("# Example\n") do |root, path|
+      File.write(path, registry, encoding: "UTF-8")
+      stdout, stderr, status = run_audit(root, path)
+
+      refute_predicate status, :success?, stdout
+      assert_includes stderr, "does not match its example"
     end
   end
 end

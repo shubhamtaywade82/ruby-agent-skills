@@ -143,8 +143,18 @@ if rspec && forbidden
   checks["scope_control"] = { "status" => "fail", "evidence" => "any_instance stubbing or sleep detected" }
 end
 
-changed_files = %x{git status --short}.lines.map { |line| (line[3..] || line).strip }.reject(&:empty?)
-checks["scope_control"] ||= { "status" => "pass", "evidence" => "recorded #{changed_files.length} changed paths" }
+# Every test-engineering contract is satisfied inside the test suite, so a
+# change outside test/ or spec/ (application code, config, stray files) is a
+# scope violation. Renames report "old -> new"; the new path is what counts.
+changed_files = %x{git status --short}.lines.map { |line| (line[3..] || line).strip.split(" -> ").last }
+                                      .reject(&:empty?)
+out_of_scope = changed_files.reject { |path| path.delete_prefix('"').start_with?("test/", "spec/") }
+checks["scope_control"] ||=
+  if out_of_scope.empty?
+    { "status" => "pass", "evidence" => "#{changed_files.length} changed paths, all under test/ or spec/" }
+  else
+    { "status" => "fail", "evidence" => { "outside_test_suite" => out_of_scope } }
+  end
 checks["performance"] = evaluation.fetch("id") == "test-performance" ?
   { "status" => "pass", "evidence" => "verifier checks for removal of targeted setup bottlenecks; runtime measurement belongs to external campaign runs" } :
   { "status" => "skipped" }

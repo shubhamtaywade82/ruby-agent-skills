@@ -113,7 +113,7 @@ class RoutingEvidenceArchiveSystemTest < Minitest::Test
         "protocol_version" => 1,
         "evidence" => "skill-routing-campaign-v1",
         "campaign" => "skill-routing-public-v1",
-        "campaign_version" => 6,
+        "campaign_version" => campaign_config.fetch("version"),
         "routing_case_count" => case_count,
         "requested_repetitions" => repetitions,
         "requested_runs" => case_count * repetitions,

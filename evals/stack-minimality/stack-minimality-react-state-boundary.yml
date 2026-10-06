@@ -1,13 +1,11 @@
 id: stack-minimality-react-state-boundary
 coverage: static-only
-version: 1
+version: 2
 title: Keep React state at the smallest owner
 category: stack-minimality
 source: ponytail-stack-adaptation-v1
 skills:
   - stack-minimality
-  - react-state-effects
-  - react-architecture
 patterns:
   - pattern:react-local-state-before-context
   - pattern:react-derived-state-in-render
