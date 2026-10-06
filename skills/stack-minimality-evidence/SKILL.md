@@ -1,7 +1,7 @@
 ---
 name: stack-minimality-evidence
 description: Measure observable complexity, dependency, test, build, and database effects of changes in Ruby, Rails, React, TypeScript, and PostgreSQL without fabricating savings.
-family: architecture-quality
+license: MIT
 ---
 # Stack Minimality Evidence
 

@@ -1,6 +1,7 @@
 ---
 name: ruby-enumerables
 description: Use when choosing or reviewing Ruby Enumerable traversal and transformation semantics after the underlying collection representation is understood.
+license: MIT
 ---
 
 # Ruby Enumerables

@@ -1,6 +1,7 @@
 ---
 name: typescript-type-design
 description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / typescript-type-design instead. Select only to maintain existing work during the deprecation window. Use when modeling TypeScript domain states, discriminated unions, generics, branded identifiers, utility types, or public APIs.
+license: MIT
 ---
 
 # TypeScript Type Design

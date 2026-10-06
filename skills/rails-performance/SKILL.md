@@ -1,6 +1,7 @@
 ---
 name: rails-performance
 description: Use when diagnosing, designing, reviewing, or changing Rails performance across Active Record queries, N+1 behavior, caching, request rendering, Puma capacity, connection pools, background jobs, allocations, memory, and production throughput.
+license: MIT
 ---
 
 # Rails Performance Engineering
@@ -230,16 +231,16 @@ Primary Rails guidance:
 - https://guides.rubyonrails.org/performance_testing.html
 
 Repository-specific foundations:
-- skills/ruby-performance/SKILL.md
-- skills/rails-active-record/SKILL.md
-- skills/rails-database-engineering/SKILL.md
-- skills/rails-active-job/SKILL.md
-- patterns/rails/cache-boundary.md
-- patterns/rails/production-index.md
-- patterns/rails/puma-capacity.md
-- patterns/rails/connection-pool-capacity.md
-- patterns/rails/n-plus-one-review.md
-- patterns/rails/query-plan-evidence.md
+- `ruby-performance` skill
+- `rails-active-record` skill
+- `rails-database-engineering` skill
+- `rails-active-job` skill
+- `cache-boundary` pattern
+- `production-index` pattern
+- `puma-capacity` pattern
+- `connection-pool-capacity` pattern
+- `n-plus-one-review` pattern
+- `query-plan-evidence` pattern
 
 ## Performance-sensitive changes
 

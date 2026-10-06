@@ -1,6 +1,7 @@
 ---
 name: ruby-poro
 description: Use when behavior can be represented by a plain Ruby object independent of persistence, controllers, or framework lifecycle.
+license: MIT
 ---
 
 # Ruby PORO

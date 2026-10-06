@@ -1,6 +1,7 @@
 ---
 name: rails-caching
 description: "Use when designing, reviewing, debugging, or changing Rails caching across low-level values, fragments, HTTP responses, cache stores, keys, freshness, invalidation, stampede control, warming, capacity, and failure behavior."
+license: MIT
 ---
 
 # Rails Caching Engineering
@@ -94,7 +95,7 @@ Never place raw secrets or unnecessary sensitive values into keys or logs.
 
 Keys should be deterministic, bounded, namespaced, and compatible with repository conventions.
 
-Use `patterns/rails/cache-key-isolation.md` for explicit identity/isolation review.
+Use the `cache-key-isolation` pattern for explicit identity/isolation review.
 
 ## Versioning and deployment
 Prefer deterministic versioning over ad-hoc mass deletion where the repository's cache model supports versioned keys.
@@ -120,7 +121,7 @@ Distinguish:
 
 Prefer invalidation tied to the authoritative state transition rather than scattered controller callbacks.
 
-Use `patterns/rails/cache-invalidation-contract.md` for non-trivial dependencies.
+Use the `cache-invalidation-contract` pattern for non-trivial dependencies.
 
 A short TTL is not a substitute for correct invalidation when stale data is unsafe.
 
@@ -141,7 +142,7 @@ A cache miss must preserve the underlying data contract. Do not return an invali
 ## Stampede and hot keys
 Cache stampede is a concurrency/capacity problem.
 
-Use `patterns/rails/cache-stampede-control.md` when concurrent recomputation is measured or the contract requires bounded recomputation.
+Use the `cache-stampede-control` pattern when concurrent recomputation is measured or the contract requires bounded recomputation.
 
 Candidate controls include:
 - stale-while-revalidate;
@@ -178,7 +179,7 @@ Where the cache is part of a required correctness or session contract, the failu
 
 Never cache exceptions or authorization failures as successful values.
 
-Use `patterns/rails/cache-failure-boundary.md` when the store failure mode affects user-visible behavior.
+Use the `cache-failure-boundary` pattern when the store failure mode affects user-visible behavior.
 
 ## Capacity and eviction
 Treat cache storage as finite capacity.
@@ -325,14 +326,14 @@ Primary Rails guidance:
 - https://guides.rubyonrails.org/caching_with_rails.html
 
 Repository composition:
-- skills/rails-performance/SKILL.md
-- skills/ruby-performance/SKILL.md
-- skills/rails-observability/SKILL.md
-- skills/rails-security/SKILL.md
-- skills/rails-security-engineering/SKILL.md
-- skills/rails-active-job/SKILL.md
-- patterns/rails/cache-boundary.md
-- patterns/rails/cache-stampede-control.md
+- `rails-performance` skill
+- `ruby-performance` skill
+- `rails-observability` skill
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-active-job` skill
+- `cache-boundary` pattern
+- `cache-stampede-control` pattern
 
 ## Rails caching changes
 

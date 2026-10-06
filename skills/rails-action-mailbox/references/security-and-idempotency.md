@@ -68,7 +68,7 @@ For replay:
 - prevent replay from bypassing authorization;
 - make duplicate handling deterministic.
 
-Compose with patterns/rails/inbox-deduplication.md for asynchronous-consumer-like workflows.
+Compose with the `inbox-deduplication` pattern for asynchronous-consumer-like workflows.
 
 ## Tenant and resource association
 

@@ -26,6 +26,15 @@ Then verify the installed pack:
 
 Every release publishes a `SHA256SUMS` checksum alongside the archive. See [Installation](#installation) for scopes, agent layouts, pinned refs, and verification workflows.
 
+### Install individual skills with the `skills` CLI
+
+Every skill follows the [Agent Skills specification](https://agentskills.io/specification), so any spec-conformant installer works. With [`npx skills`](https://github.com/vercel-labs/skills) you can browse and install only the skills you need:
+
+    npx skills add shubhamtaywade82/ruby-agent-skills --list
+    npx skills add shubhamtaywade82/ruby-agent-skills --skill rails-active-record --skill rails-performance -a claude-code
+
+A CLI install copies the skill folders only. Skills name the implementation patterns they draw on; to install the 446-pattern catalog, routing contract, and provenance verification as well, use `bin/install` above. See [docs/PUBLISHING.md](docs/PUBLISHING.md) for how the pack is published and evaluated.
+
 ---
 
 ## Agent installation verification
@@ -107,7 +116,7 @@ skills/rails-active-record/
 | Skills | **96** |
 | Implementation patterns | **446** |
 | Evaluation cases | **492** |
-| Dedicated system/contract tests | **101** |
+| Dedicated system/contract tests | **102** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -621,7 +630,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **96 skills**, **446 implementation patterns**, **492 evaluation cases**, and **101 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **96 skills**, **446 implementation patterns**, **492 evaluation cases**, and **102 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

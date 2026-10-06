@@ -1,6 +1,7 @@
 ---
 name: rails-database-engineering
 description: Use when changing Rails database schemas, migrations, indexes, constraints, transactions, locking, query strategy, connection pools, backfills, or production database operations.
+license: MIT
 ---
 
 # Rails Database Engineering

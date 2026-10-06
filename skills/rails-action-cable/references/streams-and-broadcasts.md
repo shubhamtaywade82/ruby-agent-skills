@@ -20,7 +20,7 @@ Avoid raw user input in broadcast names.
 
 Never let a client select a broadcast namespace that it could not otherwise authorize.
 
-Use `patterns/rails/action-cable-stream-contract.md`.
+Use the `action-cable-stream-contract` pattern.
 
 ## Broadcast contract
 

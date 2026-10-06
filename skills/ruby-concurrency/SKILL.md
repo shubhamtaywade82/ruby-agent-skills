@@ -1,6 +1,7 @@
 ---
 name: ruby-concurrency
 description: Use when Ruby/Rails code performs concurrent work, shares mutable state across threads, uses queues or executors, uses Fibers, or has race conditions, deadlocks, thread-safety, or ordering hazards.
+license: MIT
 ---
 
 # Ruby Concurrency

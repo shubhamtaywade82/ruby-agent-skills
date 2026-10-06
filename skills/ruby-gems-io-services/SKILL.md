@@ -1,6 +1,7 @@
 ---
 name: ruby-gems-io-services
 description: Use for RubyGems/dependency decisions, filesystem and CSV I/O, HTTP integrations, external boundaries, and focused service objects.
+license: MIT
 ---
 
 # Ruby Gems, I/O and Services

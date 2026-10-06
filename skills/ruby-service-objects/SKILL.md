@@ -1,6 +1,7 @@
 ---
 name: ruby-service-objects
 description: Use when an application workflow coordinates several steps and does not belong naturally to one model or controller.
+license: MIT
 ---
 
 # Ruby Service Objects

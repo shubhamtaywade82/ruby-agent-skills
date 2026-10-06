@@ -1,5 +1,26 @@
 # Changelog
 
+## Iteration 157 — Agent Skills Specification Conformance and Publish Readiness
+
+- **Official validator.** All 96 skills now pass the Agent Skills reference validator (`skills-ref`, pinned to `69ef37e`). Fifteen skills failed it before because of a top-level `family:` field the specification does not allow. That field duplicated `skill-manifest.yml`, so it is removed.
+- **Validator rule.** `scripts/validate_skills.rb` rejects frontmatter fields outside the specification, so this cannot recur.
+- **License.** Every skill declares `license: MIT` in its frontmatter.
+- **Standalone installs.** Skills keep working when installed alone (`npx skills add --skill`):
+  - Repository-path references (`skills/<name>/SKILL.md`, `patterns/<family>/<name>.md`) on 175 lines in 29 files now name the skill or pattern instead.
+  - `scripts/validate_skills.rb` rejects repository paths inside a skill folder.
+- **`bin/skills-spec-check`.** Runs the pinned official validator over every skill. A missing validator exits 3 (unavailable), never 0. CI runs it after `bin/validate`.
+- **`bin/publish-readiness`.** Runs every check that needs no model or account and writes an evidence report:
+  - the full validation gate;
+  - the official specification check;
+  - `npx skills` discovery of exactly the manifest's skills;
+  - a standalone install of every skill for Claude Code, checking that every relative link stays inside its skill;
+  - the release-archive self-test.
+
+  A missing tool reports `unavailable` and the overall result `NOT READY`.
+- **`docs/PUBLISHING.md`.** Covers the verified specification requirements, the install paths, and the publishing channels (`npx skills`/skills.sh, Tessl, curated lists). It also gives the five-stage end-to-end evaluation plan: deterministic readiness, routing quality, paired effectiveness, per-agent activation, and release.
+- **README.** New section on installing individual skills with the `skills` CLI.
+- **Tests.** System-test inventory is now 102.
+
 ## Iteration 156 — Verification Gates in Owning Skills and GraphQL
 
 - Add verification gates from an external gap review to the skills that own each boundary. No new skill was created.

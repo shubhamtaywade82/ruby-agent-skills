@@ -1,6 +1,7 @@
 ---
 name: react-architecture
 description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / react-architecture instead. Select only to maintain existing work during the deprecation window. Use when designing React application boundaries, feature modules, dependency direction, shared UI infrastructure, and frontend architecture.
+license: MIT
 ---
 
 # React Architecture

@@ -1,6 +1,7 @@
 ---
 name: rails-active-storage
 description: "Use when designing, implementing, reviewing, testing, or operating Rails Active Storage attachments, uploads, direct uploads, storage services, file serving, variants, previews, analysis, purge lifecycle, mirrors, or file-access security."
+license: MIT
 ---
 
 # Rails Active Storage Engineering
@@ -230,16 +231,16 @@ Primary Rails source:
 
 Composed repository skills:
 
-- `skills/rails-security/SKILL.md`
-- `skills/rails-security-engineering/SKILL.md`
-- `skills/rails-active-job/SKILL.md`
-- `skills/rails-api-integration/SKILL.md`
-- `skills/rails-performance/SKILL.md`
-- `skills/rails-caching/SKILL.md`
-- `skills/rails-observability/SKILL.md`
-- `skills/rails-production-runtime/SKILL.md`
-- `skills/rails-test-engineering/SKILL.md`
-- `skills/rails-test-engineering/SKILL.md`
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-active-job` skill
+- `rails-api-integration` skill
+- `rails-performance` skill
+- `rails-caching` skill
+- `rails-observability` skill
+- `rails-production-runtime` skill
+- `rails-test-engineering` skill
+- `rails-test-engineering` skill
 
 ## Rails Active Storage changes
 

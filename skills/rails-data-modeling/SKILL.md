@@ -1,6 +1,7 @@
 ---
 name: rails-data-modeling
 description: Use when deciding what a Rails application's relational schema should represent before writing models or migrations, including entities versus values, keys, normalization, nullability, integrity constraints, type hierarchies, JSON columns, history, soft deletion, and deliberate denormalization.
+license: MIT
 ---
 
 # Rails Data Modeling

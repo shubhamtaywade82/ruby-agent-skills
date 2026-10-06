@@ -1,7 +1,7 @@
 ---
 name: stack-minimality-review
 description: Review a Ruby, Rails, React, TypeScript, and PostgreSQL diff for unnecessary complexity, indirection, dependencies, and speculative flexibility without changing the code.
-family: architecture-quality
+license: MIT
 ---
 # Stack Minimality Review
 

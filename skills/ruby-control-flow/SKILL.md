@@ -1,6 +1,7 @@
 ---
 name: ruby-control-flow
 description: Use when implementing or refactoring Ruby conditionals, case expressions, loops, boolean branches, guards, or repetitive program flow.
+license: MIT
 ---
 
 # Ruby Control Flow

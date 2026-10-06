@@ -192,5 +192,36 @@ class SkillFrontmatterSpecSystemTest < Minitest::Test
     end
   end
 
+  # The official skills-ref validator rejects any field outside the spec, so
+  # this validator must too (a top-level `family:` once failed 15 skills).
+  def test_fields_outside_the_agent_skills_specification_are_rejected
+    with_skill(<<~YAML.strip) do |root|
+      name: example-skill
+      description: "Handles the example boundary."
+      family: ruby
+    YAML
+      _stdout, stderr, status = run_validator(root)
+
+      refute_predicate status, :success?
+      assert_includes stderr, "frontmatter field family is not in the Agent Skills specification"
+    end
+  end
+
+  # A skill installed alone (npx skills add --skill) has no sibling skills or
+  # pattern catalog at repository paths, so it must reference them by name.
+  def test_repository_path_references_are_rejected
+    with_skill(<<~YAML.strip) do |root|
+      name: example-skill
+      description: "Handles the example boundary."
+    YAML
+      skill = File.join(root, "skills", "example-skill", "SKILL.md")
+      File.write(skill, "#{File.read(skill)}\nUse `patterns/rails/idempotent-request.md`.\n")
+      _stdout, stderr, status = run_validator(root)
+
+      refute_predicate status, :success?
+      assert_includes stderr, "repository path patterns/rails/idempotent-request.md does not exist"
+    end
+  end
+
   # rubocop:enable Metrics/ClassLength, Metrics/MethodLength, Metrics/BlockLength
 end

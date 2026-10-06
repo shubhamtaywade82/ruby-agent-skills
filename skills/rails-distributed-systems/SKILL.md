@@ -1,6 +1,7 @@
 ---
 name: rails-distributed-systems
 description: Use when Rails/Ruby systems cross process, service, host, queue, or datastore boundaries and correctness depends on delivery semantics, consistency, coordination, or failure recovery.
+license: MIT
 ---
 
 # Distributed Systems & Service Architecture

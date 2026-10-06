@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 156 — Verification Gates in Owning Skills and GraphQL
+> **Current milestone:** Iteration 157 — Agent Skills Specification Conformance and Publish Readiness
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -516,3 +516,7 @@ Added source-checked verification gates to the skills that own each boundary:
 - tested authorization denial.
 
 Also added graphql-ruby guidance under `rails-api-integration`. An external review proposed five new skills; they were rejected in favour of one owning skill per capability.
+
+## Iteration 157 — Agent Skills Specification Conformance and Publish Readiness
+
+Made every skill conform to the Agent Skills specification as checked by the official validator. Made each skill self-contained for single-skill installs, and added a deterministic publish-readiness gate. `docs/PUBLISHING.md` gives the staged evaluation plan to run before publishing. The model-based stages (routing quality, paired effectiveness, per-agent activation) remain to be run.

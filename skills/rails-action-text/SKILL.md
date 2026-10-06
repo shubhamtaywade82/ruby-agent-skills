@@ -1,6 +1,7 @@
 ---
 name: rails-action-text
 description: "Use when designing, implementing, reviewing, testing, or operating Rails Action Text rich-text content, Trix editors, RichText associations, sanitization, embedded attachments, Signed Global IDs, rendering, API boundaries, localization, or rich-text performance."
+license: MIT
 ---
 
 # Rails Action Text Engineering
@@ -201,20 +202,20 @@ The Rails guide documents Trix, RichText persistence, sanitized HTML rendering, 
 
 Composed repository skills:
 
-- `skills/rails-active-record/SKILL.md`
-- `skills/rails-action-view/SKILL.md`
-- `skills/rails-validations/SKILL.md`
-- `skills/rails-active-storage/SKILL.md`
-- `skills/rails-security/SKILL.md`
-- `skills/rails-security-engineering/SKILL.md`
-- `skills/rails-i18n/SKILL.md`
-- `skills/rails-caching/SKILL.md`
-- `skills/rails-performance/SKILL.md`
-- `skills/ruby-performance/SKILL.md`
-- `skills/rails-api-integration/SKILL.md`
-- `skills/rails-active-job/SKILL.md`
-- `skills/rails-test-engineering/SKILL.md`
-- `skills/rails-test-engineering/SKILL.md`
+- `rails-active-record` skill
+- `rails-action-view` skill
+- `rails-validations` skill
+- `rails-active-storage` skill
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-i18n` skill
+- `rails-caching` skill
+- `rails-performance` skill
+- `ruby-performance` skill
+- `rails-api-integration` skill
+- `rails-active-job` skill
+- `rails-test-engineering` skill
+- `rails-test-engineering` skill
 
 ## Rails Action Text changes
 

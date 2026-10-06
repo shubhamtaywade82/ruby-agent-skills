@@ -16,6 +16,12 @@ TARGET_SKILL_LINES = 350
 TARGET_SKILL_TOKENS = 3_500
 MAX_REFERENCE_LINES = 500
 ALLOWED_SKILL_ENTRIES = %w[SKILL.md references scripts assets].freeze
+# Agent Skills specification frontmatter fields (https://agentskills.io/specification).
+# The official skills-ref validator rejects any other top-level field.
+ALLOWED_FRONTMATTER_FIELDS = %w[name description license compatibility metadata allowed-tools].freeze
+# A skill must work when installed on its own (for example `npx skills add --skill`),
+# so it names other skills and patterns instead of pointing at repository paths.
+REPOSITORY_PATH_REFERENCE = %r{\b(?:skills/[a-z0-9-]+/SKILL\.md|patterns/[a-z0-9-]+/[a-z0-9-]+\.md)}
 
 # Deterministic estimate (about four bytes per token for English Markdown);
 # never reported as a measured tokenizer count.
@@ -77,6 +83,11 @@ skill_files.each do |path|
   unless metadata.is_a?(Hash)
     errors << relative + ": frontmatter must be a mapping"
     next
+  end
+
+  (metadata.keys - ALLOWED_FRONTMATTER_FIELDS).each do |field|
+    errors << relative + ": frontmatter field #{field} is not in the Agent Skills specification; " \
+                         "allowed: #{ALLOWED_FRONTMATTER_FIELDS.join(', ')}"
   end
 
   name = metadata["name"]
@@ -151,6 +162,16 @@ skill_files.each do |path|
   above_target << "#{folder} (#{line_count} lines, ~#{tokens} tokens)" if line_count > TARGET_SKILL_LINES || tokens > TARGET_SKILL_TOKENS
 
   skill_dir = File.dirname(path)
+  Dir[File.join(skill_dir, "**", "*.md")].sort.each do |file|
+    File.read(file, encoding: "UTF-8").each_line.with_index(1) do |line, number|
+      reference = line[REPOSITORY_PATH_REFERENCE]
+      next unless reference
+
+      errors << "#{file.delete_prefix("#{ROOT}/")}:#{number}: repository path #{reference} does not " \
+                "exist in a standalone install; name the skill or pattern instead"
+    end
+  end
+
   (Dir.children(skill_dir) - ALLOWED_SKILL_ENTRIES).sort.each do |entry|
     errors << "#{relative}: unexpected skill entry #{entry}; allowed: #{ALLOWED_SKILL_ENTRIES.join(', ')}"
   end

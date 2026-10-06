@@ -1,6 +1,7 @@
 ---
 name: ruby-oop
 description: Use when designing Ruby classes, state ownership, encapsulation, inheritance, polymorphism, composition, or domain object boundaries.
+license: MIT
 ---
 
 # Ruby Object-Oriented Design

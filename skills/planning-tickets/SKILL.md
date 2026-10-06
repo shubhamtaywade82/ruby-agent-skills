@@ -1,6 +1,7 @@
 ---
 name: planning-tickets
 description: Use when a spec, plan, or conversation must be broken into tracer-bullet tickets, each a vertical slice that fits one agent session, with explicit blocking edges, published through the planning tracker.
+license: MIT
 ---
 
 # Planning Tickets

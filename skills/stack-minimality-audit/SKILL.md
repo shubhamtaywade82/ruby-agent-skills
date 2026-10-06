@@ -1,7 +1,7 @@
 ---
 name: stack-minimality-audit
 description: Audit an entire Ruby, Rails, React, TypeScript, and PostgreSQL repository for unnecessary complexity, dependencies, wrappers, and speculative abstractions without applying changes.
-family: architecture-quality
+license: MIT
 ---
 # Stack Minimality Audit
 

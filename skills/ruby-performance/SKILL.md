@@ -1,6 +1,7 @@
 ---
 name: ruby-performance
 description: Use when diagnosing or changing Ruby/Rails performance, latency, throughput, allocations, memory usage, database/query cost, caching, profiling, benchmarking, or runtime optimization.
+license: MIT
 ---
 
 # Ruby Performance Engineering

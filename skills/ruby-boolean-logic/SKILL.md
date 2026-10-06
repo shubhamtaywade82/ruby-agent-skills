@@ -1,6 +1,7 @@
 ---
 name: ruby-boolean-logic
 description: Use when implementing or refactoring complex Ruby predicates, conditional expressions, guard clauses, truthiness, or boolean combinations.
+license: MIT
 ---
 
 # Ruby Boolean Logic

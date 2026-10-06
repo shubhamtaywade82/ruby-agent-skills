@@ -1,6 +1,7 @@
 ---
 name: ruby-blocks-procs-lambdas
 description: Use when Ruby behavior is passed as blocks, stored as Proc or lambda objects, yielded to callers, or converted with the ampersand operator.
+license: MIT
 ---
 
 # Ruby Blocks, Procs and Lambdas

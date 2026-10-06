@@ -1,6 +1,7 @@
 ---
 name: ruby-core
 description: Use when implementing, reviewing, or debugging Ruby language behavior, syntax, object semantics, truthiness, method dispatch, runtime behavior, or version-sensitive Ruby code.
+license: MIT
 ---
 
 # Ruby Core

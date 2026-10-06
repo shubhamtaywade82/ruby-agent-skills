@@ -1,7 +1,7 @@
 ---
 name: rails-serialization-globalid-engineering
 description: Design and review Rails serialization, JSON representation, Active Job argument serialization, Global ID, Signed Global ID, object identity, payload versioning, and safe deserialization boundaries.
-family: rails
+license: MIT
 ---
 # Rails Serialization and Global IDs Engineering
 

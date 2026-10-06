@@ -1,6 +1,7 @@
 ---
 name: rails-action-mailbox
 description: "Use when designing, implementing, reviewing, testing, or operating Rails Action Mailbox inbound email processing, ingress authentication, mailbox routing, message lifecycle, domain association, failure handling, retention, observability, and security."
+license: MIT
 ---
 
 # Rails Action Mailbox Engineering
@@ -229,20 +230,20 @@ These sources document Action Mailbox ingress configuration, asynchronous mailbo
 
 Composed repository skills:
 
-- skills/rails-action-mailer/SKILL.md
-- skills/rails-active-job/SKILL.md
-- skills/rails-active-storage/SKILL.md
-- skills/rails-api-integration/SKILL.md
-- skills/rails-security/SKILL.md
-- skills/rails-security-engineering/SKILL.md
-- skills/rails-database-engineering/SKILL.md
-- skills/rails-event-driven-messaging/SKILL.md
-- skills/rails-distributed-systems/SKILL.md
-- skills/rails-observability/SKILL.md
-- skills/rails-reliability-engineering/SKILL.md
-- skills/rails-incident-engineering/SKILL.md
-- skills/rails-test-engineering/SKILL.md
-- skills/rails-test-engineering/SKILL.md
+- `rails-action-mailer` skill
+- `rails-active-job` skill
+- `rails-active-storage` skill
+- `rails-api-integration` skill
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-database-engineering` skill
+- `rails-event-driven-messaging` skill
+- `rails-distributed-systems` skill
+- `rails-observability` skill
+- `rails-reliability-engineering` skill
+- `rails-incident-engineering` skill
+- `rails-test-engineering` skill
+- `rails-test-engineering` skill
 
 ## Rails Action Mailbox changes
 

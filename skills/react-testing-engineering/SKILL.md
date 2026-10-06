@@ -1,6 +1,7 @@
 ---
 name: react-testing-engineering
 description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / react-testing-engineering + frontend-e2e instead. Select only to maintain existing work during the deprecation window. Use when testing React components, hooks, async UI, user interactions, accessibility, and integration boundaries.
+license: MIT
 ---
 
 # React Testing Engineering

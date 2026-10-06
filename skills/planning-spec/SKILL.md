@@ -1,6 +1,7 @@
 ---
 name: planning-spec
 description: Use when a discussed feature or change must be written up as a spec, with agreed test seams, Rails boundaries, and out-of-scope items, and published through the planning tracker, without re-interviewing the user.
+license: MIT
 ---
 
 # Planning Spec

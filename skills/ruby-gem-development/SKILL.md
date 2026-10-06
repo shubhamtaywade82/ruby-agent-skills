@@ -1,6 +1,7 @@
 ---
 name: ruby-gem-development
 description: Use when creating, developing, packaging, releasing, or maintaining a reusable Ruby gem or gem repository.
+license: MIT
 ---
 
 # Ruby Gem Development

@@ -1,6 +1,7 @@
 ---
 name: rails-security
 description: Use when implementing, reviewing, testing, or debugging security-sensitive Ruby/Rails code involving authentication, authorization, sessions, CSRF, XSS, injection, redirects, file access, SSRF, secrets, headers, dependency vulnerabilities, multi-tenancy, webhooks, or security tooling.
+license: MIT
 ---
 
 # Rails Security

@@ -1,6 +1,7 @@
 ---
 name: rails-application-bootstrap
 description: Use when creating, initializing, or intentionally reshaping a Rails application with rails new, including standard monoliths, API-only applications, database choices, frontend/build choices, templates, skip options, and reproducible project bootstrap.
+license: MIT
 ---
 
 # Rails Application Bootstrap

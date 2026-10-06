@@ -102,6 +102,6 @@ Before adding an index:
 6. consider live-deployment locking/build behavior;
 7. verify the new plan after the change.
 
-Use `patterns/rails/production-index.md` for production index changes.
+Use the `production-index` pattern for production index changes.
 
 Do not add indexes because a column "looks searchable."

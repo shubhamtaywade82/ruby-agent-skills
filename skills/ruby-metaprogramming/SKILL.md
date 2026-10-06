@@ -1,6 +1,7 @@
 ---
 name: ruby-metaprogramming
 description: Use when reflection, dynamic dispatch, runtime method creation, open classes, monkey patches, method_missing, define_method, or controlled metaprogramming are explicitly relevant.
+license: MIT
 ---
 
 # Ruby Metaprogramming

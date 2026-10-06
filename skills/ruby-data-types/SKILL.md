@@ -1,6 +1,7 @@
 ---
 name: ruby-data-types
 description: Use when choosing, parsing, validating, or reviewing Ruby values such as strings, numbers, symbols, ranges, nil, arrays, hashes, or domain value representations.
+license: MIT
 ---
 
 # Ruby Data Types

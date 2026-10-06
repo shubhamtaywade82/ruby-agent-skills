@@ -1,6 +1,7 @@
 ---
 name: ruby-runtime-compatibility
 description: Use when determining or enforcing Ruby, Rails, Bundler, and runtime-version compatibility before implementing, upgrading, linting, debugging, or reviewing Ruby/Rails code.
+license: MIT
 ---
 
 # Ruby Runtime Compatibility

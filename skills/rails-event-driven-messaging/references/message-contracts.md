@@ -46,7 +46,7 @@ Message identity must remain stable across retry/replay of the same logical mess
 
 Never generate a new logical message ID for every delivery attempt.
 
-Use `patterns/rails/event-envelope.md`.
+Use the `event-envelope` pattern.
 
 ## Schema evolution
 
@@ -69,6 +69,6 @@ When a breaking change is unavoidable:
 5. drain/replay old messages as required;
 6. remove the old schema only after compatibility evidence exists.
 
-Use `patterns/rails/event-schema-evolution.md`.
+Use the `event-schema-evolution` pattern.
 
 Do not use a schema registry as permission to make incompatible changes.

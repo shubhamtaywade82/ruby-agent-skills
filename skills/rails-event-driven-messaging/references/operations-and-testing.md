@@ -34,7 +34,7 @@ Metrics should distinguish:
 
 Avoid logging entire payloads by default.
 
-Use `patterns/rails/message-observability.md`.
+Use the `message-observability` pattern.
 
 ## Capacity and backpressure
 
@@ -56,7 +56,7 @@ Watch for:
 
 Use bounded concurrency and backpressure rather than unbounded consumer parallelism.
 
-Use `patterns/rails/broker-capacity.md`.
+Use the `broker-capacity` pattern.
 
 ## Security
 

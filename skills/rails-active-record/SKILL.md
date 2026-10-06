@@ -1,6 +1,7 @@
 ---
 name: rails-active-record
 description: Use when implementing or reviewing deep Active Record model, relation, query, persistence lifecycle, scope, callback, bulk-write, deletion, or loading behavior. Also covers routine model, migration, query, scope, callback, and transaction changes.
+license: MIT
 ---
 
 # Rails Active Record

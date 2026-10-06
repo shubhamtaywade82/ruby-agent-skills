@@ -1,6 +1,7 @@
 ---
 name: rails-release-engineering
 description: Use when designing, reviewing, validating, or operating Rails releases across CI/CD, artifact promotion, deployment gates, progressive delivery, environment compatibility, rollback or roll-forward, and release verification. Also covers deployment preparation, hosting, production configuration, builds, and Kamal-style release readiness.
+license: MIT
 ---
 
 # Rails Release Engineering

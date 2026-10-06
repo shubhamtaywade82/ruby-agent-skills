@@ -1,7 +1,7 @@
 ---
 name: rails-operational-tasks-maintenance
 description: Design and review Rails operational commands, custom Rake tasks, Rails runner jobs, maintenance workflows, cleanup operations, data repair tasks, and one-off production-safe automation.
-family: rails
+license: MIT
 ---
 # Rails Operational Tasks and Maintenance
 
