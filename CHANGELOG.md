@@ -1,5 +1,26 @@
 # Changelog
 
+## Iteration 156 — Verification Gates in Owning Skills and GraphQL
+
+- Add verification gates from an external gap review to the skills that own each boundary. No new skill was created.
+  - `rails-engines-railties-engineering`: rerunnable install generators (generate, verify, rerun, test, document); slice-by-slice extraction of host code; a dummy host that must boot before engine work.
+  - `rails-performance`: a query-count regression test that fails before an N+1 fix. It uses `assert_queries_count` (public since Rails 7.2.0), `db-query-matchers` only when already bundled, or `sql.active_record` notifications. `EXPLAIN ANALYZE` stays off production.
+  - `rails-hotwire`: a no-JavaScript test (request test or `driven_by :rack_test`) before enhancing a workflow that must work without JavaScript.
+  - `ruby-tdd-refactoring`: a characterization gate; structural and behavior changes never share a commit.
+  - `rails-database-engineering`: a new `references/seed-data.md` covering rerunnable seeds, reference versus sample data, secrets outside seeds, and a double-run check.
+  - `change-review`: always-critical security findings (`permit!`, `html_safe`/`raw` on user input, interpolated SQL, disabled forgery protection, `constantize`/`send` on request input), each cited at its real `file:line`.
+  - `rails-authorization`: denial is verified by tests, not manual console or browser checks.
+- Add GraphQL (graphql-ruby) ownership to `rails-api-integration` through `references/graphql.md`:
+  - the schema treated as a contract;
+  - object, field, mutation, and list authorization delegated to the policy layer;
+  - `GraphQL::Dataloader` batching;
+  - `max_depth` and `max_complexity`;
+  - introspection;
+  - verification.
+- Add GraphQL rows to `router/ROUTING.md` and the new triggers to the manifest. Every graphql-ruby API name was checked against graphql-ruby.org.
+- `test/engineering_gates_system_test.rb` pins every gate, link, trigger, and routing row.
+- Correct the README's stale "490 evaluation cases" (the suite reports 492). The system-test inventory is now 101.
+
 ## Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
 
 - Keep the Rails side of the Rails ↔ React seam in this pack and prepare the deprecated standalone React/TypeScript skills for removal in a release after v1.2.0. Nothing is deleted in this iteration.

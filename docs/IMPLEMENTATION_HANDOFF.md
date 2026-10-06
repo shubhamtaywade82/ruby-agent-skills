@@ -9,7 +9,7 @@ Current inventory:
 - 96 skills
 - 446 implementation patterns
 - 492 evaluation cases
-- 100 system/contract tests
+- 101 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -53,6 +53,11 @@ The RSpec reference in `rails-test-engineering` now covers `#method` / `.method`
 - `rails-react-integration` stays in this pack under the `rails` family, with guidance on composing with react-agent-skills.
 - The nine deprecated React/TypeScript skills still ship. Tag v1.2.0 from `main` after merge; its notes come from `docs/releases/v1.2.0.md`.
 - Delete them in a later release, following the checklist in `docs/REACT_AGENT_SKILLS_MIGRATION.md`.
+
+## Iteration 156 — Verification Gates in Owning Skills and GraphQL
+
+- The new gates live in their owning skills; `test/engineering_gates_system_test.rb` pins them.
+- GraphQL work routes to `rails-api-integration` (`references/graphql.md`), with the policy decision kept in `rails-authorization`.
 
 ## Release archive verification
 
@@ -253,4 +258,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 155. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 156. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
