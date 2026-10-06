@@ -1,7 +1,7 @@
 ---
 name: rails-cross-boundary-authorization-security
 description: Design and review authorization as a composed security boundary across controllers, services, jobs, APIs, Action Cable, engines, operational commands, events, tenants, and caches.
-family: security
+license: MIT
 ---
 # Rails Cross-Boundary Authorization and Security Composition
 

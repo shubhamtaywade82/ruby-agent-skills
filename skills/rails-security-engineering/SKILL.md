@@ -1,6 +1,7 @@
 ---
 name: rails-security-engineering
 description: Use when security work requires architecture-level threat modeling, trust-boundary analysis, abuse-case prioritization, tenant isolation, secret governance, supply-chain review, or security regression strategy across a Rails system.
+license: MIT
 ---
 
 # Security Engineering & Threat Modeling
@@ -80,7 +81,7 @@ Identify:
 
 Prioritize by impact and exploitability rather than by number of findings.
 
-Use `patterns/rails/threat-model.md`.
+Use the `threat-model` pattern.
 
 ## Trust boundaries
 
@@ -103,7 +104,7 @@ Place validation, authentication, authorization, and encoding controls at the bo
 
 Do not rely on a downstream caller to repeat an authorization decision that only the resource owner can make.
 
-Use `patterns/rails/trust-boundary.md`.
+Use the `trust-boundary` pattern.
 
 ## Authorization architecture
 
@@ -134,7 +135,7 @@ Review alternate paths:
 - exports/downloads;
 - service objects callable outside controllers.
 
-Use `patterns/rails/authorization-matrix.md`.
+Use the `authorization-matrix` pattern.
 
 ## Tenant isolation
 
@@ -156,7 +157,7 @@ Prefer database-level constraints/scoping invariants where practical and verify 
 
 Never trust a client-supplied tenant ID when server-side identity already determines tenant scope.
 
-Use `patterns/rails/tenant-isolation-review.md`.
+Use the `tenant-isolation-review` pattern.
 
 ## Secrets and credentials
 
@@ -183,7 +184,7 @@ Inspect:
 
 Do not place secrets in source, durable message payloads, URL query parameters, or default logs.
 
-Use `patterns/rails/secret-management-boundary.md`.
+Use the `secret-management-boundary` pattern.
 
 ## SSRF and arbitrary outbound access
 
@@ -206,7 +207,7 @@ Verify:
 
 A URL validator that checks only the original hostname is not necessarily sufficient when DNS rebinding or redirects are possible.
 
-Use `patterns/rails/ssrf-outbound-boundary.md`.
+Use the `ssrf-outbound-boundary` pattern.
 
 ## Supply-chain security
 
@@ -232,7 +233,7 @@ Separate:
 
 Do not treat a clean vulnerability database as proof that the supply chain is safe.
 
-Use `patterns/rails/dependency-supply-chain.md`.
+Use the `dependency-supply-chain` pattern.
 
 ## Security regression engineering
 
@@ -251,7 +252,7 @@ The regression should exercise the attacker-controlled boundary and prove the se
 
 Use the narrowest security test that proves the contract, then run repository security tooling.
 
-Use `patterns/rails/security-regression.md`.
+Use the `security-regression` pattern.
 
 ## Defense in depth
 

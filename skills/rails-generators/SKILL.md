@@ -1,6 +1,7 @@
 ---
 name: rails-generators
 description: Use when using Rails generators or scaffolding to create conventional models, controllers, views, migrations, tests, or related application structure.
+license: MIT
 ---
 
 # Rails Generators and Scaffolding

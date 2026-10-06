@@ -1,6 +1,7 @@
 ---
 name: rails-test-engineering
 description: Use when designing, reviewing, debugging, optimizing, or scaling a Rails test suite across unit, model, request, integration, system, job, mailer, Action Cable, parallel, and CI boundaries. Also covers deciding where model, request, system, and service tests belong for a routine change.
+license: MIT
 ---
 
 # Rails Test Engineering

@@ -1,7 +1,7 @@
 ---
 name: stack-minimality
 description: Apply a Ponytail-inspired minimality discipline to Ruby, Rails, React, TypeScript, and PostgreSQL projects without sacrificing correctness, security, accessibility, data integrity, observability, or explicit requirements.
-family: architecture-quality
+license: MIT
 ---
 # Stack Minimality
 

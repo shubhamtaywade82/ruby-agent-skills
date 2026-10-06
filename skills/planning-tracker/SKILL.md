@@ -1,6 +1,7 @@
 ---
 name: planning-tracker
 description: Use when a planning skill must read, create, link, label, or close planning items (maps, decisions, specs, tickets) and the tracker backend must be resolved as local Markdown files or GitHub Issues.
+license: MIT
 ---
 
 # Planning Tracker

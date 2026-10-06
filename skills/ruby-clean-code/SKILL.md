@@ -1,6 +1,7 @@
 ---
 name: ruby-clean-code
 description: Use globally for Ruby/Rails implementation and review when readability, simplicity, changeability, naming, responsibility, boolean logic, or maintainability matter.
+license: MIT
 ---
 
 # Ruby Clean Code

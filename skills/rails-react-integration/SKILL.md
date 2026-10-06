@@ -1,6 +1,7 @@
 ---
 name: rails-react-integration
 description: Use when React/TypeScript code talks to a Rails backend — choosing the integration mode (Inertia, JSON API, or islands), typing and validating Rails JSON on the client, sending CSRF and session credentials from fetch, mapping Rails 422 validation errors into forms, and paginating Rails collections.
+license: MIT
 ---
 
 # Rails ↔ React Integration

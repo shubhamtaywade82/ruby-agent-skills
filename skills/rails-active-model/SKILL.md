@@ -1,6 +1,7 @@
 ---
 name: rails-active-model
 description: "Use when designing, implementing, reviewing, testing, or integrating Rails Active Model classes that need model-like behavior without Active Record persistence, including attributes, validations, conversions, naming, dirty tracking, callbacks, serialization, translation, and form/view integration."
+license: MIT
 ---
 
 # Rails Active Model Engineering
@@ -352,17 +353,17 @@ Rails documents Active Model as the model-like layer for non-persisted Ruby obje
 
 Composed repository skills:
 
-- skills/ruby-poro/SKILL.md
-- skills/ruby-domain-modeling/SKILL.md
-- skills/ruby-service-objects/SKILL.md
-- skills/rails-active-record/SKILL.md
-- skills/rails-validations/SKILL.md
-- skills/rails-action-controller/SKILL.md
-- skills/rails-action-view/SKILL.md
-- skills/rails-i18n/SKILL.md
-- skills/rails-api-integration/SKILL.md
-- skills/rails-test-engineering/SKILL.md
-- skills/rails-test-engineering/SKILL.md
+- `ruby-poro` skill
+- `ruby-domain-modeling` skill
+- `ruby-service-objects` skill
+- `rails-active-record` skill
+- `rails-validations` skill
+- `rails-action-controller` skill
+- `rails-action-view` skill
+- `rails-i18n` skill
+- `rails-api-integration` skill
+- `rails-test-engineering` skill
+- `rails-test-engineering` skill
 
 ## Rails Active Model changes
 

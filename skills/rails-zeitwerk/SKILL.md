@@ -1,6 +1,7 @@
 ---
 name: rails-zeitwerk
 description: Use when creating, moving, renaming, loading, reloading, eager-loading, namespacing, inflecting, or debugging Ruby/Rails constants and file paths under Zeitwerk.
+license: MIT
 ---
 
 # Rails Zeitwerk

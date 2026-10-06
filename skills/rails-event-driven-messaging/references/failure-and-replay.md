@@ -57,7 +57,7 @@ Define:
 - replay safety;
 - whether the original timestamp/identity is preserved.
 
-Use `patterns/rails/dead-letter-replay.md`.
+Use the `dead-letter-replay` pattern.
 
 ## Replay and backfill
 

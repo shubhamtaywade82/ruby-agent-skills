@@ -1,7 +1,7 @@
 ---
 name: rails-engines-railties-engineering
 description: Design and review Rails Engines and Railties as isolated extension boundaries with explicit boot, routing, configuration, loading, dependency, and host-application contracts.
-family: rails
+license: MIT
 ---
 # Rails Engines and Railties Engineering
 

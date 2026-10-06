@@ -1,7 +1,7 @@
 ---
 name: rails-rack-middleware-engineering
 description: Design and review Rack and Rails middleware as explicit request/response, ordering, failure, security, observability, and concurrency boundaries.
-family: rails
+license: MIT
 ---
 # Rails Rack / Middleware Engineering
 

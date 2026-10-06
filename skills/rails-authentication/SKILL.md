@@ -1,6 +1,7 @@
 ---
 name: rails-authentication
 description: Use when designing, implementing, reviewing, testing, or debugging Rails authentication, credentials, sessions, password recovery, login abuse controls, authentication context propagation, or browser/API identity boundaries.
+license: MIT
 ---
 
 # Rails Authentication Engineering
@@ -228,15 +229,15 @@ The current Rails Security Guide documents the Rails 8+ authentication generator
 
 Repository composition:
 
-- skills/rails-security/SKILL.md
-- skills/rails-security-engineering/SKILL.md
-- skills/rails-action-controller/SKILL.md
-- skills/rails-api-integration/SKILL.md
-- skills/rails-observability/SKILL.md
-- skills/rails-incident-engineering/SKILL.md
-- skills/rails-active-record/SKILL.md
-- skills/rails-database-engineering/SKILL.md
-- skills/rails-test-engineering/SKILL.md
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-action-controller` skill
+- `rails-api-integration` skill
+- `rails-observability` skill
+- `rails-incident-engineering` skill
+- `rails-active-record` skill
+- `rails-database-engineering` skill
+- `rails-test-engineering` skill
 
 Primary source: Ruby on Rails, Securing Rails Applications. The current guide documents the Rails authentication generator, password reset, has_secure_password, authenticate_by, sessions, session fixation, session expiry, CSRF, brute-force/account-hijacking concerns, credentials, and related security controls.
 

@@ -17,7 +17,7 @@ Define:
 
 Recovery is not complete when the process starts. It is complete when the critical invariant and user journey are restored and verified.
 
-Use `patterns/rails/recovery-objectives.md`.
+Use the `recovery-objectives` pattern.
 
 ## Disaster recovery and reconciliation
 

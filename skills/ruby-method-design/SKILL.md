@@ -1,6 +1,7 @@
 ---
 name: ruby-method-design
 description: Use when creating, reviewing, or refactoring Ruby methods with meaningful parameters, return contracts, branching, nesting, comments, or responsibilities.
+license: MIT
 ---
 
 # Ruby Method Design

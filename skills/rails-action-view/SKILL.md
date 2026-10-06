@@ -1,6 +1,7 @@
 ---
 name: rails-action-view
 description: Use when designing, implementing, reviewing, testing, or optimizing Rails Action View rendering, templates, partials, layouts, helpers, strict locals, output safety, localized views, and rendering performance. Also covers routine ERB templates, partials, helpers, and forms.
+license: MIT
 ---
 
 # Rails Action View Engineering
@@ -200,17 +201,17 @@ These sources document Action View rendering, partials, strict locals, layouts, 
 
 Composed repository skills:
 
-- skills/rails-action-view/SKILL.md
-- skills/rails-action-controller/SKILL.md
-- skills/rails-i18n/SKILL.md
-- skills/rails-caching/SKILL.md
-- skills/rails-performance/SKILL.md
-- skills/ruby-performance/SKILL.md
-- skills/rails-security/SKILL.md
-- skills/rails-security-engineering/SKILL.md
-- skills/rails-action-text/SKILL.md
-- skills/rails-test-engineering/SKILL.md
-- skills/rails-test-engineering/SKILL.md
+- `rails-action-view` skill
+- `rails-action-controller` skill
+- `rails-i18n` skill
+- `rails-caching` skill
+- `rails-performance` skill
+- `ruby-performance` skill
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-action-text` skill
+- `rails-test-engineering` skill
+- `rails-test-engineering` skill
 
 ## Rails Action View changes
 

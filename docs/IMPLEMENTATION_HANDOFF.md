@@ -9,7 +9,7 @@ Current inventory:
 - 96 skills
 - 446 implementation patterns
 - 492 evaluation cases
-- 101 system/contract tests
+- 102 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -58,6 +58,10 @@ The RSpec reference in `rails-test-engineering` now covers `#method` / `.method`
 
 - The new gates live in their owning skills; `test/engineering_gates_system_test.rb` pins them.
 - GraphQL work routes to `rails-api-integration` (`references/graphql.md`), with the policy decision kept in `rails-authorization`.
+
+## Iteration 157 — Agent Skills Specification Conformance and Publish Readiness
+
+- `bin/skills-spec-check` (also run in CI) and `bin/publish-readiness` are the deterministic publishing gates. `docs/PUBLISHING.md` lists the model-based stages still to run before a public announcement.
 
 ## Release archive verification
 
@@ -258,4 +262,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 156. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 157. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).

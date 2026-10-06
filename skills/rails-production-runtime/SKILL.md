@@ -1,6 +1,7 @@
 ---
 name: rails-production-runtime
 description: Use when designing, reviewing, debugging, or validating Rails production process architecture, Puma sizing, worker/thread concurrency, graceful shutdown, release ordering, health/readiness, runtime configuration, secrets, or container/process lifecycle.
+license: MIT
 ---
 
 # Rails Production Runtime

@@ -1,6 +1,7 @@
 ---
 name: rails-action-cable
 description: "Use when designing, implementing, reviewing, testing, or operating Rails Action Cable/WebSocket connections, channels, subscriptions, streams, broadcasting, authorization, reconnect behavior, pub/sub adapters, realtime capacity, or cable security."
+license: MIT
 ---
 
 # Rails Action Cable & Realtime Engineering
@@ -207,20 +208,20 @@ Primary Rails guidance:
 
 Composed repository skills:
 
-- `skills/rails-security/SKILL.md`
-- `skills/rails-security-engineering/SKILL.md`
-- `skills/rails-active-job/SKILL.md`
-- `skills/rails-event-driven-messaging/SKILL.md`
-- `skills/rails-distributed-systems/SKILL.md`
-- `skills/rails-reliability-engineering/SKILL.md`
-- `skills/rails-performance/SKILL.md`
-- `skills/ruby-performance/SKILL.md`
-- `skills/ruby-concurrency/SKILL.md`
-- `skills/rails-production-runtime/SKILL.md`
-- `skills/rails-release-engineering/SKILL.md`
-- `skills/rails-observability/SKILL.md`
-- `skills/rails-test-engineering/SKILL.md`
-- `skills/rails-test-engineering/SKILL.md`
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-active-job` skill
+- `rails-event-driven-messaging` skill
+- `rails-distributed-systems` skill
+- `rails-reliability-engineering` skill
+- `rails-performance` skill
+- `ruby-performance` skill
+- `ruby-concurrency` skill
+- `rails-production-runtime` skill
+- `rails-release-engineering` skill
+- `rails-observability` skill
+- `rails-test-engineering` skill
+- `rails-test-engineering` skill
 
 ## Rails Action Cable changes
 

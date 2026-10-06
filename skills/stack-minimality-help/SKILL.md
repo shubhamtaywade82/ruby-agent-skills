@@ -1,7 +1,7 @@
 ---
 name: stack-minimality-help
 description: Provide a quick reference for stack-minimality skills and scope without changing repository behavior.
-family: architecture-quality
+license: MIT
 ---
 # Stack Minimality Help
 

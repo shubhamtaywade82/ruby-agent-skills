@@ -1,7 +1,7 @@
 ---
 name: rails-authorization
 description: Design and review authorization as an explicit Rails policy, resource-scope, tenant, and execution-boundary contract.
-family: rails
+license: MIT
 ---
 
 # Rails Authorization Engineering

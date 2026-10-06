@@ -1,6 +1,7 @@
 ---
 name: typescript-core-engineering
 description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / typescript-core-engineering instead. Select only to maintain existing work during the deprecation window. Use for TypeScript language semantics, strictness, modules, narrowing, generics, and public type contracts.
+license: MIT
 ---
 
 # TypeScript Core Engineering

@@ -1,6 +1,7 @@
 ---
 name: rubocop
 description: Use when linting, reviewing, refactoring, or implementing Ruby/Rails code where RuboCop or a RuboCop extension can provide static-analysis, style, architecture, framework, testing, performance, security-adjacent, or domain-specific feedback.
+license: MIT
 ---
 
 # RuboCop

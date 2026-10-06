@@ -1,6 +1,7 @@
 ---
 name: rails-i18n
 description: "Use when designing, implementing, reviewing, testing, or operating Rails internationalization/localization across locale selection, translation keys, pluralization, interpolation, dates/numbers, localized views/routes, model errors, mailers, APIs, jobs, caching, and translation backends."
+license: MIT
 ---
 
 # Rails I18n & Localization Engineering
@@ -207,17 +208,17 @@ Current guide evidence used by this skill includes locale configuration/availabi
 
 Composed repository skills:
 
-- skills/rails-action-view/SKILL.md
-- skills/rails-routing/SKILL.md
-- skills/rails-validations/SKILL.md
-- skills/rails-api-integration/SKILL.md
-- skills/rails-action-mailer/SKILL.md
-- skills/rails-active-job/SKILL.md
-- skills/rails-caching/SKILL.md
-- skills/rails-security/SKILL.md
-- skills/rails-test-engineering/SKILL.md
-- skills/rails-test-engineering/SKILL.md
-- skills/ruby-concurrency/SKILL.md
+- `rails-action-view` skill
+- `rails-routing` skill
+- `rails-validations` skill
+- `rails-api-integration` skill
+- `rails-action-mailer` skill
+- `rails-active-job` skill
+- `rails-caching` skill
+- `rails-security` skill
+- `rails-test-engineering` skill
+- `rails-test-engineering` skill
+- `ruby-concurrency` skill
 
 ## Rails I18n changes
 

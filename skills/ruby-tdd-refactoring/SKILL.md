@@ -1,6 +1,7 @@
 ---
 name: ruby-tdd-refactoring
 description: Use when changing Ruby/Rails behavior, fixing bugs, adding coverage, refactoring, or working under a regression-risk constraint.
+license: MIT
 ---
 
 # Ruby TDD and Refactoring

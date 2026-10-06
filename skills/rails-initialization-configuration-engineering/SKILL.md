@@ -1,7 +1,7 @@
 ---
 name: rails-initialization-configuration-engineering
 description: Design Rails boot, initialization, configuration, environment, and lifecycle boundaries with explicit ownership, ordering, reload, security, and failure contracts.
-family: rails
+license: MIT
 ---
 # Rails Initialization and Configuration Engineering
 

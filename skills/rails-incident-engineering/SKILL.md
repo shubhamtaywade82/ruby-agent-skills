@@ -1,6 +1,7 @@
 ---
 name: rails-incident-engineering
 description: "Use when operating, diagnosing, or reviewing production Rails systems through incident response: alert triage, diagnostic context, incident timelines, runbooks, safe production debugging, mitigation, recovery verification, and post-incident learning."
+license: MIT
 ---
 
 # Rails Incident Engineering & Operational Debugging
@@ -308,11 +309,11 @@ Primary framework guidance:
 - Rails Configuring Applications: https://guides.rubyonrails.org/configuring.html
 
 Repository composition:
-- skills/rails-observability/SKILL.md
-- skills/rails-reliability-engineering/SKILL.md
-- skills/rails-production-runtime/SKILL.md
-- skills/rails-event-driven-messaging/SKILL.md
-- skills/rails-distributed-systems/SKILL.md
+- `rails-observability` skill
+- `rails-reliability-engineering` skill
+- `rails-production-runtime` skill
+- `rails-event-driven-messaging` skill
+- `rails-distributed-systems` skill
 
 Use the repository's actual runtime, telemetry, access, deployment, and incident-management conventions as the operational authority.
 

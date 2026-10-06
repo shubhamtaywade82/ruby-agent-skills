@@ -27,7 +27,7 @@ A circuit breaker is not a timeout, retry policy, cache, or load balancer.
 
 Do not put one global breaker around unrelated dependencies or tenants unless they truly share a failure domain.
 
-Use `patterns/rails/circuit-breaker.md`.
+Use the `circuit-breaker` pattern.
 
 ## Bulkheads
 
@@ -52,7 +52,7 @@ Define:
 
 Do not create many tiny pools without evidence; fragmentation can reduce useful capacity.
 
-Use `patterns/rails/bulkhead-isolation.md`.
+Use the `bulkhead-isolation` pattern.
 
 ## Load shedding and admission control
 
@@ -74,7 +74,7 @@ A system that accepts unlimited work and fails later is not necessarily more rel
 
 Never silently drop durable business operations without a recovery/audit contract.
 
-Use `patterns/rails/load-shedding.md`.
+Use the `load-shedding` pattern.
 
 ## Graceful degradation
 
@@ -101,7 +101,7 @@ For every fallback define:
 
 Never return stale or fallback data where the contract requires authoritative current state.
 
-Use `patterns/rails/graceful-degradation.md`.
+Use the `graceful-degradation` pattern.
 
 ## Retry and timeout coordination
 

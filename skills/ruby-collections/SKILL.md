@@ -1,6 +1,7 @@
 ---
 name: ruby-collections
 description: Use for Ruby Array/Hash data structures and collection algorithms, especially when representation, mutation, indexing, ordering, or algorithmic complexity is the primary concern. Use `ruby-enumerables` when the primary concern is selecting or composing Enumerable transformations.
+license: MIT
 ---
 
 # Ruby Collections

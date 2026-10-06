@@ -23,7 +23,7 @@ Prefer orchestration when one component must own workflow state and sequencing. 
 
 Do not use a saga when one local transaction can enforce the invariant.
 
-Use `patterns/rails/saga-orchestration.md`.
+Use the `saga-orchestration` pattern.
 
 ## Distributed locks
 
@@ -53,7 +53,7 @@ A lock without fencing can still permit stale owners after pauses or network par
 
 Never treat a lock as proof that a side effect happened exactly once.
 
-Use `patterns/rails/distributed-lock.md`.
+Use the `distributed-lock` pattern.
 
 ## Multi-region deployments
 
@@ -71,4 +71,4 @@ Before designing for multiple regions, define:
 
 Keep synchronous cross-region calls out of user request paths.
 
-Use `patterns/rails/multi-region-data-boundary.md`.
+Use the `multi-region-data-boundary` pattern.

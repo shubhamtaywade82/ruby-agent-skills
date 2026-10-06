@@ -1,6 +1,7 @@
 ---
 name: rails-reliability-engineering
 description: Use when Rails/Ruby systems need explicit reliability objectives, failure containment, graceful degradation, dependency isolation, load shedding, recovery planning, or resilience testing.
+license: MIT
 ---
 
 # Reliability Engineering & Resilience

@@ -22,7 +22,7 @@ A partition/routing key should preserve ordering for the entity whose transition
 
 Do not partition on a high-cardinality field merely because it distributes load; verify the ordering requirement and hot-key risk first.
 
-Use `patterns/rails/consumer-group-partitioning.md`.
+Use the `consumer-group-partitioning` pattern.
 
 ## Consumer groups and parallelism
 

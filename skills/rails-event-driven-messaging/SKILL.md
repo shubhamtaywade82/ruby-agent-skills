@@ -1,6 +1,7 @@
 ---
 name: rails-event-driven-messaging
 description: Use when Rails/Ruby applications publish, consume, route, replay, evolve, or operate asynchronous events, commands, queues, brokers, or streams.
+license: MIT
 ---
 
 # Event-Driven Architecture & Messaging Engineering

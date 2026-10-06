@@ -1,6 +1,7 @@
 ---
 name: planning-wayfinder
 description: Use when an effort is too large or too unclear for one agent session and must be charted as a map of decision items, then resolved one decision per session until the way to a named destination is clear.
+license: MIT
 ---
 
 # Planning Wayfinder

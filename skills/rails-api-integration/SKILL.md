@@ -1,6 +1,7 @@
 ---
 name: rails-api-integration
 description: Use when designing, implementing, reviewing, or debugging Rails API contracts and external integrations across inbound HTTP, outbound HTTP clients, webhooks, versioning, idempotency, retries, rate limits, serialization, and failure boundaries.
+license: MIT
 ---
 
 # Rails API & Integration Architecture
@@ -134,7 +135,7 @@ When a version changes:
 
 Do not duplicate the entire domain for a representation change.
 
-Use `patterns/rails/api-contract-versioning.md`.
+Use the `api-contract-versioning` pattern.
 
 ## Serialization and normalization
 
@@ -183,7 +184,7 @@ Keep raw HTTP calls out of controllers/models.
 
 Inject the transport when replacement/isolation matters so tests do not require a live network.
 
-Use `patterns/ruby-design/resilient-http-client.md`.
+Use the `resilient-http-client` pattern.
 
 ## Timeout and retry policy
 
@@ -217,7 +218,7 @@ If yes, define idempotency key, key scope, request fingerprint, durable storage,
 
 Reject key reuse with different request semantics when required.
 
-Idempotency is not the same as uniqueness validation. Use `patterns/rails/idempotent-request.md`.
+Idempotency is not the same as uniqueness validation. Use the `idempotent-request` pattern.
 
 ## Webhook ingestion
 
@@ -238,7 +239,7 @@ Do not mark an event processed before required durable state exists.
 
 Assume duplicate, delayed, and retried delivery. If processing is asynchronous, distinguish "accepted" from "domain work completed".
 
-Use `patterns/rails/webhook-ingestion.md`.
+Use the `webhook-ingestion` pattern.
 
 ## Webhook ordering
 

@@ -1,6 +1,7 @@
 ---
 name: rails-associations
 description: Use when designing or reviewing deep Active Record association contracts including cardinality, ownership, inverse relationships, through joins, polymorphism, dependent lifecycle, autosave, counters, touch, callbacks, and association testing.
+license: MIT
 ---
 
 # Rails Associations

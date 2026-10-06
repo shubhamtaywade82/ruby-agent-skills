@@ -1,6 +1,7 @@
 ---
 name: rails-active-support
 description: "Use when designing, implementing, reviewing, testing, or optimizing Rails Active Support primitives, including core extensions/loading, ActiveSupport::Concern, class_attribute, CurrentAttributes, callbacks, Notifications instrumentation, time/date semantics, inflection, and reusable Active Support utilities."
+license: MIT
 ---
 
 # Rails Active Support Engineering
@@ -405,16 +406,16 @@ These sources document Active Support loading/core extensions, Concern compositi
 
 Composed repository skills:
 
-- skills/rails-observability/SKILL.md
-- skills/rails-zeitwerk/SKILL.md
-- skills/ruby-concurrency/SKILL.md
-- skills/rails-active-model/SKILL.md
-- skills/rails-active-record/SKILL.md
-- skills/rails-i18n/SKILL.md
-- skills/rails-security/SKILL.md
-- skills/rails-security-engineering/SKILL.md
-- skills/rails-test-engineering/SKILL.md
-- skills/rails-test-engineering/SKILL.md
+- `rails-observability` skill
+- `rails-zeitwerk` skill
+- `ruby-concurrency` skill
+- `rails-active-model` skill
+- `rails-active-record` skill
+- `rails-i18n` skill
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-test-engineering` skill
+- `rails-test-engineering` skill
 
 ## Rails Active Support changes
 

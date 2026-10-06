@@ -28,7 +28,7 @@ Do not treat every technical metric as an SLO. A metric becomes an SLI when it m
 
 Avoid arbitrary ultra-high targets. The target must reflect user impact, business criticality, architecture, and operating cost.
 
-Use `patterns/rails/slo-error-budget.md`.
+Use the `slo-error-budget` pattern.
 
 ## Error budgets and operational decisions
 
@@ -67,4 +67,4 @@ For each dependency define:
 
 Do not classify a dependency as optional merely because the API call is technically not required.
 
-Use `patterns/rails/dependency-failure-boundary.md`.
+Use the `dependency-failure-boundary` pattern.

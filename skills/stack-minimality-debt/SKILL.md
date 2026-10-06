@@ -1,7 +1,7 @@
 ---
 name: stack-minimality-debt
 description: Collect deliberate stack-minimality shortcuts into a debt ledger with explicit ceilings and revisit triggers.
-family: architecture-quality
+license: MIT
 ---
 # Stack Minimality Debt
 

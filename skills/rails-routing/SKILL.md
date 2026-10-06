@@ -1,6 +1,7 @@
 ---
 name: rails-routing
 description: Use when designing, changing, debugging, reviewing, or testing Rails routes, resource hierarchies, route helpers, scopes, constraints, routing concerns, direct routes, mounted endpoints, or URL generation.
+license: MIT
 ---
 
 # Rails Routing

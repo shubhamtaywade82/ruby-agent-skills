@@ -1,6 +1,7 @@
 ---
 name: rails-action-controller
 description: Use when implementing or reviewing Rails Action Controller HTTP boundaries including parameters, request and response semantics, sessions, cookies, callbacks, negotiation, conditional responses, streaming, and controller-level exception handling. Also covers routine controller actions, parameters, rendering, and redirects.
+license: MIT
 ---
 
 # Rails Action Controller

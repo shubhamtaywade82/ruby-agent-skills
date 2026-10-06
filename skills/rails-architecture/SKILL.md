@@ -1,6 +1,7 @@
 ---
 name: rails-architecture
 description: Use when implementing or reviewing Rails application structure, MVC boundaries, resource flows, REST behavior, or cross-layer feature changes. Also covers maintainability review of REST design, MVC responsibilities, indexing, callbacks, and migrations.
+license: MIT
 ---
 
 # Rails Architecture

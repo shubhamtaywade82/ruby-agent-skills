@@ -1,6 +1,7 @@
 ---
 name: ruby-toolchain
 description: Use when installing, selecting, inspecting, or troubleshooting the Ruby runtime, RubyGems, Bundler, gem executables, PATH, native extensions, and local Ruby development tooling before application work.
+license: MIT
 ---
 
 # Ruby Toolchain

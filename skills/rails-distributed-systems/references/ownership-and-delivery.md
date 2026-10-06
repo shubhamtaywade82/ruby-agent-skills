@@ -40,7 +40,7 @@ or the provider/broker-specific equivalent.
 
 Never acknowledge durable work before the required state is safely recorded.
 
-Use `patterns/rails/message-delivery-contract.md`.
+Use the `message-delivery-contract` pattern.
 
 ## Outbox
 
@@ -54,7 +54,7 @@ An outbox does not provide exactly-once publication. Publishers may send the sam
 
 Use stable event identity, publication state, retry/replay, and consumer idempotency.
 
-Use `patterns/rails/outbox-publication.md`.
+Use the `outbox-publication` pattern.
 
 Compose with `transaction-boundary` and `transactional-job-enqueue` rather than duplicating their concerns.
 
@@ -70,7 +70,7 @@ Do not use an in-memory set or process-local mutex for cross-process deduplicati
 
 Reuse `idempotent-job` when the final execution is an Active Job.
 
-Use `patterns/rails/inbox-deduplication.md`.
+Use the `inbox-deduplication` pattern.
 
 ## Retries and backpressure
 
@@ -106,4 +106,4 @@ Define what a caller observes during propagation:
 
 Never hide eventual consistency behind a synchronous-looking API that promises data the system cannot guarantee yet.
 
-Use `patterns/rails/eventual-consistency.md`.
+Use the `eventual-consistency` pattern.

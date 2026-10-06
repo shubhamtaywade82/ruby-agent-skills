@@ -1,0 +1,195 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Deterministic publish-readiness gate: everything that can be checked
+# locally without a model, an account, or publishing anything.
+#
+#   ruby bin/publish-readiness                      # all checks
+#   ruby bin/publish-readiness --only spec,cli_list # a subset
+#   ruby bin/publish-readiness --out tmp/publish-readiness.md
+#
+# Each check reports pass, fail, or unavailable (a missing tool). Only a run
+# where every selected check passes exits 0; unavailable is never a pass.
+# Empirical evaluation with a real model is a separate stage
+# (docs/PUBLISHING.md).
+
+require "fileutils"
+require "open3"
+require "optparse"
+require "tmpdir"
+require "yaml"
+
+ROOT = File.expand_path("..", __dir__)
+SKILLS_CLI = "skills@1.7.0"
+NO_TELEMETRY = { "DISABLE_TELEMETRY" => "1", "DO_NOT_TRACK" => "1" }.freeze
+LISTED_SKILL = /^[|│]\s{4}([a-z0-9][a-z0-9-]*)\s*$/
+Result = Struct.new(:id, :status, :evidence)
+
+def tool?(name)
+  ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).any? do |dir|
+    File.executable?(File.join(dir, name))
+  end
+end
+
+# Tool output is UTF-8 whatever the locale (the CLI draws box characters).
+def utf8(text)
+  text.to_s.dup.force_encoding("UTF-8").scrub
+end
+
+def tail(text, lines = 3)
+  utf8(text).lines.last(lines).join.strip.gsub(/\s+/, " ")
+end
+
+def names(list)
+  list.empty? ? "none" : list.join(", ")
+end
+
+def manifest_skills
+  @manifest_skills ||= YAML.safe_load_file(File.join(ROOT, "skill-manifest.yml"))
+                           .fetch("skills").keys.sort
+end
+
+def skills_cli(project, *)
+  Open3.capture3(NO_TELEMETRY, "npx", "-y", SKILLS_CLI, "add", ROOT, *, chdir: project)
+end
+
+def outcome(status, out, err)
+  [status.success? ? "pass" : "fail", tail(status.success? ? out : out + err)]
+end
+
+def check_validate
+  out, err, status = Open3.capture3("bash", File.join(ROOT, "bin", "validate"), chdir: ROOT)
+  Result.new("validate", *outcome(status, out, err))
+end
+
+def check_spec
+  out, err, status = Open3.capture3(File.join(ROOT, "bin", "skills-spec-check"), chdir: ROOT)
+  state = { 0 => "pass", 3 => "unavailable" }.fetch(status.exitstatus, "fail")
+  Result.new("spec", state, tail(out + err))
+end
+
+def list_result(listed)
+  missing = manifest_skills - listed
+  extra = listed - manifest_skills
+  Result.new("cli_list", missing.empty? && extra.empty? ? "pass" : "fail",
+             "#{listed.length} listed by #{SKILLS_CLI}; " \
+             "missing: #{names(missing)}; extra: #{names(extra)}")
+end
+
+def check_cli_list
+  return Result.new("cli_list", "unavailable", "npx not found") unless tool?("npx")
+
+  out, err, status = Dir.mktmpdir("publish-readiness-list") { |dir| skills_cli(dir, "--list") }
+  return Result.new("cli_list", "fail", "--list failed: #{tail(err)}") unless status.success?
+
+  list_result(utf8(out).scan(LISTED_SKILL).flatten.sort)
+end
+
+def link_targets(file)
+  text = File.read(file, encoding: "UTF-8").gsub(/^```.*?^```/m, "")
+  text.scan(/\]\(([^)#\s]+)\)/).flatten.grep_v(%r{\A[a-z]+://})
+end
+
+def resolves_inside?(target, file, root)
+  resolved = File.expand_path(target, File.dirname(file))
+  resolved.start_with?(root) && File.exist?(resolved)
+end
+
+# Every relative Markdown link inside an installed skill must resolve inside
+# that skill's own directory, because the CLI installs each skill alone.
+def broken_links(skill_dir)
+  root = "#{File.expand_path(skill_dir)}/"
+  Dir[File.join(skill_dir, "**", "*.md")].flat_map do |file|
+    link_targets(file).reject { |target| resolves_inside?(target, file, root) }
+                      .map { |target| "#{File.basename(skill_dir)}: #{target}" }
+  end
+end
+
+def install_problems(installed_root)
+  dirs = manifest_skills.map { |name| File.join(installed_root, name) }
+  missing = dirs.reject { |dir| File.file?(File.join(dir, "SKILL.md")) }
+  missing.map! { |dir| File.basename(dir) }
+  [missing, dirs.flat_map { |dir| broken_links(dir) }]
+end
+
+def install_result(installed_root)
+  missing, broken = install_problems(installed_root)
+  total = manifest_skills.length
+  Result.new("cli_install", missing.empty? && broken.empty? ? "pass" : "fail",
+             "#{total - missing.length}/#{total} installed standalone for claude-code; " \
+             "missing: #{names(missing)}; broken links: #{names(broken.first(5))}")
+end
+
+def check_cli_install
+  return Result.new("cli_install", "unavailable", "npx not found") unless tool?("npx")
+
+  Dir.mktmpdir("publish-readiness-install") do |project|
+    system("git", "init", "-q", project, exception: true)
+    _out, err, status = skills_cli(project, "--skill", "*", "-a", "claude-code", "--copy", "-y")
+    return Result.new("cli_install", "fail", "install failed: #{tail(err)}") unless status.success?
+
+    install_result(File.join(project, ".claude", "skills"))
+  end
+end
+
+def check_release_archive
+  Dir.mktmpdir("publish-readiness-archive") do |dir|
+    out, err, status = Open3.capture3(
+      RbConfig.ruby, File.join(ROOT, "scripts", "build_release_archive.rb"),
+      "--version", "v0.0.0-readiness", "--output", dir, "--self-test", chdir: ROOT
+    )
+    Result.new("release_archive", *outcome(status, out, err))
+  end
+end
+
+CHECKS = {
+  "validate" => method(:check_validate),
+  "spec" => method(:check_spec),
+  "cli_list" => method(:check_cli_list),
+  "cli_install" => method(:check_cli_install),
+  "release_archive" => method(:check_release_archive)
+}.freeze
+
+def commit_line
+  sha, = Open3.capture2("git", "-C", ROOT, "rev-parse", "HEAD")
+  dirty, = Open3.capture2("git", "-C", ROOT, "status", "--porcelain")
+  line = "Commit: `#{sha.strip}`"
+  dirty.strip.empty? ? line : "#{line} (working tree has uncommitted changes)"
+end
+
+def report_for(results, ready)
+  rows = results.map { |r| "| #{r.id} | #{r.status} | #{r.evidence.to_s.tr('|', '/')} |\n" }
+  "# Publish readiness\n\n#{commit_line}\n\n" \
+    "| Check | Status | Evidence |\n|---|---|---|\n#{rows.join}\n" \
+    "Result: #{ready ? 'READY (deterministic stage)' : 'NOT READY'}\n"
+end
+
+options = { only: CHECKS.keys, out: nil }
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/publish-readiness [--only #{CHECKS.keys.join(',')}] [--out FILE]"
+  opts.on("--only LIST", "Comma-separated checks to run") do |value|
+    options[:only] = value.split(",").map(&:strip)
+  end
+  opts.on("--out FILE", "Write a Markdown evidence report") do |value|
+    options[:out] = File.expand_path(value)
+  end
+end.parse!
+
+unknown = options[:only] - CHECKS.keys
+unless unknown.empty?
+  abort "unknown checks: #{unknown.join(', ')}; known: #{CHECKS.keys.join(', ')}"
+end
+
+results = options[:only].map do |id|
+  warn "running #{id}..."
+  CHECKS.fetch(id).call
+end
+ready = results.all? { |result| result.status == "pass" }
+report = report_for(results, ready)
+
+puts report
+if options[:out]
+  FileUtils.mkdir_p(File.dirname(options[:out]))
+  File.write(options[:out], report)
+end
+exit(ready ? 0 : 1)

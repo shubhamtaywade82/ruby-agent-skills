@@ -1,6 +1,7 @@
 ---
 name: rails-hotwire
 description: Use when designing, implementing, reviewing, testing, or debugging Rails Hotwire interfaces using Turbo Drive, Turbo Frames, Turbo Streams, morphing, Stimulus controllers, and server-rendered progressive enhancement.
+license: MIT
 ---
 
 # Rails Hotwire Engineering

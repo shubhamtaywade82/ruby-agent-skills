@@ -1,6 +1,7 @@
 ---
 name: agent-workflow
 description: Use for any non-trivial change in this repository when an agent must discover applicable skills, manage context, select patterns, implement incrementally, test, review, simplify, and verify the result.
+license: MIT
 ---
 
 # Agent Workflow

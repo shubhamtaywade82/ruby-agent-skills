@@ -1,7 +1,7 @@
 ---
 name: rails-encryption-credentials-engineering
 description: Design and review Rails credentials, secret storage, key management, application-level encryption, rotation, migration, and secret-safe operational boundaries.
-family: rails
+license: MIT
 ---
 # Rails Encryption and Credentials Engineering
 

@@ -1,6 +1,7 @@
 ---
 name: rails-observability
 description: Use when implementing or reviewing Rails request lifecycle, API error handling, request IDs, logging, Rails.error, ActiveSupport::Notifications, health checks, or production diagnostics.
+license: MIT
 ---
 
 # Rails Request Lifecycle & Observability

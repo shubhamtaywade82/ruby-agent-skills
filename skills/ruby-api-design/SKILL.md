@@ -1,6 +1,7 @@
 ---
 name: ruby-api-design
 description: Use when designing Ruby methods, classes, services, or library boundaries whose public inputs, outputs, errors, visibility, or compatibility contract matter.
+license: MIT
 ---
 
 # Ruby API Design

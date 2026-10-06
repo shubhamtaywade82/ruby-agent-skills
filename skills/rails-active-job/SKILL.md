@@ -1,6 +1,7 @@
 ---
 name: rails-active-job
 description: Use when creating, changing, reviewing, debugging, testing, or operating Rails Active Job and queue-backed background processing.
+license: MIT
 ---
 
 # Rails Active Job

@@ -27,7 +27,7 @@ A resilience test should specify:
 
 Do not perform uncontrolled destructive experiments against production without an explicit, authorized experiment contract.
 
-Use `patterns/rails/resilience-testing.md`.
+Use the `resilience-testing` pattern.
 
 ## Observability
 

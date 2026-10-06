@@ -1,6 +1,7 @@
 ---
 name: rails-action-mailer
 description: "Use when designing, implementing, reviewing, testing, or operating Rails Action Mailer delivery, templates, attachments, asynchronous delivery, provider configuration, email security, previews, observability, and failure/retry behavior."
+license: MIT
 ---
 
 # Rails Action Mailer Engineering
@@ -435,12 +436,12 @@ Primary Rails guidance:
 - https://guides.rubyonrails.org/security.html
 
 Repository composition:
-- `skills/rails-active-job/SKILL.md`
-- `skills/rails-api-integration/SKILL.md`
-- `skills/rails-observability/SKILL.md`
-- `skills/rails-security/SKILL.md`
-- `skills/rails-security-engineering/SKILL.md`
-- `skills/rails-test-engineering/SKILL.md`
+- `rails-active-job` skill
+- `rails-api-integration` skill
+- `rails-observability` skill
+- `rails-security` skill
+- `rails-security-engineering` skill
+- `rails-test-engineering` skill
 
 ## Rails Action Mailer changes
 

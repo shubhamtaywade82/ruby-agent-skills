@@ -1,6 +1,7 @@
 ---
 name: planning-interview
 description: Use when a plan, design, or decision must be stress-tested with the user before any spec or code, by interviewing in rounds over a design tree until every branch is settled and the domain language is written down.
+license: MIT
 ---
 
 # Planning Interview

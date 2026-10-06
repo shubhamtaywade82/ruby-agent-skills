@@ -1,6 +1,7 @@
 ---
 name: rails-validations
 description: Use when implementing, reviewing, debugging, or testing Rails model validation contracts, validation contexts, error semantics, conditional rules, custom validators, database-backed invariants, or validation bypass paths.
+license: MIT
 ---
 
 # Rails Validations Engineering

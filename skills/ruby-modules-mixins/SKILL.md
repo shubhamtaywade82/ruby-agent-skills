@@ -1,6 +1,7 @@
 ---
 name: ruby-modules-mixins
 description: Use for Ruby modules, namespaces, shared behavior, include, extend, prepend, callbacks, and method lookup design.
+license: MIT
 ---
 
 # Ruby Modules and Mixins

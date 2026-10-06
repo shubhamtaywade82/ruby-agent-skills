@@ -1,6 +1,7 @@
 ---
 name: ruby-debugging
 description: Use when diagnosing Ruby/Rails exceptions, incorrect behavior, production failures, logging problems, unexpected state, or intermittent defects.
+license: MIT
 ---
 
 # Ruby Debugging

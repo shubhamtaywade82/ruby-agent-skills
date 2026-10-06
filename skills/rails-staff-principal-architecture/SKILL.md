@@ -1,7 +1,7 @@
 ---
 name: rails-staff-principal-architecture
 description: Make senior staff/principal-level Rails architecture decisions about boundaries, dependencies, modularity, coupling, ownership, evolution, and system-wide tradeoffs without adding architecture for its own sake.
-family: architecture
+license: MIT
 ---
 # Rails Staff and Principal Architecture
 

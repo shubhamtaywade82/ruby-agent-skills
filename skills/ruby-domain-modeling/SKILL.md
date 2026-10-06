@@ -1,6 +1,7 @@
 ---
 name: ruby-domain-modeling
 description: Use when business concepts, invariants, or policies are becoming implicit in procedural code and need explicit domain boundaries.
+license: MIT
 ---
 
 # Ruby Domain Modeling

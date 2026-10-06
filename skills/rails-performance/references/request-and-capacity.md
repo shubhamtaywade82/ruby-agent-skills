@@ -42,7 +42,7 @@ Increasing workers may improve concurrency while exhausting memory.
 
 Do not use generic worker/thread counts without workload evidence.
 
-Use `patterns/rails/puma-capacity.md` for the capacity decision boundary.
+Use the `puma-capacity` pattern for the capacity decision boundary.
 
 ## Connection-pool capacity
 
@@ -71,4 +71,4 @@ When a pool timeout occurs, determine whether the root cause is:
 
 Do not increase pool size blindly. A larger pool can move the bottleneck into the database.
 
-Use `patterns/rails/connection-pool-capacity.md`.
+Use the `connection-pool-capacity` pattern.

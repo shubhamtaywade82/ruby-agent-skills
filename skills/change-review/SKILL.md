@@ -1,6 +1,7 @@
 ---
 name: change-review
 description: Use when reviewing a branch, pull request, or work-in-progress diff since a fixed point for conformance to the repository's standards and fidelity to the originating spec or issue, reported as two separate axes.
+license: MIT
 ---
 
 # Change Review

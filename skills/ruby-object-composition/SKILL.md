@@ -1,6 +1,7 @@
 ---
 name: ruby-object-composition
 description: Use when behavior can be assembled from collaborating objects and inheritance is creating coupling, branching, or fragile extension points.
+license: MIT
 ---
 
 # Ruby Object Composition

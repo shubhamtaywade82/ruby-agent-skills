@@ -1,6 +1,7 @@
 ---
 name: rails-asset-build-engineering
 description: Use when designing, implementing, reviewing, testing, or debugging Rails JavaScript/CSS asset loading, bundling, compilation, development processes, and production asset builds.
+license: MIT
 ---
 
 # Rails Asset and Build Infrastructure Engineering
