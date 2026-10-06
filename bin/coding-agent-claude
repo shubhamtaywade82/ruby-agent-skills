@@ -18,7 +18,10 @@ require "open3"
 context_file = ENV.fetch("RUBY_AGENT_CONTEXT_FILE")
 context = File.read(context_file, encoding: "UTF-8")
 claude_bin = ENV.fetch("CLAUDE_BIN", "claude")
-model = ENV.fetch("CLAUDE_MODEL", "claude-sonnet-5")
+# No default: benchmark evidence must record the exact model the operator
+# chose (a CLI alias such as "sonnet" or a full model name), never a guess.
+model = ENV["CLAUDE_MODEL"].to_s.strip
+abort "CLAUDE_MODEL must be set to a claude CLI model alias or full model name" if model.empty?
 
 command = [
   claude_bin,

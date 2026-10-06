@@ -55,13 +55,16 @@ CLI directly. Authenticate it once (`claude auth login` or
 you would any other adapter:
 
 ```bash
+# Choose the exact model; both adapters refuse to run without it:
+export CLAUDE_MODEL=<full model name>   # an alias such as "sonnet" also works, but moves when new models ship
+
 # Sanity check the CLI is reachable and authenticated:
-claude --print --output-format json --tools "" "reply with: OK"
+claude --model "$CLAUDE_MODEL" --print --output-format json --tools "" "reply with: OK"
 
 # Routing campaign (all 23 cases x 3 repetitions):
 ruby bin/routing-eval \
   --command "ruby $(pwd)/bin/routing-agent-claude" \
-  --provider anthropic --model claude-sonnet-5 \
+  --provider anthropic --model "$CLAUDE_MODEL" \
   --router router/ROUTING.md \
   --output benchmark-results/routing-claude
 
@@ -69,14 +72,17 @@ ruby bin/routing-eval \
 ruby bin/agent-benchmark \
   --command "ruby $(pwd)/bin/coding-agent-claude" \
   --manifest benchmarks/rails/campaign.yml \
-  --provider anthropic --model claude-sonnet-5 \
+  --provider anthropic --model "$CLAUDE_MODEL" \
   --timeout 300 --continue-on-failure \
   --output benchmark-results/rails-claude
 ```
 
 Both adapters accept `CLAUDE_BIN` (defaults to `claude` on `PATH`) and
-`CLAUDE_MODEL` (defaults to `claude-sonnet-5`) as overrides, so a specific
-binary or model alias never needs a code change.
+require `CLAUDE_MODEL` (a `claude` CLI alias such as `sonnet`, or a full
+model name). There is no model default, so the evidence records the model the
+operator chose. Prefer a full model name for paired evidence, because an alias
+resolves to whatever model is latest on the day of the run. Pass the same value to `--model` so the campaign label
+matches the model that actually ran.
 
 `bin/coding-agent-claude` runs the CLI with `--restricted` and
 `--setting-sources ""`: no local `CLAUDE.md`, skills, or MCP servers leak
@@ -143,14 +149,14 @@ The two newly benchmark-backed foundation families can be run through the same l
 ruby bin/agent-benchmark \
   --command "ruby $(pwd)/bin/coding-agent-claude" \
   --manifest benchmarks/ruby-toolchain/campaign.yml \
-  --provider anthropic --model claude-sonnet-5 \
+  --provider anthropic --model "$CLAUDE_MODEL" \
   --timeout 300 --output benchmark-results/ruby-toolchain-claude
 
 # Ruby gem development: 1 evaluation × 3 paired repetitions × 2 configurations.
 ruby bin/agent-benchmark \
   --command "ruby $(pwd)/bin/coding-agent-claude" \
   --manifest benchmarks/ruby-gem-development/campaign.yml \
-  --provider anthropic --model claude-sonnet-5 \
+  --provider anthropic --model "$CLAUDE_MODEL" \
   --timeout 300 --output benchmark-results/ruby-gem-development-claude
 ```
 

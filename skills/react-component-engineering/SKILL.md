@@ -1,6 +1,6 @@
 ---
 name: react-component-engineering
-description: Use when designing React component boundaries, props, composition, rendering contracts, and reusable UI architecture.
+description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / react-component-engineering instead. Select only to maintain existing work during the deprecation window. Use when designing React component boundaries, props, composition, rendering contracts, and reusable UI architecture.
 ---
 
 # React Component Engineering

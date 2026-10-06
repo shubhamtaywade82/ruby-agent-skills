@@ -1,6 +1,6 @@
 ---
 name: react-data-fetching
-description: Use for React server-state fetching, caching, mutations, optimistic updates, loading states, and request races.
+description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / react-data-fetching instead. Select only to maintain existing work during the deprecation window. Use for React server-state fetching, caching, mutations, optimistic updates, loading states, and request races.
 ---
 
 # React Data Fetching

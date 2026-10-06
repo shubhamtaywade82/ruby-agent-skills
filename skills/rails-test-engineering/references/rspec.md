@@ -17,4 +17,28 @@ Detect RSpec before writing tests: `spec/`, `.rspec`, `spec/rails_helper.rb`, an
 - `let` is lazy and memoized per example; `let!` forces the call in a `before` hook, so use `let!` only when a later example needs the record to already exist (a query scope, a count, an association preload) — a `let` no example calls never runs and hides that the fixture is unused.
 - Load support files deterministically: `Rails.root.glob("spec/support/**/*.rb").sort_by(&:to_s).each { |f| require f }`.
 
+## Lint enforcement in the consuming repository
+The rules above are guidance; installing this skill pack does not lint anything. They become executable only when the consuming repository's own `.rubocop.yml` loads `rubocop-rspec`. If it already does, keep its settings. If it does not, propose adding the plugin as a lint-policy change rather than adding it silently. These are the settings the rules above assume:
+
+```yaml
+plugins:
+  - rubocop-rspec # versions declaring `default_lint_roller_plugin`; older ones use `require:`
+
+RSpec/AnyInstance:
+  Enabled: true
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+RSpec/HookArgument:
+  EnforcedStyle: implicit
+RSpec/MultipleExpectations:
+  Max: 1
+RSpec/NamedSubject:
+  EnforcedStyle: always
+RSpec/PredicateMatcher:
+  EnforcedStyle: inflected
+```
+
 Patterns: `rspec-request-spec`, `rspec-job-and-mail-enqueue`, `rspec-mailer-spec`, `rspec-factory-traits`, `rspec-shared-examples-contract`, `rspec-verifying-doubles`.

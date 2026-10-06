@@ -40,6 +40,14 @@ This iteration makes the controller resource-loading policy explicit and regress
 
 The RSpec reference in `rails-test-engineering` now covers `#method` / `.method` describe naming, `:aggregate_failures` for expensive multi-assertion specs, and WebMock/VCR HTTP stubbing with `disable_net_connect!`. These are regression-checked in `test/test_engineering_system_test.rb`.
 
+## Iteration 154 — Review Remediation: Deprecation Visibility, Drift Detection, and Benchmark Honesty
+
+- Framework drift detection now actually matches: registry regexes are singly escaped, each entry carries an `example` the validator must match, and the committed registry is tested against every example.
+- Deprecated React/TypeScript skills announce `DEPRECATED` and their replacement in frontmatter, enforced by the deprecation validator.
+- Test-engineering `scope_control` rejects changes outside `test/`/`spec/`. The campaign is documented as statically graded.
+- Claude benchmark adapters require an explicit `CLAUDE_MODEL`.
+- The latest release tag (`v1.1.0`) predates Iterations 134–154; cut a new release from `main` after merge.
+
 ## Release archive verification
 
 The release archive builder records file-level SHA-256/byte-size provenance in `RELEASE.json`. Independently verify a built archive with:
@@ -239,4 +247,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 153. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 154. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).

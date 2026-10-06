@@ -5,7 +5,7 @@ require "yaml"
 module RubyAgentSkills
   class FrameworkDriftRegistry
     REQUIRED_FIELDS = %w[
-      framework status version symbol match
+      framework status version symbol match example
       replacement source_url source_section
     ].freeze
 
@@ -56,8 +56,11 @@ module RubyAgentSkills
         ]
       end
 
-      Regexp.new(match)
-      []
+      # A regex that cannot match its own example detects nothing; this guards
+      # against over-escaping (e.g. '\\b' inside YAML single quotes).
+      return [] if Regexp.new(match).match?(entry.fetch("example", "").to_s)
+
+      ["entry #{id} match does not match its example"]
     rescue RegexpError => e
       ["entry #{id} has invalid match: #{e.message}"]
     end
@@ -71,9 +74,10 @@ module RubyAgentSkills
     RUBY_FENCE = /^\x60\x60\x60(?:ruby|rb)[ \t]*$/
     END_FENCE = /^\x60\x60\x60[ \t]*$/
     RUBY_BLOCK = /^\x60\x60\x60(?:ruby|rb)[ \t]*\n(.*?)^\x60\x60\x60[ \t]*$/m
+    FRAMEWORK_LABELS = { "rails" => "Rails", "ruby" => "Ruby" }.freeze
     FINDING_FORMAT = [
       "%<relative>s:%<line>d: framework drift %<id>s",
-      " (%<status>s Rails %<version>s) uses %<symbol>s;",
+      " (%<status>s %<framework>s %<version>s) uses %<symbol>s;",
       " replace with %<replacement>s"
     ].freeze
 
@@ -154,10 +158,8 @@ module RubyAgentSkills
         relative: path.delete_prefix("#{@root}/"),
         line: line,
         id: id,
-        status: entry.fetch("status"),
-        version: entry.fetch("version"),
-        symbol: entry.fetch("symbol"),
-        replacement: entry.fetch("replacement")
+        framework: FRAMEWORK_LABELS.fetch(entry.fetch("framework"), entry.fetch("framework")),
+        **entry.slice("status", "version", "symbol", "replacement").transform_keys(&:to_sym)
       )
     end
   end

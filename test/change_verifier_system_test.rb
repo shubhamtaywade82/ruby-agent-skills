@@ -419,6 +419,11 @@ class ChangeVerifierStructuralChecksTest < Minitest::Test
 end
 
 class ChangeVerifierRunnerTest < Minitest::Test
+  # ASCII-only script source that emits the UTF-8 bytes of an em dash. A
+  # literal non-ASCII -e script does not parse under a POSIX/US-ASCII locale,
+  # which would leave stdout empty and test the locale instead of the runner.
+  NON_ASCII_WRITER = "STDOUT.write(%q{hello } + [0xE2, 0x80, 0x94].pack(%q{C*}) + %q{ world})"
+
   def test_runner_kills_a_command_that_exceeds_the_timeout
     started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     result = RubyAgentSkills::ChangeVerifier::CommandRunner.new
@@ -431,7 +436,7 @@ class ChangeVerifierRunnerTest < Minitest::Test
 
   def test_runner_normalizes_non_ascii_command_output
     result = RubyAgentSkills::ChangeVerifier::CommandRunner.new
-                                                           .call([RbConfig.ruby, "-e", "STDOUT.write(%q{hello — world})"],
+                                                           .call([RbConfig.ruby, "-e", NON_ASCII_WRITER],
                                                                  chdir: Dir.pwd, timeout: 5)
 
     assert_predicate result.stdout, :valid_encoding?

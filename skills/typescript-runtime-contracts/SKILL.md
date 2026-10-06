@@ -1,6 +1,6 @@
 ---
 name: typescript-runtime-contracts
-description: Use when untrusted JSON, HTTP responses, environment values, browser storage, or dynamic JavaScript enters typed TypeScript code.
+description: DEPRECATED for new standalone React/TypeScript work; use react-agent-skills / typescript-runtime-contracts instead. Select only to maintain existing work during the deprecation window. Use when untrusted JSON, HTTP responses, environment values, browser storage, or dynamic JavaScript enters typed TypeScript code.
 ---
 
 # TypeScript Runtime Contracts

@@ -56,6 +56,10 @@ The upstream guide is a living document and notes that RSpec practices evolve ov
 
 Many of these are enabled by the extension's defaults and contain direct Style Guide references. The repository therefore treats the guide as the semantic source and `rubocop-rspec` as the executable enforcement layer.
 
+### Scope of enforcement
+
+The policy in this repository's `.rubocop.yml` lints no specs here: the only `*_spec.rb` files are benchmark fixtures under `benchmarks/`, which RuboCop excludes. It is the reference policy, and `bin/install` does not copy it into consuming projects. Enforcement in a consuming Rails project requires that project's own `.rubocop.yml` to load `rubocop-rspec`. The consumer snippet lives in `skills/rails-test-engineering/references/rspec.md`, and `test/test_engineering_system_test.rb` keeps it identical to this repository's policy.
+
 ## Agent rules
 
 For RSpec changes, the agent should:

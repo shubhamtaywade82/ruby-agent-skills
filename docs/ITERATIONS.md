@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 153 — RSpec Method Naming, Aggregate Failures, and HTTP Stubbing
+> **Current milestone:** Iteration 154 — Review Remediation: Deprecation Visibility, Drift Detection, and Benchmark Honesty
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -482,3 +482,15 @@ Made Rails controller resource-loading policy explicit and regression-checked: `
 ## Iteration 153 — RSpec Method Naming, Aggregate Failures, and HTTP Stubbing
 
 Closed three gaps found by comparing the RSpec reference against Better Specs: describe-block method naming, `:aggregate_failures` for expensive multi-assertion specs, and WebMock/VCR HTTP stubbing with a real-connection guard. The fixtures-versus-factories and tooling (Guard, formatter) recommendations were deliberately not adopted because they conflict with the existing-convention rule or are workflow rather than spec-correctness guidance.
+
+## Iteration 154 — Review Remediation: Deprecation Visibility, Drift Detection, and Benchmark Honesty
+
+Remediated defects found in an end-to-end review:
+- Framework-drift regexes that could never match, now guarded by per-entry examples, plus five new source-verified entries.
+- Deprecations that were invisible in skill frontmatter.
+- An RSpec lint policy described as enforced although it linted nothing.
+- A test-engineering `scope_control` check that always passed.
+- An undocumented Claude model default.
+- A locale-dependent test.
+
+Cutting a release that includes Iterations 134–154 remains a maintainer action on `main`.
