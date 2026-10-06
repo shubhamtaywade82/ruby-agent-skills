@@ -30,6 +30,17 @@ class TestEngineeringSystemTest < Minitest::Test
     scripts/verify_test_engineering_eval.rb
   ].freeze
 
+  RSPEC_REFERENCE_RULES = [
+    'describe "#instance_method"',
+    'describe ".class_method"',
+    "RSpec/DescribeMethod",
+    ":aggregate_failures",
+    "RSpec/MultipleExpectations",
+    "WebMock.disable_net_connect!(allow_localhost: true)",
+    "filter_sensitive_data",
+    "Do not add WebMock or VCR to a suite that isolates HTTP another way"
+  ].freeze
+
   def test_all_test_engineering_artifacts_exist
     REQUIRED_PATHS.each do |relative|
       assert File.file?(File.join(ROOT, relative)), "missing #{relative}"
@@ -45,5 +56,11 @@ class TestEngineeringSystemTest < Minitest::Test
 
       evaluation.fetch("skills").each { |skill| assert_includes registered, skill }
     end
+  end
+
+  def test_rspec_reference_keeps_method_naming_aggregate_failures_and_http_stubbing_rules
+    reference = File.read(File.join(ROOT, "skills/rails-test-engineering/references/rspec.md"))
+
+    RSPEC_REFERENCE_RULES.each { |rule| assert_includes reference, rule }
   end
 end

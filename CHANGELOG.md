@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 153 — RSpec Method Naming, Aggregate Failures, and HTTP Stubbing
+
+- Add three Better Specs-derived rules to `skills/rails-test-engineering/references/rspec.md`: `#instance_method` / `.class_method` describe naming (and the narrow scope of `RSpec/DescribeMethod`), `:aggregate_failures` for expensive multi-assertion specs (and how `RSpec/MultipleExpectations` treats it), and WebMock/VCR HTTP stubbing with `disable_net_connect!(allow_localhost: true)` and cassette credential filtering.
+- Keep the existing-convention rule: the reference does not prescribe factories over fixtures and does not add WebMock/VCR to suites that isolate HTTP another way.
+- Add a regression assertion for the three rules to `test/test_engineering_system_test.rb`.
+
 ## Iteration 152 — Action Controller Resource-Loading Evidence
 
 - Make resource-loading placement explicit in `rails-action-controller`: narrow `before_action` for shared request prerequisites, action-local lookup for one-off access when clearer, and memoized readers only as a lazy-access option.

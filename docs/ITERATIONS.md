@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 152 — Action Controller Resource-Loading Evidence
+> **Current milestone:** Iteration 153 — RSpec Method Naming, Aggregate Failures, and HTTP Stubbing
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -478,3 +478,7 @@ Recorded the closed #80 reconciliation, corrected stale controlled-benchmark doc
 ## Iteration 152 — Action Controller Resource-Loading Evidence
 
 Made Rails controller resource-loading policy explicit and regression-checked: `before_action` is a request-prerequisite boundary, action-local lookup remains appropriate for one-off use, memoized readers are permitted for lazy access without an unsupported performance claim, and complex reads escalate to explicit query/read boundaries.
+
+## Iteration 153 — RSpec Method Naming, Aggregate Failures, and HTTP Stubbing
+
+Closed three gaps found by comparing the RSpec reference against Better Specs: describe-block method naming, `:aggregate_failures` for expensive multi-assertion specs, and WebMock/VCR HTTP stubbing with a real-connection guard. The fixtures-versus-factories and tooling (Guard, formatter) recommendations were deliberately not adopted because they conflict with the existing-convention rule or are workflow rather than spec-correctness guidance.
