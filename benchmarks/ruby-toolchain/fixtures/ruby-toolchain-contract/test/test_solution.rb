@@ -50,6 +50,18 @@ class RubyToolchainAdvisorTest < Minitest::Test
     )
   end
 
+  def test_compares_version_segments_not_string_prefixes
+    assert_equal(
+      "conflict",
+      @advisor.resolve(
+        declared_ruby: "3.1",
+        observed_ruby: "3.10.0",
+        ruby_executable: "/usr/local/bin/ruby",
+        bundle_executable: "/usr/local/bin/bundle"
+      ).fetch("status")
+    )
+  end
+
   def test_uses_bundler_for_application_dependencies
     assert_equal "bundle check && bundle install",
                  @advisor.dependency_command(lockfile_present: true)
