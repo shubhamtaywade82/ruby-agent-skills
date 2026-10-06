@@ -1,7 +1,7 @@
 ---
 name: rails-react-typed-api-contract
 description: "Type Rails JSON on the React side and validate it at runtime at the boundary."
-family: react-typescript
+family: rails
 ---
 
 # Rails React Typed API Contract
@@ -76,4 +76,6 @@ Parser accepts the real Rails payload and rejects a missing key, a wrong type, a
 Would a renamed Rails attribute fail a test on both sides?
 
 ## Related skills
-rails-react-integration,typescript-runtime-contracts,rails-api-integration
+rails-react-integration,rails-api-integration
+
+Frontend side: react-agent-skills / typescript-runtime-contracts

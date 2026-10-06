@@ -93,6 +93,15 @@ entries.each do |skill, entry|
   validate_entry(errors, skill, entry)
 end
 
+relocated = manifest.fetch("relocated_skills", nil).to_h
+relocated.each do |skill, target|
+  errors << "relocated skill #{skill} is still registered in skills" if skills.key?(skill)
+  errors << "relocated skill #{skill} is still deprecated in place" if entries.key?(skill)
+  next if target.is_a?(String) && target.match?(%r{\A[a-z0-9-]+ / .+})
+
+  errors << "relocated skill #{skill} must name its destination as '<pack> / <skill>'"
+end
+
 replacements = entries.values.filter_map do |entry|
   entry["replacement"] if entry.is_a?(Hash)
 end

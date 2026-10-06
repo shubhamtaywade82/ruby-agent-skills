@@ -75,6 +75,11 @@ retired_skills:
   rails-best-practices: rails-architecture
   rails-deployment: rails-release-engineering
 
+# Skills removed from this pack because another pack now owns them. When a
+# deprecated skill is deleted, move its entry here from `deprecations:` with
+# the same replacement; bin/install then tells upgrading users where it went.
+relocated_skills: {}
+
 skills:
 
   # DEPRECATED: standalone frontend ownership moved to react-agent-skills / typescript-core-engineering
@@ -108,7 +113,7 @@ skills:
     path: skills/react-data-fetching/SKILL.md
     triggers: [React data fetching, server state, query caches, mutations, optimistic updates, request races]
   rails-react-integration:
-    family: react-typescript
+    family: rails
     path: skills/rails-react-integration/SKILL.md
     triggers: [Rails React integration, Inertia, Rails JSON API client, CSRF token in fetch, Rails validation errors in React forms, Rails pagination in React]
   # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-testing-engineering + frontend-e2e
@@ -606,11 +611,6 @@ patterns:
       - patterns/react-typescript/react-focus-management.md
       - patterns/react-typescript/react-render-performance-budget.md
       - patterns/react-typescript/react-memoization-evidence-gate.md
-      - patterns/react-typescript/rails-react-integration-mode.md
-      - patterns/react-typescript/rails-react-typed-api-contract.md
-      - patterns/react-typescript/rails-react-validation-error-mapping.md
-      - patterns/react-typescript/rails-react-csrf-session-fetch.md
-      - patterns/react-typescript/rails-react-pagination-contract.md
   stack-minimality:
     paths:
       - patterns/stack-minimality/rails-convention-before-abstraction.md
@@ -659,6 +659,11 @@ patterns:
 
   rails:
     paths:
+      - patterns/rails/rails-react-integration-mode.md
+      - patterns/rails/rails-react-typed-api-contract.md
+      - patterns/rails/rails-react-validation-error-mapping.md
+      - patterns/rails/rails-react-csrf-session-fetch.md
+      - patterns/rails/rails-react-pagination-contract.md
       - patterns/rails/authentication-mechanism-boundary.md
       - patterns/rails/credential-storage-contract.md
       - patterns/rails/session-lifecycle-contract.md
@@ -1350,7 +1355,7 @@ evaluations:
     source: rails-react-integration-v1
     schema: docs/EVAL_SCHEMA.md
     paths:
-      - evals/react-typescript/rails-react-integration-contract.yml
+      - evals/rails-react-integration/rails-react-integration-contract.yml
     checks:
       - functional
       - tests

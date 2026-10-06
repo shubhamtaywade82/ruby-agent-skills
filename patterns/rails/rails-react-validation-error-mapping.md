@@ -1,7 +1,7 @@
 ---
 name: rails-react-validation-error-mapping
 description: "Map Rails 422 validation errors onto React form fields without losing any error."
-family: react-typescript
+family: rails
 ---
 
 # Rails React Validation Error Mapping
@@ -74,4 +74,6 @@ Mapped field errors, base and unmapped errors surfaced, a non-Rails body rejecte
 Can any Rails validation error fail to reach the user?
 
 ## Related skills
-rails-react-integration,rails-validations,react-component-engineering
+rails-react-integration,rails-validations
+
+Frontend side: react-agent-skills / react-component-engineering

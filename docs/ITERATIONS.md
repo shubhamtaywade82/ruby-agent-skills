@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 154 — Review Remediation: Deprecation Visibility, Drift Detection, and Benchmark Honesty
+> **Current milestone:** Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -494,3 +494,12 @@ Remediated defects found in an end-to-end review:
 - A locale-dependent test.
 
 Cutting a release that includes Iterations 134–154 remains a maintainer action on `main`.
+
+## Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
+
+Kept the Rails side of the Rails ↔ React seam in this pack:
+- `rails-react-integration` moved to the `rails` family;
+- guidance on composing with react-agent-skills;
+- no retained dependency on deprecated skills.
+
+Also prepared the nine deprecated React/TypeScript skills for removal in a later release: relocation-aware installer messages, per-version release notes, and gate status with a removal checklist. Deletion and tagging v1.2.0 remain maintainer actions after merge.

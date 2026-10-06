@@ -1,12 +1,12 @@
 id: rails-react-integration-contract
 coverage: static-only
-version: 1
+version: 2
 title: Rails React Integration Contract
-category: react-typescript
+category: rails-react-integration
 source: rails-react-integration-v1
 skills:
   - rails-react-integration
-  - typescript-runtime-contracts
+  - rails-api-integration
 patterns:
   - rails-react-typed-api-contract
   - rails-react-validation-error-mapping

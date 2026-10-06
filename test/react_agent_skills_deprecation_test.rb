@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "minitest/autorun"
+require "yaml"
 
 class ReactAgentSkillsDeprecationTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
@@ -37,6 +38,34 @@ class ReactAgentSkillsDeprecationTest < Minitest::Test
       assert description.start_with?("DEPRECATED"),
              "#{skill} description must start with DEPRECATED"
       assert_includes description, replacement
+    end
+  end
+
+  # A deprecated skill must not be selected for new work, so no routing
+  # contract may expect it as a primary or secondary skill.
+  def test_routing_cases_never_expect_a_deprecated_skill
+    cases = YAML.safe_load_file(File.join(ROOT, "router", "ROUTING_CASES.yml")).fetch("cases")
+
+    cases.each do |routing_case|
+      expected = Array(routing_case["primary_skills"]) + Array(routing_case["secondary_skills"])
+
+      assert_empty expected & MAPPINGS.keys,
+                   "#{routing_case.fetch('id')} expects a deprecated skill"
+    end
+  end
+
+  # Content that stays after removal may point at the React pack, but must not
+  # depend on a deprecated in-pack skill; otherwise deletion breaks it.
+  def test_retained_content_never_depends_on_a_deprecated_skill
+    names = MAPPINGS.keys.join("|")
+    removed = %r{/(?:skills/(?:#{names})|patterns/react-typescript|evals/react-typescript)/}
+    retained = Dir[File.join(ROOT, "{skills,patterns,evals}", "**", "*.{md,yml}")].grep_v(removed)
+    pattern = /(?<![a-z-])(?:#{names})(?![a-z-])/
+
+    retained.each do |path|
+      text = File.read(path, encoding: "UTF-8").gsub(%r{react-agent-skills / [a-z0-9+ -]+}, "")
+
+      refute_match pattern, text, "#{path.delete_prefix("#{ROOT}/")} depends on a deprecated skill"
     end
   end
 

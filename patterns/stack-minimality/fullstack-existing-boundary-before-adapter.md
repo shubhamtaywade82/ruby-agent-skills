@@ -47,4 +47,6 @@ Test the API contract and the real translation boundary.
 [ ] repository evidence checked [ ] smallest valid boundary chosen [ ] required guarantees preserved
 
 ## Related skills
-rails-api-integration, react-data-fetching, typescript-runtime-contracts, stack-minimality
+rails-api-integration, stack-minimality
+
+Frontend side: react-agent-skills / react-data-fetching; react-agent-skills / typescript-runtime-contracts

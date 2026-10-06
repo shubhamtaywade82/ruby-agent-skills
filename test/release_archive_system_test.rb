@@ -141,6 +141,35 @@ class ReleaseArchiveSystemTest < Minitest::Test
     end
   end
 
+  def test_release_notes_include_version_specific_notes_when_present
+    Dir.mktmpdir("release-notes") do |dir|
+      notes_dir = File.join(dir, "notes")
+      FileUtils.mkdir_p(notes_dir)
+      File.write(File.join(notes_dir, "#{VERSION}.md"), "### Deprecated\n\nold-skill moved.\n")
+      out, err, status = Open3.capture3(RbConfig.ruby, BUILDER, "--version", VERSION,
+                                        "--output", File.join(dir, "dist"),
+                                        "--notes-dir", notes_dir, chdir: ROOT)
+
+      assert status.success?, "#{out}\n#{err}"
+      notes = File.read(File.join(dir, "dist", "release-notes.md"), encoding: "UTF-8")
+
+      assert_includes notes, "## Changes in this release\n\n### Deprecated\n\nold-skill moved."
+    end
+  end
+
+  # The next release must tell upgrading users where every deprecated skill
+  # went before any of them is removed (migration removal gate 4).
+  def test_next_release_notes_name_every_deprecation_replacement
+    notes = File.read(File.join(ROOT, "docs", "releases", "v1.2.0.md"), encoding: "UTF-8")
+    deprecations = YAML.safe_load_file(File.join(ROOT, "skill-manifest.yml")).fetch("deprecations")
+
+    deprecations.each do |skill, entry|
+      replacement = entry.fetch("replacement").delete_prefix("react-agent-skills / ")
+
+      assert_includes notes, "| #{skill} | #{replacement} |"
+    end
+  end
+
   def test_validator_executes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
 

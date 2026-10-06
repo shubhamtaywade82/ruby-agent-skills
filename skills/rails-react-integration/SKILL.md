@@ -12,8 +12,24 @@ Composes with:
 - `rails-api-integration` for the server wire contract, versioning, and error shape;
 - `rails-authentication` and the `browser-api-auth-boundary` pattern for session versus token credentials;
 - `rails-validations` and the `validation-error-contract` pattern for the 422 body;
-- `typescript-runtime-contracts` for runtime validation of untrusted JSON;
-- `react-data-fetching` for cache identity, invalidation, and mutations.
+- `react-agent-skills / typescript-runtime-contracts` for runtime validation of untrusted JSON (separate pack);
+- `react-agent-skills / react-data-fetching` for cache identity, invalidation, and mutations (separate pack).
+
+## Composing with react-agent-skills
+Full-stack work uses this pack for the server and the boundary, and `react-agent-skills` for everything inside the client. Neither pack owns the other's side.
+
+| Concern | Owner |
+|---|---|
+| Serializer, wire shape, versioning, error body | this pack (`rails-api-integration`) |
+| Session, CSRF, forgery protection, token issuance | this pack (`rails-authentication`, `rails-security`) |
+| Validation rules and the 422 contract | this pack (`rails-validations`) |
+| Integration mode, client parser fit, field-to-attribute mapping, cache-key inputs | this pack (`rails-react-integration`) |
+| Components, hooks, state, client caching, client tests, accessibility | `react-agent-skills` |
+
+Hand-off rules:
+- A contract change starts on the Rails side, then the client parser and types move in the same change.
+- A client-only change, such as a component, a hook, or a render-performance fix, does not route here.
+- When only this pack is installed, do the boundary work here and name the client-side follow-up rather than improvising frontend guidance.
 
 ## Activate when
 - a React component or hook calls a Rails endpoint;

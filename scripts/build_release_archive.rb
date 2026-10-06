@@ -28,12 +28,16 @@ require "yaml"
 
 ROOT = File.expand_path("..", __dir__)
 
-options = { version: nil, output: File.join(ROOT, "dist"), self_test: false }
+options = { version: nil, output: File.join(ROOT, "dist"), self_test: false,
+            notes_dir: File.join(ROOT, "docs", "releases") }
 OptionParser.new do |opts|
   opts.banner = "usage: ruby scripts/build_release_archive.rb --version vX.Y.Z [--output DIR] [--self-test]"
   opts.on("--version V", "Release version tag (e.g. v1.0.0)") { |v| options[:version] = v }
   opts.on("--output DIR", "Output directory (default: dist)") { |v| options[:output] = File.expand_path(v) }
   opts.on("--self-test", "Extract the archive and verify an offline install") { options[:self_test] = true }
+  opts.on("--notes-dir DIR", "Per-version notes directory (default: docs/releases)") do |v|
+    options[:notes_dir] = File.expand_path(v)
+  end
 end.parse!
 
 abort "--version is required (e.g. v1.0.0)" if options[:version].to_s.empty?
@@ -136,12 +140,19 @@ end
 archive_sha256 = Digest::SHA256.file(archive_path).hexdigest
 archive_bytes = File.size(archive_path)
 
+# Version-specific changes (deprecations, removals, migrations) come from
+# docs/releases/<version>.md when present, ahead of the generic sections.
+version_notes_path = File.join(options[:notes_dir], "#{version}.md")
+version_notes = File.file?(version_notes_path) ? File.read(version_notes_path, encoding: "UTF-8").strip : ""
+version_section = version_notes.empty? ? "" : "\n## Changes in this release\n\n#{version_notes}\n"
+
 notes = <<~NOTES
   # Ruby Agent Skills #{version}
 
   A release of **agent-executable Ruby and Ruby on Rails engineering knowledge**: #{skill_count} skills, #{pattern_count} implementation patterns, a routing contract, and a verified installer.
 
   Source commit: `#{git_sha}`
+  #{version_section}
 
   ## Install from this archive (offline)
 

@@ -52,4 +52,6 @@ Add a regression test at the shared boundary and preserve representative caller 
 [ ] repository evidence checked [ ] smallest valid boundary chosen [ ] required guarantees preserved
 
 ## Related skills
-ruby-debugging, ruby-tdd-refactoring, rails-architecture, react-architecture, stack-minimality
+ruby-debugging, ruby-tdd-refactoring, rails-architecture, stack-minimality
+
+Frontend side: react-agent-skills / react-architecture

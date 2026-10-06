@@ -152,17 +152,18 @@ Core skills include:
 
 ## React and TypeScript
 
-The frontend layer covers TypeScript type design and runtime contracts, React components, state and effects, server-state fetching, testing, accessibility, performance, and architecture, plus the Rails ↔ React seam: integration mode (Inertia, JSON API, or islands), typed and runtime-validated Rails JSON, CSRF and session handling from `fetch`, Rails 422 errors in forms, and pagination.
+This pack owns the Rails side of the Rails ↔ React seam through `rails-react-integration`:
+- integration mode (Inertia, JSON API, or islands);
+- typed and runtime-validated Rails JSON;
+- CSRF and session handling from `fetch`;
+- Rails 422 errors in forms;
+- pagination.
 
-`typescript-core-engineering` · `typescript-type-design` · `typescript-runtime-contracts` · `react-component-engineering` · `react-state-effects` · `react-data-fetching` · `react-testing-engineering` · `react-accessibility-performance` · `react-architecture` · `rails-react-integration`
+Standalone React and TypeScript engineering belongs to [react-agent-skills](https://github.com/shubhamtaywade82/react-agent-skills). The in-pack frontend skills below are deprecated: they are kept only to maintain existing work and will be removed in a later release.
 
-Not yet covered: browser end-to-end testing, frontend security (DOM XSS, CSP, browser storage), complex forms, frontend build tooling, and design systems.
+Retained: `rails-react-integration`
 
----
-
-# Rails framework coverage
-
-The Rails layer has both foundational skills and deep framework-boundary skills. Application bootstrap is distinct from in-app generators: `rails-application-bootstrap` owns `rails new`; `rails-generators` owns `bin/rails generate` inside an existing application.
+Deprecated: `typescript-core-engineering` · `typescript-type-design` · `typescript-runtime-contracts` · `react-component-engineering` · `react-state-effects` · `react-data-fetching` · `react-testing-engineering` · `react-accessibility-performance` · `react-architecture`
 
 ## Core Rails
 
@@ -775,7 +776,7 @@ When adding a new skill or deepening an existing one:
 
 # Current status
 
-The repository-side implementation is complete: checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, React/TypeScript engineering coverage, the installed-pack doctor, routing-campaign analysis, and a release line of reproducible, checksummed archives with offline installation, a tag-triggered release workflow, and published GitHub releases.
+The repository-side implementation is complete: checkpointed routing campaigns, resumable multi-model execution, provenance-bound installation, exact installed-pack verification, Rails ↔ React integration coverage, the installed-pack doctor, routing-campaign analysis, and a release line of reproducible, checksummed archives with offline installation, a tag-triggered release workflow, and published GitHub releases.
 
 Remaining work is empirical execution with a reachable external model runtime: capture real campaign evidence, analyze observed routing behavior, run evidence-based remediation experiments, execute the external hidden benchmark, and publish verified release evidence.
 

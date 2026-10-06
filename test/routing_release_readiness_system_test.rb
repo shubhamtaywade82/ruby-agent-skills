@@ -9,7 +9,7 @@ class RoutingReleaseReadinessSystemTest < Minitest::Test
   def test_release_contract_requires_current_completed_runs
     config = YAML.safe_load(File.read(File.join(ROOT, "router", "ROUTING_RELEASE.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
-    assert_equal 26, config.fetch("campaign").fetch("expected_case_count")
+    assert_equal 25, config.fetch("campaign").fetch("expected_case_count")
     assert_equal 3, config.fetch("campaign").fetch("expected_repetitions")
     assert_equal 78, config.fetch("campaign").fetch("expected_runs")
     assert_equal true, config.fetch("gates").fetch("public_campaign_evidence_required")

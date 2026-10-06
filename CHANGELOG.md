@@ -1,5 +1,18 @@
 # Changelog
 
+## Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
+
+- Keep the Rails side of the Rails ↔ React seam in this pack and prepare the deprecated standalone React/TypeScript skills for removal in a release after v1.2.0. Nothing is deleted in this iteration.
+- Move `rails-react-integration` to the `rails` family: its five patterns now live in `patterns/rails/` and its evaluation in `evals/rails-react-integration/` (version 2). Add a "Composing with react-agent-skills" section assigning each side of a full-stack change.
+- Remove every dependency of retained content on a deprecated skill:
+  - The integration skill, its patterns, six stack-minimality patterns, and five stack-minimality evaluations (each bumped one version) now point to `react-agent-skills / <skill>`, or drop the deprecated skill.
+  - `router/ROUTING.md` maps the deprecated skills to their replacements.
+  - Routing cases no longer expect a deprecated skill. The frontend-only `react-filter-render-performance` case is removed: routing campaign version 7, 25 cases, and stale case counts are corrected across the docs.
+  - `test/react_agent_skills_deprecation_test.rb` enforces all of the above pack-wide.
+- Add `relocated_skills:` to the manifest. `bin/install` removes a relocated skill from an existing installation and prints its destination pack. `scripts/validate_deprecations.rb` rejects relocated skills that are still registered or still deprecated in place.
+- Release notes: `scripts/build_release_archive.rb` includes `docs/releases/<version>.md` when present. `docs/releases/v1.2.0.md` announces the deprecations and names every replacement, and a system test ties it to the manifest.
+- `docs/REACT_AGENT_SKILLS_MIGRATION.md` records the status of each removal gate and a removal checklist. `docs/DEPRECATION_GOVERNANCE.md` documents the frontmatter and relocation rules. The README describes the retained and deprecated frontend skills.
+
 ## Iteration 154 — Review Remediation: Deprecation Visibility, Drift Detection, and Benchmark Honesty
 
 - Framework drift detection was inert: every `match` in `framework-drift.yml` was double-escaped inside YAML single quotes, so no regex could match real code and the audit passed vacuously. Fix the escaping and quote values that YAML truncated at ` #`. Add a required `example` per entry that the validator must match, and a system test that the committed registry detects every entry's example.

@@ -211,9 +211,12 @@ if [[ -f "$OLD_INSTALLATION" ]]; then
     [[ "$old_skill" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]] || continue
     [[ -d "$REPO_DIR/skills/$old_skill" ]] && continue
     rm -rf "$TARGET_ROOT/$old_skill"
-    replacement="$(ruby -ryaml -e 'print YAML.safe_load(File.read(ARGV.fetch(0))).fetch("retired_skills", {}).fetch(ARGV.fetch(1), "")' "$REPO_DIR/skill-manifest.yml" "$old_skill")"
+    replacement="$(ruby -ryaml -e 'print YAML.safe_load(File.read(ARGV.fetch(0))).fetch("retired_skills", nil).to_h.fetch(ARGV.fetch(1), "")' "$REPO_DIR/skill-manifest.yml" "$old_skill")"
+    relocation="$(ruby -ryaml -e 'print YAML.safe_load(File.read(ARGV.fetch(0))).fetch("relocated_skills", nil).to_h.fetch(ARGV.fetch(1), "")' "$REPO_DIR/skill-manifest.yml" "$old_skill")"
     if [[ -n "$replacement" ]]; then
       echo "Removed retired skill $old_skill (merged into $replacement)."
+    elif [[ -n "$relocation" ]]; then
+      echo "Removed relocated skill $old_skill (moved to $relocation; install that skill pack to keep using it)."
     else
       echo "Removed skill $old_skill (no longer in this skill pack)."
     fi
