@@ -46,12 +46,12 @@ The RSpec reference in `rails-test-engineering` now covers `#method` / `.method`
 - Deprecated React/TypeScript skills announce `DEPRECATED` and their replacement in frontmatter, enforced by the deprecation validator.
 - Test-engineering `scope_control` rejects changes outside `test/`/`spec/`. The campaign is documented as statically graded.
 - Claude benchmark adapters require an explicit `CLAUDE_MODEL`.
-- The latest release tag (`v1.1.0`) predates Iterations 134–154; cut a new release from `main` after merge.
+- `v1.2.0` was tagged at Iteration 155; it was created in the GitHub UI, so its archive was never attached (see Iteration 158).
 
 ## Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
 
 - `rails-react-integration` stays in this pack under the `rails` family, with guidance on composing with react-agent-skills.
-- The nine deprecated React/TypeScript skills still ship. Tag v1.2.0 from `main` after merge; its notes come from `docs/releases/v1.2.0.md`.
+- The nine deprecated React/TypeScript skills still ship. v1.2.0 (Iteration 155) announced their deprecation; the next release is v1.3.0, with notes from `docs/releases/v1.3.0.md`.
 - Delete them in a later release, following the checklist in `docs/REACT_AGENT_SKILLS_MIGRATION.md`.
 
 ## Iteration 156 — Verification Gates in Owning Skills and GraphQL
@@ -262,4 +262,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 157. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 158. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude` CLI (see `docs/LOCAL_BENCHMARKING.md`).

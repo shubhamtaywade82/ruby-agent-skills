@@ -1,5 +1,12 @@
 # Changelog
 
+## Iteration 158 — Release Workflow Recovery and v1.3.0 Notes
+
+- **v1.2.0 shipped without its archive.** It was created in the GitHub UI before its tag workflow ran. That workflow then validated and verified the archive, but `gh release create` failed with "a release with the same tag name already exists", so no archive or `SHA256SUMS` was attached.
+- **The Release workflow now attaches to an existing release.** When a release already exists for the tag, it uploads the verified assets (`--clobber`) and replaces the notes with the generated ones. It can also be run manually (`workflow_dispatch`) for an existing tag; it checks out and verifies exactly that tag, and rejects tags that do not look like `vX.Y.Z`. A system test pins both behaviours.
+- **Release notes.** `docs/releases/v1.2.0.md` is restored to the text that shipped with the v1.2.0 tag. Iterations 156–158 move to the new `docs/releases/v1.3.0.md`.
+- **`RELEASE.md`.** Push the tag rather than creating the release in the UI, and use the manual run to repair an existing tag.
+
 ## Iteration 157 — Agent Skills Specification Conformance and Publish Readiness
 
 - **Official validator.** All 96 skills now pass the Agent Skills reference validator (`skills-ref`, pinned to `69ef37e`). Fifteen skills failed it before because of a top-level `family:` field the specification does not allow. That field duplicated `skill-manifest.yml`, so it is removed.

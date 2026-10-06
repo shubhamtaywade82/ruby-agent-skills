@@ -3,6 +3,13 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  # Rebuild and attach assets for an existing tag, e.g. a release that was
+  # first created in the GitHub UI and so never received its archive.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Existing release tag to build and publish (e.g. v1.2.0)"
+        required: true
 
 permissions:
   contents: write
@@ -10,9 +17,21 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version || github.ref_name }}
 
     steps:
+      - name: Check release tag format
+        run: |
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "release tag must look like vX.Y.Z: $VERSION" >&2
+            exit 1
+          fi
+
       - uses: actions/checkout@v7
+        with:
+          # Build exactly the tagged revision, also when dispatched from main.
+          ref: refs/tags/${{ inputs.version || github.ref_name }}
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -34,18 +53,12 @@ jobs:
         run: ruby scripts/smoke_workshop_benchmark.rb
 
       - name: Build release archive and verify offline install
-        env:
-          VERSION: ${{ github.ref_name }}
         run: ruby scripts/build_release_archive.rb --version "$VERSION" --self-test
 
       - name: Independently verify release archive
-        env:
-          VERSION: ${{ github.ref_name }}
         run: ruby scripts/verify_release_archive.rb "dist/ruby-agent-skills-$VERSION.tar.gz" --checksums dist/SHA256SUMS --check-files
 
       - name: Check archive reproducibility
-        env:
-          VERSION: ${{ github.ref_name }}
         run: |
           first="$(sha256sum dist/ruby-agent-skills-"$VERSION".tar.gz | awk '{print $1}')"
           ruby scripts/build_release_archive.rb --version "$VERSION"
@@ -56,18 +69,23 @@ jobs:
           fi
           echo "release archive reproducible: $first"
 
-      - name: Create GitHub Release
+      - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ github.ref_name }}
         run: |
           prerelease_args=()
           if [[ "$VERSION" =~ -(rc|beta|alpha|test)\.?[0-9]*$ || "$VERSION" == *"-rc"* ]]; then
             prerelease_args+=(--prerelease)
           fi
-          gh release create "$VERSION" \
-            "dist/ruby-agent-skills-$VERSION.tar.gz" \
-            dist/SHA256SUMS \
-            --title "Ruby Agent Skills $VERSION" \
-            --notes-file dist/release-notes.md \
-            "${prerelease_args[@]}"
+          assets=("dist/ruby-agent-skills-$VERSION.tar.gz" dist/SHA256SUMS)
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            # A release created by hand (or by an earlier run) gets the verified
+            # assets and the generated notes instead of failing the publish.
+            gh release upload "$VERSION" "${assets[@]}" --clobber
+            gh release edit "$VERSION" --notes-file dist/release-notes.md
+          else
+            gh release create "$VERSION" "${assets[@]}" \
+              --title "Ruby Agent Skills $VERSION" \
+              --notes-file dist/release-notes.md \
+              "${prerelease_args[@]}"
+          fi

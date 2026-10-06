@@ -29,9 +29,13 @@ Pushing the tag triggers `.github/workflows/release.yml`, which:
 1. Runs `bin/validate` and the smoke tests on the tagged commit.
 2. Builds `ruby-agent-skills-vX.Y.Z.tar.gz` and verifies an offline install from it (install + verify + doctor).
 3. Rebuilds the archive and asserts byte-identical output (reproducibility).
-4. Creates the GitHub Release with the archive, `SHA256SUMS`, and generated release notes.
+4. Creates the GitHub Release with the archive, `SHA256SUMS`, and generated release notes. Per-version notes come from `docs/releases/vX.Y.Z.md`.
 
 Pre-release tags (`vX.Y.Z-rc.1`, `-beta.`, `-alpha.`) are published as GitHub prereleases.
+
+Push the tag; do not create the release in the GitHub UI first. If a release already exists for the tag (created by hand, or by an earlier run), the workflow attaches the verified archive and `SHA256SUMS` to it and replaces its notes with the generated ones, instead of failing.
+
+To build and attach assets for an existing tag, for example one whose release never received its archive, run the workflow manually: **Actions → Release → Run workflow**, with `version` set to the tag. It checks out and verifies that exact tag.
 
 ## Release archive contents
 

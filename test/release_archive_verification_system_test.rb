@@ -178,6 +178,16 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
     assert_includes workflow, "--checksums dist/SHA256SUMS --check-files"
   end
 
+  # A release created in the GitHub UI before the tag workflow ran made
+  # `gh release create` fail, so v1.2.0 shipped without its archive.
+  def test_release_workflow_attaches_assets_to_an_existing_release
+    workflow = File.read(File.join(ROOT, ".github", "workflows", "release.yml"), encoding: "UTF-8")
+
+    assert_includes workflow, "workflow_dispatch:"
+    assert_includes workflow, "ref: refs/tags/${{ inputs.version || github.ref_name }}"
+    assert_match(/gh release view "\$VERSION".*gh release upload "\$VERSION" "\$\{assets\[@\]\}" --clobber/m, workflow)
+  end
+
   def test_validator_registers_release_archive_verification
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
 

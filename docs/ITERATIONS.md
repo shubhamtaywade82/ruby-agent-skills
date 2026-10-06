@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 157 — Agent Skills Specification Conformance and Publish Readiness
+> **Current milestone:** Iteration 158 — Release Workflow Recovery and v1.3.0 Notes
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -520,3 +520,7 @@ Also added graphql-ruby guidance under `rails-api-integration`. An external revi
 ## Iteration 157 — Agent Skills Specification Conformance and Publish Readiness
 
 Made every skill conform to the Agent Skills specification as checked by the official validator. Made each skill self-contained for single-skill installs, and added a deterministic publish-readiness gate. `docs/PUBLISHING.md` gives the staged evaluation plan to run before publishing. The model-based stages (routing quality, paired effectiveness, per-agent activation) remain to be run.
+
+## Iteration 158 — Release Workflow Recovery and v1.3.0 Notes
+
+v1.2.0 was created in the GitHub UI, so its tag workflow failed at publishing and attached no archive. The Release workflow now uploads to an existing release, and can be run manually for an existing tag. Release notes are split so that v1.2.0 keeps what it shipped and v1.3.0 covers Iterations 156–158.
