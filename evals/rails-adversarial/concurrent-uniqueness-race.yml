@@ -1,0 +1,42 @@
+id: concurrent-uniqueness-race
+version: 1
+title: One user per email under concurrent signups
+category: rails
+source: rails-adversarial-v1
+skills:
+  - rails-database-engineering
+  - rails-active-record
+  - agent-workflow
+patterns:
+  - validation-uniqueness-database-contract
+prompt: |
+  Production has duplicate user rows for the same email. Implement
+  SignupService#register(email:) in lib/solution.rb so an email always maps to
+  exactly one user: return the existing user when there is one, otherwise create
+  it. Emails compare case-insensitively, ignoring surrounding whitespace.
+  Schema.migrate defines the storage schema. lib/store.rb is the database
+  adapter; do not change it. Extend test/test_solution.rb.
+constraints:
+  required_design:
+    - the one-user-per-email invariant holds at the storage boundary
+    - a losing concurrent insert returns the existing user instead of failing
+  forbidden:
+    - relying only on an application-level existence check
+    - changing lib/store.rb
+checks:
+  - functional
+  - tests
+  - adversarial
+  - scope_control
+cases:
+  - name: concurrent-signup
+    input: eight simultaneous registrations for one email
+    expected: one user row; every caller receives it
+  - name: writer-bypass
+    input: a direct storage insert of a duplicate email
+    expected: storage rejects it
+grading:
+  functional: visible feature tests pass
+  tests: workspace tests exist and pass
+  adversarial: withheld concurrency and storage-invariant tests pass
+  scope_control: only lib/solution.rb and tests change

@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 160 — Cross-Pack Linking to react-agent-skills
+> **Current milestone:** Iteration 161 — Cross-Pack Linking to react-agent-skills
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -529,6 +529,10 @@ v1.2.0 was created in the GitHub UI, so its tag workflow failed at publishing an
 
 Added `patterns/testing/rspec-betterspecs-audit.md` mapping all 19 betterspecs.org guidelines to their existing enforcement points in this pack (cops, patterns, references, eval cases). Twelve rules are executable, three are partial, three are out of scope, one is enforced by the eval contract. The pattern explicitly references Iteration 153's coverage so the cross-reference is consistent with the upstream RSpec reference. Inventory counts bumped to 447 patterns / 102 system tests.
 
-## Iteration 160 — Cross-Pack Linking to react-agent-skills
+## Iteration 160 — Rails Adversarial Benchmarks and Behavioral Contract Checks
+
+Added the behaviourally graded `rails-adversarial` benchmark family, with withheld production-condition tests and negative controls, and a system test that pins its verifier. Added six adversarial routing cases (campaign version 8, 31 cases), and replaced text-matching contract checks in the Ruby foundation fixtures with behavioural tests.
+
+## Iteration 161 — Cross-Pack Linking to react-agent-skills
 
 `rails-react-integration` and the cross-stack routing table now name the react-agent-skills skill that owns each client-side seam concern instead of relying on in-pack React guidance; README, INSTALLATION and AGENTS document installing both packs and the current skill-name collisions.

@@ -1,11 +1,23 @@
 # Changelog
 
-## Iteration 160 — Cross-Pack Linking to react-agent-skills
+## Iteration 161 — Cross-Pack Linking to react-agent-skills
 
 - `rails-react-integration` maps every seam concern (typed client, query cache, 422 forms, browser session/CSRF, error recovery, Action Cable consumers, integration mode, OpenAPI clients, tests) to the react-agent-skills skill that owns the client side, and says to load those skills when that pack is installed.
 - `router/ROUTING.md` cross-stack table adds Action Cable, Active Storage direct upload, generated OpenAPI clients, and React-only changes, corrects the frontend-side names to current react-agent-skills owners (`react-forms-validation`, `browser-authentication`, `typescript-api-contracts`), and states what to do when react-agent-skills is or is not installed.
 - README "Full-stack Rails + React", `docs/INSTALLATION.md` "Companion pack: react-agent-skills", and an `AGENTS.md` "Companion packs" rule document installing both packs and the current directory-name collisions (`agent-workflow` and the nine deprecated frontend skills).
 - No React or TypeScript skill is added to this pack.
+
+## Iteration 160 — Rails Adversarial Benchmarks and Behavioral Contract Checks
+
+- **New `rails-adversarial` benchmark family** (4 evaluations: concurrent uniqueness race, webhook idempotency under redelivery, checkout retry side effects, authorization through an alternate path).
+  - Each fixture has visible tests for the requested feature, plus a withheld test, never placed in the agent workspace, that exercises the production condition the visible tests leave out.
+  - Grading is behavioural only (`scripts/verify_rails_adversarial_eval.rb`).
+  - Negative controls in `controls/` pass the visible tests and must fail the withheld ones.
+- **New system test** (`test/rails_adversarial_benchmark_system_test.rb`, registered in `bin/validate`) pins the verifier: every reference passes every check, every negative control passes the visible tests and fails the withheld test, and a change outside `lib/`/`test/` fails scope control.
+- **Six routing cases added** (concurrent uniqueness race, webhook redelivery, transaction retry side effects, alternate access path, Zeitwerk nested constant drift, STI/polymorphic boundary). The routing campaign is now version 8 with 31 cases × 3 = 93 runs; counts are updated across the docs and routing release config.
+- **`ruby-toolchain` and `ruby-gem-development` contract checks** now test behaviour (declared-versus-observed Ruby mismatch; segment-wise version comparison) instead of matching `Gem::Version`/`gemspec` text, which failed correct solutions.
+- **`LOCAL_BENCHMARKING.md`:** the CLI sanity check now orders `--tools ""` so it does not swallow the prompt.
+- **Inventory:** 447 patterns, 500 evaluation cases, 103 system tests.
 
 ## Iteration 159 — betterspecs.org Audit Pattern
 

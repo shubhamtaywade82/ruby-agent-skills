@@ -1,0 +1,41 @@
+id: authorization-alternate-path
+version: 1
+title: Invoice export and emailed copy keep invoice authorization
+category: rails
+source: rails-adversarial-v1
+skills:
+  - rails-cross-boundary-authorization-security
+  - rails-authorization
+  - rails-active-job
+  - agent-workflow
+patterns:
+  - background-reauthorization-composition
+prompt: |
+  Add two invoice features in lib/solution.rb. InvoicesController#export_csv
+  returns "number,total_cents\n<number>,<total_cents>\n". InvoicesController#email_copy
+  enqueues InvoiceEmailJob, which emails that CSV to the given address through
+  Mailer#invoice_copy. lib/app.rb holds the existing models, policy, job queue,
+  and mailer; do not change it. Extend test/test_solution.rb.
+constraints:
+  required_design:
+    - every new path enforces the same invoice access rule as show
+    - the job enforces access when it runs
+  forbidden:
+    - changing lib/app.rb
+checks:
+  - functional
+  - tests
+  - adversarial
+  - scope_control
+cases:
+  - name: outsider-export
+    input: a user from another account exports the invoice
+    expected: NotAuthorized
+  - name: revoked-before-perform
+    input: the requester loses access after enqueue
+    expected: no email is delivered
+grading:
+  functional: visible feature tests pass
+  tests: workspace tests exist and pass
+  adversarial: withheld alternate-path and revoked-access tests pass
+  scope_control: only lib/solution.rb and tests change
