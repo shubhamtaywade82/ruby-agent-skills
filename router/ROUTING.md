@@ -1554,12 +1554,22 @@ This pack owns the Rails side of the Rails ↔ React boundary, through `rails-re
 
 | Task | Primary | Secondary (this pack) | Frontend side (react-agent-skills) |
 |---|---|---|---|
-| React code calling a Rails endpoint (fetch, response types, error handling) | rails-react-integration | rails-api-integration | typescript-runtime-contracts, react-data-fetching |
-| React form showing Rails 422 validation errors | rails-react-integration | rails-validations | react-component-engineering, react-testing-engineering |
-| React fetch fails with InvalidAuthenticityToken or loses the session | rails-react-integration | rails-authentication, rails-security | — |
-| Choosing Inertia, a JSON API with a separate client, or React islands | rails-react-integration | rails-api-integration, rails-hotwire | react-architecture |
-| Paginating, filtering, or sorting a Rails collection in React | rails-react-integration | rails-active-record | react-data-fetching |
-| Changing a Rails JSON contract that a React client consumes | rails-api-integration | rails-react-integration, rails-test-engineering | — |
+| React code calling a Rails endpoint (fetch, response types, error handling) | rails-react-integration | rails-api-integration | typescript-api-contracts, typescript-runtime-contracts, react-data-fetching |
+| React form showing Rails 422 validation errors | rails-react-integration | rails-validations | react-forms-validation, react-testing-engineering |
+| React fetch fails with InvalidAuthenticityToken or loses the session | rails-react-integration | rails-authentication, rails-security | browser-authentication |
+| Choosing Inertia, a JSON API with a separate client, or React islands | rails-react-integration | rails-api-integration, rails-hotwire | react-architecture, frontend-rendering-strategies |
+| Paginating, filtering, or sorting a Rails collection in React | rails-react-integration | rails-active-record | react-data-fetching, react-routing |
+| Action Cable broadcasts updating React state | rails-react-integration | rails-action-cable | frontend-realtime, react-data-fetching |
+| Active Storage direct upload from a React form | rails-react-integration | rails-active-storage | react-forms-validation, frontend-networking |
+| Generated TypeScript client from a Rails OpenAPI document | rails-react-integration | rails-api-integration | openapi-tooling, typescript-runtime-contracts |
+| Changing a Rails JSON contract that a React client consumes | rails-api-integration | rails-react-integration, rails-test-engineering | typescript-api-contracts |
+| React-only change: component, hook, client state, styling, client test | — (not this pack) | — | owning react-agent-skills skill |
+
+### Loading the frontend side
+
+`react-agent-skills` is a separate install (`npx skills add shubhamtaywade82/react-agent-skills`; see README "Full-stack Rails + React"). Its skills are named in the right-hand column and are never copied into this pack.
+- Installed: load this pack's primary and secondaries for the server and the seam, then the listed react-agent-skills skills for the client.
+- Not installed: complete the server and seam work, then report the client-side follow-up and the react-agent-skills skill that owns it. Do not improvise frontend guidance from this pack.
 
 ## Stack minimality composition
 

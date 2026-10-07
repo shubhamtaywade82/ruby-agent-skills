@@ -84,6 +84,19 @@ A successful installation prints the source repository, requested ref, resolved 
 
 `skill-pack-doctor` verifies the installation metadata, supported agent/scope values, exact recorded skill set, embedded verifier, and then runs the embedded integrity verifier. It is a local installation smoke test; it does not claim that a particular coding agent has loaded or executed a skill.
 
+## Companion pack: react-agent-skills
+
+React and TypeScript client skills live in [react-agent-skills](https://github.com/shubhamtaywade82/react-agent-skills), not in this pack. For a Rails + React application install both into the same agent:
+
+    bash bin/install --agent claude
+    npx skills add shubhamtaywade82/react-agent-skills -a claude-code
+
+`rails-react-integration` names the react-agent-skills skill that owns each client-side concern (typed client, forms, CSRF/session in the browser, realtime, tests); `router/ROUTING.md` holds the full cross-stack table.
+
+Name collisions in a shared agent skill root (last install wins):
+- The nine deprecated in-pack React/TypeScript skills share a directory name with their react-agent-skills replacement. Install react-agent-skills after this pack, and again after every upgrade of this pack, so the replacements are the ones installed. The collision ends when the deprecated skills are removed (`docs/REACT_AGENT_SKILLS_MIGRATION.md`).
+- `agent-workflow` exists in both packs with different content, so one replaces the other. Until one pack renames it, keep whichever matches the repository you are working in, or install the packs at different scopes (`--scope project` for one of them).
+
 ## Operational rule
 
 Treat installed skills as code. Review the source/ref before installation, pin a trusted ref for reproducibility, and verify the resulting installation before enabling it in a controlled agent benchmark.

@@ -92,6 +92,10 @@ When multiple skills apply:
 
 When skills conflict, stop and resolve the conflict rather than combining incompatible rules.
 
+## Companion packs
+
+React/TypeScript client work belongs to `react-agent-skills`; this pack never copies its skills. For a Rails + React change, follow `router/ROUTING.md` "Rails and React cross-stack routing": this pack owns the server and the seam (`rails-react-integration`), react-agent-skills owns the client. If react-agent-skills is not installed, report the client follow-up and its owning skill instead of improvising.
+
 ## Skill-pack installation
 
 - Treat installed skills and patterns as executable agent configuration.
