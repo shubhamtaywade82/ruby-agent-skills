@@ -172,6 +172,25 @@ Standalone React and TypeScript engineering belongs to [react-agent-skills](http
 
 Retained: `rails-react-integration`
 
+### Full-stack Rails + React
+
+This pack does not copy React skills. For a Rails backend with a React frontend, install both packs:
+
+    bash bin/install --agent claude                                   # this pack (Rails, Ruby, the seam)
+    npx skills add shubhamtaywade82/react-agent-skills -a claude-code  # React + TypeScript client
+
+Install `react-agent-skills` after this pack while the deprecated skills below still ship: they share directory names with their react-agent-skills replacements, and the last install wins. `agent-workflow` also exists in both packs; see [docs/INSTALLATION.md](docs/INSTALLATION.md#companion-pack-react-agent-skills).
+
+Agents then route by boundary (see `router/ROUTING.md`, "Rails and React cross-stack routing"):
+
+| Change | Load |
+|---|---|
+| Rails only (model, controller, job, serializer) | this pack |
+| Seam (fetch from React, CSRF/session, 422 mapping, pagination, Action Cable, direct upload, Inertia) | `rails-react-integration` + the owning Rails skill, then the react-agent-skills skills it names |
+| React only (component, hook, client state, styling, client test) | react-agent-skills |
+
+When `react-agent-skills` is not installed, `rails-react-integration` still does the seam work and names the client-side follow-up and the react-agent-skills skill that owns it.
+
 Deprecated: `typescript-core-engineering` · `typescript-type-design` · `typescript-runtime-contracts` · `react-component-engineering` · `react-state-effects` · `react-data-fetching` · `react-testing-engineering` · `react-accessibility-performance` · `react-architecture`
 
 ## Core Rails

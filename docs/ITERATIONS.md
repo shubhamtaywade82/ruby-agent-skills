@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 160 — Rails Adversarial Benchmarks and Behavioral Contract Checks
+> **Current milestone:** Iteration 161 — Cross-Pack Linking to react-agent-skills
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -532,3 +532,7 @@ Added `patterns/testing/rspec-betterspecs-audit.md` mapping all 19 betterspecs.o
 ## Iteration 160 — Rails Adversarial Benchmarks and Behavioral Contract Checks
 
 Added the behaviourally graded `rails-adversarial` benchmark family, with withheld production-condition tests and negative controls, and a system test that pins its verifier. Added six adversarial routing cases (campaign version 8, 31 cases), and replaced text-matching contract checks in the Ruby foundation fixtures with behavioural tests.
+
+## Iteration 161 — Cross-Pack Linking to react-agent-skills
+
+`rails-react-integration` and the cross-stack routing table now name the react-agent-skills skill that owns each client-side seam concern instead of relying on in-pack React guidance; README, INSTALLATION and AGENTS document installing both packs and the current skill-name collisions.

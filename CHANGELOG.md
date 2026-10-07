@@ -1,5 +1,12 @@
 # Changelog
 
+## Iteration 161 — Cross-Pack Linking to react-agent-skills
+
+- `rails-react-integration` maps every seam concern (typed client, query cache, 422 forms, browser session/CSRF, error recovery, Action Cable consumers, integration mode, OpenAPI clients, tests) to the react-agent-skills skill that owns the client side, and says to load those skills when that pack is installed.
+- `router/ROUTING.md` cross-stack table adds Action Cable, Active Storage direct upload, generated OpenAPI clients, and React-only changes, corrects the frontend-side names to current react-agent-skills owners (`react-forms-validation`, `browser-authentication`, `typescript-api-contracts`), and states what to do when react-agent-skills is or is not installed.
+- README "Full-stack Rails + React", `docs/INSTALLATION.md` "Companion pack: react-agent-skills", and an `AGENTS.md` "Companion packs" rule document installing both packs and the current directory-name collisions (`agent-workflow` and the nine deprecated frontend skills).
+- No React or TypeScript skill is added to this pack.
+
 ## Iteration 160 — Rails Adversarial Benchmarks and Behavioral Contract Checks
 
 - **New `rails-adversarial` benchmark family** (4 evaluations: concurrent uniqueness race, webhook idempotency under redelivery, checkout retry side effects, authorization through an alternate path).

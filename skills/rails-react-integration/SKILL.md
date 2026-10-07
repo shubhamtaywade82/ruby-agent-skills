@@ -27,10 +27,25 @@ Full-stack work uses this pack for the server and the boundary, and `react-agent
 | Integration mode, client parser fit, field-to-attribute mapping, cache-key inputs | this pack (`rails-react-integration`) |
 | Components, hooks, state, client caching, client tests, accessibility | `react-agent-skills` |
 
+Client-side skill for each seam concern (all in `react-agent-skills`, installed separately with `npx skills add shubhamtaywade82/react-agent-skills`):
+
+| Seam concern | Load from react-agent-skills |
+|---|---|
+| Typed client for Rails JSON | `react-agent-skills / typescript-api-contracts`, `react-agent-skills / typescript-runtime-contracts` |
+| Query cache, mutations, pagination keys | `react-agent-skills / react-data-fetching` |
+| Forms showing Rails 422 errors | `react-agent-skills / react-forms-validation` |
+| Session cookie, CSRF, logout, expiry in the browser | `react-agent-skills / browser-authentication` |
+| 401/403/5xx recovery UX | `react-agent-skills / react-error-resilience` |
+| Action Cable consumers | `react-agent-skills / frontend-realtime` |
+| Inertia versus JSON API versus islands, client side | `react-agent-skills / react-architecture` |
+| Generated client from a Rails OpenAPI document | `react-agent-skills / openapi-tooling` |
+| Client and end-to-end tests | `react-agent-skills / react-testing-engineering`, `react-agent-skills / frontend-e2e` |
+
 Hand-off rules:
 - A contract change starts on the Rails side, then the client parser and types move in the same change.
 - A client-only change, such as a component, a hook, or a render-performance fix, does not route here.
-- When only this pack is installed, do the boundary work here and name the client-side follow-up rather than improvising frontend guidance.
+- When `react-agent-skills` is installed, load the row's skills for the client side instead of using this skill's reference example as frontend guidance.
+- When only this pack is installed, do the boundary work here and name the client-side follow-up and the react-agent-skills skill that owns it, rather than improvising frontend guidance.
 
 ## Activate when
 - a React component or hook calls a Rails endpoint;
