@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 158 — Release Workflow Recovery and v1.3.0 Notes
+> **Current milestone:** Iteration 159 — betterspecs.org Audit Pattern
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -524,3 +524,7 @@ Made every skill conform to the Agent Skills specification as checked by the off
 ## Iteration 158 — Release Workflow Recovery and v1.3.0 Notes
 
 v1.2.0 was created in the GitHub UI, so its tag workflow failed at publishing and attached no archive. The Release workflow now uploads to an existing release, and can be run manually for an existing tag. Release notes are split so that v1.2.0 keeps what it shipped and v1.3.0 covers Iterations 156–158.
+
+## Iteration 159 — betterspecs.org Audit Pattern
+
+Added `patterns/testing/rspec-betterspecs-audit.md` mapping all 19 betterspecs.org guidelines to their existing enforcement points in this pack (cops, patterns, references, eval cases). Twelve rules are executable, three are partial, three are out of scope, one is enforced by the eval contract. The pattern explicitly references Iteration 153's coverage so the cross-reference is consistent with the upstream RSpec reference. Inventory counts bumped to 447 patterns / 102 system tests.

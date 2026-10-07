@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 159 — betterspecs.org Audit Pattern
+
+- Add `patterns/testing/rspec-betterspecs-audit.md` mapping all 19 betterspecs.org guidelines to their existing enforcement points in this pack: `rubocop-rspec` cops, `patterns/testing/rspec-*.md` patterns, `skills/rails-test-engineering/references/rspec.md` rules, and `evals/test-engineering/rspec-request-contract.yml` cases. Twelve rules are executable, three are partial, three are out of scope, one is enforced by the eval contract.
+- Register the new pattern in `skill-manifest.yml` under the `testing` family with `betterspecs`, `betterspecs.org`, and `spec audit` triggers.
+- Bump inventory counts (446 → 447 patterns) in `README.md`, `RELEASE.md`, and `docs/IMPLEMENTATION_HANDOFF.md`. The system-test count (102, set in Iteration 153) is unchanged.
+- The pattern explicitly references Iteration 153's coverage of betterspecs #1 (describe naming), #4 (`:aggregate_failures`), and #18 (WebMock/VCR) so the cross-reference layer is consistent with the upstream reference content.
+- Live verification: `bash bin/validate` exits 0 on a clean worktree after the pattern is added.
+
 ## Iteration 158 — Release Workflow Recovery and v1.3.0 Notes
 
 - **v1.2.0 shipped without its archive.** It was created in the GitHub UI before its tag workflow ran. That workflow then validated and verified the archive, but `gh release create` failed with "a release with the same tag name already exists", so no archive or `SHA256SUMS` was attached.
