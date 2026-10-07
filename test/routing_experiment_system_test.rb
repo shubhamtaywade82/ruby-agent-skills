@@ -41,9 +41,16 @@ class RoutingExperimentSystemTest < Minitest::Test
       evidence = JSON.parse(File.read(File.join(output, "evidence.json"), encoding: "UTF-8"))
 
       assert_equal false, baseline.fetch("metrics").fetch("primary_accuracy") == 1.0
-      case_count = YAML.safe_load(File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases").length
+      cases = YAML.safe_load(File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"), permitted_classes: [], aliases: false).fetch("cases")
+      # The fake candidate answers rails-authentication for one case and
+      # rails-active-record for every other, so it also scores on any case
+      # whose expected primary is rails-active-record.
+      correct = cases.count do |routing_case|
+        answer = routing_case.fetch("id") == "password-recovery-not-authorization" ? "rails-authentication" : "rails-active-record"
+        Array(routing_case.fetch("primary_skills")).include?(answer)
+      end
 
-      assert_in_delta 1.0.fdiv(case_count), candidate.fetch("metrics").fetch("primary_accuracy"), 0.0001
+      assert_in_delta correct.fdiv(cases.length), candidate.fetch("metrics").fetch("primary_accuracy"), 0.0001
       assert_equal true, comparison.fetch("gate").fetch("passed")
       assert_equal "test-model", baseline.fetch("agent").fetch("model")
       assert_equal "test-model", candidate.fetch("agent").fetch("model")
