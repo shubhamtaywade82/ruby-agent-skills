@@ -31,7 +31,7 @@ works as the `--command` for `bin/agent-benchmark`/`bin/benchmark`.
 export OLLAMA_URL=http://127.0.0.1:11434   # default; omit if unchanged
 export OLLAMA_MODEL=your-model:tag
 
-# Routing campaign (all 25 cases x 3 repetitions):
+# Routing campaign (all 31 cases x 3 repetitions):
 ruby bin/routing-campaign --model "$OLLAMA_MODEL" --output benchmark-results/routing-ollama
 
 # Rails campaign, using your own coding-agent CLI as the adapter:
@@ -61,7 +61,7 @@ export CLAUDE_MODEL=<full model name>   # an alias such as "sonnet" also works, 
 # Sanity check the CLI is reachable and authenticated:
 claude --print --output-format json --tools "" --model "$CLAUDE_MODEL" "reply with: OK"
 
-# Routing campaign (all 25 cases x 3 repetitions):
+# Routing campaign (all 31 cases x 3 repetitions):
 ruby bin/routing-eval \
   --command "ruby $(pwd)/bin/routing-agent-claude" \
   --provider anthropic --model "$CLAUDE_MODEL" \
@@ -91,7 +91,7 @@ from the skill/pattern context the runner itself materialized.
 
 ## Smoke-test before a full run
 
-Routing uses 75 model invocations (25 cases × 3). The Rails campaign uses 168 model invocations (28 evaluations × 3 paired repetitions × 2 configurations). Each Ruby platform foundation campaign uses 6 model invocations (1 evaluation × 3 paired repetitions × 2 configurations). Prove the adapter
+Routing uses 93 model invocations (31 cases × 3). The Rails campaign uses 168 model invocations (28 evaluations × 3 paired repetitions × 2 configurations). Each Ruby platform foundation campaign uses 6 model invocations (1 evaluation × 3 paired repetitions × 2 configurations). Prove the adapter
 works on one case before spending the full budget:
 
 ```bash

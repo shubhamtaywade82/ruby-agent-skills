@@ -31,6 +31,7 @@ ruby -I"$ROOT/test" "$ROOT/test/production_runtime_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/test_engineering_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/engineering_gates_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/publish_readiness_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/rails_adversarial_benchmark_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_performance_system_test.rb"
 

@@ -52,7 +52,7 @@ A missing tool (`npx`, `uvx`/`skills-ref`) reports `unavailable` and the result 
 
 ### Stage 2: routing quality (real model)
 
-Does an agent pick the right skill for a task? The public campaign is 25 cases × 3 repetitions = 75 routing decisions.
+Does an agent pick the right skill for a task? The public campaign is 31 cases × 3 repetitions = 93 routing decisions.
 
 ```bash
 export CLAUDE_MODEL=<full model name>

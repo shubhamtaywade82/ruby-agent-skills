@@ -55,28 +55,19 @@ def run_test(directory, test_file)
   [status.success?, stdout + stderr]
 end
 
+def test_check(passed, output, pass_message)
+  passed ? check("pass", pass_message) : check("fail", tail(output))
+end
+
 def graded_checks(fixture_root, fixture, withheld)
   editable = Array(fixture.fetch("implementation_file"))
   Dir.mktmpdir("rails-adversarial-") do |scratch|
     graded_copy(scratch, fixture_root, editable, withheld)
-    visible_ok, visible_output = run_test(scratch, fixture.fetch("test_file"))
-    withheld_ok, withheld_output = run_test(scratch, WITHHELD_TEST)
     {
-      "functional" => if visible_ok
-                        check("pass",
-                              "visible fixture tests passed")
-                      else
-                        check("fail",
-                              tail(visible_output))
-                      end,
-      "adversarial" => if withheld_ok
-                         check("pass",
-                               "withheld production-condition tests passed")
-                       else
-                         check(
-                           "fail", tail(withheld_output)
-                         )
-                       end
+      "functional" => test_check(*run_test(scratch, fixture.fetch("test_file")),
+                                 "visible fixture tests passed"),
+      "adversarial" => test_check(*run_test(scratch, WITHHELD_TEST),
+                                  "withheld production-condition tests passed")
     }
   end
 end
@@ -95,20 +86,22 @@ def changed_files
   stdout.lines.map { |line| line[3..].to_s.strip }.reject(&:empty?)
 end
 
-def scope_check(fixture_root, fixture)
-  protected_files = fixture_files(fixture_root) - [fixture.fetch("implementation_file"),
-                                                   fixture.fetch("test_file")]
-  touched = changed_files
+def scope_problems(touched, protected_files)
   outside = touched.reject { |path| ALLOWED_PREFIXES.any? { |prefix| path.start_with?(prefix) } }
   modified = touched & protected_files
-  return check("pass") if outside.empty? && modified.empty?
-
   problems = []
   problems << "unexpected files: #{outside.join(', ')}" unless outside.empty?
   unless modified.empty?
     problems << "modified files the task says not to change: #{modified.join(', ')}"
   end
-  check("fail", problems.join("; "))
+  problems
+end
+
+def scope_check(fixture_root, fixture)
+  protected_files = fixture_files(fixture_root) -
+                    [fixture.fetch("implementation_file"), fixture.fetch("test_file")]
+  problems = scope_problems(changed_files, protected_files)
+  problems.empty? ? check("pass") : check("fail", problems.join("; "))
 end
 
 evaluation = load_yaml(EVAL_FILE)
@@ -132,8 +125,7 @@ result = {
 
 File.write(ENV.fetch("RUBY_AGENT_EVAL_RESULT_FILE"), "#{JSON.pretty_generate(result)}\n",
            encoding: "UTF-8")
-abort "verification failed" if result["checks"].values.any? do |value|
-  value.fetch("status") == "fail"
-end
+failed = result["checks"].values.any? { |value| value.fetch("status") == "fail" }
+abort "verification failed" if failed
 
 puts JSON.pretty_generate(result)

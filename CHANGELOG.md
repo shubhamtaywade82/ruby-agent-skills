@@ -1,5 +1,17 @@
 # Changelog
 
+## Iteration 160 — Rails Adversarial Benchmarks and Behavioral Contract Checks
+
+- **New `rails-adversarial` benchmark family** (4 evaluations: concurrent uniqueness race, webhook idempotency under redelivery, checkout retry side effects, authorization through an alternate path).
+  - Each fixture has visible tests for the requested feature, plus a withheld test, never placed in the agent workspace, that exercises the production condition the visible tests leave out.
+  - Grading is behavioural only (`scripts/verify_rails_adversarial_eval.rb`).
+  - Negative controls in `controls/` pass the visible tests and must fail the withheld ones.
+- **New system test** (`test/rails_adversarial_benchmark_system_test.rb`, registered in `bin/validate`) pins the verifier: every reference passes every check, every negative control passes the visible tests and fails the withheld test, and a change outside `lib/`/`test/` fails scope control.
+- **Six routing cases added** (concurrent uniqueness race, webhook redelivery, transaction retry side effects, alternate access path, Zeitwerk nested constant drift, STI/polymorphic boundary). The routing campaign is now version 8 with 31 cases × 3 = 93 runs; counts are updated across the docs and routing release config.
+- **`ruby-toolchain` and `ruby-gem-development` contract checks** now test behaviour (declared-versus-observed Ruby mismatch; segment-wise version comparison) instead of matching `Gem::Version`/`gemspec` text, which failed correct solutions.
+- **`LOCAL_BENCHMARKING.md`:** the CLI sanity check now orders `--tools ""` so it does not swallow the prompt.
+- **Inventory:** 447 patterns, 500 evaluation cases, 103 system tests.
+
 ## Iteration 159 — betterspecs.org Audit Pattern
 
 - Add `patterns/testing/rspec-betterspecs-audit.md` mapping all 19 betterspecs.org guidelines to their existing enforcement points in this pack: `rubocop-rspec` cops, `patterns/testing/rspec-*.md` patterns, `skills/rails-test-engineering/references/rspec.md` rules, and `evals/test-engineering/rspec-request-contract.yml` cases. Twelve rules are executable, three are partial, three are out of scope, one is enforced by the eval contract.

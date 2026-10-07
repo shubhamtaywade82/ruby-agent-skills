@@ -42,4 +42,4 @@ ruby bin/routing-campaign-import ./routing-campaign-output \
   --archive ./routing-archives
 ```
 
-The public campaign remains **25 cases × 3 repetitions = 75 executions** unless an explicit repetition override is part of the experiment contract.
+The public campaign remains **31 cases × 3 repetitions = 93 executions** unless an explicit repetition override is part of the experiment contract.
