@@ -1,0 +1,42 @@
+id: checkout-retry-side-effects
+version: 1
+title: Checkout charges and mails once across retries
+category: rails
+source: rails-adversarial-v1
+skills:
+  - rails-distributed-systems
+  - rails-reliability-engineering
+  - agent-workflow
+patterns:
+  - idempotent-request
+prompt: |
+  Implement Checkout#call(cart_id:, request_id:) in lib/solution.rb: charge the
+  cart total through the payment gateway, create an order (cart_id, charge_id,
+  total_cents), mark the cart checked_out, send the order confirmation email,
+  and return the order. Clients retry checkout on timeouts and server errors
+  with the same request_id. lib/store.rb and lib/services.rb are the database
+  adapter and external services; do not change them. Extend
+  test/test_solution.rb.
+constraints:
+  required_design:
+    - a retried request never charges twice
+    - confirmation is sent only for a committed order
+  forbidden:
+    - changing lib/store.rb or lib/services.rb
+checks:
+  - functional
+  - tests
+  - adversarial
+  - scope_control
+cases:
+  - name: retry-after-success
+    input: the same request_id submitted twice
+    expected: one charge, one order, one email
+  - name: retry-after-failure
+    input: the first attempt fails after charging
+    expected: one charge, one order, one email for that order
+grading:
+  functional: visible feature tests pass
+  tests: workspace tests exist and pass
+  adversarial: withheld retry tests pass
+  scope_control: only lib/solution.rb and tests change

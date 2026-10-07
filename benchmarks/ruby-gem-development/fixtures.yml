@@ -19,7 +19,6 @@ fixtures:
       - 'publish'
     contract_regex:
       - "bundle gem"
-      - "gemspec"
       - "runtime"
       - "development"
       - "require"

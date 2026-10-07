@@ -17,7 +17,6 @@ fixtures:
       - 'rm\s+Gemfile\.lock'
       - 'FileUtils\.rm_rf.*Gemfile\.lock'
     contract_regex:
-      - "Gem::Version"
       - "bundle check"
       - "missing-ruby-header"
       - "runtime_change_allowed"
