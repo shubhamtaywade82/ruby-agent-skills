@@ -29,7 +29,7 @@ class CrossPackContractSystemTest < Minitest::Test
 
   def test_snapshot_skill_names_are_unique_and_kebab_case
     skills = Array(@snapshot.fetch("skills"))
-    malformed = skills.reject { |name| name.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/) }
+    malformed = skills.grep_v(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/)
 
     refute_empty skills
     assert_empty malformed
