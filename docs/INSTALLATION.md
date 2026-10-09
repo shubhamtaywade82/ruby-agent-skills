@@ -25,7 +25,7 @@ Example:
 
 A release can be pinned by branch, tag, or commit:
 
-    bash bin/install --ref v1.0.0 --agent claude
+    bash bin/install --ref v1.3.0 --agent claude
 
 For local testing, the source repository can be overridden with `RUBY_AGENT_SKILLS_REPO`.
 

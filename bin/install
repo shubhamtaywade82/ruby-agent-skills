@@ -45,7 +45,7 @@ Examples:
   bash bin/install --agent codex
   bash bin/install --scope project --agent agents
   bash bin/install --scope project --agent copilot --project /path/to/app
-  bash bin/install --ref v1.0.0 --agent claude
+  bash bin/install --ref v1.3.0 --agent claude
 EOF
 }
 
