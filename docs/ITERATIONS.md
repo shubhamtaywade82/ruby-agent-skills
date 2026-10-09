@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 163 — Release-Target Consistency Audit
+> **Current milestone:** Iteration 164 — Cross-Pack Contract Snapshot
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -544,3 +544,7 @@ The README quick-start, the `docs/INSTALLATION.md` pinned-ref example, and the `
 ## Iteration 163 — Release-Target Consistency Audit
 
 The documentation consistency audit now derives the canonical release from the newest `docs/releases/vX.Y.Z.md` and pins the README quick-start, the `docs/INSTALLATION.md` pinned-ref example, and the `bin/install` usage examples to it, so release-target drift fails `bin/validate` instead of shipping silently; `RELEASE.md` names the reference update as a pre-tag step, and the check carries regression tests for stale, missing, and stale-pinned-installation references.
+
+## Iteration 164 — Cross-Pack Contract Snapshot
+
+`data/cross-pack/react-agent-skills.snapshot.yml` pins the companion pack's public skill inventory as data-only validation input, and `test/cross_pack_contract_system_test.rb` requires the documented name-collision list to exactly match the computed intersection with this pack's manifest, so a rename or relocation on either side fails `bin/validate` until the snapshot is consciously refreshed; the pinned intersection is `agent-workflow` plus the seven deprecated frontend skills shipping in both packs.
