@@ -18,8 +18,11 @@ changelog_path = File.join(root, "CHANGELOG.md")
 handoff_path = File.join(root, "docs", "IMPLEMENTATION_HANDOFF.md")
 iterations_path = File.join(root, "docs", "ITERATIONS.md")
 manifest_path = File.join(root, "skill-manifest.yml")
+installation_path = File.join(root, "docs", "INSTALLATION.md")
+installer_path = File.join(root, "bin", "install")
 
-[readme_path, changelog_path, handoff_path, iterations_path, manifest_path].each do |path|
+[readme_path, changelog_path, handoff_path, iterations_path, manifest_path,
+ installation_path, installer_path].each do |path|
   abort "missing documentation audit input: #{path}" unless File.file?(path)
 end
 
@@ -27,6 +30,8 @@ readme = File.read(readme_path, encoding: "UTF-8")
 changelog = File.read(changelog_path, encoding: "UTF-8")
 handoff = File.read(handoff_path, encoding: "UTF-8")
 iterations = File.read(iterations_path, encoding: "UTF-8")
+installation = File.read(installation_path, encoding: "UTF-8")
+installer = File.read(installer_path, encoding: "UTF-8")
 manifest = YAML.safe_load(File.read(manifest_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
 
 skill_count = Dir[File.join(root, "skills", "*", "SKILL.md")].length
@@ -103,6 +108,30 @@ if File.file?(release_path)
   end
 end
 
+# The newest documented release (docs/releases/vX.Y.Z.md) is the release that
+# every user-facing install entry point must reference. This closes the drift
+# class where the quick start kept naming v1.1.0 while v1.3.0 was canonical.
+release_note_versions = Dir[File.join(root, "docs", "releases", "v*.md")]
+  .map { |path| File.basename(path, ".md") }
+  .select { |name| name.match?(/\Av\d+\.\d+\.\d+\z/) }
+errors << "docs/releases/ has no vX.Y.Z.md notes; the canonical release cannot be derived" if release_note_versions.empty?
+
+canonical_release = release_note_versions.max_by { |name| name.delete_prefix("v").split(".").map(&:to_i) }
+
+unless canonical_release.nil?
+  install_entry_points = {
+    "README.md" => [readme, [%r{releases/download/(v\d+\.\d+\.\d+)/}, /ruby-agent-skills-(v\d+\.\d+\.\d+)/]],
+    "docs/INSTALLATION.md" => [installation, [/--ref (v\d+\.\d+\.\d+)/]],
+    "bin/install" => [installer, [/--ref (v\d+\.\d+\.\d+)/]]
+  }
+  install_entry_points.each do |label, (text, patterns)|
+    referenced = patterns.flat_map { |pattern| text.scan(pattern) }.flatten.uniq
+    errors << "#{label} names no release version; the install entry point must reference #{canonical_release}" if referenced.empty?
+    stale = referenced - [canonical_release]
+    errors << "#{label} references stale release #{stale.join(", ")}; the canonical release is #{canonical_release}" unless stale.empty?
+  end
+end
+
 routing_cases_path = File.join(root, "router", "ROUTING_CASES.yml")
 routing_campaign_path = File.join(root, "router", "ROUTING_CAMPAIGN.yml")
 if File.file?(routing_cases_path) && File.file?(routing_campaign_path)
@@ -147,6 +176,7 @@ puts "  skills: #{skill_count}"
 puts "  implementation patterns: #{pattern_count}"
 puts "  evaluation cases: #{evaluation_count}"
 puts "  system tests: #{system_test_count}"
+puts "  canonical release target: #{canonical_release || 'none'}"
 
 if errors.any?
   errors.each { |error| warn "ERROR: #{error}" }

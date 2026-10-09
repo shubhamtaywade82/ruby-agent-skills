@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 162 — Quick-Start Release Target Reconciliation
+> **Current milestone:** Iteration 163 — Release-Target Consistency Audit
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -540,3 +540,7 @@ Added the behaviourally graded `rails-adversarial` benchmark family, with withhe
 ## Iteration 162 — Quick-Start Release Target Reconciliation
 
 The README quick-start, the `docs/INSTALLATION.md` pinned-ref example, and the `bin/install` usage examples now point at the current `v1.3.0` release archive rather than the stale `v1.1.0`/`v1.0.0` references; no validator pins the quick-start version, so the drift was invisible to `bin/validate`.
+
+## Iteration 163 — Release-Target Consistency Audit
+
+The documentation consistency audit now derives the canonical release from the newest `docs/releases/vX.Y.Z.md` and pins the README quick-start, the `docs/INSTALLATION.md` pinned-ref example, and the `bin/install` usage examples to it, so release-target drift fails `bin/validate` instead of shipping silently; `RELEASE.md` names the reference update as a pre-tag step, and the check carries regression tests for stale, missing, and stale-pinned-installation references.
