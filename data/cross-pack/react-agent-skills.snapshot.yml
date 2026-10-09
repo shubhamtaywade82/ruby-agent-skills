@@ -1,0 +1,160 @@
+# Cross-pack contract snapshot: react-agent-skills
+#
+# Pins the companion repository's public skill inventory so that name
+# collisions with this pack are a checked contract instead of an
+# undocumented accident. The companion pack is a separate repository that
+# moves independently; this snapshot is deliberately data-only, and nothing
+# in this repository executes against the companion at validation time.
+#
+# Refresh procedure:
+#
+#   1. List the companion's skills (GET
+#      repos/shubhamtaywade82/react-agent-skills/contents/skills) and record
+#      the companion commit the listing was taken from.
+#   2. Update companion_commit, captured_at, and skills below.
+#   3. Re-run test/cross_pack_contract_system_test.rb and update
+#      documented_name_collisions to the recomputed intersection.
+#
+# The system test fails when either side changes names without a conscious
+# snapshot refresh, which is the drift signal this contract exists to give.
+
+companion_repository: shubhamtaywade82/react-agent-skills
+companion_commit: "9674abba1c255d24f5187847f8b4c8ccc1f21fd6"
+captured_at: "2026-10-09"
+skills:
+  - agent-adversarial-evaluations
+  - agent-behavior-scoring
+  - agent-evaluation-engineering
+  - agent-multi-turn-evaluations
+  - agent-tool-capabilities
+  - agent-workflow
+  - apollo
+  - arktype
+  - astro-react
+  - auth-session-boundaries
+  - aws-frontend
+  - biome
+  - browser-authentication
+  - browser-media
+  - browser-security-dom-safety
+  - cloudflare
+  - css-modules
+  - cypress
+  - datadog-frontend
+  - docker-kubernetes-frontend
+  - emotion
+  - eslint
+  - frontend-architecture
+  - frontend-browser-platform
+  - frontend-codemod-migration
+  - frontend-debugging
+  - frontend-dependency-management
+  - frontend-documentation
+  - frontend-e2e
+  - frontend-environment-configuration
+  - frontend-formatting
+  - frontend-generated-code
+  - frontend-internationalization
+  - frontend-messaging
+  - frontend-monorepo
+  - frontend-networking
+  - frontend-offline-pwa
+  - frontend-production
+  - frontend-realtime
+  - frontend-rendering-strategies
+  - frontend-repository-archetypes
+  - frontend-risk-classification
+  - frontend-security
+  - frontend-storage
+  - frontend-styling-layout
+  - frontend-supply-chain
+  - frontend-test-reliability
+  - frontend-visual-testing
+  - frontend-web-performance
+  - frontend-workers
+  - github-pages
+  - graphql-codegen
+  - jotai
+  - mobx
+  - msw
+  - netlify
+  - new-relic-frontend
+  - nextjs
+  - openapi-tooling
+  - opentelemetry-frontend
+  - playwright
+  - prettier
+  - react-19-modern-apis
+  - react-accessibility
+  - react-accessibility-widgets
+  - react-actions-forms
+  - react-architecture
+  - react-async-ui
+  - react-compiler
+  - react-component-engineering
+  - react-data-fetching
+  - react-design-system
+  - react-error-resilience
+  - react-forms-validation
+  - react-hook-form
+  - react-hooks-effects
+  - react-modern-rendering
+  - react-observability
+  - react-performance
+  - react-review
+  - react-router
+  - react-routing
+  - react-security
+  - react-server-components
+  - react-server-security
+  - react-state-management
+  - react-testing-engineering
+  - react-toolchain
+  - redux
+  - remix
+  - rsbuild
+  - rspack
+  - rtk-query
+  - sentry
+  - storybook
+  - styled-components
+  - swr
+  - tailwindcss
+  - tanstack-form
+  - tanstack-query
+  - tanstack-start
+  - testing-library
+  - trpc
+  - typescript-api-contracts
+  - typescript-async-error-modeling
+  - typescript-build-architecture
+  - typescript-configuration
+  - typescript-core-engineering
+  - typescript-eslint
+  - typescript-migration
+  - typescript-module-design
+  - typescript-package-publishing
+  - typescript-public-api-design
+  - typescript-runtime-contracts
+  - typescript-type-design
+  - typescript-version-migration
+  - urql
+  - valibot
+  - vanilla-extract
+  - vercel
+  - vite
+  - vitest
+  - vitest-browser
+  - xstate
+  - yup
+  - zod
+  - zustand
+documented_name_collisions:
+  - agent-workflow
+  - react-architecture
+  - react-component-engineering
+  - react-data-fetching
+  - react-testing-engineering
+  - typescript-core-engineering
+  - typescript-runtime-contracts
+  - typescript-type-design

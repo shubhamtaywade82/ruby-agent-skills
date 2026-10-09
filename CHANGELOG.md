@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 164 — Cross-Pack Contract Snapshot
+
+- `data/cross-pack/react-agent-skills.snapshot.yml` pins the react-agent-skills companion's public skill inventory (127 skills, companion commit `9674abba`, captured 2026-10-09) as data-only validation input; nothing executes against the companion at validation time, and the file documents its own refresh procedure.
+- `test/cross_pack_contract_system_test.rb` (registered in `bin/validate`) checks the snapshot is well-formed and requires the documented name-collision list to exactly match the computed intersection with this pack's manifest. The pinned intersection is eight names: `agent-workflow` plus the seven deprecated frontend skills that currently ship in both packs (`react-architecture`, `react-component-engineering`, `react-data-fetching`, `react-testing-engineering`, `typescript-core-engineering`, `typescript-runtime-contracts`, `typescript-type-design`); a rename or relocation on either side now fails `bin/validate` until the snapshot is consciously refreshed.
+- System/contract test count moves 103 to 104 (README table and implementation handoff updated).
+
 ## Iteration 163 — Release-Target Consistency Audit
 
 - `scripts/audit_documentation_consistency.rb` derives the canonical release from the newest `docs/releases/vX.Y.Z.md` and requires every user-facing install entry point to reference exactly that version: the README quick-start (`releases/download/vX.Y.Z/` URL and `ruby-agent-skills-vX.Y.Z` archive names), the pinned-release example in `docs/INSTALLATION.md`, and the `bin/install` usage examples (`--ref vX.Y.Z`). A missing or stale reference now fails `bin/validate`, closing the quick-start drift class documented in Iteration 162.
