@@ -60,6 +60,8 @@ ruby bin/routing-eval --command "ruby $(pwd)/bin/routing-agent-claude" \
   --provider anthropic --model "$CLAUDE_MODEL" \
   --router router/ROUTING.md --output benchmark-results/routing-claude
 ruby bin/routing-analyze benchmark-results/routing-claude/campaign.json
+
+The same campaign accepts `bin/routing-agent-cursor`, `bin/routing-agent-antigravity`, or `bin/routing-agent-opencode`. Set that CLI's model variable and pass the matching `--provider` and `--model`. See `docs/LOCAL_BENCHMARKING.md`.
 ```
 
 Decide the acceptance thresholds before running (for example, primary-skill accuracy and repetition stability), and record them with the results. Investigate every confusion pair the analysis reports. A rerun after a routing fix must use a fresh output directory.

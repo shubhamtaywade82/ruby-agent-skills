@@ -103,6 +103,18 @@ The repository includes `bin/routing-agent-ollama` as a concrete adapter for loc
 
 The adapter asks the model for JSON-only routing output and validates the selected skills against `skill-manifest.yml`. It does not receive the expected routing labels. Ollama's current chat API supports JSON output through the `format` field; the adapter sets `stream=false` and `format=json` for normalized routing responses.
 
+## Cursor, Antigravity, and OpenCode adapters
+
+The same routing result contract is implemented for three more local CLIs. Each refuses to run without an explicit model, and each checks the returned skill names against the manifest:
+
+| CLI | Routing adapter | Model variable |
+| --- | --- | --- |
+| Cursor `agent` | `bin/routing-agent-cursor` | `CURSOR_AGENT_MODEL` |
+| Antigravity `agy` | `bin/routing-agent-antigravity` | `AGY_MODEL` |
+| OpenCode | `bin/routing-agent-opencode` | `OPENCODE_MODEL` |
+
+Launch them through `bin/routing-eval --command` the same way as the Claude adapter. Command examples and the isolation limits of each CLI are in `docs/LOCAL_BENCHMARKING.md`.
+
 
 ## Real routing campaign
 

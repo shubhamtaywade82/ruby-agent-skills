@@ -99,6 +99,11 @@ The repository now includes:
     adapters/command_agent.rb
     bin/agent-benchmark
     lib/ruby_agent_skills/agent_adapter.rb
+    bin/coding-agent-claude and bin/routing-agent-claude
+    bin/coding-agent-cursor and bin/routing-agent-cursor
+    bin/coding-agent-antigravity and bin/routing-agent-antigravity
+    bin/coding-agent-opencode and bin/routing-agent-opencode
+    bin/routing-agent-ollama
 
 The command adapter is provider-neutral. It runs a trusted external coding-agent command inside the disposable benchmark workspace and writes normalized metadata to RUBY_AGENT_METADATA_FILE.
 

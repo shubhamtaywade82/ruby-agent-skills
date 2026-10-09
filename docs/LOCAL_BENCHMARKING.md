@@ -89,6 +89,62 @@ matches the model that actually ran.
 into the benchmark run, so a skill-enabled pair's advantage can only come
 from the skill/pattern context the runner itself materialized.
 
+## Path C: Cursor, Antigravity, and OpenCode
+
+`bin/routing-agent-cursor` / `bin/coding-agent-cursor`, the `antigravity`
+pair, and the `opencode` pair drive the local `agent`, `agy`, and `opencode`
+CLIs. Authenticate each CLI once in an interactive session. Set the model
+explicitly; none of the adapters has a default.
+
+```bash
+# Cursor (`agent` on PATH). Routing uses --mode ask. Coding uses --force
+# inside the disposable workspace.
+export CURSOR_AGENT_MODEL=<cursor model id>
+ruby bin/routing-eval \
+  --command "ruby $(pwd)/bin/routing-agent-cursor" \
+  --provider cursor --model "$CURSOR_AGENT_MODEL" \
+  --router router/ROUTING.md \
+  --output benchmark-results/routing-cursor
+ruby bin/agent-benchmark \
+  --command "ruby $(pwd)/bin/coding-agent-cursor" \
+  --manifest benchmarks/rails/campaign.yml \
+  --provider cursor --model "$CURSOR_AGENT_MODEL" \
+  --timeout 300 --continue-on-failure \
+  --output benchmark-results/rails-cursor
+
+# Antigravity (`agy`). --disable-slash-commands stops skill expansion.
+export AGY_MODEL=<agy model id>
+ruby bin/routing-eval \
+  --command "ruby $(pwd)/bin/routing-agent-antigravity" \
+  --provider antigravity --model "$AGY_MODEL" \
+  --router router/ROUTING.md \
+  --output benchmark-results/routing-antigravity
+ruby bin/agent-benchmark \
+  --command "ruby $(pwd)/bin/coding-agent-antigravity" \
+  --manifest benchmarks/rails/campaign.yml \
+  --provider antigravity --model "$AGY_MODEL" \
+  --timeout 300 --continue-on-failure \
+  --output benchmark-results/rails-antigravity
+
+# OpenCode. OPENCODE_MODEL is provider/model, as in `opencode models`.
+export OPENCODE_MODEL=<provider/model>
+ruby bin/routing-eval \
+  --command "ruby $(pwd)/bin/routing-agent-opencode" \
+  --provider opencode --model "$OPENCODE_MODEL" \
+  --router router/ROUTING.md \
+  --output benchmark-results/routing-opencode
+ruby bin/agent-benchmark \
+  --command "ruby $(pwd)/bin/coding-agent-opencode" \
+  --manifest benchmarks/rails/campaign.yml \
+  --provider opencode --model "$OPENCODE_MODEL" \
+  --timeout 300 --continue-on-failure \
+  --output benchmark-results/rails-opencode
+```
+
+Override the binary with `CURSOR_AGENT_BIN`, `AGY_BIN`, or `OPENCODE_BIN` when it is not on `PATH`.
+
+Isolation is not equal across these CLIs. Antigravity is launched with `--disable-slash-commands`, so installed skills are not expanded into the prompt. Cursor and OpenCode have no equivalent flag: a controlled run still loads skills installed for that user (`~/.cursor` skill roots, `~/.opencode/skills`). Compare those runs only with that leakage stated. The runner still withholds the verifier and the reference solution.
+
 ## Smoke-test before a full run
 
 Routing uses 93 model invocations (31 cases × 3). The Rails campaign uses 168 model invocations (28 evaluations × 3 paired repetitions × 2 configurations). Each Ruby platform foundation campaign uses 6 model invocations (1 evaluation × 3 paired repetitions × 2 configurations). Prove the adapter

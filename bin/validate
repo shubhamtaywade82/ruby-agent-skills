@@ -91,6 +91,7 @@ ruby -I"$ROOT/test" "$ROOT/test/data_catalogs_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/skill_routing_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_evaluation_system_test.rb"
+ruby -I"$ROOT/test" "$ROOT/test/headless_agent_adapter_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_campaign_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_remediation_system_test.rb"
 ruby -I"$ROOT/test" "$ROOT/test/routing_experiment_system_test.rb"

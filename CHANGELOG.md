@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 173 — Cursor, Antigravity, and OpenCode Benchmark Adapters
+
+- Routing and coding campaigns can target Cursor (`agent`), Antigravity (`agy`), and OpenCode. The adapters are `bin/routing-agent-cursor`, `bin/coding-agent-cursor`, `bin/routing-agent-antigravity`, `bin/coding-agent-antigravity`, `bin/routing-agent-opencode`, and `bin/coding-agent-opencode`. Each requires its own model variable (`CURSOR_AGENT_MODEL`, `AGY_MODEL`, `OPENCODE_MODEL`) and has no default.
+- Routing replies are normalized to the existing result contract and rejected when a skill name is not in the manifest. Cursor routing runs in ask mode. Antigravity routing uses a JSON schema and `--disable-slash-commands`. OpenCode routing runs standalone and does not pass `--auto`.
+- Coding runs stay inside the disposable workspace. Cursor coding passes `--force` and `--workspace`. Antigravity coding uses accept-edits plus `--disable-slash-commands`. OpenCode coding passes `--auto` and `--standalone`.
+- Isolation is recorded as it actually is. Antigravity can suppress skill expansion. Cursor and OpenCode still load the user's installed skills, so those runs are not the same controlled experiment as `bin/coding-agent-claude`. `docs/LOCAL_BENCHMARKING.md` states that limit.
+- The manifest routing contract names the three routing adapters, `scripts/audit_skill_routing.rb` checks the files exist, and `test/headless_agent_adapter_system_test.rb` drives fake CLIs. The system-test count moves from 105 to 106.
+
 ## Iteration 172 — External Skill Pack Reconciliation
 
 - `docs/SOURCE_COVERAGE.md` gains an *External skill pack* section reconciling the twenty-five skills from [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills), which are installed at `~/.agents/skills/` and available to an agent here but registered in none of this repository's routing. Each is mapped to the skill or mechanism that owns the same responsibility, using the coverage vocabulary already defined in the document with **absent** and **conflict** added for a responsibility with no equivalent here and a pack directive this repository overrides. Sixteen are covered, seven partial, one absent, one in conflict.

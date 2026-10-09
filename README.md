@@ -116,7 +116,7 @@ skills/rails-active-record/
 | Skills | **96** |
 | Implementation patterns | **447** |
 | Evaluation cases | **500** |
-| Dedicated system/contract tests | **105** |
+| Dedicated system/contract tests | **106** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.

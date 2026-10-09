@@ -86,10 +86,15 @@ errors << "manifest routing audit path missing" unless routing_contract["audit"]
 errors << "manifest routing result schema path missing" unless routing_contract["result_schema"].to_s == "docs/ROUTING_EVAL_RESULT_SCHEMA.md"
 errors << "manifest routing evaluation runner path missing" unless routing_contract["evaluation_runner"].to_s == "bin/routing-eval"
 errors << "manifest routing campaign manifest path missing" unless routing_contract["campaign_manifest"].to_s == "router/ROUTING_CAMPAIGN.yml"
-errors << "manifest Ollama adapter path missing" unless routing_contract["ollama_adapter"].to_s == "bin/routing-agent-ollama"
-
-ollama_adapter_path = File.join(ROOT, routing_contract.fetch("ollama_adapter", ""))
-errors << "routing Ollama adapter missing" unless File.file?(ollama_adapter_path)
+{
+  "ollama_adapter" => "bin/routing-agent-ollama",
+  "cursor_adapter" => "bin/routing-agent-cursor",
+  "antigravity_adapter" => "bin/routing-agent-antigravity",
+  "opencode_adapter" => "bin/routing-agent-opencode"
+}.each do |key, path|
+  errors << "manifest #{key} path missing" unless routing_contract[key].to_s == path
+  errors << "routing adapter missing: #{path}" unless File.file?(File.join(ROOT, path))
+end
 errors << "manifest campaign runner path missing" unless routing_contract["campaign_runner"].to_s == "bin/routing-campaign"
 errors << "manifest campaign analyzer path missing" unless routing_contract["campaign_analyzer"].to_s == "bin/routing-analyze"
 

@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 172 — External Skill Pack Reconciliation
+> **Current milestone:** Iteration 173 — Cursor, Antigravity, and OpenCode Benchmark Adapters
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -588,3 +588,7 @@ The substantive change is a gate. Nothing in the repository read the contents of
 Twenty-five generic workflow skills installed from `addyosmani/agent-skills` were available to an agent here without appearing anywhere in this repository's records — not in the manifest, not in routing, not in the coverage map — so a later session would have had to work out their relationship to the ninety-six skills this repository owns all over again. The reconciliation is now written down. Sixteen of the twenty-five map to a skill here that owns the same responsibility with more domain behind it, seven are partial for stated reasons, one has no counterpart at all, and one is overridden by this repository's contract.
 
 The value is in the two conflicts and the seven partials rather than in the mapping itself. `git-workflow-and-versioning` treats committing as part of any change while `AGENTS.md` forbids it without approval, and `spec-driven-development` defaults to opening with a spec where work here is reconciliation against an existing contract — both are recorded so the pack is used for method and not for policy. Each partial says what is genuinely missing: a divergence pass that `planning-wayfinder` does not run, threshold interviewing that this repository enforces executably but never asks for, context-budget guidance that does not sit alongside routing that does, and a fresh-context adversarial review that `change-review` cannot substitute for by reviewing a finished diff instead.
+
+## Iteration 173 — Cursor, Antigravity, and OpenCode Benchmark Adapters
+
+The routing and coding campaigns can now drive Cursor `agent`, Antigravity `agy`, and OpenCode through the same result contract as the Claude adapters. Each pair refuses to run without an explicit model id. Routing output is checked against the skill manifest before it is written. Antigravity is launched with `--disable-slash-commands` so installed skills are not expanded; Cursor and OpenCode have no equivalent switch, and that leakage is stated in `docs/LOCAL_BENCHMARKING.md` rather than treated as controlled isolation.
