@@ -21,14 +21,19 @@ class CrossPackContractSystemTest < Minitest::Test
     )
   end
 
-  def test_snapshot_is_well_formed
+  def test_snapshot_metadata_is_well_formed
     assert_equal "shubhamtaywade82/react-agent-skills", @snapshot.fetch("companion_repository")
     assert_match(/\A[0-9a-f]{40}\z/, @snapshot.fetch("companion_commit"))
     assert_match(/\A\d{4}-\d{2}-\d{2}\z/, @snapshot.fetch("captured_at").to_s)
+  end
+
+  def test_snapshot_skill_names_are_unique_and_kebab_case
     skills = Array(@snapshot.fetch("skills"))
+    malformed = skills.reject { |name| name.match?(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/) }
+
     refute_empty skills
+    assert_empty malformed
     assert_equal skills, skills.uniq
-    skills.each { |name| assert_match(/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/, name) }
   end
 
   def test_documented_name_collisions_match_the_companion_snapshot
@@ -42,6 +47,7 @@ class CrossPackContractSystemTest < Minitest::Test
 
   def test_validator_invokes_this_system_test
     validate = File.read(File.join(ROOT, "bin", "validate"))
+
     assert_includes validate, "test/cross_pack_contract_system_test.rb"
   end
 end
