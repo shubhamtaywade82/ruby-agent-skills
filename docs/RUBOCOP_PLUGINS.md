@@ -95,6 +95,10 @@ Chef cookbook                -> cookstyle
 
 Do not enable all plugins simply because they are catalogued.
 
+## Standardized target-application configuration
+
+`data/rubocop/reference-config.yml` is a version-parameterized `.rubocop.yml` template for a target Rails application: core plus rubocop-rails and rubocop-rspec by default, with the optional plugins kept as commented, applicability-gated blocks. `docs/RUBOCOP_REFERENCE_CONFIG.md` documents the substitution procedure, the version-gate decision table, and the Gemfile/CI/bin-lint companions. It is template data, not a config this repository loads.
+
 ## Important distinction
 
 RuboCop plugins extend static analysis; they do not replace the repository's architecture skills.

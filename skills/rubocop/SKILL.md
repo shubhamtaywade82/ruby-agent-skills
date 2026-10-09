@@ -180,6 +180,8 @@ First establish:
 
 For RuboCop Rails, use `AllCops: TargetRailsVersion` when the repository needs an explicit Rails target; otherwise inspect the lockfile behavior described by the installed extension.
 
+When the task is producing a standardized `.rubocop.yml` for a target Rails application, start from `data/rubocop/reference-config.yml` and resolve its version placeholders per `docs/RUBOCOP_REFERENCE_CONFIG.md` instead of assembling the config from scratch; its RSpec block must stay consistent with the RSpec consumer snippet that `docs/RSPEC_STYLE_GUIDE.md` indexes and that `test/test_engineering_system_test.rb` keeps identical to the repository policy.
+
 ## Finding interpretation
 
 A cop finding is evidence, not an unconditional design verdict.

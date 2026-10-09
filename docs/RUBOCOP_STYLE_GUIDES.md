@@ -15,17 +15,26 @@ The Ruby guide explicitly states that RuboCop is a static analyzer and formatter
 
 The configuration enables the core RuboCop rules with `AllCops/NewCops: enable`, targets Ruby 3.3, uses two-space indentation, and adopts a 100-character line limit. The Ruby Style Guide recommends two spaces and an 80-character limit, while allowing teams to raise the limit to 100 or 120 by agreement.
 
-The guide also permits either single-quoted or double-quoted string styles when applied consistently; this repository selects single quotes, matching the guide's examples.
+The guide also permits either single-quoted or double-quoted string styles when applied consistently; this repository selects double quotes (`Style/StringLiterals: EnforcedStyle: double_quotes`), and every Ruby file here follows it.
 
 ### Rails
 
-`rubocop-rails` is loaded through the modern plugin API. Its Rails cops cover Rails-specific best practices, while the actual Rails version should come from the consuming application's lockfile or an explicit `AllCops/TargetRailsVersion`.
+`rubocop-rails` is not loaded by this repository's root config, because this pack contains no Rails application code and Rails cops would only produce false positives. For a consuming Rails application, load it through the modern plugin API; its Rails cops cover Rails-specific best practices, and the Rails version should come from that application's lockfile or an explicit `AllCops/TargetRailsVersion`. See `docs/RUBOCOP_REFERENCE_CONFIG.md` for the standardized target-application configuration.
 
 The Rails style guide covers controller boundaries, model design, validations/scopes, persistence, migrations, and Active Support conventions. Examples include minimizing controller-to-view instance variables, keeping controller actions focused, and using database-enforced defaults where appropriate.
 
-## Complete plugin loading
+## Plugin loading
 
-The root config loads all plugins currently documented on RuboCop's Plugins page: 11 official plugins and 7 third-party plugins. RuboCop recommends the plugin system for compatible extensions starting with 1.72; older extensions may still require legacy loading.
+This repository's root config deliberately loads only four plugins, selected on applicability rather than completeness:
+
+- rubocop-performance
+- rubocop-minitest
+- rubocop-rspec
+- rubocop-thread_safety
+
+The full catalog below is **not** an installation list. Loading all of it into this repository was tried and failed: several extensions are not lint_roller plugins and did not load, `cookstyle` replaces RuboCop's default configuration with Chef's, `rubocop-changed` narrows execution to the diff, and plugins for frameworks this pack does not use (Rails, Sequel, Capybara, FactoryBot, I18n, Sorbet, GraphQL, SketchUp) produced only false positives. See the header of `.rubocop.yml` and the selection rules in `data/rubocop/plugins.yml`.
+
+RuboCop recommends the plugin system for compatible extensions starting with 1.72; older extensions may still require legacy loading. For a standardized configuration aimed at a target Rails application, use `data/rubocop/reference-config.yml` and `docs/RUBOCOP_REFERENCE_CONFIG.md`.
 
 ### Official
 
@@ -53,7 +62,7 @@ The root config loads all plugins currently documented on RuboCop's Plugins page
 
 ## Agent usage
 
-Agents should not treat loading every plugin as evidence that every plugin is applicable. The configuration makes the whole ecosystem available; repository dependency inspection determines which findings matter.
+Agents should not treat the catalog as evidence that every plugin is applicable. The root config loads a narrow applicable set; repository dependency inspection determines which additional plugins, if any, a target application should add.
 
 Recommended sequence:
 

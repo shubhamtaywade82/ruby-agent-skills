@@ -1,5 +1,48 @@
 # Changelog
 
+## Iteration 170 — Scaffolding Decision Record and Monitoring Registration
+
+- `docs/SOURCE_COVERAGE.md` gains a *Scaffolding scope decision* section recording that the corpus scaffolding proposed repeatedly in derived material — a numbered `docs/01-…` tree, `.agent/AGENT_CONTEXT.md` and `.cursorrules`, a gemspec with `lib/`, `spec/`, `templates/`, a `Rakefile` and `.yardopts`, plus `lint`, `test` and `docs` workflows — was considered and remains rejected. The reasons are recorded against the repository as it stands: `docs/` already holds the unnumbered coverage set that `audit_release_readiness` indexes, the repository is not a gem and its gate is `bin/validate` and `test/`, `.rubocop.yml` keeps four plugins on applicability grounds, and a generated agent-context file duplicates `AGENTS.md`. The corpus content itself stays mapped by the planning, coding-standards, and W5H tables above.
+- The unresolvable-gem correction table gains `pganalyze`, `sidekiq-prometheus`, and `uptime_kuma`, all absent from RubyGems, bringing the recorded dead names to six.
+- Two proposed CI commands are recorded as wrong against their tools' current source: `bundle exec simplecov --minimum-coverage 90` exits 1 because the CLI has no such flag (a coverage floor is `SimpleCov.minimum_coverage` in Ruby configuration), and `bundle exec mutant --use rspec 'app/models/*'` supplies a path glob where mutant requires a subject expression (`mutant run … 'Person#adult?'`); mutant is also free only for open-source repositories.
+- Eight verified gems join the catalogs, taking the twelve `data/*/tools.yml` files from 93 to 101 entries: `newrelic_rpm`, `scout_apm`, `rollbar`, `rails_semantic_logger`, `health_check`, and `prometheus-client` under `data/observability/tools.yml`, and `pghero` and `activerecord-explain-analyze` under `data/database-engineering/tools.yml` where their owning skill lives. Each was resolved against the RubyGems API before being written.
+
+## Iteration 169 — Retry Handler Precedence, CI Lockfile, Ecosystem Gem Registration
+
+- `skills/rails-active-job/references/retries-and-failures.md` gains a *Handler ordering* section. `retry_on` and `discard_on` both register a `rescue_from` handler and handlers are matched last-registered-first, so a broad handler declared after a narrow one silently shadows it; the section cites `activesupport` `rescuable.rb` (append plus `reverse_each.detect`) and `activejob` `exceptions.rb`, shows the unreachable exponential-backoff example, and states an explicit rule against `retry_on StandardError`.
+- `skills/ruby-toolchain/SKILL.md` closes the CI lockfile gap: commit `Gemfile.lock`, install with `frozen`/`deployment` so a mismatched lockfile fails instead of re-resolving, and never run `bundle update` in CI; the anti-pattern list and review checklist both gain a corresponding entry.
+- Twelve `data/*/tools.yml` catalogs now record 93 tool entries. Two new catalogs register `data/api-integration/tools.yml` (owned by `rails-api-integration`) and `data/hotwire/tools.yml` (owned by `rails-hotwire`); `docs/SOURCE_COVERAGE.md` gains an *Ecosystem gem registration* section covering both.
+- Every `gem:` value was resolved against the RubyGems API before being written. Three supplied names could not be resolved and are recorded as corrections rather than guessed into existence: `bencher`, `rails-devise-graphql` (the working gem is `graphql_devise`), and `husky` (a Node.js tool).
+- Fixed a duplicate `solid-queue-start` key in `data/active_job/tools.yml` where the second definition silently overwrote the first.
+
+## Iteration 168 — Code and Dependency Analysis Tooling
+
+- `data/performance/tools.yml` registers `derailed_benchmarks` as optional memory-leak detection alongside the existing profilers, with its provenance reference added to the performance source list.
+- Two new optional catalogs: `data/clean-code/tools.yml` for Rubycritic (code smell, complexity, and LOC aggregation, owned by `ruby-clean-code`) and `data/architecture/tools.yml` for Rubrowser (dependency graph rendering, owned by `rails-architecture`). Neither tool has a cop, and neither fit an existing catalog, so both are registered under their owning skill.
+- A new `docs/SOURCE_COVERAGE.md` section, *Code and dependency analysis tooling*, registers both catalogs and states that a Rubrowser graph is a dependency map rather than a regression matrix; the regression surface remains owned by `planning-spec` decision 5, *Name the regression surface*.
+- All three provenance URLs were verified reachable before being written. Both entries are optional and this pack runs neither tool; no inventory count moves.
+
+## Iteration 167 — Verified Cop Coverage and Test Tooling Registration
+
+- `patterns/testing/rspec-betterspecs-audit.md` mapping table gains the rubocop-rspec cops that reinforce guidelines 1, 8, 9, 12, 13, and 14: `RSpec/DescribeClass`, `RSpec/DescribedClass`, `RSpec/LetBeforeExamples`, `RSpec/VerifiedDoubles`, `RSpec/MessageSpies`, `RSpec/SubjectStub`, `RSpec/BeEq`, `RSpec/BeNil`, `RSpec/ExpectActual`, `RSpec/SharedExamples`, and `RSpecRails/HaveHttpStatus`. The table states that these are verified present but not enabled in this pack's own `.rubocop.yml`.
+- `docs/SOURCE_COVERAGE.md` gains a coding-standards table under the Allerin section mapping corpus rules to verified cops, and records three cop names that do not exist so they are not reintroduced: `Naming/ClassName` (the shipped cop is `Naming/ClassAndModuleCamelCase`), `Naming/PredicateName` (retired in favour of `Naming/PredicateMethod` and `Naming/PredicatePrefix`), and `RSpec/Rails/HaveHttpStatus` (the `rubocop-rspec_rails` department is `RSpecRails`). Four corpus rules are recorded as having no cop and staying with `ruby-clean-code`, `rails-architecture`, and `change-review`.
+- `data/test-engineering/tools.yml` registers mutation testing and coverage as `rspec-mutant` and `simplecov` with provenance sources, and adds a selection rule that a mutation score or coverage percentage is a review signal, not proof of correctness.
+- Cop existence was verified against the installed rubocop 1.91 cop listing (845 cops) and the rubocop-rails and rubocop-rspec source trees; no inventory count moves.
+
+## Iteration 166 — Allerin Planning and Review Coverage Mapping
+
+- `docs/SOURCE_COVERAGE.md`'s Allerin section gains a table mapping the corpus's planning and review artifacts (W5H interrogation, feature/change/bug-fix implementation plans, order of execution, regression matrix, self review, 30-point review checklist) to the skill that owns the equivalent responsibility: `planning-interview`, `planning-wayfinder`, `planning-spec`, `planning-tickets`, `change-review`, `stack-minimality-review`, and `rubocop`.
+- The table is explicitly labelled analogue by responsibility rather than term match, because no skill in this pack uses the terms "W5H" or "self review"; `planning-spec` decision 5 (*Name the regression surface*) is the one entry with a literal matching rule.
+- The section states that a gap means the concept has no owning skill yet, not that a new skill is warranted, so the mapping cannot be read as a mandate to grow the skill count.
+
+## Iteration 165 — RuboCop Reference Configuration for Target Applications
+
+- `data/rubocop/reference-config.yml` adds a version-parameterized `.rubocop.yml` template for a target Rails application: `rubocop-performance`, `rubocop-rails`, and `rubocop-rspec` active by default, the remaining catalog plugins kept as commented applicability-gated blocks, and version settings carried as placeholders (`__TARGET_RUBY_VERSION__`, `__TARGET_RAILS_VERSION__`, `__KNOWN_ENVIRONMENTS__`) to be resolved from the consuming application rather than pinned here.
+- `docs/RUBOCOP_REFERENCE_CONFIG.md` documents the substitution procedure, a version-gate decision table sourced from the rubocop-rails changelog (including 2.38.0 moving `AllCops/TargetRailsVersion` into rubocop-rails ahead of its removal from RuboCop core in RuboCop 2.0), the Gemfile/CI/`bin/lint` companions, the todo-baseline flow, and the `rubocop-rails-omakase` alternative.
+- Repair three statements in `docs/RUBOCOP_STYLE_GUIDES.md` that contradicted the actual root config: it selects double quotes rather than single quotes, it does not load `rubocop-rails` (this pack contains no Rails application code), and it loads four plugins rather than the full 11-plus-7 catalog.
+- Register the two new artifacts from `docs/RUBOCOP_PLUGINS.md`, `docs/SOURCE_COVERAGE.md`, and `skills/rubocop/SKILL.md` so neither is an orphan file.
+- The root `.rubocop.yml` is unchanged: it still loads four plugins on applicability grounds, and no inventory count moves.
+
 ## Iteration 164 — Cross-Pack Contract Snapshot
 
 - `data/cross-pack/react-agent-skills.snapshot.yml` pins the react-agent-skills companion's public skill inventory (127 skills, companion commit `9674abba`, captured 2026-10-09) as data-only validation input; nothing executes against the companion at validation time, and the file documents its own refresh procedure.

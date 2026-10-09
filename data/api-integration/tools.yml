@@ -1,0 +1,65 @@
+version: 1
+
+# Optional API-layer tooling for a consuming repository.
+# Registered from docs/SOURCE_COVERAGE.md; owned by rails-api-integration.
+# Every `gem:` value below was verified to exist on RubyGems before being written here.
+
+source:
+  name: Ruby/Rails API integration tooling
+  references:
+    - https://guides.rubyonrails.org/api_app.html
+    - https://rubygems.org
+    - https://github.com/doorkeeper-gem/doorkeeper
+    - https://github.com/norman/annotate_models
+
+tools:
+  doorkeeper:
+    category: oauth2_provider
+    gem: doorkeeper
+    optional: true
+    notes:
+      - acts as the OAuth2 provider for third-party clients
+      - token issuance is a security boundary; scope grants and token lifetime deliberately
+  devise-token-auth:
+    category: token_authentication
+    gem: devise_token_auth
+    optional: true
+    notes:
+      - token authentication for API-only clients such as native mobile apps
+      - depends on devise; validate the session/token strategy against the existing auth boundary
+  alba:
+    category: serialization
+    gem: alba
+    optional: true
+    notes:
+      - lightweight JSON serialization for response payloads
+      - serialization shape is a public contract; cover it with request specs
+  apipie-rails:
+    category: api_documentation
+    gem: apipie-rails
+    optional: true
+    notes:
+      - documents and validates API contracts from controller descriptions
+      - documentation drift still happens; keep params and specs in the same change
+  rack-cors:
+    category: cross_origin_policy
+    gem: rack-cors
+    optional: true
+    notes:
+      - configures Cross-Origin Resource Sharing at the Rack layer
+      - an origin wildcard is a security decision, not a convenience default
+  graphql:
+    category: query_api
+    gem: graphql
+    optional: true
+    notes:
+      - schema-first query API; reduces over-fetching at the cost of N+1 exposure in resolvers
+      - pair with graphql-batch or equivalent lazy loading before claiming a performance gain
+
+selection:
+  rules:
+    - "Resolve the application's Rails, auth, and API conventions before adding any of these."
+    - "Prefer the repository's existing authentication and serialization choices over a second parallel one."
+    - "Treat authentication (identity) and authorization (permission) as separate decisions at every boundary."
+    - "Do not add an API dependency to satisfy a check the repository already runs."
+    - "Never weaken a scope, origin, or token setting to make a request pass."

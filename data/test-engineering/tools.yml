@@ -3,6 +3,8 @@ source:
   rails_testing: https://guides.rubyonrails.org/testing.html
   active_job: https://guides.rubyonrails.org/active_job_basics.html
   rubocop: https://docs.rubocop.org/rubocop/latest/plugins.html
+  mutant: https://github.com/mbj/mutant
+  simplecov: https://github.com/simplecov-ruby/simplecov
 
 tools:
   rails-test:
@@ -25,6 +27,44 @@ tools:
     category: lint
     command: bundle exec rubocop
     application_only: true
+  rspec-mutant:
+    category: mutation_testing
+    command: bundle exec mutant --use rspec
+    application_only: true
+  simplecov:
+    category: coverage
+    command: bundle exec rspec
+    application_only: true
+  rspec-rails:
+    category: spec_framework
+    gem: rspec-rails
+    optional: true
+    notes:
+      - the spec runner for the specs-first workflow; write the example before the code
+  factory-bot-rails:
+    category: test_data
+    gem: factory_bot_rails
+    optional: true
+    notes:
+      - generated test data instead of brittle checked-in fixtures
+  mutant-rspec:
+    category: mutation_testing
+    gem: mutant-rspec
+    optional: true
+    notes:
+      - mutation runner adapter for RSpec; scored against the suite, not against line counts
+  vcr:
+    category: http_record_replay
+    gem: vcr
+    optional: true
+    notes:
+      - records and replays HTTP interactions so integration specs stay deterministic
+  webmock:
+    category: http_stubbing
+    gem: webmock
+    optional: true
+    notes:
+      - disables outbound HTTP in the suite so an accidental request fails the build
 
 selection:
   rules:
@@ -32,3 +72,4 @@ selection:
     - "Use repository-specific test helpers, fixtures, factories, and external-service doubles."
     - "Do not add retry loops to hide flaky tests."
     - "Benchmark test-performance changes with the same workload before and after."
+    - "Treat a mutation score or coverage percentage as a review signal, not as proof of correctness; never relax a threshold to make a run pass."

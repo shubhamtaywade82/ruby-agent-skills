@@ -1,0 +1,47 @@
+version: 1
+
+# Optional frontend tooling for a consuming repository.
+# Registered from docs/SOURCE_COVERAGE.md; owned by rails-hotwire.
+# Every `gem:` value below was verified to exist on RubyGems before being written here.
+
+source:
+  name: Ruby/Rails frontend tooling
+  references:
+    - https://guides.rubyonrails.org/hotwire_rails.html
+    - https://rubygems.org
+    - https://github.com/hotwired/turbo-rails
+
+tools:
+  hotwire-rails:
+    category: frontend_stack
+    gem: hotwire-rails
+    optional: true
+    notes:
+      - installs the Turbo and Stimulus stack as one dependency
+  turbo-rails:
+    category: frontend_stack
+    gem: turbo-rails
+    optional: true
+    notes:
+      - drive and morph updates over Turbo Frames and Streams instead of full page loads
+      - frames change response semantics; cover them with system tests, not request specs alone
+  stimulus-rails:
+    category: frontend_stack
+    gem: stimulus-rails
+    optional: true
+    notes:
+      - controllers for behavior that does not belong in a Turbo lifecycle
+  shakapacker:
+    category: asset_build
+    gem: shakapacker
+    optional: true
+    notes:
+      - Webpack-based asset builds; adds a Node toolchain to an otherwise Ruby build
+      - choose it over importmap/propshaft only when the bundle actually needs a bundler
+
+selection:
+  rules:
+    - "Resolve which asset pipeline the repository already uses before adding a bundler."
+    - "Do not introduce a second frontend build system alongside an existing one."
+    - "Keep Turbo and Stimulus behavior behind system tests that exercise the real browser contract."
+    - "Treat a Node toolchain as an added operational dependency, not a default."

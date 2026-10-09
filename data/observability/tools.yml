@@ -17,6 +17,68 @@ tools:
     category: runtime_inspection
     command: bundle exec rails runner
     application_only: true
+  lograge:
+    category: structured_request_logging
+    gem: lograge
+    optional: true
+    notes:
+      - collapses multi-line Rails request logs into single-line structured events
+      - pair with config.filter_parameters so secrets never reach a log aggregator
+  sentry-ruby:
+    category: error_reporting
+    gem: sentry-ruby
+    optional: true
+  sentry-rails:
+    category: error_reporting
+    gem: sentry-rails
+    optional: true
+  appsignal:
+    category: application_performance_monitoring
+    gem: appsignal
+    optional: true
+    notes:
+      - hosted error and performance reporting; a third-party service
+      - confirm data residency and payload contents before enabling in production
+  newrelic_rpm:
+    category: application_performance_monitoring
+    gem: newrelic_rpm
+    optional: true
+    notes:
+      - transaction and slow-SQL tracing for production
+      - agent defaults are broad; scope what is reported before enabling
+  scout_apm:
+    category: application_performance_monitoring
+    gem: scout_apm
+    optional: true
+    notes:
+      - hosted APM with per-endpoint allocation and response-time reporting
+  rollbar:
+    category: error_reporting
+    gem: rollbar
+    optional: true
+    notes:
+      - error aggregation and alerting; a second error backend needs a single owner
+  rails_semantic_logger:
+    category: structured_logging
+    gem: rails_semantic_logger
+    optional: true
+    notes:
+      - replaces the default logger with levelled, structured events
+      - changes log shape, so any parser downstream must change in the same commit
+  health_check:
+    category: health_endpoint
+    gem: health_check
+    optional: true
+    notes:
+      - exposes database, cache, and queue checks for load balancers
+      - a health endpoint that touches dependencies must stay cheap enough to poll
+  prometheus-client:
+    category: metrics
+    gem: prometheus-client
+    optional: true
+    notes:
+      - low-level metric registry and exposition format; dashboards are a separate system
+      - pick metric names and labels deliberately, they are expensive to change
 selection:
   rules:
     - "Use repository request/test conventions."

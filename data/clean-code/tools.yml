@@ -1,0 +1,50 @@
+version: 1
+
+# Optional code-quality analysis tooling for a consuming repository.
+# Registered from docs/SOURCE_COVERAGE.md. This pack does not run Rubycritic;
+# the entry records what it is for and when it is appropriate to adopt it.
+
+source:
+  rubycritic: https://github.com/whitesmith/rubycritic
+
+tools:
+  rubycritic:
+    category: code_smell_aggregation
+    command: bundle exec rubycritic
+    optional: true
+    notes:
+      - "Aggregates code smells, complexity, duplication, and LOC for review; it is a report, not a pass/fail gate."
+      - "A Rubycritic finding is a review signal. Interpret it against the owning skill's change contract before treating it as a defect."
+  reek:
+    category: code_smell_detection
+    gem: reek
+    optional: true
+    notes:
+      - "Detects feature envy, long parameter lists, and other object-oriented smells."
+      - "Feature envy and long parameter lists are the corpus's encapsulation and max-two-argument rules made executable."
+  flog:
+    category: complexity_scoring
+    gem: flog
+    optional: true
+    notes:
+      - "Scores method complexity on the ABC metric; a high score argues for splitting the method."
+  flay:
+    category: duplication_detection
+    gem: flay
+    optional: true
+    notes:
+      - "Structural duplication detection that ignores naming differences, so renamed copies still surface."
+  sorbet-rails:
+    category: static_typing
+    gem: sorbet-rails
+    optional: true
+    notes:
+      - "Gradual static typing for Rails models and relations."
+      - "Type checking enforces declared sigs only. It does not enforce RuboCop Metrics/ParameterLists argument limits."
+
+selection:
+  rules:
+    - "Inspect the repository's existing quality tooling before adding Rubycritic alongside RuboCop."
+    - "Do not add an optional analysis dependency to satisfy a check the repository already runs."
+    - "Report complexity, duplication, and method-length findings through ruby-clean-code and ruby-method-design rather than as standalone verdicts."
+    - "Never weaken a threshold or exclude a file to make an analysis run pass."

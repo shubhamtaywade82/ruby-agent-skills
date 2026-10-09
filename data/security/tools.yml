@@ -24,6 +24,34 @@ tools:
     notes:
       - version-sensitive; use the installed gem's CLI
       - update advisory data according to repository/CI policy
+  scryer:
+    category: static_analysis
+    gem: scryer
+    optional: true
+    notes:
+      - ranks security, performance, dependency, and code-quality findings together by severity
+      - keep its report separate from Brakeman's rather than merging the two scores
+  secure_headers:
+    category: security_headers
+    gem: secure_headers
+    optional: true
+    notes:
+      - applies CSP, HSTS, X-Frame-Options and related response headers application-wide
+      - the header policy is a security boundary; assert it in tests instead of trusting defaults
+  rack-attack:
+    category: throttling
+    gem: rack-attack
+    optional: true
+    notes:
+      - middleware allowlist/blocklist/throttle for brute-force and abuse traffic
+      - thresholds must come from observed traffic, not copied defaults
+  lockbox:
+    category: field_encryption
+    gem: lockbox
+    optional: true
+    notes:
+      - application-level encryption for sensitive columns such as PII and tokens
+      - key management and migrating existing values are the risks, not the model macro
 
 selection:
   rules:

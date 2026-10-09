@@ -117,6 +117,62 @@ Do not turn these prompts into source-text skills. Turn them into testable evalu
 - readability
 - test quality
 
+### Planning and review material
+
+The corpus also carries planning and review artifacts (W5H interrogation, feature/change/bug-fix implementation plans, order of execution, a regression matrix, self review, a 30-point review checklist). None of those terms appear literally in this repository; the table below maps each to the skill that owns the equivalent responsibility. These are analogues by responsibility, not term matches.
+
+| Corpus concept | Owning skill | Coverage |
+|---|---|---|
+| W5H interrogation of a task (who/what/when/where/why/how) | `planning-interview` asks the questions in rounds over a design tree; `planning-wayfinder` names the destination and charts the decisions between here and there | analogue — neither skill uses the term "W5H" |
+| Feature / change / bug-fix implementation plan | `planning-spec` synthesizes the decisions the conversation and repository already establish | analogue |
+| Order of execution and task splitting | `planning-tickets` cuts vertical slices, declares blocking edges, and keeps the startable frontier computable | analogue |
+| Regression matrix | `planning-spec` decision 5, *Name the regression surface*, plus its checklist item for uncovered dependents | analogue with a literal rule |
+| Self review | `change-review` reports the Standards and Spec axes separately | analogue — "self review" is not named |
+| 30-point review checklist | `change-review`, `stack-minimality-review`, and `rubocop` | partial — decomposed across three executable gates rather than one list |
+
+A gap in this table means the corpus concept has no owning skill yet, not that a new skill is warranted. Route it first; create a skill only if the responsibility is a distinct routing boundary.
+
+### Coding standards material
+
+The corpus also carries coding-standard rules and mentor feedback. Each row maps a rule to the cop that enforces it; every cop name below was verified against rubocop 1.91 (installed) or the rubocop-rails master tree. `Metrics/MethodLength` defaults to `Max: 10`, which matches the corpus's "less than 10 lines" directly.
+
+| Corpus rule | Enforcing cop |
+|---|---|
+| Methods under 10 lines | `Metrics/MethodLength` (default `Max: 10`) |
+| No method with more than 2 arguments | `Metrics/ParameterLists` with `Max: 2` |
+| Line under 100 columns | `Layout/LineLength` |
+| No explicit `return` on the last line | `Style/RedundantReturn` |
+| `case`/`when` instead of long `if` chains | `Style/CaseLikeIf` |
+| No `for`; use `each` with a block | `Style/For` |
+| Avoid negative conditions; prefer `unless` | `Style/NegatedIf`, `Style/Not` |
+| Class variables used strategically | `Style/ClassVars` |
+| Discourage global variables | `Style/GlobalVars` |
+| Be specific about what is rescued | `Style/RescueStandardError` (`EnforcedStyle: explicit`), `Lint/SuppressedException`, `Style/RescueModifier` |
+| Place methods under `private`/`protected` | `Lint/UselessAccessModifier` |
+| Attribute accessors used appropriately | `Style/TrivialAccessors` |
+| DRY validations | `Rails/Validation` |
+| Static text lives in `en.yml` | `Rails/I18nLocaleTexts` |
+| File name matches the class/module defined in it | `Naming/FileName` |
+| Class/module name is a noun phrase | `Naming/ClassAndModuleCamelCase` |
+| Method name is a verb | `Naming/MethodName` |
+| Predicate methods use the `?` suffix | `Naming/PredicateMethod`, `Naming/PredicatePrefix` |
+| Names reveal intent | not enforceable — see below |
+
+Two naming cop names that appear in derived material **do not exist** and must not be introduced: `Naming/ClassName` (the shipped cop is `Naming/ClassAndModuleCamelCase`) and `Naming/PredicateName` (retired in favour of `Naming/PredicateMethod` and `Naming/PredicatePrefix`). A third, `RSpec/Rails/HaveHttpStatus`, has the wrong department — the shipped cop is `RSpecRails/HaveHttpStatus`, because `rubocop-rspec_rails` names its department `RSpecRails`.
+
+Four corpus rules have no cop and stay with review skills: intention-revealing semantic naming (`ruby-clean-code`), business logic placement across MVC boundaries (`rails-architecture`), exceptions used as control flow rather than for inevitable failure (`rails-architecture`), and the quality of W5H/YARD documentation (`change-review`). A cop can require that a comment exists; it cannot grade the comment.
+
+### Scaffolding scope decision
+
+Derived material has repeatedly proposed building the corpus prose scaffolding inside this repository: a numbered `docs/01-ruby-fundamentals/…` tree, `.agent/AGENT_CONTEXT.md` and `.cursorrules`, a `ruby-agent-skills.gemspec` with `lib/`, `spec/`, `templates/`, a `Rakefile` and `.yardopts`, plus `lint`, `test` and `docs` GitHub workflows. **This was considered and rejected, and it remains rejected.** The proposal is recorded here so it is not re-litigated each time the same material arrives.
+
+- `docs/` already holds the unnumbered coverage documents that the sections above and `audit_release_readiness` index by name. A second numbered tree would compete with them and orphan those references.
+- This repository is not a gem: it has no `gemspec`, `lib/`, `spec/`, `Rakefile` or `.yardopts`. Its gate is `bin/validate` and `test/`, so the proposed `lint.yml`, `test.yml` and `docs.yml` would duplicate checks that already run.
+- `.rubocop.yml` stays at this pack's four plugins on applicability grounds. Target-application rules belong in `data/rubocop/reference-config.yml`, not in an overwrite of this repository's config.
+- A generated `AGENT_CONTEXT.md` produced by a `sync-docs-to-agent-context.sh` script duplicates `AGENTS.md` and introduces exactly the documentation drift it claims to prevent.
+
+The corpus *content* is not rejected. W5H, the IP sections, the regression matrix and self review are mapped in *Planning and review material*, and the coding rules in *Coding standards material* above.
+
 ## Coverage states
 
 - **covered** — a skill already provides actionable guidance.
@@ -150,7 +206,9 @@ Coverage is implemented through:
 
 - skills/rubocop/SKILL.md — agent workflow and plugin selection
 - data/rubocop/plugins.yml — machine-readable plugin catalog
+- data/rubocop/reference-config.yml — version-parameterized `.rubocop.yml` template for target Rails applications
 - docs/RUBOCOP_PLUGINS.md — human-readable catalog
+- docs/RUBOCOP_REFERENCE_CONFIG.md — substitution procedure, version-gate decision table, Gemfile/CI/bin-lint companions
 - patterns/ruby/rubocop-review.md — review procedure
 - router integration in router/ROUTING.md
 
@@ -166,6 +224,47 @@ Coverage is implemented through:
 - `rubocop-rspec` — executable RSpec cop implementation
 
 Key source areas include spec layout, example-group structure, subject/let/hooks, contexts, expectations, matchers, doubles, test isolation, naming, and controlled DRYing. The upstream guide explicitly treats itself as a living document, so agents must check installed RSpec/rubocop-rspec versions before assuming a rule is current.
+
+## Code and dependency analysis tooling
+
+Two review-oriented analysis tools are registered here because neither has a cop and neither belongs in an existing catalog:
+
+| Tool | Catalog | Owning skill | Category |
+|---|---|---|---|
+| Rubycritic | `data/clean-code/tools.yml` | `ruby-clean-code` | code smell, complexity, and LOC aggregation |
+| Rubrowser | `data/architecture/tools.yml` | `rails-architecture` | dependency graph rendering |
+
+A Rubrowser graph is a dependency map, not a regression matrix: it shows what points at what, not which dependents existing tests already cover. The regression surface stays with `planning-spec` decision 5, *Name the regression surface*.
+
+Both entries are optional. This pack does not run either tool; the catalogs record what each is for so a consuming repository adopts them deliberately rather than by default.
+
+## Ecosystem gem registration
+
+Two further catalogs pair tooling with the skill that owns the domain:
+
+| Catalog | Owning skill |
+|---|---|
+| `data/api-integration/tools.yml` | `rails-api-integration` |
+| `data/hotwire/tools.yml` | `rails-hotwire` |
+
+Across twelve `data/*/tools.yml` catalogs the pack now records 101 tool entries. Every `gem:` value was resolved against the RubyGems API before being written, so a misspelled name cannot become repository fact. Names supplied by the source material that could not be resolved were recorded rather than guessed:
+
+| Name as given | Status |
+|---|---|
+| `bencher` | no such gem on RubyGems |
+| `rails-devise-graphql` | no such gem; the working gem is `graphql_devise` |
+| `husky` | not a Ruby gem — a Node.js git-hook manager |
+| `pganalyze` | no such gem on RubyGems — the product is a hosted service with no Ruby client under this name |
+| `sidekiq-prometheus` | no such gem on RubyGems |
+| `uptime_kuma` | no such gem on RubyGems — Uptime Kuma is a Node.js application |
+
+Two proposed CI commands were checked against the tools' current source and are wrong as written:
+
+- `bundle exec simplecov --minimum-coverage 90` exits 1 with `unknown command`. The `simplecov` CLI accepts only `coverage`, `show`, `run`, `open`, `report`, `status`, `history`, `uncovered`, `tests`, `affected`, `merge`, `diff`, with flags such as `--input`, `--json` and `--threshold`. A coverage floor is `SimpleCov.minimum_coverage 90` in Ruby configuration, not a command-line flag.
+- `bundle exec mutant --use rspec 'app/models/*'` uses a path glob where mutant expects a subject expression; its documented form is `mutant run --use rspec … 'Person#adult?'` with the file loaded via `--require`. Mutant is also free only for open-source repositories and requires a paid subscription otherwise, so it cannot be assumed as a default CI gate.
+
+Catalogs hold tools the pack or a consuming repository runs as a gate or reads as evidence. Runtime framework and admin gems with no owning skill (`rails`, `activerecord`, `activeadmin`, `avo`, `rails_admin`, `money-rails`) are deliberately absent rather than filed under a domain nobody owns.
+
 ## Runtime compatibility
 
 The repository now includes `ruby-runtime-compatibility` as the runtime/version intelligence layer for AI coding agents. It separates concrete resolved versions, declared constraints, CI-supported matrices, tooling targets, and conflicting evidence.

@@ -28,6 +28,92 @@ tools:
     category: query_plan_analysis
     command: EXPLAIN (ANALYZE, BUFFERS)
     database: postgresql
+  scenic:
+    category: database_views
+    gem: scenic
+    optional: true
+    notes:
+      - versioned database views; pushes reporting aggregation down into the database
+  activerecord-import:
+    category: bulk_operations
+    gem: activerecord-import
+    optional: true
+    notes:
+      - batch inserts that avoid per-row instantiation and round trips
+  counter_culture:
+    category: counter_caches
+    gem: counter_culture
+    optional: true
+    notes:
+      - maintained counter caches that avoid COUNT(*) aggregation at read time
+  db_validator:
+    category: data_integrity_audit
+    gem: db_validator
+    optional: true
+    notes:
+      - reports persisted rows that violate current model validations
+      - findings are evidence about legacy data, never a reason to weaken a validation
+  transaction_guard:
+    category: transaction_side_effects
+    gem: transaction_guard
+    optional: true
+    notes:
+      - detects mail, job, and HTTP side effects issued while a transaction is open
+  annotate:
+    category: schema_documentation
+    gem: annotate
+    optional: true
+    notes:
+      - writes schema and route comments into model, fixture, and factory files
+  rails-erd:
+    category: schema_diagram
+    gem: rails-erd
+    optional: true
+    notes:
+      - renders an ERD from the model graph; a diagram is a review aid, not a contract
+      - do not byte-diff generated diagrams as a CI gate; ordering and layout churn
+  rails-mermaid_erd:
+    category: schema_diagram
+    gem: rails-mermaid_erd
+    optional: true
+    notes:
+      - emits Mermaid ERD from the schema for embedding in documentation
+  ransack:
+    category: search_predicates
+    gem: ransack
+    optional: true
+    notes:
+      - predicate-based search; generated predicates must be allowlisted, not taken from params
+  searchkick:
+    category: search_indexing
+    gem: searchkick
+    optional: true
+    notes:
+      - search index backed by Elasticsearch; index and query behavior needs test coverage
+  kaminari:
+    category: pagination
+    gem: kaminari
+    optional: true
+  friendly_id:
+    category: slugs
+    gem: friendly_id
+    optional: true
+    notes:
+      - slug lookup and history; resolves to the same rows as the primary key
+  pghero:
+    category: database_dashboard
+    gem: pghero
+    optional: true
+    notes:
+      - query history, index suggestions, and connection stats for PostgreSQL
+      - index suggestions are candidates to investigate, not migrations to apply
+  activerecord-explain-analyze:
+    category: query_plan_analysis
+    gem: activerecord-explain-analyze
+    optional: true
+    notes:
+      - runs EXPLAIN ANALYZE against real data so estimates can be compared with actuals
+      - ANALYZE executes the query; never run it against production without a safety plan
 
 selection:
   rules:

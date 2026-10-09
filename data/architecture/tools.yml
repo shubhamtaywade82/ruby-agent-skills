@@ -1,0 +1,100 @@
+version: 1
+
+# Optional dependency-visualization tooling for a consuming repository.
+# Registered from docs/SOURCE_COVERAGE.md. This pack does not run Rubrowser;
+# the entry records what it is for and, importantly, what it is not.
+
+source:
+  rubrowser: https://github.com/emad-elsaid/rubrowser
+
+tools:
+  rubrowser:
+    category: dependency_graphing
+    command: bundle exec rubrowser
+    optional: true
+    notes:
+      - "Renders a dependency graph of the application's classes and modules."
+      - "A dependency graph is not a regression matrix: it shows what points at what, not which dependents existing tests already cover. The regression surface is owned by planning-spec decision 5, Name the regression surface."
+  active_interaction:
+    category: service_object
+    gem: active_interaction
+    optional: true
+    notes:
+      - "Encapsulates a use case with explicit inputs, outputs, and execution order."
+      - "Extract when a controller or model does more than one coherent thing; do not wrap every call."
+  simple_command:
+    category: service_object
+    gem: simple_command
+    optional: true
+    notes:
+      - "Minimal callable command with a success/failure result object."
+  draper:
+    category: presentation_boundary
+    gem: draper
+    optional: true
+    notes:
+      - "Moves view formatting and helper logic out of models into decorators."
+      - "Keep domain rules in the model; decorators hold presentation only."
+  active_decorator:
+    category: presentation_boundary
+    gem: active_decorator
+    optional: true
+    notes:
+      - "Decorator pattern without subclassing the model, applied at render time."
+  view_component:
+    category: view_component
+    gem: view_component
+    optional: true
+    notes:
+      - "Testable, object-oriented UI components that keep logic out of helpers and templates."
+  action_policy:
+    category: authorization_boundary
+    gem: action_policy
+    optional: true
+    notes:
+      - "Authorization kept in dedicated policy classes rather than controller conditionals."
+      - "Identity does not prove permission; re-authorize at the execution boundary."
+  cancancan:
+    category: authorization_boundary
+    gem: cancancan
+    optional: true
+    notes:
+      - "Centralized ability definition; a single Ability class becomes a coupling point if it grows."
+  devise:
+    category: authentication_boundary
+    gem: devise
+    optional: true
+    notes:
+      - "Session and token authentication for interactive applications."
+      - "Authentication establishes identity only; authorization stays a separate decision."
+  rails_event_store:
+    category: event_modeling
+    gem: rails_event_store
+    optional: true
+    notes:
+      - "Event sourcing and publishing; moves state transitions out of Active Record callbacks."
+  aggregate_root:
+    category: event_modeling
+    gem: aggregate_root
+    optional: true
+    notes:
+      - "In-process aggregate handling for domain events."
+  dry-validation:
+    category: data_contract
+    gem: dry-validation
+    optional: true
+    notes:
+      - "Explicit schemas and contracts for forms and API payloads, separate from persistence."
+  dry-monads:
+    category: data_contract
+    gem: dry-monads
+    optional: true
+    notes:
+      - "Success/failure result types that make failure paths explicit in the call graph."
+
+selection:
+  rules:
+    - "Inspect the repository's module, coupling, and bounded-context boundaries before rendering a graph."
+    - "Use the graph to inform a review, not as proof that a boundary is correct."
+    - "Record uncovered dependents in the spec's Notes as gaps to close, not as assumptions of safety."
+    - "Never report an unrun graph as evidence."

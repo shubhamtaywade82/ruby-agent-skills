@@ -105,6 +105,17 @@ Do not use a global gem executable when the application bundle provides the proj
 
 Do not delete or regenerate Gemfile.lock casually.
 
+Commit `Gemfile.lock` so CI, deployment, and every developer install the same resolved versions. Install against it rather than re-resolving it:
+
+```bash
+bundle config set --local frozen true   # BUNDLE_FROZEN=true
+bundle install
+```
+
+`bundle config set frozen true` refuses to change the lockfile, so a `Gemfile` edit without a matching lockfile entry fails instead of silently resolving new versions. `bundle config set deployment true` (`BUNDLE_DEPLOYMENT`) additionally installs into `vendor/bundle` and implies frozen.
+
+Never run `bundle update` in CI: it re-resolves the dependency tree and rewrites `Gemfile.lock`, so the build tests a version set nothing else has.
+
 ## RubyGems installation
 
 For a standalone tool or explicitly requested global gem, inspect its version and installation target before:
@@ -168,6 +179,7 @@ Document machine-specific exceptions rather than encoding them into application 
 - mixing system Ruby and version-manager Ruby;
 - using global Bundler/Rails executables against a project bundle;
 - deleting Gemfile.lock to resolve ordinary dependency conflicts;
+- running `bundle update` in CI, so each build resolves a version set nothing else has;
 - hiding native-extension compiler errors behind repeated installation attempts;
 - declaring compatibility from configuration without executing the runtime.
 
@@ -178,6 +190,7 @@ Document machine-specific exceptions rather than encoding them into application 
 - [ ] RubyGems provenance checked
 - [ ] Bundler provenance/version checked
 - [ ] lockfile requirements separated from local runtime
+- [ ] CI/deployment install mode observed (`frozen`, `deployment`, or neither)
 - [ ] application dependencies installed through Bundler
 - [ ] native-extension prerequisites identified when relevant
 - [ ] executable provenance is consistent

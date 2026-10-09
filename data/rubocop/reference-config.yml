@@ -1,0 +1,178 @@
+version: 1
+
+# Standardized RuboCop enforcement for target Rails applications.
+#
+# This is a TEMPLATE, not a runnable .rubocop.yml. It contains version
+# placeholders that must be resolved from the consuming application before use.
+# It is inert data: nothing in this repository loads it as RuboCop configuration.
+#
+# Substitute every __TOKEN__ below, then write the result as the application's
+# .rubocop.yml. See docs/RUBOCOP_REFERENCE_CONFIG.md for the substitution
+# procedure, the version-gate decision table, and the Gemfile/CI/bin-lint
+# companions.
+#
+# Governing policy: plugin selection follows applicability, never completeness.
+# Do not uncomment an optional plugin block unless the application actually
+# contains that dependency. Loading the full catalog is known to fail - see the
+# header of this repository's own .rubocop.yml and the selection rules in
+# data/rubocop/plugins.yml.
+
+parameters:
+  target_ruby_version: "__TARGET_RUBY_VERSION__"   # e.g. "3.3" - from .ruby-version
+  target_rails_version: "__TARGET_RAILS_VERSION__" # e.g. "7.2" - from Gemfile.lock
+  known_environments: "__KNOWN_ENVIRONMENTS__"      # e.g. [production, development, test, staging]
+
+inherit_from: .rubocop_todo.yml
+
+# Loading model. rubocop-rails supports the plugin API from 2.30.0 and is
+# recommended from RuboCop 1.72. Use `require:` only for extensions whose
+# installed version does not declare `default_lint_roller_plugin`, and for
+# in-repo custom cops/formatters. Both directives are supported; `require:` is
+# not deprecated.
+plugins:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+
+# Optional plugins. Uncomment only the blocks whose dependency is present.
+#   rubocop-rspec_rails   # rspec-rails in the Gemfile
+#   rubocop-factory_bot   # factory_bot / factory_bot_rails
+#   rubocop-capybara      # Capybara system/feature specs
+#   rubocop-minitest      # Minitest instead of, or alongside, RSpec
+#   rubocop-rake          # non-trivial Rakefile/lib/tasks surface
+#   rubocop-i18n          # gettext or rails-i18n wrapper APIs in active use
+#   rubocop-thread_safety # threaded or concurrent server/job execution
+#   rubocop-sequel        # Sequel present (unusual in a Rails app)
+#
+# Excluded on applicability grounds, not quality: cookstyle replaces RuboCop's
+# default configuration with Chef's, rubocop-changed narrows execution to the
+# diff and is a CI optimization rather than a lint policy, rubocop-sorbet /
+# rubocop-graphql / rubocop-packaging / rubocop-sketchup / rubocop-require_tools
+# apply only to their own stacks.
+
+AllCops:
+  TargetRubyVersion: __TARGET_RUBY_VERSION__
+  # rubocop-rails resolves TargetRailsVersion itself from 2.38.0, and an
+  # explicit value here takes precedence over the lockfile. RuboCop core is
+  # scheduled to drop TargetRailsVersion in RuboCop 2.0, at which point this
+  # key is owned entirely by rubocop-rails. Setting it explicitly is the
+  # reproducible choice for a standardized baseline; remove it only if the
+  # application deliberately wants lockfile-driven resolution.
+  TargetRailsVersion: __TARGET_RAILS_VERSION__
+  NewCops: enable
+  SuggestExtensions: false
+  DisplayCopNames: true
+  Exclude:
+    - "db/schema.rb"
+    - "db/migrate/**/*"
+    - "node_modules/**/*"
+    - "vendor/**/*"
+    - "tmp/**/*"
+    - "bin/**/*"
+
+# The Ruby Style Guide recommends 80 columns and permits raising it to 100 or
+# 120 by team agreement. 100 is the standardized value; justify any change.
+Layout/LineLength:
+  Max: 100
+
+Layout/IndentationWidth:
+  Width: 2
+
+# The guide permits either quote style when applied consistently. The
+# standardized choice is double quotes. This is a deliberate policy, not a
+# deprecated-feature workaround.
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+# Off by default in modern Rails applications: classes are documented through
+# the framework's own conventions and README/API docs, not per-class comments.
+Style/Documentation:
+  Enabled: false
+
+# The frozen-string-literal magic comment is valid and not deprecated. It is
+# disabled here as a noise-reduction policy: the application either freezes
+# literals repo-wide by other means or accepts the default. Re-enable and add
+# the magic comment if the application relies on literal identity.
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "test/**/*"
+    - "config/routes.rb"
+    - "config/environments/**/*"
+    - "lib/tasks/**/*"
+    - "db/seeds.rb"
+
+Metrics/MethodLength:
+  Max: 15
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+  Exclude:
+    - "db/seeds.rb"
+
+# Class length is a review signal, not a target. Controllers and migrations are
+# excluded because request orchestration and schema steps are legitimately
+# long; rails-architecture owns the fat-controller decision, not this cop.
+Metrics/ClassLength:
+  Max: 200
+  Exclude:
+    - "app/controllers/**/*"
+    - "db/migrate/**/*"
+
+Rails/FilePath:
+  EnforcedStyle: arguments
+
+# Rails 7.1 renamed the development environment to `local`. For a 7.1+ target,
+# include `local`; for older targets list the environments the app actually
+# defines.
+Rails/UnknownEnv:
+  Environments: __KNOWN_ENVIRONMENTS__
+
+Rails/ReversibleMigration:
+  Enabled: true
+
+# RSpec policy. These settings are the executable form of
+# skills/rails-test-engineering/references/rspec.md, which
+# test/test_engineering_system_test.rb keeps identical to this repository's
+# own policy. Keep them in sync or that test's contract is violated.
+RSpec/AnyInstance:
+  Enabled: true
+RSpec/BeforeAfterAll:
+  Enabled: true
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+RSpec/ExampleWording:
+  Enabled: true
+RSpec/HookArgument:
+  EnforcedStyle: implicit
+RSpec/ImplicitBlockExpectation:
+  Enabled: true
+RSpec/InstanceVariable:
+  Enabled: true
+RSpec/LeadingSubject:
+  Enabled: true
+RSpec/MultipleExpectations:
+  Max: 1
+RSpec/NamedSubject:
+  EnforcedStyle: always
+RSpec/PredicateMatcher:
+  EnforcedStyle: inflected
+
+# Deliberate relaxations from the BetterSpecs defaults. Uncomment only with
+# stated team agreement; each line trades readability signal for headroom.
+#   RSpec/ExampleLength:          # guide default 5
+#     Max: 12                     # for request/system specs with expensive setup
+#   RSpec/NestedGroups:           # guide default 3
+#     Max: 4
+#   RSpec/MultipleMemoizedHelpers: # guide default 5
+#     Max: 8
+#
+# Prefer tagging an example `:aggregate_failures` over raising
+# RSpec/MultipleExpectations: the cop already skips tagged examples.

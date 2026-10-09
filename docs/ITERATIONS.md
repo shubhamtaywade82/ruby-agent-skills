@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 164 — Cross-Pack Contract Snapshot
+> **Current milestone:** Iteration 170 — Scaffolding Decision Record and Monitoring Registration
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -548,3 +548,31 @@ The documentation consistency audit now derives the canonical release from the n
 ## Iteration 164 — Cross-Pack Contract Snapshot
 
 `data/cross-pack/react-agent-skills.snapshot.yml` pins the companion pack's public skill inventory as data-only validation input, and `test/cross_pack_contract_system_test.rb` requires the documented name-collision list to exactly match the computed intersection with this pack's manifest, so a rename or relocation on either side fails `bin/validate` until the snapshot is consciously refreshed; the pinned intersection is `agent-workflow` plus the seven deprecated frontend skills shipping in both packs.
+
+## Iteration 165 — RuboCop Reference Configuration for Target Applications
+
+Added `data/rubocop/reference-config.yml`, a version-parameterized `.rubocop.yml` template for target Rails applications, with `docs/RUBOCOP_REFERENCE_CONFIG.md` covering the substitution procedure, a version-gate decision table sourced from the rubocop-rails changelog, and the Gemfile/CI/bin-lint companions; repaired three statements in `docs/RUBOCOP_STYLE_GUIDES.md` that contradicted the actual root config (quote style, `rubocop-rails` not loaded, four plugins rather than the full catalog), and registered the new artifacts from the plugin catalog, source coverage, and `rubocop` skill. The root `.rubocop.yml` still loads four plugins on applicability grounds and no inventory count moves.
+
+## Iteration 166 — Allerin Planning and Review Coverage Mapping
+
+The Allerin section of `docs/SOURCE_COVERAGE.md` now maps the corpus's planning and review artifacts (W5H, implementation plans, order of execution, regression matrix, self review, 30-point checklist) to the owning skills, labelled as analogues by responsibility because no skill in this pack uses the terms "W5H" or "self review"; a gap in the table means the concept has no owning skill yet, not that a new skill is warranted.
+
+## Iteration 167 — Verified Cop Coverage and Test Tooling Registration
+
+The BetterSpecs mapping table now names the additional rubocop-rspec cops that reinforce its guidelines, `docs/SOURCE_COVERAGE.md` gains a corpus coding-standards table that records three cop names which do not exist (`Naming/ClassName`, `Naming/PredicateName`, `RSpec/Rails/HaveHttpStatus`), and `data/test-engineering/tools.yml` registers mutation testing and coverage with a rule that neither percentage is proof of correctness; all cop names were verified against the installed cop listing and the upstream source trees.
+
+## Iteration 168 — Code and Dependency Analysis Tooling
+
+`derailed_benchmarks` joins the performance catalog, and two new optional catalogs register Rubycritic (`data/clean-code/tools.yml`, owned by `ruby-clean-code`) and Rubrowser (`data/architecture/tools.yml`, owned by `rails-architecture`) from a new *Code and dependency analysis tooling* section in `docs/SOURCE_COVERAGE.md`, which also records that a dependency graph is not a regression matrix.
+
+## Iteration 169 — Retry Handler Precedence, CI Lockfile, Ecosystem Gem Registration
+
+Two corrections land as documentation. The ActiveJob retry reference now states that `retry_on` and `discard_on` both register a `rescue_from` handler matched last-registered-first, so a broad handler declared after a narrow one makes the narrow one unreachable — a shadowed `Net::OpenTimeout` handler is shown as the worked example — and it rules out `retry_on StandardError` outright. The toolchain skill now covers what CI does with a lockfile: commit it, install under `frozen` or `deployment`, and never `bundle update` in CI.
+
+Ecosystem tooling registration follows the same evidence discipline as the cop names. Twelve `data/*/tools.yml` catalogs record 93 entries, with `data/api-integration/tools.yml` and `data/hotwire/tools.yml` added for their owning skills. Each `gem:` value was resolved against the RubyGems API first; `bencher`, `rails-devise-graphql`, and `husky` could not be resolved and are recorded as corrections (`graphql_devise` is the working gem for the second). A duplicate `solid-queue-start` key that silently overwrote itself is also fixed.
+
+## Iteration 170 — Scaffolding Decision Record and Monitoring Registration
+
+Because the same proposal has now arrived several times, the rejection is written down instead of being re-derived. `docs/SOURCE_COVERAGE.md` gains a *Scaffolding scope decision* that names the rejected artifacts — numbered `docs/01-…` tree, `.agent/AGENT_CONTEXT.md` and `.cursorrules`, a gemspec with `lib/`, `spec/`, `templates/`, `Rakefile` and `.yardopts`, and three GitHub workflows — and gives the reason for each against the repository as it actually is: `docs/` already holds the unnumbered coverage set that release readiness indexes, the repository has no gemspec and gates through `bin/validate` and `test/`, `.rubocop.yml` keeps four plugins because applicability decides, and a generated context file would duplicate `AGENTS.md` while introducing the drift it claims to prevent. The decision separates the scaffolding from the content: W5H, the IP sections, the regression matrix, self review, and the coding rules remain mapped and in use.
+
+Corrections and registration continue under the same rule as iterations 167 through 169. Three more supplied gem names proved absent from RubyGems — `pganalyze`, `sidekiq-prometheus`, `uptime_kuma` — so the dead-name table now carries six entries rather than three. Two CI commands were checked against their tools' current source rather than accepted as written: the `simplecov` CLI dispatches `coverage`, `show`, `run`, `open`, `report`, `status`, `history`, `uncovered`, `tests`, `affected`, `merge`, and `diff` and rejects `--minimum-coverage` as an unknown command, so a floor belongs in `SimpleCov.minimum_coverage`; mutant takes a subject expression such as `'Person#adult?'` with the file supplied via `--require`, not a path glob, and is free only for open-source repositories. Eight verified gems then take the twelve catalogs from 93 to 101 entries: six filed under `data/observability/tools.yml` for APM, error reporting, structured logging, health endpoints, and metrics, and two — `pghero` and `activerecord-explain-analyze` — under `data/database-engineering/tools.yml` where the owning skill is.

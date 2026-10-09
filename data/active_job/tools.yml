@@ -14,11 +14,20 @@ tools:
     command: bin/jobs start
     application_only: true
     optional: true
-  solid-queue-start:
+  good-job-start:
     category: queue_operations
-    command: bin/jobs start
+    gem: good_job
     application_only: true
     optional: true
+    notes:
+      - Postgres-backed Active Job adapter with a web dashboard for queue monitoring
+  sidekiq:
+    category: queue_operations
+    gem: sidekiq
+    optional: true
+    notes:
+      - Redis-backed worker pool for high-throughput queues
+      - adds an external dependency and its own concurrency semantics; choose deliberately
   active-job-queue-check:
     category: runtime_inspection
     command: bundle exec rails runner 'puts ActiveJob::Base.queue_adapter.class.name'

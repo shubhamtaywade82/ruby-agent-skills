@@ -6,6 +6,7 @@ source:
     - https://guides.rubyonrails.org/performance_testing.html
     - https://github.com/tmm1/stackprof
     - https://github.com/ruby-prof/ruby-prof
+    - https://github.com/zombocom/derailed_benchmarks
 
 tools:
   benchmark:
@@ -36,6 +37,23 @@ tools:
   memory_profiler:
     category: allocation_memory_profiling
     optional: true
+  derailed_benchmarks:
+    category: memory_leak_detection
+    command: bundle exec derailed_benchmarks
+    optional: true
+  bullet:
+    category: n_plus_one_detection
+    gem: bullet
+    optional: true
+    notes:
+      - raises or logs when query patterns indicate N+1 access or missing eager loads
+      - typically run in development and test; a clean run is evidence for that workload only
+  marginalia:
+    category: sql_attribution
+    gem: marginalia
+    optional: true
+    notes:
+      - annotates SQL with controller/action so a slow query maps back to its caller
 
 selection:
   rules:
