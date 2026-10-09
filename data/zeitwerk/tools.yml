@@ -1,4 +1,5 @@
 version: 1
+owner: rails-zeitwerk
 source:
   rails_guide: https://guides.rubyonrails.org/autoloading_and_reloading_constants.html
   zeitwerk: https://github.com/fxn/zeitwerk

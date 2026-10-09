@@ -1,4 +1,5 @@
 version: 1
+owner: rails-architecture
 
 # Optional dependency-visualization tooling for a consuming repository.
 # Registered from docs/SOURCE_COVERAGE.md. This pack does not run Rubrowser;

@@ -1,4 +1,5 @@
 version: 1
+owner: rails-hotwire
 
 # Optional frontend tooling for a consuming repository.
 # Registered from docs/SOURCE_COVERAGE.md; owned by rails-hotwire.

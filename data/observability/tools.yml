@@ -1,4 +1,5 @@
 version: 1
+owner: rails-observability
 source:
   error_reporting: https://guides.rubyonrails.org/error_reporting.html
   instrumentation: https://guides.rubyonrails.org/active_support_instrumentation.html
@@ -57,14 +58,15 @@ tools:
     gem: rollbar
     optional: true
     notes:
-      - error aggregation and alerting; a second error backend needs a single owner
+      - error aggregation and alerting; this catalog already carries sentry-ruby for the same job
+      - pick one error backend rather than running both, they split ownership without adding coverage
   rails_semantic_logger:
     category: structured_logging
     gem: rails_semantic_logger
     optional: true
     notes:
       - replaces the default logger with levelled, structured events
-      - changes log shape, so any parser downstream must change in the same commit
+      - changes log shape, so downstream log consumers must be checked before enabling
   health_check:
     category: health_endpoint
     gem: health_check
@@ -84,3 +86,5 @@ selection:
     - "Use repository request/test conventions."
     - "Resolve Rails version before relying on version-specific controller or health behavior."
     - "Do not treat logs as proof without correlating request and error context."
+    - "Run one APM agent, not several: appsignal, newrelic_rpm, and scout_apm each install their own instrumentation, transport, and reporting pipeline, so running two duplicates overhead and splits the picture."
+    - "Keep one error backend: sentry-ruby and rollbar both aggregate exceptions, and a second one divides ownership without adding coverage."

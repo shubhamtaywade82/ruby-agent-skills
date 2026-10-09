@@ -293,6 +293,8 @@ Do not claim an index improved performance without workload evidence.
 
 Never run `EXPLAIN ANALYZE` against production casually; it executes the query.
 
+Set a statement timeout for the session before running it, so a slow plan cannot hold a connection open for the full query.
+
 ## Connection pools
 Connection pooling is a capacity boundary.
 

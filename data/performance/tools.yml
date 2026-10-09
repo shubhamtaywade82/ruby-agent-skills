@@ -1,4 +1,5 @@
 version: 1
+owner: rails-performance
 source:
   name: Ruby/Rails performance tooling
   references:

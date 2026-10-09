@@ -1,4 +1,5 @@
 version: 1
+owner: rails-security
 source:
   name: Ruby/Rails security tooling
   references:

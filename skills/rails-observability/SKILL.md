@@ -118,6 +118,8 @@ dependency = a specific dependency is available
 
 Do not make liveness depend on every third-party service unless that restart policy is intentional.
 
+A health endpoint reachable from outside the application should report pass or fail without naming which dependency failed: enumerating failures exposes topology, and a probe that fans out to every dependency converts a partial outage into a full one under polling.
+
 Reference: https://guides.rubyonrails.org/action_controller_overview.html
 
 ## Middleware

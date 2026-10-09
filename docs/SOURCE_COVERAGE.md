@@ -173,6 +173,53 @@ Derived material has repeatedly proposed building the corpus prose scaffolding i
 
 The corpus *content* is not rejected. W5H, the IP sections, the regression matrix and self review are mapped in *Planning and review material*, and the coding rules in *Coding standards material* above.
 
+## External skill pack: addyosmani/agent-skills
+
+Twenty-five generic workflow skills from [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) are installed at `~/.agents/skills/` and are available to an agent working here. None is registered in `skill-manifest.yml` and none participates in this repository's routing; they are reconciled below so their relationship to the ninety-six skills this repository owns is recorded rather than re-derived each session.
+
+The pack is generic — it knows nothing of Rails, of Ruby, or of this repository's contract — so most entries map to a skill here that owns the same responsibility with more domain behind it. Coverage uses the vocabulary from *Coverage states* below, with **absent** added for a responsibility that has no equivalent here and no proposal to build one, and **conflict** for a pack directive this repository's contract overrides.
+
+| Pack skill | Owning skill or mechanism here | Coverage |
+|---|---|---|
+| `using-agent-skills` | `agent-workflow` — discover skills, manage context, select patterns, implement, test, review, simplify, verify | covered |
+| `interview-me` | `planning-interview` | covered |
+| `idea-refine` | `planning-wayfinder` | partial |
+| `spec-driven-development` | `planning-spec` | covered |
+| `constraint-driven-development` | `stack-minimality-debt` (ceilings and revisit triggers), with `bin/validate` and `.rubocop.yml` as the executable bar | partial |
+| `planning-and-task-breakdown` | `planning-tickets` | covered |
+| `incremental-implementation` | `agent-workflow` operating sequence, `stack-minimality` | covered |
+| `test-driven-development` | `ruby-tdd-refactoring`, `rails-test-engineering` | covered |
+| `context-engineering` | `AGENTS.md` context rules, `router/ROUTING.md` | partial |
+| `source-driven-development` | `AGENTS.md`: prefer official, source-backed guidance for framework-sensitive behavior | partial |
+| `doubt-driven-development` | `change-review` | partial |
+| `frontend-ui-engineering` | `rails-hotwire`, `rails-asset-build-engineering`, `react-accessibility-performance` and the wider `react-*` set | covered |
+| `api-and-interface-design` | `rails-api-integration`, `ruby-api-design` | covered |
+| `browser-testing-with-devtools` | — | absent |
+| `debugging-and-error-recovery` | `ruby-debugging`, `rails-incident-engineering` | covered |
+| `code-review-and-quality` | `change-review` (standards conformance and spec fidelity as separate axes), `ruby-clean-code` | covered |
+| `code-simplification` | `stack-minimality-review` and the surrounding `stack-minimality` family, `ruby-clean-code` | covered |
+| `security-and-hardening` | `rails-security`, `rails-security-engineering` | covered |
+| `performance-optimization` | `rails-performance`, `ruby-performance` | covered |
+| `git-workflow-and-versioning` | `AGENTS.md` commit rules | conflict |
+| `ci-cd-and-automation` | `rails-release-engineering`, `ruby-toolchain` | covered |
+| `deprecation-and-migration` | `rails-release-engineering`, `rails-database-engineering` (expand/contract) | partial |
+| `documentation-and-adrs` | `rails-staff-principal-architecture`, `ruby-domain-modeling` | partial |
+| `observability-and-instrumentation` | `rails-observability` | covered |
+| `shipping-and-launch` | `rails-release-engineering`, `rails-production-runtime` | covered |
+
+Sixteen are covered, seven partial, one absent, one in conflict.
+
+The partial entries are partial for a reason worth stating: `idea-refine` runs a divergence pass before converging, where `planning-wayfinder` charts a decision map and resolves one decision per session; `constraint-driven-development` interviews for thresholds, where this repository enforces them executably but never asks; `context-engineering` configures rules files, where routing already exists but context-budget guidance does not; `source-driven-development` adds retrieval hygiene around a rule this repository states as a single contract line; `doubt-driven-development` reviews an in-flight decision with the claim withheld, where `change-review` reviews a finished diff; `deprecation-and-migration` owns API and system retirement, covered here across two skills rather than one. `documentation-and-adrs` is partial because ADRs appear inside `rails-staff-principal-architecture` and `ruby-domain-modeling` rather than owning a boundary of their own.
+
+### Policy conflicts
+
+Two pack directives are overridden by this repository's contract and must not be followed here:
+
+- `git-workflow-and-versioning` triggers on any code change and directs committing, branching, and pushing as part of the work. `AGENTS.md` forbids committing automatically, requires approval before every commit, and forbids a `Co-Authored-By` line. The repository contract wins; the pack governs how a change is structured once a commit is authorized, never whether one may be made.
+- `spec-driven-development` opens with "when in doubt, start with a spec." Work here is reconciliation of supplied material against an existing contract, gated by `bin/validate`, and follows the operating sequence in `AGENTS.md`. Where the two would both apply, `planning-spec` is this repository's skill for that boundary.
+
+`AGENTS.md` places repository architecture and explicit task requirements above generic style preferences. This pack is generic, so on any point where it and this repository disagree, the repository governs.
+
 ## Coverage states
 
 - **covered** — a skill already provides actionable guidance.
@@ -263,7 +310,7 @@ Two proposed CI commands were checked against the tools' current source and are 
 - `bundle exec simplecov --minimum-coverage 90` exits 1 with `unknown command`. The `simplecov` CLI accepts only `coverage`, `show`, `run`, `open`, `report`, `status`, `history`, `uncovered`, `tests`, `affected`, `merge`, `diff`, with flags such as `--input`, `--json` and `--threshold`. A coverage floor is `SimpleCov.minimum_coverage 90` in Ruby configuration, not a command-line flag.
 - `bundle exec mutant --use rspec 'app/models/*'` uses a path glob where mutant expects a subject expression; its documented form is `mutant run --use rspec … 'Person#adult?'` with the file loaded via `--require`. Mutant is also free only for open-source repositories and requires a paid subscription otherwise, so it cannot be assumed as a default CI gate.
 
-Catalogs hold tools the pack or a consuming repository runs as a gate or reads as evidence. Runtime framework and admin gems with no owning skill (`rails`, `activerecord`, `activeadmin`, `avo`, `rails_admin`, `money-rails`) are deliberately absent rather than filed under a domain nobody owns.
+Catalogs hold tools a consuming repository runs as a gate, or reads as evidence while diagnosing and reviewing it — a stack trace, a slow query plan, or a request log counts as evidence even though nothing in this pack executes it. What they exclude is runtime and admin surface with no skill to own it: framework and admin gems (`rails`, `activerecord`, `activeadmin`, `avo`, `rails_admin`, `money-rails`) are deliberately absent rather than filed under a domain nobody owns.
 
 ## Runtime compatibility
 
