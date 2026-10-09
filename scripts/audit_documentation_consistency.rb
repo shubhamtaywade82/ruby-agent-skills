@@ -111,9 +111,8 @@ end
 # The newest documented release (docs/releases/vX.Y.Z.md) is the release that
 # every user-facing install entry point must reference. This closes the drift
 # class where the quick start kept naming v1.1.0 while v1.3.0 was canonical.
-release_note_versions = Dir[File.join(root, "docs", "releases", "v*.md")]
-  .map { |path| File.basename(path, ".md") }
-  .select { |name| name.match?(/\Av\d+\.\d+\.\d+\z/) }
+release_note_paths = Dir[File.join(root, "docs", "releases", "v*.md")]
+release_note_versions = release_note_paths.map { |path| File.basename(path, ".md") }.grep(/\Av\d+\.\d+\.\d+\z/)
 errors << "docs/releases/ has no vX.Y.Z.md notes; the canonical release cannot be derived" if release_note_versions.empty?
 
 canonical_release = release_note_versions.max_by { |name| name.delete_prefix("v").split(".").map(&:to_i) }
