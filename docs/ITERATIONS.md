@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 161 — Cross-Pack Linking to react-agent-skills
+> **Current milestone:** Iteration 162 — Quick-Start Release Target Reconciliation
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -536,3 +536,7 @@ Added the behaviourally graded `rails-adversarial` benchmark family, with withhe
 ## Iteration 161 — Cross-Pack Linking to react-agent-skills
 
 `rails-react-integration` and the cross-stack routing table now name the react-agent-skills skill that owns each client-side seam concern instead of relying on in-pack React guidance; README, INSTALLATION and AGENTS document installing both packs and the current skill-name collisions.
+
+## Iteration 162 — Quick-Start Release Target Reconciliation
+
+The README quick-start, the `docs/INSTALLATION.md` pinned-ref example, and the `bin/install` usage examples now point at the current `v1.3.0` release archive rather than the stale `v1.1.0`/`v1.0.0` references; no validator pins the quick-start version, so the drift was invisible to `bin/validate`.
