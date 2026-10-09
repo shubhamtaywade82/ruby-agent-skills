@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 163 — Release-Target Consistency Audit
+
+- `scripts/audit_documentation_consistency.rb` derives the canonical release from the newest `docs/releases/vX.Y.Z.md` and requires every user-facing install entry point to reference exactly that version: the README quick-start (`releases/download/vX.Y.Z/` URL and `ruby-agent-skills-vX.Y.Z` archive names), the pinned-release example in `docs/INSTALLATION.md`, and the `bin/install` usage examples (`--ref vX.Y.Z`). A missing or stale reference now fails `bin/validate`, closing the quick-start drift class documented in Iteration 162.
+- `RELEASE.md` "Cutting a release" lists updating those references as a pre-tag step, so the requirement is discoverable at release time instead of only in CI output.
+- `test/documentation_consistency_system_test.rb` covers the new check with regressions for a stale quick-start version, a stale installation ref, and a removed release reference; the temporary audit root now carries `docs/INSTALLATION.md`, `bin/install`, and `docs/releases/`.
+
 ## Iteration 162 — Quick-Start Release Target Reconciliation
 
 - Point the README quick-start at the `v1.3.0` release archive (`ruby-agent-skills-v1.3.0.tar.gz`, published with `SHA256SUMS` from source commit `4f1782529c8f5ddbc7fb7ff656c5d030ebc3c6d0`); it still downloaded `v1.1.0`, which predates the specification-conformance, publish-readiness, adversarial-benchmark, and cross-pack-linking work of Iterations 134–161.

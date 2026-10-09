@@ -17,7 +17,7 @@ Static repository readiness is audited by `scripts/audit_release_readiness.rb`. 
 
 ## Cutting a release
 
-From a clean `main` at the commit you want to release:
+From a clean `main` at the commit you want to release, with the user-facing release references already updated: the README quick-start archive URL, the pinned-release example in `docs/INSTALLATION.md`, and the `bin/install` usage examples must name `vX.Y.Z`. The documentation consistency audit derives the canonical release from `docs/releases/` and fails `bin/validate` on any other version.
 
     bash bin/validate
     ruby scripts/build_release_archive.rb --version vX.Y.Z --self-test

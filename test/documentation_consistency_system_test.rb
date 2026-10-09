@@ -21,6 +21,8 @@ class DocumentationConsistencySystemTest < Minitest::Test
     assert_includes script, "evaluation_count"
     assert_includes script, "Current milestone"
     assert_includes script, "ITERATIONS.md"
+    assert_includes script, "docs/INSTALLATION.md"
+    assert_includes script, "canonical_release"
   end
 
   def test_documentation_audit_passes_current_repository_state
@@ -40,7 +42,11 @@ class DocumentationConsistencySystemTest < Minitest::Test
     Dir.mktmpdir("documentation-consistency") do |dir|
       %w[skills patterns evals test router].each { |path| FileUtils.cp_r(File.join(ROOT, path), dir) }
       FileUtils.mkdir_p(File.join(dir, "docs"))
-      %w[README.md RELEASE.md CHANGELOG.md skill-manifest.yml docs/IMPLEMENTATION_HANDOFF.md docs/ITERATIONS.md].each do |path|
+      FileUtils.cp_r(File.join(ROOT, "docs", "releases"), File.join(dir, "docs"))
+      FileUtils.mkdir_p(File.join(dir, "bin"))
+      %w[README.md RELEASE.md CHANGELOG.md skill-manifest.yml
+         docs/IMPLEMENTATION_HANDOFF.md docs/ITERATIONS.md
+         docs/INSTALLATION.md bin/install].each do |path|
         text = source(path)
         text = edits[path].call(text) if edits.key?(path)
         File.write(File.join(dir, path), text, encoding: "UTF-8")
@@ -98,6 +104,27 @@ class DocumentationConsistencySystemTest < Minitest::Test
 
     refute status.success?
     assert_includes stderr, "RELEASE.md skills count drift"
+  end
+
+  def test_documentation_audit_detects_stale_quick_start_release
+    stderr, status = audit_with("README.md" => ->(text) { text.gsub("v1.3.0", "v1.1.0") })
+
+    refute status.success?
+    assert_includes stderr, "README.md references stale release v1.1.0"
+  end
+
+  def test_documentation_audit_detects_stale_installation_ref
+    stderr, status = audit_with("docs/INSTALLATION.md" => ->(text) { text.sub(/--ref v\d+\.\d+\.\d+/, "--ref v1.0.0") })
+
+    refute status.success?
+    assert_includes stderr, "docs/INSTALLATION.md references stale release v1.0.0"
+  end
+
+  def test_documentation_audit_requires_a_release_reference
+    stderr, status = audit_with("README.md" => ->(text) { text.gsub(/v\d+\.\d+\.\d+/, "vX.Y.Z") })
+
+    refute status.success?
+    assert_includes stderr, "README.md names no release version"
   end
 
   def test_validator_invokes_this_system_test
