@@ -1,0 +1,44 @@
+id: callback-cascade
+version: 1
+title: Member lifecycle side effects fire exactly once
+category: rails
+source: rails-adversarial-v1
+skills:
+  - rails-active-record
+  - rails-reliability-engineering
+  - agent-workflow
+patterns:
+  - active-record-persistence-lifecycle
+  - active-support-callback-boundary
+prompt: |
+  Implement the Membership write paths in lib/solution.rb. signup creates a
+  member (status active) and returns it, returning :taken when the email is
+  already registered. update_profile changes the member's name. import_members
+  bulk-creates members from the given rows. Each member is welcomed once with
+  Mailer.deliver_welcome(member_id). lib/framework.rb is the ORM and mailer
+  stand-in — save runs the registered after_save hooks, an insert also runs
+  after_create, import fires no hooks — and lib/store.rb is the database
+  adapter; do not change either. Extend test/test_solution.rb.
+constraints:
+  required_design:
+    - a member receives exactly one welcome email, whichever write path created them
+    - updating a member never delivers another welcome email
+  forbidden:
+    - changing lib/framework.rb or lib/store.rb
+checks:
+  - functional
+  - tests
+  - adversarial
+  - scope_control
+cases:
+  - name: update-refire
+    input: the member's profile is updated twice after signup
+    expected: exactly one welcome email, the one delivered on signup
+  - name: import-skips-hooks
+    input: three members arrive through the bulk import
+    expected: each member receives exactly one welcome email
+grading:
+  functional: visible feature tests pass
+  tests: workspace tests exist and pass
+  adversarial: withheld lifecycle side-effect tests pass
+  scope_control: only lib/solution.rb and tests change

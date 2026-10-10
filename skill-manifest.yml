@@ -1229,6 +1229,7 @@ evaluations:
       - evals/rails-adversarial/webhook-idempotency.yml
       - evals/rails-adversarial/checkout-retry-side-effects.yml
       - evals/rails-adversarial/authorization-alternate-path.yml
+      - evals/rails-adversarial/callback-cascade.yml
     checks:
       - functional
       - tests

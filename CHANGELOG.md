@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 174 — Callback-Cascade Adversarial Fixture
+
+- `rails-adversarial` gains its fifth production-condition fixture, `callback-cascade`, the first of the seven failure modes tracked in issue #94: lifecycle side effects that pass every visible test and misfire on the write paths the tests leave out. The fixture is a member workspace — signup, profile updates, bulk import — where the visible tests describe the feature and the withheld tests exercise the two production conditions: a save hook that refires on every profile update, and a bulk import that fires no hooks at all.
+- The given `lib/framework.rb` is a mini-ORM stand-in whose `save` runs registered `after_save` hooks (and `after_create` hooks on inserts) while `import` is documented to fire none — the `insert_all` semantics — plus a `Mailer` outbox that sits outside the store's transactions the way an SMTP call would. The reference solution delivers the welcome email explicitly from the write path that creates the member.
+- The `naive` control hangs delivery on `after_save` and fails both withheld tests: updates deliver again and the import delivers nothing. The new `partial` control scopes it to `after_create`, passes the update withholding, and still fails the import one, so the two production conditions are separable in evidence. Grading stays with the family verifier, and `test/rails_adversarial_benchmark_system_test.rb` picks the fixture up through the registry.
+- Registered in `benchmarks/rails-adversarial/{fixtures,campaign}.yml` and `skill-manifest.yml`. The evaluation corpus moves from 137 to 138 files and 500 to 502 cases; campaign coverage moves from 109 to 110 evaluation files.
+- Reconciled two stale README prose counts that no audit pins: the evaluation inventory line still said 490 cases and the validation-suite summary still said 103 system/contract tests, both contradicting the inventory table the audits do enforce; both now restate the computed numbers.
+
 ## Iteration 173 — Cursor, Antigravity, and OpenCode Benchmark Adapters
 
 - Routing and coding campaigns can target Cursor (`agent`), Antigravity (`agy`), and OpenCode. The adapters are `bin/routing-agent-cursor`, `bin/coding-agent-cursor`, `bin/routing-agent-antigravity`, `bin/coding-agent-antigravity`, `bin/routing-agent-opencode`, and `bin/coding-agent-opencode`. Each requires its own model variable (`CURSOR_AGENT_MODEL`, `AGY_MODEL`, `OPENCODE_MODEL`) and has no default.

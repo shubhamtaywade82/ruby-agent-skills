@@ -8,7 +8,7 @@ Current inventory:
 
 - 96 skills
 - 447 implementation patterns
-- 500 evaluation cases
+- 502 evaluation cases
 - 106 system/contract tests
 
 ## Corpus quality and evaluation coverage
@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 137 evaluation files / 500 cases. Campaigns provide controlled benchmark coverage for 109 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark campaigns cover their respective contract evaluations with independent fixture references; actual model results remain separate empirical evidence.
+The public evaluation corpus has 138 evaluation files / 502 cases. Campaigns provide controlled benchmark coverage for 110 evaluation files; the remaining 28 files / 66 cases are explicitly classified as `coverage: static-only` and are not represented as real-model benchmark results. The new validator-aligned `ruby-toolchain` and `ruby-gem-development` benchmark campaigns cover their respective contract evaluations with independent fixture references; actual model results remain separate empirical evidence.
 
 ## Iteration 152 — Action Controller Resource-Loading Evidence
 
@@ -262,4 +262,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 173. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 174. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).

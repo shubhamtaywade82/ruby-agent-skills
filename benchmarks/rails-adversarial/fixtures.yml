@@ -23,3 +23,7 @@ fixtures:
     root: benchmarks/rails-adversarial/fixtures/authorization-alternate-path
     implementation_file: lib/solution.rb
     test_file: test/test_solution.rb
+  callback-cascade:
+    root: benchmarks/rails-adversarial/fixtures/callback-cascade
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
