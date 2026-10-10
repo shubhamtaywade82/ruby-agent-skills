@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 173 — Cursor, Antigravity, and OpenCode Benchmark Adapters
+> **Current milestone:** Iteration 174 — Callback-Cascade Adversarial Fixture
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -592,3 +592,7 @@ The value is in the two conflicts and the seven partials rather than in the mapp
 ## Iteration 173 — Cursor, Antigravity, and OpenCode Benchmark Adapters
 
 The routing and coding campaigns can now drive Cursor `agent`, Antigravity `agy`, and OpenCode through the same result contract as the Claude adapters. Each pair refuses to run without an explicit model id. Routing output is checked against the skill manifest before it is written. Antigravity is launched with `--disable-slash-commands` so installed skills are not expanded; Cursor and OpenCode have no equivalent switch, and that leakage is stated in `docs/LOCAL_BENCHMARKING.md` rather than treated as controlled isolation.
+
+## Iteration 174 — Callback-Cascade Adversarial Fixture
+
+The `rails-adversarial` family gains the first of the seven failure modes tracked in issue #94: implicit lifecycle side effects that pass every visible test and misfire in production write paths. A member-management fixture asks for signup, profile updates, and bulk import with exactly one welcome email per member; the given mini-ORM runs registered `after_save`/`after_create` hooks on `save` while its bulk `import` fires none, mirroring `insert_all`. The withheld tests deliver the two production conditions: an `after_save` implementation re-sends the email on every profile update, and any hook-based implementation silently skips the import path. The naive control fails both, the new partial control (`after_create`) fails only the import one, and the reference delivers explicitly from the creating write path. The evaluation corpus is now 138 files / 502 cases, with campaign coverage at 110 evaluation files. Two stale README prose counts (490 evaluation cases, 103 system/contract tests) were reconciled to the computed numbers the audits already enforce.

@@ -9,6 +9,7 @@ evaluations:
   - webhook-idempotency
   - checkout-retry-side-effects
   - authorization-alternate-path
+  - callback-cascade
 execution:
   repetitions: 3
   paired: true
