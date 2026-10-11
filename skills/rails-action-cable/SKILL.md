@@ -239,3 +239,7 @@ For Action Cable/realtime changes:
 - review allowed origins, credential/session lifetime, tenant isolation, secrets, and sensitive payloads;
 - avoid synchronized reconnect storms during deploys and test connection/channel/broadcast behavior with deterministic local adapters;
 - never claim realtime delivery or capacity without runtime evidence.
+
+## Book integration: Action Cable and browser state
+
+*Modern Front-End Development for Rails*, Chapter 9, demonstrates wiring Action Cable into Turbo, Stimulus and React clients. Keep the client integration subordinate to the server's authorization, stream naming, payload contract, delivery and reconnect semantics. A live broadcast is not durable state: clients must reconcile missed events when correctness depends on current server data. Use the book for integration concepts while this skill's capacity, security and recovery guidance governs production design.
