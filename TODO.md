@@ -8,8 +8,8 @@ Legend:
 
 ## Main branch health
 
-- [x] Restore a green `main`. Done on branch. `test/corpus_quality_system_test.rb` now asserts an explicit `KNOWN_UNBENCHMARKED` list, and the audit prints the unbenchmarked IDs. `isolation-level` stays unbenchmarked and is named as the one exception. Lands with PR #100. The current `main` run still fails until that merge.
-- [ ] Merge PR #100 (`ccr-e296aa76-m5ev39`, Iteration 180) into `main`. Blocked: merging to `main` is outward-facing, so it needs your go-ahead.
+- [x] Restore a green `main`. Done on branch. `test/corpus_quality_system_test.rb` now asserts an explicit `KNOWN_UNBENCHMARKED` list, and the audit prints the unbenchmarked IDs. `isolation-level` stays unbenchmarked and is named as the one exception. Merged with PR #100. Verified on `main`: post-merge `Validate skills` run 38169907212 (run 1755) on `0fca99aa` completed with `success`.
+- [x] Merge PR #100 (`ccr-e296aa76-m5ev39`, Iteration 180) into `main`. Done: merged as `0fca99aa` after your approval. The merged head `21184ba5` had passing `validate` and GitGuardian checks.
 - [x] Confirm the post-merge result for Iteration 149 (`d349a128`). Verified: `Validate skills` run 1610 on that commit completed with `success`.
 
 ## PR #80 (Iterations 144–148)
@@ -57,7 +57,7 @@ Legend:
 ## Benchmark integrity (Iteration 174)
 
 - [x] Link the modeled bulk-import behavior to official Rails documentation. Done on branch. The eval's provenance comment cites the Rails 8.1.4 guide, "Active Record Callbacks", section "Skipping Callbacks", which names `insert_all`. The API reference page I checked does not document `insert_all`, so I did not link to it.
-- [ ] After PR #100 merges, confirm the negative controls and the scope wording on `main`. Blocked on the merge. On the branch, the per-condition test passes: reference passes both conditions, naive fails both, and partial fails only `import_skips_hooks`. The eval title and prompt state successful-path scope only.
+- [x] After PR #100 merges, confirm the negative controls and the scope wording on `main`. Verified on `0fca99aa`: the adversarial system test contains the per-condition assertions, the eval title is the successful-path scope, and the post-merge validate run passed. On the branch, the per-condition test passes: reference passes both conditions, naive fails both, and partial fails only `import_skips_hooks`. The eval title and prompt state successful-path scope only.
 
 ## Roadmap (issue #94)
 
