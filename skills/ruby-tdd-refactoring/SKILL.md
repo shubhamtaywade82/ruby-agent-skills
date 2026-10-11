@@ -196,3 +196,7 @@ Run the smallest useful test first, then the affected suite, then broader regres
 Grounded in the TDD and clean-test material of *Clean Ruby*, including the emphasis on behavior clarity and readable RSpec structure, and reinforced by the exercise-driven Ruby practice model of *The Ruby Workshop*.
 
 Agreed test seams, vertical slices, the tautological and implementation-coupled test anti-patterns, and mocking only at system boundaries are adapted, in this repository's words and with Ruby examples, from the `tdd` skill in https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock). This skill keeps refactoring inside the loop, on green, where that skill moves it to review.
+
+## Book cross-reference: *Clean Ruby*
+
+Chapters 6–7 emphasize small refactorings, single responsibility, writing tests first, and keeping tests understandable. Translate that into a behavior-preserving loop: establish a failing regression test when feasible, make the smallest passing change, refactor only on green, and run focused plus relevant regression tests. Do not copy the book's example implementation when an original example is clearer for this repository.

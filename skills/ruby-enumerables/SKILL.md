@@ -110,3 +110,7 @@ Cover empty, singleton, duplicate, ordering, and representative large-input case
 ## Source foundation
 
 Grounded in the Enumerable, Array, Hash, and collection material in *Learn Rails 6* and reinforced by the collection/design material already represented in this repository.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Use chapter 10 for the distinction between iteration, Enumerable, Enumerator, chaining, reduction, and lazy traversal. Treat laziness as a change in evaluation timing, not as an automatic speed improvement. Verify supported APIs against the repository's Ruby version and test ordering, empty-input, mutation, and termination behavior.

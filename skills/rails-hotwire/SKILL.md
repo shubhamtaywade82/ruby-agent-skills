@@ -259,3 +259,7 @@ For Hotwire changes:
 - coordinate Turbo Stream broadcasts with Action Cable and durable eventing rather than treating browser updates as the source of truth;
 - add deterministic request/system/JavaScript tests for the protocol and lifecycle boundary;
 - do not claim Hotwire correctness from manual browser success alone.
+
+## Book cross-reference: *Modern Front-End Development for Rails*
+
+Chapters 1–3, 5, 8, and 10 provide a conceptual guide to the Hotwire approach, Turbo Drive/Frames/Streams, Stimulus actions/targets/values, client/server interaction, and UI state. Keep server-rendered HTML and explicit DOM contracts central. The book targets Rails 7-era tooling; inspect this application's Rails, turbo-rails, Stimulus, and asset setup before applying any installation or API instructions.

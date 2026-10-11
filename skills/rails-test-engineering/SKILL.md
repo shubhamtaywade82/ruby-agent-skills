@@ -198,3 +198,7 @@ For testing changes:
 - test Active Job enqueue and execution at the relevant boundaries;
 - measure test runtime before optimizing;
 - keep CI coverage for system tests and eager-loading where the repository requires them.
+
+## Book cross-reference: *Modern Front-End Development for Rails*
+
+Chapters 14–15 introduce Cypress configuration, end-to-end tests, troubleshooting, and testing Rails/React interactions. Apply these ideas only when Cypress is part of the repository's toolchain. Preserve a layered test strategy: fast unit/component tests for local logic, Rails request/system tests for server contracts, and E2E tests for important cross-boundary user journeys.

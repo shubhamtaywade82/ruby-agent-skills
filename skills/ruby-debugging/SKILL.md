@@ -221,3 +221,7 @@ For a reproducible local failure, an interactive breakpoint can be useful at the
 
 Do not substitute a debugger for a hypothesis. The debugging loop remains:
 feedback loop -> reproduce -> hypothesize -> instrument -> fix -> regression test -> clean up.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Chapters 1 and 15 are useful references for the Ruby execution/tooling loop, syntax checks, `irb`, stack traces, `caller`, and runtime introspection. Start with a minimal reproduction and observable evidence; introspection is a diagnostic aid, not a reason to add dynamic behavior to the fix.

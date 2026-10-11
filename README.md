@@ -708,6 +708,8 @@ Source categories include:
 
 - Ruby Workshop material
 - Clean Ruby material
+- The Well-Grounded Rubyist material
+- Modern Front-End Development for Rails material
 - Learn Rails 6 material
 - Allerin assessment material as an evaluation/benchmark source
 - current Rails framework documentation for version-sensitive framework boundaries
@@ -717,6 +719,7 @@ The repository does **not** reproduce source books. It operationalizes their eng
 See:
 
 - `docs/SOURCE_COVERAGE.md`
+- `docs/BOOK_REFERENCE_MAP.md`
 - `docs/SKILL_CONTRACT.md`
 - `docs/PATTERN_SCHEMA.md`
 - `docs/EVAL_SCHEMA.md`

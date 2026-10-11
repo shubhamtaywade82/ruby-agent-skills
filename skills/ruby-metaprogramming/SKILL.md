@@ -140,3 +140,7 @@ Before using dynamic method generation, record:
 - how unsupported names fail
 
 Prefer explicit Ruby for ordinary application code. Dynamic behavior should remain bounded and testable.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Chapters 13–15 cover singleton classes, object-specific behavior, open classes/refinements, `method_missing`, hooks, and introspection. Use these techniques as implementation tools for libraries/frameworks—not defaults for ordinary application code. Require a concrete benefit, a bounded dynamic surface, predictable failure for unsupported calls, and tests for method visibility/lookup.

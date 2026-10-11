@@ -36,6 +36,20 @@ The repository intentionally synthesizes concepts rather than reproducing source
 | Scaffolding | rails-generators, scaffold-lifecycle |
 | Hosting/deployment activity | rails-release-engineering |  
 
+## The Well-Grounded Rubyist
+
+| Source area | Agent coverage |
+|---|---|
+| Ruby execution, syntax, loading, IRB and tooling | ruby-core, ruby-toolchain, ruby-runtime-compatibility, ruby-gems-io-services, ruby-debugging |
+| Objects, dispatch, references, arguments, returns, `self`, scope and visibility | ruby-core, ruby-method-design, ruby-api-design, ruby-oop |
+| Classes, instance state, inheritance, modules, mixins and method lookup | ruby-oop, ruby-poro, ruby-domain-modeling, ruby-modules-mixins, ruby-metaprogramming |
+| Conditionals, iteration, blocks and exceptions | ruby-control-flow, ruby-boolean-logic, ruby-blocks-procs-lambdas, ruby-debugging |
+| Built-in objects, conversions, strings, symbols, numerics, dates and equality | ruby-data-types, ruby-core |
+| Arrays, hashes, ranges, sets, Enumerable, Enumerator and lazy iteration | ruby-collections, ruby-enumerables |
+| Regular expressions, files, IO, directories and standard library | ruby-data-types, ruby-gems-io-services |
+| Singleton classes, refinements, hooks, Procs/lambdas, threads and subprocesses | ruby-metaprogramming, ruby-blocks-procs-lambdas, ruby-concurrency, ruby-debugging |
+| Version caveat | The 2nd edition targets Ruby 2.1. Treat it as a conceptual source; check project constraints and current Ruby docs for version-sensitive behavior. |
+
 ## Clean Ruby
 
 | Source area | Agent coverage |
@@ -70,6 +84,20 @@ The uploaded Learn Rails 6 book adds practical Rails workflow and Ruby language 
 | Scaffold cleanup | rails-generators, scaffold-lifecycle |
 
 The book-derived benchmark family is evals/ruby-workshop and benchmarks/ruby-workshop.
+
+## Modern Front-End Development for Rails
+
+| Source area | Agent coverage |
+|---|---|
+| Client-side Rails setup and frontend architecture | rails-application-bootstrap, rails-asset-build-engineering |
+| Turbo Drive, Frames, Streams, Stimulus and UI state | rails-hotwire, rails-action-view |
+| React integration and the Rails/client contract | rails-react-integration; React internals remain in react-agent-skills |
+| CSS/JavaScript bundling, TypeScript, Propshaft and import maps | rails-asset-build-engineering, rails-react-integration |
+| Forms, AJAX/server communication and validation feedback | rails-hotwire, rails-react-integration, rails-api-integration, rails-validations |
+| Action Cable integration with Turbo, Stimulus and React | rails-action-cable, rails-hotwire, rails-react-integration |
+| React reducers/context/Redux and advanced TypeScript | Rails/client boundary: rails-react-integration; client internals: react-agent-skills |
+| Cypress and end-to-end testing | rails-test-engineering and the appropriate frontend skills |
+| Version caveat | The 2nd edition is Rails 7-era and discusses React 17. Use architecture comparisons, but check current Rails guides, installed package versions, asset configuration, and test setup before applying commands or APIs. |
 
 ## Design-pattern layer
 
