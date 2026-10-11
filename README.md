@@ -707,8 +707,10 @@ The repository began from Ruby/Rails training material and has progressively con
 Source categories include:
 
 - Ruby Workshop material
+- The Well-Grounded Rubyist (Second Edition) material
 - Clean Ruby material
 - Learn Rails 6 material
+- Modern Front-End Development for Rails (Second Edition) material
 - Allerin assessment material as an evaluation/benchmark source
 - current Rails framework documentation for version-sensitive framework boundaries
 
