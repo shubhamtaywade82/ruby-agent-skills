@@ -24,6 +24,7 @@ This file defines how an agent should select and compose skills.
 | Skill-system maintenance, completeness, registry, routing, or audit | agent-workflow | ruby-clean-code, ruby-tdd-refactoring |
 | Ruby syntax/semantics | ruby-core | ruby-clean-code |
 | Ruby values/data representation | ruby-data-types | ruby-core, ruby-clean-code |
+| Ruby regular-expression matching, captures, and string extraction/replacement | ruby-data-types | ruby-core, ruby-tdd-refactoring, ruby-gems-io-services |
 | Branches/loops/boolean logic | ruby-control-flow | ruby-core, ruby-clean-code |
 | Arrays/hashes/Enumerable | ruby-collections | ruby-enumerables, ruby-data-types, ruby-clean-code |
 | Blocks/Procs/lambdas | ruby-blocks-procs-lambdas | ruby-method-design, ruby-tdd-refactoring |
