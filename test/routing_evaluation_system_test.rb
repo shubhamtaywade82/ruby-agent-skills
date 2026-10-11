@@ -17,13 +17,26 @@ class RoutingEvaluationSystemTest < Minitest::Test
       aliases: false
     )
 
-    assert_equal 31, Array(data.fetch("cases")).length
+    assert_equal 32, Array(data.fetch("cases")).length
     assert Array(data.fetch("cases")).all? do |entry|
       entry.fetch("primary_skills").length == 1 &&
         entry.fetch("secondary_skills").none? { |skill| skill == entry.fetch("primary_skills").first }
     end
   end
 
+  def test_regexp_extraction_case_has_the_correct_owner
+    data = YAML.safe_load(
+      File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    regexp_case = Array(data.fetch("cases")).find { |entry| entry.fetch("id") == "ruby-regexp-extraction-contract" }
+
+    refute_nil regexp_case
+    assert_equal ["ruby-data-types"], regexp_case.fetch("primary_skills")
+    assert_equal %w[ruby-core ruby-tdd-refactoring], regexp_case.fetch("secondary_skills")
+    assert_includes regexp_case.fetch("prompt"), "partial matches"
+  end
   def test_routing_evaluator_produces_measurement
     Dir.mktmpdir("routing-eval") do |dir|
       command = "ruby -rjson -e 'case_file=ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_FILE]); abort(%q[gold labels leaked]) if File.read(case_file).include?(%q[primary_skills]); result=ENV.fetch(%q[RUBY_AGENT_ROUTING_RESULT_FILE]); File.write(result, JSON.generate({protocol_version:1,case_id:ENV.fetch(%q[RUBY_AGENT_ROUTING_CASE_ID]),primary_skill:%q[rails-authentication],secondary_skills:[%q[rails-security-engineering],%q[rails-test-engineering]],reason:%q[Authentication owns the identity lifecycle.]}))'"

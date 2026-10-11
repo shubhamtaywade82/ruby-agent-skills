@@ -91,6 +91,13 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
     assert_equal expected, (paths & expected).sort
   end
 
+  def test_regular_expression_routing_is_registered
+    triggers = manifest.fetch("skills").fetch("ruby-data-types").fetch("triggers")
+    assert_includes triggers, "regular expressions"
+    assert_includes routing, "Regular-expression matching, captures, and string extraction/replacement"
+    assert_includes File.read(File.join(ROOT, "skills", "ruby-data-types", "SKILL.md"), encoding: "UTF-8"),
+                    "## Book integration: regular expressions and text parsing"
+  end
   def test_validator_invokes_this_system_test
     validator = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
 
