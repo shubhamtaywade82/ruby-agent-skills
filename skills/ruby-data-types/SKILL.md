@@ -164,7 +164,7 @@ Use Chapter 11 of *The Well-Grounded Rubyist* as a conceptual reference for matc
 When implementing text matching:
 - Decide whether the contract is search, extraction, replacement, tokenization, or whole-input validation. Those are different operations.
 - Use match? when only a Boolean result is needed; use match or a returned MatchData when captures are part of the contract. Avoid depending on stale implicit match state when a local match object is clearer.
-- For whole-string validation, use string anchors such as \\A and \\z rather than line anchors when newline behavior matters. Test empty input, trailing newlines, and malformed strings explicitly.
+- For whole-input validation, prefer \`\A\` and \`\z\` anchors over line-oriented anchors when newline behavior matters. Test empty input, trailing newlines, and malformed strings explicitly.
 - Choose scan, split, sub, or gsub based on whether the contract requires all matches, tokenization, one replacement, or global replacement.
 - Escape literal user-supplied fragments with Regexp.escape; do not turn untrusted text into executable regexp syntax. Consider worst-case matching cost when a pattern processes attacker-controlled or very large input.
 - Keep the failure contract explicit. A failed extraction should not be confused with a successful partial match or a malformed value silently converted to an empty result.
