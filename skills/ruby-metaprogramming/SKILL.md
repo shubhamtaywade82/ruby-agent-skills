@@ -140,3 +140,9 @@ Before using dynamic method generation, record:
 - how unsupported names fail
 
 Prefer explicit Ruby for ordinary application code. Dynamic behavior should remain bounded and testable.
+
+## Book integration: runtime hooks and reflection
+
+*The Well-Grounded Rubyist*, Chapters 13 and 15, covers singleton classes, per-object behavior, introspection, callbacks and hooks such as inheritance or method-definition interception. These mechanisms explain how Ruby libraries and Rails declarations can operate; they are not defaults for ordinary business logic.
+
+Before adding a hook, dynamic method, open-class change or `eval`-family call, record why an explicit method/module is insufficient, what names and code are trusted, how method lookup/visibility changes, and how the behavior will be tested. Do not execute externally supplied text as Ruby. Verify runtime details and compatibility against the consuming application's Ruby version.
