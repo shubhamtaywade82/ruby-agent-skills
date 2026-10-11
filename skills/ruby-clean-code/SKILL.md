@@ -174,3 +174,7 @@ Read the final diff as a reviewer. Run relevant tests and quality checks. Confir
 ## Source foundation
 
 This skill is directly synthesized from the three core qualities in *Clean Ruby*—readability, ease of change, and straightforwardness—and its guidance on naming, methods, boolean logic, classes, refactoring, and avoiding needless complexity. The practical Ruby syntax and Rails examples are cross-checked against *The Ruby Workshop*.
+
+## Book cross-reference: *Clean Ruby*
+
+Use the book's seven-chapter progression as a review lens: readable/changeable/straightforward code; naming; method contracts; Boolean logic; class responsibilities; refactoring; and TDD. Treat suggested method length or parameter count as a prompt to investigate, never as a numeric rule to satisfy mechanically. Preserve behavior and repository conventions.

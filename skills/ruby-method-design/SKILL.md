@@ -175,3 +175,7 @@ Use keyword arguments when names carry meaning. When several values travel toget
 When a method contains nested conditionals or compound predicates, first simplify the condition without changing Ruby truthiness or short-circuit behavior. Name a meaningful predicate when the condition communicates a domain decision.
 
 This is not a method-length contest. Extract only cohesive behavior that improves the boundary or removes distracting implementation detail.
+
+## Book cross-reference: *Clean Ruby* and *The Well-Grounded Rubyist*
+
+For method design, combine *Clean Ruby* chapter 3's treatment of parameters, return contracts, guard clauses, nesting, comments, and extraction with *The Well-Grounded Rubyist* chapters 2–5 on arguments, receivers, scope, visibility, and return values. Keep methods intention-revealing and contract-stable; do not introduce extraction or wrapper objects merely to meet arbitrary size/count thresholds.

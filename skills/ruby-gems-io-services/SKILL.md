@@ -148,3 +148,7 @@ When an internal integration becomes a true reusable library, use the gem bounda
 - gem build/package verified
 
 Do not extract a gem merely to move files. Extraction should create a real reuse boundary.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Chapters 1 and 12 provide background for loading features (`require`, `require_relative`), Ruby tools, files, directories, IO, and standard-library helpers. Use block-scoped resource handling where appropriate, distinguish missing/invalid external data from valid empty data, and check the modern API/security contract before using older examples such as URL-opening helpers.
