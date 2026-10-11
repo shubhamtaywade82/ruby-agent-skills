@@ -125,3 +125,9 @@ Test empty, singleton, duplicate, nil-relevant, ordered, and large-input cases a
 ## Source foundation
 
 Grounded in the arrays, hashes, and collection operations of *The Ruby Workshop*, with *Clean Ruby* principles favoring readable, simple, changeable code.
+
+## Book integration: choosing collection semantics
+
+*The Well-Grounded Rubyist*, Chapters 9–10, grounds the choice among arrays, hashes, ranges and sets and the way collection operations expose ordering, lookup and mutation. Choose by access pattern: arrays for ordered sequences, hashes for keyed lookup/counting, sets for membership/uniqueness, and ranges for bounded intervals. Do not replace a required algorithm with a hash shortcut when its time/space contract is part of the requirement.
+
+Check the runtime before using newer convenience methods such as `tally`. The book's conceptual coverage does not override the repository's performance, mutation-ownership or algorithm-complexity contracts.
