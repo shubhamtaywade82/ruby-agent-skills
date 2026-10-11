@@ -289,3 +289,7 @@ Never claim race freedom, deadlock freedom, or scalability from a single success
 ## Source foundation
 
 Repository-process guidance for AI coding agents based on Ruby/Rails concurrency engineering principles. It intentionally avoids assuming a particular Ruby engine, Rails version, executor library, or deployment topology. Repository evidence takes precedence.
+
+## Book integration: Ruby threads are only one layer
+
+*The Well-Grounded Rubyist*, Chapter 14, is useful for Ruby thread and shared-variable semantics. Treat it as a language-level starting point only: it does not establish throughput, parallelism, scheduler behavior, safe process topology, or Rails connection-pool capacity for a current deployment. Resolve the actual Ruby engine/version and worker model, define ownership and synchronization for shared state, and measure representative workload behavior before claiming performance or safety.
