@@ -259,3 +259,7 @@ For Hotwire changes:
 - coordinate Turbo Stream broadcasts with Action Cable and durable eventing rather than treating browser updates as the source of truth;
 - add deterministic request/system/JavaScript tests for the protocol and lifecycle boundary;
 - do not claim Hotwire correctness from manual browser success alone.
+
+## Book integration: Turbo and Stimulus boundaries
+
+*Modern Front-End Development for Rails*, Chapters 2–3 and 10, is a teaching reference for Turbo Drive, Frames, Streams and Stimulus actions/targets/values. Use the examples to reason about server-rendered interaction and client lifecycle, then check the installed Turbo/Stimulus versions and current docs. Preserve stable frame/stream targets, authorization on the server, and idempotent cleanup for DOM listeners or subscriptions. The book's examples do not replace this skill's security, accessibility, lifecycle, realtime-delivery or test requirements.
