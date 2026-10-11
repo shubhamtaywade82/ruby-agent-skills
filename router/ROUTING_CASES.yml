@@ -376,3 +376,15 @@ cases:
       - rails-database-engineering
       - rails-test-engineering
     boundary: sti-vs-polymorphism-query-contract
+
+  - id: ruby-regexp-extraction-contract
+    prompt: >
+      Parse structured fields from input text with a Ruby regular expression;
+      preserve capture behavior, reject malformed input, and test empty and
+      newline-containing strings without confusing partial matches for full validation.
+    primary_skills:
+      - ruby-data-types
+    secondary_skills:
+      - ruby-core
+      - ruby-tdd-refactoring
+    boundary: text-matching-vs-input-validation
