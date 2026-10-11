@@ -150,3 +150,9 @@ Run the client boundary tests (parser, error mapping, CSRF header, 401/422 handl
 - Active Model Errors: https://api.rubyonrails.org/classes/ActiveModel/Errors.html
 - Inertia Rails: https://inertia-rails.dev/
 - Fetch API, credentials: https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#credentials
+
+## Book integration: React and server contracts
+
+*Modern Front-End Development for Rails*, Chapters 4, 8 and 11–15, illustrates React components/hooks/state, browser-to-server communication, TypeScript and browser tests. Use it to identify the client/server seam, not as a reason to collapse both responsibilities into one layer. TypeScript annotations alone do not validate untrusted JSON at runtime; preserve explicit response parsing, Rails status/error contracts, CSRF/session behavior and tests on both sides of the boundary.
+
+React-internal architecture, hook design, state management and client E2E implementation belong to the separate `react-agent-skills` pack. This skill owns Rails contract compatibility and the integration seam. Treat the book's 2022 package versions and setup commands as historical; inspect the current repository toolchain.
