@@ -175,3 +175,9 @@ Use keyword arguments when names carry meaning. When several values travel toget
 When a method contains nested conditionals or compound predicates, first simplify the condition without changing Ruby truthiness or short-circuit behavior. Name a meaningful predicate when the condition communicates a domain decision.
 
 This is not a method-length contest. Extract only cohesive behavior that improves the boundary or removes distracting implementation detail.
+
+## Book integration: arguments, return values and visibility
+
+*The Well-Grounded Rubyist*, Chapters 2–5, supports reasoning about method arguments, optional/default arguments, return values, references, `self`, and visibility. *Clean Ruby*, especially Chapter 3, adds method-quality heuristics around parameter count/order, guard clauses, nesting, comments and predictable return contracts.
+
+When refactoring, preserve the method's observable result and visibility, inspect callers before changing positional/keyword argument behavior, and test nil/missing/error cases that callers rely on. Prefer a final expression where it is clear, but do not rewrite an explicit early return when the control flow is more readable or the contract changes.
