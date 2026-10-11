@@ -687,6 +687,7 @@ patterns:
       - patterns/rails/scaffold-lifecycle.md
       - patterns/rails/presenter.md
       - patterns/rails/rails-best-practice-review.md
+      - patterns/rails/the-rails-way.md
       - patterns/rails/threat-model.md
       - patterns/rails/trust-boundary.md
       - patterns/rails/authorization-matrix.md
@@ -1011,7 +1012,7 @@ patterns:
       - patterns/rails/initializer-testing-contract.md
       - patterns/rails/middleware-observability-boundary.md
       - patterns/rails/middleware-testing.md
-    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, multi-region, data residency, region failover, cross-region replication, RPO, RTO, eventual consistency, incident triage, operational runbook, alert actionability, diagnostic context, incident timeline, safe production debugging, recovery verification, post-incident review]
+    triggers: [query object, form object, authorization policy, transaction boundary, request flow, REST resource, scaffold lifecycle, presenter, Rails best-practice review, security boundary review, idempotent job, job retry policy, transactional job enqueue, concurrency-controlled job, N+1 review, query plan evidence, connection pool capacity, cache stampede, distributed service boundary, message delivery contract, outbox, inbox, saga, distributed lock, multi-region, data residency, region failover, cross-region replication, RPO, RTO, eventual consistency, incident triage, operational runbook, alert actionability, diagnostic context, incident timeline, safe production debugging, recovery verification, post-incident review, the Rails Way, Rails Way, convention over configuration, fat model skinny controller, Rails philosophy, Rails Way audit]
 
   testing:
     paths:

@@ -1,5 +1,14 @@
 # Changelog
 
+## Iteration 175 — The Rails Way Audit Pattern
+
+- Add `patterns/rails/the-rails-way.md` mapping the Rails Way philosophy (convention over configuration, DRY, MVC, use-Rails-before-reinventing-it) to its existing enforcement points across this pack: `rails-architecture`, `rails-action-controller`, `rails-active-record`, `rails-associations`, `rails-validations`, `rails-routing`, `rails-database-engineering`, `rails-authorization`, `rails-cross-boundary-authorization-security`, `rails-active-job`, `rails-test-engineering`, `ruby-service-objects`, `ruby-poro`, `ruby-domain-modeling`, and the `stack-minimality` family.
+- The pattern frames the philosophy as a 5-step decision hierarchy for AI coding assistants: (1) follow convention, (2) assign responsibilities correctly, (3) protect correctness and security, (4) verify behavior, (5) deviate deliberately. Stop at the first step that resolves the decision; descend only when the previous step cannot answer.
+- The pattern includes a "where code belongs" placement table (eight concerns mapped to their default Rails home and owning skill) and an anti-pattern table (eight approaches that are NOT the Rails Way, each mapped to the existing skill or pattern that catches the violation — e.g. callback-as-orchestration → `rails-active-record` critical invariant; repository-around-Active-Record → `stack-minimality-review`).
+- Register the new pattern in `skill-manifest.yml` under the `rails` family with `the Rails Way`, `convention over configuration`, `fat model skinny controller`, `Rails philosophy`, and `Rails Way audit` triggers.
+- Bump inventory counts (447 → 448 patterns) in `README.md`, `RELEASE.md`, and `docs/IMPLEMENTATION_HANDOFF.md`. System-test count remains 106. Iteration entries added to `CHANGELOG.md` and `docs/ITERATIONS.md`; `docs/IMPLEMENTATION_HANDOFF.md` milestone bumped 174 → 175.
+- Live verification: `bash bin/validate` exits 0 on a clean worktree after the pattern is added.
+
 ## Iteration 174 — Callback-Cascade Adversarial Fixture
 
 - `rails-adversarial` gains its fifth production-condition fixture, `callback-cascade`, the first of the seven failure modes tracked in issue #94: lifecycle side effects that pass every visible test and misfire on the write paths the tests leave out. The fixture is a member workspace — signup, profile updates, bulk import — where the visible tests describe the feature and the withheld tests exercise the two production conditions: a save hook that refires on every profile update, and a bulk import that fires no hooks at all.

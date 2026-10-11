@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 174 — Callback-Cascade Adversarial Fixture
+> **Current milestone:** Iteration 175 — The Rails Way Audit Pattern
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -596,3 +596,7 @@ The routing and coding campaigns can now drive Cursor `agent`, Antigravity `agy`
 ## Iteration 174 — Callback-Cascade Adversarial Fixture
 
 The `rails-adversarial` family gains the first of the seven failure modes tracked in issue #94: implicit lifecycle side effects that pass every visible test and misfire in production write paths. A member-management fixture asks for signup, profile updates, and bulk import with exactly one welcome email per member; the given mini-ORM runs registered `after_save`/`after_create` hooks on `save` while its bulk `import` fires none, mirroring `insert_all`. The withheld tests deliver the two production conditions: an `after_save` implementation re-sends the email on every profile update, and any hook-based implementation silently skips the import path. The naive control fails both, the new partial control (`after_create`) fails only the import one, and the reference delivers explicitly from the creating write path. The evaluation corpus is now 138 files / 502 cases, with campaign coverage at 110 evaluation files. Two stale README prose counts (490 evaluation cases, 103 system/contract tests) were reconciled to the computed numbers the audits already enforce.
+
+## Iteration 175 — The Rails Way Audit Pattern
+
+Added `patterns/rails/the-rails-way.md` mapping the Rails Way philosophy (convention over configuration, DRY, MVC, use-Rails-before-reinventing-it) to its existing enforcement points across this pack. The pattern frames the philosophy as a 5-step decision hierarchy for AI coding assistants (follow convention → assign responsibilities → protect correctness and security → verify behavior → deviate deliberately), and includes a "where code belongs" placement table (eight concerns mapped to their default Rails home and owning skill) and an anti-pattern table (eight approaches that are NOT the Rails Way, each mapped to the existing skill or pattern that catches the violation). The pattern explicitly references `rails-architecture`, `rails-action-controller`, `rails-active-record`, `rails-associations`, `rails-validations`, `rails-routing`, `rails-database-engineering`, `rails-authorization`, `rails-cross-boundary-authorization-security`, `rails-active-job`, `rails-test-engineering`, `ruby-service-objects`, `ruby-poro`, `ruby-domain-modeling`, and the `stack-minimality` family so the cross-reference is consistent with the upstream skill content. Inventory counts bumped to 448 patterns / 502 evaluation cases / 106 system tests.
