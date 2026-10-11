@@ -142,3 +142,9 @@ Test public behavior and important collaborations. Exercise invalid state transi
 ## Source foundation
 
 Based on the OOP material in *The Ruby Workshop* and the class/module/refactoring guidance in *Clean Ruby*, especially the emphasis on clear class purpose, limited responsibilities, encapsulation, and restrained inheritance.
+
+## Book integration: classes, state and dispatch
+
+*The Well-Grounded Rubyist*, Chapters 3–5, provides the Ruby-specific foundation for instance state, `initialize`, attribute readers/writers, class objects, instance versus class methods, inheritance, constants, `self`, scope and visibility. Use it to understand an existing object model before refactoring. Prefer accessors only for state that callers genuinely need to read or change; protect state transitions that enforce an invariant.
+
+Treat inheritance as a behavior contract, not a mechanism for sharing any convenient implementation. Pair the book's language-level model with this skill's composition guidance and *Clean Ruby*'s responsibility discipline. Confirm syntax and visibility behavior on the project's Ruby version.
