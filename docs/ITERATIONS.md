@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 177 — Release v1.4.0 Notes
+> **Current milestone:** Iteration 178 — Book-Grounded Ruby and Rails Front-End Skills
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
