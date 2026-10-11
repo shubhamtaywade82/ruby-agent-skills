@@ -125,4 +125,10 @@ Use a minimal reproduction for semantic questions, then run the repository's foc
 
 ## Source foundation
 
-Grounded in the Ruby language fundamentals and execution-focused approach of *The Ruby Workshop*, with the quality principle from *Clean Ruby* that code should be readable, straightforward, and easy to change.
+Grounded in the Ruby language fundamentals and execution-focused approach of *The Ruby Workshop* and *The Well-Grounded Rubyist* (Second Edition), with the quality principle from *Clean Ruby* that code should be readable, straightforward, and easy to change.
+
+## Book integration: Ruby semantics
+
+Use *The Well-Grounded Rubyist*, Chapters 1–7 and 13–15, to reason about objects as message receivers; method dispatch and return values; references versus objects; `self`, scope, constants and visibility; and Ruby's dynamic runtime. When diagnosing behavior, identify the receiver, dispatched method, current scope, and returned value before changing code.
+
+The edition targets Ruby 2.1. Do not copy old syntax or assume every currently convenient API existed then. Resolve the consuming repository's Ruby version and verify version-sensitive behavior against the actual interpreter. The chapter on runtime hooks is conceptual grounding, not a reason to introduce hooks or metaprogramming into ordinary application code.
