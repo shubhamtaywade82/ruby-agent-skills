@@ -130,3 +130,9 @@ Test the consumer classes, method lookup, visibility, and `super` behavior where
 ## Source foundation
 
 Grounded in the modules, mixins, inheritance, encapsulation, and polymorphism material of *The Ruby Workshop*, combined with *Clean Ruby* guidance to split modules until the grouped concept is clear.
+
+## Book integration: method lookup and mixins
+
+*The Well-Grounded Rubyist*, Chapter 4, explains modules, mixins, ancestor lookup, `include`, `prepend`, `super`, and `method_missing`. Before changing a module hook or method override, inspect the actual ancestor chain and identify which implementation receives the call next. Add `respond_to_missing?` when `method_missing` intentionally supplies public dynamic methods.
+
+Use a module for a coherent shared capability or namespace, not as a dumping ground for unrelated methods. Treat `prepend`, open classes and lookup overrides as high-impact behavior: document the reason and test the consumer class, visibility and `super` chain.
