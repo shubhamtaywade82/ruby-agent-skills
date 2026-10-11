@@ -148,3 +148,9 @@ When an internal integration becomes a true reusable library, use the gem bounda
 - gem build/package verified
 
 Do not extract a gem merely to move files. Extraction should create a real reuse boundary.
+
+## Book integration: loading and IO lifetimes
+
+*The Well-Grounded Rubyist*, Chapters 1 and 12, supplies the foundations for feature loading, `require` versus `load`, `require_relative`, RubyGems, File/IO, directory operations and standard-library file helpers. Prefer `require` for one-time feature loading, and use `require_relative` when a dependency is relative to the current source file. Follow the existing gem and application loading conventions.
+
+Use block forms such as `File.open(path) { |file| ... }` when they clearly scope resource cleanup. Handle filesystem errors as part of the operation's contract; do not assume a path exists, is readable, or points to the expected kind of file. When invoking system programs, prefer argument-separated process APIs over shell-string construction and define how exit status and stderr are handled. Confirm standard-library availability on the target runtime.
