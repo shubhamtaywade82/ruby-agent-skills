@@ -100,3 +100,9 @@ Test normal invocation, missing/extra arguments when relevant, and return behavi
 ## Source foundation
 
 Based on the blocks, lambdas, Procs, yield, and ampersand-operator material in *Learn Rails 6* and supported by Ruby closure material in *The Ruby Workshop*.
+
+## Book integration: callable semantics
+
+*The Well-Grounded Rubyist*, Chapter 14, grounds blocks, `Proc`, `lambda`, closures, `Symbol#to_proc`, and `Method` objects. Distinguish a block attached to one invocation from a callable that must be stored or passed around. Test arity and return behavior when it affects the contract: lambdas have method-like argument/return behavior, while ordinary Procs have materially different control-flow semantics.
+
+Use `yield` when behavior is local to one method call and no Proc object is needed. Do not convert simple blocks into callable objects merely to make the implementation look more abstract. Verify APIs and syntax for the configured Ruby version.
