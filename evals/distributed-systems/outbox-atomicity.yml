@@ -1,0 +1,45 @@
+coverage: static-only
+id: outbox-atomicity
+version: 1
+title: Publish an event only after the originating transaction commits
+category: rails
+source: rails-distributed-systems-v1
+skills:
+  - rails-distributed-systems
+  - rails-database-engineering
+  - rails-active-job
+patterns:
+  - outbox-publication
+  - event-envelope
+  - transactional-job-enqueue
+prompt: |
+  A checkout workflow must persist the Order and enqueue a `PublishOrderEvent` job only after the transaction commits. Use the transactional outbox pattern: write the Order row and the OutboxEntry row in the same transaction; a separate relay job publishes the outbox entry to the message broker and marks it as published. The publish must not happen if the transaction rolls back. The relay must be idempotent: re-publishing an already-published outbox entry is a no-op.
+constraints:
+  required_design:
+    - outbox row written in the same transaction as the originating change
+    - relay job publishes only after commit
+    - relay marks the outbox row as published; duplicate relay runs are a no-op
+    - rollback leaves no published message
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: commit-publishes
+    input: valid checkout; transaction commits
+    expected: order persisted; outbox entry persisted; relay publishes exactly once
+  - name: rollback-skips-publish
+    input: checkout raises; transaction rolls back
+    expected: no order row; no outbox row; no published message
+  - name: relay-idempotency
+    input: relay runs twice for the same outbox entry
+    expected: broker receives exactly one published message; second relay run is a no-op
+  - name: relay-after-crash
+    input: relay crashes after broker send but before marking the outbox row as published
+    expected: relay retry re-publishes (broker must be idempotent on message id) and marks the row
+grading:
+  functional: outbox is atomic with the originating transaction; relay publishes after commit only
+  tests: commit, rollback, idempotency, and crash-recovery paths are tested
+  contract: outbox row schema is stable; relay's published flag is authoritative; broker message id is the deduplication key
+  scope_control: no dual-write to broker from inside the transaction; no global state for relay coordination

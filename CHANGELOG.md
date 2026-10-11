@@ -1,5 +1,17 @@
 # Changelog
 
+## Iteration 181 — distributed-systems Eval Family (Tier 2 item 5)
+
+Closes one of the three behavioral-validation gaps flagged by the advanced Rails coverage audit (`patterns/rails/advanced-rails-coverage-audit.md`, iter 179). The `rails-distributed-systems` skill has deep reference content (`coordination.md`, `ownership-and-delivery.md`, `ordering-rollout-testing.md`) covering sagas, outbox, inbox, distributed locks, multi-region, ordering, replay — but no dedicated eval family forcing the agent to demonstrate it. This iteration adds the first three contract-only evals.
+
+- Add `evals/distributed-systems/outbox-atomicity.yml` (4 cases: commit-publishes, rollback-skips-publish, relay-idempotency, relay-after-crash). References the existing `outbox-publication`, `event-envelope`, and `transactional-job-enqueue` patterns. The contract requires the outbox row and the originating change in the same transaction, a relay that publishes only after commit, and idempotent re-publish on relay retry.
+- Add `evals/distributed-systems/inbox-deduplication.yml` (4 cases: first-delivery-processes, duplicate-skipped, reordered-still-processes-once, crash-between-inbox-and-side-effect). References the existing `inbox-deduplication` and `event-envelope` patterns. The contract requires a unique constraint on (consumer, message_id), the inbox insert and side effect in the same transaction, and detection of duplicates without re-applying the side effect.
+- Add `evals/distributed-systems/saga-compensation.yml` (5 cases: happy-path, mid-failure-compensates, compensation-failure-recorded, crash-resumes-mid-saga, compensation-idempotency). References the existing `saga-orchestration`, `outbox-publication`, and `eventual-consistency` patterns. The contract requires a durable Saga state machine, idempotent compensations, compensation-failure recording (no silent retry forever), and crash resume from the last committed step.
+- Register the new family in `skill-manifest.yml` under a new `distributed-systems` evaluation family with `source: rails-distributed-systems-v1`, schema `docs/EVAL_SCHEMA.md`, and the same four checks as the existing `database-engineering` family (`functional`, `tests`, `contract`, `scope_control`).
+- Bump inventory counts (139 → 142 evaluation files, 506 → 519 evaluation cases — 13 new cases across 3 contracts) in `README.md` and `docs/IMPLEMENTATION_HANDOFF.md`. Implementation pattern count remains 450; system-test count remains 108. `docs/IMPLEMENTATION_HANDOFF.md` milestone bumped 180 → 181.
+- These are contract-only evals (no fixture workspaces or pristine references yet). The 28 existing static-only evaluations now become 31; `audit_benchmark_quality.rb` tolerates static-only coverage and reports it explicitly. A follow-up iteration can add `benchmarks/distributed-systems/campaign.yml` + `fixtures.yml` + per-case fixture/reference workspaces following the iter 174 `callback-cascade` pattern.
+- Live verification: `bash bin/validate` exits 0 on a clean worktree after the new family is added.
+
 ## Iteration 180 — Callback-Cascade Verification Hardening
 
 - `scripts/verify_rails_adversarial_eval.rb` reports each withheld test as its own condition under `checks.adversarial.conditions`, with Minitest's result codes mapped to `pass`, `fail` (assertion), `error` (exception), or `skip`. The aggregate `adversarial` status is unchanged, and no other fixture's grading changes.

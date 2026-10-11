@@ -1,0 +1,44 @@
+coverage: static-only
+id: inbox-deduplication
+version: 1
+title: Process an at-least-once message exactly once
+category: rails
+source: rails-distributed-systems-v1
+skills:
+  - rails-distributed-systems
+  - rails-active-job
+  - rails-database-engineering
+patterns:
+  - inbox-deduplication
+  - event-envelope
+prompt: |
+  A consumer receives `OrderCreated` events from a broker that delivers at-least-once. Implement an inbox table that records the message id of every processed message; the consumer checks the inbox before applying the side effect. The consumer must process each logical message exactly once even when the broker redelivers, when the consumer restarts mid-processing, or when messages arrive out of order. The inbox insert and the side effect must be in the same transaction so a crash between them leaves either both or neither.
+constraints:
+  required_design:
+    - inbox row with a unique constraint on (consumer, message_id)
+    - inbox insert and side effect in the same transaction
+    - duplicate message id is detected and skipped without re-applying the side effect
+    - out-of-order delivery still processes each message exactly once
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: first-delivery-processes
+    input: new message id; consumer processes for the first time
+    expected: inbox row inserted; side effect applied exactly once
+  - name: duplicate-skipped
+    input: same message id redelivered
+    expected: duplicate detected by the unique constraint; side effect not re-applied
+  - name: reordered-still-processes-once
+    input: messages m1 and m2 with the same logical id arrive out of order
+    expected: exactly one of them is processed; the other is detected as duplicate
+  - name: crash-between-inbox-and-side-effect
+    input: consumer crashes after inbox insert, before side effect commit
+    expected: transaction rolls back; both inbox and side effect are absent; redelivery processes the message
+grading:
+  functional: each logical message is processed exactly once across redelivery, reorder, and crash
+  tests: first-delivery, duplicate, reorder, and crash-recovery paths are tested
+  contract: inbox table schema is stable; (consumer, message_id) unique constraint is authoritative; message id is the deduplication key
+  scope_control: no out-of-transaction side effects; no global lock for deduplication; no skipping the inbox for "trusted" senders

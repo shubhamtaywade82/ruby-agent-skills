@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 180 — Callback-Cascade Verification Hardening
+> **Current milestone:** Iteration 181 — distributed-systems Eval Family (Tier 2 item 5)
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -620,3 +620,7 @@ Closed four of the nine gaps flagged by the advanced Rails coverage audit (the a
 ## Iteration 180 — Callback-Cascade Verification Hardening
 
 The `callback-cascade` negative controls are now verified per condition rather than by one aggregate status. The rails-adversarial verifier reports each withheld test (`update_refire`, `import_skips_hooks`) separately, and the system test pins the outcome for the reference, naive, and partial solutions, so a control must fail the condition it is documented to miss, and only that one, with an assertion failure. The fixture's claim is narrowed from exactly-once delivery to successful modeled writes; crash and retry recovery remain unmodeled. `bin/validate` no longer repeats two commands, and the gate-integrity test now rejects unexplained repeats.
+
+## Iteration 181 — distributed-systems Eval Family (Tier 2 item 5)
+
+Added the first dedicated eval family for `rails-distributed-systems`, closing one of the three behavioral-validation gaps flagged by the advanced Rails coverage audit (iter 179). Three contract-only evals: `outbox-atomicity` (4 cases — commit, rollback, relay idempotency, relay-after-crash), `inbox-deduplication` (4 cases — first delivery, duplicate, reorder, crash between inbox and side effect), `saga-compensation` (5 cases — happy path, mid-failure compensation, compensation-failure recording, crash resume, compensation idempotency). Each references existing patterns (`outbox-publication`, `inbox-deduplication`, `saga-orchestration`, `event-envelope`, `transactional-job-enqueue`, `eventual-consistency`) rather than introducing new implementation shapes. The family is registered in `skill-manifest.yml` under a new `distributed-systems` evaluation family with the same four checks as `database-engineering` (`functional`, `tests`, `contract`, `scope_control`). These are contract-only evals; a follow-up iteration can add `benchmarks/distributed-systems/campaign.yml` + fixtures + references following the iter 174 `callback-cascade` pattern. Inventory counts bumped to 450 patterns / 519 evaluation cases / 108 system tests.

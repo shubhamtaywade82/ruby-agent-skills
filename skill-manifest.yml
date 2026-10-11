@@ -1530,6 +1530,19 @@ evaluations:
       - contract
       - scope_control
 
+  distributed-systems:
+    source: rails-distributed-systems-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/distributed-systems/outbox-atomicity.yml
+      - evals/distributed-systems/inbox-deduplication.yml
+      - evals/distributed-systems/saga-compensation.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   observability:
     source: rails-observability-v1
     schema: docs/EVAL_SCHEMA.md

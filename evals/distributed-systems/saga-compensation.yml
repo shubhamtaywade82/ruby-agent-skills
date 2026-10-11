@@ -1,0 +1,49 @@
+coverage: static-only
+id: saga-compensation
+version: 1
+title: Coordinate a multi-step workflow with compensating actions on partial failure
+category: rails
+source: rails-distributed-systems-v1
+skills:
+  - rails-distributed-systems
+  - rails-active-job
+  - rails-database-engineering
+patterns:
+  - saga-orchestration
+  - outbox-publication
+  - eventual-consistency
+prompt: |
+  A `CheckoutSaga` coordinates three local transactions across independent services: reserve inventory, charge payment, and send confirmation. Each step has a compensating action (release inventory, refund payment). If step 2 (payment) fails after step 1 (inventory) succeeded, the saga must compensate step 1. The saga's state machine is durable: a worker crash mid-saga resumes from the last committed step, not from the beginning. Compensations are idempotent (a crashed compensation retries cleanly). Compensations themselves can fail; the saga records the compensation as failed and surfaces it for manual intervention.
+constraints:
+  required_design:
+    - durable saga state (a Saga record with status enum)
+    - each step is a local transaction; the saga state advances only after the step commits
+    - compensation runs on partial failure; compensations are idempotent
+    - compensation failure is recorded, not silently retried forever
+    - crash resumes from the last committed step, not from the beginning
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: happy-path
+    input: all three steps succeed
+    expected: saga completes; inventory reserved; payment charged; confirmation sent
+  - name: mid-failure-compensates
+    input: payment fails after inventory reserved
+    expected: saga marks step 2 failed; compensation runs for step 1; inventory released; payment not charged; confirmation not sent
+  - name: compensation-failure-recorded
+    input: compensation for step 1 also fails
+    expected: saga records compensation as failed; surfaces for manual intervention; does not silently retry forever
+  - name: crash-resumes-mid-saga
+    input: worker crashes after step 1 commits, before step 2 starts
+    expected: resume picks up at step 2; does not re-run step 1
+  - name: compensation-idempotency
+    input: compensation runs twice for the same step
+    expected: inventory released exactly once; second compensation is a no-op
+grading:
+  functional: saga completes happy path; compensates partial failure; records compensation failures
+  tests: happy-path, mid-failure, compensation-failure, crash-resume, and idempotency paths are tested
+  contract: Saga state machine schema is stable; status enum is authoritative; compensation idempotency key is documented
+  scope_control: no distributed transaction across services; no out-of-transaction side effects; no compensation retry storm
