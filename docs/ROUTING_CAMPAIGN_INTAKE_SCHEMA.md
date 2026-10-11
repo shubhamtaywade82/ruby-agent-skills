@@ -18,7 +18,7 @@ The submitted campaign must:
 - use only registered primary and secondary skills;
 - never place the observed primary skill in the secondary list.
 
-For the current public campaign this means **31 routing cases × 3 repetitions = 93 completed runs**.
+For the current public campaign this means **32 routing cases × 3 repetitions = 96 completed runs**.
 
 ## Purpose
 
