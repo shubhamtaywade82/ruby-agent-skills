@@ -293,3 +293,7 @@ For Rails asset/build changes:
 - distinguish development watchers from successful production builds;
 - add deterministic clean-build/precompile/system verification and inspect CI evidence;
 - do not claim production parity or reproducibility from a single local build.
+
+## Book cross-reference: *Modern Front-End Development for Rails*
+
+Chapters 1 and 5–7 compare Rails frontend setup, CSS handling, TypeScript, JavaScript/CSS bundling, Propshaft, and import maps. Treat the chapter set as a decision-space overview rather than a prescription to migrate tools. Inspect the lockfile, Rails version, deployment build path, and current asset pipeline before changing bundling or adding packages.

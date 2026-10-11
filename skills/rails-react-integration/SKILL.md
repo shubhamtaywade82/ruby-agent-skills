@@ -150,3 +150,7 @@ Run the client boundary tests (parser, error mapping, CSRF header, 401/422 handl
 - Active Model Errors: https://api.rubyonrails.org/classes/ActiveModel/Errors.html
 - Inertia Rails: https://inertia-rails.dev/
 - Fetch API, credentials: https://developer.mozilla.org/en-US/docs/Web/API/RequestInit#credentials
+
+## Book cross-reference: *Modern Front-End Development for Rails*
+
+Chapters 4, 6–8, and 11–15 cover React integration, TypeScript, bundling, server communication, state management, and Cypress testing. Use these as design prompts, not mandates to add React, Redux, TypeScript, or Cypress. Choose the smallest frontend boundary matching the application and compose with the separately owned React/TypeScript skills for component internals. Validate tool/API guidance against current repository dependencies; the book describes Rails 7 and React 17-era tooling.
