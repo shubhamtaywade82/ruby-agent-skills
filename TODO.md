@@ -21,3 +21,7 @@ Open items from the Iteration 149 recheck, verified against `origin/main` at `cc
 - [ ] Update stale README counts. Line 36 says "448-pattern catalog" (current: 450). Line 516 says "502 cases" (current: 506).
 - [ ] Update stale `docs/IMPLEMENTATION_HANDOFF.md` line 27. It says "138 evaluation files / 502 cases" (current: 139 / 506).
 - [ ] Do a manual provenance review. The automated provenance audit passes, but nothing checks prose that still describes the pre-Iteration-149 repository state.
+
+## Scheduled recheck
+
+- [ ] Confirm the "Recheck Ruby Agent Skills" scheduled task is active. The session's `CronList` reports no scheduled jobs, and `list_triggers` with `enabled: true` returns none. The task may be stored by the Cowork desktop app, which these tools don't list. Check it there, and confirm its prompt covers the open items in this file.
