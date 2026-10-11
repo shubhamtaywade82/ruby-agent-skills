@@ -17,11 +17,25 @@ class RoutingEvaluationSystemTest < Minitest::Test
       aliases: false
     )
 
-    assert_equal 31, Array(data.fetch("cases")).length
+    assert_equal 32, Array(data.fetch("cases")).length
     assert Array(data.fetch("cases")).all? do |entry|
       entry.fetch("primary_skills").length == 1 &&
         entry.fetch("secondary_skills").none? { |skill| skill == entry.fetch("primary_skills").first }
     end
+  end
+
+  def test_regexp_extraction_case_has_the_correct_owner
+    data = YAML.safe_load(
+      File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    regexp_case = Array(data.fetch("cases")).find { |entry| entry.fetch("id") == "ruby-regexp-extraction-contract" }
+
+    refute_nil regexp_case
+    assert_equal ["ruby-data-types"], regexp_case.fetch("primary_skills")
+    assert_equal %w[ruby-core ruby-tdd-refactoring], regexp_case.fetch("secondary_skills")
+    assert_includes regexp_case.fetch("prompt"), "partial matches"
   end
 
   def test_routing_evaluator_produces_measurement

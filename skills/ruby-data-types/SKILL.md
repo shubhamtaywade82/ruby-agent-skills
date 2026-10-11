@@ -156,3 +156,24 @@ Derived from the data types and operations material in *The Ruby Workshop*. The 
 ## Book integration: *The Well-Grounded Rubyist*
 
 Use chapters 7–9 as a conceptual cross-check for conversions, nil/Boolean behavior, equality, strings, symbols, numerics, dates/times, hashes, ranges, and sets. Preserve the actual input/output contract when converting values; conversion is not validation. Confirm methods and edge cases against the project's supported Ruby version.
+
+## Book integration: regular expressions and text parsing
+
+Use Chapter 11 of *The Well-Grounded Rubyist* as a conceptual reference for matching, capture groups, MatchData, and Ruby's string/regexp APIs. The book targets Ruby 2.1; verify every API and edge case against the consuming project's configured Ruby version.
+
+When implementing text matching:
+- Decide whether the contract is search, extraction, replacement, tokenization, or whole-input validation. Those are different operations.
+- Use match? when only a Boolean result is needed; use match or a returned MatchData when captures are part of the contract. Avoid depending on stale implicit match state when a local match object is clearer.
+- For whole-input validation, prefer `\A` and `\z` anchors over line-oriented anchors when newline behavior matters. Test empty input, trailing newlines, and malformed strings explicitly.
+- Choose scan, split, sub, or gsub based on whether the contract requires all matches, tokenization, one replacement, or global replacement.
+- Escape literal user-supplied fragments with Regexp.escape; do not turn untrusted text into executable regexp syntax. Consider worst-case matching cost when a pattern processes attacker-controlled or very large input.
+- Keep the failure contract explicit. A failed extraction should not be confused with a successful partial match or a malformed value silently converted to an empty result.
+
+## Agent review checklist additions
+
+- [ ] operation matches search/extract/replace/tokenize/validate intent
+- [ ] full-string versus partial matching is explicit
+- [ ] captures and failed-match behavior are tested
+- [ ] newline and empty-input behavior are tested
+- [ ] dynamic regexp fragments are escaped or otherwise constrained
+- [ ] supported Ruby behavior has been verified

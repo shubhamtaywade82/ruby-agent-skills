@@ -329,7 +329,7 @@ skills:
   ruby-data-types:
     family: ruby
     path: skills/ruby-data-types/SKILL.md
-    triggers: [strings, symbols, numbers, nil, ranges, hashes, data representation]
+    triggers: [strings, symbols, numbers, nil, ranges, hashes, data representation, regular expressions, regexp parsing, string matching, capture groups, MatchData, String#scan, String#split, String#sub, String#gsub]
   ruby-control-flow:
     family: ruby
     path: skills/ruby-control-flow/SKILL.md

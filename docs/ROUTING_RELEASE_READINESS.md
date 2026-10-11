@@ -18,7 +18,7 @@ The release contract currently expects:
 
 - 31 public routing cases;
 - 3 repetitions per case;
-- 78 completed runs;
+- 96 completed runs;
 - verified evidence with intact raw artifacts;
 - an immutable archive.
 

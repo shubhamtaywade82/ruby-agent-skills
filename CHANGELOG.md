@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 178 — Book-Grounded Ruby and Rails Front-End Skills
+
+- Ground existing Ruby/Rails skills in the three supplied books through `docs/BOOK_REFERENCE_MAP.md` and the source coverage map, preserving existing skill ownership instead of cloning chapters into new skills.
+- Add practical Ruby regular-expression guidance to `ruby-data-types`: search versus extraction versus whole-input validation, MatchData/capture contracts, newline behavior, safe dynamic fragments, and tests for malformed or empty input. Add regular-expression triggers, a routing row, and the public `ruby-regexp-extraction-contract` case.
+- Update the routing evaluation contract and public routing campaign references from 31 × 3 (93 runs) to 32 × 3 (96 runs), including handoff, publishing, local benchmarking, intake contracts, and release readiness.
+- Preserve version boundaries: *The Well-Grounded Rubyist* targets Ruby 2.1; *Modern Front-End Development for Rails* reflects 2022-era Rails frontend tooling. Resolve actual project versions before applying version-sensitive syntax or commands.
+- Add system-test assertions for routing ownership and case count, and synchronize the iteration and handoff milestones. No new skill was added.
+
 ## Iteration 177 — Release v1.4.0 Notes
 
 - Cut release `v1.4.0` covering Iterations 159 (betterspecs.org audit pattern) + 175 (The Rails Way audit pattern) + 176 (system test + skill wiring). The release is the first to ship the two new audit patterns and the `rails-architecture` skill's `## Patterns` table.
