@@ -5,6 +5,17 @@ require "yaml"
 
 class RubyRailsFoundationsSystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
+  BOOK_SKILL_COVERAGE = {
+    "The Well-Grounded Rubyist" => %w[
+      ruby-core ruby-data-types ruby-collections
+      ruby-enumerables ruby-metaprogramming
+    ],
+    "Clean Ruby" => %w[ruby-clean-code ruby-method-design ruby-tdd-refactoring],
+    "Modern Front-End Development for Rails" => %w[
+      rails-hotwire rails-react-integration
+      rails-asset-build-engineering rails-action-cable
+    ]
+  }.freeze
 
   def manifest
     YAML.safe_load(
@@ -101,17 +112,10 @@ class RubyRailsFoundationsSystemTest < Minitest::Test
     coverage = File.read(File.join(ROOT, "docs", "SOURCE_COVERAGE.md"), encoding: "UTF-8")
     readme = File.read(File.join(ROOT, "README.md"), encoding: "UTF-8")
 
-    expected = {
-      "The Well-Grounded Rubyist" => %w[ruby-core ruby-data-types ruby-collections ruby-enumerables ruby-metaprogramming],
-      "Clean Ruby" => %w[ruby-clean-code ruby-method-design ruby-tdd-refactoring],
-      "Modern Front-End Development for Rails" => %w[rails-hotwire rails-react-integration rails-asset-build-engineering rails-action-cable]
-    }
-
-    expected.each do |book, skill_names|
+    BOOK_SKILL_COVERAGE.each do |book, skill_names|
       assert_includes coverage, book
       assert_includes readme, book
       skill_names.each { |skill_name| assert_includes coverage, skill_name }
     end
   end
-
 end
