@@ -107,7 +107,7 @@ class DocumentationConsistencySystemTest < Minitest::Test
   end
 
   def test_documentation_audit_detects_stale_quick_start_release
-    stderr, status = audit_with("README.md" => ->(text) { text.gsub("v1.3.0", "v1.1.0") })
+    stderr, status = audit_with("README.md" => ->(text) { text.gsub(/v\d+\.\d+\.\d+/, "v1.1.0") })
 
     refute status.success?
     assert_includes stderr, "README.md references stale release v1.1.0"

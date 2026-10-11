@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 175 — The Rails Way Audit Pattern
+> **Current milestone:** Iteration 177 — Release v1.4.0 Notes
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -601,7 +601,15 @@ The `rails-adversarial` family gains the first of the seven failure modes tracke
 
 Added `patterns/rails/the-rails-way.md` mapping the Rails Way philosophy (convention over configuration, DRY, MVC, use-Rails-before-reinventing-it) to its existing enforcement points across this pack. The pattern frames the philosophy as a 5-step decision hierarchy for AI coding assistants (follow convention → assign responsibilities → protect correctness and security → verify behavior → deviate deliberately), and includes a "where code belongs" placement table (eight concerns mapped to their default Rails home and owning skill) and an anti-pattern table (eight approaches that are NOT the Rails Way, each mapped to the existing skill or pattern that catches the violation). The pattern explicitly references `rails-architecture`, `rails-action-controller`, `rails-active-record`, `rails-associations`, `rails-validations`, `rails-routing`, `rails-database-engineering`, `rails-authorization`, `rails-cross-boundary-authorization-security`, `rails-active-job`, `rails-test-engineering`, `ruby-service-objects`, `ruby-poro`, `ruby-domain-modeling`, and the `stack-minimality` family so the cross-reference is consistent with the upstream skill content. Inventory counts bumped to 448 patterns / 502 evaluation cases / 106 system tests.
 
-## Iteration 176 — Book-Grounded Ruby and Rails Front-End Skills
+## Iteration 176 — The Rails Way Pattern System Test and Skill Wiring
+
+Added `test/rails_architecture_system_test.rb` with five regression assertions covering the new pattern: required artifact paths; the 5-step decision hierarchy strings; the eight anti-pattern anchor strings; manifest registration under the `rails` family; and a pointer from `skills/rails-architecture/SKILL.md` to `the-rails-way` via a new `## Patterns` table that lists the five patterns the skill consults (`request-flow`, `dependency-direction-contract`, `controller-service-authorization-composition`, `policy-object-boundary`, and `the-rails-way`) by name (single-skill installs do not ship the `patterns/` catalog, so the skill cannot link to pattern paths). System-test count bumped 106 → 107. The test is wired into `bin/validate`'s system-test run.
+
+## Iteration 177 — Release v1.4.0 Notes
+
+Cut release `v1.4.0` covering Iterations 159 (betterspecs.org audit pattern) + 175 (The Rails Way audit pattern) + 176 (system test + skill wiring). Added `docs/releases/v1.4.0.md` with sectioned release notes, the inventory at this release (96 skills / 448 patterns / 502 eval cases / 107 system tests), live verification evidence (9 audit scripts pass; 589 system-test runs, 0 failures), and install commands. Bumped user-facing release references from `v1.3.0` → `v1.4.0` in `README.md` (curl/tar/cd quick-start) and `docs/INSTALLATION.md` (`--ref v1.4.0` example). The documentation consistency audit derives the canonical release from `docs/releases/vX.Y.Z.md`; all user-facing references must match.
+
+## Iteration 178 — Book-Grounded Ruby and Rails Front-End Skills
 
 Mapped the three provided references to existing skill families instead of cloning book chapters into passive notes. The Well-Grounded Rubyist now informs Ruby object/runtime semantics, classes and modules, collections and enumerators, strings/regular expressions, IO/loading, callable objects, metaprogramming and thread fundamentals. Clean Ruby is mapped more precisely by topic, and its heuristics are explicitly not treated as mechanical line-count or bang-method rules. Modern Front-End Development for Rails is mapped to Hotwire, React integration, asset/build, bootstrap and Action Cable boundaries, with version/toolchain cautions for its 2022 examples.
 

@@ -8,9 +8,9 @@ The goal is not to store passive notes. The repository turns engineering materia
 
 Install the verified skill pack from a release archive (offline; no git required):
 
-    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.3.0/ruby-agent-skills-v1.3.0.tar.gz
-    tar xzf ruby-agent-skills-v1.3.0.tar.gz
-    cd ruby-agent-skills-v1.3.0
+    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.4.0/ruby-agent-skills-v1.4.0.tar.gz
+    tar xzf ruby-agent-skills-v1.4.0.tar.gz
+    cd ruby-agent-skills-v1.4.0
     bash bin/install --agent claude
 
 Or from a git checkout:
@@ -116,7 +116,7 @@ skills/rails-active-record/
 | Skills | **96** |
 | Implementation patterns | **448** |
 | Evaluation cases | **502** |
-| Dedicated system/contract tests | **106** |
+| Dedicated system/contract tests | **107** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -649,7 +649,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **96 skills**, **448 implementation patterns**, **502 evaluation cases**, and **106 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **96 skills**, **448 implementation patterns**, **502 evaluation cases**, and **107 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
