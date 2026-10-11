@@ -3,8 +3,9 @@
 require "minitest/autorun"
 require_relative "../lib/solution"
 
-# Withheld from the agent workspace: lifecycle side effects must hold their
-# exactly-once contract across the write paths the visible tests leave out.
+# Withheld from the agent workspace: the welcome email must hold one delivery per
+# created member across the write paths the visible tests leave out. Each test
+# is one condition, named after its evaluation case, and is graded separately.
 class MemberLifecycleWithheldTest < Minitest::Test
   def setup
     @store = Store.new
@@ -13,7 +14,8 @@ class MemberLifecycleWithheldTest < Minitest::Test
     Mailer.reset
   end
 
-  def test_updating_a_member_never_sends_another_welcome_email
+  # Case update-refire: profile updates never deliver another welcome email.
+  def test_update_refire
     member = Membership.signup(email: "ada@example.com", name: "Ada")
 
     Membership.update_profile(member_id: member.id, name: "Ada Lovelace")
@@ -23,7 +25,8 @@ class MemberLifecycleWithheldTest < Minitest::Test
     assert_equal member.id, Mailer.deliveries.first.fetch(:member_id)
   end
 
-  def test_imported_members_each_receive_exactly_one_welcome_email
+  # Case import-skips-hooks: bulk-imported members are each welcomed once.
+  def test_import_skips_hooks
     Membership.import_members([
       { email: "grace@example.com", name: "Grace" },
       { email: "alan@example.com", name: "Alan" },

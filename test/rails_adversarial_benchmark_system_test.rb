@@ -49,6 +49,30 @@ class RailsAdversarialBenchmarkSystemTest < Minitest::Test
     end
   end
 
+  # Exact per-condition outcomes: a control must fail the condition it is
+  # documented to miss, and pass the rest. An "error" would fail this equality,
+  # so an exception cannot stand in for the intended assertion failure.
+  def test_callback_cascade_conditions_fail_only_where_each_control_is_documented_to
+    {
+      File.join("controls", "naive", "callback-cascade") => conditions("fail", "fail"),
+      File.join("controls", "partial", "callback-cascade") => conditions("pass", "fail"),
+      File.join("references", "callback-cascade") => conditions("pass", "pass")
+    }.each do |relative, expected|
+      checks = grade("callback-cascade", File.join(FAMILY, relative))
+
+      assert_equal expected, checks.dig("adversarial", "conditions"), relative
+    end
+  end
+
+  def test_callback_cascade_conditions_match_its_evaluation_cases
+    checks = grade("callback-cascade", File.join(FAMILY, "references", "callback-cascade"))
+    eval_path = File.join(ROOT, "evals", "rails-adversarial", "callback-cascade.yml")
+    cases = YAML.safe_load_file(eval_path).fetch("cases")
+                .map { |scenario| scenario.fetch("name").tr("-", "_") }
+
+    assert_equal cases.sort, checks.dig("adversarial", "conditions").keys.sort
+  end
+
   def test_changes_outside_lib_and_test_fail_scope_control
     id = FIXTURE_IDS.first
     checks = grade(id, File.join(FAMILY, "references", id)) do |workspace|
@@ -65,6 +89,10 @@ class RailsAdversarialBenchmarkSystemTest < Minitest::Test
   end
 
   private
+
+  def conditions(update_refire, import_skips_hooks)
+    { "update_refire" => update_refire, "import_skips_hooks" => import_skips_hooks }
+  end
 
   # Fixture committed as the baseline, the solution overlaid on top, an
   # optional extra change, then the verifier's checks.
