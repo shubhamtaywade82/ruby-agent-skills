@@ -1,5 +1,11 @@
 # Changelog
 
+## Iteration 178 — Ruby Regular-Expression Skill and Routing Contract
+
+- Expand `skills/ruby-data-types/SKILL.md` with Ruby regex extraction/validation contracts, failed-capture handling, `Regexp.escape`, and parser-selection guidance based on *The Well-Grounded Rubyist*, Chapter 11.
+- Add regex-related activation triggers, a routing matrix row and a public adversarial routing case; bump `router/ROUTING_CAMPAIGN.yml` to version 9 and the release contract to 32 cases / 96 expected runs.
+- Update case/run count documentation and add system-test assertions for routing ownership and manifest triggers.
+
 ## Iteration 177 — Release v1.4.0 Notes
 
 - Cut release `v1.4.0` covering Iterations 159 (betterspecs.org audit pattern) + 175 (The Rails Way audit pattern) + 176 (system test + skill wiring). The release is the first to ship the two new audit patterns and the `rails-architecture` skill's `## Patterns` table.
