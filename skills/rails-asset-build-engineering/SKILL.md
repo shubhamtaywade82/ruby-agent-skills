@@ -293,3 +293,7 @@ For Rails asset/build changes:
 - distinguish development watchers from successful production builds;
 - add deterministic clean-build/precompile/system verification and inspect CI evidence;
 - do not claim production parity or reproducibility from a single local build.
+
+## Book integration: frontend toolchain choice
+
+*Modern Front-End Development for Rails*, Chapters 1, 5–7 and 13, surveys frontend setup, CSS, TypeScript, bundling, import maps and Propshaft. Treat those as alternatives to evaluate, not a required stack. Inspect the repository's Rails version, package manager, lockfiles, asset pipeline, CI and production build path first; do not introduce Yarn/esbuild, a CSS bundler, TypeScript or a migration from Import Maps merely because a book example uses it. Version-specific instructions must be checked against current documentation and the target app.
