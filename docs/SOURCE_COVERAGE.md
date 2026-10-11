@@ -40,13 +40,57 @@ The repository intentionally synthesizes concepts rather than reproducing source
 
 | Source area | Agent coverage |
 |---|---|
-| Qualities of clean code | ruby-clean-code |
-| Naming | ruby-clean-code |
-| Quality methods | ruby-method-design, ruby-clean-code, ruby-api-design |
-| Boolean logic | ruby-boolean-logic, ruby-clean-code |
-| Classes | ruby-oop, ruby-poro, ruby-object-composition |
-| Refactoring | ruby-clean-code, ruby-tdd-refactoring |
-| Test-driven development | ruby-tdd-refactoring |
+| Readability, simplicity and changeability | ruby-clean-code, stack-minimality |
+| Variable, method, class and module naming | ruby-clean-code, ruby-method-design, ruby-oop, ruby-modules-mixins |
+| Method parameters, ordering and predictable return contracts | ruby-method-design, ruby-api-design |
+| Guard clauses, nesting, boolean logic and method responsibility | ruby-method-design, ruby-boolean-logic, ruby-clean-code |
+| Comment quality and stale-comment removal | ruby-clean-code, change-review |
+| Class initialization, accessors, visibility and method ordering | ruby-oop, ruby-poro |
+| Modules, inheritance restraint and single responsibility | ruby-modules-mixins, ruby-object-composition, ruby-clean-code |
+| Small safe refactors and behavior preservation | ruby-clean-code, ruby-tdd-refactoring |
+| Test-first workflow and maintainable tests | ruby-tdd-refactoring, rails-test-engineering |
+
+## The Well-Grounded Rubyist (Second Edition)
+
+This book is a deep reference for Ruby's object model, built-in classes, and runtime facilities. Its second edition targets Ruby 2.1, so it is used for language concepts and historical context—not as authority for syntax or standard-library APIs in a newer runtime. The consuming repository's configured Ruby version and current documentation remain authoritative.
+
+| Book area | Agent coverage |
+|---|---|
+| Program execution, IRB, loading, `require`, `require_relative`, RubyGems and Rake | ruby-core, ruby-toolchain, ruby-gem-development |
+| Objects, message sends, receivers, arguments, return values and references | ruby-core, ruby-method-design, ruby-api-design |
+| Classes, instance state, attributes, inheritance, class methods and constants | ruby-oop, ruby-poro, ruby-object-composition |
+| Modules, method lookup, `include`, `prepend`, `super` and `method_missing` | ruby-modules-mixins, ruby-metaprogramming |
+| `self`, variable scope, constants and visibility | ruby-core, ruby-oop |
+| Branching, loops, blocks, iterators, exceptions and custom exception classes | ruby-control-flow, ruby-boolean-logic, ruby-blocks-procs-lambdas, ruby-debugging |
+| Strings, symbols, numeric values, conversions, dates and times | ruby-data-types |
+| Arrays, hashes, ranges and sets; representation and mutation | ruby-collections, ruby-data-types |
+| `Enumerable`, `Enumerator`, reduction, sorting and lazy traversal | ruby-enumerables, ruby-collections |
+| Regular expressions, captures, `MatchData`, `scan`, `split`, `sub` and `gsub` | ruby-data-types, ruby-tdd-refactoring |
+| File and IO operations, directory operations and resource lifetimes | ruby-gems-io-services, ruby-debugging |
+| Procs, lambdas, closures, Method objects and callable behavior | ruby-blocks-procs-lambdas, ruby-method-design |
+| Singleton classes, runtime introspection, hooks and callbacks | ruby-metaprogramming |
+| Threads and operating-system command boundaries | ruby-concurrency, ruby-gems-io-services |
+
+The book's examples are not copied into the skills. Skills retain concepts that transfer across supported versions and require the agent to verify version-sensitive behavior in the target repository.
+
+## Modern Front-End Development for Rails (Second Edition)
+
+This book covers Turbo, Stimulus, React, CSS, TypeScript, asset/build choices, server communication, client state, Action Cable and browser testing. Its 2022 setup instructions and dependency versions are historical examples; inspect the actual application's versions and use current framework documentation before applying a command or API.
+
+| Book area | Agent coverage |
+|---|---|
+| Rails front-end setup and choosing a UI/build approach | rails-application-bootstrap, rails-asset-build-engineering |
+| Turbo Drive, Frames, Streams and server-rendered interaction boundaries | rails-hotwire |
+| Stimulus actions, targets, values, classes and DOM lifecycle | rails-hotwire |
+| React components, props, hooks, state and server data | rails-react-integration; client implementation belongs to the separate React skills pack |
+| CSS assets, bundling and frontend build pipeline | rails-asset-build-engineering, rails-hotwire |
+| TypeScript annotations, interfaces, strictness and runtime boundary checks | rails-react-integration; TypeScript implementation belongs to the separate React skills pack |
+| Fetch/Ajax, form submission, server responses and validation errors | rails-react-integration, rails-api-integration, rails-action-controller |
+| Action Cable with Turbo, Stimulus or React | rails-action-cable, rails-hotwire, rails-react-integration |
+| Stimulus and React state ownership | rails-hotwire, rails-react-integration; use the React skills pack for client-internal state design |
+| Cypress and browser-level verification examples | rails-test-engineering; preserve the consuming repository's established browser-test stack |
+
+The book demonstrates multiple frontend approaches rather than requiring every application to adopt all of them. Do not introduce React, TypeScript, Redux, Cypress, a bundler, or a new CSS pipeline solely because the book uses it; choose based on the existing product and repository contracts.
 
 ## Learn Rails 6
 
