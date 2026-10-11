@@ -66,7 +66,11 @@ class RailsArchitectureSystemTest < Minitest::Test
   end
 
   def test_the_rails_way_pattern_is_registered_in_manifest
-    manifest = YAML.safe_load(File.read(File.join(ROOT, "skill-manifest.yml")))
+    manifest = YAML.safe_load_file(
+      File.join(ROOT, "skill-manifest.yml"),
+      permitted_classes: [],
+      aliases: false
+    )
     rails_patterns = manifest.fetch("patterns").fetch("rails").fetch("paths")
 
     assert_includes rails_patterns, "patterns/rails/the-rails-way.md",
