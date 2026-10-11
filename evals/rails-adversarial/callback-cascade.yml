@@ -3,6 +3,9 @@ version: 1
 title: Welcome email fires once per created member on successful write paths
 category: rails
 source: rails-adversarial-v1
+# Real-world basis for the modeled framework behavior: Member.import mirrors
+# insert_all, which skips callbacks. Rails 8.1.4 guide, "Skipping Callbacks":
+# https://guides.rubyonrails.org/active_record_callbacks.html#skipping-callbacks
 skills:
   - rails-active-record
   - rails-reliability-engineering

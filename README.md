@@ -116,7 +116,7 @@ skills/rails-active-record/
 | Skills | **96** |
 | Implementation patterns | **450** |
 | Evaluation cases | **506** |
-| Dedicated system/contract tests | **107** |
+| Dedicated system/contract tests | **108** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -649,7 +649,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **96 skills**, **450 implementation patterns**, **506 evaluation cases**, and **107 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **96 skills**, **450 implementation patterns**, **506 evaluation cases**, and **108 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

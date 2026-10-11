@@ -19,12 +19,15 @@ module HeadlessAdapterFixture
     opencode: %w[coding-agent-opencode routing-agent-opencode OPENCODE_MODEL OPENCODE_BIN]
   }.freeze
 
-  def run_adapter(dir, provider, kind, model: "test-model", stdout: nil)
+  OPT_IN = { "RUBY_AGENT_UNSANDBOXED_CODING" => "1" }.freeze
+
+  def run_adapter(dir, provider, kind, **options)
     coding, routing, model_env, bin_env = ADAPTERS.fetch(provider)
     script = kind == :coding ? coding : routing
-    env = environment(dir, model_env, bin_env, script, model)
-    env["FAKE_STDOUT"] = stdout if stdout
-    Open3.capture3(env, RbConfig.ruby, File.join(ROOT, "bin", script))
+    run_env = environment(dir, model_env, bin_env, script, options.fetch(:model, "test-model"))
+    run_env["FAKE_STDOUT"] = options[:stdout] if options[:stdout]
+    run_env = run_env.merge(options.fetch(:env, {}))
+    Open3.capture3(run_env, RbConfig.ruby, File.join(ROOT, "bin", script))
   end
 
   def environment(dir, model_env, bin_env, script, model)
@@ -65,10 +68,21 @@ module HeadlessAdapterFixture
     [argv, stdin]
   end
 
-  def capture(provider, kind, stdout: nil)
+  def capture(provider, kind, stdout: nil, env: {})
     Dir.mktmpdir do |dir|
-      out, err, status = run_adapter(dir, provider, kind, stdout: stdout)
+      out, err, status = run_adapter(dir, provider, kind, stdout: stdout, env: env)
       yield dir, out, err, status
+    end
+  end
+
+  # The provider's print-mode envelope around one routing decision.
+  def stdout_for(provider, decision)
+    case provider
+    when :cursor then cursor_stdout(decision)
+    when :antigravity then JSON.generate("status" => "SUCCESS", "structured_output" => decision)
+    when :opencode
+      event = { "type" => "text", "part" => { "text" => JSON.generate(decision) } }
+      "#{JSON.generate(event)}\n"
     end
   end
 
@@ -171,6 +185,30 @@ class HeadlessRoutingAdapterSystemTest < Minitest::Test
     end
   end
 
+  MALFORMED_DECISIONS = {
+    "secondary_skills as a bare string" => DECISION.merge("secondary_skills" => "rails-security"),
+    "missing reason" => DECISION.except("reason"),
+    "blank reason" => DECISION.merge("reason" => "   "),
+    "empty primary_skill" => DECISION.merge("primary_skill" => ""),
+    "non-string primary_skill" => DECISION.merge("primary_skill" => 42),
+    "non-string secondary entry" => DECISION.merge("secondary_skills" => [7]),
+    "primary repeated as secondary" =>
+      DECISION.merge("secondary_skills" => [DECISION.fetch("primary_skill")]),
+    "unregistered secondary skill" => DECISION.merge("secondary_skills" => ["not-a-skill"])
+  }.freeze
+
+  def test_every_provider_rejects_malformed_routing_responses
+    HeadlessAdapterFixture::ADAPTERS.each_key do |provider|
+      MALFORMED_DECISIONS.each do |label, decision|
+        stdout = stdout_for(provider, decision)
+        capture(provider, :routing, stdout: stdout) do |dir, _out, _err, status|
+          refute_predicate status, :success?, "#{provider} accepted #{label}"
+          refute File.file?(File.join(dir, "result.json")), "#{provider} wrote a result: #{label}"
+        end
+      end
+    end
+  end
+
   private
 
   def capture_without_model(provider)
@@ -187,8 +225,29 @@ end
 class HeadlessCodingAdapterSystemTest < Minitest::Test
   include HeadlessAdapterFixture
 
+  def test_each_coding_adapter_refuses_to_start_without_the_opt_in
+    HeadlessAdapterFixture::ADAPTERS.each_key do |provider|
+      capture(provider, :coding) do |dir, _out, err, status|
+        refute_predicate status, :success?
+        assert_includes err, "RUBY_AGENT_UNSANDBOXED_CODING=1"
+        refute File.file?(File.join(dir, "argv.json")),
+               "#{provider} started its CLI without the opt-in"
+      end
+    end
+  end
+
+  def test_coding_opt_in_must_be_exactly_one
+    ["true", "0", "yes", ""].each do |value|
+      env = { "RUBY_AGENT_UNSANDBOXED_CODING" => value }
+      capture(:cursor, :coding, env: env) do |dir, _out, _err, status|
+        refute_predicate status, :success?, "accepted opt-in value #{value.inspect}"
+        refute File.file?(File.join(dir, "argv.json"))
+      end
+    end
+  end
+
   def test_cursor_coding_forces_edits_in_the_workspace
-    capture(:cursor, :coding) do |dir, _out, err, status|
+    capture(:cursor, :coding, env: OPT_IN) do |dir, _out, err, status|
       argv, stdin = recorded(dir)
 
       assert_predicate status, :success?, err
@@ -198,7 +257,7 @@ class HeadlessCodingAdapterSystemTest < Minitest::Test
   end
 
   def test_antigravity_coding_accepts_edits_without_skill_expansion
-    capture(:antigravity, :coding) do |dir, _out, _err, status|
+    capture(:antigravity, :coding, env: OPT_IN) do |dir, _out, _err, status|
       argv, = recorded(dir)
 
       assert_predicate status, :success?
@@ -208,7 +267,7 @@ class HeadlessCodingAdapterSystemTest < Minitest::Test
   end
 
   def test_opencode_coding_auto_approves_inside_a_private_server
-    capture(:opencode, :coding) do |dir, _out, _err, status|
+    capture(:opencode, :coding, env: OPT_IN) do |dir, _out, _err, status|
       argv, = recorded(dir)
 
       assert_predicate status, :success?

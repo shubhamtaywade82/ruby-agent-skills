@@ -37,6 +37,11 @@ class CorpusQualitySystemTest < Minitest::Test
     assert_match(/patterns: \d+\/\d+ with implementation anchors/, stdout)
     assert_match(/evaluations: \d+\/\d+ with non-empty cases/, stdout)
     assert_match(/unbenchmarked: #{KNOWN_UNBENCHMARKED.size} files /, stdout)
+  end
+
+  def test_unbenchmarked_evaluations_are_exactly_the_known_exceptions
+    stdout, = run_audit
+
     listed = stdout[/^  unbenchmarked ids: (.*)$/, 1].to_s.split(", ")
 
     assert_equal KNOWN_UNBENCHMARKED.keys.sort, listed.sort

@@ -86,6 +86,10 @@ Use this evidence order:
 
 If the direct implementation is simpler and satisfies the contract, prefer the direct implementation.
 
+## Pre-activation fact gate
+
+Before implementation, classify each task-critical fact as `observed`, `derived`, `inferred`, or `unknown`. Implementation is blocked while any task-critical fact is `inferred` or `unknown`. Load `references/fact-gate.md` for the classes, the manifest format, and the gate rule.
+
 ## Implementation loop
 
 When the work is not yet decided or is larger than one session, plan first with the planning layer: `planning-interview` to settle decisions, `planning-spec` to write them up, `planning-tickets` to slice them, and `planning-wayfinder` for multi-session efforts, all through `planning-tracker`. Take one ticket per session.
@@ -169,6 +173,15 @@ Run:
 In a consuming Ruby/Rails project, `ruby bin/verify-change --base <base-ref> --strict` runs RuboCop, tests, Brakeman, bundler-audit, and `zeitwerk:check` as applicable and reports each check's status; report `overall.status`, and treat `incomplete` as not verified. See `docs/VERIFY_CHANGE.md`.
 
 If a check cannot be run, state that instead of inferring success.
+
+## References
+
+Load only when needed; each reference is one level deep.
+
+| Load when | Reference | Covers |
+|---|---|---|
+| a change depends on repository facts before implementation | [references/fact-gate.md](references/fact-gate.md) | Fact classes, manifest format, and the blocking rule |
+| a run may change files outside the working tree, use credentials, run side-effecting commands, or spend a budget | [references/execution-control.md](references/execution-control.md) | Approval, credentials, checkpoints, undo, budgets, and provenance |
 
 ## Source foundation
 
