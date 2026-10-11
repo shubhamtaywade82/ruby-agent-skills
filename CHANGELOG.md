@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 177 — Release v1.4.0 Notes
+
+- Cut release `v1.4.0` covering Iterations 159 (betterspecs.org audit pattern) + 175 (The Rails Way audit pattern) + 176 (system test + skill wiring). The release is the first to ship the two new audit patterns and the `rails-architecture` skill's `## Patterns` table.
+- Add `docs/releases/v1.4.0.md` with sectioned release notes covering: RSpec betterspecs.org audit (iter 159); The Rails Way audit pattern (iter 175); the wiring into `rails-architecture` (iter 176); the inventory at this release (96 skills / 448 patterns / 502 evaluation cases / 107 system tests); live verification evidence (`bash bin/validate` exits 0 on the tagged commit; 9 audit scripts pass; 589 system-test runs, 0 failures); and install commands (release-tag pin and offline archive).
+- Bump user-facing release references from `v1.3.0` → `v1.4.0` in `README.md` (curl/tar/cd quick-start) and `docs/INSTALLATION.md` (`--ref v1.4.0` example). The documentation consistency audit derives the canonical release from `docs/releases/vX.Y.Z.md` and fails `bin/validate` on any other version referenced in user-facing docs.
+- Iteration entries added to `CHANGELOG.md` and `docs/ITERATIONS.md`; `docs/IMPLEMENTATION_HANDOFF.md` milestone bumped 176 → 177.
+- Live verification: `bash bin/validate` exits 0 on the tagged commit. Pushing tag `v1.4.0` triggers the release workflow (`.github/workflows/release.yml`), which builds the release archive reproducibly, verifies an offline install from it, asserts byte-identical reproducibility, and creates the GitHub Release with the archive + `SHA256SUMS` + the generated release notes.
+
 ## Iteration 176 — The Rails Way Pattern System Test and Skill Wiring
 
 - Add `test/rails_architecture_system_test.rb` with five regression assertions for the Rails Way pattern added in Iteration 175: required artifact paths; the 5-step decision hierarchy strings (`Follow the convention`, `Assign responsibilities correctly`, `Protect correctness and security`, `Verify behavior`, `Deviate deliberately`); the eight anti-pattern anchor strings; manifest registration under the `rails` family; and a pointer from `skills/rails-architecture/SKILL.md` to `the-rails-way.md`.

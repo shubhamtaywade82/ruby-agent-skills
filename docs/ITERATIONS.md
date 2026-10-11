@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 176 — The Rails Way Pattern System Test and Skill Wiring
+> **Current milestone:** Iteration 177 — Release v1.4.0 Notes
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -603,4 +603,8 @@ Added `patterns/rails/the-rails-way.md` mapping the Rails Way philosophy (conven
 
 ## Iteration 176 — The Rails Way Pattern System Test and Skill Wiring
 
-Added `test/rails_architecture_system_test.rb` with five regression assertions covering the new pattern: required artifact paths; the 5-step decision hierarchy strings; the eight anti-pattern anchor strings; manifest registration under the `rails` family; and a pointer from `skills/rails-architecture/SKILL.md` to `the-rails-way.md` via a new `## Patterns` table that lists the five patterns the skill consults (`request-flow`, `dependency-direction-contract`, `controller-service-authorization-composition`, `policy-object-boundary`, and `the-rails-way`). System-test count bumped 106 → 107. The test is wired into `bin/validate`'s system-test run via `ruby -Itest test/rails_architecture_system_test.rb`.
+Added `test/rails_architecture_system_test.rb` with five regression assertions covering the new pattern: required artifact paths; the 5-step decision hierarchy strings; the eight anti-pattern anchor strings; manifest registration under the `rails` family; and a pointer from `skills/rails-architecture/SKILL.md` to `the-rails-way` via a new `## Patterns` table that lists the five patterns the skill consults (`request-flow`, `dependency-direction-contract`, `controller-service-authorization-composition`, `policy-object-boundary`, and `the-rails-way`) by name (single-skill installs do not ship the `patterns/` catalog, so the skill cannot link to pattern paths). System-test count bumped 106 → 107. The test is wired into `bin/validate`'s system-test run.
+
+## Iteration 177 — Release v1.4.0 Notes
+
+Cut release `v1.4.0` covering Iterations 159 (betterspecs.org audit pattern) + 175 (The Rails Way audit pattern) + 176 (system test + skill wiring). Added `docs/releases/v1.4.0.md` with sectioned release notes, the inventory at this release (96 skills / 448 patterns / 502 eval cases / 107 system tests), live verification evidence (9 audit scripts pass; 589 system-test runs, 0 failures), and install commands. Bumped user-facing release references from `v1.3.0` → `v1.4.0` in `README.md` (curl/tar/cd quick-start) and `docs/INSTALLATION.md` (`--ref v1.4.0` example). The documentation consistency audit derives the canonical release from `docs/releases/vX.Y.Z.md`; all user-facing references must match.
