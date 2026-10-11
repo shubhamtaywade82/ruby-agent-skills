@@ -110,3 +110,9 @@ Cover empty, singleton, duplicate, ordering, and representative large-input case
 ## Source foundation
 
 Grounded in the Enumerable, Array, Hash, and collection material in *Learn Rails 6* and reinforced by the collection/design material already represented in this repository.
+
+## Book integration: Enumerable and Enumerator
+
+*The Well-Grounded Rubyist*, Chapter 10, grounds `each`, `Enumerable`, `Enumerator`, chained transformations, reduction, sorting and lazy traversal. For custom enumerable objects, make `each` the clear traversal contract and return an enumerator when called without a block, using the project's supported idiom. Prefer a direct operation such as `find`, `group_by`, `any?` or `map` when it matches the intent; use `reduce` only when accumulation is truly the concept.
+
+Count traversals and intermediate allocations, but do not optimize a small collection pipeline speculatively. Lazy traversal is useful only when deferred work or bounded consumption changes the cost or behavior. Verify newer APIs against the actual Ruby version.
