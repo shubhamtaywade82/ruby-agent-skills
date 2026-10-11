@@ -46,7 +46,7 @@ The RSpec reference in `rails-test-engineering` now covers `#method` / `.method`
 - Deprecated React/TypeScript skills announce `DEPRECATED` and their replacement in frontmatter, enforced by the deprecation validator.
 - Test-engineering `scope_control` rejects changes outside `test/`/`spec/`. The campaign is documented as statically graded.
 - Claude benchmark adapters require an explicit `CLAUDE_MODEL`.
-- `v1.2.0` was tagged at Iteration 155; it was created in the GitHub UI, so its archive was never attached (see Iteration 158).
+- `v1.2.0` was tagged at Iteration 155; it was created in the GitHub UI, so its archive was never attached (see Iteration 158). Follow-up: the manual Release workflow later attached the archive and `SHA256SUMS` on 2026-10-09 (see the Iteration 162 changelog entry).
 
 ## Iteration 155 — Rails ↔ React Boundary and Deprecation Release Readiness
 
