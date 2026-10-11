@@ -139,3 +139,9 @@ Exercise every meaningful branch and boundary. For algorithmic work, use tests o
 ## Source foundation
 
 Based on the program-flow material in *The Ruby Workshop* and the boolean-logic/readability guidance in *Clean Ruby*, which emphasizes making complex boolean decisions understandable rather than merely compact.
+
+## Book integration: flow and exceptions
+
+Use *The Well-Grounded Rubyist*, Chapter 6, as the language-semantic foundation for `if`/`case`, loops, iterator blocks, block scope, and rescue/ensure behavior. Preserve evaluation order and return behavior when simplifying branches. Rescue only the failures the caller can meaningfully handle; avoid a broad rescue that hides programming errors. Use `ensure` or a block-based resource API when cleanup must happen on both success and failure.
+
+Use the Ruby version configured in the repository when considering newer pattern-matching or syntax forms. A concise construct is not a reason to introduce version incompatibility or make branch intent harder to see.
