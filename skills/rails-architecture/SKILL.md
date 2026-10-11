@@ -22,6 +22,18 @@ Map a Rails feature to the repository's existing request, domain, persistence, p
 
 Use this skill for cross-layer ownership and request-flow decisions. Delegate detailed route decisions to `rails-routing`, controller boundary decisions to `rails-action-controller`, persistence decisions to `rails-active-record`, and HTTP contract testing to `rails-test-engineering`. Do not duplicate detailed guidance from those skills.
 
+## Patterns
+
+This skill consults the following patterns from the shared `patterns/` catalog. The pattern names are load-bearing — in a single-skill install, the catalog is not present, so an agent names the pattern to load rather than linking to its path.
+
+| Load when | Pattern | Covers |
+|---|---|---|
+| a change crosses routes/controllers/models/views/services and needs the cross-layer flow traced | `request-flow` | Request lifecycle; HTTP contract boundary |
+| a change introduces or moves a dependency between layers | `dependency-direction-contract` | Dependency direction; inward-pointing boundaries |
+| a controller and a service share authorization for one operation | `controller-service-authorization-composition` | Authorization at the execution boundary, not only the controller |
+| a policy object is introduced or moved | `policy-object-boundary` | Policy object responsibility and isolation |
+| a change should be audited against the Rails Way philosophy (CoC, DRY, MVC, use-Rails-first, deliberate deviation) | `the-rails-way` | 5-step decision hierarchy for AI coding assistants; where-code-belongs placement table; eight anti-patterns mapped to owning skills/patterns |
+
 ## Repository inspection
 
 

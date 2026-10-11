@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 175 — The Rails Way Audit Pattern
+> **Current milestone:** Iteration 176 — The Rails Way Pattern System Test and Skill Wiring
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -600,3 +600,7 @@ The `rails-adversarial` family gains the first of the seven failure modes tracke
 ## Iteration 175 — The Rails Way Audit Pattern
 
 Added `patterns/rails/the-rails-way.md` mapping the Rails Way philosophy (convention over configuration, DRY, MVC, use-Rails-before-reinventing-it) to its existing enforcement points across this pack. The pattern frames the philosophy as a 5-step decision hierarchy for AI coding assistants (follow convention → assign responsibilities → protect correctness and security → verify behavior → deviate deliberately), and includes a "where code belongs" placement table (eight concerns mapped to their default Rails home and owning skill) and an anti-pattern table (eight approaches that are NOT the Rails Way, each mapped to the existing skill or pattern that catches the violation). The pattern explicitly references `rails-architecture`, `rails-action-controller`, `rails-active-record`, `rails-associations`, `rails-validations`, `rails-routing`, `rails-database-engineering`, `rails-authorization`, `rails-cross-boundary-authorization-security`, `rails-active-job`, `rails-test-engineering`, `ruby-service-objects`, `ruby-poro`, `ruby-domain-modeling`, and the `stack-minimality` family so the cross-reference is consistent with the upstream skill content. Inventory counts bumped to 448 patterns / 502 evaluation cases / 106 system tests.
+
+## Iteration 176 — The Rails Way Pattern System Test and Skill Wiring
+
+Added `test/rails_architecture_system_test.rb` with five regression assertions covering the new pattern: required artifact paths; the 5-step decision hierarchy strings; the eight anti-pattern anchor strings; manifest registration under the `rails` family; and a pointer from `skills/rails-architecture/SKILL.md` to `the-rails-way.md` via a new `## Patterns` table that lists the five patterns the skill consults (`request-flow`, `dependency-direction-contract`, `controller-service-authorization-composition`, `policy-object-boundary`, and `the-rails-way`). System-test count bumped 106 → 107. The test is wired into `bin/validate`'s system-test run via `ruby -Itest test/rails_architecture_system_test.rb`.

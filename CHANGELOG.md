@@ -1,5 +1,13 @@
 # Changelog
 
+## Iteration 176 — The Rails Way Pattern System Test and Skill Wiring
+
+- Add `test/rails_architecture_system_test.rb` with five regression assertions for the Rails Way pattern added in Iteration 175: required artifact paths; the 5-step decision hierarchy strings (`Follow the convention`, `Assign responsibilities correctly`, `Protect correctness and security`, `Verify behavior`, `Deviate deliberately`); the eight anti-pattern anchor strings; manifest registration under the `rails` family; and a pointer from `skills/rails-architecture/SKILL.md` to `the-rails-way.md`.
+- Add a `## Patterns` table to `skills/rails-architecture/SKILL.md` listing the five patterns the skill consults (`request-flow.md`, `dependency-direction-contract.md`, `controller-service-authorization-composition.md`, `policy-object-boundary.md`, and `the-rails-way.md`), each with a "Load when" trigger and a coverage summary. The skill previously had no explicit pattern catalog pointer.
+- Bump system-test count (106 → 107) in `README.md` and `docs/IMPLEMENTATION_HANDOFF.md`. System-test count now matches the actual `test/` inventory after iter 175's pattern was added without a paired test.
+- Iteration entries added to `CHANGELOG.md` and `docs/ITERATIONS.md`; `docs/IMPLEMENTATION_HANDOFF.md` milestone bumped 175 → 176.
+- Live verification: `bash bin/validate` exits 0 on a clean worktree after the test and skill wiring are added.
+
 ## Iteration 175 — The Rails Way Audit Pattern
 
 - Add `patterns/rails/the-rails-way.md` mapping the Rails Way philosophy (convention over configuration, DRY, MVC, use-Rails-before-reinventing-it) to its existing enforcement points across this pack: `rails-architecture`, `rails-action-controller`, `rails-active-record`, `rails-associations`, `rails-validations`, `rails-routing`, `rails-database-engineering`, `rails-authorization`, `rails-cross-boundary-authorization-security`, `rails-active-job`, `rails-test-engineering`, `ruby-service-objects`, `ruby-poro`, `ruby-domain-modeling`, and the `stack-minimality` family.
