@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 177 — Release v1.4.0 Notes
+> **Current milestone:** Iteration 178 — Book-Grounded Ruby and Rails Front-End Skills
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -608,3 +608,7 @@ Added `test/rails_architecture_system_test.rb` with five regression assertions c
 ## Iteration 177 — Release v1.4.0 Notes
 
 Cut release `v1.4.0` covering Iterations 159 (betterspecs.org audit pattern) + 175 (The Rails Way audit pattern) + 176 (system test + skill wiring). Added `docs/releases/v1.4.0.md` with sectioned release notes, the inventory at this release (96 skills / 448 patterns / 502 eval cases / 107 system tests), live verification evidence (9 audit scripts pass; 589 system-test runs, 0 failures), and install commands. Bumped user-facing release references from `v1.3.0` → `v1.4.0` in `README.md` (curl/tar/cd quick-start) and `docs/INSTALLATION.md` (`--ref v1.4.0` example). The documentation consistency audit derives the canonical release from `docs/releases/vX.Y.Z.md`; all user-facing references must match.
+
+## Iteration 178 — Book-Grounded Ruby and Rails Front-End Skills
+
+The three supplied books are mapped to existing skills in `docs/BOOK_REFERENCE_MAP.md` and the source coverage map; book ideas are synthesized rather than copied as passive chapter notes. The distinct Ruby text-processing gap is now executable: `ruby-data-types` owns regular-expression matching and extraction, routing includes a capture/full-match contract, and the public routing campaign expands to 32 cases × 3 repetitions (96 runs). Version cautions remain explicit for the Ruby 2.1 edition and the 2022 Rails frontend reference.

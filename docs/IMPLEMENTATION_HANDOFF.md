@@ -117,7 +117,7 @@ Run the generated campaign on the machine that has Ollama access:
 
     ./routing-handoff/run-campaign.sh
 
-The campaign is 31 public cases × 3 repetitions = 93 model decisions.
+The campaign is 32 public cases × 3 repetitions = 96 model decisions.
 
 If interrupted, rerun the generated launcher. When a checkpoint exists, it automatically resumes verified completed repetitions.
 
@@ -262,4 +262,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 177. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 178. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
