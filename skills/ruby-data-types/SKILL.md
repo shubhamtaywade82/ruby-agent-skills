@@ -1,6 +1,6 @@
 ---
 name: ruby-data-types
-description: Use when choosing, parsing, validating, or reviewing Ruby values such as strings, numbers, symbols, ranges, nil, arrays, hashes, or domain value representations.
+description: Use when choosing, parsing, validating, or reviewing Ruby values such as strings, numbers, symbols, ranges, nil, arrays, hashes, domain value representations, or regular-expression matching and captures.
 license: MIT
 ---
 
@@ -18,6 +18,7 @@ Choose data representations that make contracts obvious and keep invalid states 
 - nilability or empty values matter
 - a primitive value is acquiring behavior or validation
 - serialization/deserialization crosses a boundary
+- a regular expression extracts, validates, or transforms text
 
 ## Repository inspection
 
@@ -152,3 +153,11 @@ Test representative, empty, nil, malformed, and boundary values where those dist
 ## Source foundation
 
 Derived from the data types and operations material in *The Ruby Workshop*. The naming and simplicity rules are reinforced by *Clean Ruby*: choose representations that help another developer understand the code without reconstructing hidden meaning.
+
+## Book integration: strings and regular expressions
+
+*The Well-Grounded Rubyist*, Chapters 8 and 11, covers strings, symbols, scalar conversions, regular-expression matching, captures and `MatchData`, plus `scan`, `split`, `sub` and `gsub`. Choose the operation by intent: captures for structured fields, `scan` for repeated matches, `split` for tokenization, and substitution methods for transformation.
+
+Treat matching and validation as different contracts. Test no-match results and missing captures explicitly; a failed match can produce `nil`. If a pattern must validate the entire string, use anchors with the required whole-string semantics. Escape literal user-supplied fragments with `Regexp.escape` rather than interpolating them as pattern syntax. Prefer a parser over a large regex when the input grammar is nested or not naturally regular.
+
+The book supplies the language concepts; the input-boundary and whole-string validation guidance is additional defensive engineering. Check APIs against the target Ruby version.
