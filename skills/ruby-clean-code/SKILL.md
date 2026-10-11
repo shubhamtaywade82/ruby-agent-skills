@@ -174,3 +174,9 @@ Read the final diff as a reviewer. Run relevant tests and quality checks. Confir
 ## Source foundation
 
 This skill is directly synthesized from the three core qualities in *Clean Ruby*—readability, ease of change, and straightforwardness—and its guidance on naming, methods, boolean logic, classes, refactoring, and avoiding needless complexity. The practical Ruby syntax and Rails examples are cross-checked against *The Ruby Workshop*.
+
+## Book integration: use clean-code rules as heuristics
+
+Apply *Clean Ruby*'s focus on readability, changeability and straightforwardness, including naming, cohesive methods/classes, guard clauses, nesting, comments and small behavior-preserving refactors. Treat line count, parameter count and naming patterns as signals to investigate—not automatic failure thresholds. A five-line method can still be confusing, and a longer method may be coherent when it represents one clear workflow.
+
+The book presents bang names as a warning for destructive effects; Ruby's `!` convention is not a universal guarantee that every such method mutates or is dangerous. Inspect the actual return/mutation contract and preserve repository conventions. For behavior changes, combine the cleanup principles with `ruby-tdd-refactoring` rather than refactoring blindly.
