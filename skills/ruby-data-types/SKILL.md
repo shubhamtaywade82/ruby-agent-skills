@@ -1,6 +1,6 @@
 ---
 name: ruby-data-types
-description: Use when choosing, parsing, validating, or reviewing Ruby values such as strings, numbers, symbols, ranges, nil, arrays, hashes, or domain value representations.
+description: Use when choosing, parsing, validating, or reviewing Ruby values such as strings, numbers, symbols, ranges, nil, arrays, hashes, domain value representations, or regular-expression matching and captures.
 license: MIT
 ---
 
@@ -18,6 +18,7 @@ Choose data representations that make contracts obvious and keep invalid states 
 - nilability or empty values matter
 - a primitive value is acquiring behavior or validation
 - serialization/deserialization crosses a boundary
+- a regular expression extracts, validates, or transforms text
 
 ## Repository inspection
 
@@ -156,3 +157,13 @@ Derived from the data types and operations material in *The Ruby Workshop*. The 
 ## Book integration: *The Well-Grounded Rubyist*
 
 Use chapters 7–9 as a conceptual cross-check for conversions, nil/Boolean behavior, equality, strings, symbols, numerics, dates/times, hashes, ranges, and sets. Preserve the actual input/output contract when converting values; conversion is not validation. Confirm methods and edge cases against the project's supported Ruby version.
+
+## Regular expressions and string matching
+
+Use *The Well-Grounded Rubyist*, Chapter 11, for Ruby regex and string API semantics: matching and captures, `MatchData`, `scan`, `split`, `sub` and `gsub`. Choose by intent: captures for structured fields, `scan` for repeated matches, `split` for tokenization, and substitution methods for transformations.
+
+Treat extraction and validation as different contracts. A partial match may be useful for extraction but is not proof that the entire input is valid. For whole-input validation, use the anchors and matching semantics appropriate to the contract. Handle failed matches explicitly because match results and captures may be `nil`; test absent fields, empty input, newline input, malformed input, and strings that contain a valid-looking substring surrounded by invalid text.
+
+When literal external input belongs inside a pattern, escape it with `Regexp.escape` instead of treating it as regex syntax. Prefer a dedicated parser when the grammar is nested or too complex to explain and test as a regular expression. Avoid broad or ambiguous patterns that can backtrack excessively on attacker-controlled input.
+
+Book foundation: language/API semantics. The input-boundary, full-string validation and pathological-pattern cautions are additional defensive engineering guidance. Check the project's Ruby version and actual API behavior before adopting newer syntax or methods.
