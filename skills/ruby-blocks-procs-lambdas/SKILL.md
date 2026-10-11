@@ -100,3 +100,7 @@ Test normal invocation, missing/extra arguments when relevant, and return behavi
 ## Source foundation
 
 Based on the blocks, lambdas, Procs, yield, and ampersand-operator material in *Learn Rails 6* and supported by Ruby closure material in *The Ruby Workshop*.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Chapter 14 is a reference for block/Proc/lambda distinctions, callable Method objects, closures, dynamic evaluation, threads, and subprocess interaction. Keep callable lifetime, arity, non-local return semantics, and side effects explicit. Never pass untrusted input to `eval`; prefer ordinary dispatch or a constrained parser.

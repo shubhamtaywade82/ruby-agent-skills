@@ -289,3 +289,7 @@ Never claim race freedom, deadlock freedom, or scalability from a single success
 ## Source foundation
 
 Repository-process guidance for AI coding agents based on Ruby/Rails concurrency engineering principles. It intentionally avoids assuming a particular Ruby engine, Rails version, executor library, or deployment topology. Repository evidence takes precedence.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Chapter 14 includes Ruby thread examples and shared-variable concerns. Treat it as introductory conceptual material only: it is based on Ruby 2.1 and does not define the complete behavior of current Ruby runtimes, servers, or concurrency libraries. Resolve the runtime and deployment model, make ownership/synchronization explicit, and validate race/failure behavior with tests.

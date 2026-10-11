@@ -142,3 +142,7 @@ Test public behavior and important collaborations. Exercise invalid state transi
 ## Source foundation
 
 Based on the OOP material in *The Ruby Workshop* and the class/module/refactoring guidance in *Clean Ruby*, especially the emphasis on clear class purpose, limited responsibilities, encapsulation, and restrained inheritance.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Use chapters 2–5 and 13 to reason about instance state, initialization, instance versus class methods, constants, `self`, visibility, inheritance, and method lookup. The book's object-centered model complements this skill's responsibility and composition rules: Ruby's dynamic capabilities do not by themselves justify more classes, inheritance, or runtime mutation.

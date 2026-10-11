@@ -130,3 +130,7 @@ Test the consumer classes, method lookup, visibility, and `super` behavior where
 ## Source foundation
 
 Grounded in the modules, mixins, inheritance, encapsulation, and polymorphism material of *The Ruby Workshop*, combined with *Clean Ruby* guidance to split modules until the grouped concept is clear.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Chapters 4–5 and 13 cover modules, mixins, `include`/`prepend`, `super`, method lookup, and refinements. Before changing shared behavior, inspect the ancestor chain and affected consumers. Prefer a coherent namespace or mixin contract; use refinements or monkey patches only when their scope and compatibility consequences are explicit and tested.
