@@ -354,6 +354,8 @@ Load only when needed; the reference is one level deep. Consult a listed pattern
 | Load when | Reference | Covers | Patterns |
 |---|---|---|---|
 | a change touches `db/seeds.rb`, files it loads, or `bin/rails db:seed` | [references/seed-data.md](references/seed-data.md) | Rerunnable seeds; reference versus sample data; secrets outside seeds; seed verification | none |
+| a change sets a transaction isolation level, uses row or advisory locks, or diagnoses a deadlock, lock-wait, or serialization failure | [references/isolation-and-locking.md](references/isolation-and-locking.md) | Isolation levels (`READ COMMITTED` / `REPEATABLE READ` / `SERIALIZABLE`); Row locks (`FOR UPDATE` family); Advisory locks (`pg_advisory_lock`); Optimistic vs pessimistic; Deadlock diagnosis; `SET LOCAL` per-transaction configuration | `isolation-level-contract` |
+| a change uses PostgreSQL features that Active Record does not abstract (`LISTEN`/`NOTIFY`, declarative table partitioning, materialized views, GIN/BRIN/partial/expression indexes, `CREATE INDEX CONCURRENTLY`, stored procedures, `EXPLAIN ANALYZE`) | [references/postgres-features.md](references/postgres-features.md) | PostgreSQL advanced features; `LISTEN/NOTIFY`; partitioning; materialized views; index types; concurrent index creation; stored procedures; `scenic` and `pg_partman` integrations | none |
 
 ## Reference example
 

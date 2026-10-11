@@ -102,6 +102,7 @@ Load only the reference for the boundary being changed, before changing behavior
 | a change alters retry_on/discard_on, backoff, failure classification, or error reporting | [references/retries-and-failures.md](references/retries-and-failures.md) | Retry policy; Discard policy; Retry storm prevention; Error reporting | `job-retry-policy` |
 | a change adds concurrency limits, queues or priorities, recurring/scheduled jobs, or bulk enqueue | [references/concurrency-queues-scheduling.md](references/concurrency-queues-scheduling.md) | Concurrency controls; Queues and priorities; Scheduling and recurring tasks; Bulk enqueue | `concurrency-controlled-job`, `scheduled-maintenance-overlap-contract` |
 | a change adds job callbacks, affects worker shutdown, job telemetry, or job security, or needs job tests | [references/operations-and-testing.md](references/operations-and-testing.md) | Callbacks; Shutdown and graceful termination; Observability; Security; Testing | `rspec-job-and-mail-enqueue` |
+| the repository's queue adapter resolves to `:sidekiq` (Sidekiq-specific operational surface: `sidekiq_options`, Web UI security, Redis connection pooling, retry/dead-set, sidekiq-cron, sharding, Sidekiq 6→7 migration) | [references/sidekiq-adapter.md](references/sidekiq-adapter.md) | Sidekiq operational surface; adapter-specific configuration; Active Job `JobWrapper` interop | none |
 
 ## Debugging procedure
 

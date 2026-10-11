@@ -7,8 +7,8 @@ The skill library, pattern library, corpus-quality audit, routing infrastructure
 Current inventory:
 
 - 96 skills
-- 448 implementation patterns
-- 502 evaluation cases
+- 450 implementation patterns
+- 506 evaluation cases
 - 107 system/contract tests
 
 ## Corpus quality and evaluation coverage
@@ -262,4 +262,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 178. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 179. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).

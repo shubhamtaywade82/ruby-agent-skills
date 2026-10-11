@@ -1,0 +1,42 @@
+id: isolation-level
+version: 1
+title: Choose and enforce the correct transaction isolation level
+category: rails
+source: rails-database-engineering-v1
+skills:
+  - rails-database-engineering
+  - ruby-concurrency
+patterns:
+  - isolation-level-contract
+prompt: |
+  Two ledger accounts must support concurrent transfers. The invariant: the sum of all account balances must remain constant, and no account's balance may go negative. Choose the correct PostgreSQL isolation level for the transfer transaction, lock the affected rows in a consistent order, and add retry handling for serialization and deadlock aborts. The transfer must not hold locks across external calls (HTTP, mail, job enqueue).
+constraints:
+  required_design:
+    - isolation level chosen deliberately (weakest that preserves the invariant)
+    - row locks acquired in a consistent, documented order
+    - bounded retry for PG::SerializationFailure and PG::DeadlockDetected
+    - no external calls inside the locked transaction section
+    - SET LOCAL used for per-transaction configuration, not SET
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: concurrent-transfer
+    input: two threads transfer between the same two accounts
+    expected: one succeeds; the other succeeds or fails safely (InsufficientFunds or retried serialization abort)
+  - name: serialization-abort-retry
+    input: injected PG::SerializationFailure on first attempt
+    expected: retry succeeds; final balances are correct
+  - name: deadlock-abort-retry
+    input: injected PG::DeadlockDetected on first attempt
+    expected: retry succeeds; final balances are correct
+  - name: lock-ordering
+    input: transfer from account 99 to account 1 (reverse id order)
+    expected: locks acquired in id order (1 before 99) regardless of argument order
+grading:
+  functional: concurrent transfers preserve the sum invariant; no negative balance
+  tests: abort path and retry success are tested
+  contract: isolation level is documented; lock order is documented
+  scope_control: no external calls inside the locked transaction; no global isolation override
