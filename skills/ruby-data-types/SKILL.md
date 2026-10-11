@@ -152,3 +152,7 @@ Test representative, empty, nil, malformed, and boundary values where those dist
 ## Source foundation
 
 Derived from the data types and operations material in *The Ruby Workshop*. The naming and simplicity rules are reinforced by *Clean Ruby*: choose representations that help another developer understand the code without reconstructing hidden meaning.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Use chapters 7–9 as a conceptual cross-check for conversions, nil/Boolean behavior, equality, strings, symbols, numerics, dates/times, hashes, ranges, and sets. Preserve the actual input/output contract when converting values; conversion is not validation. Confirm methods and edge cases against the project's supported Ruby version.

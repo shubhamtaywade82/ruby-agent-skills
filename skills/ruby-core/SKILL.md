@@ -126,3 +126,7 @@ Use a minimal reproduction for semantic questions, then run the repository's foc
 ## Source foundation
 
 Grounded in the Ruby language fundamentals and execution-focused approach of *The Ruby Workshop*, with the quality principle from *Clean Ruby* that code should be readable, straightforward, and easy to change.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Use the book's object/message model to reason about receivers, method dispatch, references, return values, `self`, scope, visibility, and truthiness (principally chapters 1–7). For version-sensitive syntax and APIs, inspect the repository's Ruby constraint and verify against current Ruby documentation: this second edition describes Ruby 2.1, not today's runtime.

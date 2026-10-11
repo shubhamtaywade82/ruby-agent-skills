@@ -139,3 +139,7 @@ Exercise every meaningful branch and boundary. For algorithmic work, use tests o
 ## Source foundation
 
 Based on the program-flow material in *The Ruby Workshop* and the boolean-logic/readability guidance in *Clean Ruby*, which emphasizes making complex boolean decisions understandable rather than merely compact.
+
+## Book integration: *The Well-Grounded Rubyist*
+
+Chapter 6 connects conditionals, loops, iterators/blocks, and exceptions. Prefer explicit branching and clear termination conditions over clever control flow. Use exceptions for exceptional or failed operations rather than as ordinary branching when a direct return/predicate contract is clearer.
