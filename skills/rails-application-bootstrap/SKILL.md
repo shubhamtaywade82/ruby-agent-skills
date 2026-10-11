@@ -211,3 +211,7 @@ Record the exact command and target Rails version. Report unsuccessful or unrun 
 - Rails Command Line Guide: https://guides.rubyonrails.org/command_line.html
 - Rails API-only applications: https://guides.rubyonrails.org/api_app.html
 - Rails Getting Started Guide: https://guides.rubyonrails.org/getting_started.html
+
+## Book integration: frontend choice is an explicit bootstrap decision
+
+*Modern Front-End Development for Rails*, Chapter 1, reinforces that frontend/build strategy is an application-level choice. Resolve whether the app is server-rendered, Hotwire-driven, React-integrated, or intentionally API-only before selecting setup flags and packages. Do not copy 2022 setup commands into a different Rails release; preserve generated defaults and current repository conventions unless the requirements justify changing them.
