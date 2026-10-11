@@ -146,6 +146,7 @@ puts "  evaluations: #{eval_diagnostic}/#{eval_files.length} with >=3 grading di
 puts "  evaluations: #{eval_binary_only}/#{eval_files.length} binary-only grading"
 puts "  Benchmark coverage: #{benchmark_ids.length}/#{eval_files.length} evaluation IDs covered by campaigns"
 puts "  unbenchmarked: #{unbenchmarked.length} files (#{unbenchmarked_cases} cases)"
+puts "  unbenchmarked ids: #{unbenchmarked.map { |path| File.basename(path, ".yml") }.sort.join(", ")}"
 puts "  static-only: #{static_only.length} files (#{static_only_cases} cases)"
 puts "  Routing: #{skill_names.length - missing_routes.length}/#{skill_names.length} skills routed"
 puts "  routing trigger collisions: #{trigger_collisions}"

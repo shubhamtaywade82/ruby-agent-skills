@@ -2,10 +2,13 @@
 
 require_relative "framework"
 
-# The welcome email is a lifecycle side effect with an exactly-once contract
-# per member. It is delivered by the write path that creates the member:
-# an after_save hook would refire on every profile update, and Member.import
-# fires no hooks at all, so the delivery is explicit at each creating path.
+# The welcome email is delivered once per created member on successful writes.
+# It is delivered by the write path that creates the member: an after_save hook
+# would refire on every profile update, and Member.import fires no hooks at
+# all, so the delivery is explicit at each creating path. Delivery is not
+# atomic with the insert: a crash between the write and deliver_welcome loses
+# the email, and nothing here makes a retry idempotent. Those failure modes are
+# out of this fixture's scope.
 class Membership
   class << self
     def signup(email:, name:)

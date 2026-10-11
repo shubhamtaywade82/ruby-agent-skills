@@ -5,6 +5,8 @@ require "minitest/autorun"
 class ValidationGateIntegritySystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   VALIDATE_PATH = File.join(ROOT, "bin", "validate")
+  # A command may run twice only with a documented reason recorded here.
+  INTENTIONAL_REPEATS = {}.freeze
 
   def validate_script
     File.read(VALIDATE_PATH, encoding: "UTF-8")
@@ -34,5 +36,12 @@ class ValidationGateIntegritySystemTest < Minitest::Test
 
     assert_includes script, 'ruby "$ROOT/scripts/audit_framework_drift.rb"'
     assert_includes script, 'ruby -I"$ROOT/test" "$ROOT/test/framework_drift_system_test.rb"'
+  end
+
+  def test_validation_gate_has_no_unexplained_duplicate_commands
+    commands = validate_script.lines.map(&:strip).select { |line| line.start_with?("ruby ") }
+    repeated = commands.tally.select { |_command, count| count > 1 }.keys
+
+    assert_empty repeated - INTENTIONAL_REPEATS.keys
   end
 end

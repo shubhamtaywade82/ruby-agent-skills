@@ -21,6 +21,8 @@ WORKSPACE = Dir.pwd
 FAMILY_ROOT = File.join(ROOT, "benchmarks", "rails-adversarial")
 WITHHELD_TEST = "test/test_withheld.rb"
 ALLOWED_PREFIXES = %w[lib/ test/].freeze
+# Minitest's verbose reporter prints "Class#test_name = 0.00 s = <code>" per test.
+CONDITION_CODES = { "." => "pass", "F" => "fail", "E" => "error", "S" => "skip" }.freeze
 
 def load_yaml(path)
   YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
@@ -50,13 +52,27 @@ def graded_copy(scratch, fixture_root, editable, withheld)
   FileUtils.cp(withheld, File.join(scratch, WITHHELD_TEST))
 end
 
-def run_test(directory, test_file)
-  stdout, stderr, status = Open3.capture3("ruby", "-Ilib", test_file, chdir: directory)
+def run_test(directory, test_file, *options)
+  stdout, stderr, status = Open3.capture3("ruby", "-Ilib", test_file, *options, chdir: directory)
   [status.success?, stdout + stderr]
 end
 
 def test_check(passed, output, pass_message)
   passed ? check("pass", pass_message) : check("fail", tail(output))
+end
+
+# One withheld test per production condition. Reporting each one separately
+# lets the system test prove which condition a control fails, and why: an
+# "error" is an exception, not the assertion the condition is meant to make.
+def withheld_conditions(output)
+  output.scan(/^\S+#test_(\w+) = [\d.]+ s = ([.FES])$/).to_h do |name, code|
+    [name, CONDITION_CODES.fetch(code)]
+  end
+end
+
+def adversarial_check(passed, output)
+  test_check(passed, output, "withheld production-condition tests passed")
+    .merge("conditions" => withheld_conditions(output))
 end
 
 def graded_checks(fixture_root, fixture, withheld)
@@ -66,8 +82,7 @@ def graded_checks(fixture_root, fixture, withheld)
     {
       "functional" => test_check(*run_test(scratch, fixture.fetch("test_file")),
                                  "visible fixture tests passed"),
-      "adversarial" => test_check(*run_test(scratch, WITHHELD_TEST),
-                                  "withheld production-condition tests passed")
+      "adversarial" => adversarial_check(*run_test(scratch, WITHHELD_TEST, "-v"))
     }
   end
 end

@@ -9,6 +9,10 @@ module RubyAgentSkills
   # Headless routing and coding adapters. Antigravity can disable skill
   # expansion. Cursor and OpenCode still load skills installed for the user.
   module HeadlessAdapters
+    # Coding runs pass permission-bypass flags and this adapter adds no OS-level
+    # isolation, so they refuse to start unless the operator sets this to "1".
+    UNSANDBOXED_CODING_ENV = "RUBY_AGENT_UNSANDBOXED_CODING"
+
     PROVIDERS = {
       cursor: {
         bin_env: "CURSOR_AGENT_BIN",
@@ -34,6 +38,7 @@ module RubyAgentSkills
 
     def coding(provider)
       spec = provider_spec(provider)
+      require_unsandboxed_opt_in!(spec)
       model = required_model(spec)
       context = File.read(ENV.fetch("RUBY_AGENT_CONTEXT_FILE"), encoding: "UTF-8")
       command = HeadlessCommands.coding(provider, binary(spec), model, context)
@@ -57,6 +62,14 @@ module RubyAgentSkills
 
     def provider_spec(provider)
       PROVIDERS.fetch(provider) { raise ArgumentError, "unknown headless provider #{provider}" }
+    end
+
+    def require_unsandboxed_opt_in!(spec)
+      return if ENV[UNSANDBOXED_CODING_ENV] == "1"
+
+      abort "#{spec[:label]} coding runs without OS-level isolation. " \
+            "Set #{UNSANDBOXED_CODING_ENV}=1 only inside a disposable container or VM " \
+            "with no host credentials, sensitive mounts, or unneeded network access."
     end
 
     def required_model(spec)

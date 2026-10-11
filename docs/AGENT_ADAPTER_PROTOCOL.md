@@ -107,6 +107,8 @@ The repository now includes:
 
 The command adapter is provider-neutral. It runs a trusted external coding-agent command inside the disposable benchmark workspace and writes normalized metadata to RUBY_AGENT_METADATA_FILE.
 
+The Cursor, Antigravity, and OpenCode coding adapters run permission-bypass modes without OS-level isolation. They refuse to start unless `RUBY_AGENT_UNSANDBOXED_CODING=1` is set; see `docs/LOCAL_BENCHMARKING.md` for the required environment and per-provider residual risk.
+
 Use bin/agent-benchmark when the same external command should be paired automatically with skills disabled and enabled:
 
     ruby bin/agent-benchmark \

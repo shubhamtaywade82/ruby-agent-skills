@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 179 — Advanced Rails Coverage Audit (Tier 1 depth-fill)
+> **Current milestone:** Iteration 180 — Callback-Cascade Verification Hardening
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -616,3 +616,7 @@ The three supplied books are mapped to existing skills in `docs/BOOK_REFERENCE_M
 ## Iteration 179 — Advanced Rails Coverage Audit (Tier 1 depth-fill)
 
 Closed four of the nine gaps flagged by the advanced Rails coverage audit (the audit pattern itself is one of the four). The Sidekiq gap is closed by adding `skills/rails-active-job/references/sidekiq-adapter.md` — not a new skill — because `rails-active-job` is the routing destination and Sidekiq is the adapter. The PostgreSQL advanced features gap is closed by adding `skills/rails-database-engineering/references/postgres-features.md` covering `LISTEN`/`NOTIFY`, declarative partitioning, materialized views, GIN/BRIN/partial/expression indexes, `CREATE INDEX CONCURRENTLY`, and stored procedures. The transaction isolation gap is closed by adding `skills/rails-database-engineering/references/isolation-and-locking.md` (four isolation levels, row locks, advisory locks, optimistic vs pessimistic, deadlock diagnosis), `patterns/rails/isolation-level-contract.md` (reusable implementation shape with bounded retry), and `evals/database/isolation-level.yml` (4 cases: concurrent transfer, serialization-abort-retry, deadlock-abort-retry, lock-ordering). The cross-reference audit itself is added as `patterns/rails/advanced-rails-coverage-audit.md` with a 4-step audit hierarchy, the 9-row advanced Rails coverage matrix, and an anti-pattern table. Inventory counts bumped to 450 patterns / 506 evaluation cases / 107 system tests. The remaining five gaps (three dedicated eval families for distributed/reliability/messaging; six skills lacking `references/` dirs) are Tier 2 + Tier 3 work for future iterations.
+
+## Iteration 180 — Callback-Cascade Verification Hardening
+
+The `callback-cascade` negative controls are now verified per condition rather than by one aggregate status. The rails-adversarial verifier reports each withheld test (`update_refire`, `import_skips_hooks`) separately, and the system test pins the outcome for the reference, naive, and partial solutions, so a control must fail the condition it is documented to miss, and only that one, with an assertion failure. The fixture's claim is narrowed from exactly-once delivery to successful modeled writes; crash and retry recovery remain unmodeled. `bin/validate` no longer repeats two commands, and the gate-integrity test now rejects unexplained repeats.

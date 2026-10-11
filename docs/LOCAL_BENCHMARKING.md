@@ -96,9 +96,34 @@ pair, and the `opencode` pair drive the local `agent`, `agy`, and `opencode`
 CLIs. Authenticate each CLI once in an interactive session. Set the model
 explicitly; none of the adapters has a default.
 
+**Coding is gated.** Every `coding-agent-*` adapter refuses to start unless
+`RUBY_AGENT_UNSANDBOXED_CODING=1` is set exactly. The adapters add no OS-level
+isolation, so run coding campaigns only inside a disposable container or VM
+that has:
+
+- no host credentials mounted or exported (no SSH keys, cloud profiles, or
+  provider tokens beyond the one CLI's own login);
+- no sensitive host mounts; the benchmark workspace is the only writable path;
+- no network egress beyond what the provider's CLI needs.
+
+The routing adapters are read-only and do not need the gate.
+
+Residual risk per provider in coding mode:
+
+| Provider | Coding invocation | What it removes | Residual risk |
+| --- | --- | --- | --- |
+| Cursor | `--force --trust --sandbox disabled` | approval prompts and the CLI sandbox | model-issued commands run with the process's privileges |
+| Antigravity | `--mode accept-edits --dangerously-skip-permissions` | permission checks | every permission prompt is bypassed |
+| OpenCode | `--standalone --auto` | per-action approval | tool actions are auto-approved; `--standalone` does not confine the filesystem |
+
+`RUBY_AGENT_WORKSPACE` selects the working directory. It is not a security
+boundary. Sandboxed coding modes that avoid these bypasses have not been
+verified against live CLIs (see TODO.md).
+
 ```bash
 # Cursor (`agent` on PATH). Routing uses --mode ask. Coding uses --force
-# inside the disposable workspace.
+# inside the disposable container described above.
+export RUBY_AGENT_UNSANDBOXED_CODING=1
 export CURSOR_AGENT_MODEL=<cursor model id>
 ruby bin/routing-eval \
   --command "ruby $(pwd)/bin/routing-agent-cursor" \

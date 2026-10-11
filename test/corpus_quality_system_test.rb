@@ -8,6 +8,13 @@ class CorpusQualitySystemTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
   AUDIT = File.join(ROOT, "scripts", "audit_corpus_quality.rb")
 
+  # Public evaluations that no benchmark campaign executes yet. Each entry
+  # must carry its reason. Any other evaluation without a campaign fails the
+  # audit, so the gap stays visible instead of being silently accepted.
+  KNOWN_UNBENCHMARKED = {
+    "isolation-level" => "transaction-isolation cases need a concurrency campaign (TODO.md)"
+  }.freeze
+
   def run_audit
     Open3.capture3(RbConfig.ruby, AUDIT, chdir: ROOT)
   end
@@ -29,7 +36,15 @@ class CorpusQualitySystemTest < Minitest::Test
     assert_match(/skills: \d+\/\d+ with reference examples/, stdout)
     assert_match(/patterns: \d+\/\d+ with implementation anchors/, stdout)
     assert_match(/evaluations: \d+\/\d+ with non-empty cases/, stdout)
-    assert_match(/unbenchmarked: 0 files \(0 cases\)/, stdout)
+    assert_match(/unbenchmarked: #{KNOWN_UNBENCHMARKED.size} files /, stdout)
+  end
+
+  def test_unbenchmarked_evaluations_are_exactly_the_known_exceptions
+    stdout, = run_audit
+
+    listed = stdout[/^  unbenchmarked ids: (.*)$/, 1].to_s.split(", ")
+
+    assert_equal KNOWN_UNBENCHMARKED.keys.sort, listed.sort
   end
 
   def test_audit_classifies_non_empirical_public_evaluations_explicitly

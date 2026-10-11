@@ -2,6 +2,7 @@
 
 require "json"
 require "yaml"
+require_relative "headless_selection"
 
 module RubyAgentSkills
   # Turns each CLI's print-mode stdout into the routing result contract.
@@ -43,10 +44,9 @@ module RubyAgentSkills
 
     def write_result(payload, content, provider, model)
       selected = JSON.parse(strip_fence(content))
-      primary = selected.fetch("primary_skill").to_s
-      secondary = Array(selected.fetch("secondary_skills")).map(&:to_s).uniq
+      primary, secondary, reason = HeadlessSelection.validate(selected)
       check_skills(payload.fetch(:skills), primary, secondary)
-      File.write(result_path, document(primary, secondary, selected, provider, model))
+      File.write(result_path, document(primary, secondary, reason, provider, model))
     end
 
     def routing_text(provider, stdout)
@@ -90,13 +90,13 @@ module RubyAgentSkills
       abort "secondary_skills contains primary_skill" if secondary.include?(primary)
     end
 
-    def document(primary, secondary, selected, provider, model)
+    def document(primary, secondary, reason, provider, model)
       body = {
         "protocol_version" => ENV.fetch("RUBY_AGENT_ROUTING_PROTOCOL_VERSION", "1").to_i,
         "case_id" => ENV.fetch("RUBY_AGENT_ROUTING_CASE_ID"),
         "primary_skill" => primary,
         "secondary_skills" => secondary,
-        "reason" => selected["reason"].to_s,
+        "reason" => reason,
         "metadata" => { "provider" => provider.to_s, "model" => model }
       }
       "#{JSON.pretty_generate(body)}\n"

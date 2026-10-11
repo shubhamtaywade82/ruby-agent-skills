@@ -1,5 +1,14 @@
 # Changelog
 
+## Iteration 180 — Callback-Cascade Verification Hardening
+
+- `scripts/verify_rails_adversarial_eval.rb` reports each withheld test as its own condition under `checks.adversarial.conditions`, with Minitest's result codes mapped to `pass`, `fail` (assertion), `error` (exception), or `skip`. The aggregate `adversarial` status is unchanged, and no other fixture's grading changes.
+- The `callback-cascade` withheld tests are renamed to their evaluation case names, `update_refire` and `import_skips_hooks`, so each condition traces to a documented case.
+- `test/rails_adversarial_benchmark_system_test.rb` pins the exact per-condition outcome for each `callback-cascade` solution: the reference passes both conditions, the naive control fails both, and the partial control passes `update_refire` and fails `import_skips_hooks`. It also asserts that the condition names match the evaluation's cases. An exception in a control now fails this check instead of counting as the intended assertion failure.
+- The `callback-cascade` claim is narrowed from "exactly once" to successful modeled writes. The evaluation title and prompt, and the reference solution's comments, state that recovery from a crash or retry between a write and its welcome email is out of scope. The fixture does not model transactional or idempotent delivery.
+- `bin/validate` no longer runs `scripts/audit_documentation_consistency.rb` or `test/routing_release_bundle_system_test.rb` twice. `test/validation_gate_integrity_system_test.rb` fails on any repeated `ruby` command that is not listed in its `INTENTIONAL_REPEATS` table, which is empty.
+- No inventory counts change.
+
 ## Iteration 179 — Advanced Rails Coverage Audit (Tier 1 depth-fill)
 
 Closes four of the nine gaps flagged by the advanced Rails coverage audit (`patterns/rails/advanced-rails-coverage-audit.md`, also added in this iteration). All four close single-skill depth gaps without fragmenting ownership — no new skills are created.
@@ -139,6 +148,7 @@ Closes four of the nine gaps flagged by the advanced Rails coverage audit (`patt
 - Point the README quick-start at the `v1.3.0` release archive (`ruby-agent-skills-v1.3.0.tar.gz`, published with `SHA256SUMS` from source commit `4f1782529c8f5ddbc7fb7ff656c5d030ebc3c6d0`); it still downloaded `v1.1.0`, which predates the specification-conformance, publish-readiness, adversarial-benchmark, and cross-pack-linking work of Iterations 134–161.
 - Update the pinned-release example in `docs/INSTALLATION.md` and the `bin/install` usage examples from `v1.0.0` to `v1.3.0`.
 - No change to the release line itself: `v1.3.0` remains the canonical current release and this iteration cuts no new tag. The `v1.2.0` release still has no attached archive; its documented repair path (manual Release workflow run for that tag) remains open.
+- Follow-up recorded after this iteration: the manual Release workflow for `v1.2.0` later published `ruby-agent-skills-v1.2.0.tar.gz` (791135 bytes) and `SHA256SUMS` on 2026-10-09, so the repair path above is closed. The statement above describes the repository when Iteration 162 was prepared and is kept as written.
 - The quick-start release version is not pinned by any current audit, so `bin/validate` cannot catch this class of drift; a release-target consistency check is left as follow-up work.
 
 ## Iteration 161 — Cross-Pack Linking to react-agent-skills

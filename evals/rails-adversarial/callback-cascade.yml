@@ -1,8 +1,11 @@
 id: callback-cascade
 version: 1
-title: Member lifecycle side effects fire exactly once
+title: Welcome email fires once per created member on successful write paths
 category: rails
 source: rails-adversarial-v1
+# Real-world basis for the modeled framework behavior: Member.import mirrors
+# insert_all, which skips callbacks. Rails 8.1.4 guide, "Skipping Callbacks":
+# https://guides.rubyonrails.org/active_record_callbacks.html#skipping-callbacks
 skills:
   - rails-active-record
   - rails-reliability-engineering
@@ -15,9 +18,10 @@ prompt: |
   member (status active) and returns it, returning :taken when the email is
   already registered. update_profile changes the member's name. import_members
   bulk-creates members from the given rows. Each member is welcomed once with
-  Mailer.deliver_welcome(member_id). lib/framework.rb is the ORM and mailer
-  stand-in — save runs the registered after_save hooks, an insert also runs
-  after_create, import fires no hooks — and lib/store.rb is the database
+  Mailer.deliver_welcome(member_id), on successful writes only; recovery from a
+  crash or retry between a write and its welcome is out of scope. lib/framework.rb
+  is the ORM and mailer stand-in — save runs the registered after_save hooks, an
+  insert also runs after_create, import fires no hooks — and lib/store.rb is the database
   adapter; do not change either. Extend test/test_solution.rb.
 constraints:
   required_design:
