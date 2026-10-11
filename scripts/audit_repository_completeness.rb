@@ -110,6 +110,12 @@ stale_system_tests = invoked_system_tests.reject { |path| File.file?(File.join(R
 errors << "system tests not invoked by bin/validate: #{missing_system_tests.join(", ")}" unless missing_system_tests.empty?
 errors << "bin/validate invokes missing system tests: #{stale_system_tests.join(", ")}" unless stale_system_tests.empty?
 
+# Every test file must run through the gate, not only *_system_test.rb files.
+all_test_files = Dir[File.join(ROOT, "test", "*_test.rb")].map { |p| p.delete_prefix(ROOT + "/") }.sort
+invoked_test_files = validate.scan(%r{test/[^\s"']+_test\.rb}).uniq
+unscheduled_test_files = all_test_files.reject { |path| invoked_test_files.include?(path) }
+errors << "test files not invoked by bin/validate: #{unscheduled_test_files.join(", ")}" unless unscheduled_test_files.empty?
+
 stack_minimality_files = eval_files.select { |path| path.start_with?("evals/stack-minimality/") }
 expected_stack_minimality_evals = Dir[File.join(ROOT, "evals", "stack-minimality", "*.yml")]
                                   .map { |p| p.delete_prefix(ROOT + "/") }

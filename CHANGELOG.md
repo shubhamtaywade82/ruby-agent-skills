@@ -148,6 +148,7 @@ Closes four of the nine gaps flagged by the advanced Rails coverage audit (`patt
 - Point the README quick-start at the `v1.3.0` release archive (`ruby-agent-skills-v1.3.0.tar.gz`, published with `SHA256SUMS` from source commit `4f1782529c8f5ddbc7fb7ff656c5d030ebc3c6d0`); it still downloaded `v1.1.0`, which predates the specification-conformance, publish-readiness, adversarial-benchmark, and cross-pack-linking work of Iterations 134–161.
 - Update the pinned-release example in `docs/INSTALLATION.md` and the `bin/install` usage examples from `v1.0.0` to `v1.3.0`.
 - No change to the release line itself: `v1.3.0` remains the canonical current release and this iteration cuts no new tag. The `v1.2.0` release still has no attached archive; its documented repair path (manual Release workflow run for that tag) remains open.
+- Follow-up recorded after this iteration: the manual Release workflow for `v1.2.0` later published `ruby-agent-skills-v1.2.0.tar.gz` (791135 bytes) and `SHA256SUMS` on 2026-10-09, so the repair path above is closed. The statement above describes the repository when Iteration 162 was prepared and is kept as written.
 - The quick-start release version is not pinned by any current audit, so `bin/validate` cannot catch this class of drift; a release-target consistency check is left as follow-up work.
 
 ## Iteration 161 — Cross-Pack Linking to react-agent-skills

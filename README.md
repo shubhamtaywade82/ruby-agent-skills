@@ -33,7 +33,7 @@ Every skill follows the [Agent Skills specification](https://agentskills.io/spec
     npx skills add shubhamtaywade82/ruby-agent-skills --list
     npx skills add shubhamtaywade82/ruby-agent-skills --skill rails-active-record --skill rails-performance -a claude-code
 
-A CLI install copies the skill folders only. Skills name the implementation patterns they draw on; to install the 448-pattern catalog, routing contract, and provenance verification as well, use `bin/install` above. See [docs/PUBLISHING.md](docs/PUBLISHING.md) for how the pack is published and evaluated.
+A CLI install copies the skill folders only. Skills name the implementation patterns they draw on; to install the 450-pattern catalog, routing contract, and provenance verification as well, use `bin/install` above. See [docs/PUBLISHING.md](docs/PUBLISHING.md) for how the pack is published and evaluated.
 
 ---
 
@@ -513,7 +513,7 @@ Each evaluation can specify:
 - scope control
 - expected failure modes
 
-Current validated evaluation inventory: **502 cases**.
+Current validated evaluation inventory: **506 cases**.
 
 Important evaluation families include:
 
