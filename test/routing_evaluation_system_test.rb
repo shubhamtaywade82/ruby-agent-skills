@@ -17,11 +17,30 @@ class RoutingEvaluationSystemTest < Minitest::Test
       aliases: false
     )
 
-    assert_equal 31, Array(data.fetch("cases")).length
+    assert_equal 32, Array(data.fetch("cases")).length
     assert Array(data.fetch("cases")).all? do |entry|
       entry.fetch("primary_skills").length == 1 &&
         entry.fetch("secondary_skills").none? { |skill| skill == entry.fetch("primary_skills").first }
     end
+  end
+
+  def test_regular_expression_routing_contract
+    data = YAML.safe_load_file(File.join(ROOT, "router", "ROUTING_CASES.yml"))
+    entry = data.fetch("cases").find { |item| item.fetch("id") == "ruby-regexp-extraction-contract" }
+
+    refute_nil entry
+    assert_equal ["ruby-data-types"], entry.fetch("primary_skills")
+    assert_includes entry.fetch("secondary_skills"), "ruby-core"
+    assert_includes entry.fetch("secondary_skills"), "ruby-tdd-refactoring"
+  end
+
+  def test_regular_expression_triggers_are_registered
+    manifest = YAML.safe_load_file(File.join(ROOT, "skill-manifest.yml"))
+    triggers = manifest.fetch("skills").fetch("ruby-data-types").fetch("triggers")
+
+    %w[regex regexp MatchData scan gsub split].each { |trigger| assert_includes triggers, trigger }
+    assert_includes triggers, "regular expressions"
+    assert_includes triggers, "Regexp.escape"
   end
 
   def test_routing_evaluator_produces_measurement
