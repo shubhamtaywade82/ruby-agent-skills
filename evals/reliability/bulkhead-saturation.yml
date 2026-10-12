@@ -1,0 +1,47 @@
+coverage: static-only
+id: bulkhead-saturation
+version: 1
+title: Bound concurrent work so one slow dependency cannot consume all request threads
+category: rails
+source: rails-reliability-engineering-v1
+skills:
+  - rails-reliability-engineering
+  - ruby-concurrency
+  - rails-production-runtime
+patterns:
+  - bulkhead-isolation
+prompt: |
+  A Rails service fans out to a slow downstream dependency (e.g. an external search API) from inside its request handlers. Without isolation, a slow downstream response consumes Puma worker threads until the web tier starves and other endpoints become unresponsive. Implement a bulkhead: a bounded worker pool (or semaphore) that caps concurrent calls to the slow dependency. Calls beyond the cap are rejected fast (with a 503 or a fallback result), not queued indefinitely. The bulkhead must be observable: queue depth, rejection count, and average wait time must be exposed as metrics.
+constraints:
+  required_design:
+    - bounded concurrency for the slow dependency (semaphore or fixed-size pool)
+    - over-capacity requests are rejected fast, not queued indefinitely
+    - rejection returns a documented fallback or 503 with Retry-After
+    - queue depth, rejection count, and average wait time are exposed as metrics
+    - the bulkhead does not block the calling thread when the dependency is healthy
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: healthy-path-passes-through
+    input: dependency is fast; concurrency below the cap
+    expected: requests pass through; no rejections; queue depth is zero
+  - name: over-capacity-rejects-fast
+    input: N+1 concurrent calls to the slow dependency with cap N
+    expected: N calls proceed; the (N+1)th is rejected with a documented fallback or 503
+  - name: queue-depth-metric-is-exposed
+    input: bulkhead under sustained load
+    expected: queue_depth, rejection_count, and average_wait_seconds metrics are queryable
+  - name: slow-dependency-does-not-starve-other-endpoints
+    input: one endpoint saturates the bulkhead; a different endpoint is called concurrently
+    expected: the different endpoint responds normally; it is not blocked by the saturated bulkhead
+  - name: fallback-result-honored
+    input: bulkhead rejects a request with a documented fallback (e.g. cached result)
+    expected: the caller receives the fallback, not an unhandled exception
+grading:
+  functional: bulkhead caps concurrency and rejects over-capacity requests fast
+  tests: healthy, over-capacity, metric exposure, isolation, and fallback paths are tested
+  contract: bulkhead cap and fallback result are documented; metrics names are stable
+  scope_control: no global semaphore without a documented scope; no thread leak on rejection

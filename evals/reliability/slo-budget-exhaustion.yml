@@ -1,0 +1,50 @@
+coverage: static-only
+id: slo-budget-exhaustion
+version: 1
+title: Track the error budget and freeze non-essential work when it is exhausted
+category: rails
+source: rails-reliability-engineering-v1
+skills:
+  - rails-reliability-engineering
+  - rails-observability
+  - rails-incident-engineering
+patterns:
+  - slo-error-budget
+prompt: |
+  A Rails service has a documented SLO (e.g. 99.9% of requests succeed within 500ms over a 30-day window). The error budget is the remaining budget: (1 - SLO target) × total requests. Implement an error-budget tracker that (a) consumes budget on every bad event (5xx, timeout, or SLO violation), (b) burns budget proportionally to event severity if documented, (c) raises an observable alert when 50% of the budget is consumed, (d) freezes non-essential work (feature deploys, batch jobs) when 100% is consumed, and (e) refills the budget on the documented window boundary (rolling or fixed).
+constraints:
+  required_design:
+    - documented SLO target, window, and event types that consume budget
+    - budget is consumed by every bad event; severity weighting is documented if used
+    - alert at 50% consumption
+    - freeze non-essential work at 100% consumption; document what is essential
+    - budget refills on the window boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: healthy-path-does-not-consume-budget
+    input: no bad events over the window
+    expected: budget remains full; no alert; no freeze
+  - name: bad-event-consumes-budget
+    input: N bad events of documented severity
+    expected: budget decreases by the documented amount per event
+  - name: alert-at-50-percent
+    input: budget consumption crosses 50%
+    expected: observable alert raised with current consumption, remaining budget, and window
+  - name: freeze-at-100-percent
+    input: budget consumption crosses 100%
+    expected: non-essential work (feature deploys, batch jobs) is frozen; essential paths (security patches, incident response) remain allowed
+  - name: refill-on-window-boundary
+    input: window boundary reached
+    expected: budget refills to full; alert and freeze clear if no longer warranted
+  - name: severity-weighting-honored
+    input: documented severity weights (e.g. 5xx = 1.0, timeout = 0.5)
+    expected: budget consumed proportionally; documented weights are stable
+grading:
+  functional: error-budget tracker consumes on bad events, alerts at 50%, freezes at 100%, and refills on the window boundary
+  tests: healthy, consumption, alert, freeze, refill, and severity-weighting paths are tested
+  contract: SLO target, window, event types, and severity weights are documented and stable
+  scope_control: no budget consumption on unclassified events; no freeze on essential paths

@@ -1,0 +1,50 @@
+coverage: static-only
+id: circuit-breaker-open
+version: 1
+title: Stop calling an unhealthy dependency after a justified failure threshold
+category: rails
+source: rails-reliability-engineering-v1
+skills:
+  - rails-reliability-engineering
+  - rails-api-integration
+patterns:
+  - circuit-breaker
+prompt: |
+  A Rails service calls an external payment gateway that is failing intermittently. Implement a circuit breaker that opens after N consecutive failures (or a failure-rate threshold over a sliding window), short-circuits calls while open, and probes recovery through a half-open state. The breaker must (a) make the failure threshold and recovery probe count configurable, (b) emit an observable event on every state transition, (c) never silently reset to closed without a successful probe, and (d) treat timeouts and 5xx responses as failures; 4xx as success (the gateway responded).
+constraints:
+  required_design:
+    - configurable failure threshold and recovery probe count
+    - closed -> open transition requires evidence (consecutive failures or rate threshold)
+    - open -> half-open transition is time-gated, not manual
+    - half-open -> closed requires a successful probe; half-open -> open on probe failure
+    - state transitions emit observable events
+    - timeout and 5xx are failures; 4xx is not
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: closed-stays-closed-on-success
+    input: dependency succeeds
+    expected: breaker remains closed; calls pass through
+  - name: closed-opens-after-threshold
+    input: dependency fails N consecutive times
+    expected: breaker transitions closed -> open; subsequent calls short-circuit
+  - name: open-short-circuits-and-emits-event
+    input: breaker is open; client calls
+    expected: short-circuit response returned immediately; no outbound call; transition event emitted once
+  - name: half-open-recovers-on-successful-probe
+    input: breaker open for longer than the reset timeout; probe call succeeds
+    expected: breaker transitions half-open -> closed; subsequent calls pass through
+  - name: half-open-reopens-on-probe-failure
+    input: breaker open for longer than the reset timeout; probe call fails
+    expected: breaker transitions half-open -> open; reset timeout starts again
+  - name: timeout-and-5xx-count-as-failure
+    input: dependency returns 503, then times out, then returns 404
+    expected: 503 and timeout counted as failures; 404 counted as success
+grading:
+  functional: circuit breaker state machine is correct across closed/open/half-open transitions
+  tests: every transition path is tested including probe failure, timeout, and 5xx classification
+  contract: threshold and probe count are configurable; transitions emit events; no silent reset
+  scope_control: no global singleton state without a documented boundary; no thread-safety regression

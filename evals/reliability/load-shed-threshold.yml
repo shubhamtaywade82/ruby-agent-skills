@@ -1,0 +1,48 @@
+coverage: static-only
+id: load-shed-threshold
+version: 1
+title: Reject or degrade requests when the system is overloaded, not after it has failed
+category: rails
+source: rails-reliability-engineering-v1
+skills:
+  - rails-reliability-engineering
+  - rails-production-runtime
+  - rails-observability
+patterns:
+  - load-shedding
+  - graceful-degradation
+prompt: |
+  A Rails service experiences burst traffic that exceeds its capacity. Implement load shedding: when an observable saturation signal (response time percentile, queue depth, or CPU) crosses a configured threshold, the service begins rejecting or degrading requests proactively rather than letting them pile up and time out. The shed policy must (a) document which signal triggers the shed, (b) define a shed response (503 with Retry-After, or a degraded fallback), (c) recover automatically when the signal drops below a lower hysteresis threshold (not the same threshold that triggered the shed), and (d) emit an observable event on every shed decision.
+constraints:
+  required_design:
+    - documented saturation signal (latency percentile, queue depth, CPU, or memory)
+    - shed response is either 503 with Retry-After or a documented degraded fallback
+    - hysteresis: shed recovers below a lower threshold than the one that triggered it
+    - shed decisions emit observable events
+    - shed policy is configurable without a deploy
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: no-shed-below-threshold
+    input: saturation signal below the shed threshold
+    expected: requests pass through normally
+  - name: shed-when-signal-crosses-threshold
+    input: saturation signal crosses the documented threshold
+    expected: subsequent requests receive 503 with Retry-After or a documented fallback
+  - name: shed-emits-event
+    input: shed triggered
+    expected: observable event emitted with reason, threshold, and current signal value
+  - name: hysteresis-prevents-flapping
+    input: signal oscillates around the threshold
+    expected: shed stays on while signal is between lower and upper threshold; only clears when signal drops below the lower threshold
+  - name: shed-recovers-automatically
+    input: signal drops below the lower hysteresis threshold
+    expected: shed clears; subsequent requests pass through; no manual intervention required
+grading:
+  functional: load shed engages above threshold, recovers below hysteresis lower threshold, and emits events
+  tests: shed-engage, hysteresis, event-emit, and auto-recover paths are tested
+  contract: shed signal and threshold are documented; shed response is stable; hysteresis is configured
+  scope_control: no shed on unrelated signals; no global state without a documented scope

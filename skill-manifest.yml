@@ -1543,6 +1543,20 @@ evaluations:
       - contract
       - scope_control
 
+  reliability:
+    source: rails-reliability-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/reliability/circuit-breaker-open.yml
+      - evals/reliability/bulkhead-saturation.yml
+      - evals/reliability/load-shed-threshold.yml
+      - evals/reliability/slo-budget-exhaustion.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   observability:
     source: rails-observability-v1
     schema: docs/EVAL_SCHEMA.md
