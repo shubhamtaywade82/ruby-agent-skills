@@ -82,8 +82,7 @@ class RailsAssociationsSystemTest < Minitest::Test
   end
 
   def test_evaluation_activates_expected_skills_and_patterns
-    evaluation = YAML.safe_load(
-      File.read(File.join(ROOT, "evals/rails/associations-contract.yml"), encoding: "UTF-8")
+    evaluation = YAML.safe_load_file(File.join(ROOT, "evals/rails/associations-contract.yml"))
     )
 
     assert_includes evaluation.fetch("skills"), "rails-associations"
