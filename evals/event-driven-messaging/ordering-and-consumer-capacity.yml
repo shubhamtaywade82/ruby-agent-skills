@@ -1,0 +1,44 @@
+coverage: static-only
+id: ordering-and-consumer-capacity
+version: 1
+title: Preserve required ordering without unbounded consumer concurrency
+category: rails
+source: rails-event-driven-messaging-v1
+skills:
+  - rails-event-driven-messaging
+  - ruby-concurrency
+  - rails-production-runtime
+  - rails-observability
+patterns: []
+prompt: |
+  A Rails consumer processes events for many accounts. Events for one account must preserve causal order, while different accounts may be processed concurrently. Define the ordering key, partition or serialization strategy, bounded concurrency, database connection-pool relationship, and observable lag/saturation signals. Do not claim global ordering unless the transport and topology actually provide it.
+constraints:
+  required_design:
+    - ordering guarantee scoped to an explicit key or partition
+    - per-key order preserved across retries where required
+    - concurrency is bounded and aligned with database/provider capacity
+    - queue lag and processing failures are observable
+    - global ordering is not assumed without transport support
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: same-key-events-preserve-order
+    input: two causally ordered events for the same account arrive
+    expected: effects are applied in the required order
+  - name: independent-keys-process-concurrently
+    input: events for two independent accounts are ready
+    expected: work may proceed concurrently without violating per-account ordering
+  - name: concurrency-is-bounded
+    input: message arrival rate exceeds processing capacity
+    expected: active work and resource use remain bounded; backlog/lag is observable
+  - name: retry-does-not-silently-reorder-dependent-events
+    input: an earlier event fails while a later event for the same key is ready
+    expected: the documented ordering policy prevents an invalid state transition or explicitly documents the allowed reordering
+grading:
+  functional: ordering semantics hold for dependent messages while independent work can progress
+  tests: ordering, retry interaction, and concurrency limits are covered
+  contract: partition key, worker limits, pool capacity, and lag signals are explicit
+  scope_control: no unbounded thread creation or unsupported global-ordering guarantee
