@@ -1,4 +1,3 @@
-coverage: static-only
 id: consumer-idempotency-and-acknowledgement
 version: 1
 title: Make message consumption safe under duplicate delivery

@@ -1,3 +1,11 @@
+## Iteration 184 — Event-Driven Messaging Benchmark Campaign
+
+- Add the `event-driven-messaging` controlled benchmark campaign: four deterministic pure-Ruby fixtures with pristine references outside the agent workspace and the dedicated verifier `scripts/verify_event_driven_messaging_eval.rb`.
+- Promote the four Iteration 183 messaging contracts from `coverage: static-only` to campaign coverage: event-envelope compatibility, consumer idempotency and acknowledgement ordering, bounded retry/dead-letter/replay, and ordering/consumer capacity. Campaign coverage rises from 110 to 114 evaluation files; the remaining static-only corpus drops from 39 files / 117 cases to 35 files / 101 cases.
+- Fixtures simulate broker semantics without infrastructure: versioned envelopes with stable identity and unknown-field tolerance, transactional deduplication whose reservation persists before effects and whose acknowledgement follows the commit, bounded retries with permanent-failure short-circuiting and dead-letter diagnostics, replay guarded against double-applied effects, and per-key FIFO ordering with capacity and buffer limits. No sleeps, threads, or external services, so runs stay deterministic.
+- Register the family under `benchmarks.event-driven-messaging` in `skill-manifest.yml`. `test/benchmark_fixture_controls_system_test.rb` now executes the no-op and reference controls for all four fixtures through the real verifier, and `audit_benchmark_quality.rb` enforces the fixture registry, campaign manifest, and reference hygiene.
+- Update `docs/BENCHMARK_CAMPAIGN.md` with the family section, refresh the advanced Rails coverage matrix verdict for messaging, and reconcile the handoff campaign-coverage figures. Campaign coverage defines the measurement protocol; real model results still require an external agent adapter.
+
 ## Iteration 183 — Event-Driven Messaging Evaluation Family
 
 - Add four static-only evaluation contracts for event-envelope compatibility, consumer idempotency and acknowledgement ordering, bounded retry/dead-letter/replay, and ordering/consumer capacity.

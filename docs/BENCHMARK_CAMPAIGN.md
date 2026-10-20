@@ -159,6 +159,16 @@ The Ruby platform foundation evaluations now have dedicated controlled benchmark
 
 Both campaigns enforce paired skills-disabled/skills-enabled execution, fresh workspaces, the same fixture and verifier, the same agent command, explicit Ruby 3.3 runtime control, and `hidden_cases: external-only`.
 
+## Event-driven messaging campaign
+
+The event-driven messaging evaluations have a dedicated controlled benchmark family:
+
+| Family | Public evaluations | Fixture/reference | Repetitions |
+| --- | --- | --- | ---: |
+| `event-driven-messaging` | `event-envelope-compatibility`, `consumer-idempotency-and-acknowledgement`, `retry-dead-letter-replay`, `ordering-and-consumer-capacity` | independent disposable fixture + pristine reference | 3 |
+
+Each fixture is a deterministic pure-Ruby simulation of broker semantics — versioned envelopes with stable identity and unknown-field tolerance, transactional deduplication with commit-then-acknowledge ordering, bounded retries with dead-letter diagnostics and replay safety, and per-key ordering with capacity and buffer limits — so the verifier measures behavior without external infrastructure. The campaign enforces paired skills-disabled/skills-enabled execution, fresh workspaces, the same fixture and verifier, the same agent command, explicit Ruby 3.3 runtime control, and `hidden_cases: external-only`.
+
 The repository's fixture-control tests verify both negative controls (the unmodified fixture must fail) and positive controls (the independent reference must pass). This establishes benchmark integrity, not model-quality results.
 
 Run one of these families with a real coding-agent adapter:

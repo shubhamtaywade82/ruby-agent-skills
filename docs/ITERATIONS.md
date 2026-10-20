@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 183 — Event-Driven Messaging Evaluation Family
+> **Current milestone:** Iteration 184 — Event-Driven Messaging Benchmark Campaign
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -632,3 +632,7 @@ Added the second dedicated eval family for advanced Rails behavioral validation,
 ## Iteration 183 — Event-Driven Messaging Evaluation Family
 
 Iteration 183 adds four static-only event-driven messaging contracts for schema compatibility, consumer idempotency and acknowledgement ordering, bounded retries/dead-letter/replay, and ordering/capacity. The advanced Rails coverage matrix now recognizes the dedicated family; controlled benchmark execution remains future work.
+
+## Iteration 184 — Event-Driven Messaging Benchmark Campaign
+
+Added the controlled benchmark campaign for the Iteration 183 messaging contracts. Four pure-Ruby fixtures — event-envelope compatibility, consumer idempotency with acknowledgement ordering, bounded retry/dead-letter/replay, and per-key ordering with capacity and buffer limits — ship with pristine references outside the agent workspace and `scripts/verify_event_driven_messaging_eval.rb` as the independent verifier. The four evaluations leave `coverage: static-only` and become campaign-covered (110 -> 114 evaluation files; static-only drops to 35 files / 101 cases). `test/benchmark_fixture_controls_system_test.rb` executes the no-op and reference controls for every fixture through the real verifier, and `audit_benchmark_quality.rb` enforces the registry, campaign manifest, and reference hygiene. Campaign coverage defines the measurement protocol; real model results still require an external agent adapter.

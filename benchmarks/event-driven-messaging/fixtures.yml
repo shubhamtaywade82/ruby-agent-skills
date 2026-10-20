@@ -1,0 +1,67 @@
+version: 1
+source: rails-event-driven-messaging-v1
+description: Deterministic executable fixtures for event-driven messaging contracts.
+fixtures:
+  event-envelope-compatibility:
+    root: benchmarks/event-driven-messaging/fixtures/event-envelope-compatibility
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class EventEnvelope"
+      - "def self.parse"
+      - "def field"
+      - "def self.breaking_change?"
+    forbidden_regex:
+      - 'Marshal\.(load|restore)'
+      - 'eval\s*\('
+    contract_regex:
+      - "schema_version"
+      - "correlation_id"
+      - "causation_id"
+  consumer-idempotency-and-acknowledgement:
+    root: benchmarks/event-driven-messaging/fixtures/consumer-idempotency-and-acknowledgement
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class IdempotentConsumer"
+      - "def consume"
+      - "class DeduplicationStore"
+      - "def reserve!"
+    forbidden_regex:
+      - 'Marshal\.(load|restore)'
+      - 'eval\s*\('
+    contract_regex:
+      - "message_id"
+      - "duplicate"
+      - "rollback"
+  retry-dead-letter-replay:
+    root: benchmarks/event-driven-messaging/fixtures/retry-dead-letter-replay
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class RetryPolicy"
+      - "class DeadLetterQueue"
+      - "def process"
+      - "def replay"
+    forbidden_regex:
+      - 'sleep\s'
+      - 'Marshal\.(load|restore)'
+    contract_regex:
+      - "attempts"
+      - "last_error"
+      - "reason"
+  ordering-and-consumer-capacity:
+    root: benchmarks/event-driven-messaging/fixtures/ordering-and-consumer-capacity
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class OrderedConsumerGroup"
+      - "def enqueue"
+      - "def run"
+    forbidden_regex:
+      - 'Thread\.new'
+      - 'sleep\s'
+    contract_regex:
+      - "buffer_full"
+      - "exhausted"
+      - "completions"

@@ -1,4 +1,3 @@
-coverage: static-only
 id: event-envelope-compatibility
 version: 1
 title: Evolve event envelopes without breaking existing consumers
