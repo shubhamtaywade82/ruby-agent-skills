@@ -1,0 +1,53 @@
+version: 1
+source: rails-distributed-systems-v1
+description: Deterministic executable fixtures for distributed-systems contracts.
+fixtures:
+  inbox-deduplication:
+    root: benchmarks/distributed-systems/fixtures/inbox-deduplication
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class OrderConsumer"
+      - "def consume"
+      - "class InboxStore"
+      - "def transaction"
+    forbidden_regex:
+      - 'Marshal\.(load|restore)'
+      - 'eval\s*\('
+    contract_regex:
+      - "message_id"
+      - "duplicate"
+      - "rollback"
+  outbox-atomicity:
+    root: benchmarks/distributed-systems/fixtures/outbox-atomicity
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class CheckoutService"
+      - "def place_order"
+      - "class OutboxRelay"
+      - "def run"
+    forbidden_regex:
+      - 'Marshal\.(load|restore)'
+      - 'eval\s*\('
+    contract_regex:
+      - "message_id"
+      - "published"
+      - "rollback"
+  saga-compensation:
+    root: benchmarks/distributed-systems/fixtures/saga-compensation
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class CheckoutSaga"
+      - "def execute"
+      - "def compensate"
+      - "def resume"
+    forbidden_regex:
+      - 'Thread\.new'
+      - 'sleep\s'
+      - 'Marshal\.(load|restore)'
+    contract_regex:
+      - "completed_steps"
+      - "compensated_steps"
+      - "compensation_failed"

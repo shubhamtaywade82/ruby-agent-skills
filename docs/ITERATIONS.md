@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 184 — Event-Driven Messaging Benchmark Campaign
+> **Current milestone:** Iteration 185 — Distributed Systems and Reliability Benchmark Campaigns
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -636,3 +636,7 @@ Iteration 183 adds four static-only event-driven messaging contracts for schema 
 ## Iteration 184 — Event-Driven Messaging Benchmark Campaign
 
 Added the controlled benchmark campaign for the Iteration 183 messaging contracts. Four pure-Ruby fixtures — event-envelope compatibility, consumer idempotency with acknowledgement ordering, bounded retry/dead-letter/replay, and per-key ordering with capacity and buffer limits — ship with pristine references outside the agent workspace and `scripts/verify_event_driven_messaging_eval.rb` as the independent verifier. The four evaluations leave `coverage: static-only` and become campaign-covered (110 -> 114 evaluation files; static-only drops to 35 files / 101 cases). `test/benchmark_fixture_controls_system_test.rb` executes the no-op and reference controls for every fixture through the real verifier, and `audit_benchmark_quality.rb` enforces the registry, campaign manifest, and reference hygiene. Campaign coverage defines the measurement protocol; real model results still require an external agent adapter.
+
+## Iteration 185 — Distributed Systems and Reliability Benchmark Campaigns
+
+Iteration 185 adds the `distributed-systems` and `reliability` controlled benchmark campaigns, promoting all seven remaining Tier 2 static-only contracts (outbox atomicity, inbox deduplication, saga compensation, bulkhead saturation, circuit breaker, load shedding, SLO error budget) to campaign coverage with deterministic pure-Ruby fixtures, pristine references, and the dedicated verifiers `scripts/verify_distributed_systems_eval.rb` and `scripts/verify_reliability_eval.rb`. Campaign coverage rises from 114 to 121 evaluation files; the static-only corpus drops from 35 files / 101 cases to 28 files / 66 cases, leaving only `isolation-level` unbenchmarked.

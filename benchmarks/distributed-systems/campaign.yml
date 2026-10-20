@@ -1,0 +1,21 @@
+id: distributed-systems-public-v1
+version: 1
+evaluation_set: distributed-systems
+source: rails-distributed-systems-v1
+fixture_root: benchmarks/distributed-systems/fixtures
+verifier: scripts/verify_distributed_systems_eval.rb
+evaluations:
+  - outbox-atomicity
+  - inbox-deduplication
+  - saga-compensation
+execution:
+  repetitions: 3
+  paired: true
+  fresh_workspace_per_run: true
+  same_fixture_for_pair: true
+  require_same_agent_command_when_using_agent_command: true
+controls:
+  runtime:
+    ruby: "3.3"
+  hidden_cases: external-only
+  require_complete_repetitions: true

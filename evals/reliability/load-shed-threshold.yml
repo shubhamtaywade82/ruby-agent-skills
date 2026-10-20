@@ -1,4 +1,3 @@
-coverage: static-only
 id: load-shed-threshold
 version: 1
 title: Reject or degrade requests when the system is overloaded, not after it has failed

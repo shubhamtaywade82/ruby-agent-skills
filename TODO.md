@@ -1,11 +1,11 @@
-## Current work — Iteration 184
+## Current work — Iteration 185
 
-- [x] Iteration 183 validation completed: the handoff milestone was synced with the changelog (one-line fix, merged as PR #101); `Validate skills` run #1759 passed on the merged head and main stayed green.
-- [x] Add the `event-driven-messaging` controlled benchmark campaign: four pure-Ruby fixtures, pristine references, and `scripts/verify_event_driven_messaging_eval.rb`; no-op and reference controls run through the real verifier in CI.
-- [x] Promote the four messaging contracts from `coverage: static-only` to campaign coverage (110 -> 114 campaign-covered evaluation files; static-only drops to 35 files / 101 cases).
-- [ ] Run a real model campaign with an external agent adapter before claiming empirical model performance for messaging; campaign coverage is a protocol, not a result.
-- [ ] Recheck remaining messaging-specific coverage against the owning skill and patterns; do not create duplicate skills where existing routing ownership is clear.
-- [ ] Remaining Tier 2 static-only families without campaigns: `distributed-systems` (3 files) and `reliability` (4 files); `isolation-level` still awaits a concurrency campaign.
+- [x] Iteration 184 landed: the `event-driven-messaging` campaign merged as PR #102 (four fixtures, controls green through the real verifier, main CI green on the merge commit).
+- [x] Add the `distributed-systems` and `reliability` controlled benchmark campaigns: seven pure-Ruby fixtures, pristine references, and the dedicated verifiers; no-op and reference controls run through the real verifiers in CI.
+- [x] Promote the seven Tier 2 contracts from `coverage: static-only` to campaign coverage (114 -> 121 campaign-covered evaluation files; static-only drops to 28 files / 66 cases).
+- [ ] Run a real model campaign with an external agent adapter before claiming empirical model performance for any family; campaign coverage is a protocol, not a result.
+- [ ] `isolation-level` still awaits a concurrency campaign; it is the only unbenchmarked evaluation file.
+- [ ] Recheck messaging, distributed-systems, and reliability coverage against the owning skills and patterns; do not create duplicate skills where existing routing ownership is clear.
 
 # TODO
 

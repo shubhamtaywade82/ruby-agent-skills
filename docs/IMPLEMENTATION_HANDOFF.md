@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 150 evaluation files / 557 cases. Campaigns provide controlled benchmark coverage for 114 evaluation files, including the four event-driven messaging contracts promoted from static-only in Iteration 184; the remaining non-campaign corpus is explicitly classified `coverage: static-only` (35 files / 101 cases), and one file (`isolation-level`) still awaits a concurrency campaign. The existing corpus-quality audit and `test/corpus_quality_system_test.rb` remain authoritative for the exact static-only and unbenchmarked totals. A campaign defines the measurement protocol with independent fixture references and verifiers; actual model results remain separate empirical evidence.
+The public evaluation corpus has 150 evaluation files / 557 cases. Campaigns provide controlled benchmark coverage for 121 evaluation files, including the four event-driven messaging contracts promoted from static-only in Iteration 184 and the seven distributed-systems and reliability contracts promoted in Iteration 185; the remaining non-campaign corpus is explicitly classified `coverage: static-only` (28 files / 66 cases), and one file (`isolation-level`) still awaits a concurrency campaign. The existing corpus-quality audit and `test/corpus_quality_system_test.rb` remain authoritative for the exact static-only and unbenchmarked totals. A campaign defines the measurement protocol with independent fixture references and verifiers; actual model results remain separate empirical evidence.
 
 ## Iteration 152 — Action Controller Resource-Loading Evidence
 
@@ -262,4 +262,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 184. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 185. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).

@@ -1,4 +1,3 @@
-coverage: static-only
 id: outbox-atomicity
 version: 1
 title: Publish an event only after the originating transaction commits
