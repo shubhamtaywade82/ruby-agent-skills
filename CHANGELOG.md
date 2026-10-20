@@ -1,3 +1,11 @@
+## Iteration 183 — Event-Driven Messaging Evaluation Family
+
+- Add four static-only evaluation contracts for event-envelope compatibility, consumer idempotency and acknowledgement ordering, bounded retry/dead-letter/replay, and ordering/consumer capacity.
+- Register the family in `skill-manifest.yml` under `event-driven-messaging`, using the existing `rails-event-driven-messaging` skill and related distributed-systems, Active Job, database, concurrency, runtime, and observability skills.
+- Refresh the advanced Rails coverage matrix: messaging now has a dedicated evaluation family, but remains non-empirical until a controlled campaign with fixtures and independent verification is run.
+- Reconcile stale backlog wording that still described PR #100 as unmerged and Iteration 179 as current. Historical iteration entries remain historical; current work is recorded in the Iteration 183 section of `TODO.md`.
+- Inventory target after registration: 150 evaluation files / 557 cases; validation and actual static-only totals still require `bash bin/validate` in a repository checkout.
+
 # Changelog
 
 ## Iteration 182 — reliability Eval Family (Tier 2 item 6)

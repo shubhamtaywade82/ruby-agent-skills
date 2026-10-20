@@ -1,0 +1,43 @@
+coverage: static-only
+id: retry-dead-letter-replay
+version: 1
+title: Bound retries and make poison messages operable
+category: rails
+source: rails-event-driven-messaging-v1
+skills:
+  - rails-event-driven-messaging
+  - rails-active-job
+  - rails-observability
+patterns: []
+prompt: |
+  Design a Rails message consumer for a dependency that can fail transiently or reject a message permanently. Define bounded retries with backoff, distinguish transient from permanent failures, route exhausted or poison messages to a dead-letter mechanism with diagnostic metadata, and provide a controlled replay path that does not bypass idempotency or authorization. Do not assume the broker's retry semantics; inspect and document the selected transport.
+constraints:
+  required_design:
+    - bounded retry policy with documented backoff
+    - transient and permanent failures classified separately
+    - exhausted messages retain original identity and failure metadata
+    - replay is explicit, auditable, and idempotency-aware
+    - retry and dead-letter behavior match the actual transport
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: transient-failure-retries-with-backoff
+    input: handler fails transiently before succeeding within the retry budget
+    expected: retry is bounded and uses the documented backoff policy
+  - name: permanent-failure-is-not-retried-forever
+    input: handler identifies an invalid, non-recoverable payload
+    expected: message is rejected or dead-lettered according to the transport contract
+  - name: exhausted-message-retains-diagnostics
+    input: transient failures exceed the retry budget
+    expected: dead-letter record preserves message id, failure reason, attempts, and correlation metadata
+  - name: replay-preserves-idempotency
+    input: operator replays a dead-letter message already processed successfully
+    expected: replay is audited and cannot duplicate the protected business side effect
+grading:
+  functional: retry, permanent failure, exhaustion, and replay paths behave as specified
+  tests: each failure class and replay safety rule has deterministic coverage
+  contract: retry limits, backoff, dead-letter metadata, and operator permissions are explicit
+  scope_control: no infinite retries, silent message drops, or transport-independent assumptions

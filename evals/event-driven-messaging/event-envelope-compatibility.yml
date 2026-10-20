@@ -1,0 +1,43 @@
+coverage: static-only
+id: event-envelope-compatibility
+version: 1
+title: Evolve event envelopes without breaking existing consumers
+category: rails
+source: rails-event-driven-messaging-v1
+skills:
+  - rails-event-driven-messaging
+  - rails-distributed-systems
+patterns:
+  - event-envelope
+prompt: |
+  A Rails application publishes versioned OrderPlaced events consumed by independently deployed services. Add an explicit event envelope and evolve the payload to include a new optional field while old consumers still process existing messages. Preserve stable event identity, event type, schema version, occurrence time, producer identity, and correlation/causation metadata. Do not assume all consumers deploy simultaneously.
+constraints:
+  required_design:
+    - stable event identity independent of delivery attempt
+    - explicit event type and schema version
+    - backward-compatible optional-field evolution
+    - consumers tolerate unknown optional fields
+    - incompatible changes use a new version or explicit migration strategy
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: old-payload-remains-readable
+    input: consumer receives a valid version-1 payload without the new optional field
+    expected: consumer processes it with documented default semantics
+  - name: new-optional-field-is-backward-compatible
+    input: version-2 payload contains a new optional field
+    expected: old-compatible consumer behavior remains valid; field absence is handled
+  - name: unknown-optional-field-is-ignored
+    input: consumer receives an otherwise valid envelope with an unknown optional field
+    expected: consumer does not reject the message solely because of the unknown optional field
+  - name: incompatible-change-is-versioned
+    input: proposed change renames a required field and changes its meaning
+    expected: change is not silently shipped as an additive compatible update
+grading:
+  functional: old and new compatible payloads are handled according to explicit semantics
+  tests: compatibility and incompatible-change cases have deterministic tests
+  contract: envelope identity, version, and correlation metadata are explicit
+  scope_control: no claim of universal compatibility without identifying producer and consumer contracts

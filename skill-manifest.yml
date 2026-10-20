@@ -1543,6 +1543,20 @@ evaluations:
       - contract
       - scope_control
 
+  event-driven-messaging:
+    source: rails-event-driven-messaging-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/event-driven-messaging/event-envelope-compatibility.yml
+      - evals/event-driven-messaging/consumer-idempotency-and-acknowledgement.yml
+      - evals/event-driven-messaging/retry-dead-letter-replay.yml
+      - evals/event-driven-messaging/ordering-and-consumer-capacity.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   reliability:
     source: rails-reliability-engineering-v1
     schema: docs/EVAL_SCHEMA.md
