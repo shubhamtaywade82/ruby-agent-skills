@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 182 — reliability Eval Family (Tier 2 item 6)
+> **Current milestone:** Iteration 183 — Event-Driven Messaging Evaluation Family
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -628,3 +628,7 @@ Added the first dedicated eval family for `rails-distributed-systems`, closing o
 ## Iteration 182 — reliability Eval Family (Tier 2 item 6)
 
 Added the second dedicated eval family for advanced Rails behavioral validation, closing a second of the three gaps flagged in iter 179's audit. Four contract-only evals for `rails-reliability-engineering`: `circuit-breaker-open` (6 cases — closed-on-success, opens-after-threshold, open-short-circuits, half-open-recovers, half-open-reopens, timeout-and-5xx-classification), `bulkhead-saturation` (5 cases — healthy, over-capacity-rejects-fast, queue-metric-exposed, no-starvation-of-other-endpoints, fallback-honored), `load-shed-threshold` (5 cases — no-shed-below-threshold, shed-on-cross, shed-emits-event, hysteresis-prevents-flapping, shed-recovers-automatically), `slo-budget-exhaustion` (6 cases — healthy, bad-event-consumes, alert-at-50%, freeze-at-100%, refill-on-window-boundary, severity-weighting-honored). Each references existing patterns (`circuit-breaker`, `bulkhead-isolation`, `load-shedding`, `graceful-degradation`, `slo-error-budget`) rather than introducing new implementation shapes. All 4 evals marked `coverage: static-only`. New `reliability` evaluation family registered in `skill-manifest.yml` with the same four checks as `distributed-systems` and `database-engineering`. Inventory counts bumped to 450 patterns / 541 evaluation cases / 108 system tests.
+
+## Iteration 183 — Event-Driven Messaging Evaluation Family
+
+Iteration 183 adds four static-only event-driven messaging contracts for schema compatibility, consumer idempotency and acknowledgement ordering, bounded retries/dead-letter/replay, and ordering/capacity. The advanced Rails coverage matrix now recognizes the dedicated family; controlled benchmark execution remains future work.
