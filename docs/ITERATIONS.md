@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 185 — Distributed Systems and Reliability Benchmark Campaigns
+> **Current milestone:** Iteration 186 — Transaction Isolation Campaign
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -640,3 +640,7 @@ Added the controlled benchmark campaign for the Iteration 183 messaging contract
 ## Iteration 185 — Distributed Systems and Reliability Benchmark Campaigns
 
 Iteration 185 adds the `distributed-systems` and `reliability` controlled benchmark campaigns, promoting all seven remaining Tier 2 static-only contracts (outbox atomicity, inbox deduplication, saga compensation, bulkhead saturation, circuit breaker, load shedding, SLO error budget) to campaign coverage with deterministic pure-Ruby fixtures, pristine references, and the dedicated verifiers `scripts/verify_distributed_systems_eval.rb` and `scripts/verify_reliability_eval.rb`. Campaign coverage rises from 114 to 121 evaluation files; the static-only corpus drops from 35 files / 101 cases to 28 files / 66 cases, leaving only `isolation-level` unbenchmarked.
+
+## Iteration 186 — Transaction Isolation Campaign
+
+Iteration 186 extends the `database-engineering` campaign with the `isolation-level` fixture — a deterministic pure-Ruby simulation of PostgreSQL transaction semantics (per-transaction `SET LOCAL` isolation, ascending `SELECT ... FOR UPDATE` row-lock order, commit-time serialization aborts, lock-time deadlock aborts with automatic rollback, and armed concurrent transfers that defer behind held row locks or clobber stale unlocked reads). `scripts/verify_database_engineering_eval.rb` grades it through the pristine fixture test plus registry-driven regex contracts, the fixture controls system test runs the no-op and reference controls through the real verifier, and `test/corpus_quality_system_test.rb` now expects zero unbenchmarked evaluations. Campaign coverage rises from 121 to 122 evaluation files — every evaluation file in the public corpus is now campaign-covered or explicitly classified static-only; the static-only corpus is unchanged at 28 files / 66 cases.

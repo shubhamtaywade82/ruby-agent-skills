@@ -1,11 +1,11 @@
-## Current work — Iteration 185
+## Current work — Iteration 186
 
 - [x] Iteration 184 landed: the `event-driven-messaging` campaign merged as PR #102 (four fixtures, controls green through the real verifier, main CI green on the merge commit).
-- [x] Add the `distributed-systems` and `reliability` controlled benchmark campaigns: seven pure-Ruby fixtures, pristine references, and the dedicated verifiers; no-op and reference controls run through the real verifiers in CI.
+- [x] Iteration 185 landed: the `distributed-systems` and `reliability` campaigns merged as PR #103 (seven fixtures, controls green through the real verifiers, main CI green on the merge commit).
 - [x] Promote the seven Tier 2 contracts from `coverage: static-only` to campaign coverage (114 -> 121 campaign-covered evaluation files; static-only drops to 28 files / 66 cases).
+- [x] Promote `isolation-level` into the `database-engineering` campaign (Iteration 186: fixture + pristine reference + registry-driven verifier grading; 121 -> 122 campaign-covered evaluation files). The corpus now has zero unbenchmarked evaluation files — every file is campaign-covered or explicitly static-only.
 - [ ] Run a real model campaign with an external agent adapter before claiming empirical model performance for any family; campaign coverage is a protocol, not a result.
-- [ ] `isolation-level` still awaits a concurrency campaign; it is the only unbenchmarked evaluation file.
-- [ ] Recheck messaging, distributed-systems, and reliability coverage against the owning skills and patterns; do not create duplicate skills where existing routing ownership is clear.
+- [ ] Recheck messaging, distributed-systems, reliability, and transaction-isolation coverage against the owning skills and patterns; do not create duplicate skills where existing routing ownership is clear.
 
 # TODO
 
