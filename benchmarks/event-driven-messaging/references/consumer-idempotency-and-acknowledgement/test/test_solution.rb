@@ -16,6 +16,7 @@ class ConsumerIdempotencyReferenceTest < Minitest::Test
     assert_equal "processed", first.fetch("status")
     assert_equal "duplicate", second.fetch("status")
     assert_equal 1, handler.applied.length
-    assert_equal [:ack, "m-1"], consumer.journal.last
+    assert_includes consumer.journal, [:ack, "m-1"]
+    assert_equal [:ack_duplicate, "m-1"], consumer.journal.last
   end
 end
