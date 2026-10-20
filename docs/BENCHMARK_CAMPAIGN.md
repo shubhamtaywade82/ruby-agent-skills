@@ -189,6 +189,16 @@ The reliability evaluations have a dedicated controlled benchmark family:
 
 Each fixture is a deterministic pure-Ruby simulation of overload semantics — permit-based bulkheads with bounded admission queues and clock-driven wait metrics, a circuit breaker whose scripted gateway proves short-circuits make no outbound calls and that timeouts count as failures while 4xx does not, a load shedder whose hysteresis bounds prevent flapping while every shed decision emits an event, and an error budget that freezes non-essential work at exhaustion while essential work stays allowed — so the verifier measures behavior without threads, sleeps, or external infrastructure. The campaign enforces paired skills-disabled/skills-enabled execution, fresh workspaces, the same fixture and verifier, the same agent command, explicit Ruby 3.3 runtime control, and `hidden_cases: external-only`.
 
+## Transaction isolation campaign
+
+The transaction-isolation evaluation joined the existing database-engineering campaign family, completing controlled campaign coverage of the public corpus:
+
+| Family | Public evaluations | Fixture/reference | Repetitions |
+| --- | --- | --- | ---: |
+| `database-engineering` (extended) | `expand-contract`, `concurrent-index`, `database-constraint`, `batched-backfill`, `transaction-lock`, `isolation-level` | independent disposable fixture + pristine reference | 3 |
+
+The isolation fixture is a deterministic pure-Ruby simulation of PostgreSQL transaction semantics — per-transaction `SET LOCAL` isolation configuration, ascending `SELECT ... FOR UPDATE` row-lock order, commit-time serialization aborts and lock-time deadlock aborts with automatic rollback, and armed concurrent transfers that either defer behind held row locks or clobber stale unlocked reads — so the verifier measures behavior without a database server, threads, sleeps, or randomness. The campaign enforces paired skills-disabled/skills-enabled execution, fresh workspaces, the same fixture and verifier, the same agent command, explicit Ruby 3.3 runtime control, and `hidden_cases: external-only`.
+
 The repository's fixture-control tests verify both negative controls (the unmodified fixture must fail) and positive controls (the independent reference must pass). This establishes benchmark integrity, not model-quality results.
 
 Run one of these families with a real coding-agent adapter:

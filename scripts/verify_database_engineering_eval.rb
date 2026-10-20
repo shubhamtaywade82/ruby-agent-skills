@@ -15,7 +15,8 @@ implementation = {
   "concurrent-index" => "db/migrate/20260921000002_add_orders_status_index.rb",
   "database-constraint" => "db/migrate/20260921000003_add_order_reference_constraint.rb",
   "batched-backfill" => "lib/backfill_normalized_email.rb",
-  "transaction-lock" => "app/services/inventory_reservation.rb"
+  "transaction-lock" => "app/services/inventory_reservation.rb",
+  "isolation-level" => "app/services/ledger_transfer.rb"
 }.fetch(evaluation.fetch("id"))
 
 source_path = File.join(workspace, implementation)
@@ -83,6 +84,48 @@ when "transaction-lock"
   checks["contract"] = source.match?(/InventoryReservation/) ?
     { "status" => "pass" } :
     { "status" => "fail", "evidence" => "reservation service missing" }
+
+when "isolation-level"
+  registry = YAML.safe_load(
+    File.read(File.join(root, "benchmarks", "database-engineering", "fixtures.yml"), encoding: "UTF-8"),
+    permitted_classes: [],
+    aliases: false
+  )
+  fixture = registry.fetch("fixtures").fetch("isolation-level")
+  begin
+    require File.join(root, "lib", "ruby_agent_skills", "fixture_test_run")
+    graded = RubyAgentSkills::FixtureTestRun.call(
+      workspace: workspace,
+      fixture_root: File.join(root, "benchmarks", "database-engineering", "fixtures", "isolation-level"),
+      test_file: fixture.fetch("test_file")
+    )
+    checks["functional"] =
+      if graded.success?
+        { "status" => "pass", "evidence" => "fixture contract tests passed" }
+      else
+        { "status" => "fail", "evidence" => graded.output.lines.last(6).join }
+      end
+  rescue StandardError => e
+    checks["functional"] = { "status" => "fail", "evidence" => "#{e.class}: #{e.message}" }
+  end
+  required = Array(fixture.fetch("required_regex"))
+  forbidden = Array(fixture.fetch("forbidden_regex"))
+  contract = Array(fixture.fetch("contract_regex"))
+  missing = required.reject { |expression| Regexp.new(expression).match?(source) }
+  forbidden_found = forbidden.select { |expression| Regexp.new(expression).match?(source) }
+  contract_missing = contract.reject { |expression| Regexp.new(expression).match?(source) }
+  evidence = [
+    ("missing required: #{missing.join(', ')}" unless missing.empty?),
+    ("forbidden present: #{forbidden_found.join(', ')}" unless forbidden_found.empty?),
+    ("missing contract evidence: #{contract_missing.join(', ')}" unless contract_missing.empty?)
+  ].compact.join("; ")
+  checks["contract"] =
+    if evidence.empty?
+      { "status" => "pass",
+        "evidence" => "documented READ COMMITTED choice, ascending row-lock order, bounded abort retry" }
+    else
+      { "status" => "fail", "evidence" => evidence }
+    end
 end
 
 test_files = Dir.glob(File.join(workspace, "{test,spec}/**/*.rb"))

@@ -10,6 +10,7 @@ evaluations:
   - database-constraint
   - batched-backfill
   - transaction-lock
+  - isolation-level
 execution:
   repetitions: 3
   paired: true

@@ -11,9 +11,9 @@ class CorpusQualitySystemTest < Minitest::Test
   # Public evaluations that no benchmark campaign executes yet. Each entry
   # must carry its reason. Any other evaluation without a campaign fails the
   # audit, so the gap stays visible instead of being silently accepted.
-  KNOWN_UNBENCHMARKED = {
-    "isolation-level" => "transaction-isolation cases need a concurrency campaign (TODO.md)"
-  }.freeze
+  # Iteration 186 reached full classification: every evaluation file is now
+  # either campaign-covered or explicitly classified `coverage: static-only`.
+  KNOWN_UNBENCHMARKED = {}.freeze
 
   def run_audit
     Open3.capture3(RbConfig.ruby, AUDIT, chdir: ROOT)

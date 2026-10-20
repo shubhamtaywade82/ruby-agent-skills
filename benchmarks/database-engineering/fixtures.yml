@@ -21,3 +21,23 @@ fixtures:
     root: benchmarks/database-engineering/fixtures/transaction-lock
     implementation_files:
       - app/services/inventory_reservation.rb
+  isolation-level:
+    root: benchmarks/database-engineering/fixtures/isolation-level
+    implementation_file: app/services/ledger_transfer.rb
+    test_file: test/ledger_transfer_test.rb
+    required_regex:
+      - "class LedgerTransfer"
+      - "InsufficientFunds"
+      - "PG::SerializationFailure"
+      - "PG::DeadlockDetected"
+      - "set_local_isolation"
+      - "read_for_update"
+    forbidden_regex:
+      - 'Thread\.new'
+      - 'sleep\s'
+      - 'Random\.'
+      - '\bset_isolation\b'
+    contract_regex:
+      - "READ COMMITTED"
+      - "ascending"
+      - "weakest"
