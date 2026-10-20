@@ -1,0 +1,44 @@
+coverage: static-only
+id: consumer-idempotency-and-acknowledgement
+version: 1
+title: Make message consumption safe under duplicate delivery
+category: rails
+source: rails-event-driven-messaging-v1
+skills:
+  - rails-event-driven-messaging
+  - rails-distributed-systems
+  - rails-database-engineering
+patterns:
+  - inbox-deduplication
+prompt: |
+  Implement a Rails consumer that receives an OrderPaid message and records a payment-confirmed side effect. The broker may redeliver messages and the process may fail. Use a durable idempotency key tied to message identity, persist deduplication state atomically with the business side effect where the storage model permits, and acknowledge only after durable processing. State any remaining crash window if the side effect crosses a transaction boundary.
+constraints:
+  required_design:
+    - stable message identity used for deduplication
+    - durable uniqueness enforcement, not process-local memory only
+    - deduplication state and database side effect share a transaction when possible
+    - acknowledgement follows durable completion
+    - cross-system side effects require an explicit outbox/idempotency strategy
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: first-delivery-processes
+    input: a valid message is delivered once
+    expected: business side effect commits and message is acknowledged
+  - name: duplicate-delivery-does-not-repeat-side-effect
+    input: the same message id is delivered twice
+    expected: one business side effect is committed
+  - name: crash-before-commit-does-not-acknowledge
+    input: consumer fails before the transaction commits
+    expected: no partial durable side effect; message remains eligible for redelivery
+  - name: acknowledgement-follows-durable-work
+    input: business transaction has not committed
+    expected: consumer does not acknowledge the message
+grading:
+  functional: duplicate and failure delivery paths preserve the side-effect invariant
+  tests: tests cover duplicates, rollback, and acknowledgement ordering
+  contract: deduplication survives process restart and is backed by durable uniqueness
+  scope_control: no unsupported exactly-once claim across broker and database boundaries
