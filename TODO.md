@@ -1,6 +1,14 @@
+## Current work — Iteration 183
+
+- [x] Register four event-driven messaging evaluation contracts: envelope/schema compatibility, consumer idempotency and acknowledgement ordering, bounded retry/dead-letter/replay, and ordering/consumer capacity.
+- [x] Refresh the advanced Rails coverage matrix so it recognizes the new dedicated messaging evaluation family.
+- [ ] Run `bash bin/validate` and `bundle exec rubocop` in a repository checkout; update inventory counts from actual validator output if the audit reports different numbers.
+- [ ] Replace static-only messaging contracts with controlled fixture/reference campaigns before claiming empirical model performance.
+- [ ] Recheck remaining messaging-specific coverage against the owning skill and patterns; do not create duplicate skills where existing routing ownership is clear.
+
 # TODO
 
-Open items from the Iteration 149 to 174 rechecks, with status verified against this branch (`ccr-e296aa76-m5ev39`) and `origin/main` (`ccbf4bb`, Iteration 179).
+Historical recheck notes from Iterations 149–174 are retained below. Current repository state was refreshed for Iteration 183; do not treat historical branch/PR statuses in older entries as current.
 
 Legend:
 - `[x]` done. Items marked "on branch" are committed here and reach `main` when PR #100 merges.
@@ -8,9 +16,9 @@ Legend:
 
 ## Main branch health
 
-- [x] Restore a green `main`. Done on branch. `test/corpus_quality_system_test.rb` now asserts an explicit `KNOWN_UNBENCHMARKED` list, and the audit prints the unbenchmarked IDs. `isolation-level` stays unbenchmarked and is named as the one exception. Lands with PR #100. The current `main` run still fails until that merge.
-- [ ] Merge PR #100 (`ccr-e296aa76-m5ev39`, Iteration 180) into `main`. Blocked: merging to `main` is outward-facing, so it needs your go-ahead.
-- [x] Confirm the post-merge result for Iteration 149 (`d349a128`). Verified: `Validate skills` run 1610 on that commit completed with `success`.
+- [x] PR #100 is merged into `main` (verified from GitHub; Iteration 180 is present in the current changelog).
+- [x] Current main has progressed through Iteration 182; the current inventory and evaluation families must be taken from the manifest and current validation output, not the older iteration notes.
+- [ ] Run the full local validation gate against the Iteration 183 branch and preserve the result in the pull request. This execution environment can edit GitHub files but does not provide the repository checkout and runtime needed to claim `bin/validate` passed.
 
 ## PR #80 (Iterations 144–148)
 
