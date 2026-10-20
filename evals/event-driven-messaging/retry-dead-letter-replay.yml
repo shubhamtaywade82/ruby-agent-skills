@@ -1,4 +1,3 @@
-coverage: static-only
 id: retry-dead-letter-replay
 version: 1
 title: Bound retries and make poison messages operable

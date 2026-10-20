@@ -1223,6 +1223,15 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/rails-adversarial/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  event-driven-messaging:
+    fixture_registry: benchmarks/event-driven-messaging/fixtures.yml
+    fixture_root: benchmarks/event-driven-messaging/fixtures
+    verifier: scripts/verify_event_driven_messaging_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/event-driven-messaging/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
   rails-adversarial:
     source: rails-adversarial-v1

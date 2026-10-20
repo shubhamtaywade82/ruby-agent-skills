@@ -1,10 +1,11 @@
-## Current work — Iteration 183
+## Current work — Iteration 184
 
-- [x] Register four event-driven messaging evaluation contracts: envelope/schema compatibility, consumer idempotency and acknowledgement ordering, bounded retry/dead-letter/replay, and ordering/consumer capacity.
-- [x] Refresh the advanced Rails coverage matrix so it recognizes the new dedicated messaging evaluation family.
-- [ ] Run `bash bin/validate` and `bundle exec rubocop` in a repository checkout; update inventory counts from actual validator output if the audit reports different numbers.
-- [ ] Replace static-only messaging contracts with controlled fixture/reference campaigns before claiming empirical model performance.
+- [x] Iteration 183 validation completed: the handoff milestone was synced with the changelog (one-line fix, merged as PR #101); `Validate skills` run #1759 passed on the merged head and main stayed green.
+- [x] Add the `event-driven-messaging` controlled benchmark campaign: four pure-Ruby fixtures, pristine references, and `scripts/verify_event_driven_messaging_eval.rb`; no-op and reference controls run through the real verifier in CI.
+- [x] Promote the four messaging contracts from `coverage: static-only` to campaign coverage (110 -> 114 campaign-covered evaluation files; static-only drops to 35 files / 101 cases).
+- [ ] Run a real model campaign with an external agent adapter before claiming empirical model performance for messaging; campaign coverage is a protocol, not a result.
 - [ ] Recheck remaining messaging-specific coverage against the owning skill and patterns; do not create duplicate skills where existing routing ownership is clear.
+- [ ] Remaining Tier 2 static-only families without campaigns: `distributed-systems` (3 files) and `reliability` (4 files); `isolation-level` still awaits a concurrency campaign.
 
 # TODO
 
