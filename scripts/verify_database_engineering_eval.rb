@@ -114,17 +114,17 @@ when "isolation-level"
   missing = required.reject { |expression| Regexp.new(expression).match?(source) }
   forbidden_found = forbidden.select { |expression| Regexp.new(expression).match?(source) }
   contract_missing = contract.reject { |expression| Regexp.new(expression).match?(source) }
+  evidence = [
+    ("missing required: #{missing.join(', ')}" unless missing.empty?),
+    ("forbidden present: #{forbidden_found.join(', ')}" unless forbidden_found.empty?),
+    ("missing contract evidence: #{contract_missing.join(', ')}" unless contract_missing.empty?)
+  ].compact.join("; ")
   checks["contract"] =
-    if missing.empty? && forbidden_found.empty? && contract_missing.empty?
+    if evidence.empty?
       { "status" => "pass",
         "evidence" => "documented READ COMMITTED choice, ascending row-lock order, bounded abort retry" }
     else
-      { "status" => "fail",
-        "evidence" => [
-          ("missing required: #{missing.join(', ')}" unless missing.empty?),
-          ("forbidden present: #{forbidden_found.join(', ')}" unless forbidden_found.empty?),
-          ("missing contract evidence: #{contract_missing.join(', ')}" unless contract_missing.empty?)
-        ].compact.join("; ") }
+      { "status" => "fail", "evidence" => evidence }
     end
 end
 
