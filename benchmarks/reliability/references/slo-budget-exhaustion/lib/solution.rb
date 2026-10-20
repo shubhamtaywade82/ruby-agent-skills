@@ -12,7 +12,7 @@ class ErrorBudget
 
   def initialize(slo_target:, window_requests:, severity: { "server_error" => 1.0, "timeout" => 0.5 },
                  essential_work: ["security_patch", "incident_response"])
-    @total_budget = (1 - slo_target) * window_requests
+    @total_budget = ((1 - slo_target) * window_requests).round(6)
     @severity = severity
     @essential_work = essential_work
     @consumed = 0.0
