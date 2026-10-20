@@ -169,6 +169,26 @@ The event-driven messaging evaluations have a dedicated controlled benchmark fam
 
 Each fixture is a deterministic pure-Ruby simulation of broker semantics — versioned envelopes with stable identity and unknown-field tolerance, transactional deduplication with commit-then-acknowledge ordering, bounded retries with dead-letter diagnostics and replay safety, and per-key ordering with capacity and buffer limits — so the verifier measures behavior without external infrastructure. The campaign enforces paired skills-disabled/skills-enabled execution, fresh workspaces, the same fixture and verifier, the same agent command, explicit Ruby 3.3 runtime control, and `hidden_cases: external-only`.
 
+## Distributed systems campaign
+
+The distributed-systems evaluations have a dedicated controlled benchmark family:
+
+| Family | Public evaluations | Fixture/reference | Repetitions |
+| --- | --- | --- | ---: |
+| `distributed-systems` | `outbox-atomicity`, `inbox-deduplication`, `saga-compensation` | independent disposable fixture + pristine reference | 3 |
+
+Each fixture is a deterministic pure-Ruby simulation of coordination semantics — a transactional inbox whose insert and side effect commit or roll back together, a transactional outbox whose relay publishes only after commit and whose crash-after-publish retry is deduplicated by the broker, and a durable saga state machine that resumes from the last committed step, compensates in reverse order idempotently, and records failed compensations once — so the verifier measures behavior without external services. The campaign enforces paired skills-disabled/skills-enabled execution, fresh workspaces, the same fixture and verifier, the same agent command, explicit Ruby 3.3 runtime control, and `hidden_cases: external-only`.
+
+## Reliability campaign
+
+The reliability evaluations have a dedicated controlled benchmark family:
+
+| Family | Public evaluations | Fixture/reference | Repetitions |
+| --- | --- | --- | ---: |
+| `reliability` | `bulkhead-saturation`, `circuit-breaker-open`, `load-shed-threshold`, `slo-budget-exhaustion` | independent disposable fixture + pristine reference | 3 |
+
+Each fixture is a deterministic pure-Ruby simulation of overload semantics — permit-based bulkheads with bounded admission queues and clock-driven wait metrics, a circuit breaker whose scripted gateway proves short-circuits make no outbound calls and that timeouts count as failures while 4xx does not, a load shedder whose hysteresis bounds prevent flapping while every shed decision emits an event, and an error budget that freezes non-essential work at exhaustion while essential work stays allowed — so the verifier measures behavior without threads, sleeps, or external infrastructure. The campaign enforces paired skills-disabled/skills-enabled execution, fresh workspaces, the same fixture and verifier, the same agent command, explicit Ruby 3.3 runtime control, and `hidden_cases: external-only`.
+
 The repository's fixture-control tests verify both negative controls (the unmodified fixture must fail) and positive controls (the independent reference must pass). This establishes benchmark integrity, not model-quality results.
 
 Run one of these families with a real coding-agent adapter:

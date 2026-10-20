@@ -1,4 +1,3 @@
-coverage: static-only
 id: bulkhead-saturation
 version: 1
 title: Bound concurrent work so one slow dependency cannot consume all request threads

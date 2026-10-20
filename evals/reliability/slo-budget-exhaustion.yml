@@ -1,4 +1,3 @@
-coverage: static-only
 id: slo-budget-exhaustion
 version: 1
 title: Track the error budget and freeze non-essential work when it is exhausted

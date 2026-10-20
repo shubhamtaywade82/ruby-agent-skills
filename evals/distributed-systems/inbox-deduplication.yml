@@ -1,4 +1,3 @@
-coverage: static-only
 id: inbox-deduplication
 version: 1
 title: Process an at-least-once message exactly once

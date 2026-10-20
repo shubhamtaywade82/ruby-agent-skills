@@ -1232,6 +1232,24 @@ benchmarks:
     campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
     campaign_manifest: benchmarks/event-driven-messaging/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  distributed-systems:
+    fixture_registry: benchmarks/distributed-systems/fixtures.yml
+    fixture_root: benchmarks/distributed-systems/fixtures
+    verifier: scripts/verify_distributed_systems_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/distributed-systems/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
+  reliability:
+    fixture_registry: benchmarks/reliability/fixtures.yml
+    fixture_root: benchmarks/reliability/fixtures
+    verifier: scripts/verify_reliability_eval.rb
+    campaign_documentation: docs/BENCHMARK_CAMPAIGN.md
+    comparison_schema: docs/BENCHMARK_COMPARISON_SCHEMA.md
+    campaign_result_schema: docs/BENCHMARK_CAMPAIGN_RESULT_SCHEMA.md
+    campaign_manifest: benchmarks/reliability/campaign.yml
+    adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
   rails-adversarial:
     source: rails-adversarial-v1

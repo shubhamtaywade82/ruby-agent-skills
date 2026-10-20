@@ -1,0 +1,73 @@
+version: 1
+source: rails-reliability-engineering-v1
+description: Deterministic executable fixtures for reliability engineering contracts.
+fixtures:
+  bulkhead-saturation:
+    root: benchmarks/reliability/fixtures/bulkhead-saturation
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class Bulkhead"
+      - "def acquire"
+      - "def metrics"
+      - "def complete"
+    forbidden_regex:
+      - 'Thread\.new'
+      - 'sleep\s'
+      - 'Random\.'
+    contract_regex:
+      - "queue_depth"
+      - "rejection_count"
+      - "average_wait_seconds"
+  circuit-breaker-open:
+    root: benchmarks/reliability/fixtures/circuit-breaker-open
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class CircuitBreaker"
+      - "def call"
+      - "def state"
+      - "def events"
+    forbidden_regex:
+      - 'Thread\.new'
+      - 'sleep\s'
+      - 'Random\.'
+    contract_regex:
+      - "half_open"
+      - "short_circuited"
+      - "failure_threshold"
+      - "reset_timeout_ms"
+  load-shed-threshold:
+    root: benchmarks/reliability/fixtures/load-shed-threshold
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class LoadShedder"
+      - "def observe"
+      - "def check"
+    forbidden_regex:
+      - 'Thread\.new'
+      - 'sleep\s'
+      - 'Random\.'
+    contract_regex:
+      - "recover_below"
+      - "retry_after"
+      - "request_shed"
+  slo-budget-exhaustion:
+    root: benchmarks/reliability/fixtures/slo-budget-exhaustion
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class ErrorBudget"
+      - "def record"
+      - "def refill"
+      - "def allowed?"
+    forbidden_regex:
+      - 'Thread\.new'
+      - 'sleep\s'
+      - 'Random\.'
+    contract_regex:
+      - "severity"
+      - "alert_raised"
+      - "window_refilled"
+      - "essential"

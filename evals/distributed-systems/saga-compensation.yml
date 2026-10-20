@@ -1,4 +1,3 @@
-coverage: static-only
 id: saga-compensation
 version: 1
 title: Coordinate a multi-step workflow with compensating actions on partial failure

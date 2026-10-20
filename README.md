@@ -513,7 +513,7 @@ Each evaluation can specify:
 - scope control
 - expected failure modes
 
-Current validated evaluation inventory: **506 cases**.
+Current validated evaluation inventory: **557 cases**.
 
 Important evaluation families include:
 
