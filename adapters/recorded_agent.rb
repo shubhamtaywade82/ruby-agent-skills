@@ -26,7 +26,7 @@ RECORDING_SCHEMA_VERSION = 1
 RESERVED_WORKSPACE_ENTRIES = [".git", ".ruby-agent-eval"].freeze
 
 def workspace_manifest(workspace)
-  Dir.glob(File.join(workspace, "**", "*")).sort.each_with_object({}) do |path, manifest|
+  Dir.glob(File.join(workspace, "**", "*")).each_with_object({}) do |path, manifest|
     next unless File.file?(path)
 
     relative = path.delete_prefix(workspace + File::SEPARATOR)
@@ -61,7 +61,7 @@ def workspace_mismatch(workspace, recorded_workspace)
 end
 
 def manifest_differences(actual, recorded)
-  changed = recorded.select { |_path, digest| actual[_path] != digest }
+  changed = recorded.reject { |path, digest| actual[path] == digest }
 
   {
     missing: (recorded.keys - actual.keys).sort.join(", "),
@@ -79,6 +79,7 @@ def safe_destination(workspace, relative)
     abort "recorded file path escapes the workspace: #{relative.inspect}"
   end
   return nil if RESERVED_WORKSPACE_ENTRIES.include?(segments.first)
+
   File.join(workspace, relative)
 end
 
@@ -125,7 +126,7 @@ rescue JSON::ParserError => e
 end
 
 unless recording["recording_schema_version"] == RECORDING_SCHEMA_VERSION
-  abort "unsupported recording schema: #{recording["recording_schema_version"].inspect}"
+  abort "unsupported recording schema: #{recording['recording_schema_version'].inspect}"
 end
 abort "recording evaluation mismatch" unless recording["evaluation"] == evaluation_id
 abort "recording configuration mismatch" unless recording["configuration"] == configuration

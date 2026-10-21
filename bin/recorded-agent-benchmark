@@ -91,7 +91,7 @@ def summarize_entry(entry:, evaluation_output:)
   return summary.merge("complete" => false, "dimensions" => nil) unless File.file?(campaign_path)
 
   result = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
-              .fetch("evaluations", {}).fetch(entry.fetch("evaluation"), {})
+               .fetch("evaluations", {}).fetch(entry.fetch("evaluation"), {})
   summary.merge("complete" => result["complete"], "dimensions" => result["dimensions"])
 end
 
@@ -140,7 +140,7 @@ entries.each do |entry|
 end
 
 summary_path = File.join(output_dir, "summary.json")
-File.write(summary_path, JSON.pretty_generate(summary) + "\n", encoding: "UTF-8")
+File.write(summary_path, "#{JSON.pretty_generate(summary)}\n", encoding: "UTF-8")
 puts JSON.pretty_generate(summary)
 
-abort "recorded campaign failed for: #{failed.sort.join(", ")}" unless failed.empty?
+abort "recorded campaign failed for: #{failed.sort.join(', ')}" unless failed.empty?

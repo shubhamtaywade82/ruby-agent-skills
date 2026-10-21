@@ -26,8 +26,8 @@ class RecordedAgentCampaignSystemTest < Minitest::Test
     registered = ENTRIES.map { |entry| entry.fetch("evaluation") }
 
     assert_equal registered.uniq.sort, Dir.children(SET_DIR).grep_v(/\.yml\z/).sort
-    assert_empty registered.tally.select { |_evaluation, count| count > 1 }
-    assert_empty ENTRIES.reject { |entry| File.file?(File.join(ROOT, entry.fetch("manifest"))) }
+    assert_empty(registered.tally.select { |_evaluation, count| count > 1 })
+    assert_empty(ENTRIES.reject { |entry| File.file?(File.join(ROOT, entry.fetch("manifest"))) })
   end
 
   def test_every_recording_is_structurally_sound
@@ -41,14 +41,14 @@ class RecordedAgentCampaignSystemTest < Minitest::Test
   def test_toolchain_recording_completes_a_paired_run
     Dir.mktmpdir("recorded-campaign") do |output|
       assert_predicate run_set(output, "ruby-toolchain-contract"), :success?
-      assert_equal true, campaign_result(output, "ruby-toolchain-contract").fetch("complete")
+      assert(campaign_result(output, "ruby-toolchain-contract").fetch("complete"))
     end
   end
 
   def test_database_recording_completes_a_paired_run
     Dir.mktmpdir("recorded-campaign") do |output|
       assert_predicate run_set(output, "transaction-lock"), :success?
-      assert_equal true, campaign_result(output, "transaction-lock").fetch("complete")
+      assert(campaign_result(output, "transaction-lock").fetch("complete"))
     end
   end
 
@@ -70,6 +70,7 @@ class RecordedAgentCampaignSystemTest < Minitest::Test
 
       assert_equal "z.ai", baseline.dig("agent", "metadata", "provider")
       integrity = skills.dig("agent", "metadata", "recorded_agent", "integrity")
+
       assert integrity.fetch("skill_selection_verified")
       refute_empty baseline.dig("patch", "diff")
     end
@@ -174,7 +175,7 @@ class RecordedAgentCampaignSystemTest < Minitest::Test
 
   def write_baseline_manifest(sandbox)
     manifest = File.join(sandbox, "manifest.json")
-    payload = JSON.pretty_generate("skills" => [], "patterns" => []) + "\n"
+    payload = "#{JSON.pretty_generate('skills' => [], 'patterns' => [])}\n"
     File.write(manifest, payload, encoding: "UTF-8")
   end
 
