@@ -156,7 +156,7 @@ class RecordedAgentCampaignSystemTest < Minitest::Test
 
   def dimension_tallies_pass(dimensions)
     dimensions.values.all? do |counts|
-      counts.values.all? { |tally| tally == { "pass" => 1 } }
+      counts.values.all?({ "pass" => 1 })
     end
   end
 
