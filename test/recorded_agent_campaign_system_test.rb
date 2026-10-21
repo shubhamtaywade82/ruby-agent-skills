@@ -38,6 +38,19 @@ class RecordedAgentCampaignSystemTest < Minitest::Test
     end
   end
 
+  def test_every_recording_passes_its_verifier_dimensions
+    Dir.mktmpdir("recorded-campaign") do |output|
+      assert_predicate run_set(output), :success?
+
+      ENTRIES.each do |entry|
+        evaluation = entry.fetch("evaluation")
+        dimensions = campaign_result(output, evaluation).fetch("dimensions")
+
+        assert dimension_tallies_pass(dimensions), "#{evaluation} dimensions all pass"
+      end
+    end
+  end
+
   def test_toolchain_recording_completes_a_paired_run
     Dir.mktmpdir("recorded-campaign") do |output|
       assert_predicate run_set(output, "ruby-toolchain-contract"), :success?
@@ -94,10 +107,10 @@ class RecordedAgentCampaignSystemTest < Minitest::Test
 
   private
 
-  def run_set(output, evaluation)
+  def run_set(output, evaluation = nil)
     command = [RbConfig.ruby, File.join(ROOT, "bin", "recorded-agent-benchmark"),
-               "--recordings", SET_ID, "--evaluation", evaluation,
-               "--runs", "1", "--output", output]
+               "--recordings", SET_ID, "--runs", "1", "--output", output]
+    command += ["--evaluation", evaluation] unless evaluation.nil?
     _out, _err, status = Open3.capture3(*command, chdir: ROOT)
 
     status
@@ -139,6 +152,12 @@ class RecordedAgentCampaignSystemTest < Minitest::Test
     errors.concat(path_errors((files || {}).keys))
     errors.concat(fingerprint_errors(recording["context_fingerprint"]))
     errors
+  end
+
+  def dimension_tallies_pass(dimensions)
+    dimensions.values.all? do |counts|
+      counts.values.all? { |tally| tally == { "pass" => 1 } }
+    end
   end
 
   def path_errors(paths)
