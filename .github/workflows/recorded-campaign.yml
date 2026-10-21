@@ -1,0 +1,44 @@
+name: Recorded model campaign
+
+# Evidence capture for the recorded model campaign: runs the full
+# recorded-model-campaign-v1 set (all recorded evaluations, both paired
+# configurations, manifest repetitions) through the ordinary campaign
+# machinery with the recorded-agent replay adapter, then uploads the
+# benchmark-results tree as a workflow artifact. Result files are never
+# committed to the repository (see docs/BENCHMARK_CAMPAIGN.md); the
+# uploaded artifact is the durable campaign evidence.
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: "Repetitions per evaluation (blank = manifest default)"
+        required: false
+        default: ""
+
+jobs:
+  recorded-campaign:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Run the recorded model campaign
+        run: |
+          args=(--recordings recorded-model-campaign-v1 --output benchmark-results/recorded-model-campaign-v1)
+          if [ -n "${{ inputs.runs }}" ]; then
+            args+=(--runs "${{ inputs.runs }}")
+          fi
+          ruby bin/recorded-agent-benchmark "${args[@]}"
+
+      - name: Upload campaign evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: recorded-model-campaign-v1
+          path: benchmark-results/recorded-model-campaign-v1
+          retention-days: 90

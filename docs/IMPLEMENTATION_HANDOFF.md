@@ -9,7 +9,7 @@ Current inventory:
 - 96 skills
 - 450 implementation patterns
 - 557 evaluation cases
-- 108 system/contract tests
+- 109 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -24,7 +24,7 @@ The audit reports exact measurements rather than estimates for:
 - benchmark-backed versus explicitly static-only evaluation coverage;
 - routing trigger collisions and stale manifest skill paths.
 
-The public evaluation corpus has 150 evaluation files / 557 cases. Campaigns provide controlled benchmark coverage for 122 evaluation files — the entire campaign-eligible corpus, including the four event-driven messaging contracts promoted from static-only in Iteration 184, the seven distributed-systems and reliability contracts promoted in Iteration 185, and the transaction-isolation contract promoted in Iteration 186; the remaining non-campaign corpus is explicitly classified `coverage: static-only` (28 files / 66 cases), so no evaluation file is left unclassified. The existing corpus-quality audit and `test/corpus_quality_system_test.rb` remain authoritative for the exact static-only and unbenchmarked totals. A campaign defines the measurement protocol with independent fixture references and verifiers; actual model results remain separate empirical evidence.
+The public evaluation corpus has 150 evaluation files / 557 cases. Campaigns provide controlled benchmark coverage for 122 evaluation files — the entire campaign-eligible corpus, including the four event-driven messaging contracts promoted from static-only in Iteration 184, the seven distributed-systems and reliability contracts promoted in Iteration 185, and the transaction-isolation contract promoted in Iteration 186; the remaining non-campaign corpus is explicitly classified `coverage: static-only` (28 files / 66 cases), so no evaluation file is left unclassified. The existing corpus-quality audit and `test/corpus_quality_system_test.rb` remain authoritative for the exact static-only and unbenchmarked totals. A campaign defines the measurement protocol with independent fixture references and verifiers; actual model results remain separate empirical evidence, and the first real-model campaign evidence now exists through the recorded-agent transport (Iteration 187: seven evaluations in both paired configurations, graded by the real verifiers, with integrity guards and maintainer-model provenance documented in `agent-recordings/recorded-model-campaign-v1/recording-set.yml`).
 
 ## Iteration 152 — Action Controller Resource-Loading Evidence
 
@@ -262,4 +262,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 186. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 187. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).

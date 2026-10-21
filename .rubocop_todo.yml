@@ -297,7 +297,7 @@ Lint/UselessAssignment:
     - 'scripts/verify_production_runtime_eval.rb'
     - 'scripts/verify_test_engineering_eval.rb'
 
-# Offense count: 119
+# Offense count: 120
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes, Max.
 Metrics/AbcSize:
   Exclude:
@@ -355,6 +355,7 @@ Metrics/AbcSize:
     - 'test/rails_serialization_globalid_system_test.rb'
     - 'test/rails_staff_principal_architecture_system_test.rb'
     - 'test/rails_validations_system_test.rb'
+    - 'test/recorded_agent_campaign_system_test.rb'
     - 'test/release_archive_system_test.rb'
     - 'test/release_archive_verification_system_test.rb'
     - 'test/routing_archive_integrity_system_test.rb'
@@ -419,7 +420,7 @@ Metrics/BlockNesting:
     - 'bin/routing-release-bundle-verify'
     - 'scripts/verify_training_eval.rb'
 
-# Offense count: 16
+# Offense count: 17
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
@@ -431,6 +432,7 @@ Metrics/ClassLength:
     - 'test/rails_associations_system_test.rb'
     - 'test/rails_authentication_system_test.rb'
     - 'test/rails_authorization_system_test.rb'
+    - 'test/recorded_agent_campaign_system_test.rb'
     - 'test/release_archive_system_test.rb'
     - 'test/release_archive_verification_system_test.rb'
     - 'test/routing_archive_integrity_system_test.rb'

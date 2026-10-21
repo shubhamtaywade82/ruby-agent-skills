@@ -97,7 +97,9 @@ This repository defines the protocol; it does not need to vendor an Ollama/Codex
 The repository now includes:
 
     adapters/command_agent.rb
+    adapters/recorded_agent.rb
     bin/agent-benchmark
+    bin/recorded-agent-benchmark
     lib/ruby_agent_skills/agent_adapter.rb
     bin/coding-agent-claude and bin/routing-agent-claude
     bin/coding-agent-cursor and bin/routing-agent-cursor
@@ -108,6 +110,8 @@ The repository now includes:
 The command adapter is provider-neutral. It runs a trusted external coding-agent command inside the disposable benchmark workspace and writes normalized metadata to RUBY_AGENT_METADATA_FILE.
 
 The Cursor, Antigravity, and OpenCode coding adapters run permission-bypass modes without OS-level isolation. They refuse to start unless `RUBY_AGENT_UNSANDBOXED_CODING=1` is set; see `docs/LOCAL_BENCHMARKING.md` for the required environment and per-provider residual risk.
+
+The recorded agent is a replay transport for real-model campaign evidence, not a live provider runtime: it materializes a recorded agent session inside the workspace (see docs/BENCHMARK_CAMPAIGN.md, "Recorded model campaign") after verifying the prompt digest, the workspace file manifest, and — for skills-enabled runs — the materialized skill/pattern selection against the recording's fingerprints, so a recording cannot be replayed against a different task. Use bin/recorded-agent-benchmark to run a whole recording set through the paired campaign machinery.
 
 Use bin/agent-benchmark when the same external command should be paired automatically with skills disabled and enabled:
 

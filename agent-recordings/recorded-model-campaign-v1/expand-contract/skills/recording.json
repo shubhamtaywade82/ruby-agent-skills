@@ -1,0 +1,30 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "expand-contract",
+  "configuration": "skills",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the baseline context plus the skill and pattern pack the runner materializes for the skills-enabled configuration; the SKILL.md and pattern guidance for the declared selection was consumed before editing.",
+  "context_fingerprint": {
+    "prompt_sha256": "55b95d6b82da4ad10401d5192189e3a434afb349c71ca0800ea80140d67ed635",
+    "workspace": {
+      "db/migrate/20260921000001_expand_customer_name.rb": "6c370a6414e82233ad8e8f01851b0fba9b1549ee2a9739ef60d24ce495f7c59e",
+      "test/migration_test.rb": "11183029e1ce20139a2d6ec807c4de3729c945ad507aa6fa4c01a9cd2fc3db1c"
+    },
+    "skills": [
+      "rails-database-engineering"
+    ],
+    "patterns": [
+      "expand-contract-migration"
+    ]
+  },
+  "files": {
+    "db/migrate/20260921000001_expand_customer_name.rb": "# Expand step of the expand/backfill/cutover/contract sequence for\n# adding customer display_name while old and new application processes\n# overlap during a rolling deployment.\n#\n# Rollout plan, one step per deploy:\n#   1. Expand (this migration): add the nullable display_name column.\n#      Old code ignores it; new code writes both name and display_name.\n#   2. Backfill: a later, bounded, rerunnable migration populates\n#      display_name from name in batches; it can be interrupted and\n#      resumed, and its completion criterion is \"no NULL rows remain\".\n#   3. Cutover: switch reads to display_name while writes continue to\n#      maintain both columns.\n#   4. Contract: only after no running version reads name, a separate\n#      migration removes the old column.\n#\n# The destructive removal is deliberately NOT part of this migration:\n# removing name here would break every old process still reading it.\nclass ExpandCustomerName < ActiveRecord::Migration[8.1]\n  def change\n    add_column :customers, :display_name, :string\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

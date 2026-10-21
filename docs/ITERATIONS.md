@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 186 — Transaction Isolation Campaign
+> **Current milestone:** Iteration 187 — Recorded Model Campaign
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -644,3 +644,7 @@ Iteration 185 adds the `distributed-systems` and `reliability` controlled benchm
 ## Iteration 186 — Transaction Isolation Campaign
 
 Iteration 186 extends the `database-engineering` campaign with the `isolation-level` fixture — a deterministic pure-Ruby simulation of PostgreSQL transaction semantics (per-transaction `SET LOCAL` isolation, ascending `SELECT ... FOR UPDATE` row-lock order, commit-time serialization aborts, lock-time deadlock aborts with automatic rollback, and armed concurrent transfers that defer behind held row locks or clobber stale unlocked reads). `scripts/verify_database_engineering_eval.rb` grades it through the pristine fixture test plus registry-driven regex contracts, the fixture controls system test runs the no-op and reference controls through the real verifier, and `test/corpus_quality_system_test.rb` now expects zero unbenchmarked evaluations. Campaign coverage rises from 121 to 122 evaluation files — every evaluation file in the public corpus is now campaign-covered or explicitly classified static-only; the static-only corpus is unchanged at 28 files / 66 cases.
+
+## Iteration 187 — Recorded Model Campaign
+
+Iteration 187 closes the external-agent execution gap with the first real-model campaign. The `recorded-model-campaign-v1` recording set captures a real model's workspace edits for seven evaluations across the ruby-toolchain, ruby-gem-development, and database-engineering campaign families, in both paired configurations (skills disabled, and skills enabled with the declared skill/pattern pack). The new `adapters/recorded_agent.rb` replay adapter materializes those recordings inside the disposable benchmark workspace through the agent adapter protocol, after verifying the prompt digest, the complete workspace file manifest, and — for skills-enabled runs — the materialized skill/pattern selection against the recording's fingerprints, so a recording cannot be replayed against a different task. `bin/recorded-agent-benchmark` drives the ordinary paired campaign machinery over the set and aggregates a set-level summary, `test/recorded_agent_campaign_system_test.rb` executes real paired campaign runs through the runner and verifiers in CI, and the `recorded-campaign` workflow captures full-set evidence as workflow artifacts (result files stay uncommitted under `benchmark-results/`). The recordings state their provenance explicitly: the acting model is the repository's maintaining model responding only to the materialized task context — never the pristine references, verifiers, or fixture registries — so the campaign validates the adapter protocol, runner, and verifiers end to end with a real model in the loop, and is not a neutral measurement of third-party model difficulty. `isolation-level` is deliberately left unrecorded because the same model authored that fixture in Iteration 186.

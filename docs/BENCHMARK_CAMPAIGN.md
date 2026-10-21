@@ -212,3 +212,12 @@ Run one of these families with a real coding-agent adapter:
       --agent-command 'YOUR_AGENT_ADAPTER_COMMAND'
 
 The remaining empirical gap is **actual external-agent execution and evidence capture**. The repository already contains the campaign definitions, disposable fixtures, independent references, verifier scripts, provenance controls, and CI integrity checks needed to conduct that measurement.
+
+## Recorded model campaign
+
+The first real-model campaign runs through the recorded-agent transport. The `agent-recordings/recorded-model-campaign-v1/` set captures the workspace edits a real model made while responding to the materialized task context — prompt, fixture, and, for skills-enabled runs, the selected skill/pattern pack — without access to the benchmark repository root, the verifiers, or the pristine references. `adapters/recorded_agent.rb` replays those edits inside the disposable workspace through the ordinary protocol seam, after verifying the prompt digest, the complete workspace file manifest, and the materialized skill/pattern selection against the recording's fingerprints, so a recording cannot be replayed against a different task. `bin/recorded-agent-benchmark` drives the paired campaign machinery for the whole set and aggregates a summary:
+
+    ruby bin/recorded-agent-benchmark --recordings recorded-model-campaign-v1
+
+The set covers seven evaluations across the ruby-toolchain, ruby-gem-development, and database-engineering families in both configurations. Its provenance is stated in `recording-set.yml`: the acting model is the repository's maintaining model, so the campaign validates the end-to-end protocol — adapter, runner, verifier, evidence capture — rather than neutral third-party model difficulty, and `isolation-level` is deliberately left unrecorded because the same model authored that fixture. `test/recorded_agent_campaign_system_test.rb` exercises the transport in CI on every validation run, and the `recorded-campaign` workflow captures full-set evidence as workflow artifacts; the result files themselves are never committed.
+

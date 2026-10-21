@@ -1,0 +1,30 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "concurrent-index",
+  "configuration": "skills",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the baseline context plus the skill and pattern pack the runner materializes for the skills-enabled configuration; the SKILL.md and pattern guidance for the declared selection was consumed before editing.",
+  "context_fingerprint": {
+    "prompt_sha256": "1091af81e9ddf96004898bbf8e1a8f21fd7e4a818f49c4049df5034c928ac96f",
+    "workspace": {
+      "db/migrate/20260921000002_add_orders_status_index.rb": "a6f988000869298b111f807948d6b20bbc1355533f670125c056b09dfc7e3069",
+      "test/migration_test.rb": "1cf54ca5d761f51e6b87970c122f046d13bfce19445a4e39fc0c6414b4fd9cb6"
+    },
+    "skills": [
+      "rails-database-engineering"
+    ],
+    "patterns": [
+      "production-index"
+    ]
+  },
+  "files": {
+    "db/migrate/20260921000002_add_orders_status_index.rb": "# Adds the orders.status index with a production-safe strategy for a\n# high-write table.\n#\n# Considerations applied:\n#   - The index is built with CREATE INDEX CONCURRENTLY so writes keep\n#     flowing during the build instead of blocking behind the lock a\n#     plain CREATE INDEX takes.\n#   - Concurrent index creation cannot run inside a transaction block,\n#     so disable_ddl_transaction! opts out of the migration's default\n#     ddl transaction.\n#   - if_not_exists makes a rerun after a failed deploy deterministic:\n#     a repeated migration does not fail on the leftover index.\n#   - If a concurrent build fails midway, PostgreSQL leaves an INVALID\n#     index behind; recovery is to drop that index concurrently and\n#     rerun, then verify the index is valid and actually used by the\n#     target query plan.\nclass AddOrdersStatusIndex < ActiveRecord::Migration[8.1]\n  disable_ddl_transaction!\n\n  def change\n    add_index :orders, :status, algorithm: :concurrently, if_not_exists: true\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

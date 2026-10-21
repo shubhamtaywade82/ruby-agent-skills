@@ -242,3 +242,29 @@ ruby bin/agent-benchmark \
 ```
 
 These campaigns are intentionally small enough to use as adapter smoke tests while still preserving the repository's paired three-repetition protocol. They produce empirical evidence only when a real coding agent actually edits the disposable fixture and the declared verifier evaluates the result.
+
+## Reproducing the recorded model campaign
+
+The recorded model campaign needs no provider CLI, authentication, or
+model access at all: the model's edits are already captured as
+recordings, and the replay adapter materializes them through the
+ordinary protocol seam.
+
+```bash
+# Full recorded set (7 evaluations x paired configurations, manifest repetitions):
+ruby bin/recorded-agent-benchmark --recordings recorded-model-campaign-v1
+
+# One evaluation, one paired repetition (fast smoke run):
+ruby bin/recorded-agent-benchmark \
+  --recordings recorded-model-campaign-v1 \
+  --evaluation ruby-toolchain-contract --runs 1 \
+  --output benchmark-results/recorded-smoke
+```
+
+The replay adapter verifies the prompt digest, the complete workspace
+file manifest, and the skills-enabled selection against the recording's
+fingerprints before writing anything, so it refuses to replay a
+recording against a modified task. Provenance and applicability limits
+are recorded in
+`agent-recordings/recorded-model-campaign-v1/recording-set.yml`.
+

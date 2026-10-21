@@ -1,0 +1,30 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "ruby-toolchain-contract",
+  "configuration": "skills",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the baseline context plus the skill and pattern pack the runner materializes for the skills-enabled configuration; the SKILL.md and pattern guidance for the declared selection was consumed before editing.",
+  "context_fingerprint": {
+    "prompt_sha256": "3abe17907ab3945eb8e94ebe1a0b600b7d8c3e9c768a40b680590c90936831d5",
+    "workspace": {
+      "lib/solution.rb": "8c49222995452fde63c0c2dac9d3283290e32b442c059b65d1e0f52e43dfddd8",
+      "test/test_solution.rb": "c51954b4ea2af005b442de7dc9d54675aa32f5144870e9647d8e9c9e986a4e67"
+    },
+    "skills": [
+      "ruby-core",
+      "ruby-runtime-compatibility",
+      "ruby-toolchain"
+    ],
+    "patterns": []
+  },
+  "files": {
+    "lib/solution.rb": "# frozen_string_literal: true\n\n# Resolves and verifies a Ruby development toolchain from repository\n# evidence, following the evidence-first procedure: inspect what the\n# repository declares, observe what the local runtime actually provides,\n# and only then act. The declared requirement and the observed runtime\n# are resolved separately so a mismatch is reported as a conflict instead\n# of being silently absorbed; executable provenance is verified so ruby\n# and bundle come from one installation before Bundler installs anything;\n# and a native-extension failure is classified from concrete build output\n# so the missing prerequisite is named instead of working around it by\n# weakening the runtime requirement.\nclass RubyToolchainAdvisor\n  # Compares the declared requirement with the observed runtime and the\n  # resolved executables. Status is \"conflict\" when ruby and bundle\n  # resolve from different installations, when the observed runtime does\n  # not satisfy the declared requirement, or when either version cannot\n  # be parsed into segments.\n  def resolve(declared_ruby:, observed_ruby:, ruby_executable:, bundle_executable:)\n    {\n      \"status\" => resolution_status(\n        declared_ruby: declared_ruby,\n        observed_ruby: observed_ruby,\n        ruby_executable: ruby_executable,\n        bundle_executable: bundle_executable\n      ),\n      \"declared_ruby\" => declared_ruby,\n      \"observed_ruby\" => observed_ruby,\n      \"ruby_executable\" => ruby_executable,\n      \"bundle_executable\" => bundle_executable\n    }\n  end\n\n  # Application dependencies are installed through Bundler so the Gemfile\n  # stays the single dependency contract and no global gems are mixed in.\n  # With a lockfile, bundle check reports drift before bundle install\n  # reconciles it; without one, bundle install resolves and writes it.\n  def dependency_command(lockfile_present:)\n    lockfile_present ? \"bundle check && bundle install\" : \"bundle install\"\n  end\n\n  # Classifies a native-extension build failure from the concrete\n  # compiler, linker, or make output so the correct prerequisite is\n  # fixed rather than the runtime version.\n  def native_extension_classification(error_output)\n    output = error_output.to_s\n    if output.include?(\"ruby.h\")\n      \"missing-ruby-header\"\n    elsif output.include?(\"ld:\") || output.include?(\"library not found\")\n      \"linker\"\n    elsif output.include?(\"make\") && output.include?(\"not found\")\n      \"missing-build-tool\"\n    else\n      \"unclassified\"\n    end\n  end\n\n  # The declared runtime is repository evidence. Installation failures\n  # are resolved at the toolchain level (headers, linker libraries,\n  # build tools); the requirement itself is never relaxed to make the\n  # failure disappear.\n  def runtime_change_allowed?(reason:)\n    # Every reported reason (for example: #{reason}) is a toolchain\n    # problem to diagnose, never a justification to change the runtime.\n    false\n  end\n\n  private\n\n  def resolution_status(declared_ruby:, observed_ruby:, ruby_executable:, bundle_executable:)\n    return \"conflict\" unless same_installation?(ruby_executable, bundle_executable)\n    return \"conflict\" unless requirement_satisfied?(declared_ruby, observed_ruby)\n\n    \"supported\"\n  end\n\n  def same_installation?(ruby_executable, bundle_executable)\n    File.dirname(ruby_executable) == File.dirname(bundle_executable)\n  end\n\n  # Segment-wise comparison so \"3.3\" is satisfied by \"3.3.6\" but not by\n  # \"3.2.4\", and \"3.1\" is not satisfied by \"3.10.0\" (one differs from\n  # ten). An unparsable or partially-specified observed version cannot\n  # confirm the requirement, so it conflicts conservatively.\n  def requirement_satisfied?(declared, observed)\n    declared_segments = version_segments(declared)\n    observed_segments = version_segments(observed)\n    return false if declared_segments.nil? || observed_segments.nil?\n    return false if declared_segments.length > observed_segments.length\n\n    declared_segments.zip(observed_segments).all? { |declared_value, observed_value| declared_value == observed_value }\n  end\n\n  def version_segments(version)\n    version.to_s.split(\".\").map { |segment| Integer(segment, 10) }\n  rescue ArgumentError, TypeError\n    nil\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

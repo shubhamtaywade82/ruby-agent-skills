@@ -1,0 +1,31 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "transaction-lock",
+  "configuration": "skills",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the baseline context plus the skill and pattern pack the runner materializes for the skills-enabled configuration; the SKILL.md and pattern guidance for the declared selection was consumed before editing.",
+  "context_fingerprint": {
+    "prompt_sha256": "d987c7d31453490adbc72483415165ebda7fec13714b0e0e94a5b49162d68dfb",
+    "workspace": {
+      "app/services/inventory_reservation.rb": "d3e4479afb1fcac4931a761634e42f7df9d2c0fcaed75ee5f15bb32816b4b4be",
+      "test/reservation_test.rb": "5d396ede58433015e31484c809dae4e9dccaa0fdd40599b5aa9f67085efe4143"
+    },
+    "skills": [
+      "rails-database-engineering",
+      "ruby-concurrency"
+    ],
+    "patterns": [
+      "transaction-lock-boundary"
+    ]
+  },
+  "files": {
+    "app/services/inventory_reservation.rb": "# frozen_string_literal: true\n\n# Reserves one unit of inventory.\n#\n# Concurrency design:\n#   - Invariant: a row's quantity never goes negative and one unit is\n#     never reserved twice. The state that owns the invariant is the\n#     inventory row itself, so the transition is serialized on that row.\n#   - with_lock issues SELECT ... FOR UPDATE and reloads the row inside\n#     the transaction, so the guard and the decrement observe the same\n#     committed version: two racing workers serialize, one wins, and\n#     the loser sees the post-decrement quantity and is rejected.\n#   - The lock is acquired as late as practical and the protected\n#     section holds only the guard plus the write; no application or\n#     network work happens while the row lock is held.\n#   - A database CHECK (quantity >= 0) would be the stronger belt-and-\n#     braces boundary behind this service; it is deliberately out of\n#     scope for this change, which stays focused on the reservation\n#     transition.\nclass InventoryReservation\n  def self.call(item)\n    item.with_lock do\n      raise \"unavailable\" if item.quantity <= 0\n\n      item.update!(quantity: item.quantity - 1)\n    end\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}
