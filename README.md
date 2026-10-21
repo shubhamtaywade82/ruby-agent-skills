@@ -113,10 +113,10 @@ skills/rails-active-record/
 
 | Capability | Count |
 |---|---:|
-| Skills | **96** |
+| Skills | **97** |
 | Implementation patterns | **450** |
 | Evaluation cases | **557** |
-| Dedicated system/contract tests | **109** |
+| Dedicated system/contract tests | **110** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -446,7 +446,7 @@ The core principles are:
 - deterministic verification
 - no claims of correctness without evidence
 
-Process skills sit around the Ruby and Rails skills: `agent-workflow` runs the implementation loop (test-first at agreed seams, focused tests per slice, one full-suite run), `change-review` reviews a diff on two separate axes (repository standards and spec fidelity), `ruby-debugging` builds a failing feedback loop before any hypothesis, `ruby-domain-modeling` keeps a domain glossary and decision records, and `ruby-api-design` applies deep-module design. The planning layer turns ideas into decisions and work before any code: `planning-interview` settles a design with the user in rounds, `planning-spec` writes it up with agreed test seams, `planning-tickets` slices it into vertical tickets with blocking edges, and `planning-wayfinder` charts efforts larger than one session. `planning-tracker` stores their items as local Markdown files (validated by its bundled script) or as GitHub Issues. `docs/WRITING_SKILLS.md` covers how to write skills for agents. Several of these disciplines are adapted from https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock).
+Process skills sit around the Ruby and Rails skills: `agent-workflow` runs the implementation loop (test-first at agreed seams, focused tests per slice, one full-suite run), `ai-code-review` orchestrates risk-based review of AI-generated and human-authored changes, `change-review` assesses repository standards and spec fidelity on separate axes, `ruby-debugging` builds a failing feedback loop before any hypothesis, `ruby-domain-modeling` keeps a domain glossary and decision records, and `ruby-api-design` applies deep-module design. The planning layer turns ideas into decisions and work before any code: `planning-interview` settles a design with the user in rounds, `planning-spec` writes it up with agreed test seams, `planning-tickets` slices it into vertical tickets with blocking edges, and `planning-wayfinder` charts efforts larger than one session. `planning-tracker` stores their items as local Markdown files (validated by its bundled script) or as GitHub Issues. `docs/WRITING_SKILLS.md` covers how to write skills for agents. Several of these disciplines are adapted from https://github.com/mattpocock/skills (MIT License, Copyright (c) 2026 Matt Pocock).
 
 ---
 
@@ -649,7 +649,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **96 skills**, **450 implementation patterns**, **557 evaluation cases**, and **109 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **97 skills**, **450 implementation patterns**, **557 evaluation cases**, and **110 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 

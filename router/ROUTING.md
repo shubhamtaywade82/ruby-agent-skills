@@ -43,6 +43,7 @@ This file defines how an agent should select and compose skills.
 | Runtime failure/exception | ruby-debugging | ruby-tdd-refactoring |
 | Rails application structure | rails-architecture | ruby-clean-code, stack-minimality |
 | Ruby/Rails + React + PostgreSQL implementation minimality | stack-minimality | relevant domain skill, ruby-clean-code, ruby-tdd-refactoring |
+| Full AI code review of a generated or human-authored diff | ai-code-review | change-review, relevant domain skill, ruby-clean-code, rails-test-engineering; stack-minimality-review after correctness/security |
 | Branch/PR/diff review for standards and spec fidelity | change-review | stack-minimality-review, rubocop, relevant domain skill |
 | Stress-test a plan or design with the user | planning-interview | ruby-domain-modeling |
 | Write a spec from a discussed feature | planning-spec | planning-tracker, owning domain skill |

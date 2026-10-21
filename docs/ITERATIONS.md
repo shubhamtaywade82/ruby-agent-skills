@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 187 — Recorded Model Campaign
+> **Current milestone:** Iteration 188 — AI Code Review Orchestration Skill
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -648,3 +648,8 @@ Iteration 186 extends the `database-engineering` campaign with the `isolation-le
 ## Iteration 187 — Recorded Model Campaign
 
 Iteration 187 closes the external-agent execution gap with the first real-model campaign. The `recorded-model-campaign-v1` recording set captures a real model's workspace edits for seven evaluations across the ruby-toolchain, ruby-gem-development, and database-engineering campaign families, in both paired configurations (skills disabled, and skills enabled with the declared skill/pattern pack). The new `adapters/recorded_agent.rb` replay adapter materializes those recordings inside the disposable benchmark workspace through the agent adapter protocol, after verifying the prompt digest, the complete workspace file manifest, and — for skills-enabled runs — the materialized skill/pattern selection against the recording's fingerprints, so a recording cannot be replayed against a different task. `bin/recorded-agent-benchmark` drives the ordinary paired campaign machinery over the set and aggregates a set-level summary, `test/recorded_agent_campaign_system_test.rb` executes real paired campaign runs through the runner and verifiers in CI, and the `recorded-campaign` workflow captures full-set evidence as workflow artifacts (result files stay uncommitted under `benchmark-results/`). The recordings state their provenance explicitly: the acting model is the repository's maintaining model responding only to the materialized task context — never the pristine references, verifiers, or fixture registries — so the campaign validates the adapter protocol, runner, and verifiers end to end with a real model in the loop, and is not a neutral measurement of third-party model difficulty. `isolation-level` is deliberately left unrecorded because the same model authored that fixture in Iteration 186.
+
+
+## Iteration 188 — AI Code Review Suite
+
+Expands `ai-code-review` into a risk-based, agent-executable review suite for single-file, PR/diff, and repository-audit modes. It provides a three-pass review protocol, risk-oriented checklists, adjudication rules, evidence-based report format, reviewer training and ledger references, and findings/context helper scripts. It composes existing Ruby/Rails owner skills rather than duplicating their engineering contracts. Manifest, routing documentation, an adversarial routing case, a targeted routing system test, inventory and live routing campaign counts are reconciled. A registered system test covers report generation and helper-script constraints; the suite count rises to 110. CI must validate the change before merge.

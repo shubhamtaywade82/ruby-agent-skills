@@ -278,6 +278,10 @@ skills:
     family: meta
     path: skills/change-review/SKILL.md
     triggers: [change review, review diff, review branch, review pull request, PR review, review since, spec fidelity, standards review]
+  ai-code-review:
+    family: meta
+    path: skills/ai-code-review/SKILL.md
+    triggers: [AI code review, automated code review, AI-generated code review, review AI-generated changes, adversarial PR review, code review task, review generated diff, correctness and security review]
   planning-tracker:
     family: planning
     path: skills/planning-tracker/SKILL.md

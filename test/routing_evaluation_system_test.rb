@@ -17,11 +17,27 @@ class RoutingEvaluationSystemTest < Minitest::Test
       aliases: false
     )
 
-    assert_equal 32, Array(data.fetch("cases")).length
+    assert_equal 33, Array(data.fetch("cases")).length
     assert Array(data.fetch("cases")).all? do |entry|
       entry.fetch("primary_skills").length == 1 &&
         entry.fetch("secondary_skills").none? { |skill| skill == entry.fetch("primary_skills").first }
     end
+  end
+
+  def test_ai_code_review_routes_to_review_orchestrator
+    data = YAML.safe_load(
+      File.read(File.join(ROOT, "router", "ROUTING_CASES.yml"), encoding: "UTF-8"),
+      permitted_classes: [],
+      aliases: false
+    )
+    review_case = Array(data.fetch("cases")).find { |entry| entry.fetch("id") == "ai-code-review-generated-change" }
+
+    refute_nil review_case
+    assert_equal ["ai-code-review"], review_case.fetch("primary_skills")
+    assert_includes review_case.fetch("secondary_skills"), "change-review"
+    assert_includes review_case.fetch("secondary_skills"), "rails-test-engineering"
+    assert_includes review_case.fetch("secondary_skills"), "stack-minimality-review"
+    assert_includes review_case.fetch("prompt"), "AI-generated"
   end
 
   def test_regexp_extraction_case_has_the_correct_owner

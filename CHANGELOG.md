@@ -1,3 +1,11 @@
+## Iteration 188 — AI Code Review Suite
+
+- Expand `ai-code-review` into a risk-based review suite for single files, PRs/diffs, and whole-repository audits, including a three-pass independent review → AI challenge → adjudication protocol.
+- Add review references for mode selection, single-file review, PR/diff review, repository audits, finding validation, defect categories, risk zones, review comments, reviewer training, and a review ledger. Add findings JSON/Markdown formatters and conservative Git/test context helpers.
+- Register the review skill and add an adversarial route case plus an explicit routing system test. Keep Rails security, database, test, async, and minimality contracts owned by the existing specialist skills.
+- Reconcile current inventory and routing campaign documentation after the new skill and case. Validation must pass before this PR is merge-ready; CI results are the source of truth.
+- Add `test/ai_code_review_tools_system_test.rb` (registered in `bin/validate`) to verify report formatting, rejection of malformed/duplicate findings, systemic-finding evidence requirements, and Bash helper syntax. Dedicated system/contract tests rise from 109 to 110.
+
 ## Iteration 187 — Recorded Model Campaign
 
 - Add the first real-model campaign evidence: the `recorded-model-campaign-v1` recording set records a real model's workspace edits for seven evaluations (`ruby-toolchain-contract`, `ruby-gem-development-contract`, `expand-contract`, `concurrent-index`, `database-constraint`, `batched-backfill`, `transaction-lock`) in both paired configurations — skills disabled and skills enabled with the declared skill/pattern pack.
