@@ -1,10 +1,12 @@
-## Current work — Iteration 186
+## Current work — Iteration 187
 
 - [x] Iteration 184 landed: the `event-driven-messaging` campaign merged as PR #102 (four fixtures, controls green through the real verifier, main CI green on the merge commit).
 - [x] Iteration 185 landed: the `distributed-systems` and `reliability` campaigns merged as PR #103 (seven fixtures, controls green through the real verifiers, main CI green on the merge commit).
 - [x] Promote the seven Tier 2 contracts from `coverage: static-only` to campaign coverage (114 -> 121 campaign-covered evaluation files; static-only drops to 28 files / 66 cases).
 - [x] Promote `isolation-level` into the `database-engineering` campaign (Iteration 186: fixture + pristine reference + registry-driven verifier grading; 121 -> 122 campaign-covered evaluation files). The corpus now has zero unbenchmarked evaluation files — every file is campaign-covered or explicitly static-only.
-- [ ] Run a real model campaign with an external agent adapter before claiming empirical model performance for any family; campaign coverage is a protocol, not a result.
+- [x] Run a real model campaign with an external agent adapter (Iteration 187, recorded-agent transport): seven evaluations across ruby-toolchain, ruby-gem-development, and database-engineering in both paired configurations, graded by the real verifiers through the ordinary campaign runner, with prompt/workspace/selection integrity guards and provenance recorded in `agent-recordings/recorded-model-campaign-v1/recording-set.yml`. The acting model is the repository's maintaining model, so the run validates the end-to-end protocol rather than neutral model difficulty; campaign coverage is a protocol, and this is the first real-model evidence for it.
+- [ ] Run a recorded or live campaign with a neutral third-party model before claiming neutral model performance for any family; the Iteration 187 recordings are maintainer-model evidence by construction.
+- [ ] Extend real-model recordings to the remaining campaign families (rails, design-patterns, ruby-workshop, event-driven-messaging, distributed-systems, reliability, isolation-level).
 - [ ] Recheck messaging, distributed-systems, reliability, and transaction-isolation coverage against the owning skills and patterns; do not create duplicate skills where existing routing ownership is clear.
 
 # TODO

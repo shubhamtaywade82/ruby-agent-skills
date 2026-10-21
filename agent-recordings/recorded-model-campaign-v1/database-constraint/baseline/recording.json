@@ -1,0 +1,27 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "database-constraint",
+  "configuration": "baseline",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the task prompt, the fixture workspace, and the evaluation YAML only (the baseline context the runner materializes); no skill or pattern content was consumed.",
+  "context_fingerprint": {
+    "prompt_sha256": "aecdef6e33dabe89c30486d54d991d23bf9ba77db63131fe4a94a064e9e87fe6",
+    "workspace": {
+      "app/models/order.rb": "9976065fb8cbf8df38f8cb1c08109568755a8590652ffce4e35951ec8897f1db",
+      "db/migrate/20260921000003_add_order_reference_constraint.rb": "4e70c27f9db86a1ec3f0aa4d9b1b714cbc484a47522ce73559b492bb8b651304",
+      "test/constraint_test.rb": "0ff0180860dec08b133b8c60af00a502c7e14341dcf31ad0e7b45506ecb7e5f5"
+    },
+    "skills": [],
+    "patterns": []
+  },
+  "files": {
+    "db/migrate/20260921000003_add_order_reference_constraint.rb": "# Enforces the tenant_id/external_reference uniqueness invariant at the\n# database boundary. The unique index is the race-safe guarantee: two\n# concurrent inserts with the same pair cannot both commit. The\n# application-level validation on the model stays in place for friendly\n# error messages; the index is what actually holds the invariant.\nclass AddOrderReferenceConstraint < ActiveRecord::Migration[8.1]\n  def change\n    add_index :orders, [:tenant_id, :external_reference], unique: true\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

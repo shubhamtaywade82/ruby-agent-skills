@@ -1,0 +1,41 @@
+id: recorded-model-campaign-v1
+version: 1
+description: >-
+  First real-model campaign recorded through the external agent adapter
+  seam. Seven evaluations across three campaign families, each recorded
+  in both paired configurations (skills disabled and skills enabled).
+agent:
+  provider: z.ai
+  model: GLM
+  tool_mode: cli-file-editing
+provenance: >-
+  The recordings capture the file edits a real model (Z.ai GLM, the
+  repository's maintaining model, acting through a CLI file-editing
+  loop) made while responding only to the materialized task context:
+  the task prompt, the fixture workspace, and, for skills-enabled
+  recordings, the selected skill and pattern pack. The model did not
+  read the pristine references, the verifiers, or the fixture
+  registries while generating these solutions, and the acting model
+  could not verify its own version string, so none is recorded. This
+  set therefore validates the adapter protocol, the campaign runner,
+  and the verifiers end to end with a real model in the loop; it is NOT
+  a neutral measurement of third-party model difficulty, because the
+  acting model authored adjacent campaign machinery in neighboring
+  iterations. The isolation-level evaluation is deliberately not
+  recorded: its fixture was authored by the same model in Iteration
+  186, which would make that recording fully author-contaminated.
+recordings:
+  - evaluation: ruby-toolchain-contract
+    manifest: benchmarks/ruby-toolchain/campaign.yml
+  - evaluation: ruby-gem-development-contract
+    manifest: benchmarks/ruby-gem-development/campaign.yml
+  - evaluation: expand-contract
+    manifest: benchmarks/database-engineering/campaign.yml
+  - evaluation: concurrent-index
+    manifest: benchmarks/database-engineering/campaign.yml
+  - evaluation: database-constraint
+    manifest: benchmarks/database-engineering/campaign.yml
+  - evaluation: batched-backfill
+    manifest: benchmarks/database-engineering/campaign.yml
+  - evaluation: transaction-lock
+    manifest: benchmarks/database-engineering/campaign.yml

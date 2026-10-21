@@ -1,0 +1,26 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "transaction-lock",
+  "configuration": "baseline",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the task prompt, the fixture workspace, and the evaluation YAML only (the baseline context the runner materializes); no skill or pattern content was consumed.",
+  "context_fingerprint": {
+    "prompt_sha256": "d987c7d31453490adbc72483415165ebda7fec13714b0e0e94a5b49162d68dfb",
+    "workspace": {
+      "app/services/inventory_reservation.rb": "d3e4479afb1fcac4931a761634e42f7df9d2c0fcaed75ee5f15bb32816b4b4be",
+      "test/reservation_test.rb": "5d396ede58433015e31484c809dae4e9dccaa0fdd40599b5aa9f67085efe4143"
+    },
+    "skills": [],
+    "patterns": []
+  },
+  "files": {
+    "app/services/inventory_reservation.rb": "# frozen_string_literal: true\n\n# Reserves one unit of inventory. The guard and the decrement share a\n# single row-level lock (SELECT ... FOR UPDATE through with_lock), so\n# two workers racing to reserve the last unit serialize: one wins and\n# the other sees the post-decrement quantity and is rejected. The\n# locked section is kept to the guard and the write only.\nclass InventoryReservation\n  def self.call(item)\n    item.with_lock do\n      raise \"unavailable\" if item.quantity <= 0\n\n      item.update!(quantity: item.quantity - 1)\n    end\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

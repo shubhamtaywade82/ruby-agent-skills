@@ -1,0 +1,26 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "batched-backfill",
+  "configuration": "baseline",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the task prompt, the fixture workspace, and the evaluation YAML only (the baseline context the runner materializes); no skill or pattern content was consumed.",
+  "context_fingerprint": {
+    "prompt_sha256": "b841d8e97ae457b6e9e987c5255b2e4cb04513256ae21ba3d82cc55fab5ee87a",
+    "workspace": {
+      "lib/backfill_normalized_email.rb": "7858d504816634486513d69f730faddf8d948e91b34efc6ae1ae36e7c0afaa11",
+      "test/backfill_test.rb": "816c3dbbaea625829b93b45635e8a5e53f435acdd81d673da04d5a8f2d56e491"
+    },
+    "skills": [],
+    "patterns": []
+  },
+  "files": {
+    "lib/backfill_normalized_email.rb": "# frozen_string_literal: true\n\n# Populates normalized_email for the existing users table in bounded\n# batches so a run never loads the table into Ruby memory, keeps each\n# update small, and is safe to interrupt and rerun: every batch is an\n# idempotent update, so a partial previous run resumes instead of\n# restarting or corrupting progress.\nclass BackfillNormalizedEmail\n  BATCH_SIZE = 1_000\n\n  def self.run\n    User.in_batches(of: BATCH_SIZE) do |batch|\n      batch.update_all(\"normalized_email = LOWER(email)\")\n    end\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

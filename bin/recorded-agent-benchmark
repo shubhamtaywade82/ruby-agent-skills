@@ -1,0 +1,146 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Drive a recorded model campaign end to end. A recording set (under
+# agent-recordings/<set-id>/recording-set.yml) lists the evaluations a real
+# model recorded through the external agent adapter seam and the campaign
+# manifest that owns each evaluation. This script runs the ordinary paired
+# campaign machinery (bin/benchmark campaign) for every recorded evaluation
+# with the recorded-agent replay adapter, then aggregates a set-level
+# summary. Result files stay under benchmark-results/ (never committed;
+# see docs/BENCHMARK_CAMPAIGN.md) and are the campaign evidence.
+
+require "fileutils"
+require "json"
+require "optparse"
+require "rbconfig"
+require "shellwords"
+require "yaml"
+
+options = {
+  recordings: nil, evaluation: nil, runs: nil, output: nil, timeout: nil,
+  continue_on_failure: false
+}
+
+OptionParser.new do |opts|
+  opts.banner = "usage: ruby bin/recorded-agent-benchmark --recordings SET_ID [options]"
+
+  opts.on("--recordings SET_ID", "Recording set under agent-recordings/") do |value|
+    options[:recordings] = value
+  end
+  opts.on("--evaluation ID", "Run a single recorded evaluation") do |value|
+    options[:evaluation] = value
+  end
+  opts.on("--runs COUNT", Integer, "Repetitions (default: manifest repetitions)") do |value|
+    options[:runs] = value
+  end
+  opts.on("--output DIR", "Output directory (default: benchmark-results/SET_ID)") do |value|
+    options[:output] = value
+  end
+  opts.on("--timeout SECONDS", Integer, "Per-run timeout") { |value| options[:timeout] = value }
+  opts.on("--continue-on-failure", "Keep running after a failed evaluation") do
+    options[:continue_on_failure] = true
+  end
+end.parse!
+
+def read_yaml(path)
+  YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+end
+
+def load_recording_set(recordings_root, set_id)
+  set_dir = File.join(recordings_root, set_id)
+  abort "unknown recording set: #{set_id}" unless Dir.exist?(set_dir)
+
+  config = read_yaml(File.join(set_dir, "recording-set.yml"))
+  abort "recording-set.yml id mismatch" unless config.fetch("id") == set_id
+  [set_dir, config]
+end
+
+def validate_recording_entry(root, set_dir, entry)
+  manifest = File.join(root, entry.fetch("manifest"))
+  abort "campaign manifest not found: #{manifest}" unless File.file?(manifest)
+
+  recording_dir = File.join(set_dir, entry.fetch("evaluation"))
+  %w[baseline skills].each do |configuration|
+    path = File.join(recording_dir, configuration, "recording.json")
+    abort "missing #{configuration} recording: #{path}" unless File.file?(path)
+  end
+end
+
+def campaign_arguments(root:, entry:, agent_command:, output:, options:)
+  command = [
+    RbConfig.ruby, File.join(root, "bin", "benchmark"), "campaign",
+    "--manifest", File.join(root, entry.fetch("manifest")),
+    "--agent-command", agent_command,
+    "--evaluation", entry.fetch("evaluation"),
+    "--output", output
+  ]
+  apply_run_options(command, options)
+end
+
+def apply_run_options(command, options)
+  command += ["--runs", options[:runs].to_s] if options[:runs]
+  command += ["--timeout", options[:timeout].to_s] if options[:timeout]
+  command << "--continue-on-failure" if options[:continue_on_failure]
+  command
+end
+
+def summarize_entry(entry:, evaluation_output:)
+  campaign_path = File.join(evaluation_output, "campaign.json")
+  summary = { "manifest" => entry.fetch("manifest"), "campaign_result" => campaign_path }
+  return summary.merge("complete" => false, "dimensions" => nil) unless File.file?(campaign_path)
+
+  result = JSON.parse(File.read(campaign_path, encoding: "UTF-8"))
+              .fetch("evaluations", {}).fetch(entry.fetch("evaluation"), {})
+  summary.merge("complete" => result["complete"], "dimensions" => result["dimensions"])
+end
+
+root = File.expand_path("..", __dir__)
+recordings_root = File.join(root, "agent-recordings")
+
+if options[:recordings].to_s.empty?
+  abort "usage: ruby bin/recorded-agent-benchmark --recordings SET_ID [options]"
+end
+
+set_id = options.fetch(:recordings)
+set_dir, set_config = load_recording_set(recordings_root, set_id)
+entries = set_config.fetch("recordings")
+if options[:evaluation]
+  entries = entries.select { |entry| entry.fetch("evaluation") == options[:evaluation] }
+end
+abort "no recorded evaluations selected" if entries.empty?
+
+entries.each { |entry| validate_recording_entry(root, set_dir, entry) }
+
+output_dir = File.expand_path(options[:output] || File.join(root, "benchmark-results", set_id))
+FileUtils.mkdir_p(output_dir)
+
+adapter = File.join(root, "adapters", "recorded_agent.rb")
+agent_command = [RbConfig.ruby, Shellwords.escape(adapter), Shellwords.escape(set_id)].join(" ")
+
+summary = {
+  "recording_set" => set_id,
+  "recorded_agent_transport" => true,
+  "agent" => set_config.fetch("agent"),
+  "provenance" => set_config.fetch("provenance"),
+  "evaluations" => {}
+}
+
+failed = []
+entries.each do |entry|
+  evaluation_id = entry.fetch("evaluation")
+  evaluation_output = File.join(output_dir, evaluation_id)
+  arguments = campaign_arguments(
+    root: root, entry: entry, agent_command: agent_command,
+    output: evaluation_output, options: options
+  )
+  failed << evaluation_id unless system(*arguments)
+  summary["evaluations"][evaluation_id] =
+    summarize_entry(entry: entry, evaluation_output: evaluation_output)
+end
+
+summary_path = File.join(output_dir, "summary.json")
+File.write(summary_path, JSON.pretty_generate(summary) + "\n", encoding: "UTF-8")
+puts JSON.pretty_generate(summary)
+
+abort "recorded campaign failed for: #{failed.sort.join(", ")}" unless failed.empty?

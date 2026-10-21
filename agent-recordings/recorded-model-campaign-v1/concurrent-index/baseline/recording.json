@@ -1,0 +1,26 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "concurrent-index",
+  "configuration": "baseline",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the task prompt, the fixture workspace, and the evaluation YAML only (the baseline context the runner materializes); no skill or pattern content was consumed.",
+  "context_fingerprint": {
+    "prompt_sha256": "1091af81e9ddf96004898bbf8e1a8f21fd7e4a818f49c4049df5034c928ac96f",
+    "workspace": {
+      "db/migrate/20260921000002_add_orders_status_index.rb": "a6f988000869298b111f807948d6b20bbc1355533f670125c056b09dfc7e3069",
+      "test/migration_test.rb": "1cf54ca5d761f51e6b87970c122f046d13bfce19445a4e39fc0c6414b4fd9cb6"
+    },
+    "skills": [],
+    "patterns": []
+  },
+  "files": {
+    "db/migrate/20260921000002_add_orders_status_index.rb": "# Adds the orders.status index with a production-safe strategy: the\n# orders table is high-write, so the index is built with CREATE INDEX\n# CONCURRENTLY instead of a blocking build. Concurrent index creation\n# cannot run inside a transaction block, so the migration opts out of\n# the default ddl transaction.\nclass AddOrdersStatusIndex < ActiveRecord::Migration[8.1]\n  disable_ddl_transaction!\n\n  def change\n    add_index :orders, :status, algorithm: :concurrently\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

@@ -1,0 +1,32 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "ruby-gem-development-contract",
+  "configuration": "skills",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the baseline context plus the skill and pattern pack the runner materializes for the skills-enabled configuration; the SKILL.md and pattern guidance for the declared selection was consumed before editing.",
+  "context_fingerprint": {
+    "prompt_sha256": "85224bbd2db025f04b097366d15b865fc2493b43b5a9e1be3bf6baa1958b27e9",
+    "workspace": {
+      "lib/solution.rb": "e2de359c52f9c21d84973e60f09ded0e8d2b6d79918abcc4cdf46c6ed4e91bc6",
+      "test/test_solution.rb": "52a327a684195b0267bc15d6ae2c6cbcdedc38fb9b74cf937cd960c3109e96a4"
+    },
+    "skills": [
+      "ruby-gem-development",
+      "ruby-toolchain"
+    ],
+    "patterns": [
+      "ruby-gem"
+    ]
+  },
+  "files": {
+    "lib/solution.rb": "# frozen_string_literal: true\n\n# Encodes how a reusable Ruby gem is built, packaged, and released,\n# treating the gem as a library with a narrow public boundary: the\n# Bundler/RubyGems skeleton command, the split between runtime and\n# development dependencies, a consumer require check executed outside\n# any application boot, the package boundary that keeps secrets, tests,\n# and generated artifacts out of the shipped files, and the explicit\n# authorization step in front of publishing. The advisor describes the\n# steps; it never builds or publishes anything itself.\nclass RubyGemDevelopmentAdvisor\n  # The package contract ships source and metadata only. Each excluded\n  # group exists for a stated reason:\n  #   test/, spec/    - development evidence, not runtime code\n  #   .env            - local credentials must never be packaged\n  #   .git/           - repository metadata, not package content\n  #   coverage/, log/ - generated local state\n  #   pkg/            - previous build artifacts\n  PACKAGE_EXCLUDED_PREFIXES = [\n    \"test/\",\n    \"spec/\",\n    \".env\",\n    \".git/\",\n    \"coverage/\",\n    \"log/\",\n    \"pkg/\"\n  ].freeze\n\n  # A new gem skeleton comes from `bundle gem` so the gemspec, Rakefile,\n  # and test layout follow the conventional, reproducible structure.\n  def skeleton_command(name)\n    \"bundle gem #{name}\"\n  end\n\n  # Runtime dependencies load when the gem is required; development\n  # dependencies exist only to develop and test the gem. Keeping them\n  # separate is the dependency boundary consumers rely on.\n  def dependency_groups\n    {\n      \"runtime\" => [\"json\"],\n      \"development\" => [\"minitest\", \"rake\"]\n    }\n  end\n\n  # The consumer check loads the gem exactly as a downstream application\n  # would: a plain ruby process with no application boot, so a broken\n  # require path or an accidental application coupling fails here, in\n  # development, instead of in the consumer's production.\n  def consumer_require_command(gem_name)\n    \"ruby -e 'require \\\"#{gem_name}\\\"'\"\n  end\n\n  # The safe package file list keeps the gemspec's packaged-files\n  # contract explicit: only source and metadata ship, and a broad file\n  # glob can never accidentally include the excluded groups.\n  def safe_package_files(files)\n    files.reject do |file|\n      PACKAGE_EXCLUDED_PREFIXES.any? { |prefix| file.start_with?(prefix) }\n    end\n  end\n\n  # Publishing is a separate, explicitly authorized release step.\n  # Release readiness can be verified without authorization; the\n  # release itself cannot.\n  def release_allowed?(authorized:)\n    authorized ? true : false\n  end\nend\n",
+    "test/test_solution.rb": "# frozen_string_literal: true\n\nrequire \"minitest/autorun\"\nrequire_relative \"../lib/solution\"\n\nclass RubyGemDevelopmentAdvisorTest < Minitest::Test\n  def setup\n    @advisor = RubyGemDevelopmentAdvisor.new\n  end\n\n  def test_uses_bundle_gem_for_skeleton\n    assert_equal \"bundle gem fixture_gem\",\n                 @advisor.skeleton_command(\"fixture_gem\")\n  end\n\n  def test_separates_runtime_and_development_dependencies\n    assert_equal(\n      { \"runtime\" => [\"json\"], \"development\" => [\"minitest\", \"rake\"] },\n      @advisor.dependency_groups\n    )\n  end\n\n  def test_tests_consumer_require_path_outside_application_boot\n    assert_equal(\n      \"ruby -e 'require \\\"fixture_gem\\\"'\",\n      @advisor.consumer_require_command(\"fixture_gem\")\n    )\n  end\n\n  def test_excludes_secrets_and_test_artifacts_from_package\n    assert_equal(\n      [\n        \"Gemfile\",\n        \"fixture_gem.gemspec\",\n        \"lib/fixture_gem.rb\",\n        \"lib/fixture_gem/version.rb\"\n      ],\n      @advisor.safe_package_files(\n        [\n          \"Gemfile\",\n          \"fixture_gem.gemspec\",\n          \"lib/fixture_gem.rb\",\n          \"lib/fixture_gem/version.rb\",\n          \"test/test_fixture_gem.rb\",\n          \".env\",\n          \".git/config\"\n        ]\n      )\n    )\n  end\n\n  def test_release_requires_explicit_authorization\n    refute @advisor.release_allowed?(authorized: false)\n    assert @advisor.release_allowed?(authorized: true)\n  end\n\n  def test_skeleton_command_tracks_the_requested_name\n    assert_equal \"bundle gem invoicing_core\",\n                 @advisor.skeleton_command(\"invoicing_core\")\n  end\n\n  def test_package_boundary_keeps_source_and_metadata_only\n    assert_equal(\n      [\"Gemfile\", \"lib/fixture_gem.rb\"],\n      @advisor.safe_package_files(\n        [\n          \"Gemfile\",\n          \"lib/fixture_gem.rb\",\n          \"spec/fixture_gem_spec.rb\",\n          \"coverage/.resultset.json\",\n          \"pkg/fixture_gem-0.1.0.gem\",\n          \"log/test.log\",\n          \".env.production\"\n        ]\n      )\n    )\n  end\n\n  def test_consumer_require_command_stays_boot_independent\n    assert_equal \"ruby -e 'require \\\"invoicing_core\\\"'\",\n                 @advisor.consumer_require_command(\"invoicing_core\")\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

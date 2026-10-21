@@ -1,0 +1,26 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "expand-contract",
+  "configuration": "baseline",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the task prompt, the fixture workspace, and the evaluation YAML only (the baseline context the runner materializes); no skill or pattern content was consumed.",
+  "context_fingerprint": {
+    "prompt_sha256": "55b95d6b82da4ad10401d5192189e3a434afb349c71ca0800ea80140d67ed635",
+    "workspace": {
+      "db/migrate/20260921000001_expand_customer_name.rb": "6c370a6414e82233ad8e8f01851b0fba9b1549ee2a9739ef60d24ce495f7c59e",
+      "test/migration_test.rb": "11183029e1ce20139a2d6ec807c4de3729c945ad507aa6fa4c01a9cd2fc3db1c"
+    },
+    "skills": [],
+    "patterns": []
+  },
+  "files": {
+    "db/migrate/20260921000001_expand_customer_name.rb": "# Expand step of the expand/backfill/cutover/contract sequence for\n# adding customer display_name while old application processes may still\n# read the existing name column. The expansion is additive only: the new\n# column is nullable, both old and new application versions keep working\n# against the expanded schema, and backfill plus read cutover happen in\n# later deploys. The destructive removal of name is a separate contract\n# migration, run only after no running version reads it.\nclass ExpandCustomerName < ActiveRecord::Migration[8.1]\n  def change\n    add_column :customers, :display_name, :string\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

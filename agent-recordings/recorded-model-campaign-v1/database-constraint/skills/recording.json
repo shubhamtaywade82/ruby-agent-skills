@@ -1,0 +1,31 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "database-constraint",
+  "configuration": "skills",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the baseline context plus the skill and pattern pack the runner materializes for the skills-enabled configuration; the SKILL.md and pattern guidance for the declared selection was consumed before editing.",
+  "context_fingerprint": {
+    "prompt_sha256": "aecdef6e33dabe89c30486d54d991d23bf9ba77db63131fe4a94a064e9e87fe6",
+    "workspace": {
+      "app/models/order.rb": "9976065fb8cbf8df38f8cb1c08109568755a8590652ffce4e35951ec8897f1db",
+      "db/migrate/20260921000003_add_order_reference_constraint.rb": "4e70c27f9db86a1ec3f0aa4d9b1b714cbc484a47522ce73559b492bb8b651304",
+      "test/constraint_test.rb": "0ff0180860dec08b133b8c60af00a502c7e14341dcf31ad0e7b45506ecb7e5f5"
+    },
+    "skills": [
+      "rails-database-engineering"
+    ],
+    "patterns": [
+      "database-constraint"
+    ]
+  },
+  "files": {
+    "db/migrate/20260921000003_add_order_reference_constraint.rb": "# Enforces the tenant_id/external_reference uniqueness invariant at the\n# database boundary.\n#\n# Boundary design:\n#   - The unique index is the authoritative, race-safe guarantee: two\n#     concurrent inserts with the same pair cannot both commit, no\n#     matter which process or write path races.\n#   - The model's uniqueness validation stays for friendly errors in\n#     the common case; the index is what holds the invariant under\n#     concurrency. A concurrent duplicate that loses the race surfaces\n#     as ActiveRecord::RecordNotUnique at the call boundary, where it\n#     is reported as a validation-style error instead of a crash.\n#   - The index is built concurrently so the constraint can be added to\n#     a populated orders table without blocking writes, and\n#     disable_ddl_transaction! is required because a concurrent build\n#     cannot run inside a transaction block.\n#   - Existing rows are audited for duplicates before this migration\n#     deploys; a violating pair must be resolved first, or the index\n#     build itself fails.\nclass AddOrderReferenceConstraint < ActiveRecord::Migration[8.1]\n  disable_ddl_transaction!\n\n  def change\n    add_index :orders, [:tenant_id, :external_reference], unique: true, algorithm: :concurrently\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}

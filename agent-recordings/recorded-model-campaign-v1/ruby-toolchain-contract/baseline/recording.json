@@ -1,0 +1,26 @@
+{
+  "recording_schema_version": 1,
+  "recording_set": "recorded-model-campaign-v1",
+  "evaluation": "ruby-toolchain-contract",
+  "configuration": "baseline",
+  "agent": {
+    "provider": "z.ai",
+    "model": "GLM",
+    "model_version": null,
+    "tool_mode": "cli-file-editing"
+  },
+  "context_note": "Generated from the task prompt, the fixture workspace, and the evaluation YAML only (the baseline context the runner materializes); no skill or pattern content was consumed.",
+  "context_fingerprint": {
+    "prompt_sha256": "3abe17907ab3945eb8e94ebe1a0b600b7d8c3e9c768a40b680590c90936831d5",
+    "workspace": {
+      "lib/solution.rb": "8c49222995452fde63c0c2dac9d3283290e32b442c059b65d1e0f52e43dfddd8",
+      "test/test_solution.rb": "c51954b4ea2af005b442de7dc9d54675aa32f5144870e9647d8e9c9e986a4e67"
+    },
+    "skills": [],
+    "patterns": []
+  },
+  "files": {
+    "lib/solution.rb": "# frozen_string_literal: true\n\n# Resolves and verifies a Ruby development toolchain from repository\n# evidence before any dependency is installed: the declared requirement\n# is compared against the observed runtime, executable provenance is\n# checked so ruby and bundle come from one installation, dependencies\n# go through Bundler, and native-extension failures are classified from\n# the concrete compiler output instead of being silenced by weakening\n# the declared runtime.\nclass RubyToolchainAdvisor\n  # Compares the declared requirement with the observed runtime and the\n  # resolved executables. The status is \"conflict\" when the observed\n  # runtime does not satisfy the declared requirement, or when ruby and\n  # bundle resolve from different installations.\n  def resolve(declared_ruby:, observed_ruby:, ruby_executable:, bundle_executable:)\n    {\n      \"status\" => resolution_status(\n        declared_ruby: declared_ruby,\n        observed_ruby: observed_ruby,\n        ruby_executable: ruby_executable,\n        bundle_executable: bundle_executable\n      ),\n      \"declared_ruby\" => declared_ruby,\n      \"observed_ruby\" => observed_ruby,\n      \"ruby_executable\" => ruby_executable,\n      \"bundle_executable\" => bundle_executable\n    }\n  end\n\n  # Application dependencies are installed through Bundler so the\n  # Gemfile remains the single dependency contract. With a lockfile the\n  # install is guarded by bundle check first; without one, bundle\n  # install resolves and writes it.\n  def dependency_command(lockfile_present:)\n    lockfile_present ? \"bundle check && bundle install\" : \"bundle install\"\n  end\n\n  # Classifies a native-extension build failure from the concrete\n  # compiler/linker output so the right prerequisite can be fixed.\n  def native_extension_classification(error_output)\n    if error_output.include?(\"ruby.h\")\n      \"missing-ruby-header\"\n    elsif error_output.include?(\"ld:\") || error_output.include?(\"library not found\")\n      \"linker\"\n    else\n      \"unclassified\"\n    end\n  end\n\n  # Runtime requirements are repository evidence. An installation\n  # failure is diagnosed and fixed at the toolchain level; the declared\n  # requirement is never changed to make installation pass, whatever the\n  # reported reason.\n  def runtime_change_allowed?(reason:)\n    # No reported reason (such as: #{reason}) justifies weakening the\n    # declared runtime to hide an installation failure.\n    false\n  end\n\n  private\n\n  def resolution_status(declared_ruby:, observed_ruby:, ruby_executable:, bundle_executable:)\n    return \"conflict\" unless same_installation?(ruby_executable, bundle_executable)\n    return \"conflict\" unless requirement_satisfied?(declared_ruby, observed_ruby)\n\n    \"supported\"\n  end\n\n  def same_installation?(ruby_executable, bundle_executable)\n    File.dirname(ruby_executable) == File.dirname(bundle_executable)\n  end\n\n  # Segment-wise comparison: \"3.3\" is satisfied by \"3.3.6\" but not by\n  # \"3.2.4\", and \"3.1\" is not satisfied by \"3.10.0\" because segment one\n  # differs from ten. A declared requirement longer than the observed\n  # version cannot be confirmed, so it conflicts.\n  def requirement_satisfied?(declared, observed)\n    declared_segments = version_segments(declared)\n    observed_segments = version_segments(observed)\n    return false if declared_segments.nil? || observed_segments.nil?\n    return false if declared_segments.length > observed_segments.length\n\n    declared_segments.zip(observed_segments).all? { |declared_value, observed_value| declared_value == observed_value }\n  end\n\n  def version_segments(version)\n    version.to_s.split(\".\").map { |segment| Integer(segment, 10) }\n  rescue ArgumentError, TypeError\n    nil\n  end\nend\n"
+  },
+  "recorded_at": "2026-10-21T00:00:00Z"
+}
