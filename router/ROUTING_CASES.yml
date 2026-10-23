@@ -203,6 +203,20 @@ cases:
       - rails-react-integration
     boundary: server-contract-vs-client-consumer
 
+  - id: ai-code-review-generated-change
+    prompt: >
+      Independently review an AI-generated Rails change against its specification
+      for behavioral defects, security and authorization risks, test adequacy,
+      reliability concerns, and unnecessary complexity. Do not modify files.
+    primary_skills:
+      - ai-code-review
+    secondary_skills:
+      - change-review
+      - ruby-clean-code
+      - rails-test-engineering
+      - stack-minimality-review
+    boundary: ai-code-review-vs-change-review
+
   - id: branch-review-standards-and-spec
     prompt: >
       Review this branch against main: check it follows the repository's
