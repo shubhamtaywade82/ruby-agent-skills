@@ -511,3 +511,30 @@ cases:
       - rails-active-record
       - rails-test-engineering
     boundary: posting-idempotency-vs-event-replay
+
+  - id: backtest-looks-too-good
+    prompt: >
+      A moving-average backtest shows stellar returns in-sample that
+      collapse in live paper trading. Audit the pipeline for look-ahead
+      bias, same-bar fills, and silent gap forward-fills, then make the
+      evaluation out-of-sample honest.
+    primary_skills:
+      - trading-market-data-and-backtesting
+    secondary_skills:
+      - ruby-financial-data-integrity
+      - ruby-tdd-refactoring
+    boundary: simulation-fidelity-vs-evaluation-honesty
+
+  - id: candle-gaps-timezone-boundary
+    prompt: >
+      Hourly candle data from two vendors produces duplicate and missing
+      bars around session opens, and daily rollups split trades across
+      the wrong days during DST. Define the data contract, detect gaps
+      against the exchange calendar, and fix timezone handling.
+    primary_skills:
+      - trading-market-data-and-backtesting
+    secondary_skills:
+      - rails-database-engineering
+      - rails-external-stream-ingestion
+      - ruby-tdd-refactoring
+    boundary: data-contract-vs-repair-policy

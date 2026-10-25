@@ -1,0 +1,50 @@
+id: ohlcv-integrity-and-gaps-contract
+coverage: static-only
+version: 1
+title: Enforce the OHLCV data contract with gap detection against the session calendar
+category: trading
+source: market-data-and-backtesting-v1
+skills:
+  - trading-market-data-and-backtesting
+  - rails-database-engineering
+patterns:
+  - event-envelope
+prompt: |
+  A Rails application stores hourly candles from two vendors whose bar conventions differ, and daily rollups split trades across wrong days around DST. Define and enforce an OHLCV data contract: timestamps stored in UTC with the bar-open convention stated, an explicit timeframe on every row, a unique deduplication key on symbol plus timeframe plus bar open, internal consistency checks (low <= open/close <= high), and gap detection computed against the exchange session calendar (holidays and half-days respected) rather than against the previous bar. Repair decisions must be explicit and recorded (leave absent, backfill with provenance, or mark unavailable); silent forward-fill is forbidden. Provide tests for DST boundaries, session edges, duplicate imports, and vendor alignment differences.
+constraints:
+  required_design:
+    - timestamps UTC with documented bar-open convention
+    - unique deduplication key on candles
+    - internal consistency validation on load
+    - gap detection against the session calendar
+    - repair decisions recorded in dataset metadata
+    - no silent forward-fill anywhere
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: duplicate-import-is-rejected
+    input: the same vendor file is imported twice
+    expected: the second import is a no-op or an explicit rejection with the dedup key
+  - name: inconsistent-candle-fails-load
+    input: a candle with low greater than open
+    expected: loading fails loudly with the violation named
+  - name: market-closed-is-not-a-gap
+    input: overnight and weekend absence of bars
+    expected: the gap scanner reports no gaps because the calendar explains the absence
+  - name: holiday-respected
+    input: an exchange holiday inside the scanned range
+    expected: no missing frames are reported for the holiday session
+  - name: dst-boundary-correct
+    input: a DST transition day for the exchange timezone
+    expected: sessions and day rollups use the IANA zone, not a fixed offset
+  - name: vendor-alignment-normalized
+    input: one vendor anchors hourly bars at :30 and the other at :00
+    expected: alignment is normalized or the mismatch is reported, never silently joined
+grading:
+  functional: the series is contiguous within sessions and every repair is recorded
+  tests: DST, session edge, duplicate, and alignment cases are deterministic
+  contract: the OHLCV schema and conventions are documented and enforced
+  scope_control: no display or strategy logic mixed into the loader

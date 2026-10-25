@@ -194,6 +194,10 @@ skills:
     family: trading
     path: skills/trading-execution-safety/SKILL.md
     triggers: [order execution, execution safety, place order, order placement, order submission, submit order, broker order, order gateway, paper trading, paper mode, live trading, live mode, client order ID, client order id, ClOrdID, duplicate order, double execution, order fill, partial fill, execution report, order acknowledgement, cancel order, amend order, exit order, flatten position, broker reconciliation, position reconciliation, order reconciliation, execution risk gate, fail-closed trading, runaway order]
+  trading-market-data-and-backtesting:
+    family: trading
+    path: skills/trading-market-data-and-backtesting/SKILL.md
+    triggers: [market data integrity, OHLCV, candle data, candle gaps, bar data, timeframe alignment, historical data, instrument master, symbol changes, session calendar, exchange calendar, trading session, market timezone, candle repair, forward fill, backtest, backtesting, trading simulation, replay, deterministic replay, look-ahead bias, lookahead bias, data leakage, out-of-sample, walk-forward, holdout, overfitting detection, slippage modeling, historical simulation, calibration run, technical indicator, moving average cross, indicator window, data quality scan, survivorship bias]
   ruby-financial-data-integrity:
     family: ruby
     path: skills/ruby-financial-data-integrity/SKILL.md
@@ -1273,6 +1277,18 @@ benchmarks:
     campaign_manifest: benchmarks/reliability/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  market-data-and-backtesting:
+    source: market-data-and-backtesting-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/market-data-and-backtesting/ohlcv-integrity-and-gaps-contract.yml
+      - evals/market-data-and-backtesting/backtest-lookahead-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   financial-data-integrity:
     source: financial-data-integrity-v1
     schema: docs/EVAL_SCHEMA.md
