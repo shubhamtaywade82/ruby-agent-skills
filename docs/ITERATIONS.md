@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 192 — Financial Data Integrity Skill
+> **Current milestone:** Iteration 193 — Market Data and Backtesting Skill
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -673,3 +673,8 @@ Adds `trading-execution-safety`, the first skill in the new `trading` family, ow
 ## Iteration 192 — Financial Data Integrity Skill
 
 Adds `ruby-financial-data-integrity`, owning numeric and accounting correctness in application code. The skill fixes exact representation per concept (integer minor units or scale-fixed `BigDecimal`), converts only at boundaries (JSON `decimal_class`, string parsing — never `Float` in a money path), sizes decimal precision/scale for aggregate sums, makes every rounding an explicit named decision applied once, moves balances only through balancing journal entries in one transaction with locks or conditional updates, enforces posting idempotency on the business event identity, validates quantity/lot/tick constraints, computes fees and PnL from the posting layer with written sign conventions, checks invariants continuously with loud alerting, and reconciles against external sources on a schedule with journaled adjustments. Four references, two adversarial routing cases, two static-only evaluations (10 cases), and a registered system test complete the iteration. Inventory rises to 101 skills, 599 evaluation cases, and 114 system/contract tests; the public routing campaign grows to 41 cases × 3 repetitions.
+
+
+## Iteration 193 — Market Data and Backtesting Skill
+
+Adds `trading-market-data-and-backtesting` to the `trading` family, owning the measurement infrastructure: data contracts and simulation fidelity rather than strategy advice. The skill pins the OHLCV contract (UTC bar-open timestamps, dedup keys, internal consistency), detects candle gaps against exchange session calendars instead of the previous bar, records every repair decision, normalizes timeframe alignment, handles exchange timezones with IANA zones and DST-aware day rollover, and maintains as-of instrument masters. On the simulation side it enforces one strictly-before as-of primitive for all historical access, tests indicators against reference values, models fills conservatively (next-open, through-margin limits, volume caps, live fee schedule, stated slippage), makes replay deterministic with digest comparison, and keeps evaluation honest with chronological splits and spent-once holdouts. Three references, two adversarial routing cases, two static-only evaluations (12 cases), and a registered system test complete the iteration. Inventory rises to 102 skills, 611 evaluation cases, and 115 system/contract tests; the public routing campaign grows to 43 cases × 3 repetitions.

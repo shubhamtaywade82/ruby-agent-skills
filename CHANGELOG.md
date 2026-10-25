@@ -1,3 +1,11 @@
+## Iteration 193 — Market Data and Backtesting Skill
+
+- Add the `trading-market-data-and-backtesting` skill for market data and simulation integrity: the OHLCV contract (timestamp semantics, dedup keys, internal consistency), candle gap detection against session calendars with recorded repair decisions, timeframe alignment, exchange timezone discipline (IANA zones, DST, session-bound day rollover), as-of instrument masters, indicator window conventions with reference tests, look-ahead bias prevention through one strictly-before as-of primitive, data leakage defenses beyond prices, conservative fill models (next-open fills, through-margin limit fills, volume caps), fees and slippage from the live schedule, deterministic replay with digest comparison, and out-of-sample/walk-forward evaluation with spent-once holdouts.
+- Add references for market data integrity, indicators and look-ahead, and simulation and evaluation.
+- Add a routing-matrix row and dedicated routing section, plus two adversarial routing cases (`backtest-looks-too-good`, `candle-gaps-timezone-boundary`).
+- Add a static-only evaluation family covering OHLCV/gap/timezone integrity and backtest look-ahead/determinism (12 cases).
+- Add `test/trading_market_data_and_backtesting_system_test.rb` (registered in `bin/validate`). Skills rise from 101 to 102; evaluation cases from 599 to 611; system/contract tests from 114 to 115; the public routing campaign grows to 43 cases × 3 repetitions.
+
 ## Iteration 192 — Financial Data Integrity Skill
 
 - Add the `ruby-financial-data-integrity` skill for money, quantity, ledger, and accounting correctness: exact representation (integer minor units or scale-fixed BigDecimal) at every parse/serialization boundary, decimal precision and scale sized for aggregate sums, named rounding decisions with modes and reasons, largest-remainder allocation that sums exactly, double-entry invariants (entries balance, balances equal postings, conservation), posting transactions with row locks and conditional updates, posting idempotency keyed on the business event identity, quantity/lot/tick constraints, fee and PnL arithmetic with written sign conventions, continuous invariant checks that alert, and scheduled external reconciliation with journaled adjustments.

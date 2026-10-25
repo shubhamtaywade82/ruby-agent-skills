@@ -1,0 +1,49 @@
+id: backtest-lookahead-contract
+coverage: static-only
+version: 1
+title: Make a backtest unable to see the future and reproducible
+category: trading
+source: market-data-and-backtesting-v1
+skills:
+  - trading-market-data-and-backtesting
+patterns:
+  - message-handler-boundary
+prompt: |
+  A strategy backtest produces results that live trading never reproduces, and reviewers suspect look-ahead bias and optimistic fills. Rebuild the evaluation path around one as-of primitive: every data access the strategy makes goes through a strictly-before boundary that excludes the bar being traded; signals are computed on completed bars only; fills use the next bar's open plus a stated slippage with fees from the live fee schedule; limit fills require the subsequent bar to trade through the level with margin. Make replay deterministic (seeded randomness, pinned inputs, digest-compared outputs), and split train/validation/test chronologically before tuning, spending the holdout once. Provide a look-ahead tripwire test that truncates the series after T and asserts the signal is unchanged, plus a determinism test asserting byte-identical digests.
+constraints:
+  required_design:
+    - one as-of primitive for all historical access
+    - no signal consumes the bar it trades
+    - fills at next open with stated slippage and live fee schedule
+    - limit fills require trading through the level with margin
+    - deterministic replay with seeded randomness and digest comparison
+    - chronological splits defined before tuning; holdout used once
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: truncation-does-not-change-signal
+    input: the strategy steps at T with the series truncated after T
+    expected: the signal equals the one produced with the full series
+  - name: same-bar-close-is-never-a-fill-price
+    input: a signal generated from bar N's close
+    expected: the fill price comes from bar N+1's open plus slippage
+  - name: limit-touch-is-not-a-fill
+    input: a bar whose low exactly touches the buy limit
+    expected: no fill unless the price trades through the level with margin
+  - name: replay-is-byte-identical
+    input: the same inputs and seed run twice
+    expected: identical digests from both runs
+  - name: fees-are-modeled
+    input: a filled simulated order
+    expected: the fill records fees computed by the live fee schedule
+  - name: holdout-is-spent-once
+    input: tuning iterates on the train/validation split
+    expected: the test set is evaluated exactly once for the final report
+grading:
+  functional: no decision can use post-decision information under any input
+  tests: tripwire, fill, determinism, and split tests are deterministic and in CI
+  contract: assumptions (costs, fill model, universe, data versions) reported with results
+  scope_control: strategy code remains pure with no data-store access

@@ -93,6 +93,7 @@ This file defines how an agent should select and compose skills.
 | Domain state machines / durable workflow state | rails-state-machine-engineering | rails-active-record, rails-database-engineering, rails-distributed-systems, rails-event-driven-messaging, rails-external-stream-ingestion, rails-api-integration, rails-observability, rails-test-engineering |
 | Trading execution safety / order placement through brokers | trading-execution-safety | rails-state-machine-engineering, rails-api-integration, ruby-financial-data-integrity, trading-market-data-and-backtesting, rails-external-stream-ingestion, rails-reliability-engineering, rails-observability, rails-test-engineering |
 | Financial data integrity / money and ledger arithmetic | ruby-financial-data-integrity | rails-database-engineering, trading-execution-safety, rails-state-machine-engineering, rails-api-integration, rails-active-record, rails-observability, rails-test-engineering |
+| Market data and backtesting integrity | trading-market-data-and-backtesting | trading-execution-safety, ruby-financial-data-integrity, rails-external-stream-ingestion, rails-database-engineering, ruby-tdd-refactoring, rails-observability |
 | Rails I18n / localization | rails-i18n | rails-routing, rails-action-view, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, ruby-concurrency |
 | Rails Action Text / rich text | rails-action-text | rails-action-view, rails-active-record, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-action-controller, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-test-engineering |
@@ -1251,6 +1252,33 @@ Financial data integrity owns numeric and accounting correctness: exact represen
 | Guarded posting transitions | pattern:state-transition-guard |
 | Financial event envelope contract | pattern:event-envelope |
 | Invariant and drift telemetry | pattern:message-observability |
+
+## Market data and backtesting
+
+```text
+OHLCV / candle data / candle gaps / timeframe alignment / instrument master /
+session calendar / market timezone / historical data / data quality /
+backtest / backtesting / trading simulation / deterministic replay /
+look-ahead bias / data leakage / out-of-sample / walk-forward / holdout /
+slippage modeling / technical indicator / survivorship bias
+  -> trading-market-data-and-backtesting
+  -> trading-execution-safety for the live execution boundary
+  -> ruby-financial-data-integrity for PnL and fee arithmetic
+  -> rails-external-stream-ingestion for live market feed consumption
+  -> rails-database-engineering for historical storage and queries
+  -> ruby-tdd-refactoring for indicator and regression tests
+  -> rails-observability for data-quality telemetry
+```
+
+Market data and backtesting integrity owns the measurement infrastructure: data contracts, gap and session discipline, timezone correctness, as-of access that cannot see the future, conservative fill models with costs, deterministic replay, and out-of-sample evaluation. It deliberately does not provide strategy advice or live execution guidance.
+
+### Market data pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Candle/event envelope contract | pattern:event-envelope |
+| Indicator/signal hand-off shape | pattern:message-handler-boundary |
+| Reproducibility regression harness | pattern:regression-test |
 
 ## Rails I18n
 
