@@ -90,6 +90,7 @@ This file defines how an agent should select and compose skills.
 | Rails Active Storage / file attachments | rails-active-storage | rails-security, rails-security-engineering, rails-active-job, rails-api-integration, rails-performance, rails-caching, rails-observability, rails-production-runtime, rails-test-engineering |
 | Rails Action Cable / realtime WebSockets | rails-action-cable | rails-security, rails-security-engineering, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-reliability-engineering, rails-performance, ruby-performance, ruby-concurrency, rails-production-runtime, rails-release-engineering, rails-observability, rails-test-engineering |
 | External stream ingestion (consuming provider feeds/WebSockets) | rails-external-stream-ingestion | ruby-concurrency, rails-reliability-engineering, rails-caching, rails-api-integration, rails-observability, rails-production-runtime, rails-test-engineering, rails-action-cable |
+| Domain state machines / durable workflow state | rails-state-machine-engineering | rails-active-record, rails-database-engineering, rails-distributed-systems, rails-event-driven-messaging, rails-external-stream-ingestion, rails-api-integration, rails-observability, rails-test-engineering |
 | Rails I18n / localization | rails-i18n | rails-routing, rails-action-view, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, ruby-concurrency |
 | Rails Action Text / rich text | rails-action-text | rails-action-view, rails-active-record, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-action-controller, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-test-engineering |
@@ -1161,6 +1162,36 @@ External stream ingestion owns the consuming side of an inbound provider stream;
 | Inbound work hand-off shape | pattern:message-handler-boundary |
 | Capacity/backpressure budgeting | pattern:broker-capacity |
 | Feed state and gap telemetry | pattern:message-observability |
+
+## Domain state machines
+
+```text
+state machine / state transitions / transition table / terminal state /
+order state / payment state / approval workflow / import pipeline /
+AASM / transition guard / state audit / concurrent transitions /
+double transition / out-of-order events / state migration
+  -> rails-state-machine-engineering
+  -> rails-active-record for persistence lifecycle, transactions, and callbacks
+  -> rails-database-engineering for locking, unique constraints, and constraint enforcement
+  -> rails-distributed-systems when state spans services and needs saga/compensation
+  -> rails-event-driven-messaging when transitions publish or consume durable events
+  -> rails-external-stream-ingestion when state changes are driven by an external feed
+  -> rails-api-integration for remote side-effect boundaries and idempotent execution keys
+  -> rails-observability for transition telemetry and divergence alerting
+  -> rails-test-engineering for the transition/race/recovery test matrix
+```
+
+A state machine is durable application state with legal-transition semantics; an AASM declaration is one implementation choice, not the contract. Cross-service orchestration stays with distributed-systems sagas; this skill owns the machine guarding one record's lifecycle.
+
+### State machine pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Guarded transition entry point | pattern:state-transition-guard |
+| Duplicate event suppression | pattern:inbox-deduplication |
+| Transactional event publication | pattern:outbox-publication |
+| Remote-effect intent and recovery | pattern:dead-letter-replay |
+| Full transition/race/recovery test plan | pattern:state-machine-testing |
 
 ## Rails I18n
 

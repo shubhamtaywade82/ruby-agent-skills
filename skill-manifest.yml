@@ -186,6 +186,10 @@ skills:
     family: rails
     path: skills/rails-external-stream-ingestion/SKILL.md
     triggers: [external stream, external WebSocket, WebSocket client, stream ingestion, consuming realtime data, market data feed, market feed, broker feed, data feed, feed consumer, tick data, feed health, stale feed, feed staleness, stalled feed, feed freshness, missing ticks, event gap, gap detection, feed reconnection, reconnection, resubscription, subscription registry, inbound stream, feed backpressure, feed recovery, feed shutdown, supervised feed, event time, processing time, external streaming data]
+  rails-state-machine-engineering:
+    family: rails
+    path: skills/rails-state-machine-engineering/SKILL.md
+    triggers: [state machine, state machines, domain state, durable state, state transition, state transitions, transition table, legal transitions, terminal state, transition guard, workflow state, order state, order lifecycle, payment state, approval workflow, import pipeline, AASM, aasm, state audit, audit history, transition authorization, concurrent transitions, transition race, double transition, out-of-order events, stale state, state migration, event ordering, idempotent transition, machine states, illegal transition]
   rails-event-driven-messaging:
     family: rails
     path: skills/rails-event-driven-messaging/SKILL.md
@@ -739,6 +743,7 @@ patterns:
       - patterns/rails/message-delivery-contract.md
       - patterns/rails/outbox-publication.md
       - patterns/rails/inbox-deduplication.md
+      - patterns/rails/state-transition-guard.md
       - patterns/rails/saga-orchestration.md
       - patterns/rails/distributed-lock.md
       - patterns/rails/multi-region-data-boundary.md
@@ -1036,6 +1041,7 @@ patterns:
       - patterns/testing/request-contract.md
       - patterns/testing/parallel-database-test.md
       - patterns/testing/regression-test.md
+      - patterns/testing/state-machine-testing.md
       - patterns/rails/mailer-testing.md
       - patterns/rails/active-storage-testing.md
       - patterns/rails/action-cable-testing.md
@@ -1259,6 +1265,18 @@ benchmarks:
     campaign_manifest: benchmarks/reliability/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  state-machine-engineering:
+    source: state-machine-engineering-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/state-machine-engineering/order-state-machine-transition-contract.yml
+      - evals/state-machine-engineering/transition-side-effect-recovery.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   external-stream-ingestion:
     source: external-stream-ingestion-v1
     schema: docs/EVAL_SCHEMA.md

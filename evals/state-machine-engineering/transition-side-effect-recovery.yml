@@ -1,0 +1,46 @@
+id: transition-side-effect-recovery
+coverage: static-only
+version: 1
+title: Recover when a remote transition side effect outlives its transaction
+category: rails
+source: state-machine-engineering-v1
+skills:
+  - rails-state-machine-engineering
+  - rails-api-integration
+patterns:
+  - outbox-publication
+prompt: |
+  A subscription record transitions to active when a payment capture succeeds at the external payment gateway. Today the gateway call happens inside the state transaction: a provider outage holds the row lock, and a crash after a successful charge rolls back the record, leaving paid customers with inactive subscriptions. Restructure the flow: persist a durable effect intent (with a deterministic idempotency key) before execution, execute the capture after commit with that key, record completion, and apply the transition from the completion path. Add a reconciliation path that queries the provider by idempotency key for intents stuck pending, and define behavior for each crash window. Test each window, including intent-pending-with-succeeded-charge reconciling to the active state exactly once.
+constraints:
+  required_design:
+    - effect intent persisted before remote execution with deterministic idempotency key
+    - remote call never inside the state transaction or row lock
+    - completion applies the transition idempotently
+    - reconciliation queries the provider by idempotency key
+    - every crash window has a defined recovery behavior
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: intent-then-capture-succeeds
+    input: capture completes normally after commit
+    expected: subscription active, intent completed, one audit trail
+  - name: crash-after-capture-before-completion
+    input: process dies after the provider charged but before completion was recorded
+    expected: reconciliation marks the intent completed and applies the transition exactly once
+  - name: crash-before-capture
+    input: process dies before the capture call
+    expected: pending intent is re-executed with the same idempotency key
+  - name: provider-outage-does-not-hold-locks
+    input: the gateway is slow or down
+    expected: no state transaction or row lock is held during the remote call
+  - name: duplicate-completion-is-idempotent
+    input: the completion path runs twice
+    expected: the transition and its effects apply once
+grading:
+  functional: paid captures always converge to active or to an explicit failed state
+  tests: each crash window is simulated and asserted deterministically
+  contract: idempotency key is stable per intent and reused across retries
+  scope_control: no provider-specific coupling inside the model layer

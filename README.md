@@ -113,10 +113,10 @@ skills/rails-active-record/
 
 | Capability | Count |
 |---|---:|
-| Skills | **98** |
-| Implementation patterns | **450** |
-| Evaluation cases | **568** |
-| Dedicated system/contract tests | **111** |
+| Skills | **99** |
+| Implementation patterns | **452** |
+| Evaluation cases | **579** |
+| Dedicated system/contract tests | **112** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -237,6 +237,7 @@ The repository now has dedicated deep skills for:
 - **Distributed Systems** — service boundaries, message delivery, outbox/inbox, deduplication, sagas, distributed locks, eventual consistency.
 - **Event-Driven Messaging** — events, commands, brokers, schemas, acknowledgements, replay, DLQs, consumer lag, capacity.
 - **External Stream Ingestion** — consuming provider feeds/WebSockets: connection ownership, heartbeats, reconnect/resubscription, bounded buffering and backpressure, freshness/staleness contracts, gap recovery, failure semantics, fake-client tests.
+- **State Machine Engineering** — durable workflow state: transition tables, guards, transition authorization, audit history, locking, duplicate/out-of-order event handling, side-effect sequencing and recovery, transition test matrices.
 - **Release Engineering** — artifact promotion, deployment gates, progressive delivery, canary/staged rollout, rollback/roll-forward, release evidence.
 - **Incident Engineering** — incident triage, runbooks, diagnostics, mitigation, recovery verification, post-incident review.
 - **Security Engineering** — threat modeling, trust boundaries, tenant isolation, secret management, SSRF/network security, supply chain and residual risk.
@@ -534,6 +535,7 @@ Important evaluation families include:
 - distributed systems
 - event-driven messaging
 - external stream ingestion
+- state machine engineering
 - release engineering
 - incident engineering
 - caching
@@ -651,7 +653,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **98 skills**, **450 implementation patterns**, **568 evaluation cases**, and **111 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **99 skills**, **452 implementation patterns**, **579 evaluation cases**, and **112 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
@@ -759,6 +761,7 @@ Completed deep Rails areas currently include:
 - Distributed systems
 - Event-driven messaging
 - External stream ingestion
+- State machine engineering
 - Release engineering
 - Incident engineering
 - Security engineering
