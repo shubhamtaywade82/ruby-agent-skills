@@ -92,6 +92,7 @@ This file defines how an agent should select and compose skills.
 | External stream ingestion (consuming provider feeds/WebSockets) | rails-external-stream-ingestion | ruby-concurrency, rails-reliability-engineering, rails-caching, rails-api-integration, rails-observability, rails-production-runtime, rails-test-engineering, rails-action-cable |
 | Domain state machines / durable workflow state | rails-state-machine-engineering | rails-active-record, rails-database-engineering, rails-distributed-systems, rails-event-driven-messaging, rails-external-stream-ingestion, rails-api-integration, rails-observability, rails-test-engineering |
 | Trading execution safety / order placement through brokers | trading-execution-safety | rails-state-machine-engineering, rails-api-integration, ruby-financial-data-integrity, trading-market-data-and-backtesting, rails-external-stream-ingestion, rails-reliability-engineering, rails-observability, rails-test-engineering |
+| Financial data integrity / money and ledger arithmetic | ruby-financial-data-integrity | rails-database-engineering, trading-execution-safety, rails-state-machine-engineering, rails-api-integration, rails-active-record, rails-observability, rails-test-engineering |
 | Rails I18n / localization | rails-i18n | rails-routing, rails-action-view, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, ruby-concurrency |
 | Rails Action Text / rich text | rails-action-text | rails-action-view, rails-active-record, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-action-controller, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-test-engineering |
@@ -1222,6 +1223,34 @@ Execution safety owns the boundary where a defect has direct financial consequen
 | Fill/event envelope contract | pattern:event-envelope |
 | Duplicate execution-report suppression | pattern:inbox-deduplication |
 | Loss/error-rate circuit breaking | pattern:circuit-breaker |
+
+## Financial data integrity
+
+```text
+BigDecimal / decimal precision / decimal scale / minor units / rounding mode /
+fee calculation / PnL / realized PnL / average price / double-entry /
+journal entry / journal posting / ledger invariant / account balance /
+posting idempotency / idempotency key / ledger reconciliation / money parsing /
+lot size / tick size / allocation split / sign conventions
+  -> ruby-financial-data-integrity
+  -> rails-database-engineering for constraints, transactions, and isolation
+  -> trading-execution-safety when money facts originate at an execution venue
+  -> rails-state-machine-engineering when postings follow durable state transitions
+  -> rails-api-integration for external financial API contracts
+  -> rails-active-record for persistence boundaries
+  -> rails-observability for invariant-violation alerting
+```
+
+Financial data integrity owns numeric and accounting correctness: exact representation at every boundary, named rounding decisions, balances moved only through balancing journal entries, posting idempotency on the event identity, continuous invariant checks, and scheduled external reconciliation.
+
+### Financial integrity pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Idempotent event-driven requests | pattern:idempotent-request |
+| Guarded posting transitions | pattern:state-transition-guard |
+| Financial event envelope contract | pattern:event-envelope |
+| Invariant and drift telemetry | pattern:message-observability |
 
 ## Rails I18n
 

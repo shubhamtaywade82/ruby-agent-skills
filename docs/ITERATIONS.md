@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 191 — Trading Execution Safety Skill
+> **Current milestone:** Iteration 192 — Financial Data Integrity Skill
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -668,3 +668,8 @@ Adds `rails-state-machine-engineering`, owning durable workflow state for record
 ## Iteration 191 — Trading Execution Safety Skill
 
 Adds `trading-execution-safety`, the first skill in the new `trading` family, owning the boundary where a software defect has direct financial consequences. The skill persists durable order intent with deterministic client order IDs before any submission, enforces one submission per identity with unique constraints and guarded transitions, separates submission, acknowledgement, partial fill, and fill as distinct facts from different sources, treats ambiguous outcomes as probably-executed and resolves them by venue reconciliation instead of resubmission, reconciles positions and executed quantities against the broker as the source of truth, keeps paper and live behind a default-off explicit gate sharing one contract, and makes risk gates fail closed on stale, missing, or inconsistent inputs. Four references carry intent/identity, submission/fills, retries/reconciliation, and paper-live/testing; two adversarial routing cases pin the routing boundary; two static-only evaluations (10 cases) and a registered system test complete the iteration. Inventory rises to 100 skills, 589 evaluation cases, and 113 system/contract tests; the public routing campaign grows to 39 cases × 3 repetitions.
+
+
+## Iteration 192 — Financial Data Integrity Skill
+
+Adds `ruby-financial-data-integrity`, owning numeric and accounting correctness in application code. The skill fixes exact representation per concept (integer minor units or scale-fixed `BigDecimal`), converts only at boundaries (JSON `decimal_class`, string parsing — never `Float` in a money path), sizes decimal precision/scale for aggregate sums, makes every rounding an explicit named decision applied once, moves balances only through balancing journal entries in one transaction with locks or conditional updates, enforces posting idempotency on the business event identity, validates quantity/lot/tick constraints, computes fees and PnL from the posting layer with written sign conventions, checks invariants continuously with loud alerting, and reconciles against external sources on a schedule with journaled adjustments. Four references, two adversarial routing cases, two static-only evaluations (10 cases), and a registered system test complete the iteration. Inventory rises to 101 skills, 599 evaluation cases, and 114 system/contract tests; the public routing campaign grows to 41 cases × 3 repetitions.

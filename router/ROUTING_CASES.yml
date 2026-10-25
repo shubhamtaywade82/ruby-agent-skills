@@ -485,3 +485,29 @@ cases:
       - rails-initialization-configuration-engineering
       - rails-test-engineering
     boundary: paper-live-separation-vs-fail-closed
+
+  - id: cents-off-fee-calculation
+    prompt: >
+      Our fee totals occasionally differ from the payment provider by a cent
+      and account balances drifted negative during a concurrent transfer
+      incident. Make the money path exact end to end and prove the books
+      balance.
+    primary_skills:
+      - ruby-financial-data-integrity
+    secondary_skills:
+      - rails-database-engineering
+      - ruby-tdd-refactoring
+    boundary: numeric-exactness-vs-balance-mutation
+
+  - id: ledger-idempotent-replay
+    prompt: >
+      Redelivered webhook events sometimes post charges twice into the
+      ledger. Introduce posting idempotency keyed on the business event so a
+      replay is a no-op, and add an integrity job that alerts when entries
+      stop balancing.
+    primary_skills:
+      - ruby-financial-data-integrity
+    secondary_skills:
+      - rails-active-record
+      - rails-test-engineering
+    boundary: posting-idempotency-vs-event-replay

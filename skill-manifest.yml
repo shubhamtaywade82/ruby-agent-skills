@@ -194,6 +194,10 @@ skills:
     family: trading
     path: skills/trading-execution-safety/SKILL.md
     triggers: [order execution, execution safety, place order, order placement, order submission, submit order, broker order, order gateway, paper trading, paper mode, live trading, live mode, client order ID, client order id, ClOrdID, duplicate order, double execution, order fill, partial fill, execution report, order acknowledgement, cancel order, amend order, exit order, flatten position, broker reconciliation, position reconciliation, order reconciliation, execution risk gate, fail-closed trading, runaway order]
+  ruby-financial-data-integrity:
+    family: ruby
+    path: skills/ruby-financial-data-integrity/SKILL.md
+    triggers: [financial data integrity, money representation, monetary arithmetic, BigDecimal, decimal precision, decimal scale, minor units, currency conversion, rounding rules, rounding mode, banker's rounding, fee calculation, fee rounding, PnL, realized PnL, unrealized PnL, average price, weighted average, double-entry, double-entry ledger, journal entry, journal posting, ledger invariant, account balance, balance update, posting idempotency, idempotency key, ledger reconciliation, money parsing, float money, quantity constraints, lot size, tick size, allocation split, sign conventions, financial arithmetic]
   rails-event-driven-messaging:
     family: rails
     path: skills/rails-event-driven-messaging/SKILL.md
@@ -1269,6 +1273,18 @@ benchmarks:
     campaign_manifest: benchmarks/reliability/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  financial-data-integrity:
+    source: financial-data-integrity-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/financial-data-integrity/money-representation-and-rounding-contract.yml
+      - evals/financial-data-integrity/double-entry-posting-invariant-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   trading-execution-safety:
     source: trading-execution-safety-v1
     schema: docs/EVAL_SCHEMA.md

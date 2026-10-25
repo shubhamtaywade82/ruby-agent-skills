@@ -113,10 +113,10 @@ skills/rails-active-record/
 
 | Capability | Count |
 |---|---:|
-| Skills | **100** |
+| Skills | **101** |
 | Implementation patterns | **452** |
-| Evaluation cases | **589** |
-| Dedicated system/contract tests | **113** |
+| Evaluation cases | **599** |
+| Dedicated system/contract tests | **114** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -239,6 +239,7 @@ The repository now has dedicated deep skills for:
 - **External Stream Ingestion** — consuming provider feeds/WebSockets: connection ownership, heartbeats, reconnect/resubscription, bounded buffering and backpressure, freshness/staleness contracts, gap recovery, failure semantics, fake-client tests.
 - **State Machine Engineering** — durable workflow state: transition tables, guards, transition authorization, audit history, locking, duplicate/out-of-order event handling, side-effect sequencing and recovery, transition test matrices.
 - **Trading Execution Safety** — order placement through external venues: durable intent, deterministic client order IDs, duplicate prevention, submission/acknowledgement/fill separation, ambiguous-outcome reconciliation, paper/live separation, fail-closed risk gates.
+- **Financial Data Integrity** — money and ledger arithmetic: BigDecimal/decimal precision and scale, named rounding decisions, minor units, double-entry invariants, atomic balance updates, posting idempotency, PnL and fee arithmetic, reconciliation and invariant checks.
 - **Release Engineering** — artifact promotion, deployment gates, progressive delivery, canary/staged rollout, rollback/roll-forward, release evidence.
 - **Incident Engineering** — incident triage, runbooks, diagnostics, mitigation, recovery verification, post-incident review.
 - **Security Engineering** — threat modeling, trust boundaries, tenant isolation, secret management, SSRF/network security, supply chain and residual risk.
@@ -538,6 +539,7 @@ Important evaluation families include:
 - external stream ingestion
 - state machine engineering
 - trading execution safety
+- financial data integrity
 - release engineering
 - incident engineering
 - caching
@@ -655,7 +657,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **100 skills**, **452 implementation patterns**, **589 evaluation cases**, and **113 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **101 skills**, **452 implementation patterns**, **599 evaluation cases**, and **114 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
@@ -765,6 +767,7 @@ Completed deep Rails areas currently include:
 - External stream ingestion
 - State machine engineering
 - Trading execution safety
+- Financial data integrity
 - Release engineering
 - Incident engineering
 - Security engineering

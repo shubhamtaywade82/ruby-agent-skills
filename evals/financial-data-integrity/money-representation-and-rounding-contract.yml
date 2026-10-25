@@ -1,0 +1,45 @@
+id: money-representation-and-rounding-contract
+coverage: static-only
+version: 1
+title: Keep money exact from the parse boundary to the rounding decision
+category: ruby
+source: financial-data-integrity-v1
+skills:
+  - ruby-financial-data-integrity
+patterns:
+  - idempotent-request
+prompt: |
+  A Rails application parses JSON payloads containing prices, quantities, and fee rates, computes charges over several steps, and stores amounts in decimal columns. Amounts occasionally differ by cents from the payment provider's records. Fix the numeric path end to end: parse money and quantities as exact values at every boundary (JSON with decimal_class or string construction), keep intermediate computation unrounded, define decimal precision and scale that fit the largest realistic sums, and make each rounding an explicit named decision (mode, scale, and reason) applied once at the boundary that owns it. Provide adversarial tests for the exact rounding boundary, scale overflow at the column, zero and negative values, and allocation of a total into parts that must sum exactly to the whole.
+constraints:
+  required_design:
+    - exact representation chosen per concept and converted only at edges
+    - no Float anywhere in the money or quantity path
+    - decimal precision and scale sized for aggregate sums with headroom
+    - rounding modes named with a reason and applied once
+    - allocation sums exactly to the original total
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: json-parse-stays-exact
+    input: a payload with price 19.99 and quantity 3
+    expected: notional is exactly 59.97 with no binary fraction error
+  - name: rounding-boundary-is-pinned
+    input: a fee computation landing exactly on 0.005
+    expected: the named rounding mode applies and a test pins the documented direction
+  - name: intermediate-rounding-does-not-compound
+    input: a multi-component fee computation
+    expected: the sum is rounded once, after exact component sums
+  - name: allocation-sums-exactly
+    input: 100.00 split into three equal parts
+    expected: parts sum to exactly 100.00 with the remainder distributed deterministically
+  - name: scale-overflow-is-rejected
+    input: a value with more decimals than the column scale
+    expected: the failure is explicit rather than silent truncation
+grading:
+  functional: computed amounts match the provider's records exactly at every boundary
+  tests: rounding boundaries, zero, negative, and overflow cases are pinned deterministically
+  contract: one representation per concept with named rounding decisions
+  scope_control: no formatting concerns mixed into the arithmetic layer
