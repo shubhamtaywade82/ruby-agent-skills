@@ -402,3 +402,30 @@ cases:
       - ruby-core
       - ruby-tdd-refactoring
     boundary: text-matching-vs-input-validation
+
+  - id: external-feed-client-not-action-cable
+    prompt: >
+      Our broker's market data WebSocket client stops receiving ticks after
+      the daily maintenance window and the team wants to add a heartbeat and
+      resubscribe loop to the cable channel that forwards ticks to the
+      dashboard.
+    primary_skills:
+      - rails-external-stream-ingestion
+    secondary_skills:
+      - rails-action-cable
+      - ruby-concurrency
+      - rails-test-engineering
+    boundary: feed-ingestion-vs-realtime-serving
+
+  - id: stale-feed-order-guard
+    prompt: >
+      Orders occasionally execute against quotes that are several minutes
+      old when the feed stalls while connected. Add a guard so order
+      placement refuses to act on stale data and the display keeps showing
+      last-known values with a delay marker.
+    primary_skills:
+      - rails-external-stream-ingestion
+    secondary_skills:
+      - rails-reliability-engineering
+      - rails-test-engineering
+    boundary: feed-freshness-vs-consumer-safety

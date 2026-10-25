@@ -1,0 +1,47 @@
+id: external-feed-freshness-failure-semantics
+coverage: static-only
+version: 1
+title: Enforce per-consumer freshness and fail-closed behavior on a stale external feed
+category: rails
+source: external-stream-ingestion-v1
+skills:
+  - rails-external-stream-ingestion
+  - rails-reliability-engineering
+patterns:
+  - message-observability
+prompt: |
+  A Rails application ingests quotes from an external streaming feed and exposes two consumers: a live order placement path that must not act on data older than two seconds, and a display path that may show last-known values marked as delayed. The feed can stall while the socket stays connected, and can deliver events with provider timestamps. Implement a feed health object that distinguishes live, degraded, stalled, and disconnected states using event arrival and provider timestamps, wire per-consumer freshness contracts, and make the order path fail closed when health is unknown. Keep interval math on a monotonic clock, keep staleness checks at the boundary that consumes the data, and test staleness transitions with injected time rather than sleeps.
+constraints:
+  required_design:
+    - feed health states distinguish stalled from disconnected
+    - per-consumer freshness thresholds enforced at the consuming boundary
+    - order path fails closed on unknown health
+    - display path marks last-known data as delayed
+    - monotonic clock for interval math
+    - staleness tests use injected time, not sleeps
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: fresh-data-permits-action
+    input: last event for the instrument arrived within the order path threshold
+    expected: the order guard allows the action
+  - name: stale-data-rejects-order
+    input: no event for the instrument within the order path threshold
+    expected: the order guard rejects with an explicit unavailable reason and no silent fallback
+  - name: display-degrades-with-marker
+    input: data older than the display threshold but within its degraded window
+    expected: the display path serves last-known values marked delayed
+  - name: stalled-connection-detected
+    input: socket connected and heartbeats flowing but no payload events for longer than the expected minimum rate allows
+    expected: feed health reports stalled, not live
+  - name: unknown-health-fails-closed
+    input: feed health has never recorded an event for the instrument
+    expected: the order guard rejects rather than assumes freshness
+grading:
+  functional: stale and stalled inputs cannot drive the order path
+  tests: staleness transitions tested with injected time deterministically
+  contract: freshness thresholds live with each consumer and failure semantics are explicit
+  scope_control: no wall-clock interval math and no sleep-based tests

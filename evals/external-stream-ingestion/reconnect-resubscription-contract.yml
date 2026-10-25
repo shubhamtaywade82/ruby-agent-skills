@@ -1,0 +1,52 @@
+id: external-feed-reconnect-resubscription
+coverage: static-only
+version: 1
+title: Reconnect an external market data feed without losing or duplicating subscriptions
+category: rails
+source: external-stream-ingestion-v1
+skills:
+  - rails-external-stream-ingestion
+  - ruby-concurrency
+patterns:
+  - external-api-client
+prompt: |
+  A Rails application consumes an external market data WebSocket through a provider SDK that invokes callbacks from its own thread. Consumers subscribe by instrument token. The connection drops several times a day. Implement the reconnection path so that, after any disconnect: a new client object is used, the full subscription set is re-established exactly once from a registry (not from state the dead connection happened to hold), reconnect attempts are bounded with jittered backoff, and a sequence gap observed after reconnection is recorded rather than silently accepted. Callbacks must not perform database work; they validate, normalize with both event time and arrival time, and enqueue to a bounded buffer with an explicit overflow policy. Provide deterministic tests using an injected fake client that simulate disconnect, reconnect, and redelivery.
+constraints:
+  required_design:
+    - single named owner of the connection lifecycle
+    - subscriptions replayed from a registry that replaces rather than appends
+    - bounded buffer with explicit overflow behavior
+    - event time and processing time recorded separately
+    - reconnect backoff bounded and jittered
+    - sequence gaps recorded for reconciliation
+    - no blocking work in provider callbacks
+    - deterministic fake-client tests for disconnect, reconnect, and redelivery
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: first-subscription-delivers
+    input: consumer subscribes to one instrument and the feed delivers valid ticks
+    expected: normalized events reach the downstream buffer stamped with event time and arrival time
+  - name: disconnect-triggers-reconnect
+    input: the provider closes the connection
+    expected: the reconnect path runs with bounded backoff and uses a fresh client object
+  - name: reconnect-replays-subscription-set-exactly
+    input: reconnection completes after two instruments were subscribed
+    expected: the new connection carries exactly the registry's subscription set with no duplicates
+  - name: redelivered-event-is-suppressed
+    input: the provider redelivers an event identity already processed after reconnect
+    expected: downstream observes the event once
+  - name: sequence-gap-is-recorded
+    input: the first post-reconnect event's sequence jumps by ten
+    expected: the missing range is recorded for reconciliation instead of being skipped silently
+  - name: burst-overflows-by-policy
+    input: a burst exceeds the bounded buffer
+    expected: the configured overflow policy applies and a drop counter is observable
+grading:
+  functional: reconnect path restores subscriptions and processing without duplicates or losses
+  tests: fake-client tests cover disconnect, reconnect, replay, redelivery, and burst deterministically
+  contract: subscription registry is the single source of truth and reconnection uses it
+  scope_control: no live provider dependency in tests and no unrelated infrastructure introduced

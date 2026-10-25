@@ -182,6 +182,10 @@ skills:
     family: operations
     path: skills/rails-release-engineering/SKILL.md
     triggers: [release engineering, release management, release readiness, CI/CD release, artifact promotion, artifact provenance, deployment gate, release gate, progressive delivery, canary release, staged rollout, environment parity, rollback, roll-forward, release health, release evidence, deployment verification, deployment, hosting, production, environment, release, Kamal, Kamal 2, registry-free deploy, Thruster]
+  rails-external-stream-ingestion:
+    family: rails
+    path: skills/rails-external-stream-ingestion/SKILL.md
+    triggers: [external stream, external WebSocket, WebSocket client, stream ingestion, consuming realtime data, market data feed, market feed, broker feed, data feed, feed consumer, tick data, feed health, stale feed, feed staleness, stalled feed, feed freshness, missing ticks, event gap, gap detection, feed reconnection, reconnection, resubscription, subscription registry, inbound stream, feed backpressure, feed recovery, feed shutdown, supervised feed, event time, processing time, external streaming data]
   rails-event-driven-messaging:
     family: rails
     path: skills/rails-event-driven-messaging/SKILL.md
@@ -1255,6 +1259,18 @@ benchmarks:
     campaign_manifest: benchmarks/reliability/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  external-stream-ingestion:
+    source: external-stream-ingestion-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/external-stream-ingestion/reconnect-resubscription-contract.yml
+      - evals/external-stream-ingestion/feed-freshness-failure-semantics.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-adversarial:
     source: rails-adversarial-v1
     schema: docs/EVAL_SCHEMA.md
