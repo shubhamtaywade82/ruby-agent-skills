@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 188 — AI Code Review Orchestration Skill
+> **Current milestone:** Iteration 189 — External Stream Ingestion Skill
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -653,3 +653,8 @@ Iteration 187 closes the external-agent execution gap with the first real-model 
 ## Iteration 188 — AI Code Review Suite
 
 Expands `ai-code-review` into a risk-based, agent-executable review suite for single-file, PR/diff, and repository-audit modes. It provides a three-pass review protocol, risk-oriented checklists, adjudication rules, evidence-based report format, reviewer training and ledger references, and findings/context helper scripts. It composes existing Ruby/Rails owner skills rather than duplicating their engineering contracts. Manifest, routing documentation, an adversarial routing case, a targeted routing system test, inventory and live routing campaign counts are reconciled. A registered system test covers report generation and helper-script constraints; the suite count rises to 110. CI must validate the change before merge.
+
+
+## Iteration 189 — External Stream Ingestion Skill
+
+Adds `rails-external-stream-ingestion`, the first skill dedicated to the consuming side of external streaming data: broker/market-data WebSocket clients, provider SDK callbacks, reconnection and resubscription, bounded inbound buffering, ordering and duplicate suppression, freshness contracts, gap recovery, and explicit unavailable-data semantics. The boundary is deliberately separated from Action Cable (Rails' serving side), from event-driven messaging (broker infrastructure), and from generic API integration (request/response). Four references carry the connection lifecycle, buffering and backpressure, freshness and recovery, and subscription state with deterministic fake-client testing. The skill ships with two static-only evaluations (reconnect/resubscription contract; freshness and failure semantics), two adversarial routing cases, and a registered system test. Inventory rises to 98 skills, 568 evaluation cases, and 111 system/contract tests; the public routing campaign grows to 35 cases × 3 repetitions.

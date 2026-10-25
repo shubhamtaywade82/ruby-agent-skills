@@ -1,3 +1,11 @@
+## Iteration 189 — External Stream Ingestion Skill
+
+- Add the `rails-external-stream-ingestion` skill for the consuming side of external streaming feeds: provider WebSocket/broker feed clients, connection ownership and supervision, heartbeats, reconnection with explicit resubscription from a registry, bounded buffering and backpressure, event ordering and duplicate suppression, event-time versus processing-time discipline, freshness/staleness contracts, gap detection, and unavailable-feed failure semantics (stop, degrade, alert, reject).
+- Add references for the connection lifecycle, buffering/ordering/backpressure, freshness and recovery, and subscription state with deterministic fake-client testing.
+- Keep Action Cable as the serving boundary and route feed-consumption work to the new skill; add routing-matrix rows, a routing section, and two adversarial routing cases (`external-feed-client-not-action-cable`, `stale-feed-order-guard`).
+- Add a static-only evaluation family for the reconnection/resubscription contract and feed freshness/failure semantics (11 cases), registered in the manifest evaluations section.
+- Add `test/rails_external_stream_ingestion_system_test.rb` (registered in `bin/validate`) covering artifacts, manifest registration, routing, and the stream contract sections. Dedicated system/contract tests rise from 110 to 111; skills from 97 to 98; evaluation cases from 557 to 568.
+
 ## Iteration 188 — AI Code Review Suite
 
 - Expand `ai-code-review` into a risk-based review suite for single files, PRs/diffs, and whole-repository audits, including a three-pass independent review → AI challenge → adjudication protocol.

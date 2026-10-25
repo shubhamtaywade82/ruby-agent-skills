@@ -89,6 +89,7 @@ This file defines how an agent should select and compose skills.
 | Rails email / Action Mailer | rails-action-mailer | rails-active-job, rails-api-integration, rails-security, rails-security-engineering, rails-observability, rails-test-engineering, rails-distributed-systems |
 | Rails Active Storage / file attachments | rails-active-storage | rails-security, rails-security-engineering, rails-active-job, rails-api-integration, rails-performance, rails-caching, rails-observability, rails-production-runtime, rails-test-engineering |
 | Rails Action Cable / realtime WebSockets | rails-action-cable | rails-security, rails-security-engineering, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-reliability-engineering, rails-performance, ruby-performance, ruby-concurrency, rails-production-runtime, rails-release-engineering, rails-observability, rails-test-engineering |
+| External stream ingestion (consuming provider feeds/WebSockets) | rails-external-stream-ingestion | ruby-concurrency, rails-reliability-engineering, rails-caching, rails-api-integration, rails-observability, rails-production-runtime, rails-test-engineering, rails-action-cable |
 | Rails I18n / localization | rails-i18n | rails-routing, rails-action-view, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, ruby-concurrency |
 | Rails Action Text / rich text | rails-action-text | rails-action-view, rails-active-record, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-action-controller, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-test-engineering |
@@ -1131,6 +1132,36 @@ Action Cable is an online realtime boundary, not a durable message queue. Author
 | Connection/fan-out capacity | pattern:action-cable-capacity |
 | Redis/cable outage behavior | pattern:action-cable-failure-boundary |
 | Deterministic realtime tests | pattern:action-cable-testing |
+
+## External stream ingestion
+
+```text
+external WebSocket / broker feed / market data feed / provider SDK
+callbacks / tick data / stream ingestion / feed health / stale feed /
+feed reconnection / resubscription / feed backpressure / event gap /
+event time versus processing time
+  -> rails-external-stream-ingestion
+  -> ruby-concurrency for thread-safe state, bounded queues, and callback threading
+  -> rails-reliability-engineering for degradation budgets, circuit breaking, and unavailable-dependency semantics
+  -> rails-caching for freshness-sensitive cache entries and staleness rules
+  -> rails-api-integration for the same provider's request/response and historical/backfill endpoints
+  -> rails-observability for feed state, rate, lag, and drop telemetry
+  -> rails-production-runtime for supervised long-running daemon topology
+  -> rails-test-engineering for deterministic fake-client disconnect/reconnect tests
+  -> rails-action-cable only when Rails also re-broadcasts the ingested data to browsers
+```
+
+External stream ingestion owns the consuming side of an inbound provider stream; Action Cable owns Rails' own serving side. A channel that forwards ingested ticks to browsers composes both skills, but does not make feed reconnection, resubscription, or staleness an Action Cable concern.
+
+### External stream ingestion pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Provider client boundary and injection | pattern:external-api-client |
+| Inbound work hand-off shape | pattern:message-handler-boundary |
+| Capacity/backpressure budgeting | pattern:broker-capacity |
+| Feed state and gap telemetry | pattern:message-observability |
+
 ## Rails I18n
 
 ```text
