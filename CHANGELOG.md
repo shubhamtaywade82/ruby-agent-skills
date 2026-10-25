@@ -1,3 +1,11 @@
+## Iteration 191 — Trading Execution Safety Skill
+
+- Add the `trading-execution-safety` skill for order placement through external execution venues: durable intent persisted before side effects, deterministic client order IDs (ClOrdID discipline), duplicate prevention at database/guard/venue layers, submission versus acknowledgement versus fill as separate facts, partial fills as accumulating increments, cancel/amend identities, ambiguous-outcome handling (timeout/reset/5xx treated as probably-executed), retry classification (safe-retry versus reconcile-only), broker and position reconciliation, paper/live separation behind default-off gates, and fail-closed risk gates on stale prices, unknown positions, and missing limits.
+- Add references for intent and identity, submission and fills, retries and reconciliation, and paper/live separation with adversarial execution testing.
+- Add a routing-matrix row and dedicated routing section under a new `trading` family, plus two adversarial routing cases (`broker-timeout-not-safe-retry`, `live-trading-fails-closed`).
+- Add a static-only evaluation family covering duplicate order prevention and uncertain-outcome reconciliation (10 cases).
+- Add `test/trading_execution_safety_system_test.rb` (registered in `bin/validate`). Skills rise from 99 to 100; evaluation cases from 579 to 589; system/contract tests from 112 to 113; the public routing campaign grows to 39 cases × 3 repetitions.
+
 ## Iteration 190 — Domain State Machine Skill
 
 - Add the `rails-state-machine-engineering` skill for durable application state with legal-transition semantics: orders, payments, approvals, imports, deployments. Covers transition tables as executable contracts, guards and exit actions, transition authorization, append-only audit history, locking strategies (optimistic vs `with_lock`), concurrent transition attempts, duplicate and idempotent event application, out-of-order event policies (reject, absorb, buffer, reconcile), side-effect sequencing (transactional inside, remote behind durable intent), recovery windows with provider reconciliation, and test matrices generated from the table.

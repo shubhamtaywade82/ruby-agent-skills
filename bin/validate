@@ -45,6 +45,8 @@ ruby -I"$ROOT/test" "$ROOT/test/rails_external_stream_ingestion_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_state_machine_engineering_system_test.rb"
 
+ruby -I"$ROOT/test" "$ROOT/test/trading_execution_safety_system_test.rb"
+
 ruby -I"$ROOT/test" "$ROOT/test/rails_reliability_engineering_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_security_engineering_system_test.rb"

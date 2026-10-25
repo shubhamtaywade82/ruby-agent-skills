@@ -190,6 +190,10 @@ skills:
     family: rails
     path: skills/rails-state-machine-engineering/SKILL.md
     triggers: [state machine, state machines, domain state, durable state, state transition, state transitions, transition table, legal transitions, terminal state, transition guard, workflow state, order state, order lifecycle, payment state, approval workflow, import pipeline, AASM, aasm, state audit, audit history, transition authorization, concurrent transitions, transition race, double transition, out-of-order events, stale state, state migration, event ordering, idempotent transition, machine states, illegal transition]
+  trading-execution-safety:
+    family: trading
+    path: skills/trading-execution-safety/SKILL.md
+    triggers: [order execution, execution safety, place order, order placement, order submission, submit order, broker order, order gateway, paper trading, paper mode, live trading, live mode, client order ID, client order id, ClOrdID, duplicate order, double execution, order fill, partial fill, execution report, order acknowledgement, cancel order, amend order, exit order, flatten position, broker reconciliation, position reconciliation, order reconciliation, execution risk gate, fail-closed trading, runaway order]
   rails-event-driven-messaging:
     family: rails
     path: skills/rails-event-driven-messaging/SKILL.md
@@ -1265,6 +1269,18 @@ benchmarks:
     campaign_manifest: benchmarks/reliability/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  trading-execution-safety:
+    source: trading-execution-safety-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/trading-execution-safety/duplicate-order-prevention-contract.yml
+      - evals/trading-execution-safety/uncertain-outcome-reconciliation-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   state-machine-engineering:
     source: state-machine-engineering-v1
     schema: docs/EVAL_SCHEMA.md
