@@ -1,0 +1,45 @@
+id: llm-degradation-and-deterministic-path-contract
+coverage: static-only
+version: 1
+title: Keep core paths alive when the model is down and model output out of guards
+category: ruby
+source: llm-integration-v1
+skills:
+  - ruby-llm-integration
+patterns:
+  - circuit-breaker
+prompt: |
+  An LLM-backed feature is called inline from request handlers; provider slowness or outages produce 500s, and one path consults the model before deciding whether a safety check passes. Make the integration bounded and degradable: give every call an explicit timeout and a bounded retry policy that distinguishes safe-to-retry failures; record token and cost usage per feature with per-feature budgets checked before expensive calls; make the feature degrade gracefully (cached results marked stale, rule-based fallback, or explicit unavailability) so core paths stay green with the provider down; and move the safety consultation out of the model entirely so no deterministic guard consumes model output. Test degradation by making a fake provider raise unavailability and asserting core flows still pass, and trace consumers of model output to prove none is a guard.
+constraints:
+  required_design:
+    - explicit timeouts at connection and read layers
+    - bounded retries only for safe-to-retry failure classes
+    - token/cost usage recorded and budgets enforced per feature
+    - degradation strategy per feature with core paths independent of the model
+    - no deterministic guard consumes model output
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: provider-down-core-flows-pass
+    input: the provider raises unavailability for every call
+    expected: the application's core paths remain green and the feature degrades explicitly
+  - name: slow-provider-is-bounded
+    input: the provider takes longer than the read timeout
+    expected: the call fails within the budget with a named unavailability outcome
+  - name: cost-budget-is-enforced
+    input: a feature exceeds its configured token or cost budget
+    expected: the call is refused before spend and the refusal is observable
+  - name: cached-result-serves-stale
+    input: generation fails but a recent cached result exists
+    expected: the stale result is served with an explicit stale marker
+  - name: guards-do-not-consult-the-model
+    input: a safety-relevant path executes while the model is unavailable
+    expected: the guard's decision is unchanged and independent of the model
+grading:
+  functional: provider outages degrade features without breaking core paths
+  tests: degradation and bounding simulated deterministically with fakes
+  contract: budgets observable and enforced before spend
+  scope_control: no model output reaches guards or authorization decisions

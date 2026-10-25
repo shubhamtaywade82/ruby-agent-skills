@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 193 — Market Data and Backtesting Skill
+> **Current milestone:** Iteration 194 — Ruby LLM Integration Skill
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -678,3 +678,8 @@ Adds `ruby-financial-data-integrity`, owning numeric and accounting correctness 
 ## Iteration 193 — Market Data and Backtesting Skill
 
 Adds `trading-market-data-and-backtesting` to the `trading` family, owning the measurement infrastructure: data contracts and simulation fidelity rather than strategy advice. The skill pins the OHLCV contract (UTC bar-open timestamps, dedup keys, internal consistency), detects candle gaps against exchange session calendars instead of the previous bar, records every repair decision, normalizes timeframe alignment, handles exchange timezones with IANA zones and DST-aware day rollover, and maintains as-of instrument masters. On the simulation side it enforces one strictly-before as-of primitive for all historical access, tests indicators against reference values, models fills conservatively (next-open, through-margin limits, volume caps, live fee schedule, stated slippage), makes replay deterministic with digest comparison, and keeps evaluation honest with chronological splits and spent-once holdouts. Three references, two adversarial routing cases, two static-only evaluations (12 cases), and a registered system test complete the iteration. Inventory rises to 102 skills, 611 evaluation cases, and 115 system/contract tests; the public routing campaign grows to 43 cases × 3 repetitions.
+
+
+## Iteration 194 — Ruby LLM Integration Skill
+
+Adds `ruby-llm-integration`, owning the application side of large language model calls: the provider isolated behind one adapter, every call bounded in time (connection and read timeouts) and money (token/cost budgets enforced before spend and recorded per feature), structured output validated against schemas with malformed output as a designed outcome, prompt-injection boundaries keeping untrusted content in data roles, tool calls authorized by an allow-list with schema-validated arguments and deterministic effect classes, observability without prompt-content logging, and graceful degradation so core paths stay green with the provider down. The composition rule is absolute: model output may draft and propose, but schema validation, authorization, risk gates, and safety checks remain deterministic — the model is never in the guard path. Three references, two adversarial routing cases, two static-only evaluations (10 cases), and a registered system test complete the iteration. Inventory rises to 103 skills, 621 evaluation cases, and 116 system/contract tests; the public routing campaign grows to 45 cases × 3 repetitions.

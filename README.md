@@ -113,10 +113,10 @@ skills/rails-active-record/
 
 | Capability | Count |
 |---|---:|
-| Skills | **102** |
+| Skills | **103** |
 | Implementation patterns | **452** |
-| Evaluation cases | **611** |
-| Dedicated system/contract tests | **115** |
+| Evaluation cases | **621** |
+| Dedicated system/contract tests | **116** |
 | Manifest version | **2** |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
@@ -241,6 +241,7 @@ The repository now has dedicated deep skills for:
 - **Trading Execution Safety** — order placement through external venues: durable intent, deterministic client order IDs, duplicate prevention, submission/acknowledgement/fill separation, ambiguous-outcome reconciliation, paper/live separation, fail-closed risk gates.
 - **Financial Data Integrity** — money and ledger arithmetic: BigDecimal/decimal precision and scale, named rounding decisions, minor units, double-entry invariants, atomic balance updates, posting idempotency, PnL and fee arithmetic, reconciliation and invariant checks.
 - **Market Data and Backtesting** — OHLCV contracts, candle gaps, timeframe alignment, session calendars and timezones, as-of discipline and look-ahead prevention, conservative fill models, fees/slippage, deterministic replay, out-of-sample evaluation.
+- **LLM Integration** — model calls as an application dependency: provider adapters (RubyLLM/Ollama), timeouts and bounded retries, token/cost budgets, schema-validated structured output, prompt-injection boundaries, tool-call authorization, observability, graceful degradation, and model output kept out of deterministic guards.
 - **Release Engineering** — artifact promotion, deployment gates, progressive delivery, canary/staged rollout, rollback/roll-forward, release evidence.
 - **Incident Engineering** — incident triage, runbooks, diagnostics, mitigation, recovery verification, post-incident review.
 - **Security Engineering** — threat modeling, trust boundaries, tenant isolation, secret management, SSRF/network security, supply chain and residual risk.
@@ -542,6 +543,7 @@ Important evaluation families include:
 - trading execution safety
 - financial data integrity
 - market data and backtesting
+- LLM integration
 - release engineering
 - incident engineering
 - caching
@@ -659,7 +661,7 @@ Validation covers:
 - adversarial routing quality contracts
 - benchmark fixture consistency
 
-The validation suite currently reports the same inventory shown above: **102 skills**, **452 implementation patterns**, **611 evaluation cases**, and **115 dedicated system/contract tests**.
+The validation suite currently reports the same inventory shown above: **103 skills**, **452 implementation patterns**, **621 evaluation cases**, and **116 dedicated system/contract tests**.
 
 The exact counts are enforced by `scripts/audit_repository_completeness.rb` and `bin/validate`.
 
@@ -771,6 +773,7 @@ Completed deep Rails areas currently include:
 - Trading execution safety
 - Financial data integrity
 - Market data and backtesting
+- LLM integration
 - Release engineering
 - Incident engineering
 - Security engineering

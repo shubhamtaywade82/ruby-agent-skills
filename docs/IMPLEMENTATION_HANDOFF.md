@@ -6,10 +6,10 @@ The skill library, pattern library, corpus-quality audit, routing infrastructure
 
 Current inventory:
 
-- 102 skills
+- 103 skills
 - 452 implementation patterns
-- 611 evaluation cases
-- 115 system/contract tests
+- 621 evaluation cases
+- 116 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -117,7 +117,7 @@ Run the generated campaign on the machine that has Ollama access:
 
     ./routing-handoff/run-campaign.sh
 
-The campaign is 43 public cases × 3 repetitions = 129 model decisions.
+The campaign is 45 public cases × 3 repetitions = 135 model decisions.
 
 If interrupted, rerun the generated launcher. When a checkpoint exists, it automatically resumes verified completed repetitions.
 
@@ -262,4 +262,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 193. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 194. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
