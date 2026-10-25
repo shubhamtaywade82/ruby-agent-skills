@@ -94,6 +94,7 @@ This file defines how an agent should select and compose skills.
 | Trading execution safety / order placement through brokers | trading-execution-safety | rails-state-machine-engineering, rails-api-integration, ruby-financial-data-integrity, trading-market-data-and-backtesting, rails-external-stream-ingestion, rails-reliability-engineering, rails-observability, rails-test-engineering |
 | Financial data integrity / money and ledger arithmetic | ruby-financial-data-integrity | rails-database-engineering, trading-execution-safety, rails-state-machine-engineering, rails-api-integration, rails-active-record, rails-observability, rails-test-engineering |
 | Market data and backtesting integrity | trading-market-data-and-backtesting | trading-execution-safety, ruby-financial-data-integrity, rails-external-stream-ingestion, rails-database-engineering, ruby-tdd-refactoring, rails-observability |
+| LLM integration / model calls in Ruby applications | ruby-llm-integration | ruby-dependency-injection, rails-api-integration, rails-security, rails-observability, trading-execution-safety, rails-active-job, ruby-tdd-refactoring |
 | Rails I18n / localization | rails-i18n | rails-routing, rails-action-view, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, ruby-concurrency |
 | Rails Action Text / rich text | rails-action-text | rails-action-view, rails-active-record, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-action-controller, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-test-engineering |
@@ -1279,6 +1280,34 @@ Market data and backtesting integrity owns the measurement infrastructure: data 
 | Candle/event envelope contract | pattern:event-envelope |
 | Indicator/signal hand-off shape | pattern:message-handler-boundary |
 | Reproducibility regression harness | pattern:regression-test |
+
+## Ruby LLM integration
+
+```text
+LLM integration / large language model / RubyLLM / Ollama / chat completion /
+AI feature / provider adapter / structured output / JSON schema output /
+function calling / tool calls / agent loop / prompt injection /
+token budget / cost budget / model output validation / AI degradation /
+local model / model version pinning
+  -> ruby-llm-integration
+  -> ruby-dependency-injection for the adapter boundary and testability
+  -> rails-api-integration for HTTP contracts, retries, and rate limits
+  -> rails-security for trust boundaries and secret handling
+  -> rails-observability for latency, token, and cost telemetry
+  -> trading-execution-safety when model output could touch execution paths
+  -> rails-active-job for backgrounded and queued generation
+  -> ruby-tdd-refactoring for adapter contract tests
+```
+
+LLM integration owns the application side of model calls: one bounded adapter, timeouts and retries, token/cost budgets, schema-validated output, prompt-injection boundaries, tool-call authorization at a deterministic policy, observability, and graceful degradation. The model proposes; the application disposes — model output never substitutes for a deterministic guard.
+
+### LLM integration pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Provider client boundary and injection | pattern:external-api-client |
+| Output/tool-call consumption shape | pattern:message-handler-boundary |
+| Provider outage behavior | pattern:circuit-breaker |
 
 ## Rails I18n
 

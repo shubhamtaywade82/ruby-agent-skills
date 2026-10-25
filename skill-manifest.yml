@@ -198,6 +198,10 @@ skills:
     family: trading
     path: skills/trading-market-data-and-backtesting/SKILL.md
     triggers: [market data integrity, OHLCV, candle data, candle gaps, bar data, timeframe alignment, historical data, instrument master, symbol changes, session calendar, exchange calendar, trading session, market timezone, candle repair, forward fill, backtest, backtesting, trading simulation, replay, deterministic replay, look-ahead bias, lookahead bias, data leakage, out-of-sample, walk-forward, holdout, overfitting detection, slippage modeling, historical simulation, calibration run, technical indicator, moving average cross, indicator window, data quality scan, survivorship bias]
+  ruby-llm-integration:
+    family: ruby
+    path: skills/ruby-llm-integration/SKILL.md
+    triggers: [LLM integration, large language model, RubyLLM, Ollama integration, Ollama client, chat completion, AI feature, AI assistant integration, model provider, provider adapter, structured output, JSON schema output, function calling, tool calls, tool-call authorization, agent loop, prompt injection, untrusted prompt content, token budget, cost budget, model latency, LLM timeout, LLM retry, LLM observability, model output validation, AI degradation, graceful degradation AI, local model, model version pinning, prompt assembly, LLM cost tracking]
   ruby-financial-data-integrity:
     family: ruby
     path: skills/ruby-financial-data-integrity/SKILL.md
@@ -1277,6 +1281,18 @@ benchmarks:
     campaign_manifest: benchmarks/reliability/campaign.yml
     adapter_protocol: docs/AGENT_ADAPTER_PROTOCOL.md
 evaluations:
+  llm-integration:
+    source: llm-integration-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/llm-integration/structured-output-tool-authorization-contract.yml
+      - evals/llm-integration/llm-degradation-and-deterministic-path-contract.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   market-data-and-backtesting:
     source: market-data-and-backtesting-v1
     schema: docs/EVAL_SCHEMA.md

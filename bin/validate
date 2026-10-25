@@ -51,6 +51,8 @@ ruby -I"$ROOT/test" "$ROOT/test/ruby_financial_data_integrity_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/trading_market_data_and_backtesting_system_test.rb"
 
+ruby -I"$ROOT/test" "$ROOT/test/ruby_llm_integration_system_test.rb"
+
 ruby -I"$ROOT/test" "$ROOT/test/rails_reliability_engineering_system_test.rb"
 
 ruby -I"$ROOT/test" "$ROOT/test/rails_security_engineering_system_test.rb"

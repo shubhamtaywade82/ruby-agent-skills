@@ -1,0 +1,47 @@
+id: structured-output-tool-authorization-contract
+coverage: static-only
+version: 1
+title: Validate model output and authorize tool calls at a deterministic boundary
+category: ruby
+source: llm-integration-v1
+skills:
+  - ruby-llm-integration
+  - rails-security
+patterns:
+  - message-handler-boundary
+prompt: |
+  A Rails feature calls an LLM provider, parses the JSON response with JSON.parse and rescue nil, and executes tool calls the model names, passing the model's arguments directly. Rebuild the boundary: route calls through one adapter with an explicit timeout and bounded retries; validate structured output against a schema (types, ranges, enums, semantic bounds) with malformed output handled as a designed outcome (one bounded repair re-ask, then a named failure); delimit untrusted content in prompts so external text never becomes instruction; and authorize tool calls against an allow-list with schema-validated arguments and deterministic effect classification, so tools with material consequences require application-side confirmation. Test with a fake provider covering malformed JSON, schema violations, injection-laden content, and unapproved tool requests.
+constraints:
+  required_design:
+    - one adapter owns provider traffic with timeout and bounded retries
+    - structured output schema-validated before application state consumes it
+    - malformed output a designed outcome with bounded repair
+    - untrusted prompt content delimited as data, never instructions
+    - tool allow-list with schema-validated arguments and effect classes
+    - consequence-bearing tools require deterministic confirmation
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: malformed-json-is-handled
+    input: the model returns text that is not valid JSON
+    expected: the feature applies its designed outcome instead of nil-propagating
+  - name: schema-violation-rejects-result
+    input: JSON that parses but fails a range constraint
+    expected: the result is rejected with the named violation and repair is bounded
+  - name: injected-content-stays-data
+    input: retrieved content containing ignore-instructions text
+    expected: the content remains delimited data and the output still validates against the schema
+  - name: unapproved-tool-is-rejected
+    input: the model requests a tool outside the allow-list
+    expected: an explicit unauthorized-tool failure and no execution
+  - name: consequence-tool-requires-confirmation
+    input: the model requests a send/charge-class tool with valid arguments
+    expected: execution requires the application-side deterministic confirmation step
+grading:
+  functional: application state consumes only schema-valid typed results
+  tests: malformed, injection, and unauthorized-tool cases simulated with a fake provider
+  contract: the allow-list is code and arguments are schema-validated
+  scope_control: no provider SDK types leak past the adapter

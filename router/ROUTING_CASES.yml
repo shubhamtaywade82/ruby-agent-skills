@@ -538,3 +538,31 @@ cases:
       - rails-external-stream-ingestion
       - ruby-tdd-refactoring
     boundary: data-contract-vs-repair-policy
+
+  - id: llm-output-before-guard-not-instead
+    prompt: >
+      An AI assistant drafts order suggestions for traders. Make sure the
+      drafted intents pass through the same risk gates, live-mode switch,
+      and state machine as human-created orders, with the model unable to
+      approve or bypass anything.
+    primary_skills:
+      - ruby-llm-integration
+    secondary_skills:
+      - trading-execution-safety
+      - rails-security
+      - rails-test-engineering
+    boundary: llm-proposal-vs-deterministic-guard
+
+  - id: llm-provider-unavailable-degrades
+    prompt: >
+      A summarization feature calls the provider SDK inline with no timeout,
+      and provider outages turn the page into a 500. Bound the calls, validate
+      the JSON output against a schema, and make the feature degrade to
+      cached or fallback results.
+    primary_skills:
+      - ruby-llm-integration
+    secondary_skills:
+      - rails-api-integration
+      - rails-observability
+      - ruby-tdd-refactoring
+    boundary: ai-assistance-vs-core-path
