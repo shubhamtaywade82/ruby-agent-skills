@@ -7,7 +7,7 @@ How this pack meets the Agent Skills standard, how it reaches users, and the sta
 | Requirement | Source | Status in this repository |
 |---|---|---|
 | Each skill is a directory with `SKILL.md` and optional `references/`, `scripts/`, `assets/` | [agentskills.io/specification](https://agentskills.io/specification) | Enforced by `scripts/validate_skills.rb` |
-| Frontmatter fields: only `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools` | Same; the official `skills-ref` validator rejects anything else | All 99 skills pass the pinned `skills-ref` (`bin/skills-spec-check`), in CI too. Every skill declares `license: MIT` |
+| Frontmatter fields: only `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools` | Same; the official `skills-ref` validator rejects anything else | All 100 skills pass the pinned `skills-ref` (`bin/skills-spec-check`), in CI too. Every skill declares `license: MIT` |
 | `name` matches the directory, lowercase, single hyphens, at most 64 characters; `description` at most 1024 characters | Same | Enforced by `scripts/validate_skills.rb` |
 | `SKILL.md` under 500 lines; references one level deep | Same (progressive disclosure) | Enforced by `scripts/validate_skills.rb` |
 | A skill works when installed on its own | `npx skills add <repo> --skill <name>` copies only that skill's directory | No skill links outside its own folder or names a repository path; other skills and patterns are named, not linked. Enforced by `scripts/validate_skills.rb` and checked by the `cli_install` readiness check |
@@ -43,7 +43,7 @@ ruby bin/publish-readiness --out tmp/publish-readiness.md
 | Check | What it proves |
 |---|---|
 | `validate` | The full repository gate: skill, pattern, and evaluation schemas, audits, and every system test |
-| `spec` | All 99 skills pass the official `skills-ref` validator |
+| `spec` | All 100 skills pass the official `skills-ref` validator |
 | `cli_list` | `npx skills` discovers exactly the skills in the manifest |
 | `cli_install` | Every skill installs alone for Claude Code with no broken relative links |
 | `release_archive` | The release archive builds, installs offline, and passes `skill-pack-verify` and `skill-pack-doctor` |

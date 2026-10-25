@@ -91,6 +91,7 @@ This file defines how an agent should select and compose skills.
 | Rails Action Cable / realtime WebSockets | rails-action-cable | rails-security, rails-security-engineering, rails-active-job, rails-event-driven-messaging, rails-distributed-systems, rails-reliability-engineering, rails-performance, ruby-performance, ruby-concurrency, rails-production-runtime, rails-release-engineering, rails-observability, rails-test-engineering |
 | External stream ingestion (consuming provider feeds/WebSockets) | rails-external-stream-ingestion | ruby-concurrency, rails-reliability-engineering, rails-caching, rails-api-integration, rails-observability, rails-production-runtime, rails-test-engineering, rails-action-cable |
 | Domain state machines / durable workflow state | rails-state-machine-engineering | rails-active-record, rails-database-engineering, rails-distributed-systems, rails-event-driven-messaging, rails-external-stream-ingestion, rails-api-integration, rails-observability, rails-test-engineering |
+| Trading execution safety / order placement through brokers | trading-execution-safety | rails-state-machine-engineering, rails-api-integration, ruby-financial-data-integrity, trading-market-data-and-backtesting, rails-external-stream-ingestion, rails-reliability-engineering, rails-observability, rails-test-engineering |
 | Rails I18n / localization | rails-i18n | rails-routing, rails-action-view, rails-validations, rails-api-integration, rails-action-mailer, rails-active-job, rails-caching, rails-security, rails-test-engineering, ruby-concurrency |
 | Rails Action Text / rich text | rails-action-text | rails-action-view, rails-active-record, rails-validations, rails-active-storage, rails-security, rails-security-engineering, rails-i18n, rails-caching, rails-performance, ruby-performance, rails-api-integration, rails-active-job, rails-test-engineering |
 | Rails API and integration architecture | rails-api-integration | rails-routing, rails-action-controller, rails-authentication, rails-security, rails-observability, rails-active-job, ruby-api-design, ruby-gems-io-services, ruby-dependency-injection, rails-test-engineering |
@@ -1192,6 +1193,35 @@ A state machine is durable application state with legal-transition semantics; an
 | Transactional event publication | pattern:outbox-publication |
 | Remote-effect intent and recovery | pattern:dead-letter-replay |
 | Full transition/race/recovery test plan | pattern:state-machine-testing |
+
+## Trading execution safety
+
+```text
+order execution / place order / submit order / broker order / order gateway /
+paper trading / live trading / client order ID / ClOrdID / duplicate order /
+double execution / partial fill / execution report / order acknowledgement /
+cancel order / amend order / exit order / flatten position /
+broker reconciliation / position reconciliation / risk gate / fail-closed
+  -> trading-execution-safety
+  -> rails-state-machine-engineering for the order intent lifecycle machine
+  -> rails-api-integration for broker REST contracts and idempotent requests
+  -> ruby-financial-data-integrity for money/quantity representation and ledger postings
+  -> trading-market-data-and-backtesting for data integrity feeding decisions
+  -> rails-external-stream-ingestion for consuming broker event streams
+  -> rails-reliability-engineering for circuit breakers and degradation budgets
+  -> rails-observability for execution telemetry and divergence alerts
+```
+
+Execution safety owns the boundary where a defect has direct financial consequences: durable intent before side effects, deterministic client order IDs, one submission per identity, submission versus acknowledgement versus fill as separate facts, reconciliation instead of resubmission under uncertain outcomes, paper/live separation, and fail-closed risk gates. Strategy quality and market-data integrity are not execution concerns.
+
+### Execution safety pattern selection
+
+| Problem shape | Pattern |
+|---|---|
+| Guarded order-intent transitions | pattern:state-transition-guard |
+| Fill/event envelope contract | pattern:event-envelope |
+| Duplicate execution-report suppression | pattern:inbox-deduplication |
+| Loss/error-rate circuit breaking | pattern:circuit-breaker |
 
 ## Rails I18n
 

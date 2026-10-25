@@ -1,0 +1,46 @@
+id: uncertain-outcome-reconciliation-contract
+coverage: static-only
+version: 1
+title: Resolve ambiguous submission outcomes by reconciliation, never resubmission
+category: trading
+source: trading-execution-safety-v1
+skills:
+  - trading-execution-safety
+  - rails-api-integration
+patterns:
+  - inbox-deduplication
+prompt: |
+  Broker order submissions that time out or drop the connection currently land in a generic retry path and sometimes execute twice. Restructure execution so every ambiguous outcome (timeout, connection reset, 5xx, crash after send) marks the intent outcome-unknown and schedules a reconciliation job that queries the venue by client order ID, applies any execution reports it finds idempotently by report identity, and converges the order state without ever resubmitting. Classify gateway errors into definitely-not-executed (safe to retry) versus unknown (reconcile only). Add a scheduled sweep for intents stuck in unknown or submitted-without-acknowledgement states, and test the timeout-then-filled path end to end with a fake venue.
+constraints:
+  required_design:
+    - ambiguous outcomes raise a distinct error class and park the intent
+    - reconciliation queries by client order id and applies reports idempotently
+    - error classification separates safe-retry from reconcile-only
+    - scheduled sweep covers stuck intents
+    - timeout-then-filled converges with exactly one venue order
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: timeout-parks-intent
+    input: the gateway raises a timeout during submission
+    expected: intent transitions to outcome-unknown and reconciliation is scheduled
+  - name: timeout-then-filled-converges
+    input: the venue actually received the timed-out order and filled it
+    expected: reconciliation applies the fill and final state is correct with one venue order
+  - name: never-received-resolves-by-policy
+    input: the venue reports not-found for the client order id
+    expected: the intent resolves as never-submitted by an explicit policy decision
+  - name: duplicate-report-applies-once
+    input: the venue returns an execution report already applied
+    expected: the report is deduplicated by identity and totals unchanged
+  - name: sweep-finds-stuck-intents
+    input: an intent remains outcome-unknown past the sweep threshold
+    expected: the scheduled sweep triggers reconciliation and alerts if unresolvable
+grading:
+  functional: no ambiguous outcome can produce a second venue order
+  tests: the timeout-then-filled and not-found paths are simulated deterministically
+  contract: venue remains the source of truth and local state converges to it
+  scope_control: no live venue in tests and no resubmission path added anywhere

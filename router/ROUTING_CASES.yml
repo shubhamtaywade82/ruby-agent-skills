@@ -457,3 +457,31 @@ cases:
       - rails-event-driven-messaging
       - rails-test-engineering
     boundary: event-ordering-vs-state-integrity
+
+  - id: broker-timeout-not-safe-retry
+    prompt: >
+      Order submissions that time out against the broker are retried by the
+      job queue and occasionally execute twice. Make submission safe when the
+      outcome is unknown, using deterministic client order IDs and
+      reconciliation instead of resubmission.
+    primary_skills:
+      - trading-execution-safety
+    secondary_skills:
+      - rails-state-machine-engineering
+      - rails-api-integration
+      - rails-test-engineering
+    boundary: uncertain-outcome-vs-retry-safety
+
+  - id: live-trading-fails-closed
+    prompt: >
+      Add a live trading mode next to the existing paper mode. Fresh
+      deployments must never place live orders by default, submissions must
+      be blocked when prices are stale or positions are unknown, and both
+      gate directions need tests.
+    primary_skills:
+      - trading-execution-safety
+    secondary_skills:
+      - rails-reliability-engineering
+      - rails-initialization-configuration-engineering
+      - rails-test-engineering
+    boundary: paper-live-separation-vs-fail-closed

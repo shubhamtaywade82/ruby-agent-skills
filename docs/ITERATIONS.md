@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 190 — Domain State Machine Skill
+> **Current milestone:** Iteration 191 — Trading Execution Safety Skill
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -663,3 +663,8 @@ Adds `rails-external-stream-ingestion`, the first skill dedicated to the consumi
 ## Iteration 190 — Domain State Machine Skill
 
 Adds `rails-state-machine-engineering`, owning durable workflow state for records with legal-transition semantics (orders, payments, approvals, imports, deployments). The skill makes the transition table the contract, routes all writes through one guarded and audited entry point, chooses locking by contention, absorbs duplicate and out-of-order events, sequences side effects around persistence deliberately, and recovers from every partial-failure window. It composes existing owner skills (Active Record, database engineering, distributed systems sagas, messaging, API integration) instead of duplicating their contracts, and treats AASM as one implementation choice rather than the boundary itself. Ships with two new patterns (`state-transition-guard`, `state-machine-testing`), four references, two adversarial routing cases, two static-only evaluations (11 cases), and a registered system test. Inventory rises to 99 skills, 452 patterns, 579 evaluation cases, 112 system/contract tests; the public routing campaign grows to 37 cases × 3 repetitions.
+
+
+## Iteration 191 — Trading Execution Safety Skill
+
+Adds `trading-execution-safety`, the first skill in the new `trading` family, owning the boundary where a software defect has direct financial consequences. The skill persists durable order intent with deterministic client order IDs before any submission, enforces one submission per identity with unique constraints and guarded transitions, separates submission, acknowledgement, partial fill, and fill as distinct facts from different sources, treats ambiguous outcomes as probably-executed and resolves them by venue reconciliation instead of resubmission, reconciles positions and executed quantities against the broker as the source of truth, keeps paper and live behind a default-off explicit gate sharing one contract, and makes risk gates fail closed on stale, missing, or inconsistent inputs. Four references carry intent/identity, submission/fills, retries/reconciliation, and paper-live/testing; two adversarial routing cases pin the routing boundary; two static-only evaluations (10 cases) and a registered system test complete the iteration. Inventory rises to 100 skills, 589 evaluation cases, and 113 system/contract tests; the public routing campaign grows to 39 cases × 3 repetitions.

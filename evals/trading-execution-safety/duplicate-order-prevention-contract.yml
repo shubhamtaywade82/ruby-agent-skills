@@ -1,0 +1,47 @@
+id: duplicate-order-prevention-contract
+coverage: static-only
+version: 1
+title: Make order submission exactly-once per intent against an execution venue
+category: trading
+source: trading-execution-safety-v1
+skills:
+  - trading-execution-safety
+  - rails-state-machine-engineering
+patterns:
+  - state-transition-guard
+prompt: |
+  A trading application submits orders to a broker gateway. Job retries, double-clicks, and replayed webhook events currently produce duplicate live orders. Introduce a durable order intent persisted before any submission call, with a deterministic client order ID unique per venue and account, a database uniqueness constraint making one identity equal at most one order, and a guarded submit transition so a second submission attempt raises instead of sending. Amend and cancel requests must carry their own identities and remain pending until the venue confirms. Provide adversarial tests with a fake gateway covering double submission, job retry after submission, and replayed decision events.
+constraints:
+  required_design:
+    - durable intent persisted before the remote submission call
+    - deterministic client order ID stable across retries and restarts
+    - unique constraint on venue plus client order ID
+    - second submission attempt raises through the guarded transition
+    - cancel requests pending until venue confirmation
+    - fake gateway implements the full contract including ambiguous outcomes
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: intent-exists-before-submission
+    input: a decision triggers an order placement
+    expected: the intent row with its client order ID exists before the gateway call is made
+  - name: job-retry-does-not-double-submit
+    input: the submission job is retried after it already sent the order
+    expected: the retry is a no-op with audit and the venue holds exactly one order
+  - name: duplicate-decision-event-is-suppressed
+    input: the same decision event is replayed
+    expected: no second intent or order is created
+  - name: retry-stability-of-identity
+    input: the submission path runs twice for the same intent
+    expected: both attempts carry the identical client order ID
+  - name: cancel-remains-pending-until-confirmed
+    input: a cancel request is sent
+    expected: order state changes only on the venue's confirmation event
+grading:
+  functional: at most one venue order can exist per logical intent under any retry or replay
+  tests: adversarial duplicate paths are simulated deterministically through a fake gateway
+  contract: identity is deterministic, persisted first, and enforced by a unique constraint
+  scope_control: no live venue is required by the test suite
