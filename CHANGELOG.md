@@ -1,3 +1,12 @@
+## Iteration 190 — Domain State Machine Skill
+
+- Add the `rails-state-machine-engineering` skill for durable application state with legal-transition semantics: orders, payments, approvals, imports, deployments. Covers transition tables as executable contracts, guards and exit actions, transition authorization, append-only audit history, locking strategies (optimistic vs `with_lock`), concurrent transition attempts, duplicate and idempotent event application, out-of-order event policies (reject, absorb, buffer, reconcile), side-effect sequencing (transactional inside, remote behind durable intent), recovery windows with provider reconciliation, and test matrices generated from the table.
+- Add references for transition contracts, concurrency and event ordering, side effects and recovery, and testing/migration (including retrofitting a machine onto live data).
+- Add two implementation patterns: `state-transition-guard` (rails family) and `state-machine-testing` (testing family), registered in the manifest.
+- Add a routing-matrix row, a dedicated routing section, and two adversarial routing cases (`order-state-machine-not-aasm-trivia`, `webhook-transition-out-of-order`).
+- Add a static-only evaluation family for the order transition contract and side-effect recovery (11 cases), registered in the manifest evaluations section.
+- Add `test/rails_state_machine_engineering_system_test.rb` (registered in `bin/validate`). Skills rise from 98 to 99, patterns from 450 to 452, evaluation cases from 568 to 579, system/contract tests from 111 to 112; the public routing campaign grows to 37 cases × 3 repetitions.
+
 ## Iteration 189 — External Stream Ingestion Skill
 
 - Add the `rails-external-stream-ingestion` skill for the consuming side of external streaming feeds: provider WebSocket/broker feed clients, connection ownership and supervision, heartbeats, reconnection with explicit resubscription from a registry, bounded buffering and backpressure, event ordering and duplicate suppression, event-time versus processing-time discipline, freshness/staleness contracts, gap detection, and unavailable-feed failure semantics (stop, degrade, alert, reject).

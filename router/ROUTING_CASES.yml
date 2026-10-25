@@ -429,3 +429,31 @@ cases:
       - rails-reliability-engineering
       - rails-test-engineering
     boundary: feed-freshness-vs-consumer-safety
+
+  - id: order-state-machine-not-aasm-trivia
+    prompt: >
+      Add a partial-fill state to the orders workflow so a fill event can
+      move an order from placed to partially_filled and then to filled, with
+      concurrent fill events from two workers never double-applying, and
+      keep the audit history intact.
+    primary_skills:
+      - rails-state-machine-engineering
+    secondary_skills:
+      - rails-active-record
+      - rails-database-engineering
+      - rails-test-engineering
+    boundary: state-contract-vs-persistence
+
+  - id: webhook-transition-out-of-order
+    prompt: >
+      Our payment provider's webhooks sometimes arrive out of order and are
+      redelivered, leaving subscription records in states that never existed.
+      Deduplicate and sequence the webhook events so state always follows
+      the provider's actual sequence.
+    primary_skills:
+      - rails-state-machine-engineering
+    secondary_skills:
+      - rails-api-integration
+      - rails-event-driven-messaging
+      - rails-test-engineering
+    boundary: event-ordering-vs-state-integrity

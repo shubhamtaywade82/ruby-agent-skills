@@ -1,0 +1,50 @@
+id: order-state-machine-transition-contract
+coverage: static-only
+version: 1
+title: Make order workflow transitions guarded, audited, and race-free
+category: rails
+source: state-machine-engineering-v1
+skills:
+  - rails-state-machine-engineering
+  - rails-database-engineering
+patterns:
+  - state-transition-guard
+prompt: |
+  An orders table has a string state column written directly from controllers, a job, and a webhook consumer. Introduce an explicit state machine: define states, events, legal transitions, and terminal states as one table; route every state write through a single guarded entry point that locks the row, applies guards, writes the transition, and records an audit row (from, to, event, actor) in the same transaction; make illegal transitions raise with a reason instead of silently no-op'ing; and handle duplicate webhook events by durable event identity so a redelivered event cannot apply twice. Provide a test matrix generated from the table covering allowed and rejected transitions, terminal states, concurrent double-transition attempts, and duplicate delivery.
+constraints:
+  required_design:
+    - transition table defined before writers change
+    - single guarded entry point for every state write
+    - audit row written transactionally with the transition
+    - illegal transitions raise with reasons
+    - duplicate events deduplicated by durable identity
+    - concurrency test synchronizes release without sleeps
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: legal-transition-applies
+    input: a placed order receives a fill event
+    expected: state becomes filled with an audit row recording the transition
+  - name: illegal-transition-rejects
+    input: a cancelled order receives a fill event
+    expected: an exception with a reason is raised and the state is unchanged
+  - name: terminal-state-is-final
+    input: a filled order receives any event
+    expected: no transition applies and the failure is explicit
+  - name: concurrent-transitions-succeed-once
+    input: two workers apply the fill event simultaneously
+    expected: exactly one transition succeeds and the other sees an explicit failure
+  - name: duplicate-event-applies-once
+    input: the same webhook event identity is delivered twice
+    expected: the transition applies once with one audit row
+  - name: direct-assignment-remains-impossible
+    input: a caller tries to update the state column directly through the model
+    expected: the change is routed through or rejected by the guard, never bypassed
+grading:
+  functional: transitions follow the table and illegal transitions are loud
+  tests: matrix covers allowed, rejected, terminal, concurrent, and duplicate paths deterministically
+  contract: audit trail explains every state change including actor and event
+  scope_control: no state writes outside the guarded entry point

@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 189 — External Stream Ingestion Skill
+> **Current milestone:** Iteration 190 — Domain State Machine Skill
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -658,3 +658,8 @@ Expands `ai-code-review` into a risk-based, agent-executable review suite for si
 ## Iteration 189 — External Stream Ingestion Skill
 
 Adds `rails-external-stream-ingestion`, the first skill dedicated to the consuming side of external streaming data: broker/market-data WebSocket clients, provider SDK callbacks, reconnection and resubscription, bounded inbound buffering, ordering and duplicate suppression, freshness contracts, gap recovery, and explicit unavailable-data semantics. The boundary is deliberately separated from Action Cable (Rails' serving side), from event-driven messaging (broker infrastructure), and from generic API integration (request/response). Four references carry the connection lifecycle, buffering and backpressure, freshness and recovery, and subscription state with deterministic fake-client testing. The skill ships with two static-only evaluations (reconnect/resubscription contract; freshness and failure semantics), two adversarial routing cases, and a registered system test. Inventory rises to 98 skills, 568 evaluation cases, and 111 system/contract tests; the public routing campaign grows to 35 cases × 3 repetitions.
+
+
+## Iteration 190 — Domain State Machine Skill
+
+Adds `rails-state-machine-engineering`, owning durable workflow state for records with legal-transition semantics (orders, payments, approvals, imports, deployments). The skill makes the transition table the contract, routes all writes through one guarded and audited entry point, chooses locking by contention, absorbs duplicate and out-of-order events, sequences side effects around persistence deliberately, and recovers from every partial-failure window. It composes existing owner skills (Active Record, database engineering, distributed systems sagas, messaging, API integration) instead of duplicating their contracts, and treats AASM as one implementation choice rather than the boundary itself. Ships with two new patterns (`state-transition-guard`, `state-machine-testing`), four references, two adversarial routing cases, two static-only evaluations (11 cases), and a registered system test. Inventory rises to 99 skills, 452 patterns, 579 evaluation cases, 112 system/contract tests; the public routing campaign grows to 37 cases × 3 repetitions.
