@@ -1,3 +1,11 @@
+## Iteration 192 — Financial Data Integrity Skill
+
+- Add the `ruby-financial-data-integrity` skill for money, quantity, ledger, and accounting correctness: exact representation (integer minor units or scale-fixed BigDecimal) at every parse/serialization boundary, decimal precision and scale sized for aggregate sums, named rounding decisions with modes and reasons, largest-remainder allocation that sums exactly, double-entry invariants (entries balance, balances equal postings, conservation), posting transactions with row locks and conditional updates, posting idempotency keyed on the business event identity, quantity/lot/tick constraints, fee and PnL arithmetic with written sign conventions, continuous invariant checks that alert, and scheduled external reconciliation with journaled adjustments.
+- Add references for numeric representation, ledger and balances, fees/quantities/PnL, and reconciliation with adversarial numeric testing.
+- Add a routing-matrix row and dedicated routing section, plus two adversarial routing cases (`cents-off-fee-calculation`, `ledger-idempotent-replay`).
+- Add a static-only evaluation family covering money representation/rounding and double-entry posting invariants (10 cases).
+- Add `test/ruby_financial_data_integrity_system_test.rb` (registered in `bin/validate`). Skills rise from 100 to 101; evaluation cases from 589 to 599; system/contract tests from 113 to 114; the public routing campaign grows to 41 cases × 3 repetitions.
+
 ## Iteration 191 — Trading Execution Safety Skill
 
 - Add the `trading-execution-safety` skill for order placement through external execution venues: durable intent persisted before side effects, deterministic client order IDs (ClOrdID discipline), duplicate prevention at database/guard/venue layers, submission versus acknowledgement versus fill as separate facts, partial fills as accumulating increments, cancel/amend identities, ambiguous-outcome handling (timeout/reset/5xx treated as probably-executed), retry classification (safe-retry versus reconcile-only), broker and position reconciliation, paper/live separation behind default-off gates, and fail-closed risk gates on stale prices, unknown positions, and missing limits.

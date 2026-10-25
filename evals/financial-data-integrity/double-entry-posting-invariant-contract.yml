@@ -1,0 +1,46 @@
+id: double-entry-posting-invariant-contract
+coverage: static-only
+version: 1
+title: Move balances only through balancing journal entries, exactly once per event
+category: ruby
+source: financial-data-integrity-v1
+skills:
+  - ruby-financial-data-integrity
+  - rails-database-engineering
+patterns:
+  - state-transition-guard
+prompt: |
+  Account balances are currently updated directly by several services and occasionally go negative under concurrent transfers. Introduce a double-entry ledger: an append-only journal whose entries balance (credits equal debits) inside one database transaction, balance updates performed under a row lock or conditional update in the same transaction, and posting idempotency enforced by a unique idempotency key on the business event identity so a redelivered event posts exactly once. Add a scheduled integrity job that verifies every entry balances and every account balance equals its postings, alerting loudly on violation. Provide tests for concurrent same-account postings, duplicate event application, and the negative-balance constraint.
+constraints:
+  required_design:
+    - append-only journal with entries that balance in one transaction
+    - balance mutation only through posting, under lock or conditional update
+    - unique idempotency key on the business event identity
+    - scheduled invariant checks that alert, not log-and-continue
+    - negative balances prevented by constraint or explicit design
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: balanced-entry-commits
+    input: a transfer event posts two lines
+    expected: both lines commit together and the entry sums to zero
+  - name: unbalanced-entry-is-rejected
+    input: a posting set that does not sum to zero
+    expected: the transaction raises and nothing is written
+  - name: concurrent-posts-both-apply
+    input: two transfers hit the same account simultaneously
+    expected: both apply exactly once and the balance equals the postings sum
+  - name: duplicate-event-is-a-no-op
+    input: the same event id posts twice, concurrently
+    expected: exactly one journal entry exists and the balance reflects one application
+  - name: negative-balance-blocks
+    input: a transfer exceeding the account balance
+    expected: the posting fails loudly and the balance is unchanged
+grading:
+  functional: balances move only through balancing entries and always equal their postings
+  tests: concurrency, duplication, and overspend paths tested deterministically with barriers
+  contract: the journal is the source of truth and balances are derived
+  scope_control: no direct balance writers remain outside the posting service
