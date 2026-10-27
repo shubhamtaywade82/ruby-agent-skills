@@ -1,5 +1,17 @@
+# v3 marker (additive). Existing v2 parsers ignore this key.
+# See docs/CROSS_PACK_SCHEMA.md for the full v3 contract.
+schema_version: 3
 version: 2
 name: ruby-agent-skills
+
+# v3 pack envelope (additive). Mirrors node-agent-skills's pack: block so a
+# cross-pack loader can read either pack's envelope with the same code.
+pack:
+  name: ruby-agent-skills
+  language: ruby
+  runtime: MRI 3.2+
+  homepage: https://github.com/shubhamtaywade82/ruby-agent-skills
+  license: MIT
 
 installation:
   installer: bin/install
@@ -119,6 +131,14 @@ skills:
     family: rails
     path: skills/rails-react-integration/SKILL.md
     triggers: [Rails React integration, Inertia, Rails JSON API client, CSRF token in fetch, Rails validation errors in React forms, Rails pagination in React]
+    version: 1.0.0
+    language: ruby
+    category: integration
+    schema_version: 3
+    companion_owners:
+      - react-agent-skills/browser-authentication
+      - react-agent-skills/react-data-fetching
+      - react-agent-skills/react-forms-validation
   # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-testing-engineering + frontend-e2e
   react-testing-engineering:
     family: react-typescript
@@ -138,6 +158,10 @@ skills:
     family: rails-quality
     path: skills/rails-test-engineering/SKILL.md
     triggers: [test engineering, Rails test suite, flaky test, flaky tests, parallel tests, parallelize, test isolation, test performance, slow tests, system tests, integration tests, request tests, job tests, test database, transactional tests, test helpers, fixtures, factories, deterministic tests, CI tests, config/ci.rb, bin/ci, local CI, request test, model test, system test, integration test, Rails test]
+    version: 1.0.0
+    language: ruby
+    category: testing
+    schema_version: 3
   rails-production-runtime:
     family: rails
     path: skills/rails-production-runtime/SKILL.md
@@ -298,6 +322,13 @@ skills:
     family: meta
     path: skills/agent-workflow/SKILL.md
     triggers: [agent workflow, skill selection, repository agent process, context management, implementation workflow]
+    version: 1.0.0
+    language: ruby
+    category: meta
+    schema_version: 3
+    companion_owners:
+      - node-agent-skills/node-skill-routing-contract
+      - react-agent-skills/agent-workflow
   change-review:
     family: meta
     path: skills/change-review/SKILL.md
@@ -430,6 +461,10 @@ skills:
     family: quality
     path: skills/ruby-clean-code/SKILL.md
     triggers: [code review, refactor, readability, naming, simplicity, maintainability]
+    version: 1.0.0
+    language: ruby
+    category: quality
+    schema_version: 3
   ruby-tdd-refactoring:
     family: quality
     path: skills/ruby-tdd-refactoring/SKILL.md
@@ -451,6 +486,13 @@ skills:
     family: rails
     path: skills/rails-active-record/SKILL.md
     triggers: [Active Record, ActiveRecord, ActiveRecord::Base, ApplicationRecord, ActiveRecord::Relation, relation, query composition, scope, default_scope, unscoped, preload, eager_load, includes, strict_loading, pluck, pick, persistence lifecycle, save, update, destroy, delete, update_all, delete_all, destroy_all, upsert, after_commit, after_rollback, Active Record callbacks, bulk write, model, migration, query, persistence]
+    version: 1.0.0
+    language: ruby
+    category: persistence
+    schema_version: 3
+    companion_owners:
+      - node-agent-skills/node-postgresql-persistence
+      - node-agent-skills/node-migrations
   rails-associations:
     family: rails
     path: skills/rails-associations/SKILL.md
@@ -463,6 +505,13 @@ skills:
     family: rails
     path: skills/rails-authentication/SKILL.md
     triggers: [authentication, session, sign in, sign out, protected route, password reset, session fixation, session revocation, remember me, bearer token, account lockout, login throttling, current user, reauthentication, authentication generator, Rails authentication generator, sign, fixation, rotation, in, out, protected, route, password, reset, revocation, remember, me, bearer, token, account, lockout]
+    version: 1.0.0
+    language: ruby
+    category: security
+    schema_version: 3
+    companion_owners:
+      - node-agent-skills/node-authentication
+      - react-agent-skills/browser-authentication
   rails-authorization:
     family: rails
     path: skills/rails-authorization/SKILL.md
@@ -511,6 +560,20 @@ skills:
     family: rails
     path: skills/rails-generators/SKILL.md
     triggers: [generator, scaffold, rails generate, CRUD scaffold]
+  # v3 seam skill (additive). Owns the Rails-to-Node backend boundary.
+  # See docs/CROSS_PACK_SCHEMA.md and router/ROUTING.md#rails-and-node-cross-stack-routing.
+  rails-node-integration:
+    family: rails
+    path: skills/rails-node-integration/SKILL.md
+    triggers: [Rails to Node, Rails Node, Node service consuming Rails, Rails API consumed by Node, Node BFF, Node backend calling Rails, cross-stack Rails Node, monorepo Rails Node, Node sidekiq replacement, Express calling Rails, Fastify calling Rails, NestJS calling Rails, Rails to Node handoff, Node consumer of Rails JSON]
+    version: 1.0.0
+    language: ruby
+    category: integration
+    schema_version: 3
+    companion_owners:
+      - node-agent-skills/node-ruby-integration
+      - node-agent-skills/node-rest-api-design
+      - node-agent-skills/node-postgresql-persistence
 
 
 
@@ -695,6 +758,7 @@ patterns:
       - patterns/rails/rails-react-validation-error-mapping.md
       - patterns/rails/rails-react-csrf-session-fetch.md
       - patterns/rails/rails-react-pagination-contract.md
+      - patterns/rails/rails-node-backend-seam.md
       - patterns/rails/authentication-mechanism-boundary.md
       - patterns/rails/credential-storage-contract.md
       - patterns/rails/session-lifecycle-contract.md
@@ -1880,6 +1944,17 @@ evaluations:
       - contract
       - scope_control
 
+  rails-node-integration:
+    source: rails-node-integration-v1
+    schema: docs/EVAL_SCHEMA.md
+    paths:
+      - evals/rails/node-backend-seam.yml
+    checks:
+      - functional
+      - tests
+      - contract
+      - scope_control
+
   rails-asset-build-engineering:
     source: rails-asset-build-v1
     schema: docs/EVAL_SCHEMA.md
@@ -2117,3 +2192,109 @@ evaluations:
       - tests
       - contract
       - scope_control
+
+# v3 cross-pack section (additive). Existing v2 parsers ignore this key.
+# See docs/CROSS_PACK_SCHEMA.md for the full contract.
+cross_pack:
+  schema_version: 3
+  companions:
+    - pack: node-agent-skills
+      repo: https://github.com/shubhamtaywade82/node-agent-skills
+      pinned_ref: main
+      snapshot: data/cross-pack/node-agent-skills.snapshot.yml
+      seam_skill: rails-node-integration
+      language: typescript
+    - pack: react-agent-skills
+      repo: https://github.com/shubhamtaywade82/react-agent-skills
+      pinned_ref: main
+      snapshot: data/cross-pack/react-agent-skills.snapshot.yml
+      seam_skill: rails-react-integration
+      language: typescript
+  # ruby-agent-skills and node-agent-skills share ZERO skill names today
+  # (the node pack prefixes every skill with `node-`). react-agent-skills
+  # shares 8 names (see data/cross-pack/react-agent-skills.snapshot.yml).
+  # cross_pack.name_collisions is the machine-checkable surface that the
+  # v3 verifier (bin/cross-pack-verify) compares against the actual set
+  # intersection; it must list every name present in both packs.
+  name_collisions:
+    - skill_name: agent-workflow
+      this_pack_owner: skills/agent-workflow/SKILL.md
+      companion_pack: react-agent-skills
+      companion_owner: skills/agent-workflow/SKILL.md
+      resolution: context_dependent
+      rationale: |
+        Both packs ship an agent-workflow with different content; the last
+        install wins (see docs/INSTALLATION.md "Name collisions"). For pure
+        Ruby/Rails work this pack's copy is authoritative; for React/TS work
+        react-agent-skills's copy is authoritative. Install react-agent-skills
+        after this pack so the frontend-flavored copy wins in shared roots.
+    - skill_name: react-architecture
+      this_pack_owner: skills/react-architecture/SKILL.md
+      companion_pack: react-agent-skills
+      companion_owner: skills/react-architecture/SKILL.md
+      resolution: companion_wins
+      rationale: |
+        Deprecated in this pack (standalone frontend ownership moved to
+        react-agent-skills). Install react-agent-skills after this pack so
+        the replacement is the copy installed in shared roots.
+    - skill_name: react-component-engineering
+      this_pack_owner: skills/react-component-engineering/SKILL.md
+      companion_pack: react-agent-skills
+      companion_owner: skills/react-component-engineering/SKILL.md
+      resolution: companion_wins
+      rationale: |
+        Deprecated in this pack; react-agent-skills owns the replacement.
+    - skill_name: react-data-fetching
+      this_pack_owner: skills/react-data-fetching/SKILL.md
+      companion_pack: react-agent-skills
+      companion_owner: skills/react-data-fetching/SKILL.md
+      resolution: companion_wins
+      rationale: |
+        Deprecated in this pack; react-agent-skills owns the replacement.
+    - skill_name: react-testing-engineering
+      this_pack_owner: skills/react-testing-engineering/SKILL.md
+      companion_pack: react-agent-skills
+      companion_owner: skills/react-testing-engineering/SKILL.md
+      resolution: companion_wins
+      rationale: |
+        Deprecated in this pack; react-agent-skills owns the replacement.
+    - skill_name: typescript-core-engineering
+      this_pack_owner: skills/typescript-core-engineering/SKILL.md
+      companion_pack: react-agent-skills
+      companion_owner: skills/typescript-core-engineering/SKILL.md
+      resolution: companion_wins
+      rationale: |
+        Deprecated in this pack; react-agent-skills owns the replacement.
+    - skill_name: typescript-runtime-contracts
+      this_pack_owner: skills/typescript-runtime-contracts/SKILL.md
+      companion_pack: react-agent-skills
+      companion_owner: skills/typescript-runtime-contracts/SKILL.md
+      resolution: companion_wins
+      rationale: |
+        Deprecated in this pack; react-agent-skills owns the replacement.
+    - skill_name: typescript-type-design
+      this_pack_owner: skills/typescript-type-design/SKILL.md
+      companion_pack: react-agent-skills
+      companion_owner: skills/typescript-type-design/SKILL.md
+      resolution: companion_wins
+      rationale: |
+        Deprecated in this pack; react-agent-skills owns the replacement.
+  seam_contracts:
+    - boundary: rails-to-node-backend
+      primary_in_this_pack: rails-node-integration
+      secondary_in_this_pack:
+        - rails-active-record
+        - rails-action-controller
+      companion_pack: node-agent-skills
+      companion_side: node-agent-skills/skills/node-ruby-integration
+      routing_doc: router/ROUTING.md#rails-and-node-cross-stack-routing
+      eval_cases: evals/rails/node-backend-seam.yml
+    - boundary: rails-to-react-client
+      primary_in_this_pack: rails-react-integration
+      secondary_in_this_pack:
+        - rails-action-controller
+        - rails-active-record
+      companion_pack: react-agent-skills
+      companion_side: react-agent-skills/skills/browser-authentication
+      routing_doc: router/ROUTING.md#rails-and-react-cross-stack-routing
+      eval_cases: evals/rails-react-integration/rails-react-seam.yml

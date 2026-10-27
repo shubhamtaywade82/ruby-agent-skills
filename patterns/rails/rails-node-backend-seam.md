@@ -1,0 +1,85 @@
+---
+name: rails-node-backend-seam
+description: "Choose and record one integration mode between a Rails backend and a Node.js service: HTTP JSON API, JSON-RPC, shared Postgres, or a queue — then hold the contract on both sides."
+family: rails
+---
+
+# Rails Node Backend Seam
+
+## Problem
+A Rails application and a Node.js service can talk over an HTTP JSON API, JSON-RPC, a shared Postgres database, or a message queue (Sidekiq ↔ BullMQ). Each mode moves authentication, error translation, transaction ownership, and observability to a different place; mixing them without a decision splits those conventions across the language boundary.
+
+## Use when
+A Rails backend and a Node service must exchange data or work, a Sidekiq job is moving to a Node worker (or the reverse), a Node BFF will call Rails, or cross-language requests fail because the two sides assume different modes.
+
+## Do not use when
+The task stays entirely on one side of the boundary (pure Rails work routes to the owning `rails-` skill; pure Node work routes to `node-agent-skills`), or the repository has already recorded its seam mode and the task stays inside it.
+
+## Repository inspection
+Inspect the Rails side (`config/routes.rb` API namespaces, `Gemfile` for `sidekiq`/`sidekiq-pro`, serializers, auth concerns) and the Node side (`package.json` for `express`/`fastify`/`@nestjs`/`hono`/`bullmq`/`pg`/`prisma`, the HTTP client module, the validation library). Look for an existing shared contract: an OpenAPI document, a generated TypeScript client, or a `packages/contracts/` directory in a monorepo.
+
+## Implementation procedure
+1. Choose the mode: HTTP JSON API when Rails is the API authority and Node is a client; JSON-RPC when a tight method-call contract is needed; shared Postgres when both sides need the same data synchronously and one side can own writes; queue when the work is asynchronous.
+2. Record the choice, the write-authority per table (shared Postgres only), and the correlation-ID convention where the repository keeps decisions.
+3. Make the API authority generate the contract (OpenAPI/JSON Schema/TypeScript types) and make the consumer's build fail when the contract is missing or stale.
+4. Keep authentication and authorization on the Rails side in every mode; the Node side forwards identity, it does not re-decide it.
+5. Propagate the correlation ID on every cross-language call and log it on both sides.
+
+## Example
+
+```ruby
+# Rails side of an HTTP seam. Rails owns the contract and renders a
+# problem+json error envelope the Node consumer maps directly.
+module Api
+  module V1
+    class OrdersController < Api::BaseController
+      before_action :set_order
+
+      # GET /api/v1/orders/:id — consumed by the Node BFF.
+      def show
+        render json: OrderSerializer.new(@order).as_json
+      end
+
+      # POST /api/v1/orders/:id/refunds — the seam entry point. Cross-origin
+      # credentials: the BFF forwards the session cookie and the CSRF token.
+      def create_refund
+        refund = @order.refunds.create!(refund_params)
+        render json: RefundSerializer.new(refund).as_json, status: :created
+      rescue ActiveRecord::RecordInvalid => e
+        # RFC 9457 problem+json: the contract the Node side maps 1:1.
+        render json: {
+          type: "https://example.com/errors/validation",
+          title: "Validation failed",
+          status: 422,
+          errors: e.record.errors.map { |attr, msg| { field: attr, message: msg } }
+        }, status: :unprocessable_entity
+      end
+
+      private
+
+      def set_order
+        @order = policy_scope(Order).find(params[:id])
+      end
+    end
+  end
+end
+
+# Cross-origin cookies for a Node BFF on another origin: SameSite=None.
+# config/initializers/session_store.rb:
+#   Rails.application.config.session_store :cookie_store,
+#     cookie: { same_site: :none, secure: true }
+```
+
+## Failure modes
+Hand-typed request/response types in the Node service (guaranteed drift — generate the contract from Rails instead), Rails rendering ad-hoc `422` JSON when the Node consumer expects problem+json, cross-origin fetches without `credentials: "include"` on the Node side (the session cookie is silently dropped), a CSRF token endpoint not exposed to the BFF (mutating requests fail with `ActionController::InvalidAuthenticityToken`), both sides writing the same Postgres table (lost updates — name the write authority per table), and a correlation ID set on one side but not propagated on the other (broken traces).
+
+## Testing
+Rails request tests per seam endpoint (status, rendered shape, problem+json errors) plus Node consumer tests that post fixtures through the generated contract and fail the build when the contract is stale; a correlation-ID test that asserts the same `X-Request-ID` is logged on both sides.
+
+## Review checklist
+Is the mode recorded with a per-table write authority and a correlation-ID convention, is the contract generated by the API authority and consumed by the other side, and does every cross-language call carry credentials and the correlation ID?
+
+## Related skills
+rails-node-integration,rails-api-integration,rails-active-record,rails-active-job
+
+Node side: node-agent-skills / node-ruby-integration
