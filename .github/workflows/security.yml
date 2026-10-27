@@ -1,0 +1,83 @@
+name: Security and supply chain
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  schedule:
+    # Weekly cron: Sunday 02:00 Asia/Kolkata. Catches new advisories on
+    # dependencies that have not changed in the repo.
+    - cron: "0 20 * * 6"
+  workflow_dispatch:
+
+# Least privilege: this workflow only reads. No release publishing, no
+# deployment. The patterns/rails/autonomous-engineering-platform.md pattern
+# documents the policy; audit_github_governance.rb enforces the
+# permissions: block.
+permissions:
+  contents: read
+
+jobs:
+  ruby-static-analysis:
+    name: Brakeman (Rails static security)
+    runs-on: ubuntu-latest
+    # This repository has no Rails app, so Brakeman reports on the skill
+    # fixtures' Ruby code fences instead of a real app. It is a structural
+    # check; findings are advisory, not gating. Run it as a non-blocking
+    # advisory until a real Rails app is added.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - name: Install Brakeman
+        run: gem install brakeman --no-document
+      - name: Run Brakeman
+        run: bundle exec brakeman --no-exit-on-warn --format sarif --output brakeman.sarif || brakeman --no-exit-on-warn --format sarif --output brakeman.sarif
+      - name: Upload Brakeman SARIF
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brakeman-sarif
+          path: brakeman.sarif
+          retention-days: 14
+
+  dependency-vulnerabilities:
+    name: bundler-audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+      - name: Install bundler-audit
+        run: gem install bundler-audit --no-document
+      - name: Run bundler-audit
+        run: bundle-audit check --gemfile-lock Gemfile.lock --ignore-strict-locked
+
+  secret-scanning:
+    name: TruffleHog (secrets in git history)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Scan the full git history, not just the checked-out commit.
+          fetch-depth: 0
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@7e083729a994c5b03b38243d3b1c44d63c7d3b4a  # main, pinned SHA
+        with:
+          path: .
+          extra_args: --only-verified --exclude-paths=.git/info
+
+  workflow-permissions-audit:
+    name: GitHub governance audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - name: Run audit_github_governance.rb
+        run: ruby scripts/audit_github_governance.rb

@@ -1,0 +1,65 @@
+# CODEOWNERS for ruby-agent-skills
+#
+# Each line: <path pattern> @<owner>
+# Owners are GitHub usernames or team names. The first matching pattern wins.
+# See https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-how-your-repository-is-displayed-on-github/about-code-owners
+#
+# Governance principle: every protected path has an explicit owner. Pull requests
+# that touch a protected path require code-owner review (enforced by branch
+# protection on main). The patterns/rails/autonomous-engineering-platform.md
+# pattern documents the policy; scripts/audit_github_governance.rb enforces it.
+
+# CI/CD and governance — the workflows that govern the platform itself.
+# Changes here require the strictest review.
+.github/                     @shubhamtaywade82
+
+# Skill library — the agent-facing surface. Each skill touches one or more
+# sub-frameworks; the whole pack owner signs off on additions and removals.
+skills/                      @shubhamtaywade82
+
+# Implementation patterns — shared catalog. Pattern schema, family, and
+# ownership decisions are pack-wide.
+patterns/                    @shubhamtaywade82
+
+# Evaluations — deterministic contracts. Schema, cases, and grading are
+# pack-wide.
+evals/                       @shubhamtaywade82
+
+# Benchmarks — campaign manifests, fixtures, and references. Changes to the
+# harness shape are pack-wide.
+benchmarks/                  @shubhamtaywade82
+
+# Routing and manifest — the router and manifest are the source of truth for
+# the whole pack. Changes here affect every install.
+router/                      @shubhamtaywade82
+skill-manifest.yml           @shubhamtaywade82
+
+# Validator scripts and the canonical bin/validate pipeline.
+bin/                         @shubhamtaywade82
+scripts/                     @shubhamtaywade82
+
+# System tests — every test enforces a contract on the repository.
+test/                        @shubhamtaywade82
+
+# Library code — the stdlib-only Ruby modules the validators and harness use.
+lib/                         @shubhamtaywade82
+
+# Data catalogs — tool registries per skill family.
+data/                        @shubhamtaywade82
+
+# Documentation — README, RELEASE, ITERATIONS, CHANGELOG, and source coverage.
+# These track the pack's public surface and require consistency with the
+# validator's reported counts.
+README.md                    @shubhamtaywade82
+RELEASE.md                   @shubhamtaywade82
+CHANGELOG.md                 @shubhamtaywade82
+docs/                        @shubhamtaywade82
+AGENTS.md                    @shubhamtaywade82
+CONTRIBUTING.md              @shubhamtaywade82
+SECURITY.md                  @shubhamtaywade82
+
+# Framework drift registry — tracks Rails deprecations and removals.
+framework-drift.yml          @shubhamtaywade82
+
+# Default: any path not matched above requires the pack owner.
+*                            @shubhamtaywade82

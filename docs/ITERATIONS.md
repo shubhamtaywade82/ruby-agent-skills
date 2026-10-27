@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 194 — Ruby LLM Integration Skill
+> **Current milestone:** Iteration 195 — Autonomous Engineering Platform (Batch 1: Foundation and Governance)
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -683,3 +683,7 @@ Adds `trading-market-data-and-backtesting` to the `trading` family, owning the m
 ## Iteration 194 — Ruby LLM Integration Skill
 
 Adds `ruby-llm-integration`, owning the application side of large language model calls: the provider isolated behind one adapter, every call bounded in time (connection and read timeouts) and money (token/cost budgets enforced before spend and recorded per feature), structured output validated against schemas with malformed output as a designed outcome, prompt-injection boundaries keeping untrusted content in data roles, tool calls authorized by an allow-list with schema-validated arguments and deterministic effect classes, observability without prompt-content logging, and graceful degradation so core paths stay green with the provider down. The composition rule is absolute: model output may draft and propose, but schema validation, authorization, risk gates, and safety checks remain deterministic — the model is never in the guard path. Three references, two adversarial routing cases, two static-only evaluations (10 cases), and a registered system test complete the iteration. Inventory rises to 103 skills, 621 evaluation cases, and 116 system/contract tests; the public routing campaign grows to 45 cases × 3 repetitions.
+
+## Iteration 195 — Autonomous Engineering Platform (Batch 1: Foundation and Governance)
+
+Implements Batch 1 of the 5-batch autonomous engineering platform plan. The new `patterns/rails/autonomous-engineering-platform.md` pattern documents the platform's principle: AI agents handle reasoning and code changes; deterministic workflows enforce correctness, security, and deployment policy. Production never depends on an AI agent deciding whether its own work is safe. Batch 1 lays the foundation: `.github/CODEOWNERS` (52 ownership rules), `.github/dependabot.yml` (weekly updates for github-actions + bundler + ruby-version), `.github/workflows/security.yml` (Brakeman advisory, bundler-audit, TruffleHog secrets, governance audit), hardened `permissions: contents: read` on `validate.yml` and `recorded-campaign.yml`, new `scripts/audit_github_governance.rb` enforcing 5 rules (CODEOWNERS exists and covers 8 protected paths; dependabot exists and covers required ecosystems; every workflow has explicit `permissions:`; no `pull_request_target`; `contents: write` only on release.yml), new `test/github_governance_system_test.rb` (6 tests, 28 assertions, positive + 5 negative cases), both wired into `bin/validate`. Inventory rises to 453 implementation patterns and 117 system/contract tests. Batches 2-5 (production-grade reusable CI, agentic engineering, release/deployment, autonomous operations) remain for future iterations.

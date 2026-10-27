@@ -718,6 +718,7 @@ patterns:
       - patterns/rails/the-rails-way.md
       - patterns/rails/isolation-level-contract.md
       - patterns/rails/advanced-rails-coverage-audit.md
+      - patterns/rails/autonomous-engineering-platform.md
       - patterns/rails/threat-model.md
       - patterns/rails/trust-boundary.md
       - patterns/rails/authorization-matrix.md

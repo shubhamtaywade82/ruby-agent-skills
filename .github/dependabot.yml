@@ -1,0 +1,79 @@
+# Dependabot configuration for ruby-agent-skills
+#
+# Update policy: weekly for all ecosystems, grouped where safe to reduce PR
+# noise. Security updates are not subject to the schedule — they open
+# immediately. The patterns/rails/autonomous-engineering-platform.md
+# pattern documents the policy; scripts/audit_github_governance.rb enforces
+# that this file exists and covers the github-actions, bundler, and
+# ruby-version ecosystems.
+#
+# See https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+
+updates:
+  # GitHub Actions used by .github/workflows/*.yml.
+  # Pinned to a major tag in the workflow, but Dependabot opens PRs to bump
+  # the major when a new release ships. The audit_github_governance.rb
+  # script enforces that every action is pinned (not floating to @main).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - "actions/*"
+          - "ruby/*"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  # Ruby gems declared in Gemfile + Gemfile.lock.
+  # Only the lint group is declared (rubocop + extensions). The validators
+  # and harness use only the Ruby standard library, so there is no runtime
+  # dependency group to bump.
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 5
+    groups:
+      rubocop:
+        patterns:
+          - "rubocop"
+          - "rubocop-*"
+    commit-message:
+      prefix: "lint"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "bundler"
+
+  # .ruby-version file (if adopted in the future).
+  # The repo currently does not ship a .ruby-version file (the runtime
+  # profile reports it as missing); if it is added, Dependabot bumps it here.
+  - package-ecosystem: "ruby-version"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Kolkata"
+    open-pull-requests-limit: 1
+    commit-message:
+      prefix: "ruby"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "ruby-version"

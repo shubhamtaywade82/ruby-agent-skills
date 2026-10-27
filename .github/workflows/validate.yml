@@ -6,6 +6,12 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Least privilege: this workflow only reads. The patterns/rails/autonomous-
+# engineering-platform.md pattern documents the policy; audit_github_
+# governance.rb enforces the permissions: block.
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
