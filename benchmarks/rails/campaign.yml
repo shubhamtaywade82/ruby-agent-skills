@@ -32,6 +32,7 @@ evaluations:
   - rails-routing-contract
   - rails-serialization-globalid-contract
   - rails-staff-principal-architecture-contract
+  - rails-node-backend-seam
   - validations-contract
 execution:
   repetitions: 3

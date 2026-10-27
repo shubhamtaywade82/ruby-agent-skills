@@ -1,0 +1,50 @@
+id: rails-node-backend-seam
+coverage: static-only
+version: 1
+title: Rails Node Backend Seam Contract
+category: rails
+source: rails-node-integration-v1
+skills:
+  - rails-node-integration
+  - rails-api-integration
+  - rails-authentication
+patterns:
+  - rails-node-backend-seam
+prompt: |
+  A Rails 7.2 API application exposes order refunds to a Node.js BFF service. The Node service
+  calls POST /api/v1/orders/:id/refunds with a forwarded session cookie and CSRF token, and it
+  expects RFC 9457 problem+json errors when validation fails. Implement the Rails side of the
+  seam: the controller action, the problem+json error rendering, the cross-origin session cookie
+  configuration, and the X-Request-ID propagation. The Node side is owned by the companion
+  node-agent-skills pack and is out of scope here.
+constraints:
+  required_boundary: rails-node-integration
+  forbidden:
+    - implementing Node-side consumer code from this pack
+    - rendering ad-hoc 422 JSON instead of the problem+json envelope the seam contract names
+    - weakening CSRF or session configuration to make the cross-origin call work
+    - writing a shared Postgres table from both sides without naming a write authority
+    - dropping the correlation ID on either side of the boundary
+checks:
+  - functional
+  - tests
+  - contract
+  - scope_control
+cases:
+  - name: seam-endpoint-with-problem-json
+    input: The refund endpoint is implemented with a rescue from ActiveRecord::RecordInvalid that renders problem+json with field-level errors.
+    expected:
+      seam: controller action renders created on success and 422 problem+json on validation failure; session cookie uses SameSite=None; X-Request-ID is echoed
+  - name: node-side-work-is-reported-not-implemented
+    input: The task also asks for the Node BFF fetch client with credentials include.
+    expected:
+      seam: the Rails side and the error envelope are implemented; the Node-side follow-up is reported with node-agent-skills / node-ruby-integration as the owning skill instead of being improvised
+  - name: shared-postgres-write-authority
+    input: The repository also exposes the orders table to the Node service for reads, and a migration adds a refunds table both sides can see.
+    expected:
+      seam: Rails is named the write authority for refunds; the Node side is read-only; the decision is recorded with the seam contract
+grading:
+  functional: The refund endpoint, error envelope, cookie configuration, and correlation-ID propagation all work as specified.
+  tests: Request tests cover the success, validation-failure, and cross-origin credential paths.
+  contract: The problem+json shape and the correlation-ID header are asserted in tests, and the Node-side follow-up names the owning companion skill.
+  scope_control: No Node-side implementation, no weakened CSRF/session configuration, and no unnamed write authority.

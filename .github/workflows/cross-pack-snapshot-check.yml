@@ -1,0 +1,47 @@
+name: Cross-pack snapshot check
+
+# Companion snapshots (data/cross-pack/*.snapshot.yml) pin the companion
+# packs' skill inventories at a captured_at date. This scheduled check keeps
+# them honest: it fails when a snapshot is missing, stale, or its
+# documented_name_collisions no longer match the recomputed intersection.
+# Errors fail the run; staleness beyond the threshold is reported via an
+# issue so the fix (refreshing the snapshot) is tracked.
+
+on:
+  schedule:
+    - cron: "15 6 1 * *" # monthly, 06:15 UTC on the 1st
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Cross-pack verification (errors fail, warnings captured)
+        run: |
+          set +e
+          ruby bin/cross-pack-verify --root . 2>&1 | tee /tmp/cross-pack.log
+          status=${PIPESTATUS[0]}
+          if grep -q "^WARNINGS:" /tmp/cross-pack.log; then
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
+          exit $status
+        id: verify
+
+      - name: Open issue on stale snapshots
+        if: ${{ steps.verify.outputs.stale == 'true' }}
+        run: |
+          gh issue create \
+            --title "Cross-pack snapshot refresh needed" \
+            --body "The scheduled cross-pack check reported stale companion snapshots. Refresh data/cross-pack/*.snapshot.yml per the refresh procedure in each snapshot's header comment, then re-run bin/cross-pack-verify." \
+            --label "maintenance" || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

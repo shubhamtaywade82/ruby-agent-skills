@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 194 — Ruby LLM Integration Skill
+> **Current milestone:** Iteration 195 — Cross-Pack v3 Integration (Rails and Node)
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -683,3 +683,7 @@ Adds `trading-market-data-and-backtesting` to the `trading` family, owning the m
 ## Iteration 194 — Ruby LLM Integration Skill
 
 Adds `ruby-llm-integration`, owning the application side of large language model calls: the provider isolated behind one adapter, every call bounded in time (connection and read timeouts) and money (token/cost budgets enforced before spend and recorded per feature), structured output validated against schemas with malformed output as a designed outcome, prompt-injection boundaries keeping untrusted content in data roles, tool calls authorized by an allow-list with schema-validated arguments and deterministic effect classes, observability without prompt-content logging, and graceful degradation so core paths stay green with the provider down. The composition rule is absolute: model output may draft and propose, but schema validation, authorization, risk gates, and safety checks remain deterministic — the model is never in the guard path. Three references, two adversarial routing cases, two static-only evaluations (10 cases), and a registered system test complete the iteration. Inventory rises to 103 skills, 621 evaluation cases, and 116 system/contract tests; the public routing campaign grows to 45 cases × 3 repetitions.
+
+## Iteration 195 — Cross-Pack v3 Integration (Rails and Node)
+
+Adds the cross-pack manifest schema v3 (an additive superset of v2: `schema_version`, `pack:` envelope, per-skill v3 fields, and a `cross_pack:` section with companions, name-collision registry, and seam contracts) and the `rails-node-integration` seam skill owning the Rails side of the Rails ↔ Node backend boundary — integration-mode selection, generated contracts, cross-origin credentials, RFC 9457 problem+json errors, correlation IDs, and write authority. Ships a pinned `node-agent-skills` companion snapshot, the `rails-node-backend-seam` pattern, a "Rails and Node cross-stack routing" matrix section, two adversarial routing cases, a static-only seam evaluation with a benchmark fixture and reference, the RuboCop-clean `bin/cross-pack-verify` verifier (handles both manifest entry shapes), a stdlib-only MCP server (`bin/mcp-server`: list_skills, get_skill, route_prompt with language boosting, list_companions, route_cross_pack), a root `CLAUDE.md` for Claude Code sessions, and the `cross_pack_v3` + `mcp_server` system tests. Inventory rises to 104 skills, 453 patterns, 624 evaluation cases, and 118 system/contract tests; the public routing campaign grows to 47 cases × 3 repetitions.
