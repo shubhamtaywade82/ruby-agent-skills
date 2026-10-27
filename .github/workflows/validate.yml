@@ -27,6 +27,18 @@ jobs:
       - name: Validate skill library
         run: bash bin/validate
 
+      - name: Cross-pack manifest verification (v3)
+        run: ruby bin/cross-pack-verify --root .
+
+      - name: MCP server smoke test (v3)
+        run: |
+          printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+            '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"route_prompt","arguments":{"prompt":"add a migration with an index"}}}' \
+            '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"list_companions","arguments":{}}}' \
+            | ruby bin/mcp-server
+
       # The official Agent Skills validator, pinned to the commit
       # bin/skills-spec-check names, so every skill stays installable by
       # spec-conformant tools such as `npx skills`.
