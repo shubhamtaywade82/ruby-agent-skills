@@ -8,50 +8,17 @@ on:
 
 # Least privilege: this workflow only reads. The patterns/rails/autonomous-
 # engineering-platform.md pattern documents the policy; audit_github_
-# governance.rb enforces the permissions: block.
+# governance.rb enforces the permissions: block. The actual lint+validate+
+# smoke-test steps live in the reusable workflow (.github/workflows/
+# reusable-ruby-ci.yml) so downstream Rails repositories can adopt the
+# same CI shape without duplicating the steps.
 permissions:
   contents: read
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3"
-          bundler-cache: true
-
-      - name: Lint Ruby (RuboCop)
-        run: bundle exec rubocop
-
-      - name: Audit validation gate integrity
-        run: ruby -Itest test/validation_gate_integrity_system_test.rb
-
-      - name: Validate skill library
-        run: bash bin/validate
-
-      # The official Agent Skills validator, pinned to the commit
-      # bin/skills-spec-check names, so every skill stays installable by
-      # spec-conformant tools such as `npx skills`.
-      - name: Validate skills against the Agent Skills specification
-        run: |
-          pipx install "git+https://github.com/agentskills/agentskills@69ef37e9424c0a7ea9dd2293b559e43ec8176379#subdirectory=skills-ref"
-          bin/skills-spec-check
-
-      - name: Smoke test evaluation runner
-        run: ruby scripts/smoke_eval_runner.rb
-
-      - name: Smoke test benchmark verifier
-        run: ruby scripts/smoke_benchmark.rb
-
-      - name: Smoke test agent adapter
-        run: ruby scripts/smoke_agent_adapter.rb
-
-      - name: Smoke test book integration campaign
-        run: ruby scripts/smoke_workshop_benchmark.rb
-
-      - name: Smoke test runtime profile
-        run: ruby -Itest test/runtime_profile_test.rb
+    name: Validate via reusable Ruby CI
+    uses: ./.github/workflows/reusable-ruby-ci.yml
+    with:
+      ruby-version: "3.3"
+      run-smoke-tests: true

@@ -98,6 +98,48 @@ class GithubGovernanceSystemTest < Minitest::Test
     end
   end
 
+  def test_audit_fails_when_a_reusable_workflow_lacks_workflow_call
+    in_temp_repo_with_workflow("reusable-broken.yml", <<~YAML) do |dir|
+      name: Reusable without workflow_call
+      on:
+        push:
+          branches: ["main"]
+      permissions:
+        contents: read
+      jobs:
+        build:
+          runs-on: ubuntu-latest
+          steps:
+            - run: echo "misconfigured"
+    YAML
+      stdout, status = run_audit_in(dir)
+      refute_predicate status, :success?, "audit must fail when a reusable-*.yml workflow lacks workflow_call"
+      assert_includes stdout, "must declare `on: workflow_call`"
+    end
+  end
+
+  def test_audit_passes_when_a_reusable_workflow_has_workflow_call
+    in_temp_repo_with_workflow("reusable-good.yml", <<~YAML) do |dir|
+      name: Reusable with workflow_call
+      on:
+        workflow_call:
+      permissions:
+        contents: read
+      jobs:
+        build:
+          runs-on: ubuntu-latest
+          steps:
+            - run: echo "correct"
+    YAML
+      stdout, status = run_audit_in(dir)
+      assert_predicate status, :success?, "audit must pass when a reusable-*.yml workflow declares workflow_call; got:\n#{stdout}"
+      # The temp dir already contains the real repo's reusable-ruby-ci.yml,
+      # so adding reusable-good.yml makes 2 reusable workflows total. Match
+      # the regex so the count is at least 1 (the one we just added).
+      assert_match(/reusable workflows: \d+/, stdout)
+    end
+  end
+
   private
 
   # Run the audit against the actual repository.

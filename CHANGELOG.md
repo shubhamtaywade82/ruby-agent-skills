@@ -1,3 +1,19 @@
+## Iteration 196 — Autonomous Engineering Platform (Batch 2: Production-grade CI)
+
+Implements Batch 2 of the 5-batch autonomous engineering platform plan documented in `patterns/rails/autonomous-engineering-platform.md`. Batch 1 (iter 195) laid the foundation: CODEOWNERS, dependabot, security workflow, least-privilege permissions, and the governance audit. Batch 2 extracts the shared Ruby CI shape into a reusable workflow and extends the governance audit to enforce it.
+
+- Add `.github/workflows/reusable-ruby-ci.yml` (~95 lines) — reusable Ruby CI workflow with `on: workflow_call` trigger. Accepts three inputs: `ruby-version` (default `3.3`), `skip-bundler-audit` (default false), and `run-smoke-tests` (default true). Declares `permissions: contents: read` (least privilege). Steps: RuboCop lint, validation gate integrity test, GitHub governance audit, full `bin/validate`, Agent Skills spec check, four smoke tests (eval runner, benchmark, agent adapter, workshop benchmark), runtime profile test. Service containers for Postgres 16 and Redis 7 are included as commented-out slots so downstream Rails consumers can enable them by uncommenting — ruby-agent-skills itself does not need them because its tests are stdlib-only. Cache key includes Ruby version + Gemfile.lock + OS via `bundler-cache: true` and `cache-version: ${{ inputs.ruby-version }}`.
+
+- Refactor `.github/workflows/validate.yml` (was 50 lines, now 18 lines) — the workflow now calls the reusable workflow via `uses: ./.github/workflows/reusable-ruby-ci.yml` with `ruby-version: "3.3"` and `run-smoke-tests: true`. Keeps the same `permissions: contents: read` block and the same `on:` triggers (push to main, pull_request, workflow_dispatch). The lint+validate+smoke-test steps that were inlined in iter 178 now live in the reusable workflow so downstream Rails repositories can adopt the same shape without duplicating them.
+
+- Extend `scripts/audit_github_governance.rb` with Check 6: every `reusable-*.yml` workflow file must declare `on: workflow_call` so it can be called from other workflows. A reusable workflow file that lacks this trigger is dead weight, or worse, a misconfigured copy of an inline workflow. The audit reports the reusable-workflow count in its summary line (`reusable workflows: N`).
+
+- Extend `test/github_governance_system_test.rb` with two new tests: `test_audit_fails_when_a_reusable_workflow_lacks_workflow_call` (negative case — `reusable-broken.yml` with `on: push` fails the audit) and `test_audit_passes_when_a_reusable_workflow_has_workflow_call` (positive case — `reusable-good.yml` with `on: workflow_call` passes). The system test now runs 8 tests / 36 assertions (was 6 / 28 in iter 195).
+
+- Bump inventory counts (117 → 118 system/contract tests) in `README.md` and `docs/IMPLEMENTATION_HANDOFF.md`. Implementation pattern count remains 453; evaluation count remains 621; skill count remains 103. `docs/IMPLEMENTATION_HANDOFF.md` milestone bumped 195 → 196. `docs/ITERATIONS.md` current milestone bumped to 196.
+
+- Live verification: `bash bin/validate` exits 0 on a clean worktree after the new content is added. The governance audit reports `workflows audited: 5`, `reusable workflows: 1`. The system test runs 8 tests / 36 assertions / 0 failures.
+
 ## Iteration 195 — Autonomous Engineering Platform (Batch 1: Foundation and Governance)
 
 Implements Batch 1 of the 5-batch autonomous engineering platform plan documented in the new `patterns/rails/autonomous-engineering-platform.md` pattern. The platform's principle: AI agents handle reasoning and code changes; deterministic workflows enforce correctness, security, and deployment policy. Production never depends on an AI agent deciding whether its own work is safe. Batch 1 lays the foundation: ownership rules, dependency update policy, security workflow, least-privilege permissions, and a governance audit that enforces them.

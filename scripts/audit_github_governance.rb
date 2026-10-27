@@ -111,6 +111,21 @@ workflow_files.each do |path|
   end
 end
 
+# --- Check 6: reusable-*.yml workflows declare on: workflow_call --------
+# A reusable workflow file that does not declare workflow_call cannot be
+# called by other workflows — it is dead weight, or worse, a misconfigured
+# copy of an inline workflow.
+
+reusable_workflows = workflow_files.select { |p| File.basename(p).start_with?("reusable-") }
+reusable_workflows.each do |path|
+  relative = path.delete_prefix(ROOT + "/")
+  text = File.read(path, encoding: "UTF-8")
+
+  unless text.match?(/^on:\s*\n\s+workflow_call:/) || text.match?(/^on:\s*workflow_call/)
+    errors << "#{relative}: reusable workflow must declare `on: workflow_call` so it can be called from other workflows"
+  end
+end
+
 # --- Report --------------------------------------------------------------
 
 puts "GitHub governance audit"
@@ -122,6 +137,7 @@ if File.file?(dependabot_path)
   puts "  dependabot.yml: present"
 end
 puts "  workflows audited: #{workflow_files.length}"
+puts "  reusable workflows: #{reusable_workflows.length}" unless reusable_workflows.empty?
 warnings.each { |w| puts "WARN: #{w}" }
 
 if errors.any?

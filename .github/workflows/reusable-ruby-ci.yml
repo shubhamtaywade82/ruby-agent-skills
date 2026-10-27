@@ -1,0 +1,128 @@
+# Reusable Ruby CI workflow for ruby-agent-skills and downstream Rails projects.
+#
+# Called from .github/workflows/validate.yml (and any other consumer that
+# wants the same guarantees: lint, validate, smoke tests). Also callable
+# from downstream Rails repositories that adopt this pack's CI shape —
+# they pass their own Ruby version and any additional inputs.
+#
+# The pattern patterns/rails/autonomous-engineering-platform.md (Batch 2)
+# documents the design: extract the shared Ruby/Rails CI shape into a
+# reusable workflow with workflow_call, add service containers for
+# Postgres/Redis (commented out until integration tests need them), and
+# cache keys so the same commit produces the same artifacts.
+#
+# audit_github_governance.rb enforces:
+#   - explicit permissions: block (least privilege)
+#   - no pull_request_target trigger
+#   - reusable-*.yml files declare on: workflow_call
+
+name: Reusable Ruby CI
+
+on:
+  workflow_call:
+    inputs:
+      ruby-version:
+        description: "Ruby version to install and run against"
+        required: false
+        default: "3.3"
+        type: string
+      skip-bundler-audit:
+        description: "Skip bundler-audit (for forks without secret access)"
+        required: false
+        default: false
+        type: boolean
+      run-smoke-tests:
+        description: "Run the smoke-test suite (eval/benchmark/agent adapter)"
+        required: false
+        default: true
+        type: boolean
+
+# Least privilege: this workflow only reads. The release workflow is the
+# only one allowed contents: write. See patterns/rails/autonomous-engineering-
+# platform.md for the policy; audit_github_governance.rb enforces it.
+permissions:
+  contents: read
+
+jobs:
+  lint-and-validate:
+    name: Lint, validate, smoke-test
+    runs-on: ubuntu-latest
+    # Service containers for downstream Rails consumers that need a real
+    # database. ruby-agent-skills itself does not need them — its tests are
+    # stdlib-only — but the reusable workflow exposes the slots so consumers
+    # can enable them by uncommenting. Postgres 16 and Redis 7 are pinned
+    # to specific major versions; bump deliberately.
+    #
+    # services:
+    #   postgres:
+    #     image: postgres:16-alpine
+    #     env:
+    #       POSTGRES_USER: ci
+    #       POSTGRES_PASSWORD: ci
+    #       POSTGRES_DB: ci_test
+    #     ports: ["5432:5432"]
+    #     options: >-
+    #       --health-cmd "pg_isready -U ci"
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #   redis:
+    #     image: redis:7-alpine
+    #     ports: ["6379:6379"]
+    #     options: >-
+    #       --health-cmd "redis-cli ping"
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ inputs.ruby-version }}
+          # Cache key includes the Ruby version, Gemfile.lock content, and
+          # the OS — so the same commit produces the same bundle.
+          bundler-cache: true
+          cache-version: ${{ inputs.ruby-version }}
+
+      - name: Lint Ruby (RuboCop)
+        run: bundle exec rubocop
+
+      - name: Audit validation gate integrity
+        run: ruby -Itest test/validation_gate_integrity_system_test.rb
+
+      - name: Audit GitHub governance
+        run: ruby scripts/audit_github_governance.rb
+
+      - name: Validate skill library
+        run: bash bin/validate
+
+      # The official Agent Skills validator, pinned to the commit
+      # bin/skills-spec-check names. Optional for downstream consumers
+      # that are not skill packs; skipped via run-smoke-tests=false.
+      - name: Validate skills against the Agent Skills specification
+        if: ${{ inputs.run-smoke-tests }}
+        run: |
+          pipx install "git+https://github.com/agentskills/agentskills@69ef37e9424c0a7ea9dd2293b559e43ec8176379#subdirectory=skills-ref"
+          bin/skills-spec-check
+
+      - name: Smoke test evaluation runner
+        if: ${{ inputs.run-smoke-tests }}
+        run: ruby scripts/smoke_eval_runner.rb
+
+      - name: Smoke test benchmark verifier
+        if: ${{ inputs.run-smoke-tests }}
+        run: ruby scripts/smoke_benchmark.rb
+
+      - name: Smoke test agent adapter
+        if: ${{ inputs.run-smoke-tests }}
+        run: ruby scripts/smoke_agent_adapter.rb
+
+      - name: Smoke test book integration campaign
+        if: ${{ inputs.run-smoke-tests }}
+        run: ruby scripts/smoke_workshop_benchmark.rb
+
+      - name: Smoke test runtime profile
+        if: ${{ inputs.run-smoke-tests }}
+        run: ruby -Itest test/runtime_profile_test.rb
