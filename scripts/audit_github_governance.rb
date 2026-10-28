@@ -126,6 +126,45 @@ reusable_workflows.each do |path|
   end
 end
 
+# --- Check 7: agent-*.yml workflows are bounded and gated -----------------
+# The autonomous platform's bounded-autonomy rules (patterns/rails/
+# autonomous-engineering-platform.md, Batch 3): every agent workflow must
+# (a) declare a wall-clock cap via timeout-minutes, (b) gate execution on
+# an explicit repository variable or secret so untrusted events never
+# trigger an unconditional agent run, and (c) never contain an approval
+# command — required reviews come from CODEOWNERS, not from agents.
+
+agent_workflows = workflow_files.select { |p| File.basename(p).start_with?("agent-") }
+agent_workflows.each do |path|
+  relative = path.delete_prefix(ROOT + "/")
+  text = File.read(path, encoding: "UTF-8")
+
+  # 7a: wall-clock cap
+  unless text.match?(/^\s*timeout-minutes:\s*\d+\s*$/) || text.match?(/^\s+timeout-minutes:\s*\d+/)
+    errors << "#{relative}: agent workflow must declare `timeout-minutes:` (bounded autonomy — no uncapped agent runtime)"
+  end
+
+  # 7b: gated on an explicit repository variable or secret
+  unless text.match?(/if:\s*.*(?:vars\.|secrets\.)/) || text.match?(/if:\s*>/) && text.match?(/vars\.|secrets\./)
+    errors << "#{relative}: agent workflow must gate execution on a repository variable or secret (`if: vars.X == 'true'`) so untrusted events never trigger an unconditional agent run"
+  end
+
+  # 7c: no approval commands — agents propose, CODEOWNERS approve.
+  # Only scan executable lines: strip YAML comments (lines whose first
+  # non-space character is #) so documentation that *names* the forbidden
+  # command as an example does not trip the check.
+  executable_lines = text.lines.reject { |line| line.match?(/^\s*#/) }
+  executable_text = executable_lines.join
+  approval_commands = [
+    /gh\s+pr\s+review\s+[^\n]*--approve/,
+    /pull_request_review[^\n]*approve/i,
+    /--[^\s]*approve\b/
+  ]
+  if approval_commands.any? { |pattern| executable_text.match?(pattern) }
+    errors << "#{relative}: agent workflow contains an approval command — agents propose, CODEOWNERS approve (merge-protection rule)"
+  end
+end
+
 # --- Report --------------------------------------------------------------
 
 puts "GitHub governance audit"
@@ -138,6 +177,7 @@ if File.file?(dependabot_path)
 end
 puts "  workflows audited: #{workflow_files.length}"
 puts "  reusable workflows: #{reusable_workflows.length}" unless reusable_workflows.empty?
+puts "  agent workflows: #{agent_workflows.length}" unless agent_workflows.empty?
 warnings.each { |w| puts "WARN: #{w}" }
 
 if errors.any?

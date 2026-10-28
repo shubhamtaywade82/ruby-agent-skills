@@ -86,11 +86,13 @@ Deliver the platform in five batches, with validation at each stage. Do not skip
 ### Batch 3 — Agentic engineering
 
 1. Add `agent-issue-triage` workflow: GitHub Issue triggers → agent categorizes, labels, identifies priority and missing information → posts a structured comment.
-2. Add `agent-ci-investigator` workflow: CI failure triggers → agent reads sanitized logs (no secrets) → proposes a bounded fix on a feature branch → rerun the authoritative CI pipeline.
-3. Add `agent-pr-reviewer` workflow: PR opened → agent reviews for correctness, edge cases, test gaps → posts advisory comments. **Never authoritative.** Required reviews come from CODEOWNERS, not the agent.
-4. Bound every agent: cap retries (3), tool permissions (read-only by default), runtime (15 minutes), cost (per-job spend limit). Stop and escalate when limits are reached.
-5. Run all agents in isolated, ephemeral execution environments. Never let agent-generated code share a runner with production deployment jobs.
-6. Audit agent actions: every prompt, every tool call, every diff the agent produces is logged and reviewable.
+2. Add `agent-ci-investigator` workflow: CI failure triggers → agent reads sanitized logs (no secrets) → proposes a bounded fix as a comment. **Propose-only, never apply**: the investigator posts diagnosis + proposed patch; a human applies it through the normal PR flow with CODEOWNERS review. This keeps the least-privilege rule intact (`contents: write` only on `release.yml`, enforced by the governance audit).
+3. Add `agent-pr-reviewer` workflow: PR opened → agent reviews for correctness, edge cases, test gaps → posts advisory comments. **Never authoritative.** Required reviews come from CODEOWNERS, not the agent. Diffs touching `.github/` or `scripts/` are flagged for mandatory human review of the CI security surface.
+4. Bound every agent: cap retries (3 default, `AGENT_MAX_ATTEMPTS`), tool permissions (read-only by default), runtime (`timeout-minutes: 15` in the workflow, `AGENT_TIMEOUT` seconds in the dispatcher), cost (per-job spend limit). Stop and escalate when limits are reached.
+5. Run all agents in isolated, ephemeral execution environments (separate GitHub-hosted runners). Never let agent-generated code share a runner with production deployment jobs.
+6. Audit agent actions: `scripts/agent_dispatch.rb` appends one JSON line per attempt to the audit log (role, exit code, duration, output size) so every prompt and result is reviewable. The dispatcher owns the file handle; the agent cannot rewrite its own history.
+
+**Implementation status (Iteration 197):** all three workflows ship as gated conventional workflows (`.github/workflows/agent-issue-triage.yml`, `agent-ci-investigator.yml`, `agent-pr-reviewer.yml`) that call the bounded dispatcher `scripts/agent_dispatch.rb`. Each is gated on an explicit repository variable (`vars.AGENT_*_ENABLED`) so untrusted events never trigger an unconditional agent run; each declares `timeout-minutes: 15`; the governance audit rejects an agent workflow that lacks a timeout, lacks a gate, or contains an approval command. The dispatcher fails safe when `AGENT_COMMAND` is unset (exit 0 with a skip message), sanitizes secret-shaped strings from every payload before it reaches a prompt, bounds retries with backoff, escalates on exhaustion, and writes the append-only audit trail. `test/agent_dispatch_system_test.rb` and the extended `test/github_governance_system_test.rb` pin all of this in `bin/validate`.
 
 ### Batch 4 — Release and deployment
 

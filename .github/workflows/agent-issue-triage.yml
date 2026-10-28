@@ -1,0 +1,72 @@
+name: Agent issue triage
+
+# Batch 3 of the autonomous engineering platform (patterns/rails/
+# autonomous-engineering-platform.md). The agent categorizes, labels, and
+# identifies missing information in a newly opened issue, then posts one
+# structured comment.
+#
+# Bounds (enforced by scripts/agent_dispatch.rb and audited by
+# scripts/audit_github_governance.rb):
+#   - gated on vars.AGENT_ISSUE_TRIAGE_ENABLED — fails safe (skips) when
+#     the agent CLI is not configured
+#   - timeout-minutes: 15 (hard wall-clock cap)
+#   - AGENT_MAX_ATTEMPTS: 3 (bounded retries, then escalate)
+#   - permissions: issues write + contents read — no more
+#   - audit log appended per attempt; the agent cannot rewrite it
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Gate: the agent only runs when the repository variable is explicitly
+    # set. Untrusted issue events never trigger an unconditional agent run.
+    if: vars.AGENT_ISSUE_TRIAGE_ENABLED == 'true'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Write issue payload
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_LABELS: ${{ toJSON(github.event.issue.labels) }}
+        run: |
+          ruby -rjson -e '
+            payload = {
+              "issue_number" => ENV.fetch("ISSUE_NUMBER", ""),
+              "title" => ENV.fetch("ISSUE_TITLE", ""),
+              "body" => ENV.fetch("ISSUE_BODY", ""),
+              "labels" => JSON.parse(ENV.fetch("ISSUE_LABELS", "[]"))
+            }
+            File.write("issue-payload.json", JSON.pretty_generate(payload))
+          '
+
+      - name: Dispatch issue-triage agent
+        env:
+          AGENT_COMMAND: ${{ secrets.AGENT_COMMAND }}
+          AGENT_MAX_ATTEMPTS: "3"
+        run: |
+          ruby scripts/agent_dispatch.rb \
+            --role issue-triage \
+            --payload issue-payload.json \
+            --audit-log agent-audit.jsonl
+
+      - name: Upload audit log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-issue-triage-audit
+          path: agent-audit.jsonl
+          retention-days: 90

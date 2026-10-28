@@ -140,6 +140,70 @@ class GithubGovernanceSystemTest < Minitest::Test
     end
   end
 
+  def test_audit_fails_when_an_agent_workflow_lacks_timeout
+    in_temp_repo_with_workflow("agent-unbounded.yml", <<~YAML) do |dir|
+      name: Unbounded agent
+      on:
+        issues:
+          types: [opened]
+      permissions:
+        contents: read
+      jobs:
+        act:
+          runs-on: ubuntu-latest
+          if: vars.AGENT_X_ENABLED == 'true'
+          steps:
+            - run: echo "no timeout"
+    YAML
+      stdout, status = run_audit_in(dir)
+      refute_predicate status, :success?, "audit must fail when an agent-*.yml workflow has no timeout-minutes"
+      assert_includes stdout, "must declare `timeout-minutes:`"
+    end
+  end
+
+  def test_audit_fails_when_an_agent_workflow_is_not_gated
+    in_temp_repo_with_workflow("agent-ungated.yml", <<~YAML) do |dir|
+      name: Ungated agent
+      on:
+        issues:
+          types: [opened]
+      permissions:
+        contents: read
+      jobs:
+        act:
+          runs-on: ubuntu-latest
+          timeout-minutes: 15
+          steps:
+            - run: echo "runs unconditionally"
+    YAML
+      stdout, status = run_audit_in(dir)
+      refute_predicate status, :success?, "audit must fail when an agent-*.yml workflow runs unconditionally"
+      assert_includes stdout, "must gate execution on a repository variable or secret"
+    end
+  end
+
+  def test_audit_fails_when_an_agent_workflow_contains_an_approval_command
+    in_temp_repo_with_workflow("agent-approver.yml", <<~YAML) do |dir|
+      name: Agent that approves
+      on:
+        pull_request:
+      permissions:
+        contents: read
+        pull-requests: write
+      jobs:
+        act:
+          runs-on: ubuntu-latest
+          timeout-minutes: 15
+          if: vars.AGENT_X_ENABLED == 'true'
+          steps:
+            - run: gh pr review "$PR" --approve
+    YAML
+      stdout, status = run_audit_in(dir)
+      refute_predicate status, :success?, "audit must fail when an agent-*.yml workflow approves PRs"
+      assert_includes stdout, "agents propose, CODEOWNERS approve"
+    end
+  end
+
   private
 
   # Run the audit against the actual repository.

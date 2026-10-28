@@ -1,0 +1,90 @@
+name: Agent PR reviewer
+
+# Batch 3 of the autonomous engineering platform (patterns/rails/
+# autonomous-engineering-platform.md). The agent reviews a pull request for
+# correctness, edge cases, and missing tests, and posts ADVISORY comments.
+# It never approves, never requests changes through the review API, and
+# never merges: required reviews come from CODEOWNERS, not from the agent.
+# Diffs that touch .github/ or scripts/ are flagged for mandatory human
+# review of the CI security surface.
+#
+# Bounds (enforced by scripts/agent_dispatch.rb and audited by
+# scripts/audit_github_governance.rb):
+#   - gated on vars.AGENT_PR_REVIEWER_ENABLED — fails safe when unset
+#   - timeout-minutes: 15
+#   - AGENT_MAX_ATTEMPTS: 3, then escalate
+#   - permissions: pull-requests write (comments ONLY) + contents read
+#   - the audit rejects any agent workflow containing an approval command
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  # Comments only. The governance audit (scripts/audit_github_governance.rb)
+  # rejects any agent-*.yml workflow that contains an approval command
+  # (gh pr review --approve, pull_request_review approve, or equivalent).
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: vars.AGENT_PR_REVIEWER_ENABLED == 'true'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Review the exact merge commit of the PR.
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Write PR diff payload
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Bounded diff: cap at 5000 lines so a huge PR cannot exhaust the
+          # agent's budget on input alone.
+          git diff --unified=3 "$BASE_SHA" "$HEAD_SHA" > pr.diff || true
+          ruby -rjson -e '
+            diff = File.exist?("pr.diff") ? File.readlines("pr.diff") : []
+            truncated = false
+            if diff.length > 5000
+              diff = diff.first(5000)
+              truncated = true
+            end
+            payload = {
+              "pr_number" => ENV.fetch("PR_NUMBER", ""),
+              "title" => ENV.fetch("PR_TITLE", ""),
+              "body" => ENV.fetch("PR_BODY", "")[0, 10_000],
+              "diff" => diff.join,
+              "diff_truncated" => truncated,
+              "diff_lines" => diff.length
+            }
+            File.write("pr-payload.json", JSON.pretty_generate(payload))
+          '
+
+      - name: Dispatch pr-reviewer agent
+        env:
+          AGENT_COMMAND: ${{ secrets.AGENT_COMMAND }}
+          AGENT_MAX_ATTEMPTS: "3"
+        run: |
+          ruby scripts/agent_dispatch.rb \
+            --role pr-reviewer \
+            --payload pr-payload.json \
+            --audit-log agent-audit.jsonl
+
+      - name: Upload audit log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-pr-reviewer-audit
+          path: agent-audit.jsonl
+          retention-days: 90

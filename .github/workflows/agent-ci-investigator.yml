@@ -1,0 +1,91 @@
+name: Agent CI investigator
+
+# Batch 3 of the autonomous engineering platform (patterns/rails/
+# autonomous-engineering-platform.md). When a CI run fails, the agent reads
+# the sanitized failure summary, identifies the most likely root cause, and
+# PROPOSES a bounded fix as a comment. It never pushes branches and never
+# opens pull requests: proposing is the bounded tier, applying is not.
+# This keeps the least-privilege rule intact (contents: write only on
+# release.yml, enforced by scripts/audit_github_governance.rb).
+#
+# Bounds (enforced by scripts/agent_dispatch.rb):
+#   - gated on vars.AGENT_CI_INVESTIGATOR_ENABLED — fails safe when unset
+#   - timeout-minutes: 15
+#   - AGENT_MAX_ATTEMPTS: 3, then escalate to a human
+#   - sanitized payload: secret-shaped strings never reach the prompt
+#   - audit log appended per attempt
+
+on:
+  workflow_run:
+    workflows: ["Validate skills", "Security and supply chain"]
+    types: [completed]
+
+permissions:
+  contents: read
+  # Note: deliberately NOT pull-requests: write or contents: write.
+  # The investigator proposes in a workflow summary + issue comment;
+  # a human applies the fix through the normal PR flow with CODEOWNERS
+  # review. The governance audit rejects contents: write here.
+
+jobs:
+  investigate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only investigate failures, and only when explicitly enabled.
+    if: >
+      github.event.workflow_run.conclusion == 'failure' &&
+      vars.AGENT_CI_INVESTIGATOR_ENABLED == 'true'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Download sanitized failure summary
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          # Pull the failed run's logs and reduce them to a bounded summary:
+          # the failing job names, failing step names, and the last 50 lines
+          # of each failing step's output. Secret-shaped strings are stripped
+          # by scripts/agent_dispatch.rb before anything reaches a prompt.
+          mkdir -p failure
+          gh run view "$RUN_ID" --json jobs --jq '.jobs[] | select(.conclusion == "failure") | {name, conclusion, steps: [.steps[] | select(.conclusion == "failure") | {name, conclusion}]}' > failure/jobs.json || echo '[]' > failure/jobs.json
+          gh api "repos/${{ github.repository }}/actions/runs/$RUN_ID/logs" > failure/logs.zip 2>/dev/null || true
+          if [ -f failure/logs.zip ]; then
+            cd failure && unzip -o -q logs.zip 2>/dev/null || true && cd ..
+            # Reduce: keep only the tail of each failing log file, bounded.
+            ruby -e '
+              require "json"
+              jobs = JSON.parse(File.read("failure/jobs.json")) rescue []
+              summaries = Dir.glob("failure/**/*.txt").map do |f|
+                lines = File.readlines(f).last(50)
+                { "file" => f.delete_prefix("failure/"), "tail" => lines.join }
+              end
+              File.write("failure-summary.json", JSON.pretty_generate({ "jobs" => jobs, "log_tails" => summaries }))
+            ' || echo '{"jobs":[],"log_tails":[]}' > failure-summary.json
+          else
+            echo '{"jobs":[],"log_tails":[]}' > failure-summary.json
+          fi
+
+      - name: Dispatch ci-investigator agent
+        env:
+          AGENT_COMMAND: ${{ secrets.AGENT_COMMAND }}
+          AGENT_MAX_ATTEMPTS: "3"
+        run: |
+          ruby scripts/agent_dispatch.rb \
+            --role ci-investigator \
+            --payload failure-summary.json \
+            --audit-log agent-audit.jsonl
+
+      - name: Upload audit log and summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-ci-investigator-audit
+          path: |
+            agent-audit.jsonl
+            failure-summary.json
+          retention-days: 90

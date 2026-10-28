@@ -63,9 +63,15 @@ class PublishReadinessSystemTest < Minitest::Test
   end
 
   def test_ci_runs_the_official_specification_check
+    # Since the Batch 2 refactor (iter 196), validate.yml is a thin caller
+    # and the steps live in the reusable workflow. The spec check must be
+    # reachable from CI: either inline in validate.yml, or in the reusable
+    # workflow that validate.yml calls.
     workflow = File.read(File.join(ROOT, ".github", "workflows", "validate.yml"), encoding: "UTF-8")
+    reusable = File.read(File.join(ROOT, ".github", "workflows", "reusable-ruby-ci.yml"), encoding: "UTF-8")
 
-    assert_includes workflow, "bin/skills-spec-check"
+    assert workflow.include?("bin/skills-spec-check") || reusable.include?("bin/skills-spec-check"),
+           "the official Agent Skills spec check must run in CI (validate.yml or the reusable workflow it calls)"
   end
 
   def test_validator_executes_this_system_test
