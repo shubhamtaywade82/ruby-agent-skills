@@ -29,9 +29,14 @@ class CiToolchainSystemTest < Minitest::Test
     workflows.each do |path|
       text = File.read(path, encoding: "UTF-8")
 
+      # Agent workflows that operate purely through the gh API (e.g. the
+      # issue-triage lock file) legitimately skip checkout; the policy only
+      # applies when actions/checkout is used at all.
+      next unless text.include?("actions/checkout")
+
       refute_includes text, "actions/checkout@v4"
-      refute_match(%r{actions/checkout@v\d+(?:\.\d+){0,2}}, text), path
-      assert_match(%r{actions/checkout@[0-9a-f]{40}\s*#\s*v\d+}, text), path
+      refute_match(%r{actions/checkout@v\d+(?:\.\d+){0,2}}, text, path)
+      assert_match(%r{actions/checkout@[0-9a-f]{40}\s*#\s*v\d+}, text, path)
     end
   end
 end
