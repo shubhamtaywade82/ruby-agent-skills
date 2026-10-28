@@ -1,0 +1,46 @@
+# Autonomous Engineering Platform - CI entry point.
+#
+# This workflow is the stable name reviewers and branch protection rely on.
+# All heavy lifting lives in the reusable workflow so the pipeline can be
+# lifted into a shared workflow library later without changing call sites.
+# Required check: "ci-summary" (see .github/GOVERNANCE.md).
+
+name: CI
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  quality:
+    name: Quality gates (reusable)
+    uses: ./.github/workflows/reusable-ruby-ci.yml
+    permissions:
+      contents: read
+
+  # Aggregation job with a stable name so branch protection can require a
+  # single check regardless of how many matrix legs exist. Fails if any
+  # upstream job failed, was cancelled, or was skipped.
+  ci-summary:
+    name: ci-summary
+    needs: [quality]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Verify all quality gates passed
+        run: |
+          echo "quality result: ${{ needs.quality.result }}"
+          test "${{ needs.quality.result }}" = "success"

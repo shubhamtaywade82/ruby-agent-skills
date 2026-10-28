@@ -63,7 +63,7 @@ class PublishReadinessSystemTest < Minitest::Test
   end
 
   def test_ci_runs_the_official_specification_check
-    workflow = File.read(File.join(ROOT, ".github", "workflows", "validate.yml"), encoding: "UTF-8")
+    workflow = File.read(File.join(ROOT, ".github", "workflows", "reusable-ruby-ci.yml"), encoding: "UTF-8")
 
     assert_includes workflow, "bin/skills-spec-check"
   end

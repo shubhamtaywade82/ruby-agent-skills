@@ -1,0 +1,100 @@
+# Autonomous Engineering Platform - compiled agent workflow.
+#
+# Source of truth: agent-pr-reviewer.md (Agentic Workflows format).
+# This lock file is the hand-authored conventional implementation.
+# Engine preference: Codex (OPENAI_API_KEY), fallback Claude
+# (ANTHROPIC_API_KEY); graceful no-op if neither is configured.
+# The agent posts review COMMENTS only - it has no approval path, so a
+# human code-owner approval remains mandatory via branch protection.
+# See .github/AGENT_PLATFORM.md.
+
+name: Agent - PR Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+concurrency:
+  group: agent-pr-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: review
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Check out PR head (read-only)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Capability guard (engine selection)
+        id: guard
+        env:
+          HAS_OPENAI: ${{ secrets.OPENAI_API_KEY != '' }}
+          HAS_ANTHROPIC: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+        run: |
+          if [ "$HAS_OPENAI" = "true" ]; then
+            echo "engine=codex" >> "$GITHUB_OUTPUT"
+          elif [ "$HAS_ANTHROPIC" = "true" ]; then
+            echo "engine=claude" >> "$GITHUB_OUTPUT"
+          else
+            echo "engine=none" >> "$GITHUB_OUTPUT"
+            echo "::notice::No model API key configured; AI review skipped (CI gates still enforced). See .github/AGENT_PLATFORM.md."
+          fi
+
+      - name: AI review (Codex engine)
+        if: steps.guard.outputs.engine == 'codex'
+        uses: openai/codex-action@1d82a3dba7c7988ec71ecae1ed5b8e8db96495c5 # v1
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          prompt: |
+            You are the PR reviewer defined in
+            .github/workflows/agent-pr-reviewer.md. Read that file and follow
+            its Review priorities, Procedure, and Constraints exactly for
+            PR #${{ github.event.pull_request.number }} in this repository.
+
+            Review the diff (`git diff origin/${{ github.base_ref }}...HEAD`),
+            post inline comments per the severity scheme, then exactly one
+            review-level summary comment via `gh pr comment`, and apply the
+            `ai-review-complete` label with `gh pr edit --add-label`.
+
+            Binding constraints: never approve or formally request changes;
+            comments and labels only; max 10 inline comments; never propose
+            edits to security workflows or permission blocks - flag those for
+            humans.
+          sandbox: read-only
+
+      - name: AI review (Claude engine fallback)
+        if: steps.guard.outputs.engine == 'claude'
+        uses: anthropics/claude-code-action@ea2298eeead3535f6cef2ded5fd8ccabeb6b50b4 # v1
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        with:
+          prompt: |
+            You are the PR reviewer defined in
+            .github/workflows/agent-pr-reviewer.md. Read that file and follow
+            its Review priorities, Procedure, and Constraints exactly for
+            PR #${{ github.event.pull_request.number }} in this repository.
+
+            Review the diff (`git diff origin/${{ github.base_ref }}...HEAD`),
+            post inline comments per the severity scheme, then exactly one
+            review-level summary comment via `gh pr comment`, and apply the
+            `ai-review-complete` label with `gh pr edit --add-label`.
+
+            Binding constraints: never approve or formally request changes;
+            comments and labels only; max 10 inline comments; never propose
+            edits to security workflows or permission blocks - flag those for
+            humans.
+          allowed_tools: "Bash(gh pr:*),Bash(gh label:*),Read,Grep"
+          timeout_minutes: "15"

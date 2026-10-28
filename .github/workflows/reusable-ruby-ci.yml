@@ -1,0 +1,125 @@
+# Autonomous Engineering Platform - reusable Ruby CI.
+#
+# Called by ci.yml via `uses: ./.github/workflows/reusable-ruby-ci.yml`.
+# Structure:
+#   - test (matrix): fast per-version checks (RuboCop, cross-pack verify,
+#     MCP smoke, core contract test).
+#   - full-validation: the complete bin/validate suite on the primary
+#     Ruby version only (it runs the entire audit + minitest surface).
+#
+# The workflow is intentionally parameterised so it can be promoted to a
+# shared workflow library without changing the ci.yml call site.
+
+name: Reusable Ruby CI
+
+on:
+  workflow_call:
+    inputs:
+      ruby-versions:
+        description: JSON array of Ruby versions for the test matrix
+        type: string
+        default: ["3.1", "3.2", "3.3"]
+      primary-ruby:
+        description: Ruby version that runs the full validation suite
+        type: string
+        default: "3.3"
+      run-rubocop:
+        description: Run RuboCop static analysis
+        type: boolean
+        default: true
+      upload-artifacts:
+        description: Upload CI metadata artifacts
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (ruby-${{ matrix.ruby }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ${{ fromJSON(inputs.ruby-versions) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Ruby ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@e5517072e87f198d9533967ae13d97c11b604005 # v1.99.0
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Static analysis (RuboCop)
+        if: ${{ inputs.run-rubocop && matrix.ruby == inputs.primary-ruby }}
+        run: bundle exec rubocop
+
+      - name: Core contract test (validation gate integrity)
+        run: ruby -Itest test/validation_gate_integrity_system_test.rb
+
+      - name: Cross-pack manifest verification (v3)
+        run: ruby bin/cross-pack-verify --root .
+
+      - name: MCP server smoke test (v3)
+        run: |
+          printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+            '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"route_prompt","arguments":{"prompt":"add a migration with an index"}}}' \
+            | ruby bin/mcp-server
+
+      - name: Record CI metadata
+        run: |
+          mkdir -p tmp
+          cat > tmp/ci-metadata.json <<JSON
+          {
+            "pack": "${GITHUB_REPOSITORY##*/}",
+            "ruby": "${{ matrix.ruby }}",
+            "sha": "${{ github.sha }}",
+            "ref": "${{ github.ref_name }}",
+            "run_id": "${{ github.run_id }}",
+            "run_attempt": "${{ github.run_attempt }}"
+          }
+          JSON
+
+      - name: Upload CI metadata
+        if: ${{ inputs.upload-artifacts }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ci-metadata-ruby-${{ matrix.ruby }}-${{ github.run_id }}
+          path: tmp/ci-metadata.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  full-validation:
+    name: full-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Ruby ${{ inputs.primary-ruby }}
+        uses: ruby/setup-ruby@e5517072e87f198d9533967ae13d97c11b604005 # v1.99.0
+        with:
+          ruby-version: ${{ inputs.primary-ruby }}
+          bundler-cache: true
+
+      - name: Validate skill library (bin/validate)
+        run: bash bin/validate
+
+      # The official Agent Skills validator, pinned to the commit
+      # bin/skills-spec-check names, so every skill stays installable by
+      # spec-conformant tools such as `npx skills`.
+      - name: Validate skills against the Agent Skills specification
+        run: |
+          pipx install "git+https://github.com/agentskills/agentskills@69ef37e9424c0a7ea9dd2293b559e43ec8176379#subdirectory=skills-ref"
+          bin/skills-spec-check

@@ -8,6 +8,12 @@ name: Recorded model campaign
 # committed to the repository (see docs/BENCHMARK_CAMPAIGN.md); the
 # uploaded artifact is the durable campaign evidence.
 
+permissions:
+  contents: read
+
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -19,11 +25,13 @@ on:
 jobs:
   recorded-campaign:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@e5517072e87f198d9533967ae13d97c11b604005 # v1.99.0
         with:
           ruby-version: "3.3"
           bundler-cache: true
@@ -37,7 +45,7 @@ jobs:
           ruby bin/recorded-agent-benchmark "${args[@]}"
 
       - name: Upload campaign evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: recorded-model-campaign-v1
           path: benchmark-results/recorded-model-campaign-v1

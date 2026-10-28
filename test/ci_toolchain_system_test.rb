@@ -17,10 +17,21 @@ class CiToolchainSystemTest < Minitest::Test
     assert_includes stdout, "CI toolchain audit passed."
   end
 
-  def test_validate_workflow_uses_node24_compatible_checkout
-    workflow = File.read(File.join(ROOT, ".github", "workflows", "validate.yml"), encoding: "UTF-8")
+  def test_every_workflow_sha_pins_checkout
+    # Autonomous Engineering Platform pinning policy (.github/GOVERNANCE.md):
+    # actions/checkout must be pinned to a full commit SHA with a version
+    # comment; bare mutable tags are rejected by audit_ci_toolchain.rb, and
+    # this test independently asserts the same invariant across ALL workflows.
+    workflows = Dir[File.join(ROOT, ".github", "workflows", "*.yml")]
 
-    assert_includes workflow, "actions/checkout@v7"
-    refute_includes workflow, "actions/checkout@v4"
+    refute_empty workflows
+
+    workflows.each do |path|
+      text = File.read(path, encoding: "UTF-8")
+
+      refute_includes text, "actions/checkout@v4"
+      refute_match(%r{actions/checkout@v\d+(?:\.\d+){0,2}}, text), path
+      assert_match(%r{actions/checkout@[0-9a-f]{40}\s*#\s*v\d+}, text), path
+    end
   end
 end

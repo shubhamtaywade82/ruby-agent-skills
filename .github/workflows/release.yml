@@ -17,6 +17,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    timeout-minutes: 30
     env:
       VERSION: ${{ inputs.version || github.ref_name }}
 
@@ -28,12 +30,12 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Build exactly the tagged revision, also when dispatched from main.
           ref: refs/tags/${{ inputs.version || github.ref_name }}
 
-      - uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@e5517072e87f198d9533967ae13d97c11b604005 # v1.99.0
         with:
           ruby-version: "3.3"
 

@@ -1,0 +1,44 @@
+# Autonomous Engineering Platform - CodeQL static analysis.
+#
+# Runs on the default branch, on PRs, and weekly. Results appear under
+# the repository Security tab; alerts are triaged by the issue-triage
+# agent workflow (labelled, never auto-dismissed).
+
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: analyze (ruby)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Initialize CodeQL (ruby)
+        uses: github/codeql-action/init@8498dc4c2b27cdd99baf0f87955b29ebbf30c78d # v4.39.1
+        with:
+          languages: ruby
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@8498dc4c2b27cdd99baf0f87955b29ebbf30c78d # v4.39.1
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@8498dc4c2b27cdd99baf0f87955b29ebbf30c78d # v4.39.1
+        with:
+          category: "/language:ruby"

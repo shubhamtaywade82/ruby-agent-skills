@@ -1,0 +1,90 @@
+# Autonomous Engineering Platform - compiled agent workflow.
+#
+# Source of truth: agent-issue-triage.md (GitHub Agentic Workflows format).
+# This lock file is the hand-authored conventional implementation that runs
+# without the Agentic Workflows preview: a deterministic labeling pass runs
+# ALWAYS (zero AI required); AI enrichment of the triage comment runs only
+# if ANTHROPIC_API_KEY is configured. Regenerate with `gh aw compile` when
+# the preview is enabled and review the diff against this file's guard steps.
+# See .github/AGENT_PLATFORM.md.
+
+name: Agent - Issue Triage
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: agent-triage-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    name: triage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Capability guard (graceful degradation)
+        id: guard
+        env:
+          HAS_ANTHROPIC: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+        run: |
+          if [ "$HAS_ANTHROPIC" = "true" ]; then
+            echo "ai=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ai=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::ANTHROPIC_API_KEY not configured; running deterministic triage only. See .github/AGENT_PLATFORM.md."
+          fi
+
+      - name: Deterministic classification (zero AI)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          TITLE: ${{ github.event.issue.title }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          set -euo pipefail
+          labels=()
+          t="$(printf '%s' "$TITLE" | tr '[:upper:]' '[:lower:]')"
+          case "$t" in
+            *bug*|*error*|*fail*|*broken*|*crash*)    labels+=("type:bug");    pri="P1" ;;
+            *feature*|*add*|*support*|*new skill*)     labels+=("type:feature"); pri="P2" ;;
+            *doc*|*readme*|*typo*)                      labels+=("type:documentation"); pri="P3" ;;
+            *)                                          labels+=("type:question"); pri="P3" ;;
+          esac
+          labels+=("$pri")
+          # Apply labels one by one; create any label that does not exist yet.
+          for l in "${labels[@]}"; do
+            gh label create "$l" --repo "$OWNER/$REPO" --color d4c5f9 >/dev/null 2>&1 || true
+            gh issue edit "$ISSUE_NUMBER" --repo "$OWNER/$REPO" --add-label "$l" || true
+          done
+          echo "Applied: ${labels[*]}"
+
+      - name: AI enrichment of triage comment
+        if: steps.guard.outputs.ai == 'true'
+        uses: anthropics/claude-code-action@ea2298eeead3535f6cef2ded5fd8ccabeb6b50b4 # v1
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        with:
+          prompt: |
+            You are the issue triage agent for this repository, defined in
+            .github/workflows/agent-issue-triage.md. Read that file and follow
+            its Procedure, Labels, and Constraints exactly for issue #${{ github.event.issue.number }}.
+
+            Use `gh issue view` to read the issue and `gh issue comment` to post
+            exactly one triage comment. Apply any labels the deterministic pass
+            missed (you may create labels with `gh label create`).
+
+            Constraints from the source file are binding: no closing, reopening,
+            assigning, or milestone changes; one comment only; never fabricate
+            information.
+          allowed_tools: "Bash(gh issue:*),Bash(gh label:*),Read,Grep"
+          timeout_minutes: "10"

@@ -1,0 +1,81 @@
+# Autonomous Engineering Platform - security and supply chain.
+#
+# Deterministic gates only: no AI agent may satisfy, waive, or re-run
+# these checks with elevated permissions. See .github/GOVERNANCE.md.
+
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly deep scan; scheduled runs use the repo default branch.
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  secrets-scan:
+    name: secrets-scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Scan for leaked secrets (gitleaks)
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-review:
+    name: dependency-review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Review dependencies for known vulnerabilities and licence risk
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+
+  permissions-audit:
+    name: permissions-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Deterministic least-privilege audit: every workflow file must declare
+      # a top-level `permissions:` block, and no workflow may request write
+      # access to `contents` beyond read except the release workflow.
+      - name: Audit workflow token permissions
+        run: |
+          set -euo pipefail
+          fail=0
+          for f in .github/workflows/*.yml .github/workflows/*.yaml; do
+            [ -e "$f" ] || continue
+            if ! grep -qE '^permissions:' "$f"; then
+              echo "::error file=$f::missing top-level 'permissions:' block"
+              fail=1
+            fi
+            if grep -qE '^[[:space:]]+contents:[[:space:]]*write' "$f" \
+               && [ "$(basename "$f")" != "release.yml" ]; then
+              echo "::error file=$f::unexpected contents:write (only release.yml may hold it)"
+              fail=1
+            fi
+          done
+          exit $fail
