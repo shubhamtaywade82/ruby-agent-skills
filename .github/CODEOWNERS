@@ -1,0 +1,25 @@
+# Autonomous Engineering Platform - code ownership.
+# Policy: see .github/GOVERNANCE.md (platform changes require owner review;
+# AI-generated PRs can never satisfy the human code-owner requirement).
+
+# Default owner for everything.
+*                                                       shubhamtaywade82
+
+# Platform governance: workflows, security policy, agent autonomy bounds.
+/.github/                                               shubhamtaywade82
+
+# Pack contract: the manifest is the single source of truth for routing
+# and the v3 cross-pack schema. Changes here affect companion packs.
+/skill-manifest.yml                                     shubhamtaywade82
+
+# Cross-pack seam contracts and companion snapshots.
+/data/cross-pack/                                       shubhamtaywade82
+
+# Routing boundary table and routing cases.
+/router/                                                shubhamtaywade82
+
+# Pack content (skills/adapters/patterns/evals).
+/skills/                                               shubhamtaywade82
+/patterns/                                             shubhamtaywade82
+/evals/                                                shubhamtaywade82
+/benchmarks/                                           shubhamtaywade82

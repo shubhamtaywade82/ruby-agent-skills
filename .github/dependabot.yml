@@ -1,0 +1,23 @@
+# Autonomous Engineering Platform - dependency maintenance.
+# All ecosystems are grouped so Dependabot opens one PR per ecosystem per
+# week instead of a flood of individual updates. Every PR still passes the
+# full CI gates before merge. See .github/GOVERNANCE.md for merge policy.
+
+version: 2
+updates:
+  # GitHub Actions: keep every workflow action current and SHA-pinned.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      ruby-gems:
+        patterns: ["*"]
