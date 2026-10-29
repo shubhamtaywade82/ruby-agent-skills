@@ -64,15 +64,29 @@ Dependabot keeps the pinned actions current (grouped weekly PRs). When a
 PR bumps an action, review the diff between the old and new commit SHAs
 on github.com before approving.
 
-## 5. Environments (Batch 4 - documented now, wired later)
+## 5. Environments
 
-- `staging`: auto-deployment target for the default branch after CI;
-  no manual approval; smoke tests run as deployment verification.
-- `production`: requires a human reviewer (environment protection rule),
-  restricts deployment to protected tags/branches, holds registry
-  credentials (RubyGems / npm) as environment-scoped secrets.
-- Deployment workflows are **not part of this batch**; this section pins
-  the policy so the future Batch 4 workflows inherit it unchanged.
+For a skill-pack repo, the deploy model is "publish a verified tarball
+under a release tag"; there is no live service to blue-green. The
+release pipeline and rollback path live in:
+
+- `.github/workflows/release.yml` - builds and publishes the release
+  (tag-triggered or workflow_dispatch).
+- `.github/workflows/release-provenance.yml` - SLSA-style attestation,
+  called from `release.yml` after assets are uploaded.
+- `.github/workflows/rollback.yml` - workflow_dispatch only; re-publishes
+  a prior release's assets under a `vX.Y.Z-rollback.N` tag.
+
+Permissions policy:
+
+- `contents: write` is allowed only in `release.yml`, `release-provenance.yml`,
+  and `rollback.yml` (the audit job in `security.yml` enforces this with a
+  documented exception list).
+- `id-token: write` (for OIDC-backed attestations) is allowed only in
+  `release.yml` and `release-provenance.yml`.
+- No agentic workflow receives any of these permissions. Agents only ever
+  see `GITHUB_TOKEN` (advisory scope) plus their model API key. See
+  AGENT_PLATFORM.md section 5 for the agent permission table.
 
 ## 6. What agents may never do
 

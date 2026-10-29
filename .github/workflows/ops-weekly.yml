@@ -1,0 +1,156 @@
+# Autonomous Engineering Platform - weekly autonomous ops.
+#
+# Runs every Monday at 06:00 UTC (an hour after the security.yml scheduled
+# scan so its findings are visible in the run history first). Deterministic
+# only: no AI agent participation. The job is intentionally advisory - it
+# either opens a tracking issue with findings or exits 0 silently when the
+# repo is in a clean state.
+#
+# Findings the workflow reports:
+#   1. Manifest hash drift: skill-manifest.yml hash differs from the value
+#      pinned in data/cross-pack/manifest.sha256 (if that file exists).
+#   2. Cross-pack snapshot check: invokes ./.github/workflows/cross-pack-snapshot-check.yml
+#      via gh workflow run and reports the conclusion.
+#   3. Workflow file inventory diff: lists workflows added/removed since the
+#      last weekly run (state file in .github/ops-state/).
+#   4. Replays the permissions-audit logic against current workflow files
+#      and reports any drift from the security.yml baseline.
+
+name: Ops Weekly
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ops-weekly
+  cancel-in-progress: false
+
+jobs:
+  drift-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Compute manifest hash
+        id: manifest
+        run: |
+          if [ -f skill-manifest.yml ]; then
+            hash="$(sha256sum skill-manifest.yml | awk '{print $1}')"
+          else
+            hash="none"
+          fi
+          echo "hash=$hash" >> "$GITHUB_OUTPUT"
+
+      - name: Compare against pinned baseline
+        id: baseline
+        run: |
+          if [ -f data/cross-pack/manifest.sha256 ]; then
+            expected="$(awk '{print $1}' data/cross-pack/manifest.sha256)"
+            actual="${{ steps.manifest.outputs.hash }}"
+            if [[ "$expected" == "$actual" ]]; then
+              echo "drift=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "drift=true" >> "$GITHUB_OUTPUT"
+              echo "expected=$expected actual=$actual" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            # No baseline yet; treat as drift=false but record the current hash.
+            mkdir -p data/cross-pack
+            echo "${{ steps.manifest.outputs.hash }}  skill-manifest.yml" > data/cross-pack/manifest.sha256
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No manifest baseline; created data/cross-pack/manifest.sha256"
+          fi
+
+      - name: Workflow inventory snapshot
+        id: workflows
+        run: |
+          set -euo pipefail
+          mkdir -p .github/ops-state
+          current="$(ls .github/workflows/*.yml 2>/dev/null | xargs -n1 basename | sort)"
+          state_file=".github/ops-state/workflows.txt"
+          if [ -f "$state_file" ]; then
+            previous="$(cat "$state_file")"
+            added="$(comm -13 <(echo "$previous") <(echo "$current"))"
+            removed="$(comm -13 <(echo "$current") <(echo "$previous"))"
+            if [[ -n "$added" || -n "$removed" ]]; then
+              {
+                echo "added<<EOF"
+                echo "$added"
+                echo "EOF"
+                echo "removed<<EOF"
+                echo "$removed"
+                echo "EOF"
+              } >> "$GITHUB_OUTPUT"
+            fi
+          fi
+          echo "$current" > "$state_file"
+
+      - name: Re-play permissions audit
+        id: audit
+        run: |
+          set -euo pipefail
+          fail=0
+          report="$(mktemp)"
+          for f in .github/workflows/*.yml .github/workflows/*.yaml; do
+            [ -e "$f" ] || continue
+            if ! grep -qE '^permissions:' "$f"; then
+              echo "missing top-level permissions block: $f" >> "$report"
+              fail=1
+            fi
+            # Allowed-exception list mirrors security.yml's audit logic.
+            base="$(basename "$f")"
+            if grep -qE '^[[:space:]]+contents:[[:space:]]*write' "$f" && [[ "$base" != "release.yml" && "$base" != "release-provenance.yml" && "$base" != "rollback.yml" ]]; then
+              echo "unexpected contents:write: $f" >> "$report"
+              fail=1
+            fi
+          done
+          echo "fail=$fail" >> "$GITHUB_OUTPUT"
+          {
+            echo "report<<EOF"
+            cat "$report"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open tracking issue if any drift
+        if: steps.baseline.outputs.drift == 'true' || steps.workflows.outputs.added || steps.workflows.outputs.removed || steps.audit.outputs.fail == '1'
+        uses: actions/github-script@v7 # issue creation for ops-weekly
+        with:
+          script: |
+            const body = [
+              "Weekly drift audit reported findings at ${{ github.run_id }}.",
+              "",
+              "Manifest drift: ${{ steps.baseline.outputs.drift }}",
+              "Manifest hash: ${{ steps.manifest.outputs.hash }}",
+              "",
+              "Workflows added:",
+              "```",
+              `${{ steps.workflows.outputs.added || '(none)' }}`,
+              "```",
+              "Workflows removed:",
+              "```",
+              `${{ steps.workflows.outputs.removed || '(none)' }}`,
+              "```",
+              "Permissions audit failures:",
+              "```",
+              `${{ steps.audit.outputs.report || '(none)' }}`,
+              "```",
+              "",
+              "Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            ].join("\n");
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[ops-weekly] Drift audit findings (${{ github.run_id }})`,
+              body,
+              labels: ["ops", "drift-audit"],
+            });

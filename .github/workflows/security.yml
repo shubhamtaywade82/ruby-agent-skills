@@ -60,21 +60,39 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Deterministic least-privilege audit: every workflow file must declare
-      # a top-level `permissions:` block, and no workflow may request write
-      # access to `contents` beyond read except the release workflow.
+      # a top-level `permissions:` block. The following files are the only
+      # ones permitted to request `contents: write` (or `id-token: write`
+      # for OIDC-issued attestations), with a documented reason per file:
+      #   - release.yml            : create tag + GitHub Release + upload assets
+      #   - release-provenance.yml : OIDC attestation pushes to the same release
+      #   - rollback.yml           : create rollback tag + re-publish release
       - name: Audit workflow token permissions
         run: |
           set -euo pipefail
           fail=0
+          # Allowed exception list (basename -> reason).
+          declare -A allowed_contents_write=(
+            [release.yml]=1
+            [release-provenance.yml]=1
+            [rollback.yml]=1
+          )
+          declare -A allowed_id_token_write=(
+            [release.yml]=1
+            [release-provenance.yml]=1
+          )
           for f in .github/workflows/*.yml .github/workflows/*.yaml; do
             [ -e "$f" ] || continue
+            base="$(basename "$f")"
             if ! grep -qE '^permissions:' "$f"; then
               echo "::error file=$f::missing top-level 'permissions:' block"
               fail=1
             fi
-            if grep -qE '^[[:space:]]+contents:[[:space:]]*write' "$f" \
-               && [ "$(basename "$f")" != "release.yml" ]; then
-              echo "::error file=$f::unexpected contents:write (only release.yml may hold it)"
+            if grep -qE '^[[:space:]]+contents:[[:space:]]*write' "$f" && [ -z "${allowed_contents_write[$base]:-}" ]; then
+              echo "::error file=$f::unexpected contents:write"
+              fail=1
+            fi
+            if grep -qE '^[[:space:]]+id-token:[[:space:]]*write' "$f" && [ -z "${allowed_id_token_write[$base]:-}" ]; then
+              echo "::error file=$f::unexpected id-token:write"
               fail=1
             fi
           done

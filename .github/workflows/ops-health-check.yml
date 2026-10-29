@@ -1,0 +1,98 @@
+# Autonomous Engineering Platform - daily platform health probe.
+#
+# Runs at 09:00 UTC every day. Inspects the most recent CI runs on the
+# default branch. If the same job name has failed >=3 times in the last
+# 24h, opens an issue with a summary and a link to the failing run.
+# Otherwise exits 0 silently.
+#
+# No AI agent participation: the probe is deterministic and advisory.
+# Existing tracking issues with the same title are deduplicated - if the
+# most recent open issue was created within the last 24h, the probe appends
+# a comment rather than opening a new issue.
+
+name: Ops Health Check
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: ops-health-check
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Inspect recent CI runs
+        uses: actions/github-script@v7 # gh API calls for ops-health-check
+        with:
+          script: |
+            const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            const runs = await github.paginate(github.rest.actions.listWorkflowRunsForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: context.repo.defaultBranch || 'main',
+              created: `>=${since.toISOString().slice(0, 10)}`,
+              per_page: 100,
+            });
+            const fails = runs.filter(r => r.conclusion === 'failure');
+            if (fails.length === 0) {
+              core.info('No failed CI runs in the last 24h.');
+              return;
+            }
+            // Group by workflow name + head_branch to detect repeated signature.
+            const groups = new Map();
+            for (const r of fails) {
+              const key = `${r.name} @ ${r.head_branch}`;
+              groups.set(key, (groups.get(key) || []).concat(r));
+            }
+            const repeated = [...groups.entries()].filter(([, list]) => list.length >= 3);
+            if (repeated.length === 0) {
+              core.info(`Saw ${fails.length} failures in 24h but no signature crossed the 3-failure threshold.`);
+              return;
+            }
+            const lines = [
+              `[ops-health-check] Detected a sustained failure trend in the last 24h.`,
+              ``,
+              ...repeated.flatMap(([sig, list]) => [
+                `### ${sig} (${list.length} failures)`,
+                ...list.slice(0, 5).map(r => `- [run ${r.run_number}](${r.html_url}) conclusion=${r.conclusion}`),
+              ]),
+              ``,
+              `Run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ];
+            const title = `[ops-health-check] Sustained failure trend`;
+            // Look for an existing open issue with the same title created in the last 24h.
+            const recent = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              since: since.toISOString(),
+              labels: 'ops,health-check',
+              per_page: 50,
+            });
+            const existing = recent.data.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: lines.join('\n'),
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body: lines.join('\n'),
+                labels: ['ops', 'health-check'],
+              });
+            }

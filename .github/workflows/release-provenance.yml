@@ -1,0 +1,58 @@
+# Autonomous Engineering Platform - release provenance.
+#
+# Reusable workflow called by release.yml after assets are uploaded.
+# Generates a SLSA-style build provenance attestation for the release
+# tarball using GitHub's OIDC-issued token. The attestation is stored
+# server-side by GitHub (under the release's "Attestations" tab) and is
+# verifiable by anyone with `gh attestation verify` or `cosign verify-attestation`.
+#
+# Permissions: requires id-token:write (for OIDC) and attestations:write.
+# contents:read is for checkout. The audit in security.yml permits
+# id-token/attestations writes for this file; contents:write is NOT granted.
+
+name: Release Provenance
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: "Release tag (vX.Y.Z) whose assets to attest"
+        type: string
+        required: true
+      asset-name:
+        description: "Filename of the tarball to attest (e.g. node-agent-skills-v1.2.3.tar.gz)"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+jobs:
+  provenance:
+    name: attest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Fetch the release tarball
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          ASSET: ${{ inputs.asset-name }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          gh release download "$VERSION" --pattern "$ASSET" --dir dist --clobber
+          test -f "dist/$ASSET"
+          sha256sum "dist/$ASSET"
+
+      - name: Generate build provenance attestation
+        uses: actions/attest-build-provenance@v2 # id-token:write; attests the release tarball
+        with:
+          subject-name: ${{ github.repository }}
+          subject-digest: sha256:$(sha256sum "dist/${{ inputs.asset-name }}" | awk '{print $1}')
+          push-to-repository: true

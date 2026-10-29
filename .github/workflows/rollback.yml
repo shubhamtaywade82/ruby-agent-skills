@@ -1,0 +1,82 @@
+# Autonomous Engineering Platform - release rollback.
+#
+# Workflow-dispatch only. Promotes the assets of an older release tag to a
+# new tag with a -rollback.N suffix, so consumers depending on a fixed
+# major.minor can roll back without losing the regressed release.
+#
+# Example: input previous_version=v1.2.2, rollback_index=1 -> publishes
+# v1.2.3-rollback.1 with the v1.2.2 tarball, plus a release note pointing
+# back to the original release.
+#
+# Permissions: contents:write (creates tag + release). Permitted by the
+# security.yml audit exception list. No code is recompiled: the rollback
+# is purely a re-publish of an existing verified asset to a new tag, which
+# keeps the build deterministic and audit-traceable.
+
+name: Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      previous_version:
+        description: "Existing release tag whose assets to promote (e.g. v1.2.2)"
+        required: true
+      rollback_index:
+        description: "Rollback sequence number (starts at 1)"
+        required: true
+        default: "1"
+
+permissions:
+  contents: write
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PREV: ${{ inputs.previous_version }}
+      IDX: ${{ inputs.rollback_index }}
+    steps:
+      - name: Validate inputs
+        run: |
+          set -euo pipefail
+          if [[ ! "$PREV" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "previous_version must look like vX.Y.Z (got: $PREV)" >&2
+            exit 1
+          fi
+          if ! [[ "$IDX" =~ ^[0-9]+$ ]] || [[ "$IDX" -lt 1 ]]; then
+            echo "rollback_index must be a positive integer (got: $IDX)" >&2
+            exit 1
+          fi
+          # Derive the next-version tag: strip any pre-release suffix, then append.
+          base="${PREV%-*}"
+          new_tag="$base-rollback.$IDX"
+          echo "NEW_TAG=$new_tag" >> "$GITHUB_ENV"
+
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Promote previous release assets to new tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tmpdir="$(mktemp -d)"
+          gh release download "$PREV" --dir "$tmpdir" --clobber
+          # Rewrite SHA256SUMS so the rollback tag is self-describing.
+          # (The tarball bytes are unchanged; the existing SHA256SUMS still applies.)
+          if [ -f "$tmpdir/SHA256SUMS" ]; then
+            cp "$tmpdir/SHA256SUMS" "$tmpdir/SHA256SUMS.orig"
+          fi
+          cat > "$tmpdir/release-notes.md" <<NOTES
+          ## Rollback to $PREV
+
+          This release re-publishes the verified assets of $PREV under
+          tag \`$NEW_TAG\` for consumers that depend on a rollback path.
+          The tarball is byte-identical to the original $PREV release.
+          NOTES
+          gh release create "$NEW_TAG" "$tmpdir"/* \
+            --title "Rollback to $PREV ($NEW_TAG)" \
+            --notes-file "$tmpdir/release-notes.md" \
+            --prerelease
+          echo "Published rollback release: $NEW_TAG"

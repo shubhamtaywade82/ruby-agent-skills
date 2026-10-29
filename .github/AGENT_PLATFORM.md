@@ -88,3 +88,52 @@ Agents can never:
       is refused with `agent:escalate`.
 - [ ] Delete both API keys: all four agent workflows post a notice and
       exit 0; `ci-summary` is unaffected.
+
+## 8. Batch 4 - Release, deploy, and rollback
+
+Batch 4 wires up the release pipeline, build provenance, and a deterministic
+rollback path. The release job is the only place that holds `contents: write`
+plus `id-token: write` (the latter for OIDC-backed provenance attestation).
+The security.yml audit was widened to permit `release.yml`,
+`release-provenance.yml`, and `rollback.yml` for these specific permissions,
+with a documented reason per file (see the audit job's inline comment).
+
+| Workflow | Trigger | Permissions | Role |
+| -------- | ------- | ----------- | ---- |
+| `release.yml` | `push: tags: v*` or `workflow_dispatch` | `contents: write`, `id-token: write`, `attestations: write` | Build reproducible tarball + SHA256SUMS, publish GitHub Release, call `release-provenance.yml` |
+| `release-provenance.yml` | `workflow_call` from `release.yml` | `id-token: write`, `attestations: write`, `contents: read` | Generate SLSA-style provenance attestation for the tarball; verifiable via `gh attestation verify` |
+| `rollback.yml` | `workflow_dispatch` only | `contents: write` | Re-publish a prior release's assets under a new `vX.Y.Z-rollback.N` tag. Deterministic: no code is rebuilt |
+
+### Staging vs production
+
+For a skill-pack repo, "staging" = the open PR branch (covered by CI on
+every push); "production" = a release tag on `main`. The release.yml
+workflow is the production deploy step. There is no live service to
+roll forward; rollback is purely about re-publishing a prior verified
+tarball under a new tag for consumers that pin to a fixed major.minor.
+
+## 9. Batch 5 - Autonomous ops
+
+Batch 5 adds two scheduled workflows that operate the platform without any
+AI agent involvement. Both are advisory - they only open tracking issues
+when they observe real drift or sustained failure trends; otherwise they
+exit 0 silently.
+
+| Workflow | Schedule | Permissions | Role |
+| -------- | -------- | ----------- | ---- |
+| `ops-weekly.yml` | Monday 06:00 UTC | `contents: read`, `issues: write` | Manifest hash drift detection, cross-pack snapshot check, workflow inventory diff, permissions-audit replay. Opens a labelled tracking issue with findings |
+| `ops-health-check.yml` | Daily 09:00 UTC | `contents: read`, `actions: read`, `issues: write` | Inspects the last 24h of CI runs on the default branch. If the same workflow name failed >=3 times, opens (or appends to) a tracking issue. Otherwise silent |
+
+### Issue labels
+
+Both ops workflows use the `ops` label plus a sub-label (`drift-audit`
+or `health-check`). Configure the labels in advance (Settings > Labels)
+or the workflows will create them on demand (the GitHub REST API
+auto-creates labels on issue creation when the actor has `issues: write`).
+
+### State files
+
+The weekly drift audit persists state under `.github/ops-state/`. The
+manifest baseline lives at `data/cross-pack/manifest.sha256`. Neither
+path is touched by any agent workflow (verified by the CODEOWNERS rule
+on `/.github/` and `/data/cross-pack/`).
