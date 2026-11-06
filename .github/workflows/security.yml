@@ -66,7 +66,7 @@ jobs:
           # Scan the full git history, not just the checked-out commit.
           fetch-depth: 0
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@7e083729a994c5b03b38243d3b1c44d63c7d3b4a  # main, pinned SHA
+        uses: trufflesecurity/trufflehog@ea68ca03c865c5f324e86e849ced20ed3cf9dbbb  # v3.99.8, pinned SHA
         with:
           path: .
           extra_args: --only-verified --exclude-paths=.git/info
