@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# MCP server entry point. JSON-RPC 2.0 over stdio.
+#
+# Register with Claude Code in ~/.claude/mcp.json (or a project .mcp.json):
+#
+#   {
+#     "mcpServers": {
+#       "ruby-agent-skills": {
+#         "command": "ruby",
+#         "args": ["/absolute/path/to/ruby-agent-skills/bin/mcp-server"],
+#         "env": {
+#           "RUBY_AGENT_SKILLS_ROOT": "/absolute/path/to/ruby-agent-skills",
+#           "AGENT_SKILLS_PACKS": "/optional/path/to/node-agent-skills"
+#         }
+#       }
+#     }
+#   }
+#
+# See docs/CLAUDE_CODE_INTEGRATION.md for the full wiring guide.
+
+require_relative "../lib/ruby_agent_skills/mcp_server"
+
+server = RubyAgentSkills::MCP::Server.new
+exit RubyAgentSkills::MCP::Protocol.run(server)

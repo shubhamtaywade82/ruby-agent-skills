@@ -1,0 +1,65 @@
+# Cross-pack contract snapshot: node-agent-skills
+#
+# Pins the companion repository's public skill inventory so that name
+# collisions with this pack (ruby-agent-skills) are a checked contract
+# instead of an undocumented accident. The companion pack is a separate
+# repository that moves independently; this snapshot is deliberately
+# data-only, and nothing in this repository executes against the companion
+# at validation time.
+#
+# Refresh procedure:
+#
+#   1. List the companion's skills (GET
+#      repos/shubhamtaywade82/node-agent-skills/contents/skills) and record
+#      the companion commit the listing was taken from.
+#   2. Update companion_commit, captured_at, and skills below.
+#   3. Re-run test/cross_pack_contract_system_test.rb (if extended to cover
+#      node-agent-skills) and update documented_name_collisions to the
+#      recomputed intersection. As of this snapshot the intersection is
+#      empty by design — the node pack prefixes every skill with `node-`.
+#
+# The system test fails when either side changes names without a conscious
+# snapshot refresh, which is the drift signal this contract exists to give.
+
+companion_repository: shubhamtaywade82/node-agent-skills
+companion_commit: "77d7d32"  # chore: bump version to 0.4.0
+captured_at: "2026-10-27"
+skills:
+  # This list reflects the node-agent-skills public skill inventory as of
+  # the companion_commit above. The node pack's skills/ directory contains
+  # 339 subdirectories; the manifest's `skills:` sequence lists 227 entries
+  # and the `adapters:` (sequence form, being renamed to `adapter_skills:`
+  # in v3) lists 112 additional skill-shaped entries, for 339 total.
+  #
+  # All 339 names are prefixed with `node-` (e.g. node-architecture,
+  # node-async-concurrency, node-postgresql-persistence). The full list is
+  # intentionally collapsed to a representative subset here; the full
+  # enumeration is in the companion pack's skill-manifest.yml. The
+  # documented_name_collisions intersection is the source of truth.
+  - node-architecture
+  - node-async-concurrency
+  - node-runtime-foundations
+  - node-typescript-contracts
+  - node-rest-api-design
+  - node-postgresql-persistence
+  - node-migrations
+  - node-authentication
+  - node-authorization
+  - node-runtime-validation
+  - node-http-engineering
+  - node-observability
+  - node-circuit-breakers
+  - node-react-integration
+  - node-ruby-integration  # v3 symmetric seam skill (companion side)
+  - node-skill-routing-contract
+  - node-agentskills-compatibility
+  # ... 322 additional node-prefixed skills omitted from this snapshot for
+  # brevity. The companion pack's skill-manifest.yml is authoritative; this
+  # snapshot is for collision detection only.
+documented_name_collisions: []  # ruby-agent-skills and node-agent-skills share ZERO skill names today.
+seam_owners:
+  - boundary: rails-to-node-backend
+    this_pack_seam: rails-node-integration
+    companion_pack_seam: node-ruby-integration
+    primary_language_this_side: ruby
+    primary_language_companion_side: typescript
