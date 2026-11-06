@@ -22,7 +22,13 @@
 # Usage:
 #   ruby scripts/audit_github_governance.rb
 
-ROOT = ENV["RUBY_AGENT_SKILLS_REPO"] ? File.expand_path(ENV["RUBY_AGENT_SKILLS_REPO"]) : File.expand_path("..", __dir__)
+ROOT = if ENV["RUBY_AGENT_SKILLS_REPO"]
+         File.expand_path(ENV["RUBY_AGENT_SKILLS_REPO"])
+       else
+         File.expand_path(
+           "..", __dir__
+         )
+       end
 GITHUB_DIR = File.join(ROOT, ".github")
 WORKFLOWS_DIR = File.join(GITHUB_DIR, "workflows")
 
@@ -32,7 +38,8 @@ warnings = []
 # --- Check 1: CODEOWNERS exists and covers protected paths ---------------
 codeowners_path = File.join(GITHUB_DIR, "CODEOWNERS")
 unless File.file?(codeowners_path)
-  errors << ".github/CODEOWNERS is missing — every protected path needs an owner (see patterns/rails/autonomous-engineering-platform.md)"
+  errors << ".github/CODEOWNERS is missing — every protected path needs an owner " \
+            "(see patterns/rails/autonomous-engineering-platform.md)"
 end
 
 if File.file?(codeowners_path)
@@ -49,25 +56,30 @@ if File.file?(codeowners_path)
   ]
   missing_owners = protected_paths.reject { |path| codeowners.match?(/^#{Regexp.escape(path)}/) }
   unless missing_owners.empty?
-    errors << ".github/CODEOWNERS is missing ownership rules for: #{missing_owners.join(", ")}"
+    errors << ".github/CODEOWNERS is missing ownership rules for: #{missing_owners.join(', ')}"
   end
 end
 
 # --- Check 2: dependabot.yml exists and covers required ecosystems -------
 dependabot_path = File.join(GITHUB_DIR, "dependabot.yml")
 unless File.file?(dependabot_path)
-  errors << ".github/dependabot.yml is missing — every ecosystem needs an update policy (see patterns/rails/autonomous-engineering-platform.md)"
+  errors << ".github/dependabot.yml is missing — every ecosystem needs an update policy " \
+            "(see patterns/rails/autonomous-engineering-platform.md)"
 end
 
 if File.file?(dependabot_path)
   require "yaml"
   begin
-    dependabot = YAML.safe_load(File.read(dependabot_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
-    ecosystems = (dependabot.is_a?(Hash) ? dependabot["updates"] : []).to_a.filter_map { |u| u["package-ecosystem"] if u.is_a?(Hash) }
+    dependabot = YAML.safe_load(File.read(dependabot_path, encoding: "UTF-8"),
+                                permitted_classes: [], aliases: false)
+    ecosystems = (dependabot.is_a?(Hash) ? dependabot["updates"] : []).to_a.filter_map do |u|
+      u["package-ecosystem"] if u.is_a?(Hash)
+    end
     required_ecosystems = %w[github-actions bundler]
     missing_ecosystems = required_ecosystems.reject { |e| ecosystems.include?(e) }
     unless missing_ecosystems.empty?
-      errors << ".github/dependabot.yml is missing update policies for: #{missing_ecosystems.join(", ")}"
+      errors << ".github/dependabot.yml is missing update policies for: " \
+                "#{missing_ecosystems.join(', ')}"
     end
   rescue Psych::Exception => e
     errors << ".github/dependabot.yml is not valid YAML: #{e.message}"
@@ -77,37 +89,41 @@ end
 # --- Check 3 & 4 & 5: every workflow has permissions block, no
 # pull_request_target, minimum-scope permissions --------------------------
 
-workflow_files = Dir[File.join(WORKFLOWS_DIR, "*.yml")].sort
+workflow_files = Dir[File.join(WORKFLOWS_DIR, "*.yml")]
 abort "no GitHub Actions workflow files found in .github/workflows/" if workflow_files.empty?
 
 workflow_files.each do |path|
-  relative = path.delete_prefix(ROOT + "/")
+  relative = path.delete_prefix("#{ROOT}/")
   text = File.read(path, encoding: "UTF-8")
 
   # Check 3: explicit permissions block at the top level
   unless text.match?(/^permissions:/)
-    errors << "#{relative}: missing top-level `permissions:` block (default permissive permissions are a security smell)"
+    errors << "#{relative}: missing top-level `permissions:` block " \
+              "(default permissive permissions are a security smell)"
   end
 
   # Check 4: no pull_request_target trigger (high-risk for untrusted PRs)
   if text.match?(/^on:.*pull_request_target|^\s+-?\s*pull_request_target\b/)
-    errors << "#{relative}: uses `pull_request_target` trigger — runs in base branch's context with default token (see patterns/rails/autonomous-engineering-platform.md)"
+    errors << "#{relative}: uses `pull_request_target` trigger — runs in base branch's " \
+              "context with default token (see patterns/rails/autonomous-engineering-platform.md)"
   end
 
   # Check 5: contents: write allowed only on the release workflow
   if text.match?(/^\s*contents:\s*write\b/) && !relative.end_with?("release.yml")
-    errors << "#{relative}: declares `contents: write` but is not the release workflow — least-privilege violation"
+    errors << "#{relative}: declares `contents: write` but is not the release workflow " \
+              "— least-privilege violation"
   end
 
   # Check 5b: pull requests (forks) get read-only by default. If a workflow
   # declares write on something other than contents in a PR-triggered
   # workflow, warn (not error — some workflows genuinely need it, like
   # `pull-requests: write` for PR comments).
-  if text.match?(/^on:.*pull_request\b/) && !text.match?(/^on:.*pull_request_target\b/)
-    write_scopes = text.scan(/^\s*(\w+):\s*write\b/).flatten.reject { |s| s == "contents" }
-    unless write_scopes.empty?
-      warnings << "#{relative}: PR-triggered workflow declares write on #{write_scopes.join(", ")} — verify it is justified"
-    end
+  next unless text.match?(/^on:.*pull_request\b/) && !text.match?(/^on:.*pull_request_target\b/)
+
+  write_scopes = text.scan(/^\s*(\w+):\s*write\b/).flatten.reject { |s| s == "contents" }
+  unless write_scopes.empty?
+    warnings << "#{relative}: PR-triggered workflow declares write on " \
+                "#{write_scopes.join(', ')} — verify it is justified"
   end
 end
 
@@ -118,11 +134,12 @@ end
 
 reusable_workflows = workflow_files.select { |p| File.basename(p).start_with?("reusable-") }
 reusable_workflows.each do |path|
-  relative = path.delete_prefix(ROOT + "/")
+  relative = path.delete_prefix("#{ROOT}/")
   text = File.read(path, encoding: "UTF-8")
 
   unless text.match?(/^on:\s*\n\s+workflow_call:/) || text.match?(/^on:\s*workflow_call/)
-    errors << "#{relative}: reusable workflow must declare `on: workflow_call` so it can be called from other workflows"
+    errors << "#{relative}: reusable workflow must declare `on: workflow_call` " \
+              "so it can be called from other workflows"
   end
 end
 
@@ -136,24 +153,28 @@ end
 
 agent_workflows = workflow_files.select { |p| File.basename(p).start_with?("agent-") }
 agent_workflows.each do |path|
-  relative = path.delete_prefix(ROOT + "/")
+  relative = path.delete_prefix("#{ROOT}/")
   text = File.read(path, encoding: "UTF-8")
 
   # 7a: wall-clock cap
   unless text.match?(/^\s*timeout-minutes:\s*\d+\s*$/) || text.match?(/^\s+timeout-minutes:\s*\d+/)
-    errors << "#{relative}: agent workflow must declare `timeout-minutes:` (bounded autonomy — no uncapped agent runtime)"
+    errors << "#{relative}: agent workflow must declare `timeout-minutes:` " \
+              "(bounded autonomy — no uncapped agent runtime)"
   end
 
   # 7b: gated on an explicit repository variable or secret
-  unless text.match?(/if:\s*.*(?:vars\.|secrets\.)/) || text.match?(/if:\s*>/) && text.match?(/vars\.|secrets\./)
-    errors << "#{relative}: agent workflow must gate execution on a repository variable or secret (`if: vars.X == 'true'`) so untrusted events never trigger an unconditional agent run"
+  unless text.match?(/if:\s*.*(?:vars\.|secrets\.)/) ||
+         (text.match?(/if:\s*>/) && text.match?(/vars\.|secrets\./))
+    errors << "#{relative}: agent workflow must gate execution on a repository variable " \
+              "or secret (`if: vars.X == 'true'`) so untrusted events never trigger " \
+              "an unconditional agent run"
   end
 
   # 7c: no approval commands — agents propose, CODEOWNERS approve.
   # Only scan executable lines: strip YAML comments (lines whose first
   # non-space character is #) so documentation that *names* the forbidden
   # command as an example does not trip the check.
-  executable_lines = text.lines.reject { |line| line.match?(/^\s*#/) }
+  executable_lines = text.lines.grep_v(/^\s*#/)
   executable_text = executable_lines.join
   approval_commands = [
     /gh\s+pr\s+review\s+[^\n]*--approve/,
@@ -161,7 +182,8 @@ agent_workflows.each do |path|
     /--[^\s]*approve\b/
   ]
   if approval_commands.any? { |pattern| executable_text.match?(pattern) }
-    errors << "#{relative}: agent workflow contains an approval command — agents propose, CODEOWNERS approve (merge-protection rule)"
+    errors << "#{relative}: agent workflow contains an approval command — " \
+              "agents propose, CODEOWNERS approve (merge-protection rule)"
   end
 end
 
@@ -169,12 +191,11 @@ end
 
 puts "GitHub governance audit"
 if File.file?(codeowners_path)
-  codeowners_lines = File.readlines(codeowners_path).count { |line| line.match?(/^\S/) }
+  codeowners_lines = File.foreach(codeowners_path, encoding: "UTF-8")
+                         .count { |line| line.match?(/^\S/) }
   puts "  CODEOWNERS: #{codeowners_lines} ownership rules"
 end
-if File.file?(dependabot_path)
-  puts "  dependabot.yml: present"
-end
+puts "  dependabot.yml: present" if File.file?(dependabot_path)
 puts "  workflows audited: #{workflow_files.length}"
 puts "  reusable workflows: #{reusable_workflows.length}" unless reusable_workflows.empty?
 puts "  agent workflows: #{agent_workflows.length}" unless agent_workflows.empty?

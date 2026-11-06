@@ -13,9 +13,10 @@ class McpServerSystemTest < Minitest::Test
   def test_tool_definitions_cover_the_contract_surface
     names = @server.tool_definitions.map { |tool| tool[:name] }
     expected = %w[list_skills get_skill route_prompt list_companions route_cross_pack]
+
     assert_equal expected.sort, names.sort
     @server.tool_definitions.each do |tool|
-      assert tool[:inputSchema].is_a?(Hash), "#{tool[:name]}: inputSchema missing"
+      assert_kind_of Hash, tool[:inputSchema], "#{tool[:name]}: inputSchema missing"
       refute_empty tool[:description], "#{tool[:name]}: description missing"
     end
   end
@@ -51,13 +52,18 @@ class McpServerSystemTest < Minitest::Test
     end
   end
 
-  def test_list_companions_declares_the_v3_contract
+  def test_list_companions_declares_both_companion_packs
     result = @server.call_tool("list_companions", {})
-
     packs = result[:companions].map { |companion| companion["pack"] }
+
     assert_includes packs, "node-agent-skills"
     assert_includes packs, "react-agent-skills"
+  end
+
+  def test_list_companions_declares_the_rails_seam_contracts
+    result = @server.call_tool("list_companions", {})
     boundaries = result[:seam_contracts].map { |contract| contract["boundary"] }
+
     assert_includes boundaries, "rails-to-node-backend"
     assert_includes boundaries, "rails-to-react-client"
   end
@@ -69,8 +75,13 @@ class McpServerSystemTest < Minitest::Test
     # assert on THIS pack's presence and shape rather than an exact count.
     refute_empty result[:packs]
     assert_equal "ruby-agent-skills", result[:packs].first[:pack][:name]
+  end
+
+  def test_route_cross_pack_reports_primary_and_seam_recommendation
+    result = @server.call_tool("route_cross_pack", { "prompt" => "add a migration with an index" })
+
     refute_nil result[:primary]
-    assert result[:seam].is_a?(Hash)
+    assert_kind_of Hash, result[:seam]
     assert_includes [true, false], result[:seam][:recommended]
   end
 

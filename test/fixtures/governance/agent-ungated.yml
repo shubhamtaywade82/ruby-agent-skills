@@ -1,0 +1,12 @@
+name: Ungated agent
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: read
+jobs:
+  act:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - run: echo "runs unconditionally"

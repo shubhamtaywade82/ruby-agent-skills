@@ -21,7 +21,6 @@
 # Exit codes: 0 pass, 1 checks failed, 2 invocation error.
 
 require "yaml"
-require "set"
 require "optparse"
 require "date"
 

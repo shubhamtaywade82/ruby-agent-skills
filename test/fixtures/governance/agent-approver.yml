@@ -1,0 +1,13 @@
+name: Agent that approves
+on:
+  pull_request:
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  act:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: vars.AGENT_X_ENABLED == 'true'
+    steps:
+      - run: gh pr review "$PR" --approve

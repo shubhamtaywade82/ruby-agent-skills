@@ -1,0 +1,10 @@
+name: Pull request target
+on:
+  pull_request_target:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "dangerous trigger"

@@ -1,0 +1,11 @@
+name: Reusable without workflow_call
+on:
+  push:
+    branches: ["main"]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "misconfigured"
