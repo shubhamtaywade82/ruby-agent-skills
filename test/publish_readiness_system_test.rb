@@ -68,10 +68,12 @@ class PublishReadinessSystemTest < Minitest::Test
     # reachable from CI: either inline in validate.yml, or in the reusable
     # workflow that validate.yml calls.
     workflow = File.read(File.join(ROOT, ".github", "workflows", "validate.yml"), encoding: "UTF-8")
-    reusable = File.read(File.join(ROOT, ".github", "workflows", "reusable-ruby-ci.yml"), encoding: "UTF-8")
+    reusable = File.read(File.join(ROOT, ".github", "workflows", "reusable-ruby-ci.yml"),
+                         encoding: "UTF-8")
 
     assert workflow.include?("bin/skills-spec-check") || reusable.include?("bin/skills-spec-check"),
-           "the official Agent Skills spec check must run in CI (validate.yml or the reusable workflow it calls)"
+           "the official Agent Skills spec check must run in CI " \
+           "(validate.yml or the reusable workflow it calls)"
   end
 
   def test_validator_executes_this_system_test

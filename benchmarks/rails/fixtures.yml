@@ -463,3 +463,18 @@ fixtures:
       - "css"
       - "skip"
       - "template"
+
+  rails-node-backend-seam:
+    root: benchmarks/rails/fixtures/rails-node-backend-seam
+    implementation_file: lib/solution.rb
+    test_file: test/test_solution.rb
+    required_regex:
+      - "class RefundsController"
+      - "def create_refund"
+      - "problem"
+    forbidden_regex:
+      - "backtrace"
+    contract_regex:
+      - "X-Request-ID"
+      - "same_site"
+      - "WRITE_AUTHORITY"

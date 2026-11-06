@@ -21,10 +21,11 @@ jobs:
   ruby-static-analysis:
     name: Brakeman (Rails static security)
     runs-on: ubuntu-latest
-    # This repository has no Rails app, so Brakeman reports on the skill
-    # fixtures' Ruby code fences instead of a real app. It is a structural
-    # check; findings are advisory, not gating. Run it as a non-blocking
-    # advisory until a real Rails app is added.
+    # This repository has no Rails app. Without --force, Brakeman exits 4 ("Please
+    # supply the path to a Rails application"). With --force it scans the
+    # repository's Ruby files and reports only the checks that apply to them, so
+    # an empty report is not evidence of Rails security. Findings are advisory,
+    # not gating, until a real Rails app is added.
     continue-on-error: true
     steps:
       - uses: actions/checkout@v7
@@ -34,7 +35,7 @@ jobs:
       - name: Install Brakeman
         run: gem install brakeman --no-document
       - name: Run Brakeman
-        run: bundle exec brakeman --no-exit-on-warn --format sarif --output brakeman.sarif || brakeman --no-exit-on-warn --format sarif --output brakeman.sarif
+        run: brakeman --force --no-exit-on-warn --format sarif --output brakeman.sarif
       - name: Upload Brakeman SARIF
         if: always()
         uses: actions/upload-artifact@v4
@@ -55,7 +56,7 @@ jobs:
       - name: Install bundler-audit
         run: gem install bundler-audit --no-document
       - name: Run bundler-audit
-        run: bundle-audit check --gemfile-lock Gemfile.lock --ignore-strict-locked
+        run: bundle-audit check --gemfile-lock Gemfile.lock
 
   secret-scanning:
     name: TruffleHog (secrets in git history)
@@ -66,7 +67,7 @@ jobs:
           # Scan the full git history, not just the checked-out commit.
           fetch-depth: 0
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@7e083729a994c5b03b38243d3b1c44d63c7d3b4a  # main, pinned SHA
+        uses: trufflesecurity/trufflehog@ea68ca03c865c5f324e86e849ced20ed3cf9dbbb  # v3.99.8, pinned SHA
         with:
           path: .
           extra_args: --only-verified --exclude-paths=.git/info

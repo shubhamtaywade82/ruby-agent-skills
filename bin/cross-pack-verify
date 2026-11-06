@@ -1,0 +1,338 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# bin/cross-pack-verify (v3, additive)
+#
+# Verifies the cross-pack contract declared in this pack's skill-manifest.yml
+# `cross_pack:` section:
+#
+#   1. `schema_version: 3` is declared at the top level.
+#   2. `pack:` envelope is present with name/language/runtime.
+#   3. Companions carry pack/repo/pinned_ref/language, and each declared
+#      snapshot exists, is fresh (default 90 days; --staleness), and its
+#      documented_name_collisions match the recomputed intersection.
+#   4. seam_contracts reference seam skills that exist on disk.
+#   5. (Optional, --companions) installed companions declare a symmetric
+#      seam_contract pointing back at this pack.
+#
+# Usage:
+#   ruby bin/cross-pack-verify [--root DIR] [--companions DIR] [--staleness N]
+#
+# Exit codes: 0 pass, 1 checks failed, 2 invocation error.
+
+require "yaml"
+require "optparse"
+require "date"
+
+module RubyAgentSkills
+  module CrossPackVerify
+    REQUIRED_COMPANION_FIELDS = %w[pack repo pinned_ref language].freeze
+    REQUIRED_PACK_FIELDS = %w[name language runtime].freeze
+
+    module_function
+
+    def default_root
+      File.expand_path("../..", __dir__)
+    end
+
+    # Accumulates check failures for the final report.
+    class Report
+      def initialize
+        @errors = []
+        @warnings = []
+      end
+
+      def error(message)
+        @errors << message
+      end
+
+      def warn(message)
+        @warnings << message
+      end
+
+      def emit
+        print_warnings
+        return emit_failure unless @errors.empty?
+
+        puts "Cross-pack verification PASSED."
+        0
+      end
+
+      def emit_failure
+        warn "ERRORS:"
+        @errors.each { |message| warn "  - #{message}" }
+        warn "Cross-pack verification FAILED (#{count_phrase})."
+        1
+      end
+
+      def count_phrase
+        "#{@errors.length} error#{'s' if @errors.length != 1}"
+      end
+
+      def print_warnings
+        return if @warnings.empty?
+
+        warn "WARNINGS:"
+        @warnings.each { |message| warn "  - #{message}" }
+      end
+    end
+
+    # Companion snapshot freshness and collision-registry accuracy.
+    class SnapshotChecks
+      def initialize(root, report)
+        @root = root
+        @report = report
+      end
+
+      def verify(companion, manifest_skills, staleness)
+        path = File.join(@root, companion["snapshot"])
+        return missing(path, companion) unless File.file?(path)
+
+        snapshot = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [],
+                                                                      aliases: false)
+        freshness(companion, snapshot, staleness)
+        collisions(companion, snapshot, manifest_skills)
+      end
+
+      private
+
+      def missing(_path, companion)
+        name = companion["snapshot"]
+        @report.error "companion #{companion['pack']} snapshot file missing: #{name}"
+      end
+
+      def freshness(companion, snapshot, staleness)
+        captured = snapshot["captured_at"]
+        if captured.nil?
+          return @report.warn("companion #{companion['pack']} snapshot has no captured_at date")
+        end
+
+        age = age_in_days(captured)
+        return if age.nil? || age <= staleness
+
+        @report.warn "companion #{companion['pack']} snapshot is #{age} days old " \
+                     "(>#{staleness}); refresh it"
+      end
+
+      def age_in_days(captured)
+        (Date.today - Date.parse(captured.to_s)).to_i
+      rescue ArgumentError
+        nil
+      end
+
+      def collisions(companion, snapshot, manifest_skills)
+        documented = Array(snapshot["documented_name_collisions"]).to_set(&:to_s)
+        actual = (manifest_skills & Array(snapshot["skills"]).map(&:to_s)).to_set
+        compare(companion, documented, actual)
+      end
+
+      def compare(companion, documented, actual)
+        missing_names = (actual - documented).to_a.sort
+        stale_names = (documented - actual).to_a.sort
+        return if missing_names.empty? && stale_names.empty?
+
+        @report.error "companion #{companion['pack']} collisions mismatch — " \
+                      "missing: #{missing_names.inspect}, stale: #{stale_names.inspect}"
+      end
+    end
+
+    # Optional: installed companions declare a symmetric seam_contract.
+    class SymmetryChecks
+      def initialize(manifest, report)
+        @manifest = manifest
+        @report = report
+        @this_pack = manifest.dig("pack", "name") || manifest["name"]
+      end
+
+      def verify(companion, companions_root)
+        path = manifest_path(companion, companions_root)
+        return skip(companion, companions_root) if path.nil?
+
+        mirror = mirror_contract(path, companion)
+        @report.warn(asymmetric(companion)) unless mirror
+      end
+
+      private
+
+      def manifest_path(companion, root)
+        [companion["pack"], ".#{companion['pack']}"].each do |dir|
+          candidate = File.join(root, dir, "skill-manifest.yml")
+          return candidate if File.file?(candidate)
+        end
+        nil
+      end
+
+      def mirror_contract(path, companion)
+        other = YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [],
+                                                                   aliases: false)
+        contracts = Array(other.fetch("cross_pack", {})["seam_contracts"])
+        contracts.find do |contract|
+          mirrors?(contract, companion)
+        end
+      end
+
+      def skip(companion, root)
+        @report.warn "companion #{companion['pack']} not found under #{root}"
+      end
+
+      def mirrors?(contract, companion)
+        contract["companion_pack"] == @this_pack &&
+          contract["primary_in_this_pack"] == companion["seam_skill"]
+      end
+
+      def asymmetric(companion)
+        "companion #{companion['pack']} declares no symmetric seam_contract pointing back at " \
+          "#{@this_pack} — seam routing will be one-directional"
+      end
+    end
+
+    # Orchestrates every check against one manifest.
+    class Verifier
+      def initialize(root:, options:)
+        @root = root
+        @options = options
+        @report = Report.new
+        @manifest = load_manifest
+      end
+
+      def run
+        check_schema_version
+        check_pack_envelope
+        return warn_missing_cross_pack unless cross_pack
+
+        check_companions
+        check_seam_contracts
+        check_symmetry
+        @report.emit
+      end
+
+      private
+
+      def load_manifest
+        path = File.join(@root, "skill-manifest.yml")
+        abort_run(2, "manifest not found at #{path}") unless File.file?(path)
+
+        YAML.safe_load(File.read(path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+      end
+
+      def cross_pack
+        @manifest["cross_pack"]
+      end
+
+      def check_schema_version
+        version = @manifest["schema_version"]
+        return if version == 3
+
+        @report.error "schema_version is missing or not 3 (got: #{version.inspect})"
+      end
+
+      def check_pack_envelope
+        pack = @manifest["pack"]
+        return @report.error("pack envelope missing or not a mapping") unless pack.is_a?(Hash)
+
+        REQUIRED_PACK_FIELDS.each do |field|
+          @report.error "pack.#{field} missing" if pack[field].to_s.strip.empty?
+        end
+      end
+
+      def warn_missing_cross_pack
+        @report.warn "cross_pack section absent — this pack does not declare any companions"
+        @report.emit
+      end
+
+      def manifest_skills
+        skills = @manifest.fetch("skills", {})
+        names = if skills.is_a?(Hash)
+                  skills.keys
+                else
+                  Array(skills).filter_map do |entry|
+                    entry["name"]
+                  end
+                end
+        Set.new(names.map(&:to_s))
+      end
+
+      def check_companions
+        companions = cross_pack["companions"] || []
+        companions.each { |companion| check_companion(companion) }
+      end
+
+      def check_companion(companion)
+        REQUIRED_COMPANION_FIELDS.each do |field|
+          if companion[field].to_s.strip.empty?
+            @report.error "companion entry missing #{field}: #{companion['pack']}"
+          end
+        end
+        return if companion["snapshot"].to_s.strip.empty?
+
+        SnapshotChecks.new(@root, @report).verify(companion, manifest_skills,
+                                                  @options.fetch(:staleness))
+      end
+
+      def check_seam_contracts
+        contracts = cross_pack["seam_contracts"] || []
+        contracts.each { |contract| check_seam_contract(contract) }
+      end
+
+      def check_seam_contract(contract)
+        primary = contract["primary_in_this_pack"]
+        path = File.join(@root, "skills", primary.to_s, "SKILL.md")
+        @report.error "seam primary #{primary} not found at #{path}" unless File.file?(path)
+        return if manifest_skills.include?(primary.to_s)
+
+        @report.error "seam primary #{primary} missing from manifest skills"
+      end
+
+      def check_symmetry
+        root = @options[:companions]
+        return unless root && File.directory?(root)
+
+        checks = SymmetryChecks.new(@manifest, @report)
+        (cross_pack["companions"] || []).each { |companion| checks.verify(companion, root) }
+      end
+
+      def abort_run(code, message)
+        warn "ERROR: #{message}"
+        exit code
+      end
+    end
+
+    def run(argv)
+      options = parse_args(argv)
+      Verifier.new(root: options.fetch(:root), options: options).run
+    end
+
+    def parse_args(argv)
+      options = { staleness: 90, root: default_root, companions: nil }
+      parser(options).parse!(argv)
+      options
+    end
+
+    def parser(options)
+      OptionParser.new do |opts|
+        opts.banner = "Usage: ruby bin/cross-pack-verify [options]"
+        opts.on("--root PATH", "Repository root (default: this pack)") { |v| options[:root] = v }
+        companions_option(opts, options)
+        staleness_option(opts, options)
+        opts.on("-h", "--help") do
+          puts opts
+          exit 0
+        end
+      end
+    end
+
+    def companions_option(opts, options)
+      opts.on("--companions PATH", "Skills root with installed companions") do |v|
+        options[:companions] = v
+      end
+    end
+
+    def staleness_option(opts, options)
+      opts.on("--staleness DAYS", Integer, "Snapshot staleness threshold (default: 90)") do |v|
+        options[:staleness] = v
+      end
+    end
+  end
+end
+
+exit RubyAgentSkills::CrossPackVerify.run(ARGV) if $0 == __FILE__

@@ -566,3 +566,27 @@ cases:
       - rails-observability
       - ruby-tdd-refactoring
     boundary: ai-assistance-vs-core-path
+
+  - id: node-consumer-not-rails-improvisation
+    prompt: >
+      The Node.js BFF service consumes our Rails orders JSON API and its fetch
+      client needs the session cookie, the CSRF token flow, and the 422 error
+      mapping updated after we changed the refund endpoints.
+    primary_skills:
+      - rails-node-integration
+    secondary_skills:
+      - rails-api-integration
+      - rails-authentication
+    boundary: rails-vs-node-ownership
+
+  - id: shared-postgres-write-authority
+    prompt: >
+      Both the Rails app and the Node ingestion service read and write the
+      same shipments table through their own ORMs and we keep losing updates;
+      make the writes safe.
+    primary_skills:
+      - rails-active-record
+    secondary_skills:
+      - rails-node-integration
+      - rails-database-engineering
+    boundary: persistence-vs-seam

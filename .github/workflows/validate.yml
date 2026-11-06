@@ -22,3 +22,29 @@ jobs:
     with:
       ruby-version: "3.3"
       run-smoke-tests: true
+
+  # Repository-specific checks. bin/cross-pack-verify and bin/mcp-server exist
+  # only in this pack, so they stay out of the reusable workflow that
+  # downstream Rails consumers call.
+  cross-pack:
+    name: Cross-pack manifest and MCP smoke (v3)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Cross-pack manifest verification (v3)
+        run: ruby bin/cross-pack-verify --root .
+
+      - name: MCP server smoke test (v3)
+        run: |
+          printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+            '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"route_prompt","arguments":{"prompt":"add a migration with an index"}}}' \
+            '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"list_companions","arguments":{}}}' \
+            | ruby bin/mcp-server

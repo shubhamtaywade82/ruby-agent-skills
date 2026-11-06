@@ -70,14 +70,15 @@ SANITIZE_PATTERNS = [
   /ghu_[A-Za-z0-9]{20,}/,        # GitHub user token
   /ghs_[A-Za-z0-9]{20,}/,        # GitHub server token
   /github_pat_[A-Za-z0-9_]{20,}/, # GitHub fine-grained PAT
-  /AKIA[0-9A-Z]{16}/,            # AWS access key id
+  /AKIA[0-9A-Z]{16}/, # AWS access key id
   /-----BEGIN [A-Z ]*PRIVATE KEY-----/, # private key material
   /Bearer\s+[A-Za-z0-9\-_.]{20,}/ # bearer tokens
 ].freeze
 
 options = { role: nil, payload: nil, audit_log: nil }
 OptionParser.new do |opts|
-  opts.banner = "usage: ruby scripts/agent_dispatch.rb --role ROLE --payload PATH [--audit-log PATH]"
+  opts.banner = "usage: ruby scripts/agent_dispatch.rb --role ROLE --payload PATH " \
+                "[--audit-log PATH]"
   opts.on("--role ROLE", ROLES, "agent role: #{ROLES.join(' | ')}") { |v| options[:role] = v }
   opts.on("--payload PATH", "path to the JSON event payload") { |v| options[:payload] = v }
   opts.on("--audit-log PATH", "append-only audit log (JSON lines)") { |v| options[:audit_log] = v }

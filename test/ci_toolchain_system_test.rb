@@ -22,7 +22,8 @@ class CiToolchainSystemTest < Minitest::Test
     # the checkout step lives in the reusable workflow it calls. The pinned
     # checkout version must be found in one of the two.
     workflow = File.read(File.join(ROOT, ".github", "workflows", "validate.yml"), encoding: "UTF-8")
-    reusable = File.read(File.join(ROOT, ".github", "workflows", "reusable-ruby-ci.yml"), encoding: "UTF-8")
+    reusable = File.read(File.join(ROOT, ".github", "workflows", "reusable-ruby-ci.yml"),
+                         encoding: "UTF-8")
     combined = workflow + reusable
 
     assert_includes combined, "actions/checkout@v7"

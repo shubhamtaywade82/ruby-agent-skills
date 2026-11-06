@@ -96,6 +96,8 @@ When skills conflict, stop and resolve the conflict rather than combining incomp
 
 React/TypeScript client work belongs to `react-agent-skills`; this pack never copies its skills. For a Rails + React change, follow `router/ROUTING.md` "Rails and React cross-stack routing": this pack owns the server and the seam (`rails-react-integration`), react-agent-skills owns the client. If react-agent-skills is not installed, report the client follow-up and its owning skill instead of improvising.
 
+Node.js backend work belongs to `node-agent-skills`; this pack never copies its skills. For a Rails + Node change, follow `router/ROUTING.md` "Rails and Node cross-stack routing": this pack owns the Rails side and the seam (`rails-node-integration`), node-agent-skills owns the Node service side (its symmetric seam is `node-ruby-integration`). If node-agent-skills is not installed, report the Node-side follow-up and its owning skill (`node-ruby-integration` for the seam; `node-rest-api-design` / `node-postgresql-persistence` / etc. for the domain) instead of improvising. The `cross_pack:` section of `skill-manifest.yml` declares the pinned companion snapshot; `bin/cross-pack-verify` checks the seam is symmetric and the collision registry matches the actual intersection.
+
 ## Skill-pack installation
 
 - Treat installed skills and patterns as executable agent configuration.

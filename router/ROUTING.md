@@ -1751,6 +1751,36 @@ This pack owns the Rails side of the Rails ↔ React boundary, through `rails-re
 - Installed: load this pack's primary and secondaries for the server and the seam, then the listed react-agent-skills skills for the client.
 - Not installed: complete the server and seam work, then report the client-side follow-up and the react-agent-skills skill that owns it. Do not improvise frontend guidance from this pack.
 
+## Rails and Node cross-stack routing
+
+This pack owns the Rails side of the Rails ↔ Node backend boundary, through `rails-node-integration` (added in v3; see `docs/CROSS_PACK_SCHEMA.md`). The Node side is owned symmetrically by `node-agent-skills`'s `node-ruby-integration` skill.
+- Route the integration mode (HTTP REST, JSON-RPC, shared Postgres, queue) to `rails-node-integration`. The seam is the contract: request/response shapes, credentials, error envelope, observability headers.
+- Keep the server domain work with its owning Rails skill. A change that only alters the Rails wire contract is primary `rails-api-integration`, with `rails-node-integration` secondary so the Node consumer's types move with it.
+- Handler, validation, persistence, and observability work inside the Node service belongs to the `node-`-prefixed skills in `node-agent-skills`. It is a cross-pack composition, never a secondary skill from this pack.
+
+| Task | Primary | Secondary (this pack) | Node side (node-agent-skills) |
+|---|---|---|---|
+| Node service calling a Rails REST endpoint (contract, types, error mapping) | rails-node-integration | rails-api-integration | node-ruby-integration, node-rest-api-design, node-runtime-validation |
+| Rails calling a Node BFF / Node service (HTTP, JSON-RPC) | rails-node-integration | rails-action-controller, rails-authentication | node-ruby-integration, node-http-engineering |
+| Cross-origin cookies + CSRF between Rails API and Node BFF | rails-node-integration | rails-authentication, rails-security | node-ruby-integration, node-authentication |
+| Rails 422 errors mapped into a Node problem+json envelope | rails-node-integration | rails-validations | node-ruby-integration, node-rest-api-design |
+| Choosing integration mode: HTTP vs shared Postgres vs queue | rails-node-integration | rails-active-record, rails-active-job | node-ruby-integration, node-postgresql-persistence, node-queue-engineering |
+| Shared Postgres: Rails writes, Node reads (or vice versa) | rails-active-record | rails-node-integration | node-postgresql-persistence, node-ruby-integration |
+| Sidekiq job replaced by Node BullMQ worker (or vice versa) | rails-active-job | rails-node-integration | node-queue-engineering, node-ruby-integration |
+| Correlation ID / trace propagation across Rails ↔ Node | rails-node-integration | rails-observability | node-observability, node-ruby-integration |
+| OpenAPI / JSON Schema generated from Rails, consumed by Node | rails-api-integration | rails-node-integration | node-rest-api-design, node-runtime-validation |
+| Node-only change: handler, validation, persistence, Node test | — (not this pack) | — | owning node-agent-skills skill |
+
+### Loading the Node side
+
+`node-agent-skills` is a separate install (`npx skills add shubhamtaywade82/node-agent-skills`; see README "Full-stack Rails + Node"). Its skills are named in the right-hand column (all `node-`-prefixed) and are never copied into this pack. The companion pack declares its symmetric seam at `node-agent-skills/skills/node-ruby-integration`.
+- Installed: load this pack's primary and secondaries for the Rails side and the seam, then the listed node-agent-skills skills for the Node side.
+- Not installed: complete the Rails side and the seam work, then report the Node-side follow-up and the node-agent-skills skill that owns it (`node-ruby-integration` for the seam; `node-rest-api-design` / `node-postgresql-persistence` / etc. for the domain). Do not improvise Node guidance from this pack.
+
+### Cross-pack collision status
+
+`ruby-agent-skills` and `node-agent-skills` share **zero** skill name collisions today, because the Node pack prefixes every skill with `node-`. The collision registry in `skill-manifest.yml`'s `cross_pack.name_collisions` is `[]` for the Node companion (vs. 8 entries for the React companion). Do not introduce a `node-`-prefixed skill name into this pack or a Rails-prefixed skill name into `node-agent-skills` — this collision-free property is load-bearing.
+
 ## Stack minimality composition
 
 Use stack-minimality with the skill that owns the actual contract:

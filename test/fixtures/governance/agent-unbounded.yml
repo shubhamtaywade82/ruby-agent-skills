@@ -1,0 +1,12 @@
+name: Unbounded agent
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: read
+jobs:
+  act:
+    runs-on: ubuntu-latest
+    if: vars.AGENT_X_ENABLED == 'true'
+    steps:
+      - run: echo "no timeout"
