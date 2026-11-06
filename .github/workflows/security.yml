@@ -55,7 +55,7 @@ jobs:
       - name: Install bundler-audit
         run: gem install bundler-audit --no-document
       - name: Run bundler-audit
-        run: bundle-audit check --gemfile-lock Gemfile.lock --ignore-strict-locked
+        run: bundle-audit check --gemfile-lock Gemfile.lock
 
   secret-scanning:
     name: TruffleHog (secrets in git history)
