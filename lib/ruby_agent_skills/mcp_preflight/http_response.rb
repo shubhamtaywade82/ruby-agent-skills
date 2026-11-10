@@ -32,8 +32,12 @@ module RubyAgentSkills
 
       def self.tools(result)
         list = result["tools"]
-        valid = list.is_a?(Array) && list.all? { |tool| tool.is_a?(Hash) && tool["name"].is_a?(String) }
-        raise Error.new("invalid_tools_list", "tools/list response must contain named tools") unless valid
+        valid = list.is_a?(Array) && list.all? do |tool|
+          tool.is_a?(Hash) && tool["name"].is_a?(String)
+        end
+        unless valid
+          raise Error.new("invalid_tools_list", "tools/list response must contain named tools")
+        end
 
         list.map { |tool| tool["name"] }.uniq.sort
       end
