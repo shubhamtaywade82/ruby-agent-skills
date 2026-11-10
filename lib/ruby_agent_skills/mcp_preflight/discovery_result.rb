@@ -37,9 +37,11 @@ module RubyAgentSkills
         unless result["resultType"].is_a?(String) && !result["resultType"].empty?
           raise Error.new("invalid_discovery", "server/discover resultType must be a non-empty string")
         end
-        return unless result["resultType"] != "complete"
+        unless result["resultType"] == "complete"
+          raise Error.new("incomplete_discovery", "partial or cached discovery results are not supported")
+        end
 
-        raise Error.new("incomplete_discovery", "partial or cached discovery results are not supported")
+        validate_result_fields!(result)
       end
 
       def validate_result_fields!(result)
