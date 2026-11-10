@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "optparse"
+require "json"
+require_relative "../lib/ruby_agent_skills/mcp_preflight"
+
+options = {
+  config: ".mcp.json",
+  policy: File.expand_path("../mcp/permissions.yml", __dir__),
+  timeout: RubyAgentSkills::MCPPreflight::DEFAULT_TIMEOUT,
+  isolated: false,
+  probe: false
+}
+
+OptionParser.new do |parser|
+  parser.banner = <<~USAGE
+    Usage:
+      ruby bin/mcp-preflight --server NAME --tool NAME --profile PROFILE \
+        --environment ENVIRONMENT --probe [options]
+
+    Probes MCP discovery and tools/list only. It never invokes tools/call.
+  USAGE
+
+  parser.on("--config PATH", "MCP client JSON config (default: .mcp.json)") { |value| options[:config] = value }
+  parser.on("--policy PATH", "Permission policy YAML") { |value| options[:policy] = value }
+  parser.on("--server NAME", "Exact key under mcpServers") { |value| options[:server] = value }
+  parser.on("--tool NAME", "Exact tool name returned by tools/list") { |value| options[:tool] = value }
+  parser.on("--profile NAME", "Permission profile from the policy") { |value| options[:profile] = value }
+  parser.on("--environment NAME", "development, test, staging, or production") { |value| options[:environment] = value }
+  parser.on("--cwd PATH", "Working directory for a STDIO server") { |value| options[:cwd] = value }
+  parser.on("--timeout SECONDS", Float, "Per-request timeout (default: 5)") { |value| options[:timeout] = value }
+  parser.on("--isolated", "Attest that execution is in a disposable, isolated environment") { options[:isolated] = true }
+  parser.on("--probe", "Explicitly start the configured STDIO process or contact the HTTP URL") { options[:probe] = true }
+  parser.on("-h", "--help", "Show this help") do
+    puts parser
+    exit 0
+  end
+end.parse!
+
+required = %i[server tool profile environment]
+missing = required.reject { |key| options[key] }
+unless missing.empty?
+  warn "Missing required options: #{missing.map { |key| "--#{key}" }.join(", ")}"
+  exit 64
+end
+
+unless options[:timeout].positive? && options[:timeout] <= 30
+  warn "--timeout must be greater than 0 and no more than 30 seconds"
+  exit 64
+end
+
+begin
+  runner = RubyAgentSkills::MCPPreflight::Runner.new(
+    config_path: options[:config],
+    policy_path: options[:policy],
+    server: options[:server],
+    tool: options[:tool],
+    profile: options[:profile],
+    environment: options[:environment],
+    isolated: options[:isolated],
+    cwd: options[:cwd],
+    timeout: options[:timeout],
+    probe: options[:probe]
+  )
+  result = runner.call
+  puts JSON.pretty_generate(result)
+  exit({
+    "allowed" => 0,
+    "approval_required" => 2,
+    "denied" => 3,
+    "unavailable" => 4
+  }.fetch(result[:decision], 3))
+rescue RubyAgentSkills::MCPPreflight::Error => e
+  warn JSON.pretty_generate(error: e.code, message: e.message)
+  exit 64
+end
