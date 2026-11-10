@@ -33,6 +33,7 @@ module RubyAgentSkills
 
         {
           status: "healthy",
+          configured: true,
           transport: "streamable_http",
           protocol_version: MODERN_PROTOCOL,
           server_info: HttpResponse.server_info(result),
