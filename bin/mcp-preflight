@@ -53,7 +53,7 @@ unless options[:timeout].positive? && options[:timeout] <= 30
 end
 
 begin
-  runner = RubyAgentSkills::MCPPreflight::Runner.new(
+  runner_options = {
     config_path: options[:config],
     policy_path: options[:policy],
     server: options[:server],
@@ -64,7 +64,8 @@ begin
     cwd: options[:cwd],
     timeout: options[:timeout],
     probe: options[:probe]
-  )
+  }
+  runner = RubyAgentSkills::MCPPreflight::Runner.new(runner_options)
   result = runner.call
   puts JSON.pretty_generate(result)
   exit({
