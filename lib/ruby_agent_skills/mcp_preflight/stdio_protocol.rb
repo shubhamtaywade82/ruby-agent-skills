@@ -19,6 +19,7 @@ module RubyAgentSkills
         result = result_or_raise(discovery, "server/discover")
         negotiated = DiscoveryResult.new(result)
         return legacy_initialize unless negotiated.modern?
+        return empty_tool_list(MODERN_PROTOCOL, negotiated.server_info) unless negotiated.supports_tools?
 
         list_tools(2, { "_meta" => CLIENT_META }, MODERN_PROTOCOL, negotiated.server_info)
       end
@@ -57,7 +58,17 @@ module RubyAgentSkills
         end
 
         notify_initialized
+        return empty_tool_list(LEGACY_PROTOCOL, result["serverInfo"]) unless legacy_tools_supported?(result)
+
         list_tools(3, {}, LEGACY_PROTOCOL, result["serverInfo"])
+      end
+
+      def legacy_tools_supported?(result)
+        result.fetch("capabilities", {}).key?("tools")
+      end
+
+      def empty_tool_list(version, server_info)
+        StdioToolList.build({ "tools" => [] }, version, server_info: server_info)
       end
 
       def list_tools(id, params, version, server_info)
