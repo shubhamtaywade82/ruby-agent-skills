@@ -21,7 +21,7 @@ class McpPreflightSystemTest < Minitest::Test
 
   def test_modern_stdio_discovery_lists_the_live_tool_and_allows_inspection
     result = run_preflight(
-      server: "rails",
+      server: "ask-rails-harness",
       tool: "schema_graph",
       tools: %w[schema_graph run_tests],
       profile: "inspect"
@@ -112,8 +112,8 @@ class McpPreflightSystemTest < Minitest::Test
 
   def test_tool_missing_from_live_tools_list_is_unavailable
     result = run_preflight(
-      server: "rails",
-      tool: "tool_that_does_not_exist",
+      server: "ask-rails-harness",
+      tool: "query_database",
       tools: %w[schema_graph]
     )
 
@@ -123,7 +123,7 @@ class McpPreflightSystemTest < Minitest::Test
 
   def test_production_is_denied_even_for_read_only_capabilities
     result = run_preflight(
-      server: "rails",
+      server: "ask-rails-harness",
       tool: "schema_graph",
       tools: %w[schema_graph],
       environment: "production"
@@ -137,7 +137,7 @@ class McpPreflightSystemTest < Minitest::Test
   def test_preflight_requires_explicit_confirmation_before_starting_a_server
     error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
       run_preflight(
-        server: "rails",
+        server: "ask-rails-harness",
         tool: "schema_graph",
         tools: %w[schema_graph],
         probe: false
