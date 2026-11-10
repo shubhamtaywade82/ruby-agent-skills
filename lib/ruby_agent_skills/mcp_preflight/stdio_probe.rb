@@ -49,11 +49,21 @@ module RubyAgentSkills
         command = @config["command"]
         args = @config.fetch("args", [])
         valid_command = command.is_a?(String) && !command.strip.empty?
-        raise Error.new("invalid_server_config", "STDIO command must be a non-empty string") unless valid_command
-        raise Error.new("invalid_server_config", "STDIO args must be an array of strings") unless valid_args?(args)
-        raise Error.new("invalid_working_directory", "MCP working directory does not exist") unless Dir.exist?(@cwd)
-        raise Error.new("invalid_server_config", "MCP env must be a string mapping") unless valid_env?(@config.fetch("env", {}))
-        raise Error.new("invalid_server_config", "inherit_env must be an array") unless @config.fetch("inherit_env", []).is_a?(Array)
+        unless valid_command
+          raise Error.new("invalid_server_config", "STDIO command must be a non-empty string")
+        end
+        unless valid_args?(args)
+          raise Error.new("invalid_server_config", "STDIO args must be an array of strings")
+        end
+        unless Dir.exist?(@cwd)
+          raise Error.new("invalid_working_directory", "MCP working directory does not exist")
+        end
+        unless valid_env?(@config.fetch("env", {}))
+          raise Error.new("invalid_server_config", "MCP env must be a string mapping")
+        end
+        unless @config.fetch("inherit_env", []).is_a?(Array)
+          raise Error.new("invalid_server_config", "inherit_env must be an array")
+        end
       end
 
       def valid_args?(args)
