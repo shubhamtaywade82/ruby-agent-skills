@@ -184,6 +184,7 @@ Load only when needed; each reference is one level deep.
 | a change depends on repository facts before implementation | [references/fact-gate.md](references/fact-gate.md) | Fact classes, manifest format, and the blocking rule |
 | a run may change files outside the working tree, use credentials, run side-effecting commands, or spend a budget | [references/execution-control.md](references/execution-control.md) | Approval, credentials, checkpoints, undo, budgets, and provenance |
 | configuring MCP developer tools for Ruby/Rails structure, tests, database inspection, console access, debugging, or gem management | [references/ruby-rails-mcp-tools.md](references/ruby-rails-mcp-tools.md) | Server selection, install scope, transports, setup, composition, and permission boundaries |
+| assigning tool capabilities, selecting permission profiles, or checking MCP server/tool availability before use | [references/mcp-governance-and-preflight.md](references/mcp-governance-and-preflight.md) | Fail-closed tool classification, profiles, protocol discovery, health results, and consent boundaries |
 
 ## Source foundation
 
