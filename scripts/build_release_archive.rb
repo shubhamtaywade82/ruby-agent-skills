@@ -64,6 +64,7 @@ SHIPPED_PATHS = %w[
   docs/SKILL_CONTRACT.md
   docs/VERIFY_CHANGE.md
   lib/ruby_agent_skills/change_verifier.rb
+  lib/ruby_agent_skills/mcp_preflight.rb
 lib/ruby_agent_skills/mcp_preflight/constants.rb
   lib/ruby_agent_skills/mcp_preflight/policy.rb
   lib/ruby_agent_skills/mcp_preflight/policy_validator.rb
