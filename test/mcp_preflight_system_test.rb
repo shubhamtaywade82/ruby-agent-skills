@@ -112,6 +112,18 @@ class McpPreflightSystemTest < Minitest::Test
     assert_match(/unclassified/, result[:reason])
   end
 
+  def test_unresponsive_stdio_server_is_reported_unavailable
+    result = run_preflight(
+      server: "ask-rails-harness",
+      tool: "schema_graph",
+      tools: %w[schema_graph],
+      exit_early: true
+    )
+
+    assert_equal "unavailable", result.dig(:health, :status)
+    assert_match(/server_exited/, result.dig(:health, :reason))
+  end
+
   def test_tool_missing_from_live_tools_list_is_unavailable
     result = run_preflight(
       server: "ask-rails-harness",
@@ -206,6 +218,18 @@ class McpPreflightSystemTest < Minitest::Test
     assert_equal "unsafe_url", error.code
   end
 
+  def test_policy_rejects_a_non_deny_unknown_tool_default
+    policy_path = File.join(@tmpdir, "unsafe-policy.yml")
+    policy = File.read(POLICY, encoding: "UTF-8").sub("unknown_tool: deny", "unknown_tool: allow")
+    File.write(policy_path, policy, encoding: "UTF-8")
+
+    error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
+      RubyAgentSkills::MCPPreflight::Policy.new(policy_path)
+    end
+
+    assert_equal "invalid_policy", error.code
+  end
+
   def test_validator_executes_this_system_test
     validate = File.read(File.join(ROOT, "bin", "validate"), encoding: "UTF-8")
 
@@ -214,8 +238,16 @@ class McpPreflightSystemTest < Minitest::Test
 
   private
 
-  def run_preflight(server:, tool:, tools:, profile: "inspect", environment: "development",
-                    isolated: false, modern: true, probe: true)
+  def run_preflight(options)
+    server = options.fetch(:server)
+    tool = options.fetch(:tool)
+    tools = options.fetch(:tools)
+    profile = options.fetch(:profile, "inspect")
+    environment = options.fetch(:environment, "development")
+    isolated = options.fetch(:isolated, false)
+    modern = options.fetch(:modern, true)
+    probe = options.fetch(:probe, true)
+    exit_early = options.fetch(:exit_early, false)
     config_path = File.join(@tmpdir, "mcp.json")
     File.write(
       config_path,
@@ -223,7 +255,7 @@ class McpPreflightSystemTest < Minitest::Test
         "mcpServers" => {
           server => {
             "command" => RbConfig.ruby,
-            "args" => ["-e", fake_server(modern: modern, tools: tools)]
+            "args" => ["-e", fake_server(modern: modern, tools: tools, exit_early: exit_early)]
           }
         }
       ),
@@ -245,13 +277,16 @@ class McpPreflightSystemTest < Minitest::Test
     runner.call
   end
 
-  def fake_server(modern:, tools:)
+  def fake_server(modern:, tools:, exit_early: false)
     <<~RUBY
       require "json"
       modern = #{modern}
+      exit_early = #{exit_early}
       tools = #{tools.inspect}
 
       STDIN.each_line do |line|
+        exit 0 if exit_early
+
         request = JSON.parse(line)
         method = request["method"]
         response =
