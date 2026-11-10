@@ -1,0 +1,85 @@
+# MCP capability policy used by bin/mcp-preflight.
+# Tool names must be classified explicitly from a trusted tools/list response.
+# Server-provided descriptions and annotations are never security policy.
+schema_version: 1
+
+defaults:
+  unknown_tool: deny
+  production: deny
+  isolated_capabilities:
+    - test_execution
+    - debugger_control
+    - arbitrary_code_execution
+    - shell_execution
+    - dependency_write
+    - filesystem_write
+    - database_write
+    - external_network
+
+profiles:
+  inspect:
+    allow:
+      - metadata_read
+      - source_read
+      - schema_read
+    require_approval:
+      - application_data_read
+
+  test:
+    allow:
+      - metadata_read
+      - source_read
+      - schema_read
+      - test_execution
+    require_approval:
+      - application_data_read
+      - database_write
+      - filesystem_write
+
+  debug:
+    allow:
+      - metadata_read
+      - source_read
+      - schema_read
+    require_approval:
+      - debugger_control
+      - arbitrary_code_execution
+
+  console:
+    allow:
+      - metadata_read
+      - source_read
+      - schema_read
+    require_approval:
+      - arbitrary_code_execution
+      - application_data_read
+      - database_write
+      - external_network
+
+  maintenance:
+    allow:
+      - metadata_read
+      - source_read
+      - schema_read
+    require_approval:
+      - application_data_read
+      - test_execution
+      - shell_execution
+      - dependency_write
+      - filesystem_write
+      - database_write
+      - external_network
+
+# Keys here must match the server key in the consuming project's mcpServers
+# object. Add exact tool names after reviewing the server's live tools/list.
+# Unknown or newly-added tools remain denied until explicitly classified.
+servers:
+  ask-rails-harness:
+    tools:
+      schema_graph: schema_read
+      route_inspector: metadata_read
+      read_model: schema_read
+      query_database: application_data_read
+      read_log: application_data_read
+      run_tests: test_execution
+      run_command: shell_execution

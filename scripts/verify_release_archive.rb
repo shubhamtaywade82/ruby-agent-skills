@@ -31,6 +31,19 @@ require "yaml"
 PROTOCOL_VERSION = 1
 REQUIRED_PATHS = %w[
   AGENTS.md CHANGELOG.md CONTRIBUTING.md LICENSE README.md SECURITY.md
+  bin/mcp-preflight mcp/permissions.yml
+lib/ruby_agent_skills/mcp_preflight.rb
+lib/ruby_agent_skills/mcp_preflight/constants.rb
+lib/ruby_agent_skills/mcp_preflight/policy.rb
+lib/ruby_agent_skills/mcp_preflight/policy_validator.rb
+lib/ruby_agent_skills/mcp_preflight/json_line_reader.rb
+lib/ruby_agent_skills/mcp_preflight/stdio_protocol.rb
+lib/ruby_agent_skills/mcp_preflight/stdio_tool_list.rb
+lib/ruby_agent_skills/mcp_preflight/stdio_probe.rb
+lib/ruby_agent_skills/mcp_preflight/http_response.rb
+lib/ruby_agent_skills/mcp_preflight/streamable_http_probe.rb
+lib/ruby_agent_skills/mcp_preflight/server_probe.rb
+lib/ruby_agent_skills/mcp_preflight/runner.rb
   bin/install bin/skill-pack-doctor bin/skill-pack-verify bin/skill-pack-compatibility bin/stack-minimality
   docs/SKILL_CONTRACT.md router/ROUTING.md skill-manifest.yml RELEASE.json
 ].freeze

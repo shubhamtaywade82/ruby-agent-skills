@@ -1,3 +1,21 @@
+## Iteration 200 — MCP Permission Profiles and Server Preflight
+
+- Add `mcp/permissions.yml` with explicit server/tool-to-capability mappings and `inspect`, `test`, `debug`, `console`, and `maintenance` profiles. Unknown tools and production are denied; production access and credential export are unconditional hard denies; execution, debugger, shell, and write capabilities require an isolated-environment attestation and sensitive actions require approval.
+- Add `bin/mcp-preflight` and the stdlib `RubyAgentSkills::MCPPreflight` implementation. The command reads a consuming MCP client's `mcpServers` JSON configuration, checks local policy before process/network activity, and requires explicit `--probe` before starting a configured STDIO command or contacting Streamable HTTP.
+- Add modern MCP `2026-07-28` discovery and `tools/list` probing, with STDIO fallback to the legacy `2025-11-25` initialize handshake. Report configured-server errors, transport health, authorization-required/unavailable states, and exact tool inventory. The preflight never invokes `tools/call`.
+- Apply transport controls: no shell interpolation for STDIO, minimal inherited environment plus explicit overrides, bounded request timeouts and response size, child process-group cleanup, verified TLS for remote HTTP, loopback-only plain HTTP, rejection of URL credentials/redirects/custom auth headers, and structured failure results.
+- Add `skills/agent-workflow/references/mcp-governance-and-preflight.md`, link it from `agent-workflow`, the Ruby/Rails MCP tools guide, routing matrix, README, and Claude Code integration guide. Document that `--isolated` is an operator attestation and that the preflight is not a reference monitor; the MCP host/application must enforce actual approval and authorization.
+- Add and register `test/mcp_preflight_system_test.rb`. No new skills, patterns, or evaluation cases; inventory remains 104 skills, 454 patterns, and 624 evaluation cases. System/contract test files increase from 121 to 122.
+- Execution note: the Ruby test suite and RuboCop were not run in the remote editing environment; branch-local CI/local validation remains required before merge.
+
+## Iteration 199 — Ruby and Rails MCP Developer Tool Ecosystem
+
+- Add `skills/agent-workflow/references/ruby-rails-mcp-tools.md`, a task-oriented guide to `rails-mcp-server`, `ruby-console-mcp`, `ask-ruby-harness-mcp`, `ask-rails-harness-mcp`, `debug-mcp`, ActionMCP, and `@ruby-mcp/gems-mcp`; distinguish developer tools from application dependencies, document install scopes/transports/setup, and provide combinations by workflow.
+- Correct upstream-specific setup distinctions: `rails-mcp-config` is shipped as an executable by `rails-mcp-server`; the generic Ruby harness and Rails wrapper are different packages; ActionMCP is a project-level Rails integration for networked MCP and does not provide STDIO; Rails harness execution is pinned through the app's Bundler context; console/debugger and dependency-file tools carry explicit execution/write risks.
+- Document this pack's existing `bin/mcp-server` as skill routing/discovery rather than application introspection; link the external guide from `agent-workflow`, `router/ROUTING.md`, the README, and the Claude Code integration guide.
+- Add `test/ruby_rails_mcp_tools_reference_system_test.rb` and register it in `bin/validate` to guard server distinctions, install scope, discoverability, and minimum security statements. No new skills, patterns, or evaluation cases; inventory remains 104 skills, 454 patterns, and 624 evaluation cases. Dedicated system/contract test files increase from 120 to 121.
+- External package/transport information was checked against upstream project documentation on 2026-11-10. The repository validator was not run as part of this documentation update.
+
 ## Iteration 198 — Cross-Pack v3 Integration (Rails and Node)
 
 - Add the cross-pack manifest schema v3 as an additive superset of v2: top-level `schema_version: 3`, a `pack:` envelope (`name`/`language`/`runtime`/`homepage`/`license`), optional per-skill `version`/`language`/`category`/`schema_version`/`companion_owners` fields, and a new `cross_pack:` section declaring companions, name collisions, and seam contracts. Existing v2 consumers see no change; the contract is documented in `docs/CROSS_PACK_SCHEMA.md`.
