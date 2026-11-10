@@ -22,16 +22,16 @@ OptionParser.new do |parser|
     Probes MCP discovery and tools/list only. It never invokes tools/call.
   USAGE
 
-  parser.on("--config PATH", "MCP client JSON config (default: .mcp.json)") { |value| options[:config] = value }
+  parser.on("--config PATH", "MCP client JSON config") { |value| options[:config] = value }
   parser.on("--policy PATH", "Permission policy YAML") { |value| options[:policy] = value }
   parser.on("--server NAME", "Exact key under mcpServers") { |value| options[:server] = value }
-  parser.on("--tool NAME", "Exact tool name returned by tools/list") { |value| options[:tool] = value }
-  parser.on("--profile NAME", "Permission profile from the policy") { |value| options[:profile] = value }
-  parser.on("--environment NAME", "development, test, staging, or production") { |value| options[:environment] = value }
+  parser.on("--tool NAME", "Exact tools/list name") { |value| options[:tool] = value }
+  parser.on("--profile NAME", "Permission profile") { |value| options[:profile] = value }
+  parser.on("--environment NAME", "development, test, staging, production") { |value| options[:environment] = value }
   parser.on("--cwd PATH", "Working directory for a STDIO server") { |value| options[:cwd] = value }
-  parser.on("--timeout SECONDS", Float, "Per-request timeout (default: 5)") { |value| options[:timeout] = value }
-  parser.on("--isolated", "Attest that execution is in a disposable, isolated environment") { options[:isolated] = true }
-  parser.on("--probe", "Explicitly start the configured STDIO process or contact the HTTP URL") { options[:probe] = true }
+  parser.on("--timeout SECONDS", Float, "Per-request timeout") { |value| options[:timeout] = value }
+  parser.on("--isolated", "Attest disposable environment") { options[:isolated] = true }
+  parser.on("--probe", "Start or contact the configured MCP server") { options[:probe] = true }
   parser.on("-h", "--help", "Show this help") do
     puts parser
     exit 0
