@@ -18,6 +18,20 @@ module RubyAgentSkills
 
       def call
         validate_config!
+        run_protocol(force_legacy: false)
+      rescue Error => error
+        raise unless error.code == "legacy_probe_required"
+
+        run_protocol(force_legacy: true)
+      rescue Errno::ENOENT
+        raise Error.new("command_not_found", "configured MCP command could not be started")
+      rescue Errno::EACCES
+        raise Error.new("command_not_executable", "configured MCP command is not executable")
+      end
+
+      private
+
+      def run_protocol(force_legacy:)
         Open3.popen3(
           child_environment,
           @config.fetch("command"),
@@ -27,7 +41,8 @@ module RubyAgentSkills
           err: File::NULL
         ) do |stdin, stdout, _stderr, waiter|
           protocol = StdioProtocol.new(stdin, JsonLineReader.new(stdout), timeout: @timeout)
-          protocol.call.merge(
+          result = force_legacy ? protocol.legacy_call : protocol.call
+          result.merge(
             status: "healthy",
             configured: true,
             transport: "stdio",
@@ -38,13 +53,7 @@ module RubyAgentSkills
           stdout.close unless stdout.closed?
           stdin.close unless stdin.closed?
         end
-      rescue Errno::ENOENT
-        raise Error.new("command_not_found", "configured MCP command could not be started")
-      rescue Errno::EACCES
-        raise Error.new("command_not_executable", "configured MCP command is not executable")
       end
-
-      private
 
       def validate_config!
         command = @config["command"]
