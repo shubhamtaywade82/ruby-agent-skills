@@ -29,6 +29,7 @@ class McpPreflightSystemTest < Minitest::Test
 
     assert_equal "healthy", result.dig(:health, :status)
     assert_equal "2026-07-28", result.dig(:health, :protocol_version)
+    assert_equal "test-server", result.dig(:health, :server_info, :name)
     assert_includes result.dig(:health, :tools), "schema_graph"
     assert_equal "allowed", result[:decision]
     refute result[:tool_invoked]
@@ -262,7 +263,11 @@ class McpPreflightSystemTest < Minitest::Test
                 "id" => request["id"],
                 "result" => {
                   "protocolVersion" => "2026-07-28",
-                  "serverInfo" => { "name" => "test-server", "version" => "1.0" }
+                  "_meta" => {
+                    "io.modelcontextprotocol/serverInfo" => {
+                      "name" => "test-server", "version" => "1.0"
+                    }
+                  }
                 }
               }
             else
