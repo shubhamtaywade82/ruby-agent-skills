@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 198 — Cross-Pack v3 Integration (Rails and Node)
+> **Current milestone:** Iteration 199 — Ruby and Rails MCP Developer Tool Ecosystem
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -699,3 +699,7 @@ Implements Batch 3 of the 5-batch plan. Adds the bounded agent dispatcher `scrip
 ## Iteration 198 — Cross-Pack v3 Integration (Rails and Node)
 
 Adds the cross-pack manifest schema v3 (an additive superset of v2: `schema_version`, `pack:` envelope, per-skill v3 fields, and a `cross_pack:` section with companions, name-collision registry, and seam contracts) and the `rails-node-integration` seam skill owning the Rails side of the Rails ↔ Node backend boundary — integration-mode selection, generated contracts, cross-origin credentials, RFC 9457 problem+json errors, correlation IDs, and write authority. Ships a pinned `node-agent-skills` companion snapshot, the `rails-node-backend-seam` pattern, a "Rails and Node cross-stack routing" matrix section, two adversarial routing cases, a static-only seam evaluation with a benchmark fixture and reference, the RuboCop-clean `bin/cross-pack-verify` verifier (handles both manifest entry shapes), a stdlib-only MCP server (`bin/mcp-server`: list_skills, get_skill, route_prompt with language boosting, list_companions, route_cross_pack), a root `CLAUDE.md` for Claude Code sessions, and the `cross_pack_v3` + `mcp_server` system tests. Inventory rises to 104 skills, 453 patterns, 624 evaluation cases, and 118 system/contract tests; the public routing campaign grows to 47 cases × 3 repetitions.
+
+## Iteration 199 — Ruby and Rails MCP Developer Tool Ecosystem
+
+Adds a task-oriented reference for the external MCP servers that can give Ruby/Rails coding agents project structure, test/database feedback, console access, paused-process debugging, custom application-owned tools, and RubyGems/dependency workflows. It distinguishes the pack's own skill-routing MCP server from application/runtime MCP tools; records developer-tool versus Gemfile installation scope, transports, supported setup, compatibility notes, and task-based combinations; and adds least-privilege rules for shell execution, database access, debugger/console evaluation, network exposure, credentials, authorization, and untrusted tool output. The routing matrix and agent-workflow reference index point to the guide, as do the README and Claude Code integration guide. A registered system test protects the key distinctions and documentation links. Inventory remains 104 skills, 454 patterns, and 624 evaluation cases; system/contract tests rise from 120 to 121.
