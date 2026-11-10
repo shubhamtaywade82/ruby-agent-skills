@@ -26,8 +26,7 @@ module RubyAgentSkills
         return legacy_probe unless negotiated.modern?
         return report(MODERN_PROTOCOL, negotiated.server_info, []) unless negotiated.supports_tools?
 
-        listed = post("tools/list", { "_meta" => CLIENT_META }, 2, modern: true)
-        tools = HttpResponse.tools(result_or_raise(listed, "tools/list"))
+        tools = collect_tools({ "_meta" => CLIENT_META }, 2, modern: true)
         report(MODERN_PROTOCOL, negotiated.server_info, tools)
       end
 
@@ -55,9 +54,16 @@ module RubyAgentSkills
         notify_initialized
         return report(LEGACY_PROTOCOL, HttpResponse.server_info(result["serverInfo"]), []) unless legacy_tools_supported?(result)
 
-        listed = post("tools/list", {}, 3, modern: false)
-        tools = HttpResponse.tools(result_or_raise(listed, "tools/list"))
+        tools = collect_tools({}, 3, modern: false)
         report(LEGACY_PROTOCOL, HttpResponse.server_info(result["serverInfo"]), tools)
+      end
+
+      def collect_tools(params, request_id, modern:)
+        ToolInventory.collect do |cursor, page|
+          page_params = cursor ? params.merge("cursor" => cursor) : params
+          response = post("tools/list", page_params, request_id + page - 1, modern: modern)
+          result_or_raise(response, "tools/list")
+        end
       end
 
       def result_or_raise(response, method)
