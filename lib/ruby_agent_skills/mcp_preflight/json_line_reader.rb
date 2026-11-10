@@ -30,7 +30,9 @@ module RubyAgentSkills
           return parse_message(line) if line
 
           remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
-          raise Error.new("timeout", "timed out waiting for an MCP response") unless remaining.positive?
+          unless remaining.positive?
+            raise Error.new("timeout", "timed out waiting for an MCP response")
+          end
 
           read_chunk(remaining)
         end
