@@ -68,6 +68,7 @@ module RubyAgentSkills
         transport = transport_for(config)
         {
           status: status,
+          configured: !config.nil?,
           transport: transport,
           reason: "#{error.code}: #{error.message}",
           tools: [],
