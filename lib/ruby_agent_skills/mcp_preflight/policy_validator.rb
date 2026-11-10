@@ -26,12 +26,16 @@ module RubyAgentSkills
 
       def validate_root
         raise Error.new("invalid_policy", "policy root must be a mapping") unless @data.is_a?(Hash)
-        raise Error.new("invalid_policy", "schema_version must be 1") unless @data["schema_version"] == 1
+        return if @data["schema_version"] == 1
+
+        raise Error.new("invalid_policy", "schema_version must be 1")
       end
 
       def validate_defaults(defaults)
         raise Error.new("invalid_policy", "defaults must be a mapping") unless defaults.is_a?(Hash)
-        raise Error.new("invalid_policy", "production must be deny") unless defaults["production"] == "deny"
+        return if defaults["production"] == "deny"
+
+        raise Error.new("invalid_policy", "production must be deny")
 
         isolated = defaults.fetch("isolated_capabilities")
         valid = isolated.is_a?(Array) && (isolated - CAPABILITIES).empty?
@@ -48,7 +52,9 @@ module RubyAgentSkills
       end
 
       def validate_profile(name, profile)
-        raise Error.new("invalid_policy", "profile #{name} must be a mapping") unless profile.is_a?(Hash)
+        unless profile.is_a?(Hash)
+          raise Error.new("invalid_policy", "profile #{name} must be a mapping")
+        end
 
         %w[allow require_approval deny].each do |field|
           validate_capabilities(name, field, profile.fetch(field, []))
@@ -72,7 +78,9 @@ module RubyAgentSkills
         raise Error.new("invalid_policy", "server #{server} must be a mapping") unless entry.is_a?(Hash)
 
         tools = entry.fetch("tools", {})
-        raise Error.new("invalid_policy", "server #{server} tools must be a mapping") unless tools.is_a?(Hash)
+        unless tools.is_a?(Hash)
+          raise Error.new("invalid_policy", "server #{server} tools must be a mapping")
+        end
 
         tools.each do |tool, capability|
           valid = tool.is_a?(String) && CAPABILITIES.include?(capability)
