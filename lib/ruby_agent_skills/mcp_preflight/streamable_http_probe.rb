@@ -8,6 +8,12 @@ module RubyAgentSkills
   module MCPPreflight
     class StreamableHttpProbe
       LOOPBACK_HOSTS = %w[localhost 127.0.0.1 ::1].freeze
+      MAX_HTTP_RESPONSE_BYTES = 1_048_576
+      ResponseData = Struct.new(:code, :body, :headers) do
+        def [](name)
+          headers[name.downcase]
+        end
+      end
 
       def initialize(server_config, timeout:)
         @uri = URI.parse(server_config.fetch("url"))
@@ -168,7 +174,22 @@ module RubyAgentSkills
           read_timeout: @timeout,
           write_timeout: @timeout,
           verify_mode: OpenSSL::SSL::VERIFY_PEER
-        ) { |http| http.request(request) }
+        ) do |http|
+          http.request(request) do |response|
+            body = +""
+            response.read_body do |chunk|
+              body << chunk
+              if body.bytesize > MAX_HTTP_RESPONSE_BYTES
+                raise Error.new("response_too_large", "HTTP MCP response exceeded the 1 MiB limit")
+              end
+            end
+            ResponseData.new(
+              response.code,
+              body,
+              { "content-type" => response["content-type"] }
+            )
+          end
+        end
       rescue Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout
         raise Error.new("timeout", "timed out waiting for HTTP MCP server")
       rescue SocketError, Errno::ECONNREFUSED, Errno::EHOSTUNREACH
