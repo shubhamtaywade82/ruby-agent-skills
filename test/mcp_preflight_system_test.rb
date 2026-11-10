@@ -298,7 +298,7 @@ class McpPreflightSystemTest < Minitest::Test
           end
 
         STDOUT.write(JSON.generate(response))
-        STDOUT.write("\\n")
+        STDOUT.write("\n")
         STDOUT.flush
       end
     RUBY
