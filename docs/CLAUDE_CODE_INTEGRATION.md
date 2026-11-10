@@ -97,6 +97,10 @@ The `*_ROOT` env vars let either server resolve its pack without relying on scri
 
 After registering, restart Claude Code. Verify with `/mcp` in the Claude Code prompt — you should see both servers listed with 5 tools each.
 
+### External Ruby/Rails developer-tool MCP servers
+
+The `ruby-agent-skills` server above exposes **skill discovery and routing only**. It does not inspect a consuming Rails application's runtime or execute its tests. For optional app-aware tools (Rails structure, test/database feedback, a local console, a paused-process debugger, or an app-owned network MCP API), use the [Ruby and Rails MCP developer-tools guide](../skills/agent-workflow/references/ruby-rails-mcp-tools.md). Choose servers by task and permission scope; do not enable a console/debugger or production credentials by default.
+
 ### The `route_cross_pack` tool (v3.1)
 
 Both servers expose `route_cross_pack`, which routes a prompt across every installed pack:
