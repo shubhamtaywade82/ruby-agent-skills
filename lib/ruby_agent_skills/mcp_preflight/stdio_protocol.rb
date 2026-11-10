@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require_relative "stdio_tool_list"
 
 module RubyAgentSkills
   module MCPPreflight
@@ -21,7 +22,7 @@ module RubyAgentSkills
 
         result = result_or_raise(discovery, "server/discover")
         listed = request(2, "tools/list", { "_meta" => CLIENT_META })
-        normalize_tools(result_or_raise(listed, "tools/list"), MODERN_PROTOCOL, result["serverInfo"])
+        StdioToolList.build(result_or_raise(listed, "tools/list"), MODERN_PROTOCOL)
       end
 
       private
@@ -44,7 +45,7 @@ module RubyAgentSkills
 
         notify_initialized
         listed = request(3, "tools/list", {})
-        normalize_tools(result_or_raise(listed, "tools/list"), version, result["serverInfo"])
+        StdioToolList.build(result_or_raise(listed, "tools/list"), version)
       end
 
       def notify_initialized
@@ -75,24 +76,6 @@ module RubyAgentSkills
         raise Error.new("invalid_response", "#{method} result must be an object") unless result.is_a?(Hash)
 
         result
-      end
-
-      def normalize_tools(result, version, server_info)
-        tools = result["tools"]
-        valid = tools.is_a?(Array) && tools.all? { |tool| tool.is_a?(Hash) && tool["name"].is_a?(String) }
-        raise Error.new("invalid_tools_list", "tools/list response must contain named tools") unless valid
-
-        {
-          protocol_version: version,
-          server_info: safe_server_info(server_info),
-          tools: tools.map { |tool| tool["name"] }.uniq.sort
-        }
-      end
-
-      def safe_server_info(info)
-        return nil unless info.is_a?(Hash)
-
-        { name: info["name"], version: info["version"] }
       end
 
       def error_code(error)
