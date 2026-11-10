@@ -3,7 +3,8 @@
 module RubyAgentSkills
   module MCPPreflight
     class Runner
-      def initialize(config_path:, policy_path:, server:, tool:, profile:, environment:, isolated:, cwd: nil,
+      def initialize(config_path:, policy_path:, server:, tool:, profile:, environment:,
+                     isolated:, cwd: nil,
                      timeout: DEFAULT_TIMEOUT, probe: false)
         @server = server
         @tool = tool
@@ -23,7 +24,10 @@ module RubyAgentSkills
       def call
         permission = permission_decision
         return report(not_checked, permission) if permission[:decision] == "denied"
-        raise Error.new("probe_confirmation_required", "pass --probe to start or contact the MCP server") unless @probe
+        unless @probe
+          message = "pass --probe to start or contact the MCP server"
+          raise Error.new("probe_confirmation_required", message)
+        end
 
         health = @server_probe.call
         return report(health, unavailable(health)) unless health[:status] == "healthy"
