@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "fileutils"
 require "json"
 require "minitest/autorun"
 require "rbconfig"
@@ -128,6 +129,7 @@ class McpPreflightSystemTest < Minitest::Test
       environment: "production"
     )
 
+    assert_equal "not_checked", result.dig(:health, :status)
     assert_equal "denied", result[:decision]
     assert_match(/production environment/, result[:reason])
   end
@@ -159,17 +161,36 @@ class McpPreflightSystemTest < Minitest::Test
   end
 
   def test_production_access_and_credential_export_are_unconditionally_denied
-    policy = RubyAgentSkills::MCPPreflight::Policy.new(POLICY)
+    policy_path = File.join(@tmpdir, "hard-deny.yml")
+    File.write(
+      policy_path,
+      <<~YAML,
+        schema_version: 1
+        defaults:
+          production: deny
+          isolated_capabilities: []
+        profiles:
+          maintenance:
+            allow: [production_access, credential_export]
+        servers:
+          example:
+            tools:
+              open_production: production_access
+              export_credentials: credential_export
+      YAML
+      encoding: "UTF-8"
+    )
+    policy = RubyAgentSkills::MCPPreflight::Policy.new(policy_path)
 
-    %w[production_access credential_export].each do |capability|
+    %w[open_production export_credentials].each do |tool|
       result = policy.evaluate(
         server: "example",
-        tool: "sensitive",
+        tool: tool,
         profile: "maintenance",
         environment: "development",
         isolated: true
       )
-      refute_equal "allowed", result[:decision], capability
+      assert_equal "denied", result[:decision]
     end
   end
 
