@@ -14,14 +14,16 @@ class RubyRailsMcpToolsReferenceSystemTest < Minitest::Test
   end
 
   def test_reference_covers_the_requested_external_servers
-    %w[rails-mcp-server ruby-console-mcp ask-ruby-harness-mcp ask-rails-harness-mcp debug-mcp ActionMCP].each do |name|
+    %w[rails-mcp-server ruby-console-mcp ask-ruby-harness-mcp ask-rails-harness-mcp
+       debug-mcp ActionMCP].each do |name|
       assert_includes guide, name
     end
     assert_includes guide, "@ruby-mcp/gems-mcp"
   end
 
   def test_rails_mcp_config_is_documented_as_an_executable_from_the_same_gem
-    assert_includes guide, "`rails-mcp-config` is an executable installed by the `rails-mcp-server` gem"
+    assert_includes guide,
+                    "`rails-mcp-config` is an executable installed by the `rails-mcp-server` gem"
     assert_includes guide, "not a separate gem"
   end
 
@@ -44,13 +46,17 @@ class RubyRailsMcpToolsReferenceSystemTest < Minitest::Test
 
   def test_console_and_debugger_are_marked_as_arbitrary_code_execution
     assert_includes guide, "arbitrary Ruby execution with persistent state"
-    assert_includes guide, "Debugger evaluation and process control can alter live application state"
+    assert_includes guide,
+                    "Debugger evaluation and process control can alter live application state"
   end
 
   def test_security_contract_covers_database_network_authorization_and_untrusted_output
-    %w[Least\ privilege Environment\ isolation Database\ controls Network\ controls Application\ authorization Untrusted\ tool\ output Credential\ hygiene].each do |control|
-      assert_includes guide, control
-    end
+    controls = [
+      "Least privilege", "Environment isolation", "Database controls",
+      "Network controls", "Application authorization", "Untrusted tool output",
+      "Credential hygiene"
+    ]
+    controls.each { |control| assert_includes guide, control }
   end
 
   def test_existing_pack_mcp_server_is_distinguished_from_application_tools
@@ -65,7 +71,8 @@ class RubyRailsMcpToolsReferenceSystemTest < Minitest::Test
 
   def test_documentation_entry_points_link_the_reference
     assert_includes source("README.md"), "skills/agent-workflow/references/ruby-rails-mcp-tools.md"
-    assert_includes source("docs/CLAUDE_CODE_INTEGRATION.md"), "../skills/agent-workflow/references/ruby-rails-mcp-tools.md"
+    assert_includes source("docs/CLAUDE_CODE_INTEGRATION.md"),
+                    "../skills/agent-workflow/references/ruby-rails-mcp-tools.md"
   end
 
   def test_validator_executes_this_system_test
