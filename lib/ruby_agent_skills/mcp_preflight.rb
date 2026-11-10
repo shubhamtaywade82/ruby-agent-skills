@@ -483,6 +483,22 @@ module RubyAgentSkills
       end
 
       def call
+        permission = @policy.evaluate(
+          server: @server_name,
+          tool: @tool_name,
+          profile: @profile,
+          environment: @environment,
+          isolated: @isolated
+        )
+        if permission[:decision] == "denied"
+          health = {
+            status: "not_checked",
+            reason: "permission was denied before starting or contacting the MCP server",
+            tools: []
+          }
+          return report(health, permission)
+        end
+
         raise Error.new("probe_confirmation_required", "pass --probe to start the configured MCP server or contact its URL") unless @probe
 
         configuration = JSON.parse(File.read(@config_path, encoding: "UTF-8"))
@@ -501,13 +517,6 @@ module RubyAgentSkills
           return report(health, { decision: "unavailable", reason: "requested tool is not present in the live tools/list response" })
         end
 
-        permission = @policy.evaluate(
-          server: @server_name,
-          tool: @tool_name,
-          profile: @profile,
-          environment: @environment,
-          isolated: @isolated
-        )
         report(health, permission)
       rescue JSON::ParserError => e
         raise Error.new("invalid_client_config", "MCP client config is not valid JSON: #{e.message}")
