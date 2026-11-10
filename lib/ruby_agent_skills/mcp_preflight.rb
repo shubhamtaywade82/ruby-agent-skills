@@ -2,6 +2,7 @@
 
 require "time"
 require_relative "mcp_preflight/constants"
+require_relative "mcp_preflight/discovery_result"
 require_relative "mcp_preflight/policy_validator"
 require_relative "mcp_preflight/policy"
 require_relative "mcp_preflight/json_line_reader"
