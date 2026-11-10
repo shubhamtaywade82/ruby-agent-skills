@@ -1,3 +1,13 @@
+## Iteration 200 — MCP Permission Profiles and Server Preflight
+
+- Add `mcp/permissions.yml` with explicit server/tool-to-capability mappings and `inspect`, `test`, `debug`, `console`, and `maintenance` profiles. Unknown tools and production are denied; production access and credential export are unconditional hard denies; execution, debugger, shell, and write capabilities require an isolated-environment attestation and sensitive actions require approval.
+- Add `bin/mcp-preflight` and the stdlib `RubyAgentSkills::MCPPreflight` implementation. The command reads a consuming MCP client's `mcpServers` JSON configuration, checks local policy before process/network activity, and requires explicit `--probe` before starting a configured STDIO command or contacting Streamable HTTP.
+- Add modern MCP `2026-07-28` discovery and `tools/list` probing, with STDIO fallback to the legacy `2025-11-25` initialize handshake. Report configured-server errors, transport health, authorization-required/unavailable states, and exact tool inventory. The preflight never invokes `tools/call`.
+- Apply transport controls: no shell interpolation for STDIO, minimal inherited environment plus explicit overrides, bounded request timeouts and response size, child process-group cleanup, verified TLS for remote HTTP, loopback-only plain HTTP, rejection of URL credentials/redirects/custom auth headers, and structured failure results.
+- Add `skills/agent-workflow/references/mcp-governance-and-preflight.md`, link it from `agent-workflow`, the Ruby/Rails MCP tools guide, routing matrix, README, and Claude Code integration guide. Document that `--isolated` is an operator attestation and that the preflight is not a reference monitor; the MCP host/application must enforce actual approval and authorization.
+- Add and register `test/mcp_preflight_system_test.rb`. No new skills, patterns, or evaluation cases; inventory remains 104 skills, 454 patterns, and 624 evaluation cases. System/contract test files increase from 121 to 122.
+- Execution note: the Ruby test suite and RuboCop were not run in the remote editing environment; branch-local CI/local validation remains required before merge.
+
 ## Iteration 199 — Ruby and Rails MCP Developer Tool Ecosystem
 
 - Add `skills/agent-workflow/references/ruby-rails-mcp-tools.md`, a task-oriented guide to `rails-mcp-server`, `ruby-console-mcp`, `ask-ruby-harness-mcp`, `ask-rails-harness-mcp`, `debug-mcp`, ActionMCP, and `@ruby-mcp/gems-mcp`; distinguish developer tools from application dependencies, document install scopes/transports/setup, and provide combinations by workflow.
