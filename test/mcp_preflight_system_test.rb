@@ -99,13 +99,14 @@ class McpPreflightSystemTest < Minitest::Test
     assert_equal "shell_execution", result[:capability]
   end
 
-  def test_unclassified_tool_is_denied_even_when_discovered
+  def test_unclassified_tool_is_denied_without_starting_server
     result = run_preflight(
       server: "ask-rails-harness",
       tool: "new_sensitive_tool",
       tools: %w[new_sensitive_tool]
     )
 
+    assert_equal "not_checked", result.dig(:health, :status)
     assert_equal "denied", result[:decision]
     assert_match(/unclassified/, result[:reason])
   end
