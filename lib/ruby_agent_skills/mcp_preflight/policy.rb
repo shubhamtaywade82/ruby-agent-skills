@@ -40,7 +40,8 @@ module RubyAgentSkills
       def validate_environment(environment)
         return if ENVIRONMENTS.include?(environment)
 
-        raise Error.new("unknown_environment", "environment must be development, test, staging, or production")
+        message = "environment must be development, test, staging, or production"
+        raise Error.new("unknown_environment", message)
       end
 
       def capability_for(server, tool)
@@ -49,8 +50,12 @@ module RubyAgentSkills
 
       def evaluate_capability(capability, profile, name, isolated)
         return deny("#{capability} is an unconditional deny") if HARD_DENY.include?(capability)
-        return deny("#{capability} requires an isolated environment", capability) unless isolated?(capability, isolated)
-        return deny("#{capability} is denied by profile #{name}", capability) if Array(profile["deny"]).include?(capability)
+        unless isolated?(capability, isolated)
+          return deny("#{capability} requires an isolated environment", capability)
+        end
+        if Array(profile["deny"]).include?(capability)
+          return deny("#{capability} is denied by profile #{name}", capability)
+        end
         return approval(capability) if Array(profile["require_approval"]).include?(capability)
         return allowed(capability, name) if Array(profile["allow"]).include?(capability)
 
