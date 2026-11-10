@@ -3,24 +3,21 @@
 module RubyAgentSkills
   module MCPPreflight
     class Runner
-      def initialize(config_path:, policy_path:, server:, tool:, profile:, environment:,
-                     isolated:, cwd: nil,
-                     timeout: DEFAULT_TIMEOUT, probe: false)
-        @server = server
-        @tool = tool
-        @profile = profile
-        @environment = environment
-        @isolated = isolated
-        @policy = Policy.new(policy_path)
-        @probe = probe
+      def initialize(options)
+        @server = options.fetch(:server)
+        @tool = options.fetch(:tool)
+        @profile = options.fetch(:profile)
+        @environment = options.fetch(:environment)
+        @isolated = options.fetch(:isolated)
+        @policy = Policy.new(options.fetch(:policy_path))
+        @probe = options.fetch(:probe, false)
         @server_probe = ServerProbe.new(
-          config_path: config_path,
-          server: server,
-          cwd: cwd,
-          timeout: timeout
+          config_path: options.fetch(:config_path),
+          server: @server,
+          cwd: options[:cwd],
+          timeout: options.fetch(:timeout, DEFAULT_TIMEOUT)
         )
       end
-
       def call
         permission = permission_decision
         return report(not_checked, permission) if permission[:decision] == "denied"
