@@ -15,7 +15,8 @@ module RubyAgentSkills
       def call
         probe(load_server_config)
       rescue JSON::ParserError => e
-        raise Error.new("invalid_client_config", "MCP client config is not valid JSON: #{e.message}")
+        message = "MCP client config is not valid JSON: #{e.message}"
+        raise Error.new("invalid_client_config", message)
       end
 
       private
@@ -25,7 +26,9 @@ module RubyAgentSkills
         server_config = configuration.fetch("mcpServers").fetch(@server) do
           raise Error.new("server_not_configured", "MCP server #{@server} is not registered")
         end
-        raise Error.new("invalid_server_config", "server registration must be a mapping") unless server_config.is_a?(Hash)
+        unless server_config.is_a?(Hash)
+          raise Error.new("invalid_server_config", "server registration must be a mapping")
+        end
 
         server_config
       rescue KeyError => e
@@ -43,7 +46,8 @@ module RubyAgentSkills
 
       def http_probe(config)
         if config["headers"]
-          raise Error.new("unsupported_http_auth", "preflight does not perform OAuth; authenticate in the MCP host")
+          message = "preflight does not perform OAuth; authenticate in the MCP host"
+          raise Error.new("unsupported_http_auth", message)
         end
 
         StreamableHttpProbe.new(config, timeout: @timeout).call
