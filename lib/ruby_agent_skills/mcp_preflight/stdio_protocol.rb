@@ -56,6 +56,9 @@ module RubyAgentSkills
         unless result["protocolVersion"] == LEGACY_PROTOCOL
           raise Error.new("protocol_incompatible", "legacy server did not negotiate the requested protocol version")
         end
+        unless result["capabilities"].is_a?(Hash)
+          raise Error.new("invalid_initialize", "legacy initialize response has no capabilities object")
+        end
 
         notify_initialized
         return empty_tool_list(LEGACY_PROTOCOL, result["serverInfo"]) unless legacy_tools_supported?(result)
