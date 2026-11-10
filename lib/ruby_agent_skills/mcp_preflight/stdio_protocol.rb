@@ -23,7 +23,10 @@ module RubyAgentSkills
 
         result = result_or_raise(discovery, "server/discover")
         listed = request(2, "tools/list", { "_meta" => CLIENT_META })
-        StdioToolList.build(result_or_raise(listed, "tools/list"), MODERN_PROTOCOL)
+        server_info = result.dig("_meta", "io.modelcontextprotocol/serverInfo")
+        StdioToolList.build(
+          result_or_raise(listed, "tools/list"), MODERN_PROTOCOL, server_info: server_info
+        )
       end
 
       private
@@ -46,7 +49,9 @@ module RubyAgentSkills
 
         notify_initialized
         listed = request(3, "tools/list", {})
-        StdioToolList.build(result_or_raise(listed, "tools/list"), version)
+        StdioToolList.build(
+          result_or_raise(listed, "tools/list"), version, server_info: result["serverInfo"]
+        )
       end
 
       def notify_initialized
