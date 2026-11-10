@@ -53,6 +53,7 @@ SHIPPED_PATHS = %w[
   README.md
   SECURITY.md
   bin/install
+  bin/mcp-preflight
   bin/skill-pack-compatibility
   bin/skill-pack-doctor
   bin/skill-pack-verify
@@ -63,10 +64,22 @@ SHIPPED_PATHS = %w[
   docs/SKILL_CONTRACT.md
   docs/VERIFY_CHANGE.md
   lib/ruby_agent_skills/change_verifier.rb
+lib/ruby_agent_skills/mcp_preflight/constants.rb
+  lib/ruby_agent_skills/mcp_preflight/policy.rb
+  lib/ruby_agent_skills/mcp_preflight/policy_validator.rb
+  lib/ruby_agent_skills/mcp_preflight/json_line_reader.rb
+  lib/ruby_agent_skills/mcp_preflight/stdio_protocol.rb
+  lib/ruby_agent_skills/mcp_preflight/stdio_tool_list.rb
+  lib/ruby_agent_skills/mcp_preflight/stdio_probe.rb
+  lib/ruby_agent_skills/mcp_preflight/http_response.rb
+  lib/ruby_agent_skills/mcp_preflight/streamable_http_probe.rb
+  lib/ruby_agent_skills/mcp_preflight/server_probe.rb
+  lib/ruby_agent_skills/mcp_preflight/runner.rb
   lib/ruby_agent_skills/runtime_profile.rb
   lib/ruby_agent_skills/version_constraint.rb
   router/ROUTING.md
   skill-manifest.yml
+  mcp/permissions.yml
 ].freeze
 SHIPPED_DIRS = %w[skills patterns].freeze
 
