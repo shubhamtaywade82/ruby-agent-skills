@@ -13,10 +13,13 @@ module RubyAgentSkills
       end
 
       def call
-        probe(load_server_config)
+        config = load_server_config
+        probe(config)
       rescue JSON::ParserError => e
         message = "MCP client config is not valid JSON: #{e.message}"
         raise Error.new("invalid_client_config", message)
+      rescue Error => e
+        health_failure(e)
       end
 
       private
@@ -51,6 +54,18 @@ module RubyAgentSkills
         end
 
         StreamableHttpProbe.new(config, timeout: @timeout).call
+      end
+
+      def health_failure(error)
+        status = error.code == "authorization_required" ? "authorization_required" : "unavailable"
+        transport = error.code.to_s.start_with?("http", "unsafe", "tls") ? "streamable_http" : "stdio"
+        {
+          status: status,
+          transport: transport,
+          reason: "#{error.code}: #{error.message}",
+          tools: [],
+          checked_at: Time.now.utc.iso8601
+        }
       end
     end
   end
