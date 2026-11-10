@@ -288,6 +288,17 @@ Treat every server registration as a grant of capabilities to the agent. MCP doe
 9. **Reproducibility:** pin gem/npm versions for team setups, record transport and command, and review upstream release notes before upgrades. Do not rely on an unpinned `npx` invocation for controlled CI/benchmark runs.
 10. **Auditability:** record which server/tool was invoked, on which project/environment, with what permission mode and result. Require confirmation for writes, schema changes, dependency changes, external network calls and irreversible actions.
 
+## Permission profiles and health preflight
+
+Before using a configured external MCP tool, consult [MCP Permission Profiles and Preflight](mcp-governance-and-preflight.md). The `bin/mcp-preflight` command checks the configured server transport, protocol discovery, the live `tools/list` inventory, and a local fail-closed capability policy. It never calls the requested tool. The policy is advisory unless the consuming MCP host also enforces approval at the actual call boundary; `--isolated` is an operator attestation, not an environment inspection.
+
+Example:
+
+```bash
+ruby bin/mcp-preflight --config .mcp.json --server ask-rails-harness \
+  --tool query_database --profile inspect --environment development --probe
+```
+
 ## Skill composition
 
 | Concern | Load |
