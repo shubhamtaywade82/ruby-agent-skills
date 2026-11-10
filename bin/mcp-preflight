@@ -27,7 +27,9 @@ OptionParser.new do |parser|
   parser.on("--server NAME", "Exact key under mcpServers") { |value| options[:server] = value }
   parser.on("--tool NAME", "Exact tools/list name") { |value| options[:tool] = value }
   parser.on("--profile NAME", "Permission profile") { |value| options[:profile] = value }
-  parser.on("--environment NAME", "development, test, staging, production") { |value| options[:environment] = value }
+  parser.on("--environment NAME", "development, test, staging, production") do |value|
+    options[:environment] = value
+  end
   parser.on("--cwd PATH", "Working directory for a STDIO server") { |value| options[:cwd] = value }
   parser.on("--timeout SECONDS", Float, "Per-request timeout") { |value| options[:timeout] = value }
   parser.on("--isolated", "Attest disposable environment") { options[:isolated] = true }
