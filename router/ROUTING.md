@@ -19,7 +19,7 @@ This file defines how an agent should select and compose skills.
 |---|---|---|
 | Runtime/version compatibility | ruby-runtime-compatibility | ruby-core, ruby-gems-io-services, ruby-debugging |
 | Ruby toolchain/environment setup | ruby-toolchain | ruby-runtime-compatibility, ruby-gems-io-services, ruby-debugging |
-| Ruby/Rails MCP developer-tool selection, configuration, permissions, or integration | agent-workflow | ruby-toolchain, ruby-debugging, rails-test-engineering, rails-security, rails-security-engineering, rails-api-integration |
+| Ruby/Rails MCP server selection, health preflight, tool permission profiles, or integration | agent-workflow | ruby-toolchain, ruby-debugging, rails-test-engineering, rails-security, rails-security-engineering, rails-api-integration |
 | Create a Rails application / `rails new` | rails-application-bootstrap | ruby-toolchain, ruby-runtime-compatibility, rails-architecture, rails-generators |
 | Ruby gem authoring/packaging/release | ruby-gem-development | ruby-toolchain, ruby-gems-io-services, ruby-tdd-refactoring, pattern:ruby-gem |
 | Skill-system maintenance, completeness, registry, routing, or audit | agent-workflow | ruby-clean-code, ruby-tdd-refactoring |
