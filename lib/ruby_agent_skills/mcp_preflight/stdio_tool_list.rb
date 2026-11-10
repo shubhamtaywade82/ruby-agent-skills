@@ -3,7 +3,7 @@
 module RubyAgentSkills
   module MCPPreflight
     class StdioToolList
-      def self.build(result, version)
+      def self.build(result, version, server_info: nil)
         tools = result["tools"]
         valid = tools.is_a?(Array) && tools.all? do |tool|
           tool.is_a?(Hash) && tool["name"].is_a?(String)
@@ -12,7 +12,7 @@ module RubyAgentSkills
 
         {
           protocol_version: version,
-          server_info: safe_server_info(result["serverInfo"]),
+          server_info: safe_server_info(server_info),
           tools: tools.map { |tool| tool["name"] }.uniq.sort
         }
       end
