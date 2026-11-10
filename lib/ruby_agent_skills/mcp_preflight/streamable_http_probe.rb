@@ -20,11 +20,14 @@ module RubyAgentSkills
         validate_url!
         discovery = post("server/discover", { "_meta" => CLIENT_META }, 1)
         if discovery[:error]
-          raise Error.new("protocol_incompatible", "HTTP server does not support modern server/discover")
+          message = "HTTP server does not support modern server/discover"
+          raise Error.new("protocol_incompatible", message)
         end
 
         result = discovery[:result]
-        raise Error.new("invalid_discovery", "server/discover result must be an object") unless result.is_a?(Hash)
+        unless result.is_a?(Hash)
+          raise Error.new("invalid_discovery", "server/discover result must be an object")
+        end
         listed = post("tools/list", { "_meta" => CLIENT_META }, 2)
         tools = HttpResponse.tools(listed[:result] || {})
 
@@ -45,7 +48,9 @@ module RubyAgentSkills
         secure = @uri.is_a?(URI::HTTPS)
         local_http = @uri.is_a?(URI::HTTP) && loopback
         raise Error.new("unsafe_url", "remote MCP URLs must use HTTPS") unless secure || local_http
-        raise Error.new("unsafe_url", "MCP URL must not contain credentials") if @uri.user || @uri.password
+        if @uri.user || @uri.password
+          raise Error.new("unsafe_url", "MCP URL must not contain credentials")
+        end
         raise Error.new("unsafe_url", "MCP URL must not contain a fragment") if @uri.fragment
         raise Error.new("invalid_server_config", "MCP URL must include a host") unless @uri.host
       end
@@ -54,7 +59,9 @@ module RubyAgentSkills
         request = request_for(method, params, id)
         response = perform_request(request)
         return HttpResponse.parse(response) if response.code.to_i.between?(200, 299)
-        raise Error.new("authorization_required", "HTTP MCP server requires authorization") if [401, 403].include?(response.code.to_i)
+        if [401, 403].include?(response.code.to_i)
+          raise Error.new("authorization_required", "HTTP MCP server requires authorization")
+        end
 
         raise Error.new("http_unavailable", "HTTP MCP server returned status #{response.code}")
       end
