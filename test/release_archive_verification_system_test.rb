@@ -75,6 +75,17 @@ class ReleaseArchiveVerificationSystemTest < Minitest::Test
     end
   end
 
+  def test_verifier_requires_mcp_preflight_files
+    source = File.read(VERIFIER, encoding: "UTF-8")
+
+    %w[
+      bin/mcp-preflight mcp/permissions.yml
+      lib/ruby_agent_skills/mcp_preflight.rb lib/ruby_agent_skills/mcp_preflight/constants.rb lib/ruby_agent_skills/mcp_preflight/policy.rb lib/ruby_agent_skills/mcp_preflight/policy_validator.rb lib/ruby_agent_skills/mcp_preflight/json_line_reader.rb lib/ruby_agent_skills/mcp_preflight/stdio_protocol.rb lib/ruby_agent_skills/mcp_preflight/stdio_tool_list.rb lib/ruby_agent_skills/mcp_preflight/stdio_probe.rb lib/ruby_agent_skills/mcp_preflight/http_response.rb lib/ruby_agent_skills/mcp_preflight/streamable_http_probe.rb lib/ruby_agent_skills/mcp_preflight/server_probe.rb lib/ruby_agent_skills/mcp_preflight/runner.rb
+    ].each do |path|
+      assert_includes source, path
+    end
+  end
+
   def test_verifier_rejects_archive_checksum_mismatch
     Dir.mktmpdir("release-verify") do |dir|
       archive = build(dir)
