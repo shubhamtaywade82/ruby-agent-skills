@@ -92,6 +92,22 @@ bundle install
 
 Run it with the target repository as the MCP client's `cwd` so it can resolve the intended project. When it is in the Gemfile, invoke it through `bundle exec`. The generic harness includes execution capabilities; apply the same shell-command allowlist and database restrictions described for the Rails wrapper.
 
+Illustrative STDIO client entry for a global installation (client schemas differ):
+
+```json
+{
+  "mcpServers": {
+    "ask-ruby-harness": {
+      "command": "ask-ruby-harness-mcp",
+      "args": [],
+      "cwd": "/absolute/path/to/ruby-project"
+    }
+  }
+}
+```
+
+For a project-bundled installation, use `command: "bundle"` with `args: ["exec", "ask-ruby-harness-mcp"]` and keep the same project-root `cwd`.
+
 Do not install both generic and Rails wrappers automatically. `ask-rails-harness-mcp` is the Rails-specific package, adds route inspection, and documents app-root/Bundler execution as its supported setup.
 
 **Scope:** global or project-level. Prefer project pinning when reproducible tool versions are important or when the project uses a strict Ruby/Bundler runtime.
@@ -151,6 +167,8 @@ bundle install
 
 Start the target process with Ruby debugging enabled (for example, use `rdbg --open --port=12345` with the relevant script/process arguments), then configure the MCP server to connect using the options documented by the installed `debug-mcp` release. If the gem is in the app bundle, launch the server via Bundler.
 
+For a global installation, the basic STDIO server registration is `command: "debug-mcp"` with no arguments; for a project-bundled installation use `command: "bundle"`, `args: ["exec", "debug-mcp"]`, and the project root as `cwd`. Follow the installed release's README for how the server attaches to the debugger endpoint.
+
 Debugger evaluation and process control can alter live application state. Use a local or isolated staging process with synthetic data, loopback-only debugger connectivity, and no production secrets. Stop the debug listener when the investigation ends.
 
 **Scope:** global or project Gemfile. The correct choice depends on whether the debugger should be independently updated or pinned with the app.
@@ -183,7 +201,16 @@ Important constraints from the current upstream README: ActionMCP does **not** i
 npx -y @ruby-mcp/gems-mcp
 ```
 
-Or install it in a dedicated Node tooling workspace with npm/pnpm. The upstream monorepo is `https://github.com/fugufish/ruby-mcp`; when building from source, follow its workspace instructions and build the package you intend to run. The public npm page currently shows package version 0.3.0 with a publication date a year ago, so review maintenance, compatibility and release activity before making it a standard team dependency.
+Or install it in a dedicated Node tooling workspace with npm/pnpm. To build from the upstream monorepo:
+
+```bash
+git clone https://github.com/fugufish/ruby-mcp.git
+cd ruby-mcp
+pnpm install
+pnpm --filter @ruby-mcp/gems-mcp build
+```
+
+Follow the monorepo's current workspace instructions if its build scripts change; do not assume `turbo run build` is a stable public interface. The public npm page currently shows package version 0.3.0 with a publication date a year ago, so review maintenance, compatibility and release activity before making it a standard team dependency.
 
 Gemfile/gemspec mutation is a write operation. Require a human-approved dependency diff, review version constraints and transitive impact, then run the project's Bundler/test/security gates. Never let an agent blindly update the full dependency tree.
 
