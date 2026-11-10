@@ -182,6 +182,7 @@ class McpPreflightSystemTest < Minitest::Test
         schema_version: 1
         defaults:
           production: deny
+          unknown_tool: deny
           isolated_capabilities: []
         profiles:
           maintenance:
