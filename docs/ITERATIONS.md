@@ -2,7 +2,7 @@
 
 The repository is built in numbered iterations. This file is the ordered history, oldest first: one section per iteration with a short summary. `CHANGELOG.md` keeps the itemized changes, newest first.
 
-> **Current milestone:** Iteration 199 — Ruby and Rails MCP Developer Tool Ecosystem
+> **Current milestone:** Iteration 200 — MCP Permission Profiles and Server Preflight
 
 No entry was recorded for iterations before 41, or for 68, 80, 107, and 108.
 
@@ -703,3 +703,7 @@ Adds the cross-pack manifest schema v3 (an additive superset of v2: `schema_vers
 ## Iteration 199 — Ruby and Rails MCP Developer Tool Ecosystem
 
 Adds a task-oriented reference for the external MCP servers that can give Ruby/Rails coding agents project structure, test/database feedback, console access, paused-process debugging, custom application-owned tools, and RubyGems/dependency workflows. It distinguishes the pack's own skill-routing MCP server from application/runtime MCP tools; records developer-tool versus Gemfile installation scope, transports, supported setup, compatibility notes, and task-based combinations; and adds least-privilege rules for shell execution, database access, debugger/console evaluation, network exposure, credentials, authorization, and untrusted tool output. The routing matrix and agent-workflow reference index point to the guide, as do the README and Claude Code integration guide. A registered system test protects the key distinctions and documentation links. Inventory remains 104 skills, 454 patterns, and 624 evaluation cases; system/contract tests rise from 120 to 121.
+
+## Iteration 200 — MCP Permission Profiles and Server Preflight
+
+Adds an explicit MCP permission policy and a health/availability preflight for Ruby/Rails coding-agent tools. `mcp/permissions.yml` classifies exact server/tool pairs into capabilities and defines inspect, test, debug, console, and maintenance profiles; unclassified tools, production, production access, and credential export fail closed. The stdlib `bin/mcp-preflight` reads the consuming MCP client's configuration, evaluates policy before starting a process or contacting a URL, requires explicit `--probe`, then performs modern `2026-07-28` discovery plus `tools/list` or falls back to the legacy `2025-11-25` STDIO handshake. It reports transport and tool availability without invoking `tools/call`. Transport safeguards include command execution without a shell, minimal environment inheritance, bounded request/response handling, process-group cleanup, remote HTTPS verification, loopback-only plaintext HTTP, and explicit unsupported-auth reporting. A governance reference is integrated into agent-workflow, routing, README, and Claude Code documentation. The new preflight system test is registered in `bin/validate`. Inventory remains 104 skills, 454 patterns, and 624 evaluation cases; system/contract tests rise from 121 to 122. The local `--isolated` flag is an operator attestation, not proof of container/network/database isolation; the actual MCP host must enforce approval and authorization.
