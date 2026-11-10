@@ -18,31 +18,75 @@ module RubyAgentSkills
 
       def call
         validate_url!
-        discovery = post("server/discover", { "_meta" => CLIENT_META }, 1)
-        if discovery[:error]
-          message = "HTTP server does not support modern server/discover"
-          raise Error.new("protocol_incompatible", message)
+        discovery = post("server/discover", { "_meta" => CLIENT_META }, 1, modern: true)
+        return legacy_probe if method_not_found?(discovery)
+
+        result = discovery.fetch(:result)
+        negotiated = DiscoveryResult.new(result)
+        return legacy_probe unless negotiated.modern?
+        return report(MODERN_PROTOCOL, negotiated.server_info, []) unless negotiated.supports_tools?
+
+        listed = post("tools/list", { "_meta" => CLIENT_META }, 2, modern: true)
+        tools = HttpResponse.tools(listed.fetch(:result))
+        report(MODERN_PROTOCOL, negotiated.server_info, tools)
+      end
+
+      private
+
+      def legacy_probe
+        initialized = post(
+          "initialize",
+          {
+            "protocolVersion" => LEGACY_PROTOCOL,
+            "capabilities" => {},
+            "clientInfo" => CLIENT_INFO
+          },
+          2,
+          modern: false
+        )
+        result = initialized.fetch(:result)
+        unless result.is_a?(Hash) && result["protocolVersion"] == LEGACY_PROTOCOL
+          raise Error.new("protocol_incompatible", "legacy HTTP server did not negotiate the requested version")
         end
 
-        result = discovery[:result]
-        unless result.is_a?(Hash)
-          raise Error.new("invalid_discovery", "server/discover result must be an object")
-        end
-        listed = post("tools/list", { "_meta" => CLIENT_META }, 2)
-        tools = HttpResponse.tools(listed[:result] || {})
+        notify_initialized
+        return report(LEGACY_PROTOCOL, HttpResponse.server_info(result["serverInfo"]), []) unless legacy_tools_supported?(result)
 
+        listed = post("tools/list", {}, 3, modern: false)
+        tools = HttpResponse.tools(listed.fetch(:result))
+        report(LEGACY_PROTOCOL, HttpResponse.server_info(result["serverInfo"]), tools)
+      end
+
+      def report(version, server_info, tools)
         {
           status: "healthy",
           configured: true,
           transport: "streamable_http",
-          protocol_version: MODERN_PROTOCOL,
-          server_info: HttpResponse.server_info(result),
+          protocol_version: version,
+          server_info: server_info,
           tools: tools,
           checked_at: Time.now.utc.iso8601
         }
       end
 
-      private
+      def legacy_tools_supported?(result)
+        result.fetch("capabilities", {}).key?("tools")
+      end
+
+      def method_not_found?(response)
+        response[:error].is_a?(Hash) && response[:error]["code"] == -32_601
+      end
+
+      def notify_initialized
+        request = request_for(
+          "notifications/initialized",
+          {},
+          nil,
+          modern: false
+        )
+        response = perform_request(request)
+        ensure_success!(response)
+      end
 
       def validate_url!
         loopback = LOOPBACK_HOSTS.include?(@uri.host)
@@ -56,30 +100,41 @@ module RubyAgentSkills
         raise Error.new("invalid_server_config", "MCP URL must include a host") unless @uri.host
       end
 
-      def post(method, params, id)
-        request = request_for(method, params, id)
+      def post(method, params, id, modern:)
+        request = request_for(method, params, id, modern: modern)
         response = perform_request(request)
-        return HttpResponse.parse(response) if response.code.to_i.between?(200, 299)
+        if response.code.to_i.between?(200, 299)
+          return HttpResponse.parse(response)
+        end
         if [401, 403].include?(response.code.to_i)
           raise Error.new("authorization_required", "HTTP MCP server requires authorization")
+        end
+        if method == "server/discover" && [404, 405, 501].include?(response.code.to_i)
+          return { error: { "code" => -32_601 } }
         end
 
         raise Error.new("http_unavailable", "HTTP MCP server returned status #{response.code}")
       end
 
-      def request_for(method, params, id)
+      def request_for(method, params, id, modern:)
         request = Net::HTTP::Post.new(@uri)
         request["Content-Type"] = "application/json"
         request["Accept"] = "application/json, text/event-stream"
-        request["MCP-Protocol-Version"] = MODERN_PROTOCOL
-        request["Mcp-Method"] = method
-        request.body = JSON.generate(
-          "jsonrpc" => "2.0",
-          "id" => id,
-          "method" => method,
-          "params" => params
-        )
+        request["MCP-Protocol-Version"] = modern ? MODERN_PROTOCOL : LEGACY_PROTOCOL
+        request["Mcp-Method"] = method if modern
+        payload = { "jsonrpc" => "2.0", "method" => method, "params" => params }
+        payload["id"] = id unless id.nil?
+        request.body = JSON.generate(payload)
         request
+      end
+
+      def ensure_success!(response)
+        return if response.code.to_i.between?(200, 299)
+        if [401, 403].include?(response.code.to_i)
+          raise Error.new("authorization_required", "HTTP MCP server requires authorization")
+        end
+
+        raise Error.new("http_unavailable", "HTTP MCP notification returned status #{response.code}")
       end
 
       def perform_request(request)
