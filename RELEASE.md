@@ -50,6 +50,9 @@ The archive carries the agent-facing surface only — no git history, no evaluat
 | `AGENTS.md` | Agent-facing entry point |
 | `docs/SKILL_CONTRACT.md` | Skill authoring contract |
 | `bin/install` | Installer (git and offline archive modes) |
+| `bin/mcp-preflight` | MCP transport/availability preflight and permission-profile decision tool |
+| `mcp/permissions.yml` | Default fail-closed MCP capability classifications and permission profiles |
+| `lib/ruby_agent_skills/mcp_preflight.rb`, `lib/ruby_agent_skills/mcp_preflight/` | Stdlib MCP policy, STDIO, and Streamable HTTP preflight implementation |
 | `bin/skill-pack-verify`, `bin/skill-pack-doctor`, `bin/skill-pack-compatibility` | Installed-pack verification and compatibility tools |
 | `bin/stack-minimality` | Deterministic minimality evidence tool |
 | `RELEASE.json` | Version, source git SHA, and inventory provenance |
