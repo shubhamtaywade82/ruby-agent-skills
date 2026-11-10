@@ -228,7 +228,7 @@ class McpPreflightSystemTest < Minitest::Test
       encoding: "UTF-8"
     )
 
-    runner = RubyAgentSkills::MCPPreflight::Runner.new(
+    runner_options = {
       config_path: config_path,
       policy_path: POLICY,
       server: server,
@@ -238,7 +238,8 @@ class McpPreflightSystemTest < Minitest::Test
       isolated: isolated,
       timeout: 2,
       probe: probe
-    )
+    }
+    runner = RubyAgentSkills::MCPPreflight::Runner.new(runner_options)
     runner.call
   end
 
