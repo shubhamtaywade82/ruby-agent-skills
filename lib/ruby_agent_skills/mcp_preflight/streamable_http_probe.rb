@@ -21,13 +21,13 @@ module RubyAgentSkills
         discovery = post("server/discover", { "_meta" => CLIENT_META }, 1, modern: true)
         return legacy_probe if method_not_found?(discovery)
 
-        result = discovery.fetch(:result)
+        result = result_or_raise(discovery, "server/discover")
         negotiated = DiscoveryResult.new(result)
         return legacy_probe unless negotiated.modern?
         return report(MODERN_PROTOCOL, negotiated.server_info, []) unless negotiated.supports_tools?
 
         listed = post("tools/list", { "_meta" => CLIENT_META }, 2, modern: true)
-        tools = HttpResponse.tools(listed.fetch(:result))
+        tools = HttpResponse.tools(result_or_raise(listed, "tools/list"))
         report(MODERN_PROTOCOL, negotiated.server_info, tools)
       end
 
@@ -44,17 +44,33 @@ module RubyAgentSkills
           2,
           modern: false
         )
-        result = initialized.fetch(:result)
-        unless result.is_a?(Hash) && result["protocolVersion"] == LEGACY_PROTOCOL
+        result = result_or_raise(initialized, "initialize")
+        unless result["protocolVersion"] == LEGACY_PROTOCOL
           raise Error.new("protocol_incompatible", "legacy HTTP server did not negotiate the requested version")
+        end
+        unless result["capabilities"].is_a?(Hash)
+          raise Error.new("invalid_initialize", "legacy HTTP initialize response has no capabilities object")
         end
 
         notify_initialized
         return report(LEGACY_PROTOCOL, HttpResponse.server_info(result["serverInfo"]), []) unless legacy_tools_supported?(result)
 
         listed = post("tools/list", {}, 3, modern: false)
-        tools = HttpResponse.tools(listed.fetch(:result))
+        tools = HttpResponse.tools(result_or_raise(listed, "tools/list"))
         report(LEGACY_PROTOCOL, HttpResponse.server_info(result["serverInfo"]), tools)
+      end
+
+      def result_or_raise(response, method)
+        if response[:error]
+          raise Error.new("request_failed", "#{method} failed with a JSON-RPC error")
+        end
+
+        result = response[:result]
+        unless result.is_a?(Hash)
+          raise Error.new("invalid_response", "#{method} result must be an object")
+        end
+
+        result
       end
 
       def report(version, server_info, tools)
