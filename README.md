@@ -41,6 +41,10 @@ A CLI install copies the skill folders only. Skills name the implementation patt
 
 After installing the pack, run `ruby bin/skill-pack-doctor --root <agent-skill-root>` to verify the installed metadata, skill inventory, embedded verifier, and content integrity before using the pack in a controlled agent environment.
 
+## Ruby/Rails MCP developer tooling
+
+The pack includes its own skill-routing MCP server (`bin/mcp-server`). For application-aware tools such as Rails structure inspection, test/database feedback, interactive consoles, runtime debugging, custom Rails MCP endpoints, and RubyGems management, see the [Ruby and Rails MCP developer-tools guide](skills/agent-workflow/references/ruby-rails-mcp-tools.md). It distinguishes developer tooling from application dependencies and documents least-privilege setup.
+
 ## Routing evidence integrity
 
 `bin/routing-compare` recomputes routing metrics from the recorded run data before applying the remediation gate. A campaign whose recorded metrics have been altered or drifted from its runs is rejected rather than treated as benchmark evidence.
@@ -116,7 +120,7 @@ skills/rails-active-record/
 | Skills | **104** |
 | Implementation patterns | **454** |
 | Evaluation cases | **624** |
-| Dedicated system/contract tests | **120** |
+| Dedicated system/contract tests | **121** |
 | Manifest version | **2** (cross-pack schema v3) |
 
 The exact inventory is governed by `skill-manifest.yml`; `bin/validate` is the source of truth for library-contract validation.
