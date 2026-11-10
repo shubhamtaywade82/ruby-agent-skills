@@ -49,6 +49,71 @@ class McpPreflightSystemTest < Minitest::Test
     assert_equal "allowed", result[:decision]
   end
 
+  def test_discovery_negotiates_legacy_when_modern_is_not_advertised
+    result = run_preflight(
+      server: "ask-rails-harness",
+      tool: "schema_graph",
+      tools: %w[schema_graph],
+      supported_versions: ["2025-11-25"]
+    )
+
+    assert_equal "healthy", result.dig(:health, :status)
+    assert_equal "2025-11-25", result.dig(:health, :protocol_version)
+    assert_includes result.dig(:health, :tools), "schema_graph"
+  end
+
+  def test_discovery_fails_closed_when_no_client_version_is_supported
+    result = run_preflight(
+      server: "ask-rails-harness",
+      tool: "schema_graph",
+      tools: %w[schema_graph],
+      supported_versions: ["2024-11-05"]
+    )
+
+    assert_equal "unavailable", result[:decision]
+    assert_match(/no protocol version supported/, result.dig(:health, :reason))
+  end
+
+  def test_discovery_without_tools_capability_returns_healthy_empty_inventory
+    result = run_preflight(
+      server: "ask-rails-harness",
+      tool: "schema_graph",
+      tools: %w[schema_graph],
+      supports_tools: false
+    )
+
+    assert_equal "healthy", result.dig(:health, :status)
+    assert_empty result.dig(:health, :tools)
+    assert_equal "unavailable", result[:decision]
+  end
+
+  def test_silent_legacy_stdio_probe_restarts_server_for_initialize
+    result = run_preflight(
+      server: "ask-rails-harness",
+      tool: "schema_graph",
+      tools: %w[schema_graph],
+      modern: false,
+      silence_first_discovery: true
+    )
+
+    assert_equal "healthy", result.dig(:health, :status)
+    assert_equal "2025-11-25", result.dig(:health, :protocol_version)
+    assert_includes result.dig(:health, :tools), "schema_graph"
+  end
+
+  def test_discovery_requires_supported_versions_and_cache_metadata
+    error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
+      RubyAgentSkills::MCPPreflight::DiscoveryResult.new(
+        "resultType" => "complete",
+        "capabilities" => { "tools" => {} },
+        "cacheScope" => "public",
+        "ttlMs" => 1
+      )
+    end
+
+    assert_equal "invalid_discovery", error.code
+  end
+
   def test_database_reads_require_human_approval_under_inspect_profile
     result = run_preflight(
       server: "ask-rails-harness",
@@ -263,17 +328,30 @@ class McpPreflightSystemTest < Minitest::Test
     probe = options.fetch(:probe, true)
     exit_early = options.fetch(:exit_early, false)
     omit_server_config = options.fetch(:omit_server_config, false)
+    supported_versions = options.fetch(:supported_versions, ["2026-07-28"])
+    supports_tools = options.fetch(:supports_tools, true)
+    silence_first_discovery = options.fetch(:silence_first_discovery, false)
+    counter_path = File.join(@tmpdir, "probe-count")
     config_path = File.join(@tmpdir, "mcp.json")
+    registration = {
+      "command" => RbConfig.ruby,
+      "args" => [
+        "-e",
+        fake_server(
+          modern: modern,
+          tools: tools,
+          exit_early: exit_early,
+          supported_versions: supported_versions,
+          supports_tools: supports_tools,
+          silence_first_discovery: silence_first_discovery,
+          counter_path: counter_path
+        )
+      ],
+      "env" => { "MCP_PREFLIGHT_CALLS" => counter_path }
+    }
     File.write(
       config_path,
-      JSON.generate(
-        "mcpServers" => (omit_server_config ? {} : {
-          server => {
-            "command" => RbConfig.ruby,
-            "args" => ["-e", fake_server(modern: modern, tools: tools, exit_early: exit_early)]
-          }
-        })
-      ),
+      JSON.generate("mcpServers" => (omit_server_config ? {} : { server => registration })),
       encoding: "UTF-8"
     )
 
@@ -288,16 +366,27 @@ class McpPreflightSystemTest < Minitest::Test
       timeout: 2,
       probe: probe
     }
-    runner = RubyAgentSkills::MCPPreflight::Runner.new(runner_options)
-    runner.call
+    RubyAgentSkills::MCPPreflight::Runner.new(runner_options).call
   end
 
-  def fake_server(modern:, tools:, exit_early: false)
+  def fake_server(modern:, tools:, exit_early:, supported_versions:,
+                  supports_tools:, silence_first_discovery:, counter_path:)
     <<~RUBY
       require "json"
       modern = #{modern}
       exit_early = #{exit_early}
+      supported_versions = #{supported_versions.inspect}
+      supports_tools = #{supports_tools}
+      silence_first_discovery = #{silence_first_discovery}
+      counter_path = ENV.fetch("MCP_PREFLIGHT_CALLS")
+      calls = File.exist?(counter_path) ? File.read(counter_path).to_i : 0
+      File.write(counter_path, (calls + 1).to_s)
       tools = #{tools.inspect}
+
+      if silence_first_discovery && calls.zero?
+        STDIN.readline
+        sleep 60
+      end
 
       STDIN.each_line do |line|
         exit 0 if exit_early
@@ -308,11 +397,16 @@ class McpPreflightSystemTest < Minitest::Test
           case method
           when "server/discover"
             if modern
+              capabilities = supports_tools ? { "tools" => {} } : {}
               {
                 "jsonrpc" => "2.0",
                 "id" => request["id"],
                 "result" => {
-                  "protocolVersion" => "2026-07-28",
+                  "resultType" => "complete",
+                  "supportedVersions" => supported_versions,
+                  "capabilities" => capabilities,
+                  "cacheScope" => "public",
+                  "ttlMs" => 30_000,
                   "_meta" => {
                     "io.modelcontextprotocol/serverInfo" => {
                       "name" => "test-server", "version" => "1.0"
