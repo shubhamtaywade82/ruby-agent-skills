@@ -75,12 +75,12 @@ module RubyAgentSkills
       end
 
       def list_tools(id, params, version, server_info)
-        listed = request(id, "tools/list", params)
-        StdioToolList.build(
-          result_or_raise(listed, "tools/list"),
-          version,
-          server_info: server_info
-        )
+        tools = ToolInventory.collect do |cursor, page|
+          page_params = cursor ? params.merge("cursor" => cursor) : params
+          listed = request(id + page - 1, "tools/list", page_params)
+          result_or_raise(listed, "tools/list")
+        end
+        StdioToolList.build({ "tools" => tools }, version, server_info: server_info)
       end
 
       def notify_initialized
