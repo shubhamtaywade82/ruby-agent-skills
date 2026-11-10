@@ -33,15 +33,14 @@ module RubyAgentSkills
 
       def validate_defaults(defaults)
         raise Error.new("invalid_policy", "defaults must be a mapping") unless defaults.is_a?(Hash)
-        return if defaults["production"] == "deny"
-
-        raise Error.new("invalid_policy", "production must be deny")
+        unless defaults["production"] == "deny" && defaults["unknown_tool"] == "deny"
+          raise Error.new("invalid_policy", "production and unknown_tool must be deny")
+        end
 
         isolated = defaults.fetch("isolated_capabilities")
         valid = isolated.is_a?(Array) && (isolated - CAPABILITIES).empty?
         raise Error.new("invalid_policy", "invalid isolated_capabilities") unless valid
       end
-
       def validate_profiles(profiles)
         valid = profiles.is_a?(Hash) && !profiles.empty?
         raise Error.new("invalid_policy", "profiles must be a non-empty mapping") unless valid
