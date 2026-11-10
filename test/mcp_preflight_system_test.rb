@@ -28,6 +28,7 @@ class McpPreflightSystemTest < Minitest::Test
     )
 
     assert_equal "healthy", result.dig(:health, :status)
+    assert_equal true, result.dig(:health, :configured)
     assert_equal "2026-07-28", result.dig(:health, :protocol_version)
     assert_equal "test-server", result.dig(:health, :server_info, :name)
     assert_includes result.dig(:health, :tools), "schema_graph"
@@ -110,6 +111,18 @@ class McpPreflightSystemTest < Minitest::Test
     assert_equal "not_checked", result.dig(:health, :status)
     assert_equal "denied", result[:decision]
     assert_match(/unclassified/, result[:reason])
+  end
+
+  def test_missing_server_registration_is_distinct_from_an_unhealthy_server
+    result = run_preflight(
+      server: "ask-rails-harness",
+      tool: "schema_graph",
+      tools: %w[schema_graph],
+      omit_server_config: true
+    )
+
+    assert_equal "unavailable", result.dig(:health, :status)
+    assert_equal false, result.dig(:health, :configured)
   end
 
   def test_unresponsive_stdio_server_is_reported_unavailable
@@ -249,16 +262,17 @@ class McpPreflightSystemTest < Minitest::Test
     modern = options.fetch(:modern, true)
     probe = options.fetch(:probe, true)
     exit_early = options.fetch(:exit_early, false)
+    omit_server_config = options.fetch(:omit_server_config, false)
     config_path = File.join(@tmpdir, "mcp.json")
     File.write(
       config_path,
       JSON.generate(
-        "mcpServers" => {
+        "mcpServers" => (omit_server_config ? {} : {
           server => {
             "command" => RbConfig.ruby,
             "args" => ["-e", fake_server(modern: modern, tools: tools, exit_early: exit_early)]
           }
-        }
+        })
       ),
       encoding: "UTF-8"
     )
