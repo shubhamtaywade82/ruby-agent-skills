@@ -5,7 +5,9 @@ module RubyAgentSkills
     class StdioToolList
       def self.build(result, version)
         tools = result["tools"]
-        valid = tools.is_a?(Array) && tools.all? { |tool| tool.is_a?(Hash) && tool["name"].is_a?(String) }
+        valid = tools.is_a?(Array) && tools.all? do |tool|
+          tool.is_a?(Hash) && tool["name"].is_a?(String)
+        end
         raise Error.new("invalid_tools_list", "tools/list must contain named tools") unless valid
 
         {
