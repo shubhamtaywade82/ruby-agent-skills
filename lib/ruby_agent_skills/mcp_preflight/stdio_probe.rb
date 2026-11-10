@@ -29,6 +29,7 @@ module RubyAgentSkills
           protocol = StdioProtocol.new(stdin, JsonLineReader.new(stdout), timeout: @timeout)
           protocol.call.merge(
             status: "healthy",
+            configured: true,
             transport: "stdio",
             checked_at: Time.now.utc.iso8601
           )
