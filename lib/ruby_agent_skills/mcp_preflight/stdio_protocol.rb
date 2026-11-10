@@ -13,23 +13,33 @@ module RubyAgentSkills
       end
 
       def call
-        discovery = request(1, "server/discover", { "_meta" => CLIENT_META })
-        if discovery[:error]
-          return legacy_initialize if discovery[:error]["code"] == -32_601
-
-          message = "MCP server discovery failed: #{error_code(discovery[:error])}"
-          raise Error.new("discovery_failed", message)
-        end
+        discovery = discover
+        return legacy_initialize if discovery[:error] && method_not_found?(discovery[:error])
 
         result = result_or_raise(discovery, "server/discover")
-        listed = request(2, "tools/list", { "_meta" => CLIENT_META })
-        server_info = result.dig("_meta", "io.modelcontextprotocol/serverInfo")
-        StdioToolList.build(
-          result_or_raise(listed, "tools/list"), MODERN_PROTOCOL, server_info: server_info
-        )
+        negotiated = DiscoveryResult.new(result)
+        return legacy_initialize unless negotiated.modern?
+
+        list_tools(2, { "_meta" => CLIENT_META }, MODERN_PROTOCOL, negotiated.server_info)
+      end
+
+      def legacy_call
+        legacy_initialize
       end
 
       private
+
+      def discover
+        request(1, "server/discover", { "_meta" => CLIENT_META })
+      rescue Error => e
+        raise unless %w[timeout server_exited].include?(e.code)
+
+        raise Error.new("legacy_probe_required", e.message)
+      end
+
+      def method_not_found?(error)
+        error.is_a?(Hash) && error["code"] == -32_601
+      end
 
       def legacy_initialize
         initialized = request(
@@ -42,15 +52,20 @@ module RubyAgentSkills
           }
         )
         result = result_or_raise(initialized, "initialize")
-        version = result["protocolVersion"]
-        unless version.is_a?(String)
-          raise Error.new("invalid_initialize", "legacy initialize response has no protocolVersion")
+        unless result["protocolVersion"] == LEGACY_PROTOCOL
+          raise Error.new("protocol_incompatible", "legacy server did not negotiate the requested protocol version")
         end
 
         notify_initialized
-        listed = request(3, "tools/list", {})
+        list_tools(3, {}, LEGACY_PROTOCOL, result["serverInfo"])
+      end
+
+      def list_tools(id, params, version, server_info)
+        listed = request(id, "tools/list", params)
         StdioToolList.build(
-          result_or_raise(listed, "tools/list"), version, server_info: result["serverInfo"]
+          result_or_raise(listed, "tools/list"),
+          version,
+          server_info: server_info
         )
       end
 
