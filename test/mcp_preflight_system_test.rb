@@ -114,6 +114,41 @@ class McpPreflightSystemTest < Minitest::Test
     assert_equal "invalid_discovery", error.code
   end
 
+  def test_requested_tool_is_found_on_a_later_tools_list_page
+    result = run_preflight(
+      server: "ask-rails-harness",
+      tool: "query_database",
+      tools: [],
+      tool_pages: [%w[schema_graph], %w[query_database]]
+    )
+
+    assert_equal "healthy", result.dig(:health, :status)
+    assert_includes result.dig(:health, :tools), "query_database"
+    assert_equal "approval_required", result[:decision]
+  end
+
+  def test_tool_inventory_rejects_duplicate_names_across_pages
+    error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
+      RubyAgentSkills::MCPPreflight::ToolInventory.collect do |cursor, _page|
+        response = { "tools" => [{ "name" => "read_model" }] }
+        response["nextCursor"] = "next" unless cursor
+        response
+      end
+    end
+
+    assert_equal "invalid_tools_list", error.code
+  end
+
+  def test_tool_inventory_rejects_unbounded_pagination
+    error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
+      RubyAgentSkills::MCPPreflight::ToolInventory.collect do |_cursor, _page|
+        { "tools" => [], "nextCursor" => "again" }
+      end
+    end
+
+    assert_equal "pagination_limit", error.code
+  end
+
   def test_database_reads_require_human_approval_under_inspect_profile
     result = run_preflight(
       server: "ask-rails-harness",
@@ -330,6 +365,7 @@ class McpPreflightSystemTest < Minitest::Test
     omit_server_config = options.fetch(:omit_server_config, false)
     supported_versions = options.fetch(:supported_versions, ["2026-07-28"])
     supports_tools = options.fetch(:supports_tools, true)
+    tool_pages = options.fetch(:tool_pages, [tools])
     silence_first_discovery = options.fetch(:silence_first_discovery, false)
     counter_path = File.join(@tmpdir, "probe-count")
     config_path = File.join(@tmpdir, "mcp.json")
@@ -343,6 +379,7 @@ class McpPreflightSystemTest < Minitest::Test
           exit_early: exit_early,
           supported_versions: supported_versions,
           supports_tools: supports_tools,
+          tool_pages: tool_pages,
           silence_first_discovery: silence_first_discovery,
           counter_path: counter_path
         )
@@ -370,13 +407,14 @@ class McpPreflightSystemTest < Minitest::Test
   end
 
   def fake_server(modern:, tools:, exit_early:, supported_versions:,
-                  supports_tools:, silence_first_discovery:, counter_path:)
+                  supports_tools:, tool_pages:, silence_first_discovery:, counter_path:)
     <<~RUBY
       require "json"
       modern = #{modern}
       exit_early = #{exit_early}
       supported_versions = #{supported_versions.inspect}
       supports_tools = #{supports_tools}
+      tool_pages = #{tool_pages.inspect}
       silence_first_discovery = #{silence_first_discovery}
       counter_path = ENV.fetch("MCP_PREFLIGHT_CALLS")
       calls = File.exist?(counter_path) ? File.read(counter_path).to_i : 0
@@ -434,10 +472,16 @@ class McpPreflightSystemTest < Minitest::Test
           when "notifications/initialized"
             next
           when "tools/list"
+            cursor = request.dig("params", "cursor")
+            page_index = cursor ? cursor.to_i : 0
+            next_cursor = (page_index + 1).to_s if page_index + 1 < tool_pages.length
+            page = tool_pages.fetch(page_index)
+            tools_result = { "tools" => page.map { |name| { "name" => name } } }
+            tools_result["nextCursor"] = next_cursor if next_cursor
             {
               "jsonrpc" => "2.0",
               "id" => request["id"],
-              "result" => { "tools" => tools.map { |name| { "name" => name } } }
+              "result" => tools_result
             }
           end
 
