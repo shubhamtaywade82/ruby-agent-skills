@@ -17,7 +17,8 @@ module RubyAgentSkills
         if discovery[:error]
           return legacy_initialize if discovery[:error]["code"] == -32_601
 
-          raise Error.new("discovery_failed", "MCP server discovery failed: #{error_code(discovery[:error])}")
+          message = "MCP server discovery failed: #{error_code(discovery[:error])}"
+          raise Error.new("discovery_failed", message)
         end
 
         result = result_or_raise(discovery, "server/discover")
@@ -70,10 +71,14 @@ module RubyAgentSkills
       end
 
       def result_or_raise(response, method)
-        raise Error.new("request_failed", "#{method} failed: #{error_code(response[:error])}") if response[:error]
+        if response[:error]
+          raise Error.new("request_failed", "#{method} failed: #{error_code(response[:error])}")
+        end
 
         result = response[:result]
-        raise Error.new("invalid_response", "#{method} result must be an object") unless result.is_a?(Hash)
+        unless result.is_a?(Hash)
+          raise Error.new("invalid_response", "#{method} result must be an object")
+        end
 
         result
       end
