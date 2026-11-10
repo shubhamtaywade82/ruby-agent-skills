@@ -48,6 +48,7 @@ module RubyAgentSkills
       def not_checked
         {
           status: "not_checked",
+          configured: nil,
           reason: "permission was denied before starting or contacting the MCP server",
           tools: []
         }
