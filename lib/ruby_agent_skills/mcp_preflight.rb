@@ -31,6 +31,8 @@ module RubyAgentSkills
     end
 
     class Policy
+      ENVIRONMENTS = %w[development test staging production].freeze
+      HARD_DENY_CAPABILITIES = %w[production_access credential_export].freeze
       CAPABILITIES = %w[
         metadata_read source_read schema_read application_data_read test_execution
         debugger_control arbitrary_code_execution shell_execution dependency_write
@@ -51,13 +53,20 @@ module RubyAgentSkills
       end
 
       def evaluate(server:, tool:, profile:, environment:, isolated:)
-        return decision("denied", "production environment is blocked by default") if environment == "production"
+        unless ENVIRONMENTS.include?(environment)
+          raise Error.new("unknown_environment", "environment must be development, test, staging, or production")
+        end
+        return decision("denied", "production environment is blocked by policy") if environment == "production"
 
         selected = @data.fetch("profiles").fetch(profile) do
           raise Error.new("unknown_profile", "unknown MCP permission profile: #{profile}")
         end
         capability = @data.fetch("servers", {}).dig(server, "tools", tool)
         return decision("denied", "tool is unclassified; add an explicit trusted capability mapping") unless capability
+
+        if HARD_DENY_CAPABILITIES.include?(capability)
+          return decision("denied", "#{capability} is an unconditional deny")
+        end
 
         if @data.fetch("defaults").fetch("isolated_capabilities").include?(capability) && !isolated
           return decision("denied", "#{capability} requires an isolated environment")
@@ -95,6 +104,7 @@ module RubyAgentSkills
         profiles = @data.fetch("profiles")
         servers = @data.fetch("servers", {})
         raise Error.new("invalid_policy", "defaults must be a mapping") unless defaults.is_a?(Hash)
+        raise Error.new("invalid_policy", "production must be deny") unless defaults["production"] == "deny"
         raise Error.new("invalid_policy", "profiles must be a non-empty mapping") unless profiles.is_a?(Hash) && !profiles.empty?
         raise Error.new("invalid_policy", "servers must be a mapping") unless servers.is_a?(Hash)
 
@@ -353,7 +363,7 @@ module RubyAgentSkills
         @config = server_config
         @timeout = timeout
         @uri = URI.parse(server_config.fetch("url"))
-      rescue URI::InvalidURIError, KeyError
+      rescue URI::InvalidURIError, KeyError, TypeError
         raise Error.new("invalid_server_config", "HTTP MCP server requires a valid url")
       end
 
