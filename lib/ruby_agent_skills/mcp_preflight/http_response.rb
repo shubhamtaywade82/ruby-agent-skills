@@ -24,8 +24,7 @@ module RubyAgentSkills
         end.last.to_s
       end
 
-      def self.server_info(result)
-        info = result.dig("_meta", "io.modelcontextprotocol/serverInfo")
+      def self.server_info(info)
         return nil unless info.is_a?(Hash)
 
         { name: info["name"], version: info["version"] }
