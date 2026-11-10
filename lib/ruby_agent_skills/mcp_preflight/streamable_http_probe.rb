@@ -35,7 +35,7 @@ module RubyAgentSkills
           status: "healthy",
           transport: "streamable_http",
           protocol_version: MODERN_PROTOCOL,
-          server_info: HttpResponse.server_info(result["serverInfo"]),
+          server_info: HttpResponse.server_info(result),
           tools: tools,
           checked_at: Time.now.utc.iso8601
         }
