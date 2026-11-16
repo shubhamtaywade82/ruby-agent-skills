@@ -50,9 +50,15 @@ module RubyAgentSkills
       end
 
       def validate_server_registration!(registration)
-        return registration if registration.is_a?(Hash)
+        valid = registration.is_a?(Hash) && transport_keys(registration).one?
+        return registration if valid
 
-        raise Error.new("invalid_server_config", "server registration must be a mapping")
+        message = "server registration must define exactly one transport: command or url"
+        raise Error.new("invalid_server_config", message)
+      end
+
+      def transport_keys(registration)
+        %w[command url].select { |key| registration.key?(key) }
       end
 
       def probe(config)
@@ -72,8 +78,11 @@ module RubyAgentSkills
       end
 
       def transport_for(config)
-        return "streamable_http" if config.is_a?(Hash) && config.key?("url")
-        return "stdio" if config.is_a?(Hash) && config.key?("command")
+        return "unknown" unless config.is_a?(Hash)
+
+        transports = transport_keys(config)
+        return "stdio" if transports == ["command"]
+        return "streamable_http" if transports == ["url"]
 
         "unknown"
       end
