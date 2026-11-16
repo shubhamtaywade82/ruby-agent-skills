@@ -19,6 +19,8 @@ module RubyAgentSkills
         message = "MCP client config is not valid JSON: #{e.message}"
         raise Error.new("invalid_client_config", message)
       rescue Error => e
+        raise if e.code == "invalid_client_config"
+
         health_failure(e, config)
       end
 
