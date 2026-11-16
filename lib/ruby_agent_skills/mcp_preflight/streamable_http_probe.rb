@@ -41,7 +41,9 @@ module RubyAgentSkills
       end
 
       def result_or_raise(response, method)
-        raise Error.new("request_failed", "#{method} failed with a JSON-RPC error") if response[:error]
+        if response[:error]
+          raise Error.new("request_failed", "#{method} failed with a JSON-RPC error")
+        end
 
         result = response[:result]
         return result if result.is_a?(Hash)
