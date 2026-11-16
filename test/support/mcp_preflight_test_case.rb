@@ -56,22 +56,13 @@ class McpPreflightTestCase < Minitest::Test
   end
 
   def runner_options(options, config_path)
-    {
-      config_path: config_path,
-      policy_path: POLICY,
-      server: options.fetch(:server),
-      tool: options.fetch(:tool),
-      profile: option_or_default(options, :profile, "inspect"),
-      environment: option_or_default(options, :environment, "development"),
-      isolated: option_or_default(options, :isolated, false),
-      timeout: 2,
-      probe: options.fetch(:probe, true)
-    }
+    defaults = { profile: "inspect", environment: "development", isolated: false, probe: true }
+    options = defaults.merge(options)
+    options.slice(:server, :tool, :profile, :environment, :isolated, :probe).merge(
+      config_path: config_path, policy_path: POLICY, timeout: 2
+    )
   end
 
-  def option_or_default(options, key, default)
-    options.fetch(key, default)
-  end
 
   def assert_modern_probe_result(result)
     assert_equal "healthy", result.dig(:health, :status)
