@@ -16,6 +16,7 @@ class McpPreflightSafetySystemTest < McpPreflightTestCase
         environment: "development",
         isolated: true
       )
+
       assert_equal "denied", result[:decision]
     end
   end
