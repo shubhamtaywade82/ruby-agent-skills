@@ -93,7 +93,7 @@ servers:
       run_command: shell_execution
 ```
 
-`ask-rails-harness` is an example MCP client key. If your `.mcp.json` uses `rails-harness`, rename the policy key to match. A different or newly-added tool remains **unclassified and denied** until a maintainer reviews the live tool list and implementation, then adds an explicit mapping.
+`ask-rails-harness` is an example MCP client key. If your `.mcp.json` uses `rails-harness`, rename the policy key to match. A different or newly-added tool remains **unclassified and denied** until a maintainer reviews the live tool list and implementation, then adds an explicit mapping. The shipped `read_model` mapping is deliberately `application_data_read`: until its implementation is reviewed and shown to expose metadata only, treat its output as potentially sensitive application data.
 
 Do not trust MCP tool annotations as a substitute for this classification. They are advisory metadata, not a security boundary.
 
