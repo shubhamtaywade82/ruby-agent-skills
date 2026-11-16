@@ -78,6 +78,8 @@ SHIPPED_PATHS = %w[
   lib/ruby_agent_skills/mcp_preflight/streamable_http_probe.rb
   lib/ruby_agent_skills/mcp_preflight/server_probe.rb
   lib/ruby_agent_skills/mcp_preflight/runner.rb
+  lib/ruby_agent_skills/mcp_preflight/http_transport.rb
+  lib/ruby_agent_skills/mcp_preflight/legacy_http_probe.rb
   lib/ruby_agent_skills/runtime_profile.rb
   lib/ruby_agent_skills/version_constraint.rb
   router/ROUTING.md
