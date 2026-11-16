@@ -15,6 +15,17 @@ class McpPreflightPolicySystemTest < McpPreflightTestCase
     assert_equal "application_data_read", result[:capability]
   end
 
+  def test_model_reads_require_human_approval_under_inspect_profile
+    result = run_preflight(
+      server: "ask-rails-harness",
+      tool: "read_model",
+      tools: %w[read_model]
+    )
+
+    assert_equal "approval_required", result[:decision]
+    assert_equal "application_data_read", result[:capability]
+  end
+
   def test_test_execution_requires_an_isolated_test_environment
     result = run_preflight(
       server: "ask-rails-harness",
