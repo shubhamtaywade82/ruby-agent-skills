@@ -2,90 +2,97 @@
 
 require "json"
 
-options = JSON.parse(ENV.fetch("MCP_PREFLIGHT_FAKE_SERVER_OPTIONS"))
-counter_path = ENV.fetch("MCP_PREFLIGHT_CALLS")
-calls = File.exist?(counter_path) ? File.read(counter_path).to_i : 0
-File.write(counter_path, (calls + 1).to_s)
-
-if options["silence_first_discovery"] && calls.zero?
-  STDIN.readline
-  sleep 60
-end
-
-STDIN.each_line do |line|
-  exit 0 if options["exit_early"]
-
-  request = JSON.parse(line)
-  response = build_response(request, options)
-  next unless response
-
-  STDOUT.write(JSON.generate(response))
-  STDOUT.write("\n")
-  STDOUT.flush
-end
-
-def build_response(request, options)
-  case request["method"]
-  when "server/discover"
-    discovery_response(request, options)
-  when "initialize"
-    legacy_response(request)
-  when "notifications/initialized"
-    nil
-  when "tools/list"
-    tools_response(request, options)
+class McpPreflightFakeServer
+  def initialize
+    @options = JSON.parse(ENV.fetch("MCP_PREFLIGHT_FAKE_SERVER_OPTIONS"))
+    counter_path = ENV.fetch("MCP_PREFLIGHT_CALLS")
+    @calls = File.exist?(counter_path) ? File.read(counter_path).to_i : 0
+    File.write(counter_path, (@calls + 1).to_s)
   end
-end
 
-def discovery_response(request, options)
-  return method_not_found(request) unless options.fetch("modern", true)
+  def run
+    pause_first_discovery if @options["silence_first_discovery"] && @calls.zero?
+    STDIN.each_line { |line| write_response(JSON.parse(line)) }
+  end
 
-  capabilities = options.fetch("supports_tools", true) ? { "tools" => {} } : {}
-  {
-    "jsonrpc" => "2.0",
-    "id" => request["id"],
-    "result" => {
+  private
+
+  def pause_first_discovery
+    STDIN.readline
+    sleep 60
+  end
+
+  def write_response(request)
+    exit 0 if @options["exit_early"]
+
+    response = response_for(request)
+    return unless response
+
+    STDOUT.write(JSON.generate(response) + "\n")
+    STDOUT.flush
+  end
+
+  def response_for(request)
+    case request["method"]
+    when "server/discover" then discovery_response(request)
+    when "initialize" then legacy_response(request)
+    when "tools/list" then tools_response(request)
+    end
+  end
+
+  def discovery_response(request)
+    return method_not_found(request) unless @options.fetch("modern", true)
+
+    { "jsonrpc" => "2.0", "id" => request["id"], "result" => discovery_result }
+  end
+
+  def discovery_result
+    {
       "resultType" => "complete",
-      "supportedVersions" => options.fetch("supported_versions", ["2026-07-28"]),
-      "capabilities" => capabilities,
+      "supportedVersions" => @options.fetch("supported_versions", ["2026-07-28"]),
+      "capabilities" => tool_capabilities,
       "cacheScope" => "public",
       "ttlMs" => 30_000,
-      "_meta" => {
-        "io.modelcontextprotocol/serverInfo" => {
-          "name" => "test-server",
-          "version" => "1.0"
-        }
-      }
+      "_meta" => { "io.modelcontextprotocol/serverInfo" => server_info }
     }
-  }
-end
+  end
 
-def method_not_found(request)
-  {
-    "jsonrpc" => "2.0",
-    "id" => request["id"],
-    "error" => { "code" => -32_601, "message" => "Method not found" }
-  }
-end
+  def tool_capabilities
+    @options.fetch("supports_tools", true) ? { "tools" => {} } : {}
+  end
 
-def legacy_response(request)
-  {
-    "jsonrpc" => "2.0",
-    "id" => request["id"],
-    "result" => {
+  def server_info
+    { "name" => "test-server", "version" => "1.0" }
+  end
+
+  def method_not_found(request)
+    {
+      "jsonrpc" => "2.0",
+      "id" => request["id"],
+      "error" => { "code" => -32_601, "message" => "Method not found" }
+    }
+  end
+
+  def legacy_response(request)
+    result = {
       "protocolVersion" => "2025-11-25",
       "capabilities" => { "tools" => {} },
       "serverInfo" => { "name" => "legacy-test-server", "version" => "1.0" }
     }
-  }
+    { "jsonrpc" => "2.0", "id" => request["id"], "result" => result }
+  end
+
+  def tools_response(request)
+    pages = @options.fetch("tool_pages", [@options.fetch("tools", [])])
+    index = request.dig("params", "cursor")&.to_i || 0
+    result = { "tools" => pages.fetch(index).map { |name| { "name" => name } } }
+    add_next_cursor(result, pages, index)
+    { "jsonrpc" => "2.0", "id" => request["id"], "result" => result }
+  end
+
+  def add_next_cursor(result, pages, index)
+    result["nextCursor"] = (index + 1).to_s if index + 1 < pages.length
+  end
 end
 
-def tools_response(request, options)
-  pages = options.fetch("tool_pages", [options.fetch("tools", [])])
-  cursor = request.dig("params", "cursor")
-  index = cursor ? cursor.to_i : 0
-  next_cursor = (index + 1).to_s if index + 1 < pages.length
-  result = { "tools" => pages.fetch(index).map { |name| { "name" => name } } }
-  result["nextCursor"] = next_cursor if next_cursor
-  { "jsonrpc" => "2.0", "id" => request["id"], "result" => result }
-end
+McpPreflightFakeServer.new.run
