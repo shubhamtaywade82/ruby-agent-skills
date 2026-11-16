@@ -11,8 +11,6 @@ class McpPreflightFakeHttpTransport
   end
 
   def post(method, _params, _id, modern:)
-    raise "expected legacy protocol" if modern
-
     method == "initialize" ? initialize_response : tools_response
   end
 
@@ -46,6 +44,15 @@ class McpPreflightHttpSystemTest < McpPreflightTestCase
     assert_equal "2025-11-25", result[:protocol_version]
     assert_equal %w[run_tests schema_graph], result[:tools]
     assert transport.notified
+    assert_equal "legacy-http", result.dig(:server_info, :name)
+  end
+
+  def test_modern_http_probe_returns_tool_names_not_tool_objects
+    probe = http_probe("https://example.com/mcp")
+    transport = McpPreflightFakeHttpTransport.new(tools: %w[schema_graph run_tests])
+    probe.instance_variable_set(:@transport, transport)
+
+    assert_equal %w[run_tests schema_graph], probe.send(:collect_tools, {}, 2)
   end
 
   def test_legacy_http_probe_skips_tool_list_without_tools_capability
