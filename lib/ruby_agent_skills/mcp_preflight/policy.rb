@@ -50,16 +50,33 @@ module RubyAgentSkills
 
       def evaluate_capability(capability, profile, name, isolated)
         return deny("#{capability} is an unconditional deny") if HARD_DENY.include?(capability)
-        unless isolated?(capability, isolated)
-          return deny("#{capability} requires an isolated environment", capability)
-        end
-        if Array(profile["deny"]).include?(capability)
-          return deny("#{capability} is denied by profile #{name}", capability)
-        end
-        return approval(capability) if Array(profile["require_approval"]).include?(capability)
-        return allowed(capability, name) if Array(profile["allow"]).include?(capability)
+        return isolation_denial(capability) unless isolated?(capability, isolated)
+
+        profile_decision(capability, profile, name)
+      end
+
+      def isolation_denial(capability)
+        deny("#{capability} requires an isolated environment", capability)
+      end
+
+      def profile_decision(capability, profile, name)
+        return deny("#{capability} is denied by profile #{name}", capability) if profile_denies?(profile, capability)
+        return approval(capability) if approval_required?(profile, capability)
+        return allowed(capability, name) if profile_allows?(profile, capability)
 
         deny("#{capability} is not allowed by profile #{name}", capability)
+      end
+
+      def profile_denies?(profile, capability)
+        Array(profile["deny"]).include?(capability)
+      end
+
+      def approval_required?(profile, capability)
+        Array(profile["require_approval"]).include?(capability)
+      end
+
+      def profile_allows?(profile, capability)
+        Array(profile["allow"]).include?(capability)
       end
 
       def isolated?(capability, isolated)
