@@ -19,8 +19,8 @@ module RubyAgentSkills
       def call
         validate_config!
         run_protocol(force_legacy: false)
-      rescue Error => error
-        raise unless error.code == "legacy_probe_required"
+      rescue Error => e
+        raise unless e.code == "legacy_probe_required"
 
         run_protocol(force_legacy: true)
       rescue Errno::ENOENT
@@ -40,39 +40,72 @@ module RubyAgentSkills
           pgroup: true,
           err: File::NULL
         ) do |stdin, stdout, _stderr, waiter|
-          protocol = StdioProtocol.new(stdin, JsonLineReader.new(stdout), timeout: @timeout)
-          result = force_legacy ? protocol.legacy_call : protocol.call
-          result.merge(
-            status: "healthy",
-            configured: true,
-            transport: "stdio",
-            checked_at: Time.now.utc.iso8601
-          )
+          run_session(stdin, stdout, force_legacy)
         ensure
-          stop(waiter) if waiter
-          stdout.close unless stdout.closed?
-          stdin.close unless stdin.closed?
+          cleanup_process(stdin, stdout, waiter)
         end
       end
 
+      def run_session(stdin, stdout, force_legacy)
+        protocol = StdioProtocol.new(stdin, JsonLineReader.new(stdout), timeout: @timeout)
+        result = force_legacy ? protocol.legacy_call : protocol.call
+        result.merge(
+          status: "healthy",
+          configured: true,
+          transport: "stdio",
+          checked_at: Time.now.utc.iso8601
+        )
+      end
+
+      def cleanup_process(stdin, stdout, waiter)
+        stop(waiter) if waiter
+        stdout.close unless stdout.closed?
+        stdin.close unless stdin.closed?
+      end
+
       def validate_config!
+        validate_command!
+        validate_arguments!
+        validate_working_directory!
+        validate_environment!
+        validate_inherited_environment!
+      end
+
+      def validate_command!
         command = @config["command"]
-        args = @config.fetch("args", [])
-        valid_command = command.is_a?(String) && !command.strip.empty?
-        unless valid_command
-          raise Error.new("invalid_server_config", "STDIO command must be a non-empty string")
-        end
-        unless valid_args?(args)
-          raise Error.new("invalid_server_config", "STDIO args must be an array of strings")
-        end
-        unless Dir.exist?(@cwd)
-          raise Error.new("invalid_working_directory", "MCP working directory does not exist")
-        end
-        unless valid_env?(@config.fetch("env", {}))
-          raise Error.new("invalid_server_config", "MCP env must be a string mapping")
-        end
-        unless @config.fetch("inherit_env", []).is_a?(Array)
-          raise Error.new("invalid_server_config", "inherit_env must be an array")
+        valid = command.is_a?(String) && !command.strip.empty?
+        return if valid
+
+        raise Error.new("invalid_server_config", "STDIO command must be a non-empty string")
+      end
+
+      def validate_arguments!
+        return if valid_args?(@config.fetch("args", []))
+
+        raise Error.new("invalid_server_config", "STDIO args must be an array of strings")
+      end
+
+      def validate_working_directory!
+        return if Dir.exist?(@cwd)
+
+        raise Error.new("invalid_working_directory", "MCP working directory does not exist")
+      end
+
+      def validate_environment!
+        return if valid_env?(@config.fetch("env", {}))
+
+        raise Error.new("invalid_server_config", "MCP env must be a string mapping")
+      end
+
+      def validate_inherited_environment!
+        return if valid_inherit_env?(@config.fetch("inherit_env", []))
+
+        raise Error.new("invalid_server_config", "inherit_env must contain valid environment names")
+      end
+
+      def valid_inherit_env?(keys)
+        keys.is_a?(Array) && keys.all? do |key|
+          key.is_a?(String) && key.match?(/\\A[A-Za-z_][A-Za-z0-9_]*\\z/)
         end
       end
 
