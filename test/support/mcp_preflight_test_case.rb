@@ -61,12 +61,16 @@ class McpPreflightTestCase < Minitest::Test
       policy_path: POLICY,
       server: options.fetch(:server),
       tool: options.fetch(:tool),
-      profile: options.fetch(:profile, "inspect"),
-      environment: options.fetch(:environment, "development"),
-      isolated: options.fetch(:isolated, false),
+      profile: option_or_default(options, :profile, "inspect"),
+      environment: option_or_default(options, :environment, "development"),
+      isolated: option_or_default(options, :isolated, false),
       timeout: 2,
       probe: options.fetch(:probe, true)
     }
+  end
+
+  def option_or_default(options, key, default)
+    options.fetch(key, default)
   end
 
   def assert_modern_probe_result(result)
