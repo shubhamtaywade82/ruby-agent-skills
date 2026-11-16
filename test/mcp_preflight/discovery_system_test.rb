@@ -50,5 +50,4 @@ class McpPreflightDiscoverySystemTest < McpPreflightTestCase
 
     assert_equal "pagination_limit", error.code
   end
-
 end
