@@ -12,13 +12,13 @@ class McpPreflightFakeServer
 
   def run
     pause_first_discovery if @options["silence_first_discovery"] && @calls.zero?
-    STDIN.each_line { |line| write_response(JSON.parse(line)) }
+    $stdin.each_line { |line| write_response(JSON.parse(line)) }
   end
 
   private
 
   def pause_first_discovery
-    STDIN.readline
+    $stdin.readline
     sleep 60
   end
 
@@ -29,7 +29,7 @@ class McpPreflightFakeServer
     return unless response
 
     STDOUT.write(JSON.generate(response) + "\n")
-    STDOUT.flush
+    $stdout.flush
   end
 
   def response_for(request)
@@ -84,7 +84,8 @@ class McpPreflightFakeServer
 
   def tools_response(request)
     pages = @options.fetch("tool_pages", [@options.fetch("tools", [])])
-    index = request.dig("params", "cursor")&.to_i || 0
+    cursor = request.dig("params", "cursor")
+    index = cursor ? cursor.to_i : 0
     result = { "tools" => pages.fetch(index).map { |name| { "name" => name } } }
     add_next_cursor(result, pages, index)
     { "jsonrpc" => "2.0", "id" => request["id"], "result" => result }
