@@ -73,6 +73,7 @@ SHIPPED_PATHS = %w[
   lib/ruby_agent_skills/mcp_preflight/json_line_reader.rb
   lib/ruby_agent_skills/mcp_preflight/stdio_protocol.rb
   lib/ruby_agent_skills/mcp_preflight/stdio_tool_list.rb
+  lib/ruby_agent_skills/mcp_preflight/stdio_environment.rb
   lib/ruby_agent_skills/mcp_preflight/stdio_probe.rb
   lib/ruby_agent_skills/mcp_preflight/http_response.rb
   lib/ruby_agent_skills/mcp_preflight/streamable_http_probe.rb
