@@ -4,19 +4,11 @@ module RubyAgentSkills
   module MCPPreflight
     class Runner
       def initialize(options)
-        @server = options.fetch(:server)
-        @tool = options.fetch(:tool)
-        @profile = options.fetch(:profile)
-        @environment = options.fetch(:environment)
-        @isolated = options.fetch(:isolated)
+        @server, @tool, @profile, @environment, @isolated =
+          options.values_at(:server, :tool, :profile, :environment, :isolated)
         @policy = Policy.new(options.fetch(:policy_path))
         @probe = options.fetch(:probe, false)
-        @server_probe = ServerProbe.new(
-          config_path: options.fetch(:config_path),
-          server: @server,
-          cwd: options[:cwd],
-          timeout: options.fetch(:timeout, DEFAULT_TIMEOUT)
-        )
+        @server_probe = build_server_probe(options)
       end
 
       def call
@@ -35,6 +27,15 @@ module RubyAgentSkills
       end
 
       private
+
+      def build_server_probe(options)
+        ServerProbe.new(
+          config_path: options.fetch(:config_path),
+          server: @server,
+          cwd: options[:cwd],
+          timeout: options.fetch(:timeout, DEFAULT_TIMEOUT)
+        )
+      end
 
       def permission_decision
         @policy.evaluate(
@@ -67,6 +68,10 @@ module RubyAgentSkills
       end
 
       def report(health, permission)
+        base_report.merge(health: health, **permission.slice(:decision, :capability, :reason))
+      end
+
+      def base_report
         {
           schema_version: 1,
           server: @server,
@@ -74,10 +79,6 @@ module RubyAgentSkills
           profile: @profile,
           environment: @environment,
           isolated: @isolated,
-          health: health,
-          decision: permission[:decision],
-          capability: permission[:capability],
-          reason: permission[:reason],
           tool_invoked: false
         }
       end
