@@ -77,5 +77,4 @@ class McpPreflightPolicySystemTest < McpPreflightTestCase
     assert_equal "denied", result[:decision]
     assert_match(/unclassified/, result[:reason])
   end
-
 end
