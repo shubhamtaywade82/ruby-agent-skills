@@ -16,7 +16,6 @@ class McpPreflightDiscoverySystemTest < McpPreflightTestCase
     assert_equal "invalid_discovery", error.code
   end
 
-
   def test_requested_tool_is_found_on_a_later_tools_list_page
     result = run_preflight(
       server: "ask-rails-harness",
@@ -30,7 +29,6 @@ class McpPreflightDiscoverySystemTest < McpPreflightTestCase
     assert_equal "approval_required", result[:decision]
   end
 
-
   def test_tool_inventory_rejects_duplicate_names_across_pages
     error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
       RubyAgentSkills::MCPPreflight::ToolInventory.collect do |cursor, _page|
@@ -43,7 +41,6 @@ class McpPreflightDiscoverySystemTest < McpPreflightTestCase
     assert_equal "invalid_tools_list", error.code
   end
 
-
   def test_tool_inventory_rejects_unbounded_pagination
     error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
       RubyAgentSkills::MCPPreflight::ToolInventory.collect do |_cursor, _page|
@@ -53,6 +50,5 @@ class McpPreflightDiscoverySystemTest < McpPreflightTestCase
 
     assert_equal "pagination_limit", error.code
   end
-
 
 end
