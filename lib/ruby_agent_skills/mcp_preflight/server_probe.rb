@@ -26,6 +26,10 @@ module RubyAgentSkills
 
       def load_server_config
         configuration = JSON.parse(File.read(@config_path, encoding: "UTF-8"))
+        unless configuration.is_a?(Hash) && configuration["mcpServers"].is_a?(Hash)
+          raise Error.new("invalid_client_config", "MCP client config must contain an mcpServers mapping")
+        end
+
         server_config = configuration.fetch("mcpServers").fetch(@server) do
           raise Error.new("server_not_configured", "MCP server #{@server} is not registered")
         end
