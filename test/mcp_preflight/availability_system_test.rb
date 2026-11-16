@@ -19,21 +19,13 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
   end
 
   def test_server_registration_rejects_ambiguous_transports
-    config_path = File.join(@tmpdir, "ambiguous-mcp.json")
     registration = { "command" => "ruby", "url" => "https://example.com/mcp" }
-    File.write(config_path, JSON.generate("mcpServers" => { "rails" => registration }))
-    probe = RubyAgentSkills::MCPPreflight::ServerProbe.new(
-      config_path: config_path,
-      server: "rails",
-      cwd: nil,
-      timeout: 1
-    )
-
-    result = probe.call
+    result = probe_server_registration(registration)
 
     assert_equal "unavailable", result[:status]
     assert_equal "unknown", result[:transport]
   end
+
 
   def test_missing_server_registration_is_distinct_from_an_unhealthy_server
     result = run_preflight(
@@ -108,4 +100,15 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
 
     assert_equal "unknown_environment", error.code
   end
+  private
+
+  def probe_server_registration(registration)
+    path = File.join(@tmpdir, "custom-mcp.json")
+    config = { "mcpServers" => { "rails" => registration } }
+    File.write(path, JSON.generate(config))
+    RubyAgentSkills::MCPPreflight::ServerProbe.new(
+      config_path: path, server: "rails", cwd: nil, timeout: 1
+    ).call
+  end
+
 end
