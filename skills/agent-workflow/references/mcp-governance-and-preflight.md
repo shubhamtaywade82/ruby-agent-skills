@@ -125,7 +125,7 @@ STDIO responses must be newline-delimited JSON-RPC on STDOUT. Logs belong on STD
 
 The HTTP probe implements modern `2026-07-28` discovery and `tools/list`. It sends the per-request protocol metadata and `Mcp-Method` routing header, verifies TLS certificates, allows plain HTTP only for loopback hosts, rejects credentials embedded in URLs, and does not follow redirects.
 
-The current preflight does not run OAuth or consume custom `headers` from the client config. Authenticate with the MCP host first; HTTP 401/403 is reported as `authorization_required`. Legacy handshake-era HTTP and legacy HTTP+SSE are not supported by this preflight and fail closed. An ordinary HTTP health URL is not proof that MCP discovery or `tools/list` works.
+The current preflight does not run OAuth or consume custom `headers` from the client config. Authenticate with the MCP host first; HTTP 401/403 is reported as `authorization_required`. If modern discovery is unsupported at the same endpoint (JSON-RPC method-not-found or HTTP 404/405/501), the probe falls back to the legacy `initialize` handshake and `tools/list` exchange. It does not implement the separate legacy HTTP+SSE two-endpoint transport. An ordinary HTTP health URL is not proof that MCP discovery or `tools/list` works.
 
 ### Report states
 
