@@ -28,7 +28,7 @@ class McpPreflightFakeServer
     response = response_for(request)
     return unless response
 
-    STDOUT.write(JSON.generate(response) + "\n")
+    $stdout.puts("#{JSON.generate(response)}")
     $stdout.flush
   end
 
