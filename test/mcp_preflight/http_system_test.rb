@@ -10,7 +10,7 @@ class McpPreflightFakeHttpTransport
     @supports_tools = supports_tools
   end
 
-  def post(method, _params, _id, modern:)
+  def post(method, _params, _id, **_options)
     method == "initialize" ? initialize_response : tools_response
   end
 
