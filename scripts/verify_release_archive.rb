@@ -39,6 +39,7 @@ REQUIRED_PATHS = %w[
   lib/ruby_agent_skills/mcp_preflight/policy.rb
   lib/ruby_agent_skills/mcp_preflight/policy_validator.rb
   lib/ruby_agent_skills/mcp_preflight/json_line_reader.rb
+  lib/ruby_agent_skills/mcp_preflight/stdio_client.rb
   lib/ruby_agent_skills/mcp_preflight/stdio_protocol.rb
   lib/ruby_agent_skills/mcp_preflight/stdio_tool_list.rb
   lib/ruby_agent_skills/mcp_preflight/stdio_environment.rb
