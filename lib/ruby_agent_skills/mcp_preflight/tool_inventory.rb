@@ -7,23 +7,23 @@ module RubyAgentSkills
       MAX_TOOLS = 10_000
 
       def self.collect
-        tools = []
-        seen = {}
-        cursor = nil
-        page = 0
-
+        state = { tools: [], seen: {}, cursor: nil, page: 0 }
         loop do
-          page += 1
-          validate_page_limit!(page)
-          result = yield(cursor, page)
-          validate_page!(result["tools"])
-          append_page!(result["tools"], tools, seen)
-          cursor = next_cursor(result)
-          break if cursor.nil?
+          state[:page] += 1
+          result = yield(state[:cursor], state[:page])
+          collect_page(result, state)
+          state[:cursor] = next_cursor(result)
+          break if state[:cursor].nil?
         end
-
-        tools
+        state[:tools]
       end
+
+      def self.collect_page(result, state)
+        validate_page_limit!(state[:page])
+        validate_page!(result["tools"])
+        append_page!(result["tools"], state[:tools], state[:seen])
+      end
+      private_class_method :collect_page
 
       def self.validate_page_limit!(page)
         return unless page > MAX_PAGES
@@ -36,9 +36,9 @@ module RubyAgentSkills
         valid = entries.is_a?(Array) && entries.all? do |tool|
           tool.is_a?(Hash) && tool["name"].is_a?(String) && !tool["name"].empty?
         end
-        unless valid
-          raise Error.new("invalid_tools_list", "tools/list page must contain named tools")
-        end
+        return if valid
+
+        raise Error.new("invalid_tools_list", "tools/list page must contain named tools")
       end
       private_class_method :validate_page!
 
