@@ -18,6 +18,7 @@ module RubyAgentSkills
           timeout: options.fetch(:timeout, DEFAULT_TIMEOUT)
         )
       end
+
       def call
         permission = permission_decision
         return report(not_checked, permission) if permission[:decision] == "denied"
