@@ -117,7 +117,7 @@ module RubyAgentSkills
       end
 
       def validate_url!
-        loopback = LOOPBACK_HOSTS.include?(@uri.host)
+        loopback = LOOPBACK_HOSTS.include?(@uri.hostname)
         secure = @uri.is_a?(URI::HTTPS)
         local_http = @uri.is_a?(URI::HTTP) && loopback
         raise Error.new("unsafe_url", "remote MCP URLs must use HTTPS") unless secure || local_http
