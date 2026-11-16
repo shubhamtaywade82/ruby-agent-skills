@@ -67,7 +67,7 @@ class RubyRailsMcpToolsReferenceSystemTest < Minitest::Test
 
   def test_agent_workflow_and_routing_discover_the_reference
     assert_includes source("skills/agent-workflow/SKILL.md"), "references/ruby-rails-mcp-tools.md"
-    assert_includes source("router/ROUTING.md"), "Ruby/Rails MCP developer-tool selection"
+    assert_includes source("router/ROUTING.md"), "Ruby/Rails MCP server selection, health preflight, tool permission profiles"
   end
 
   def test_documentation_entry_points_link_the_reference
