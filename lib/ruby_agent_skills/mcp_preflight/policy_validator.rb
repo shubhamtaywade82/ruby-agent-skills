@@ -41,6 +41,7 @@ module RubyAgentSkills
         valid = isolated.is_a?(Array) && (isolated - CAPABILITIES).empty?
         raise Error.new("invalid_policy", "invalid isolated_capabilities") unless valid
       end
+
       def validate_profiles(profiles)
         valid = profiles.is_a?(Hash) && !profiles.empty?
         raise Error.new("invalid_policy", "profiles must be a non-empty mapping") unless valid
