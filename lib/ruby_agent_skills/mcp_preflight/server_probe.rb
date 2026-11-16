@@ -28,20 +28,31 @@ module RubyAgentSkills
 
       def load_server_config
         configuration = JSON.parse(File.read(@config_path, encoding: "UTF-8"))
-        unless configuration.is_a?(Hash) && configuration["mcpServers"].is_a?(Hash)
-          raise Error.new("invalid_client_config", "MCP client config must contain an mcpServers mapping")
-        end
-
-        server_config = configuration.fetch("mcpServers").fetch(@server) do
-          raise Error.new("server_not_configured", "MCP server #{@server} is not registered")
-        end
-        unless server_config.is_a?(Hash)
-          raise Error.new("invalid_server_config", "server registration must be a mapping")
-        end
-
-        server_config
+        servers = server_registry(configuration)
+        registration = registered_server(servers)
+        validate_server_registration!(registration)
       rescue KeyError => e
         raise Error.new("invalid_client_config", "MCP client config is missing #{e.key}")
+      end
+
+      def server_registry(configuration)
+        return configuration["mcpServers"] if configuration.is_a?(Hash) &&
+                                              configuration["mcpServers"].is_a?(Hash)
+
+        message = "MCP client config must contain an mcpServers mapping"
+        raise Error.new("invalid_client_config", message)
+      end
+
+      def registered_server(servers)
+        servers.fetch(@server) do
+          raise Error.new("server_not_configured", "MCP server #{@server} is not registered")
+        end
+      end
+
+      def validate_server_registration!(registration)
+        return registration if registration.is_a?(Hash)
+
+        raise Error.new("invalid_server_config", "server registration must be a mapping")
       end
 
       def probe(config)
