@@ -11,15 +11,8 @@ class McpPreflightProtocolSystemTest < McpPreflightTestCase
       profile: "inspect"
     )
 
-    assert_equal "healthy", result.dig(:health, :status)
-    assert_equal true, result.dig(:health, :configured)
-    assert_equal "2026-07-28", result.dig(:health, :protocol_version)
-    assert_equal "test-server", result.dig(:health, :server_info, :name)
-    assert_includes result.dig(:health, :tools), "schema_graph"
-    assert_equal "allowed", result[:decision]
-    refute result[:tool_invoked]
+    assert_modern_probe_result(result)
   end
-
 
   def test_legacy_stdio_server_falls_back_to_initialize
     result = run_preflight(
@@ -34,7 +27,6 @@ class McpPreflightProtocolSystemTest < McpPreflightTestCase
     assert_equal "allowed", result[:decision]
   end
 
-
   def test_discovery_negotiates_legacy_when_modern_is_not_advertised
     result = run_preflight(
       server: "ask-rails-harness",
@@ -48,7 +40,6 @@ class McpPreflightProtocolSystemTest < McpPreflightTestCase
     assert_includes result.dig(:health, :tools), "schema_graph"
   end
 
-
   def test_discovery_fails_closed_when_no_client_version_is_supported
     result = run_preflight(
       server: "ask-rails-harness",
@@ -60,7 +51,6 @@ class McpPreflightProtocolSystemTest < McpPreflightTestCase
     assert_equal "unavailable", result[:decision]
     assert_match(/no protocol version supported/, result.dig(:health, :reason))
   end
-
 
   def test_discovery_without_tools_capability_returns_healthy_empty_inventory
     result = run_preflight(
@@ -75,7 +65,6 @@ class McpPreflightProtocolSystemTest < McpPreflightTestCase
     assert_equal "unavailable", result[:decision]
   end
 
-
   def test_silent_legacy_stdio_probe_restarts_server_for_initialize
     result = run_preflight(
       server: "ask-rails-harness",
@@ -89,6 +78,5 @@ class McpPreflightProtocolSystemTest < McpPreflightTestCase
     assert_equal "2025-11-25", result.dig(:health, :protocol_version)
     assert_includes result.dig(:health, :tools), "schema_graph"
   end
-
 
 end
