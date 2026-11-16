@@ -59,7 +59,7 @@ module RubyAgentSkills
         raise Error.new("tls_error", "HTTP MCP TLS verification failed")
       end
 
-      def open_http_connection
+      def open_http_connection(&)
         Net::HTTP.start(
           @uri.hostname,
           @uri.port,
@@ -67,8 +67,9 @@ module RubyAgentSkills
           open_timeout: @timeout,
           read_timeout: @timeout,
           write_timeout: @timeout,
-          verify_mode: OpenSSL::SSL::VERIFY_PEER
-        ) { |http| yield http }
+          verify_mode: OpenSSL::SSL::VERIFY_PEER,
+          &
+        )
       end
 
       def response_data(response)
