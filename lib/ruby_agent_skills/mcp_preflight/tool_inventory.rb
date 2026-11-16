@@ -14,14 +14,10 @@ module RubyAgentSkills
 
         loop do
           page += 1
-          if page > MAX_PAGES
-            raise Error.new("pagination_limit", "tools/list exceeded the page limit")
-          end
-
+          validate_page_limit!(page)
           result = yield(cursor, page)
-          entries = result["tools"]
-          validate_page!(entries)
-          append_page!(entries, tools, seen)
+          validate_page!(result["tools"])
+          append_page!(result["tools"], tools, seen)
           cursor = next_cursor(result)
           break if cursor.nil?
         end
@@ -29,20 +25,28 @@ module RubyAgentSkills
         tools
       end
 
+      def self.validate_page_limit!(page)
+        return unless page > MAX_PAGES
+
+        raise Error.new("pagination_limit", "tools/list exceeded the page limit")
+      end
+      private_class_method :validate_page_limit!
+
       def self.validate_page!(entries)
         valid = entries.is_a?(Array) && entries.all? do |tool|
           tool.is_a?(Hash) && tool["name"].is_a?(String) && !tool["name"].empty?
         end
-        raise Error.new("invalid_tools_list", "tools/list page must contain named tools") unless valid
+        unless valid
+          raise Error.new("invalid_tools_list", "tools/list page must contain named tools")
+        end
       end
       private_class_method :validate_page!
 
       def self.append_page!(entries, tools, seen)
         entries.each do |tool|
           name = tool.fetch("name")
-          if seen.key?(name)
-            raise Error.new("invalid_tools_list", "tools/list repeated a tool name across pages")
-          end
+          raise Error.new("invalid_tools_list", "tools/list repeated a tool name across pages") if seen.key?(name)
+
           seen[name] = true
           tools << { "name" => name }
           if tools.length > MAX_TOOLS
