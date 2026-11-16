@@ -28,19 +28,25 @@ class McpPreflightFakeHttpTransport
   def discovery_response
     return { error: { "code" => -32_601 } } unless @modern_discovery_supported
 
+    { result: discovery_result }
+  end
+
+  def discovery_result
     {
-      result: {
-        "resultType" => "complete",
-        "supportedVersions" => ["2026-07-28"],
-        "capabilities" => { "tools" => {} },
-        "cacheScope" => "public",
-        "ttlMs" => 30_000,
-        "_meta" => {
-          "io.modelcontextprotocol/serverInfo" => {
-            "name" => "modern-http",
-            "version" => "2.0"
-          }
-        }
+      "resultType" => "complete",
+      "supportedVersions" => ["2026-07-28"],
+      "capabilities" => { "tools" => {} },
+      "cacheScope" => "public",
+      "ttlMs" => 30_000,
+      "_meta" => discovery_metadata
+    }
+  end
+
+  def discovery_metadata
+    {
+      "io.modelcontextprotocol/serverInfo" => {
+        "name" => "modern-http",
+        "version" => "2.0"
       }
     }
   end
@@ -69,7 +75,15 @@ class McpPreflightHttpSystemTest < McpPreflightTestCase
     assert_equal "2025-11-25", result[:protocol_version]
     assert_equal %w[run_tests schema_graph], result[:tools]
     assert transport.notified
-    assert_equal "legacy-http", result.dig(:server_info, :name)
+  end
+
+  def test_legacy_http_probe_reports_server_info
+    assert_equal "legacy-http", legacy_http_result.dig(:server_info, :name)
+  end
+
+  def legacy_http_result
+    transport = McpPreflightFakeHttpTransport.new(tools: %w[schema_graph run_tests])
+    RubyAgentSkills::MCPPreflight::LegacyHttpProbe.new(transport).call
   end
 
   def test_modern_http_probe_reports_server_and_tool_inventory
