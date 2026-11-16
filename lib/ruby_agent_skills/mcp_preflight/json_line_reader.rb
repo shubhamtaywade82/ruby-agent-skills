@@ -60,7 +60,9 @@ module RubyAgentSkills
       end
 
       def read_chunk(timeout)
-        raise Error.new("timeout", "timed out waiting for an MCP response") unless @io.wait_readable(timeout)
+        unless @io.wait_readable(timeout)
+          raise Error.new("timeout", "timed out waiting for an MCP response")
+        end
 
         chunk = @io.read_nonblock(16_384, exception: false)
         raise Error.new("server_exited", "MCP server exited before responding") if chunk.nil?
