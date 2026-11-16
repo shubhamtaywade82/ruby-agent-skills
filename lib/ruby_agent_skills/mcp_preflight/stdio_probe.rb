@@ -105,7 +105,7 @@ module RubyAgentSkills
 
       def valid_inherit_env?(keys)
         keys.is_a?(Array) && keys.all? do |key|
-          key.is_a?(String) && key.match?(/\\A[A-Za-z_][A-Za-z0-9_]*\\z/)
+          key.is_a?(String) && key.match?(/\A[A-Za-z_][A-Za-z0-9_]*\z/)
         end
       end
 
