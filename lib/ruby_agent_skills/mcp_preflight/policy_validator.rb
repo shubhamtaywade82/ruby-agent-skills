@@ -96,7 +96,6 @@ module RubyAgentSkills
 
         raise Error.new("invalid_policy", "invalid capability for #{server}.#{tool}")
       end
-
     end
   end
 end
