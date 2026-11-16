@@ -332,6 +332,15 @@ class McpPreflightSystemTest < Minitest::Test
     assert_equal "unsafe_url", error.code
   end
 
+  def test_ipv6_loopback_plain_http_is_allowed
+    probe = RubyAgentSkills::MCPPreflight::StreamableHttpProbe.new(
+      { "url" => "http://[::1]:3000/mcp" },
+      timeout: 1
+    )
+
+    assert_nil probe.send(:validate_url!)
+  end
+
   def test_policy_rejects_a_non_deny_unknown_tool_default
     policy_path = File.join(@tmpdir, "unsafe-policy.yml")
     policy = File.read(POLICY, encoding: "UTF-8").sub("unknown_tool: deny", "unknown_tool: allow")
