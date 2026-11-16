@@ -63,7 +63,6 @@ class McpPreflightTestCase < Minitest::Test
     )
   end
 
-
   def assert_modern_probe_result(result)
     assert_equal "healthy", result.dig(:health, :status)
     assert result.dig(:health, :configured)
