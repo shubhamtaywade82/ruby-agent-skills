@@ -63,7 +63,7 @@ module RubyAgentSkills
           response = @transport.post("tools/list", params, page + 2, modern: false)
           result_or_raise(response, "tools/list")
         end
-        tools.map { |tool| tool.fetch("name") }
+        tools.map { |tool| tool.fetch("name") }.sort
       end
 
       def result_or_raise(response, method)
