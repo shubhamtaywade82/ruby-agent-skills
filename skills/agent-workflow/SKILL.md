@@ -20,6 +20,21 @@ Provide the repository-local execution contract for agent-assisted Ruby/Rails en
 - benchmark/evaluation infrastructure is changing
 - configuring or selecting MCP servers used by a coding agent to inspect, test, query, or debug a Ruby/Rails project
 
+## MCP tool-use preflight
+
+When a task may use an external MCP server to inspect, test, query, execute, debug, or mutate a Ruby/Rails application, treat each tool invocation as a gated operation:
+
+1. Identify the exact MCP client registration key and requested tool name. Do not infer safety from a server name, tool name, description, or MCP annotation.
+2. Review the registration command/URL, arguments, working directory, environment inheritance, configured headers, and the server's trust/source before starting or contacting it.
+3. Classify the exact `server_key.tool_name` in `mcp/permissions.yml`. Unknown tools, production, production access, and credential export are denied.
+4. Select the narrowest profile (`inspect`, `test`, `debug`, `console`, or `maintenance`) and the actual target environment. Never relabel production to bypass the production gate.
+5. Run `bin/mcp-preflight` with `--probe` only after reviewing and explicitly accepting the registration's startup/network behavior. It performs protocol discovery and `tools/list`; it never calls the requested tool.
+6. Interpret `allowed`, `approval_required`, `denied`, and `unavailable` distinctly. A healthy server with a missing tool is not available for the requested operation.
+7. For `approval_required`, obtain specific user approval and rely on the MCP host to enforce it at the actual `tools/call` boundary. The local policy is advisory unless enforced by the host.
+8. Use `--isolated` only when the operator has independently verified disposable process/database state, filesystem boundaries, credentials, and network egress. The flag is an attestation, not an isolation detector.
+
+Do not retry a denied or unavailable operation using a broader profile, different environment label, or weaker transport controls. Load [the MCP governance reference](references/mcp-governance-and-preflight.md) for the command contract, report states, protocol support, and security limitations.
+
 ## Repository inspection
 
 Before implementation, inspect:
