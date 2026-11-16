@@ -57,6 +57,7 @@ class RubyRailsMcpToolsReferenceSystemTest < Minitest::Test
       "Credential hygiene"
     ]
     controls.each { |control| assert_includes guide, control }
+
   end
 
   def test_existing_pack_mcp_server_is_distinguished_from_application_tools
