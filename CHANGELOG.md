@@ -6,6 +6,7 @@
 - Apply transport controls: no shell interpolation for STDIO, minimal inherited environment plus explicit overrides, bounded request timeouts and response size, child process-group cleanup, verified TLS for remote HTTP, loopback-only plain HTTP, rejection of URL credentials/redirects/custom auth headers, and structured failure results.
 - Add `skills/agent-workflow/references/mcp-governance-and-preflight.md`, link it from `agent-workflow`, the Ruby/Rails MCP tools guide, routing matrix, README, and Claude Code integration guide. Document that `--isolated` is an operator attestation and that the preflight is not a reference monitor; the MCP host/application must enforce actual approval and authorization.
 - Add and register `test/mcp_preflight_system_test.rb`. No new skills, patterns, or evaluation cases; inventory remains 104 skills, 454 patterns, and 624 evaluation cases. System/contract test files increase from 121 to 122.
+- Harden the follow-up implementation: support IPv6 loopback HTTP URLs, split transport/protocol code and test fixtures into focused components, mark `bin/mcp-preflight` executable, and include all MCP runtime dependencies in both release-archive construction and verification lists.
 - Execution note: the Ruby test suite and RuboCop were not run in the remote editing environment; branch-local CI/local validation remains required before merge.
 
 ## Iteration 199 — Ruby and Rails MCP Developer Tool Ecosystem
