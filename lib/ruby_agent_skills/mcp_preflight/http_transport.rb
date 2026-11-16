@@ -50,6 +50,16 @@ module RubyAgentSkills
       end
 
       def perform_request(request)
+        open_http_connection { |http| http.request(request) { |response| response_data(response) } }
+      rescue Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout
+        raise Error.new("timeout", "timed out waiting for HTTP MCP server")
+      rescue SocketError, Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+        raise Error.new("unavailable", "HTTP MCP server could not be reached")
+      rescue OpenSSL::SSL::SSLError
+        raise Error.new("tls_error", "HTTP MCP TLS verification failed")
+      end
+
+      def open_http_connection
         Net::HTTP.start(
           @uri.hostname,
           @uri.port,
@@ -58,15 +68,7 @@ module RubyAgentSkills
           read_timeout: @timeout,
           write_timeout: @timeout,
           verify_mode: OpenSSL::SSL::VERIFY_PEER
-        ) do |http|
-          http.request(request) { |response| response_data(response) }
-        end
-      rescue Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout
-        raise Error.new("timeout", "timed out waiting for HTTP MCP server")
-      rescue SocketError, Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-        raise Error.new("unavailable", "HTTP MCP server could not be reached")
-      rescue OpenSSL::SSL::SSLError
-        raise Error.new("tls_error", "HTTP MCP TLS verification failed")
+        ) { |http| yield http }
       end
 
       def response_data(response)
