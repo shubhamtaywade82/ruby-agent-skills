@@ -13,10 +13,9 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
       timeout: 1
     )
 
-    result = probe.call
+    error = assert_raises(RubyAgentSkills::MCPPreflight::Error) { probe.call }
 
-    assert_equal "unavailable", result[:status]
-    refute result[:configured]
+    assert_equal "invalid_client_config", error.code
   end
 
   def test_missing_server_registration_is_distinct_from_an_unhealthy_server
