@@ -45,16 +45,23 @@ module RubyAgentSkills
       def self.append_page!(entries, tools, seen)
         entries.each do |tool|
           name = tool.fetch("name")
-          raise Error.new("invalid_tools_list", "tools/list repeated a tool name across pages") if seen.key?(name)
+          if seen.key?(name)
+            raise Error.new("invalid_tools_list", "tools/list repeated a tool name across pages")
+          end
 
           seen[name] = true
           tools << { "name" => name }
-          if tools.length > MAX_TOOLS
-            raise Error.new("pagination_limit", "tools/list exceeded the tool limit")
-          end
+          enforce_tool_limit!(tools.length)
         end
       end
       private_class_method :append_page!
+
+      def self.enforce_tool_limit!(count)
+        return unless count > MAX_TOOLS
+
+        raise Error.new("pagination_limit", "tools/list exceeded the tool limit")
+      end
+      private_class_method :enforce_tool_limit!
 
       def self.next_cursor(result)
         cursor = result["nextCursor"]
