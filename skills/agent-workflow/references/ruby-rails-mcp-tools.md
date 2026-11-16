@@ -236,7 +236,7 @@ Register it alongside (not instead of) whichever external app tools are justifie
 }
 ```
 
-See [Claude Code Integration](../../../docs/CLAUDE_CODE_INTEGRATION.md) for the pack's own server registration and cross-pack setup.
+The repository-level Claude Code integration guide documents the pack's own server registration and cross-pack setup.
 
 ## Recommended combinations
 
@@ -290,7 +290,7 @@ Treat every server registration as a grant of capabilities to the agent. MCP doe
 
 ## Permission profiles and health preflight
 
-Before using a configured external MCP tool, consult [MCP Permission Profiles and Preflight](mcp-governance-and-preflight.md). The `bin/mcp-preflight` command checks the configured server transport, protocol discovery, the live `tools/list` inventory, and a local fail-closed capability policy. It never calls the requested tool. The policy is advisory unless the consuming MCP host also enforces approval at the actual call boundary; `--isolated` is an operator attestation, not an environment inspection.
+Before using a configured external MCP tool, consult the MCP Permission Profiles and Preflight reference listed in the agent-workflow reference index. The `bin/mcp-preflight` command checks the configured server transport, protocol discovery, the live `tools/list` inventory, and a local fail-closed capability policy. It never calls the requested tool. The policy is advisory unless the consuming MCP host also enforces approval at the actual call boundary; `--isolated` is an operator attestation, not an environment inspection.
 
 Example:
 
