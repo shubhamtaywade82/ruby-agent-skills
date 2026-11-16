@@ -19,7 +19,9 @@ module RubyAgentSkills
         result = result_or_raise(discovery, "server/discover")
         negotiated = DiscoveryResult.new(result)
         return legacy_initialize unless negotiated.modern?
-        return empty_tool_list(MODERN_PROTOCOL, negotiated.server_info) unless negotiated.supports_tools?
+        unless negotiated.supports_tools?
+          return empty_tool_list(MODERN_PROTOCOL, negotiated.server_info)
+        end
 
         list_tools(2, { "_meta" => CLIENT_META }, MODERN_PROTOCOL, negotiated.server_info)
       end
@@ -45,7 +47,9 @@ module RubyAgentSkills
       def legacy_initialize
         result = legacy_initialize_result
         notify_initialized
-        return empty_tool_list(LEGACY_PROTOCOL, result["serverInfo"]) unless legacy_tools_supported?(result)
+        unless legacy_tools_supported?(result)
+          return empty_tool_list(LEGACY_PROTOCOL, result["serverInfo"])
+        end
 
         list_tools(3, {}, LEGACY_PROTOCOL, result["serverInfo"])
       end
@@ -72,7 +76,8 @@ module RubyAgentSkills
         end
         return result if result["capabilities"].is_a?(Hash)
 
-        raise Error.new("invalid_initialize", "legacy initialize response has no capabilities object")
+        message = "legacy initialize response has no capabilities object"
+        raise Error.new("invalid_initialize", message)
       end
 
       def legacy_tools_supported?(result)
