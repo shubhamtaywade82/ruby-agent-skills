@@ -75,13 +75,17 @@ module RubyAgentSkills
       end
 
       def validate_server(server, entry)
-        raise Error.new("invalid_policy", "server #{server} must be a mapping") unless entry.is_a?(Hash)
+        unless entry.is_a?(Hash)
+          raise Error.new("invalid_policy", "server #{server} must be a mapping")
+        end
 
         validate_server_tools(server, entry.fetch("tools", {}))
       end
 
       def validate_server_tools(server, tools)
-        raise Error.new("invalid_policy", "server #{server} tools must be a mapping") unless tools.is_a?(Hash)
+        unless tools.is_a?(Hash)
+          raise Error.new("invalid_policy", "server #{server} tools must be a mapping")
+        end
 
         tools.each { |tool, capability| validate_tool_capability(server, tool, capability) }
       end
