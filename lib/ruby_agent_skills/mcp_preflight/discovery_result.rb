@@ -45,18 +45,39 @@ module RubyAgentSkills
       end
 
       def validate_result_fields!(result)
-        versions = result["supportedVersions"]
-        valid_versions = versions.is_a?(Array) && !versions.empty? &&
-                         versions.all? { |version| version.is_a?(String) && !version.empty? }
-        raise Error.new("invalid_discovery", "supportedVersions must contain protocol version strings") unless valid_versions
+        validate_supported_versions!(result["supportedVersions"])
+        validate_capabilities!(result["capabilities"])
+        validate_cache_scope!(result["cacheScope"])
+        validate_ttl!(result["ttlMs"])
+      end
 
-        raise Error.new("invalid_discovery", "capabilities must be an object") unless result["capabilities"].is_a?(Hash)
-        unless CACHE_SCOPES.include?(result["cacheScope"])
-          raise Error.new("invalid_discovery", "cacheScope must be public or private")
-        end
-        unless result["ttlMs"].is_a?(Integer) && result["ttlMs"] >= 0
-          raise Error.new("invalid_discovery", "ttlMs must be a non-negative integer")
-        end
+      def validate_supported_versions!(versions)
+        valid = versions.is_a?(Array) && !versions.empty? &&
+                versions.all? { |version| version.is_a?(String) && !version.empty? }
+        return if valid
+
+        raise Error.new(
+          "invalid_discovery",
+          "supportedVersions must contain protocol version strings"
+        )
+      end
+
+      def validate_capabilities!(capabilities)
+        return if capabilities.is_a?(Hash)
+
+        raise Error.new("invalid_discovery", "capabilities must be an object")
+      end
+
+      def validate_cache_scope!(scope)
+        return if CACHE_SCOPES.include?(scope)
+
+        raise Error.new("invalid_discovery", "cacheScope must be public or private")
+      end
+
+      def validate_ttl!(ttl)
+        return if ttl.is_a?(Integer) && ttl >= 0
+
+        raise Error.new("invalid_discovery", "ttlMs must be a non-negative integer")
       end
 
       def normalized_server_info(info)
