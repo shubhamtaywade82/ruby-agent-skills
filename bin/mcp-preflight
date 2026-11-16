@@ -43,7 +43,7 @@ end.parse!
 required = %i[server tool profile environment]
 missing = required.reject { |key| options[key] }
 unless missing.empty?
-  warn "Missing required options: #{missing.map { |key| "--#{key}" }.join(", ")}"
+  warn "Missing required options: #{missing.map { |key| '--#{key}' }.join(', ')}"
   exit 64
 end
 
