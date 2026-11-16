@@ -12,7 +12,7 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
     )
 
     assert_equal "unavailable", result.dig(:health, :status)
-    assert_equal false, result.dig(:health, :configured)
+    refute result.dig(:health, :configured)
   end
 
   def test_unresponsive_stdio_server_is_reported_unavailable
