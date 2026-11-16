@@ -4,21 +4,27 @@ require_relative "../support/mcp_preflight_test_case"
 
 class McpPreflightSafetySystemTest < McpPreflightTestCase
   def test_production_access_and_credential_export_are_unconditionally_denied
-    policy_path = File.join(@tmpdir, "hard-deny.yml")
-    write_hard_deny_policy(policy_path)
-    policy = RubyAgentSkills::MCPPreflight::Policy.new(policy_path)
+    policy = hard_deny_policy
 
     %w[open_production export_credentials].each do |tool|
-      result = policy.evaluate(
-        server: "example",
-        tool: tool,
-        profile: "maintenance",
-        environment: "development",
-        isolated: true
-      )
-
-      assert_equal "denied", result[:decision]
+      assert_equal "denied", hard_deny_decision(policy, tool)
     end
+  end
+
+  def hard_deny_policy
+    path = File.join(@tmpdir, "hard-deny.yml")
+    write_hard_deny_policy(path)
+    RubyAgentSkills::MCPPreflight::Policy.new(path)
+  end
+
+  def hard_deny_decision(policy, tool)
+    policy.evaluate(
+      server: "example",
+      tool: tool,
+      profile: "maintenance",
+      environment: "development",
+      isolated: true
+    ).fetch(:decision)
   end
 
   def test_remote_plain_http_is_rejected_before_network_access
@@ -49,5 +55,4 @@ class McpPreflightSafetySystemTest < McpPreflightTestCase
 
     assert_includes validate, "test/mcp_preflight_system_test.rb"
   end
-
 end
