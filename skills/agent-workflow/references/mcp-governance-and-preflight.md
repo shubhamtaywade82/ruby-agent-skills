@@ -1,6 +1,6 @@
 # MCP Permission Profiles and Preflight
 
-This reference defines the MCP governance workflow used by `bin/mcp-preflight`. Read it with [Ruby and Rails MCP Developer Tools](ruby-rails-mcp-tools.md) when selecting or configuring a server.
+This reference defines the MCP governance workflow used by `bin/mcp-preflight`. Use the Ruby and Rails MCP Developer Tools reference from the agent-workflow reference index when selecting or configuring a server.
 
 ## Separate four decisions
 
@@ -154,7 +154,7 @@ The preflight is a guardrail for agent reasoning, **not a reference monitor**. I
 
 | Task | Load |
 |---|---|
-| Select a Ruby/Rails MCP server | [ruby-rails-mcp-tools.md](ruby-rails-mcp-tools.md) |
+| Select a Ruby/Rails MCP server | `ruby-rails-mcp-tools.md` in the agent-workflow reference index |
 | Configure profiles, tool mappings, or health checks | This reference + `agent-workflow` |
 | Test execution and test isolation | `rails-test-engineering` + owning implementation skill |
 | Shell/console/debugger and credentials | `ruby-debugging`, `rails-security`, `rails-security-engineering` |
