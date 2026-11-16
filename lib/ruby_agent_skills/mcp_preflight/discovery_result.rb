@@ -16,7 +16,6 @@ module RubyAgentSkills
         @server_info = normalized_server_info(server_info)
       end
 
-
       def modern?
         protocol_version == MODERN_PROTOCOL
       end
@@ -36,7 +35,6 @@ module RubyAgentSkills
         message = "server advertises no protocol version supported by this client"
         raise Error.new("protocol_incompatible", message)
       end
-
 
       def validate_shape!(result)
         validate_object!(result)
