@@ -53,7 +53,7 @@ module RubyAgentSkills
       end
 
       def legacy_initialize_result
-        response = request(
+        response = @client.request(
           2,
           "initialize",
           {
