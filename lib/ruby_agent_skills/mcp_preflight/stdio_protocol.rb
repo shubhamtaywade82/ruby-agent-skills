@@ -7,9 +7,7 @@ module RubyAgentSkills
   module MCPPreflight
     class StdioProtocol
       def initialize(stdin, reader, timeout:)
-        @stdin = stdin
-        @reader = reader
-        @timeout = timeout
+        @client = StdioClient.new(stdin, reader, timeout: timeout)
       end
 
       def call
@@ -33,7 +31,7 @@ module RubyAgentSkills
       private
 
       def discover
-        request(1, "server/discover", { "_meta" => CLIENT_META })
+        @client.request(1, "server/discover", { "_meta" => CLIENT_META })
       rescue Error => e
         raise unless %w[timeout server_exited].include?(e.code)
 
@@ -46,7 +44,7 @@ module RubyAgentSkills
 
       def legacy_initialize
         result = legacy_initialize_result
-        notify_initialized
+        @client.notify_initialized
         unless legacy_tools_supported?(result)
           return empty_tool_list(LEGACY_PROTOCOL, result["serverInfo"])
         end
@@ -91,31 +89,10 @@ module RubyAgentSkills
       def list_tools(id, params, version, server_info)
         tools = ToolInventory.collect do |cursor, page|
           page_params = cursor ? params.merge("cursor" => cursor) : params
-          listed = request(id + page - 1, "tools/list", page_params)
+          listed = @client.request(id + page - 1, "tools/list", page_params)
           result_or_raise(listed, "tools/list")
         end
         StdioToolList.build({ "tools" => tools }, version, server_info: server_info)
-      end
-
-      def notify_initialized
-        notification = {
-          "jsonrpc" => "2.0",
-          "method" => "notifications/initialized",
-          "params" => {}
-        }
-        @stdin.write(JSON.generate(notification))
-        @stdin.write("\n")
-        @stdin.flush
-      end
-
-      def request(id, method, params)
-        message = { "jsonrpc" => "2.0", "id" => id, "method" => method, "params" => params }
-        @stdin.write(JSON.generate(message))
-        @stdin.write("\n")
-        @stdin.flush
-        @reader.response_for(id, timeout: @timeout)
-      rescue IOError, Errno::EPIPE
-        raise Error.new("server_exited", "MCP server closed STDIN before responding")
       end
 
       def result_or_raise(response, method)
