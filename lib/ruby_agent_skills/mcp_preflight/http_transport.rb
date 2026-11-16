@@ -97,7 +97,8 @@ module RubyAgentSkills
         return if successful?(response)
 
         raise_authorization_error(response) if unauthorized?(response)
-        raise Error.new("http_unavailable", "HTTP MCP notification returned status #{response.code}")
+        message = "HTTP MCP notification returned status #{response.code}"
+        raise Error.new("http_unavailable", message)
       end
 
       def successful?(response)
