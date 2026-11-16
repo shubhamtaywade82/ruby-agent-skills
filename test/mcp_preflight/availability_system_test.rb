@@ -3,6 +3,22 @@
 require_relative "../support/mcp_preflight_test_case"
 
 class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
+  def test_non_mapping_mcp_server_registry_is_reported_unavailable
+    config_path = File.join(@tmpdir, "invalid-mcp.json")
+    File.write(config_path, JSON.generate("mcpServers" => []), encoding: "UTF-8")
+    probe = RubyAgentSkills::MCPPreflight::ServerProbe.new(
+      config_path: config_path,
+      server: "rails",
+      cwd: nil,
+      timeout: 1
+    )
+
+    result = probe.call
+
+    assert_equal "unavailable", result[:status]
+    refute result[:configured]
+  end
+
   def test_missing_server_registration_is_distinct_from_an_unhealthy_server
     result = run_preflight(
       server: "ask-rails-harness",
