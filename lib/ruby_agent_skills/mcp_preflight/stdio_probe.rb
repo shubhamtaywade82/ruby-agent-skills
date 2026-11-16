@@ -35,13 +35,13 @@ module RubyAgentSkills
         end
       end
 
-      def open_server(&block)
+      def open_server(&)
         Open3.popen3(
           child_environment,
           @config.fetch("command"),
           *@config.fetch("args", []),
           **server_options,
-          &block
+          &
         )
       end
 
@@ -99,20 +99,6 @@ module RubyAgentSkills
 
       def valid_args?(args)
         args.is_a?(Array) && args.all?(String)
-      end
-
-      def valid_env?(env)
-        env.is_a?(Hash) && env.all? do |key, value|
-          key.to_s.match?(/\A[A-Za-z_][A-Za-z0-9_]*\z/) && value.is_a?(String)
-        end
-      end
-
-      def child_environment
-        inherited_keys = INHERITED_ENV + Array(@config["inherit_env"])
-        inherited = inherited_keys.uniq.each_with_object({}) do |key, result|
-          result[key] = ENV.fetch(key) if ENV.key?(key)
-        end
-        inherited.merge(@config.fetch("env", {}))
       end
 
       def stop(waiter)
