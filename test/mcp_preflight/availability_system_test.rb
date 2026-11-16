@@ -91,5 +91,4 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
 
     assert_equal "unknown_environment", error.code
   end
-
 end
