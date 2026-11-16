@@ -39,9 +39,7 @@ module RubyAgentSkills
       end
 
       def probe(config)
-        if config["command"]
-          return StdioProbe.new(config, cwd: @cwd, timeout: @timeout).call
-        end
+        return StdioProbe.new(config, cwd: @cwd, timeout: @timeout).call if config["command"]
         return http_probe(config) if config["url"]
 
         raise Error.new("unsupported_transport", "server registration requires command or url")
