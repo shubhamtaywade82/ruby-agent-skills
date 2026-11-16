@@ -60,7 +60,9 @@ module RubyAgentSkills
       end
 
       def profile_decision(capability, profile, name)
-        return deny("#{capability} is denied by profile #{name}", capability) if profile_denies?(profile, capability)
+        if profile_denies?(profile, capability)
+          return deny("#{capability} is denied by profile #{name}", capability)
+        end
         return approval(capability) if approval_required?(profile, capability)
         return allowed(capability, name) if profile_allows?(profile, capability)
 
