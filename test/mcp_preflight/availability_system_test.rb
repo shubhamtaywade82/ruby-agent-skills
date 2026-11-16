@@ -15,7 +15,6 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
     assert_equal false, result.dig(:health, :configured)
   end
 
-
   def test_unresponsive_stdio_server_is_reported_unavailable
     result = run_preflight(
       server: "ask-rails-harness",
@@ -28,7 +27,6 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
     assert_match(/server_exited/, result.dig(:health, :reason))
   end
 
-
   def test_tool_missing_from_live_tools_list_is_unavailable
     result = run_preflight(
       server: "ask-rails-harness",
@@ -39,7 +37,6 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
     assert_equal "unavailable", result[:decision]
     assert_equal "healthy", result.dig(:health, :status)
   end
-
 
   def test_production_is_denied_even_for_read_only_capabilities
     result = run_preflight(
@@ -54,7 +51,6 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
     assert_match(/production environment/, result[:reason])
   end
 
-
   def test_preflight_requires_explicit_confirmation_before_starting_a_server
     error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
       run_preflight(
@@ -68,7 +64,6 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
     assert_equal "probe_confirmation_required", error.code
   end
 
-
   def test_invalid_environment_is_rejected
     error = assert_raises(RubyAgentSkills::MCPPreflight::Error) do
       run_preflight(
@@ -81,6 +76,5 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
 
     assert_equal "unknown_environment", error.code
   end
-
 
 end
