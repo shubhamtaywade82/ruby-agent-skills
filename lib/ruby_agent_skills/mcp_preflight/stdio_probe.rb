@@ -110,7 +110,7 @@ module RubyAgentSkills
       end
 
       def valid_args?(args)
-        args.is_a?(Array) && args.all? { |arg| arg.is_a?(String) }
+        args.is_a?(Array) && args.all?(String)
       end
 
       def valid_env?(env)
