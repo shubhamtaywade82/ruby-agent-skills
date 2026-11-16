@@ -14,6 +14,7 @@ module RubyAgentSkills
       def call
         permission = permission_decision
         return report(not_checked, permission) if permission[:decision] == "denied"
+
         unless @probe
           message = "pass --probe to start or contact the MCP server"
           raise Error.new("probe_confirmation_required", message)
