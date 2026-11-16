@@ -10,17 +10,20 @@ module RubyAgentSkills
 
       def initialize(result)
         validate_shape!(result)
-        @protocol_version = CLIENT_VERSIONS.find do |version|
-          result.fetch("supportedVersions").include?(version)
-        end
-        unless @protocol_version
-          message = "server advertises no protocol version supported by this client"
-          raise Error.new("protocol_incompatible", message)
-        end
-
+        @protocol_version = supported_protocol_version(result)
         @capabilities = result.fetch("capabilities")
         server_info = result.dig("_meta", "io.modelcontextprotocol/serverInfo")
         @server_info = normalized_server_info(server_info)
+      end
+
+      def supported_protocol_version(result)
+        version = CLIENT_VERSIONS.find do |candidate|
+          result.fetch("supportedVersions").include?(candidate)
+        end
+        return version if version
+
+        message = "server advertises no protocol version supported by this client"
+        raise Error.new("protocol_incompatible", message)
       end
 
       def modern?
@@ -34,20 +37,24 @@ module RubyAgentSkills
       private
 
       def validate_shape!(result)
+        validate_object!(result)
+        validate_result_type!(result)
+        validate_result_fields!(result)
+      end
+
+      def validate_object!(result)
         return if result.is_a?(Hash)
 
         raise Error.new("invalid_discovery", "server/discover result must be an object")
+      end
 
-        unless result["resultType"].is_a?(String) && !result["resultType"].empty?
-          message = "server/discover resultType must be a non-empty string"
-          raise Error.new("invalid_discovery", message)
-        end
-        unless result["resultType"] == "complete"
-          message = "partial or cached discovery results are not supported"
-          raise Error.new("incomplete_discovery", message)
-        end
+      def validate_result_type!(result)
+        type = result["resultType"]
+        valid = type.is_a?(String) && !type.empty?
+        raise Error.new("invalid_discovery", "server/discover resultType must be a string") unless valid
+        return if type == "complete"
 
-        validate_result_fields!(result)
+        raise Error.new("incomplete_discovery", "partial or cached discovery results are not supported")
       end
 
       def validate_result_fields!(result)
