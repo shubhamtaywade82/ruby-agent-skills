@@ -61,7 +61,8 @@ class McpPreflightTestCase < Minitest::Test
       policy_path: POLICY,
       server: options.fetch(:server),
       tool: options.fetch(:tool),
-      profile: options.fetch(:profile, "inspect"), environment: options.fetch(:environment, "development"),
+      profile: options.fetch(:profile, "inspect"),
+      environment: options.fetch(:environment, "development"),
       isolated: options.fetch(:isolated, false),
       timeout: 2,
       probe: options.fetch(:probe, true)
