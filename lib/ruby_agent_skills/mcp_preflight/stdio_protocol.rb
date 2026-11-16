@@ -43,7 +43,15 @@ module RubyAgentSkills
       end
 
       def legacy_initialize
-        initialized = request(
+        result = legacy_initialize_result
+        notify_initialized
+        return empty_tool_list(LEGACY_PROTOCOL, result["serverInfo"]) unless legacy_tools_supported?(result)
+
+        list_tools(3, {}, LEGACY_PROTOCOL, result["serverInfo"])
+      end
+
+      def legacy_initialize_result
+        response = request(
           2,
           "initialize",
           {
@@ -52,18 +60,19 @@ module RubyAgentSkills
             "clientInfo" => CLIENT_INFO
           }
         )
-        result = result_or_raise(initialized, "initialize")
+        validate_legacy_initialize!(result_or_raise(response, "initialize"))
+      end
+
+      def validate_legacy_initialize!(result)
         unless result["protocolVersion"] == LEGACY_PROTOCOL
-          raise Error.new("protocol_incompatible", "legacy server did not negotiate the requested protocol version")
+          raise Error.new(
+            "protocol_incompatible",
+            "legacy server did not negotiate the requested protocol version"
+          )
         end
-        unless result["capabilities"].is_a?(Hash)
-          raise Error.new("invalid_initialize", "legacy initialize response has no capabilities object")
-        end
+        return result if result["capabilities"].is_a?(Hash)
 
-        notify_initialized
-        return empty_tool_list(LEGACY_PROTOCOL, result["serverInfo"]) unless legacy_tools_supported?(result)
-
-        list_tools(3, {}, LEGACY_PROTOCOL, result["serverInfo"])
+        raise Error.new("invalid_initialize", "legacy initialize response has no capabilities object")
       end
 
       def legacy_tools_supported?(result)
