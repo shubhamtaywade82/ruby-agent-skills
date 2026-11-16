@@ -46,6 +46,8 @@ REQUIRED_PATHS = %w[
   lib/ruby_agent_skills/mcp_preflight/streamable_http_probe.rb
   lib/ruby_agent_skills/mcp_preflight/server_probe.rb
   lib/ruby_agent_skills/mcp_preflight/runner.rb
+  lib/ruby_agent_skills/mcp_preflight/http_transport.rb
+  lib/ruby_agent_skills/mcp_preflight/legacy_http_probe.rb
   bin/install bin/skill-pack-doctor bin/skill-pack-verify bin/skill-pack-compatibility bin/stack-minimality
   docs/SKILL_CONTRACT.md router/ROUTING.md skill-manifest.yml RELEASE.json
 ].freeze
