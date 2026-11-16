@@ -47,6 +47,7 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
     )
 
     assert_equal "unavailable", result.dig(:health, :status)
+    assert result.dig(:health, :configured)
     assert_match(/server_exited/, result.dig(:health, :reason))
   end
 
