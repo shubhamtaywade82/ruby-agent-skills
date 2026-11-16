@@ -5,13 +5,9 @@ require "open3"
 module RubyAgentSkills
   module MCPPreflight
     class StdioProbe
-      INHERITED_ENV = %w[
-        PATH HOME USERPROFILE TMPDIR TEMP LANG LC_ALL SYSTEMROOT WINDIR
-        GEM_HOME GEM_PATH RBENV_VERSION RBENV_ROOT
-      ].freeze
-
       def initialize(server_config, cwd:, timeout:)
         @config = server_config
+        @environment = StdioEnvironment.new(server_config)
         @cwd = File.expand_path(cwd || server_config.fetch("cwd", Dir.pwd))
         @timeout = timeout
       end
@@ -32,18 +28,25 @@ module RubyAgentSkills
       private
 
       def run_protocol(force_legacy:)
-        Open3.popen3(
-          child_environment,
-          @config.fetch("command"),
-          *@config.fetch("args", []),
-          chdir: @cwd,
-          pgroup: true,
-          err: File::NULL
-        ) do |stdin, stdout, _stderr, waiter|
+        open_server do |stdin, stdout, _stderr, waiter|
           run_session(stdin, stdout, force_legacy)
         ensure
           cleanup_process(stdin, stdout, waiter)
         end
+      end
+
+      def open_server(&block)
+        Open3.popen3(
+          child_environment,
+          @config.fetch("command"),
+          *@config.fetch("args", []),
+          **server_options,
+          &block
+        )
+      end
+
+      def server_options
+        { chdir: @cwd, pgroup: true, err: File::NULL }
       end
 
       def run_session(stdin, stdout, force_legacy)
@@ -67,8 +70,7 @@ module RubyAgentSkills
         validate_command!
         validate_arguments!
         validate_working_directory!
-        validate_environment!
-        validate_inherited_environment!
+        @environment.validate!
       end
 
       def validate_command!
@@ -91,22 +93,8 @@ module RubyAgentSkills
         raise Error.new("invalid_working_directory", "MCP working directory does not exist")
       end
 
-      def validate_environment!
-        return if valid_env?(@config.fetch("env", {}))
-
-        raise Error.new("invalid_server_config", "MCP env must be a string mapping")
-      end
-
-      def validate_inherited_environment!
-        return if valid_inherit_env?(@config.fetch("inherit_env", []))
-
-        raise Error.new("invalid_server_config", "inherit_env must contain valid environment names")
-      end
-
-      def valid_inherit_env?(keys)
-        keys.is_a?(Array) && keys.all? do |key|
-          key.is_a?(String) && key.match?(/\A[A-Za-z_][A-Za-z0-9_]*\z/)
-        end
+      def child_environment
+        @environment.child_environment
       end
 
       def valid_args?(args)
