@@ -1,0 +1,13 @@
+schema_version: 1
+defaults:
+  production: deny
+  unknown_tool: deny
+  isolated_capabilities: []
+profiles:
+  maintenance:
+    allow: [production_access, credential_export]
+servers:
+  example:
+    tools:
+      open_production: production_access
+      export_credentials: credential_export
