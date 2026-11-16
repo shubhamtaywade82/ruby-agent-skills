@@ -14,11 +14,13 @@ module RubyAgentSkills
           result.fetch("supportedVersions").include?(version)
         end
         unless @protocol_version
-          raise Error.new("protocol_incompatible", "server advertises no protocol version supported by this client")
+          message = "server advertises no protocol version supported by this client"
+          raise Error.new("protocol_incompatible", message)
         end
 
         @capabilities = result.fetch("capabilities")
-        @server_info = normalized_server_info(result.dig("_meta", "io.modelcontextprotocol/serverInfo"))
+        server_info = result.dig("_meta", "io.modelcontextprotocol/serverInfo")
+        @server_info = normalized_server_info(server_info)
       end
 
       def modern?
@@ -32,13 +34,17 @@ module RubyAgentSkills
       private
 
       def validate_shape!(result)
-        raise Error.new("invalid_discovery", "server/discover result must be an object") unless result.is_a?(Hash)
+        return if result.is_a?(Hash)
+
+        raise Error.new("invalid_discovery", "server/discover result must be an object")
 
         unless result["resultType"].is_a?(String) && !result["resultType"].empty?
-          raise Error.new("invalid_discovery", "server/discover resultType must be a non-empty string")
+          message = "server/discover resultType must be a non-empty string"
+          raise Error.new("invalid_discovery", message)
         end
         unless result["resultType"] == "complete"
-          raise Error.new("incomplete_discovery", "partial or cached discovery results are not supported")
+          message = "partial or cached discovery results are not supported"
+          raise Error.new("incomplete_discovery", message)
         end
 
         validate_result_fields!(result)
