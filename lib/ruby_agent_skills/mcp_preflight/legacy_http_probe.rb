@@ -17,27 +17,35 @@ module RubyAgentSkills
       private
 
       def initialize_server
-        response = @transport.post(
-          "initialize",
-          {
-            "protocolVersion" => LEGACY_PROTOCOL,
-            "capabilities" => {},
-            "clientInfo" => CLIENT_INFO
-          },
-          2,
-          modern: false
-        )
+        response = @transport.post("initialize", initialize_params, 2, modern: false)
         validate_initialize_result(result_or_raise(response, "initialize"))
       end
 
+      def initialize_params
+        {
+          "protocolVersion" => LEGACY_PROTOCOL,
+          "capabilities" => {},
+          "clientInfo" => CLIENT_INFO
+        }
+      end
+
       def validate_initialize_result(result)
-        unless result["protocolVersion"] == LEGACY_PROTOCOL
-          raise Error.new(
-            "protocol_incompatible",
-            "legacy HTTP server did not negotiate the requested version"
-          )
-        end
-        return result if result["capabilities"].is_a?(Hash)
+        validate_protocol_version!(result)
+        validate_capabilities!(result)
+        result
+      end
+
+      def validate_protocol_version!(result)
+        return if result["protocolVersion"] == LEGACY_PROTOCOL
+
+        raise Error.new(
+          "protocol_incompatible",
+          "legacy HTTP server did not negotiate the requested version"
+        )
+      end
+
+      def validate_capabilities!(result)
+        return if result["capabilities"].is_a?(Hash)
 
         raise Error.new(
           "invalid_initialize",
