@@ -60,8 +60,7 @@ module RubyAgentSkills
       end
 
       def read_chunk(timeout)
-        ready = IO.select([@io], nil, nil, timeout)
-        raise Error.new("timeout", "timed out waiting for an MCP response") unless ready
+        raise Error.new("timeout", "timed out waiting for an MCP response") unless @io.wait_readable(timeout)
 
         chunk = @io.read_nonblock(16_384, exception: false)
         raise Error.new("server_exited", "MCP server exited before responding") if chunk.nil?
@@ -69,9 +68,9 @@ module RubyAgentSkills
         return if chunk == :wait_readable
 
         @buffer << chunk
-        if @buffer.bytesize > MAX_STDOUT_BUFFER
-          raise Error.new("response_too_large", "MCP server response exceeded the 1 MiB limit")
-        end
+        return unless @buffer.bytesize > MAX_STDOUT_BUFFER
+
+        raise Error.new("response_too_large", "MCP server response exceeded the 1 MiB limit")
       end
     end
   end
