@@ -78,7 +78,7 @@ servers:
     tools:
       schema_graph: schema_read
       route_inspector: metadata_read
-      read_model: schema_read
+      read_model: application_data_read
       query_database: application_data_read
       read_log: application_data_read
       run_tests: test_execution
