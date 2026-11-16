@@ -58,11 +58,12 @@ module RubyAgentSkills
       end
 
       def collect_tools
-        ToolInventory.collect do |cursor, page|
+        tools = ToolInventory.collect do |cursor, page|
           params = cursor ? { "cursor" => cursor } : {}
           response = @transport.post("tools/list", params, page + 2, modern: false)
           result_or_raise(response, "tools/list")
         end
+        tools.map { |tool| tool.fetch("name") }
       end
 
       def result_or_raise(response, method)
