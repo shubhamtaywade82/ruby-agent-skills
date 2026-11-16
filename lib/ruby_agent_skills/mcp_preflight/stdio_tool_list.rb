@@ -20,7 +20,7 @@ module RubyAgentSkills
       def self.safe_server_info(info)
         return nil unless info.is_a?(Hash)
 
-        { name: info["name"], version: info["version"] }
+        { name: info["name"] || info[:name], version: info["version"] || info[:version] }
       end
 
       private_class_method :safe_server_info
