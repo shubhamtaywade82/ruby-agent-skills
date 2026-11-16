@@ -5,13 +5,18 @@ require_relative "../support/mcp_preflight_test_case"
 class McpPreflightFakeHttpTransport
   attr_reader :notified
 
-  def initialize(tools: [], supports_tools: true)
+  def initialize(tools: [], supports_tools: true, modern_discovery_supported: true)
     @tools = tools
     @supports_tools = supports_tools
+    @modern_discovery_supported = modern_discovery_supported
   end
 
   def post(method, _params, _id, **_options)
-    method == "initialize" ? initialize_response : tools_response
+    case method
+    when "server/discover" then discovery_response
+    when "initialize" then initialize_response
+    when "tools/list" then tools_response
+    end
   end
 
   def notify_initialized
@@ -19,6 +24,26 @@ class McpPreflightFakeHttpTransport
   end
 
   private
+
+  def discovery_response
+    return { error: { "code" => -32_601 } } unless @modern_discovery_supported
+
+    {
+      result: {
+        "resultType" => "complete",
+        "supportedVersions" => ["2026-07-28"],
+        "capabilities" => { "tools" => {} },
+        "cacheScope" => "public",
+        "ttlMs" => 30_000,
+        "_meta" => {
+          "io.modelcontextprotocol/serverInfo" => {
+            "name" => "modern-http",
+            "version" => "2.0"
+          }
+        }
+      }
+    }
+  end
 
   def initialize_response
     capabilities = @supports_tools ? { "tools" => {} } : {}
@@ -47,12 +72,30 @@ class McpPreflightHttpSystemTest < McpPreflightTestCase
     assert_equal "legacy-http", result.dig(:server_info, :name)
   end
 
-  def test_modern_http_probe_returns_tool_names_not_tool_objects
+  def test_modern_http_probe_reports_server_and_tool_inventory
     probe = http_probe("https://example.com/mcp")
     transport = McpPreflightFakeHttpTransport.new(tools: %w[schema_graph run_tests])
     probe.instance_variable_set(:@transport, transport)
 
-    assert_equal %w[run_tests schema_graph], probe.send(:collect_tools, {}, 2)
+    result = probe.call
+
+    assert_equal "healthy", result[:status]
+    assert_equal "modern-http", result.dig(:server_info, :name)
+    assert_equal %w[run_tests schema_graph], result[:tools]
+  end
+
+  def test_http_probe_falls_back_when_modern_discovery_is_not_supported
+    probe = http_probe("https://example.com/mcp")
+    transport = McpPreflightFakeHttpTransport.new(
+      tools: %w[schema_graph run_tests],
+      modern_discovery_supported: false
+    )
+    probe.instance_variable_set(:@transport, transport)
+
+    result = probe.call
+
+    assert_equal "2025-11-25", result[:protocol_version]
+    assert_equal "legacy-http", result.dig(:server_info, :name)
   end
 
   def test_legacy_http_probe_skips_tool_list_without_tools_capability
