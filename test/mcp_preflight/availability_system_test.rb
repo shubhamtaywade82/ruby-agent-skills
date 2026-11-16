@@ -26,7 +26,6 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
     assert_equal "unknown", result[:transport]
   end
 
-
   def test_missing_server_registration_is_distinct_from_an_unhealthy_server
     result = run_preflight(
       server: "ask-rails-harness",
@@ -100,6 +99,7 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
 
     assert_equal "unknown_environment", error.code
   end
+
   private
 
   def probe_server_registration(registration)
@@ -110,5 +110,4 @@ class McpPreflightAvailabilitySystemTest < McpPreflightTestCase
       config_path: path, server: "rails", cwd: nil, timeout: 1
     ).call
   end
-
 end
