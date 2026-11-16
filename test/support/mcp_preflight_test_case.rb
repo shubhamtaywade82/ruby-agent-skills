@@ -61,8 +61,7 @@ class McpPreflightTestCase < Minitest::Test
       policy_path: POLICY,
       server: options.fetch(:server),
       tool: options.fetch(:tool),
-      profile: options.fetch(:profile, "inspect"),
-      environment: options.fetch(:environment, "development"),
+      profile: options.fetch(:profile, "inspect"), environment: options.fetch(:environment, "development"),
       isolated: options.fetch(:isolated, false),
       timeout: 2,
       probe: options.fetch(:probe, true)
@@ -80,24 +79,11 @@ class McpPreflightTestCase < Minitest::Test
   end
 
   def write_hard_deny_policy(path)
-    File.write(
-      path,
-      <<~YAML,
-        schema_version: 1
-        defaults:
-          production: deny
-          unknown_tool: deny
-          isolated_capabilities: []
-        profiles:
-          maintenance:
-            allow: [production_access, credential_export]
-        servers:
-          example:
-            tools:
-              open_production: production_access
-              export_credentials: credential_export
-      YAML
-      encoding: "UTF-8"
-    )
+    fixture = File.join(ROOT, "test", "fixtures", "mcp_preflight_hard_deny.yml")
+    FileUtils.cp(fixture, path)
+  end
+
+  def http_probe(url)
+    RubyAgentSkills::MCPPreflight::StreamableHttpProbe.new({ "url" => url }, timeout: 1)
   end
 end
