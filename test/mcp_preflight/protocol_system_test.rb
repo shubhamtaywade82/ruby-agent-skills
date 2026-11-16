@@ -78,5 +78,4 @@ class McpPreflightProtocolSystemTest < McpPreflightTestCase
     assert_equal "2025-11-25", result.dig(:health, :protocol_version)
     assert_includes result.dig(:health, :tools), "schema_graph"
   end
-
 end
