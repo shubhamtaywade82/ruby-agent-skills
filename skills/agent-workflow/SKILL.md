@@ -18,6 +18,22 @@ Provide the repository-local execution contract for agent-assisted Ruby/Rails en
 - a cross-file change is planned
 - an agent is reviewing or modifying another agent's work
 - benchmark/evaluation infrastructure is changing
+- configuring or selecting MCP servers used by a coding agent to inspect, test, query, or debug a Ruby/Rails project
+
+## MCP tool-use preflight
+
+When a task may use an external MCP server to inspect, test, query, execute, debug, or mutate a Ruby/Rails application, treat each tool invocation as a gated operation:
+
+1. Identify the exact MCP client registration key and requested tool name. Do not infer safety from a server name, tool name, description, or MCP annotation.
+2. Review the registration command/URL, arguments, working directory, environment inheritance, configured headers, and the server's trust/source before starting or contacting it.
+3. Classify the exact `server_key.tool_name` in `mcp/permissions.yml`. Unknown tools, production, production access, and credential export are denied.
+4. Select the narrowest profile (`inspect`, `test`, `debug`, `console`, or `maintenance`) and the actual target environment. Never relabel production to bypass the production gate.
+5. Run `bin/mcp-preflight` with `--probe` only after reviewing and explicitly accepting the registration's startup/network behavior. It performs protocol discovery and `tools/list`; it never calls the requested tool.
+6. Interpret `allowed`, `approval_required`, `denied`, and `unavailable` distinctly. A healthy server with a missing tool is not available for the requested operation.
+7. For `approval_required`, obtain specific user approval and rely on the MCP host to enforce it at the actual `tools/call` boundary. The local policy is advisory unless enforced by the host.
+8. Use `--isolated` only when the operator has independently verified disposable process/database state, filesystem boundaries, credentials, and network egress. The flag is an attestation, not an isolation detector.
+
+Do not retry a denied or unavailable operation using a broader profile, different environment label, or weaker transport controls. Load [the MCP governance reference](references/mcp-governance-and-preflight.md) for the command contract, report states, protocol support, and security limitations.
 
 ## Repository inspection
 
@@ -182,6 +198,8 @@ Load only when needed; each reference is one level deep.
 |---|---|---|
 | a change depends on repository facts before implementation | [references/fact-gate.md](references/fact-gate.md) | Fact classes, manifest format, and the blocking rule |
 | a run may change files outside the working tree, use credentials, run side-effecting commands, or spend a budget | [references/execution-control.md](references/execution-control.md) | Approval, credentials, checkpoints, undo, budgets, and provenance |
+| configuring MCP developer tools for Ruby/Rails structure, tests, database inspection, console access, debugging, or gem management | [references/ruby-rails-mcp-tools.md](references/ruby-rails-mcp-tools.md) | Server selection, install scope, transports, setup, composition, and permission boundaries |
+| assigning tool capabilities, selecting permission profiles, or checking MCP server/tool availability before use | [references/mcp-governance-and-preflight.md](references/mcp-governance-and-preflight.md) | Fail-closed tool classification, profiles, protocol discovery, health results, and consent boundaries |
 
 ## Source foundation
 

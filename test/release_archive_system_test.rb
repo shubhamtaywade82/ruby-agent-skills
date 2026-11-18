@@ -89,10 +89,30 @@ class ReleaseArchiveSystemTest < Minitest::Test
           docs/VERIFY_CHANGE.md
           bin/install bin/skill-pack-compatibility bin/skill-pack-verify
           bin/skill-pack-doctor bin/stack-minimality
+          bin/mcp-preflight mcp/permissions.yml
+          lib/ruby_agent_skills/mcp_preflight.rb
+          lib/ruby_agent_skills/mcp_preflight/constants.rb
+          lib/ruby_agent_skills/mcp_preflight/discovery_result.rb
+          lib/ruby_agent_skills/mcp_preflight/tool_inventory.rb
+          lib/ruby_agent_skills/mcp_preflight/stdio_client.rb
+          lib/ruby_agent_skills/mcp_preflight/stdio_environment.rb
+          lib/ruby_agent_skills/mcp_preflight/http_transport.rb
+          lib/ruby_agent_skills/mcp_preflight/legacy_http_probe.rb
+          lib/ruby_agent_skills/mcp_preflight/policy.rb
+          lib/ruby_agent_skills/mcp_preflight/policy_validator.rb
+          lib/ruby_agent_skills/mcp_preflight/json_line_reader.rb
+          lib/ruby_agent_skills/mcp_preflight/stdio_protocol.rb
+          lib/ruby_agent_skills/mcp_preflight/stdio_tool_list.rb
+          lib/ruby_agent_skills/mcp_preflight/stdio_probe.rb
+          lib/ruby_agent_skills/mcp_preflight/http_response.rb
+          lib/ruby_agent_skills/mcp_preflight/streamable_http_probe.rb
+          lib/ruby_agent_skills/mcp_preflight/server_probe.rb
+          lib/ruby_agent_skills/mcp_preflight/runner.rb
         ].each do |path|
           assert File.file?(File.join(archive_root, path)), "archive missing #{path}"
         end
         assert File.file?(File.join(archive_root, "skills", "ruby-clean-code", "SKILL.md"))
+        assert File.executable?(File.join(archive_root, "bin", "mcp-preflight"))
         assert !File.exist?(File.join(archive_root, ".git")), "archive must not ship git history"
       end
     end

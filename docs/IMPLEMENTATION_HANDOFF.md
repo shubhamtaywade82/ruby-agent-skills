@@ -9,7 +9,7 @@ Current inventory:
 - 104 skills
 - 454 implementation patterns
 - 624 evaluation cases
-- 120 system/contract tests
+- 122 system/contract tests
 
 ## Corpus quality and evaluation coverage
 
@@ -248,6 +248,27 @@ Use `stack-minimality` with the domain skill that owns the actual contract. The 
 
 `scripts/audit_documentation_consistency.rb` cross-checks the README, implementation handoff, changelog, `docs/ITERATIONS.md`, filesystem inventory, and manifest. It requires the current milestone in `docs/ITERATIONS.md` and the documented counts to match repository reality, keeps `docs/ITERATIONS.md` in ascending order with a section for the latest iteration, and rejects iteration history in the README. It also pins the README quick-start, the `docs/INSTALLATION.md` pinned-release example, and the `bin/install` usage examples to the newest `docs/releases/vX.Y.Z.md`, so release-target drift fails validation. `bin/validate` runs this audit before release-readiness checks.
 
+## MCP permissions and server preflight
+
+Iteration 200 adds a fail-closed preflight for external Ruby/Rails MCP tools. The policy at `mcp/permissions.yml` maps exact MCP client registration keys and tool names to capabilities; the selected profile and environment determine whether the operation is allowed, requires approval, or is denied. Unclassified tools, production, production access, and credential export are denied.
+
+Run the preflight from the repository root after reviewing the MCP client registration:
+
+```bash
+ruby bin/mcp-preflight \
+  --config .mcp.json \
+  --policy mcp/permissions.yml \
+  --server ask-rails-harness \
+  --tool query_database \
+  --profile inspect \
+  --environment development \
+  --probe
+```
+
+The preflight starts the configured STDIO process or contacts the configured Streamable HTTP URL only with explicit `--probe`. It performs protocol discovery and `tools/list`, never `tools/call`. A healthy server does not prove that its database or downstream dependencies are healthy. `approval_required` must be handled by the consuming MCP host at the actual invocation boundary. `--isolated` is an operator attestation; it does not inspect container, database, filesystem, credential, or network isolation.
+
+See [MCP governance and preflight](../skills/agent-workflow/references/mcp-governance-and-preflight.md) for profiles, transport details, report states, and limitations, and [Ruby/Rails MCP developer tools](../skills/agent-workflow/references/ruby-rails-mcp-tools.md) for server selection and installation scope.
+
 ## Remaining non-implementation work
 
 1. Execute the real 78-run public routing campaign.
@@ -262,4 +283,4 @@ These steps depend on an externally reachable Ollama runtime/model and real mode
 
 ## PR handoff
 
-The repository-side implementation line is complete through Iteration 198. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
+The repository-side implementation line is complete through Iteration 200. The remaining work is empirical execution and evidence analysis using a reachable Ollama runtime/model, or a locally authenticated `claude`, Cursor `agent`, Antigravity `agy`, or OpenCode CLI (see `docs/LOCAL_BENCHMARKING.md`).
