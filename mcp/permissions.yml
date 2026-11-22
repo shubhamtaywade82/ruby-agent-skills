@@ -15,6 +15,37 @@ defaults:
     - filesystem_write
     - database_write
     - external_network
+    - database_admin_write
+    - browser_automation_write
+    - version_control_write
+    - external_context_fetch
+
+# Capability aliases used by the database, browser, version-control, and
+# external-context profiles. The base capabilities above remain the canonical
+# vocabulary; aliases group them so a single profile decision can cover a
+# family of tools (Postgres MCP Pro, Playwright MCP, GitHub MCP, Context7).
+capability_aliases:
+  database_admin:
+    - schema_read
+    - application_data_read
+  database_admin_write:
+    - database_write
+    - filesystem_write
+  browser_automation:
+    - metadata_read
+    - source_read
+  browser_automation_write:
+    - external_network
+    - filesystem_write
+  version_control:
+    - metadata_read
+  version_control_write:
+    - external_network
+    - filesystem_write
+  external_context:
+    - metadata_read
+  external_context_fetch:
+    - external_network
 
 profiles:
   inspect:
@@ -70,6 +101,37 @@ profiles:
       - database_write
       - external_network
 
+  # Profiles for the companion MCP ecosystem. See
+  # skills/agent-workflow/references/ruby-rails-mcp-tools.md for which servers
+  # each profile governs. Each profile is fail-closed: capabilities absent from
+  # the allow list are denied, and the listed approval-required capabilities
+  # also require --isolated (see defaults.isolated_capabilities).
+  database_admin:
+    allow:
+      - schema_read
+      - application_data_read
+    require_approval:
+      - database_admin_write
+
+  browser_automation:
+    allow:
+      - metadata_read
+      - source_read
+    require_approval:
+      - browser_automation_write
+
+  version_control:
+    allow:
+      - metadata_read
+    require_approval:
+      - version_control_write
+
+  external_context:
+    allow:
+      - metadata_read
+    require_approval:
+      - external_context_fetch
+
 # Keys here must match the server key in the consuming project's mcpServers
 # object. Add exact tool names after reviewing the server's live tools/list.
 # Unknown or newly-added tools remain denied until explicitly classified.
@@ -83,3 +145,80 @@ servers:
       read_log: application_data_read
       run_tests: test_execution
       run_command: shell_execution
+
+  # Companion ecosystem starter mappings. Tool names below are illustrative
+  # of the documented surface for each server; a consuming project must
+  # review the live tools/list response and confirm or correct each mapping
+  # before enabling the profile. Unclassified tools remain denied.
+  #
+  # Database administration (Postgres MCP Pro, DevDb, ruby-postgres-mcp-server).
+  postgres-mcp-pro:
+    tools:
+      list_schemas: schema_read
+      list_tables: schema_read
+      describe_table: schema_read
+      explain_query: metadata_read
+      run_query: application_data_read
+      execute_sql: database_admin_write
+  devdb:
+    tools:
+      list_databases: schema_read
+      list_tables: schema_read
+      describe_table: schema_read
+      run_query: application_data_read
+  ruby-postgres-mcp-server:
+    tools:
+      list_schemas: schema_read
+      list_tables: schema_read
+      describe_table: schema_read
+      run_query: application_data_read
+
+  # Browser automation (Playwright MCP, web-dev-mcp-gateway).
+  playwright:
+    tools:
+      navigate: browser_automation
+      snapshot: metadata_read
+      click: browser_automation_write
+      fill: browser_automation_write
+      select_option: browser_automation_write
+      hover: browser_automation_write
+      evaluate: browser_automation_write
+  web-dev-mcp-gateway:
+    tools:
+      console_logs: application_data_read
+      network_requests: application_data_read
+      dom_query: metadata_read
+      js_evaluate: browser_automation_write
+
+  # Version control (GitHub MCP).
+  github:
+    tools:
+      list_issues: metadata_read
+      get_issue: metadata_read
+      list_pull_requests: metadata_read
+      get_pull_request: metadata_read
+      create_issue: version_control_write
+      update_issue: version_control_write
+      create_pull_request: version_control_write
+      merge_pull_request: version_control_write
+      push_branch: version_control_write
+      dispatch_workflow: version_control_write
+
+  # Error monitoring (Sentry MCP). Reads are application_data_read because
+  # event payloads can carry user data, request bodies, and stack traces.
+  sentry:
+    tools:
+      list_projects: metadata_read
+      list_issues: metadata_read
+      get_issue: application_data_read
+      get_event: application_data_read
+      stacktrace: application_data_read
+
+  # External context (Context7, Sequential Thinking).
+  context7:
+    tools:
+      resolve_library_id: metadata_read
+      get_library_docs: external_context_fetch
+  sequential-thinking:
+    tools:
+      think: external_context_fetch

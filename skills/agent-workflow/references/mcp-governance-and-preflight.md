@@ -69,8 +69,12 @@ The default policy is `mcp/permissions.yml`. Copy it into the consuming project 
 | `debug` | Metadata/source/schema reads | Debugger control and arbitrary code evaluation |
 | `console` | Metadata/source/schema reads | Arbitrary code evaluation, application-data reads, database writes, external network |
 | `maintenance` | Metadata/source/schema reads | Application-data reads, test execution, shell, dependency/filesystem/database writes, external network |
+| `database_admin` | Schema/index/query reads | Query writes, schema changes, index builds, VACUUM/ANALYZE, non-SELECT operations |
+| `browser_automation` | Navigations and DOM reads | Clicks, form submits, file uploads, downloads, network requests on the driven browser |
+| `version_control` | Issue/PR/Actions reads | Open/close/merge PRs, push branches, dispatch workflows, edit release artifacts |
+| `external_context` | Documentation and reasoning reads | External network fetches, generated content fed into model context |
 
-Test execution, debugger control, arbitrary code evaluation, shell execution, dependency writes, filesystem writes, database writes, and external network capabilities also require `--isolated`. For the test profile, use `--environment test` and attest isolation only when the test database and process are actually disposable.
+Test execution, debugger control, arbitrary code evaluation, shell execution, dependency writes, filesystem writes, database writes, external network, `database_admin` non-SELECT operations, `browser_automation` write actions, and `version_control` write operations also require `--isolated`. For the test profile, use `--environment test` and attest isolation only when the test database and process are actually disposable. For `database_admin`, point the tool at a non-production replica or sandbox. For `browser_automation`, scope the driven URL to test/staging. For `version_control`, never auto-merge PRs that change public contracts or release artifacts.
 
 `production` is denied by the evaluator before a server process starts or an HTTP request is made. `production_access` and `credential_export` are unconditional denies even if mistakenly added to a profile's allow list. Capabilities absent from a profile are denied.
 
@@ -105,6 +109,10 @@ Do not trust MCP tool annotations as a substitute for this classification. They 
 - `debugger_control`, `arbitrary_code_execution`: process inspection, evaluation, and persistent console execution.
 - `shell_execution`: command execution in the configured working directory.
 - `dependency_write`, `filesystem_write`, `database_write`, `external_network`: mutation or external side effects.
+- `database_admin`: schema, index, and query operations on the DBMS itself (Postgres MCP Pro, DevDb, ruby-postgres-mcp-server). Treat SELECT results as `application_data_read`; treat DDL and writes as approval-required.
+- `browser_automation`: driving a browser via Playwright MCP or web-dev-mcp-gateway. DOM reads are bounded by the driven URL; clicks, form submits, file uploads, and downloads are mutation-class.
+- `version_control_write`: opening, merging, and pushing PRs, dispatching workflows, and editing release artifacts via GitHub MCP. Treat merge and push as approval-required.
+- `external_context_fetch`: documentation or reasoning content fetched or generated outside the repo (Context7, Sequential Thinking). Verify version match and treat as untrusted input.
 - `production_access`, `credential_export`: unconditional deny capabilities.
 
 ## Availability checks and protocol eras
