@@ -7,6 +7,8 @@ module RubyAgentSkills
         metadata_read source_read schema_read application_data_read test_execution
         debugger_control arbitrary_code_execution shell_execution dependency_write
         filesystem_write database_write external_network production_access credential_export
+        database_admin database_admin_write browser_automation browser_automation_write
+        version_control version_control_write external_context external_context_fetch
       ].freeze
 
       def initialize(data)
