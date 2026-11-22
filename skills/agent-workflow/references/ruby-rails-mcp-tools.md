@@ -413,7 +413,7 @@ ruby bin/mcp-preflight --config .mcp.json --server ask-rails-harness \
 | Building application features that call LLMs or delegate tool calls | `ruby-llm-integration` |
 | Gemfile/gemspec changes and package release | `ruby-gem-development` |
 | Database administration, query analysis, index tuning (Postgres MCP Pro, DevDb) | `rails-database-engineering` + `rails-performance` |
-| Browser automation, E2E UI testing (Playwright MCP, web-dev-mcp-gateway) | `rails-test-engineering` + `react-testing-engineering` (companion pack) |
+| Browser automation, E2E UI testing (Playwright MCP, web-dev-mcp-gateway) | `rails-test-engineering` + the react-agent-skills companion pack's testing skill |
 | GitHub PRs, releases, and Actions writes (GitHub MCP) | `rails-release-engineering` + this pack's governance audit surface |
 | Production error monitoring and trace analysis (Sentry MCP) | `rails-observability` + `rails-reliability-engineering` |
 | Server-side MCP authentication and authorization (hitch-rails) | `rails-authorization` + `rails-security` |
