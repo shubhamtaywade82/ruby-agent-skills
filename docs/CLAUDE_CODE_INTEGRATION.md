@@ -236,7 +236,7 @@ node bin/cross-pack-verify.mjs --root ~/.claude/skills --companions ~/.claude/sk
 
 ## What Claude Code does NOT do automatically
 
-- **Pinned ref checking**: the ruby pack's `bin/install` defaults to `main` on the public GitHub repo. For reproducibility, pass `--ref v1.5.0` (or a SHA). Claude Code does not warn if the install ref drifts.
+- **Pinned ref checking**: the ruby pack's `bin/install` defaults to `main` on the public GitHub repo. For reproducibility, pass `--ref v1.6.0` (or a SHA). Claude Code does not warn if the install ref drifts.
 - **Cross-pack coherence**: if you install ruby and node packs from different dates, Claude Code does not detect that their companion-snapshot files might disagree. Run `bin/cross-pack-verify` after every install or upgrade.
 - **Deprecated-skill suppression**: the ruby pack still ships 9 deprecated React/TypeScript skills (they trigger on `React state`, `TypeScript generics`, etc.). Claude Code's trigger-matching may activate them. The deprecated skills' bodies redirect to `react-agent-skills`; the agent should follow that redirect.
 - **Seam routing**: when a task spans two languages (Rails + Node), Claude Code does not automatically know to load `rails-node-integration` or `node-ruby-integration`. The agent must consult `router/ROUTING.md`'s cross-stack section. The v3 `cross_pack.seam_contracts` section makes this machine-readable; future Claude Code skill-routing logic may consume it.

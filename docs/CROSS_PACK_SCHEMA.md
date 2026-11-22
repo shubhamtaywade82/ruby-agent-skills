@@ -93,7 +93,7 @@ cross_pack:
   companions:
     - pack: ruby-agent-skills            # companion pack name
       repo: https://github.com/shubhamtaywade82/ruby-agent-skills
-      pinned_ref: v1.5.0                # tag, branch, or SHA; recommend pinning
+      pinned_ref: v1.6.0                # tag, branch, or SHA; recommend pinning
       snapshot: data/cross-pack/ruby-agent-skills.snapshot.yml  # path within THIS repo
       seam_skill: rails-node-integration  # this pack's seam skill for the boundary
       language: ruby
