@@ -8,9 +8,9 @@ The goal is not to store passive notes. The repository turns engineering materia
 
 Install the verified skill pack from a release archive (offline; no git required):
 
-    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.5.0/ruby-agent-skills-v1.5.0.tar.gz
-    tar xzf ruby-agent-skills-v1.5.0.tar.gz
-    cd ruby-agent-skills-v1.5.0
+    curl -LO https://github.com/shubhamtaywade82/ruby-agent-skills/releases/download/v1.6.0/ruby-agent-skills-v1.6.0.tar.gz
+    tar xzf ruby-agent-skills-v1.6.0.tar.gz
+    cd ruby-agent-skills-v1.6.0
     bash bin/install --agent claude
 
 Or from a git checkout:
@@ -91,6 +91,7 @@ The skill system is built from five connected layers:
                          │ Implementation +     │
                          │ Focused Verification │
                          └──────────┬───────────┘
+                                    │
                                     ▼
                          ┌──────────────────────┐
                          │ Evaluations / System │
@@ -804,8 +805,8 @@ Verify an installation with:
 
 Releases are cut as `vX.Y.Z` git tags and publish a downloadable, checksummed archive that installs offline (no git required). The latest archive is always available from the [releases page](https://github.com/shubhamtaywade82/ruby-agent-skills/releases). See `RELEASE.md` for the release definition and process.
 
-See `docs/INSTALLATION.md` for pinned-ref, offline-archive, project-scope, and verification workflows.
-See `docs/IMPLEMENTATION_HANDOFF.md` for the complete clone, validation, installation, routing-campaign, and empirical handoff sequence.
+See [docs/INSTALLATION.md](docs/INSTALLATION.md) for pinned-ref, offline-archive, project-scope, and verification workflows.
+See [docs/IMPLEMENTATION_HANDOFF.md](docs/IMPLEMENTATION_HANDOFF.md) for the complete clone, validation, installation, routing-campaign, and empirical handoff sequence.
 
 ---
 
