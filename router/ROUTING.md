@@ -1738,7 +1738,7 @@ This pack owns the Rails side of the Rails ↔ React boundary, through `rails-re
 |---|---|---|---|
 | React code calling a Rails endpoint (fetch, response types, error handling) | rails-react-integration | rails-api-integration | typescript-api-contracts, typescript-runtime-contracts, react-data-fetching |
 | React form showing Rails 422 validation errors | rails-react-integration | rails-validations | react-forms-validation, react-testing-engineering |
-| React fetch fails with InvalidAuthenticityToken or loses the session | rails-react-integration | rails-authentication, rails-security | browser-authentication |
+| React fetch fails with InvalidAuthenticityToken or loses the session | rails-react-integration | rails-authentication, rails-security | react-rails-integration |
 | Choosing Inertia, a JSON API with a separate client, or React islands | rails-react-integration | rails-api-integration, rails-hotwire | react-architecture, frontend-rendering-strategies |
 | Paginating, filtering, or sorting a Rails collection in React | rails-react-integration | rails-active-record | react-data-fetching, react-routing |
 | Action Cable broadcasts updating React state | rails-react-integration | rails-action-cable | frontend-realtime, react-data-fetching |
