@@ -136,7 +136,7 @@ skills:
     category: integration
     schema_version: 3
     companion_owners:
-      - react-agent-skills/browser-authentication
+      - react-agent-skills/react-rails-integration
       - react-agent-skills/react-data-fetching
       - react-agent-skills/react-forms-validation
   # DEPRECATED: standalone frontend ownership moved to react-agent-skills / react-testing-engineering + frontend-e2e
@@ -2296,6 +2296,6 @@ cross_pack:
         - rails-action-controller
         - rails-active-record
       companion_pack: react-agent-skills
-      companion_side: react-agent-skills/skills/browser-authentication
+      companion_side: react-agent-skills/skills/react-rails-integration
       routing_doc: router/ROUTING.md#rails-and-react-cross-stack-routing
       eval_cases: evals/rails-react-integration/rails-react-seam.yml
