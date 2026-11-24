@@ -19,8 +19,8 @@
 # snapshot refresh, which is the drift signal this contract exists to give.
 
 companion_repository: shubhamtaywade82/react-agent-skills
-companion_commit: "9674abba1c255d24f5187847f8b4c8ccc1f21fd6"
-captured_at: "2026-10-09"
+companion_commit: "eb7758ffcd2df8fc0c41a476fe1c5b41a8740b0c"  # = tag v0.1.0, the companion's first immutable release
+captured_at: "2026-11-24"
 skills:
   - agent-adversarial-evaluations
   - agent-behavior-scoring
@@ -100,7 +100,9 @@ skills:
   - react-hooks-effects
   - react-modern-rendering
   - react-observability
+  - react-node-integration
   - react-performance
+  - react-rails-integration
   - react-review
   - react-router
   - react-routing
